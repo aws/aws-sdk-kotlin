@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import org.jsoup.Jsoup
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.PathWalkOption
