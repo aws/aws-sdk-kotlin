@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+rootProject.name = "buildSrc"
+
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
