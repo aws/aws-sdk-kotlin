@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.43] - 09/19/2025
+
+### Features
+* (**bedrockagentcorecontrol**) Add tagging and VPC support to AgentCore Runtime, Code Interpreter, and Browser resources. Add support for configuring request headers in Runtime. Fix AgentCore Runtime shape names.
+* (**configservice**) Add UNKNOWN state to RemediationExecutionState and add IN_PROGRESS/EXITED/UNKNOWN states to RemediationExecutionStepState.
+* (**connect**) This release adds a persistent connection field to UserPhoneConfig that maintains agent's softphone media connection for faster call connections.
+* (**licensemanagerusersubscriptions**) Added support for cross-account Active Directories.
+* (**medialive**) Add MinBitrate for QVBR mode under H264/H265/AV1 output codec. Add GopBReference, GopNumBFrames, SubGopLength fields under H265 output codec.
+
+### Documentation
+* (**kendraranking**) Model whitespace change - no client difference
+* (**sqs**) Update invalid character handling documentation for SQS SendMessage API
+
 ## [1.5.42] - 09/18/2025
 
 ### Features

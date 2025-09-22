@@ -70,7 +70,9 @@ public class BuilderRenderer(
     private fun renderProperty(member: Member) {
         val dslInfo = member.dslInfo
 
-        if (dslInfo != null) blankLine()
+        if (dslInfo != null) {
+            blankLine()
+        }
 
         write("#Lvar #L: #T = null", ctx.attributes.visibility, member.name, member.type.nullable())
 

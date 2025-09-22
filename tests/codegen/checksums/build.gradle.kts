@@ -10,12 +10,10 @@ import aws.sdk.kotlin.tests.codegen.Model
 
 description = "AWS SDK for Kotlin's checksums codegen test suite"
 
-val tests = listOf(
-    CodegenTest("checksums", Model("checksums.smithy"), "aws.sdk.kotlin.test#TestService"),
-)
-
 smithyBuild {
-    this@Build_gradle.tests.forEach { test ->
+    listOf(
+        CodegenTest("checksums", Model("checksums.smithy"), "aws.sdk.kotlin.test#TestService"),
+    ).forEach { test ->
         projections.register(test.name) {
             imports = listOf(layout.projectDirectory.file(test.model.path + test.model.fileName).asFile.absolutePath)
             smithyKotlinPlugin {

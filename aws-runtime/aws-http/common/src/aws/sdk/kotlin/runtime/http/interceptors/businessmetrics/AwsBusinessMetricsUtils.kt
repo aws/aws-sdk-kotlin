@@ -31,7 +31,9 @@ internal fun formatMetrics(metrics: MutableSet<BusinessMetric>, logger: Logger):
             true
         }
     }
-    if (allowedMetrics.isEmpty()) return ""
+    if (allowedMetrics.isEmpty()) {
+        return ""
+    }
     val metricsString = allowedMetrics.joinToString(",", "m/") { it.identifier }
     val metricsByteArray = metricsString.encodeToByteArray()
 
