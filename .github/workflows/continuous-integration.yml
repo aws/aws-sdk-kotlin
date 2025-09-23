@@ -4,7 +4,9 @@ on:
   pull_request:
   workflow_dispatch:
 
-permissions: { }
+permissions:
+  id-token: write
+  contents: read
 
 # Allow one instance of this workflow per pull request, and cancel older runs when new changes are pushed
 concurrency:
@@ -29,6 +31,8 @@ jobs:
           - 17
           - 21
     steps:
+      - name: Set start time
+        run: echo "WORKFLOW_START_TIME=$(date +%s)" >> $GITHUB_ENV
       - name: Checkout sources
         uses: actions/checkout@v4
         with:
@@ -46,6 +50,9 @@ jobs:
           pwd
           ls -lsa
           ./gradlew -Ptest.java.version=${{ matrix.java-version }} jvmTest --stacktrace
+      - name: Upload metrics
+        if: always()
+        uses: ./aws-sdk-kotlin/.github/actions/workflow-metrics
       - name: Save Test Reports
         if: failure()
         uses: actions/upload-artifact@v4
@@ -60,6 +67,9 @@ jobs:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
     steps:
+      - name: Set start time
+        shell: bash
+        run: echo "WORKFLOW_START_TIME=$(date +%s)" >> $GITHUB_ENV
       - name: Checkout sources
         uses: actions/checkout@v4
         with:
@@ -99,6 +109,9 @@ jobs:
           ./gradlew apiCheck
           ./gradlew test jvmTest
           ./gradlew testAllProtocols
+      - name: Upload metrics
+        if: always()
+        uses: ./aws-sdk-kotlin/.github/actions/workflow-metrics
       - name: Save Test Reports
         if: failure()
         uses: actions/upload-artifact@v4

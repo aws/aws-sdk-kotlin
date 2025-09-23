@@ -43,6 +43,10 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Set start time
+        run: echo "WORKFLOW_START_TIME=$(date +%s)" >> $GITHUB_ENV
       - name: Verify PRs are not running malicious code
         if: ${{ (inputs.aws-sdk-kotlin-pr != '' || inputs.smithy-kotlin-pr != '') && inputs.check-pr == false }}
         run: |
@@ -68,11 +72,16 @@ jobs:
             echo "cancelling in-progress build: id=$BUILD_ID"
             aws codebuild stop-build --id $BUILD_ID
           fi
+      - name: Upload metrics
+        if: always()
+        uses: ./.github/actions/workflow-metrics
 
   service-check-batch-and-artifact-size-metrics:
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
+      - name: Set start time
+        run: echo "WORKFLOW_START_TIME=$(date +%s)" >> $GITHUB_ENV
       - name: Verify PRs are not running malicious code
         if: ${{ (inputs.aws-sdk-kotlin-pr != '' || inputs.smithy-kotlin-pr != '') && inputs.check-pr == false }}
         run: |
@@ -155,6 +164,9 @@ jobs:
             echo If this is expected please add the 'acknowledge-artifact-size-increase' label to this pull request.
             exit 1
           }
+      - name: Upload metrics
+        if: always()
+        uses: ./.github/actions/workflow-metrics
 
   release-artifact-size-metrics:
     if: github.event_name == 'release'
