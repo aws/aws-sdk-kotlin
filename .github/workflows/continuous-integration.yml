@@ -59,6 +59,7 @@ jobs:
           ./gradlew -Ptest.java.version=${{ matrix.java-version }} jvmTest --stacktrace
       - name: Calculate duration
         id: end
+        if: always()
         run: |
           printf -v now '%(%s)T'
           duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
@@ -141,6 +142,7 @@ jobs:
           ./gradlew testAllProtocols
       - name: Calculate duration
         id: end
+        if: always()
         shell: bash
         run: |
           now=$(date +%s)

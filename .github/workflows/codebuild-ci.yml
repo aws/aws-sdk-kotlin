@@ -75,6 +75,7 @@ jobs:
           fi
       - name: Calculate duration
         id: end
+        if: always()
         run: |
           printf -v now '%(%s)T'
           duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
@@ -185,6 +186,7 @@ jobs:
           }
       - name: Calculate duration
         id: end
+        if: always()
         run: |
           printf -v now '%(%s)T'
           duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
