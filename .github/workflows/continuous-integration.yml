@@ -85,6 +85,7 @@ jobs:
     steps:
       - name: Set start timestamp
         id: start
+        shell: bash
         run: printf 'timestamp=%(%s)T\n' >> "$GITHUB_OUTPUT"
       - name: Checkout sources
         uses: actions/checkout@v4
@@ -127,6 +128,7 @@ jobs:
           ./gradlew testAllProtocols
       - name: Calculate duration
         id: end
+        shell: bash
         run: |
           printf -v now '%(%s)T'
           duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
