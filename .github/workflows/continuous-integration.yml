@@ -4,10 +4,7 @@ on:
   pull_request:
   workflow_dispatch:
 
-permissions:
-  id-token: write
-  contents: read
-
+permissions: { }
 # Allow one instance of this workflow per pull request, and cancel older runs when new changes are pushed
 concurrency:
   group: ci-pr-${{ github.ref }}

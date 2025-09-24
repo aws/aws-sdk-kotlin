@@ -43,8 +43,6 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
       - name: Set start timestamp
         id: start
         run: printf 'timestamp=%(%s)T\n' >> "$GITHUB_OUTPUT"
