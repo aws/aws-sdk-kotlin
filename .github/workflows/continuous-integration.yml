@@ -93,7 +93,7 @@ jobs:
       - name: Set start timestamp
         id: start
         shell: bash
-        run: printf 'timestamp=%(%s)T\n' >> "$GITHUB_OUTPUT"
+        run: echo "timestamp=$(date +%s)" >> "$GITHUB_OUTPUT"
       - name: Checkout sources
         uses: actions/checkout@v4
         with:
@@ -144,7 +144,7 @@ jobs:
         id: end
         shell: bash
         run: |
-          printf -v now '%(%s)T'
+          now=$(date +%s)
           duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
           echo "duration=$duration" >> "$GITHUB_OUTPUT"
       - name: Emit metrics
