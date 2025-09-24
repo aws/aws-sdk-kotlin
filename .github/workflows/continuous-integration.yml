@@ -44,6 +44,11 @@ jobs:
         uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
           working-directory: ./aws-sdk-kotlin
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
+          aws-region: us-west-2
       - name: Setup kat
         uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
       - name: Test
@@ -95,6 +100,11 @@ jobs:
           path: 'aws-sdk-kotlin'
       - name: Setup Build
         uses: ./aws-sdk-kotlin/.github/actions/setup-build
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
+          aws-region: us-west-2
       - name: Setup kat
         uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
       - name: Configure Gradle - smithy-kotlin
