@@ -39,12 +39,12 @@ jobs:
           aws-region: us-west-2
 
       - name: Configure Gradle
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
           working-directory: ./aws-sdk-kotlin
 
       - name: Setup kat
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/setup-kat@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
 
       - name: Build
         working-directory: ./aws-sdk-kotlin

@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import org.jsoup.Jsoup
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.PathWalkOption
@@ -65,8 +70,7 @@ dokka {
     dokkaSourceSets.configureEach {
         externalDocumentationLinks {
             create("smithy-kotlin") {
-                val smithyKotlinRuntimeVersion = versionCatalogs.named("libs").findVersion("smithy-kotlin-runtime-version").get()
-                url("https://sdk.amazonaws.com/kotlin/api/smithy-kotlin/api/$smithyKotlinRuntimeVersion")
+                url("https://docs.aws.amazon.com/smithy-kotlin/api/latest")
             }
         }
     }

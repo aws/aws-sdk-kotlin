@@ -795,17 +795,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -816,17 +805,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -843,17 +821,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -864,17 +831,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -990,6 +946,20 @@
                 },
                 "smithy.api#documentation": "<p>The ARN of an EKS cluster.</p>",
                 "smithy.api#pattern": "^arn:aws[-a-z]*:eks:[-a-z0-9]+:[0-9]{12}:cluster/.+$"
+            }
+        },
+        "com.amazonaws.amp#ComponentConfig": {
+            "type": "structure",
+            "members": {
+                "options": {
+                    "target": "com.amazonaws.amp#StringMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configuration options for the scraper component.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration settings for a scraper component.</p>"
             }
         },
         "com.amazonaws.amp#ConflictException": {
@@ -1847,6 +1817,75 @@
                 "smithy.api#input": {}
             }
         },
+        "com.amazonaws.amp#DeleteResourcePolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.amp#DeleteResourcePolicyRequest"
+            },
+            "output": {
+                "target": "smithy.api#Unit"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.amp#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.amp#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes the resource-based policy attached to an Amazon Managed Service for Prometheus workspace.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "DELETE",
+                    "uri": "/workspaces/{workspaceId}/policy"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.amp#DeleteResourcePolicyRequest": {
+            "type": "structure",
+            "members": {
+                "workspaceId": {
+                    "target": "com.amazonaws.amp#WorkspaceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the workspace from which to delete the resource-based policy.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.amp#IdempotencyToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier that you provide to ensure the request is safe to retry (idempotent).</p>",
+                        "smithy.api#httpQuery": "clientToken",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "revisionId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The revision ID of the policy to delete. Use this parameter to ensure that you are deleting the correct version of the policy.</p>",
+                        "smithy.api#httpQuery": "revisionId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
         "com.amazonaws.amp#DeleteRuleGroupsNamespace": {
             "type": "operation",
             "input": {
@@ -1968,6 +2007,65 @@
                     "uri": "/scrapers/{scraperId}"
                 },
                 "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.amp#DeleteScraperLoggingConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.amp#DeleteScraperLoggingConfigurationRequest"
+            },
+            "output": {
+                "target": "smithy.api#Unit"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.amp#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.amp#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes the logging configuration for a Amazon Managed Service for Prometheus scraper.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "DELETE",
+                    "uri": "/scrapers/{scraperId}/logging-configuration"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.amp#DeleteScraperLoggingConfigurationRequest": {
+            "type": "structure",
+            "members": {
+                "scraperId": {
+                    "target": "com.amazonaws.amp#ScraperId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the scraper whose logging configuration will be deleted.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.amp#IdempotencyToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier that you provide to ensure the request is processed exactly once.</p>",
+                        "smithy.api#httpQuery": "clientToken",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
             }
         },
         "com.amazonaws.amp#DeleteScraperRequest": {
@@ -2272,6 +2370,86 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.amp#DescribeResourcePolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.amp#DescribeResourcePolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.amp#DescribeResourcePolicyResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.amp#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.amp#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Returns information about the resource-based policy attached to an Amazon Managed Service for Prometheus workspace.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "GET",
+                    "uri": "/workspaces/{workspaceId}/policy"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.amp#DescribeResourcePolicyRequest": {
+            "type": "structure",
+            "members": {
+                "workspaceId": {
+                    "target": "com.amazonaws.amp#WorkspaceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the workspace to describe the resource-based policy for.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.amp#DescribeResourcePolicyResponse": {
+            "type": "structure",
+            "members": {
+                "policyDocument": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The JSON policy document for the resource-based policy attached to the workspace.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "policyStatus": {
+                    "target": "com.amazonaws.amp#WorkspacePolicyStatusCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the resource-based policy.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "revisionId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The revision ID of the current resource-based policy.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.amp#DescribeRuleGroupsNamespace": {
             "type": "operation",
             "input": {
@@ -2470,6 +2648,97 @@
                         ]
                     }
                 }
+            }
+        },
+        "com.amazonaws.amp#DescribeScraperLoggingConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.amp#DescribeScraperLoggingConfigurationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.amp#DescribeScraperLoggingConfigurationResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.amp#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.amp#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the logging configuration for a Amazon Managed Service for Prometheus scraper.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "GET",
+                    "uri": "/scrapers/{scraperId}/logging-configuration"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.amp#DescribeScraperLoggingConfigurationRequest": {
+            "type": "structure",
+            "members": {
+                "scraperId": {
+                    "target": "com.amazonaws.amp#ScraperId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the scraper whose logging configuration will be described.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.amp#DescribeScraperLoggingConfigurationResponse": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.amp#ScraperLoggingConfigurationStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the scraper logging configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "scraperId": {
+                    "target": "com.amazonaws.amp#ScraperId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the scraper.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "loggingDestination": {
+                    "target": "com.amazonaws.amp#ScraperLoggingDestination",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The destination where scraper logs are sent.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "scraperComponents": {
+                    "target": "com.amazonaws.amp#ScraperComponents",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of scraper components configured for logging.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "modifiedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time when the logging configuration was last modified.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.amp#DescribeScraperRequest": {
@@ -3439,7 +3708,7 @@
                 "aws.api#arnReference": {
                     "type": "AWS::Logs::LogGroup"
                 },
-                "smithy.api#pattern": "^arn:aws[-a-z]*:logs:[-a-z0-9]+:[0-9]{12}:log-group:[A-Za-z0-9\\.\\-\\_\\#/]{1,512}\\:\\*$"
+                "smithy.api#pattern": "^arn:aws[a-z0-9-]*:logs:[a-z0-9-]+:[0-9]{12}:log-group:[A-Za-z0-9\\.\\-\\_\\#/]{1,512}\\:\\*$"
             }
         },
         "com.amazonaws.amp#LoggingConfiguration": {
@@ -3716,6 +3985,102 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Represents the output of a <code>PutAlertManagerDefinition</code> operation.</p>"
+            }
+        },
+        "com.amazonaws.amp#PutResourcePolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.amp#PutResourcePolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.amp#PutResourcePolicyResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.amp#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.amp#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Creates or updates a resource-based policy for an Amazon Managed Service for Prometheus workspace. Use resource-based policies to grant permissions to other AWS accounts or services to access your workspace.</p> <p>Only Prometheus-compatible APIs can be used for workspace sharing. You can add non-Prometheus-compatible APIs to the policy, but they will be ignored. For more information, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-APIReference-Prometheus-Compatible-Apis.html\">Prometheus-compatible APIs</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> <p>If your workspace uses customer-managed KMS keys for encryption, you must grant the principals in your resource-based policy access to those KMS keys. You can do this by creating KMS grants. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateGrant.html\">CreateGrant</a> in the <i>AWS Key Management Service API Reference</i> and <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/encryption-at-rest-Amazon-Service-Prometheus.html\">Encryption at rest</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> <p>For more information about working with IAM, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/security_iam_service-with-iam.html\">Using Amazon Managed Service for Prometheus with IAM</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "PUT",
+                    "uri": "/workspaces/{workspaceId}/policy"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.amp#PutResourcePolicyRequest": {
+            "type": "structure",
+            "members": {
+                "workspaceId": {
+                    "target": "com.amazonaws.amp#WorkspaceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the workspace to attach the resource-based policy to.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "policyDocument": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The JSON policy document to use as the resource-based policy. This policy defines the permissions that other AWS accounts or services have to access your workspace.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.amp#IdempotencyToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier that you provide to ensure the request is safe to retry (idempotent).</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "revisionId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The revision ID of the policy to update. Use this parameter to ensure that you are updating the correct version of the policy. If you don't specify a revision ID, the policy is updated regardless of its current revision.</p> <p>For the first <b>PUT</b> request on a workspace that doesn't have an existing resource policy, you can specify <code>NO_POLICY</code> as the revision ID.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.amp#PutResourcePolicyResponse": {
+            "type": "structure",
+            "members": {
+                "policyStatus": {
+                    "target": "com.amazonaws.amp#WorkspacePolicyStatusCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the resource-based policy.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "revisionId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The revision ID of the newly created or updated resource-based policy.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.amp#PutRuleGroupsNamespace": {
@@ -4120,7 +4485,7 @@
                 "smithy.api#documentation": "<p>The name of the namespace that the rule group belong to.</p>",
                 "smithy.api#length": {
                     "min": 1,
-                    "max": 64
+                    "max": 128
                 },
                 "smithy.api#pattern": "[0-9A-Za-z][-.0-9A-Z_a-z]*"
             }
@@ -4278,6 +4643,11 @@
             "list": {
                 "target": "com.amazonaws.amp#ListScrapers"
             },
+            "resources": [
+                {
+                    "target": "com.amazonaws.amp#ScraperLoggingConfiguration"
+                }
+            ],
             "traits": {
                 "aws.api#arn": {
                     "template": "scraper/{scraperId}"
@@ -4305,6 +4675,61 @@
                     "resource": "Scraper"
                 },
                 "smithy.api#documentation": "<p>An ARN identifying a scrape configuration.</p>"
+            }
+        },
+        "com.amazonaws.amp#ScraperComponent": {
+            "type": "structure",
+            "members": {
+                "type": {
+                    "target": "com.amazonaws.amp#ScraperComponentType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the scraper component.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "config": {
+                    "target": "com.amazonaws.amp#ComponentConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration settings for the scraper component.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A component of a Amazon Managed Service for Prometheus scraper that can be configured for logging.</p>"
+            }
+        },
+        "com.amazonaws.amp#ScraperComponentType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "name": "SERVICE_DISCOVERY",
+                        "value": "SERVICE_DISCOVERY",
+                        "documentation": "Scraper service discoverer component"
+                    },
+                    {
+                        "name": "COLLECTOR",
+                        "value": "COLLECTOR",
+                        "documentation": "Scraper collector component"
+                    },
+                    {
+                        "name": "EXPORTER",
+                        "value": "EXPORTER",
+                        "documentation": "Scraper exporter component"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.amp#ScraperComponents": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.amp#ScraperComponent"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1
+                },
+                "smithy.api#uniqueItems": {}
             }
         },
         "com.amazonaws.amp#ScraperDescription": {
@@ -4438,6 +4863,103 @@
                     "max": 64
                 },
                 "smithy.api#pattern": "^[0-9A-Za-z][-.0-9A-Z_a-z]*$"
+            }
+        },
+        "com.amazonaws.amp#ScraperLoggingConfiguration": {
+            "type": "resource",
+            "identifiers": {
+                "scraperId": {
+                    "target": "com.amazonaws.amp#ScraperId"
+                }
+            },
+            "put": {
+                "target": "com.amazonaws.amp#UpdateScraperLoggingConfiguration"
+            },
+            "read": {
+                "target": "com.amazonaws.amp#DescribeScraperLoggingConfiguration"
+            },
+            "update": {
+                "target": "com.amazonaws.amp#UpdateScraperLoggingConfiguration"
+            },
+            "delete": {
+                "target": "com.amazonaws.amp#DeleteScraperLoggingConfiguration"
+            },
+            "traits": {
+                "aws.api#arn": {
+                    "template": "scraper/{scraperId}"
+                }
+            }
+        },
+        "com.amazonaws.amp#ScraperLoggingConfigurationStatus": {
+            "type": "structure",
+            "members": {
+                "statusCode": {
+                    "target": "com.amazonaws.amp#ScraperLoggingConfigurationStatusCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status code of the scraper logging configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "statusReason": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason for the current status of the scraper logging configuration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The status of a scraper logging configuration.</p>"
+            }
+        },
+        "com.amazonaws.amp#ScraperLoggingConfigurationStatusCode": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "name": "CREATING",
+                        "value": "CREATING",
+                        "documentation": "Scraper logging configuration is being created."
+                    },
+                    {
+                        "name": "ACTIVE",
+                        "value": "ACTIVE",
+                        "documentation": "Scraper logging configuration is active."
+                    },
+                    {
+                        "name": "UPDATING",
+                        "value": "UPDATING",
+                        "documentation": "Scraper logging configuration is being updated."
+                    },
+                    {
+                        "name": "DELETING",
+                        "value": "DELETING",
+                        "documentation": "Scraper logging configuration is being deleted."
+                    },
+                    {
+                        "name": "CREATION_FAILED",
+                        "value": "CREATION_FAILED",
+                        "documentation": "Scraper logging configuration creation failed."
+                    },
+                    {
+                        "name": "UPDATE_FAILED",
+                        "value": "UPDATE_FAILED",
+                        "documentation": "Scraper logging configuration update failed."
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.amp#ScraperLoggingDestination": {
+            "type": "union",
+            "members": {
+                "cloudWatchLogs": {
+                    "target": "com.amazonaws.amp#CloudWatchLogDestination",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The CloudWatch Logs configuration for the scraper logging destination.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The destination where scraper logs are sent.</p>"
             }
         },
         "com.amazonaws.amp#ScraperStatus": {
@@ -4691,6 +5213,15 @@
                     "min": 1,
                     "max": 256
                 }
+            }
+        },
+        "com.amazonaws.amp#StringMap": {
+            "type": "map",
+            "key": {
+                "target": "smithy.api#String"
+            },
+            "value": {
+                "target": "smithy.api#String"
             }
         },
         "com.amazonaws.amp#SubnetId": {
@@ -5146,6 +5677,85 @@
                 "smithy.api#idempotent": {}
             }
         },
+        "com.amazonaws.amp#UpdateScraperLoggingConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.amp#UpdateScraperLoggingConfigurationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.amp#UpdateScraperLoggingConfigurationResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.amp#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.amp#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.amp#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Updates the logging configuration for a Amazon Managed Service for Prometheus scraper.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "PUT",
+                    "uri": "/scrapers/{scraperId}/logging-configuration"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.amp#UpdateScraperLoggingConfigurationRequest": {
+            "type": "structure",
+            "members": {
+                "scraperId": {
+                    "target": "com.amazonaws.amp#ScraperId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the scraper whose logging configuration will be updated.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "loggingDestination": {
+                    "target": "com.amazonaws.amp#ScraperLoggingDestination",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The destination where scraper logs will be sent.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "scraperComponents": {
+                    "target": "com.amazonaws.amp#ScraperComponents",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of scraper components to configure for logging.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.amp#UpdateScraperLoggingConfigurationResponse": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.amp#ScraperLoggingConfigurationStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the updated scraper logging configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.amp#UpdateScraperRequest": {
             "type": "structure",
             "members": {
@@ -5523,6 +6133,9 @@
                 },
                 {
                     "target": "com.amazonaws.amp#WorkspaceConfiguration"
+                },
+                {
+                    "target": "com.amazonaws.amp#WorkspaceResourcePolicy"
                 }
             ],
             "traits": {
@@ -5720,6 +6333,55 @@
                     "max": 64
                 },
                 "smithy.api#pattern": "[0-9A-Za-z][-.0-9A-Z_a-z]*"
+            }
+        },
+        "com.amazonaws.amp#WorkspacePolicyStatusCode": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "name": "CREATING",
+                        "value": "CREATING",
+                        "documentation": "Resource-based Policy is being created. Update/Deletion is disallowed until Resource-based Policy is ACTIVE and Workspace is ACTIVE."
+                    },
+                    {
+                        "name": "ACTIVE",
+                        "value": "ACTIVE",
+                        "documentation": "Resource-based Policy has been created/updated. Update/Deletion is disallowed until Resource-based Policy is ACTIVE and Workspace is ACTIVE."
+                    },
+                    {
+                        "name": "UPDATING",
+                        "value": "UPDATING",
+                        "documentation": "Resource-based Policy is being updated. Update/Deletion is disallowed until Resource-based Policy is ACTIVE and Workspace is ACTIVE."
+                    },
+                    {
+                        "name": "DELETING",
+                        "value": "DELETING",
+                        "documentation": "Resource-based Policy is being deleting. Update/Deletion is disallowed until Resource-based Policy is ACTIVE and Workspace is ACTIVE."
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.amp#WorkspaceResourcePolicy": {
+            "type": "resource",
+            "identifiers": {
+                "workspaceId": {
+                    "target": "com.amazonaws.amp#WorkspaceId"
+                }
+            },
+            "put": {
+                "target": "com.amazonaws.amp#PutResourcePolicy"
+            },
+            "read": {
+                "target": "com.amazonaws.amp#DescribeResourcePolicy"
+            },
+            "delete": {
+                "target": "com.amazonaws.amp#DeleteResourcePolicy"
+            },
+            "traits": {
+                "aws.api#arn": {
+                    "template": "workspace/{workspaceId}"
+                }
             }
         },
         "com.amazonaws.amp#WorkspaceStatus": {

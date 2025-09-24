@@ -1,0 +1,11 @@
+name: Minor version bump check
+on:
+  pull_request:
+
+jobs:
+  minor-version-bump-check:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Minor version bump check
+        uses: awslabs/aws-kotlin-repo-tools/.github/actions/minor-version-bump@main

@@ -4,7 +4,7 @@ ksp-version = "2.2.0-2.0.2" # Keep in sync with kotlin-version
 
 dokka-version = "2.0.0"
 
-aws-kotlin-repo-tools-version = "0.4.30-kn"
+aws-kotlin-repo-tools-version = "0.4.54"
 
 # libs
 coroutines-version = "1.10.2"
@@ -12,8 +12,8 @@ atomicfu-version = "0.29.0"
 binary-compatibility-validator-version = "0.18.0"
 
 # smithy-kotlin codegen and runtime are versioned separately
-smithy-kotlin-runtime-version = "1.5.4-SNAPSHOT"
-smithy-kotlin-codegen-version = "0.35.4-SNAPSHOT"
+smithy-kotlin-runtime-version = "1.5.10-SNAPSHOT"
+smithy-kotlin-codegen-version = "0.35.10-SNAPSHOT"
 
 # codegen
 smithy-version = "1.60.2"

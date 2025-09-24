@@ -30,11 +30,7 @@ dependencies {
     api(project(":aws-runtime:aws-core"))
     implementation(libs.ksp.api)
     implementation(libs.smithy.kotlin.runtime.core)
-
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.params)
-    testImplementation(libs.kotest.assertions.core.jvm)
-    testImplementation(libs.kotlin.test.junit5)
+    testImplementation(kotlin("test"))
 }
 
 val sourcesJar by tasks.creating(Jar::class) {

@@ -5,7 +5,8 @@
 package aws.sdk.kotlin.codegen
 
 import kotlinx.serialization.json.*
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class EndpointUrlConfigNamesTest {
     // these don't appear to exist anymore - we don't have models (and therefore no generated clients) for them
@@ -1104,16 +1105,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_OPENSEARCH"
   },
   {
-    "service_id": "OpsWorks",
-    "services_section_name": "opsworks",
-    "service_envvar_name": "AWS_ENDPOINT_URL_OPSWORKS"
-  },
-  {
-    "service_id": "OpsWorksCM",
-    "services_section_name": "opsworkscm",
-    "service_envvar_name": "AWS_ENDPOINT_URL_OPSWORKSCM"
-  },
-  {
     "service_id": "Organizations",
     "services_section_name": "organizations",
     "service_envvar_name": "AWS_ENDPOINT_URL_ORGANIZATIONS"
@@ -1409,11 +1400,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_SIGNER"
   },
   {
-    "service_id": "SMS",
-    "services_section_name": "sms",
-    "service_envvar_name": "AWS_ENDPOINT_URL_SMS"
-  },
-  {
     "service_id": "Pinpoint SMS Voice",
     "services_section_name": "pinpoint_sms_voice",
     "service_envvar_name": "AWS_ENDPOINT_URL_PINPOINT_SMS_VOICE"
@@ -1672,7 +1658,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "Customer Profiles": "CustomerProfilesClient",
   "DocDB": "DocDbClient",
   "DAX": "DaxClient",
-  "OpsWorksCM": "OpsWorksCmClient",
   "ACM PCA": "AcmPcaClient",
   "GuardDuty": "GuardDutyClient",
   "CleanRooms": "CleanRoomsClient",
@@ -1725,7 +1710,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "ConnectCampaigns": "ConnectCampaignsClient",
   "Textract": "TextractClient",
   "Support": "SupportClient",
-  "OpsWorks": "OpsWorksClient",
   "identitystore": "IdentitystoreClient",
   "Kinesis Analytics": "KinesisAnalyticsClient",
   "Snowball": "SnowballClient",
@@ -1860,7 +1844,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "MemoryDB": "MemoryDbClient",
   "Payment Cryptography": "PaymentCryptographyClient",
   "Cognito Identity": "CognitoIdentityClient",
-  "SMS": "SmsClient",
   "OSIS": "OsisClient",
   "Proton": "ProtonClient",
   "ECR PUBLIC": "EcrPublicClient",

@@ -64,15 +64,15 @@ internal data class EndpointUrlConfigNames(
 
 internal fun String.toEndpointUrlConfigNames(): EndpointUrlConfigNames = EndpointUrlConfigNames(
     withTransform(JvmSystemPropertySuffix),
-    withTransform(SdkIdTransform.UpperSnakeCase),
-    withTransform(SdkIdTransform.LowerSnakeCase),
+    withTransform(SdkIdTransformers.UpperSnakeCase),
+    withTransform(SdkIdTransformers.LowerSnakeCase),
 )
 
 // JVM system property names follow the pattern "aws.endpointUrl${BaseClientName}"
 // where BaseClientName is the PascalCased sdk ID with any forbidden suffixes dropped - this is the same as what we use
 // for our client names
 // e.g. sdkId "Elasticsearch Service" -> client name "ElasticsearchClient", prop "aws.endpointUrlElasticsearch"
-private object JvmSystemPropertySuffix : SdkIdTransformer {
+private object JvmSystemPropertySuffix : StringTransformer {
     override fun transform(id: String): String =
         id.toPascalCase().removeSuffix("Service")
 }

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import aws.sdk.kotlin.gradle.dsl.configureLinting
+import aws.sdk.kotlin.gradle.dsl.configureMinorVersionStrategyRules
 import aws.sdk.kotlin.gradle.dsl.configureNexus
 import aws.sdk.kotlin.gradle.kmp.configureIosSimulatorTasks
 import aws.sdk.kotlin.gradle.util.typedProp
@@ -14,6 +15,18 @@ buildscript {
         classpath(libs.kotlinx.atomicfu.plugin)
         // Add our custom gradle build logic to buildscript classpath
         classpath(libs.aws.kotlin.repo.tools.build.support)
+    }
+
+    configurations.classpath {
+        resolutionStrategy {
+            /*
+            Version bumping the SDK to 1.5.x in repo tools broke our buildscript classpath:
+            java.lang.NoSuchMethodError: 'void kotlinx.coroutines.CancellableContinuation.resume(java.lang.Object, kotlin.jvm.functions.Function3)
+
+            FIXME: Figure out what broke our buildscipt classpath, this is a temporary fix
+             */
+            force("com.squareup.okhttp3:okhttp-coroutines:5.0.0-alpha.14")
+        }
     }
 }
 
@@ -98,3 +111,4 @@ val lintPaths = listOf(
 )
 
 configureLinting(lintPaths)
+configureMinorVersionStrategyRules(lintPaths)

@@ -701,17 +701,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -722,17 +711,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -749,17 +727,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -770,17 +737,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -1547,6 +1503,7 @@
                 "rule": {
                     "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionRule",
                     "traits": {
+                        "smithy.api#documentation": "<p>The rule definition that specifies the formal logical expression and metadata for the new rule being added to the policy.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -1590,6 +1547,7 @@
                 "type": {
                     "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionType",
                     "traits": {
+                        "smithy.api#documentation": "<p>The type definition that specifies the name, description, and possible values for the new custom type being added to the policy.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -1654,6 +1612,7 @@
                 "variable": {
                     "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionVariable",
                     "traits": {
+                        "smithy.api#documentation": "<p>The variable definition that specifies the name, type, and description for the new variable being added to the policy.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -1823,6 +1782,16 @@
                 "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyArn"
             }
         },
+        "com.amazonaws.bedrock#AutomatedReasoningPolicyBuildDocumentBlob": {
+            "type": "blob",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 5000000
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.bedrock#AutomatedReasoningPolicyBuildDocumentContentType": {
             "type": "enum",
             "members": {
@@ -1958,7 +1927,10 @@
             "type": "union",
             "members": {
                 "policyDefinition": {
-                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinition"
+                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinition",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The complete policy definition generated by the build workflow, containing all rules, variables, and custom types extracted from the source documents.</p>"
+                    }
                 },
                 "qualityReport": {
                     "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionQualityReport",
@@ -2063,13 +2035,9 @@
             "type": "structure",
             "members": {
                 "document": {
-                    "target": "smithy.api#Blob",
+                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyBuildDocumentBlob",
                     "traits": {
                         "smithy.api#documentation": "<p>The actual content of the source document that will be analyzed to extract policy rules and concepts.</p>",
-                        "smithy.api#length": {
-                            "min": 1,
-                            "max": 4500000
-                        },
                         "smithy.api#required": {}
                     }
                 },
@@ -2138,7 +2106,10 @@
             "type": "structure",
             "members": {
                 "policyDefinition": {
-                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinition"
+                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinition",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An existing policy definition that serves as the starting point for the build workflow, typically used in policy repair or update scenarios.</p>"
+                    }
                 },
                 "workflowContent": {
                     "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyWorkflowTypeContent",
@@ -2343,13 +2314,22 @@
             "type": "union",
             "members": {
                 "policyDefinitionVariable": {
-                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionVariable"
+                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionVariable",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A variable element within the policy definition that represents a concept used in logical expressions and rules.</p>"
+                    }
                 },
                 "policyDefinitionType": {
-                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionType"
+                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A custom type element within the policy definition that defines a set of possible values for variables.</p>"
+                    }
                 },
                 "policyDefinitionRule": {
-                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionRule"
+                    "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionRule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A rule element within the policy definition that contains a formal logical expression used for validation.</p>"
+                    }
                 }
             },
             "traits": {
@@ -3336,6 +3316,7 @@
                 "testCase": {
                     "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyTestCase",
                     "traits": {
+                        "smithy.api#documentation": "<p>The test case that was executed, including the input content, expected results, and configuration parameters used during validation.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -3549,6 +3530,7 @@
                 "rule": {
                     "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionRule",
                     "traits": {
+                        "smithy.api#documentation": "<p>The updated rule definition containing the modified formal logical expression and any changed metadata for the existing rule.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -3597,6 +3579,7 @@
                 "type": {
                     "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionType",
                     "traits": {
+                        "smithy.api#documentation": "<p>The updated type definition containing the modified name, description, or values for the existing custom type.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -3665,6 +3648,7 @@
                 "variable": {
                     "target": "com.amazonaws.bedrock#AutomatedReasoningPolicyDefinitionVariable",
                     "traits": {
+                        "smithy.api#documentation": "<p>The updated variable definition containing the modified name, type, or description for the existing variable.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -4433,6 +4417,9 @@
                 },
                 {
                     "target": "com.amazonaws.bedrock#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrock#TooManyTagsException"
                 },
                 {
                     "target": "com.amazonaws.bedrock#ValidationException"
@@ -6624,6 +6611,9 @@
                 },
                 {
                     "target": "com.amazonaws.bedrock#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrock#ResourceInUseException"
                 },
                 {
                     "target": "com.amazonaws.bedrock#ResourceNotFoundException"
@@ -20548,12 +20538,6 @@
                     "target": "com.amazonaws.bedrock#AutomatedReasoningCheckTranslationConfidence",
                     "traits": {
                         "smithy.api#documentation": "<p>The updated minimum confidence level for logic validation. If null is provided, the threshold will be removed.</p>"
-                    }
-                },
-                "kmsKeyArn": {
-                    "target": "com.amazonaws.bedrock#KmsKeyArn",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The KMS key ARN for encrypting the test at rest. If not provided, the key will not be updated. Use <code>DISCARD</code> to remove the key.</p>"
                     }
                 },
                 "clientRequestToken": {

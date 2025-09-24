@@ -1,0 +1,24 @@
+name: Remove deprecated shapes check
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened, labeled, unlabeled ]
+    branches: [ main ]
+
+jobs:
+  remove-deprecated-shapes:
+    # Only runs if the deprecated-shape-cutoff-date was not updated
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'updated-deprecated-shape-cutoff-date') }}
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update deprecated shape cutoff date
+        run: |
+          # Only continue on branches starting with vX.X (e.g. v1.2, v1.2.3, v1.2-main)
+          if [[ ! "${{ github.head_ref }}" =~ ^v[0-9]+\.[0-9]+.*$ ]]; then
+            exit 0
+          fi
+
+          echo "Please update the deprecated shape cutoff date and add the 'updated-deprecated-shape-cutoff-date' label"
+          echo "It must be set to the release date of the current minor version"
+          echo "See: https://github.com/aws/aws-sdk-kotlin/blob/8df78fb048ddc40120c8fe370cd3e0d35c077b2b/build-support/src/main/kotlin/aws/sdk/kotlin/gradle/sdk/Util.kt#L16"
+          exit 1

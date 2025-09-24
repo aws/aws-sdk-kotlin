@@ -86,7 +86,7 @@ jobs:
           role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
           aws-region: us-west-2
       - name: Configure Gradle
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
       - name: Run Service Check Batch and Calculate Artifact Size Metrics
         id: svc-check-batch
         run: | 
@@ -144,7 +144,7 @@ jobs:
         run: ./gradlew analyzeArtifactSizeMetrics
 
       - name: Show Results
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/artifact-size-metrics/show-results@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/artifact-size-metrics/show-results@main
 
       - name: Evaluate Result
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'acknowledge-artifact-size-increase') }}
@@ -168,7 +168,7 @@ jobs:
           role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
           aws-region: us-west-2
       - name: Configure Gradle
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
       - name: Calculate Artifact Size Metrics
         id: svc-check-batch
         run: |

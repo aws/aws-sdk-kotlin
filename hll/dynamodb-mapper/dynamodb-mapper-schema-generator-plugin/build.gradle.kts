@@ -33,8 +33,8 @@ dependencies {
 }
 
 gradlePlugin {
-    website = "https://github.com/awslabs/aws-sdk-kotlin"
-    vcsUrl = "https://github.com/awslabs/aws-sdk-kotlin.git"
+    website = "https://github.com/aws/aws-sdk-kotlin"
+    vcsUrl = "https://github.com/aws/aws-sdk-kotlin.git"
     plugins {
         create("dynamodb-mapper-schema-generator") {
             id = "aws.sdk.kotlin.hll.dynamodbmapper.schema.generator"

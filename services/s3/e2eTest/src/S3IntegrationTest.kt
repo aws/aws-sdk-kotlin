@@ -245,60 +245,6 @@ class S3BucketOpsIntegrationTest {
     }
 
     @Test
-    fun testSelectObjectEventStream(): Unit = runBlocking {
-        // upload our content to select from
-        val objKey = "developers.csv"
-
-        val content = """
-        Name,PhoneNumber,City,Occupation
-        Sam,(949) 555-6701,Irvine,Solutions Architect
-        Vinod,(949) 555-6702,Los Angeles,Solutions Architect
-        Jeff,(949) 555-6703,Seattle,AWS Evangelist
-        Jane,(949) 555-6704,Chicago,Developer
-        Sean,(949) 555-6705,Indianapolis,Developer
-        Mary,(949) 555-6706,Detroit,Developer
-        Kate,(949) 555-6707,Boston,Solutions Architect
-        """.trimIndent()
-
-        client.putObject {
-            bucket = testBucket
-            key = objKey
-            body = ByteStream.fromString(content)
-        }
-
-        // select content as an event stream
-        val req = SelectObjectContentRequest {
-            bucket = testBucket
-            key = objKey
-            expressionType = ExpressionType.Sql
-            expression = """SELECT * FROM s3object s where s."Name" = 'Jane'"""
-            inputSerialization {
-                csv {
-                    fileHeaderInfo = FileHeaderInfo.Use
-                }
-                compressionType = CompressionType.None
-            }
-            outputSerialization {
-                csv { }
-            }
-        }
-
-        val events = client.selectObjectContent(req) { resp ->
-            // collect flow to list
-            resp.payload!!.toList()
-        }
-
-        assertEquals(3, events.size)
-
-        val records = assertIs<SelectObjectContentEventStream.Records>(events[0])
-        assertIs<SelectObjectContentEventStream.Stats>(events[1])
-        assertIs<SelectObjectContentEventStream.End>(events[2])
-
-        val expectedRecord = "Jane,(949) 555-6704,Chicago,Developer\n"
-        assertEquals(expectedRecord, records.value.payload?.decodeToString())
-    }
-
-    @Test
     fun testPutObjectWithChecksum(): Unit = runBlocking {
         val contents = "AAAAAAAAAA"
         val keyName = "put-obj-with-checksum.txt"

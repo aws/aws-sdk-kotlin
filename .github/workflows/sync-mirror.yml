@@ -10,13 +10,13 @@ permissions: { }
 jobs:
   git-sync:
     # Only sync when pushing to source repo
-    if: github.repository == 'awslabs/aws-sdk-kotlin'
+    if: github.repository == 'aws/aws-sdk-kotlin'
     runs-on: ubuntu-latest
     steps:
       - name: git-sync
         uses: wei/git-sync@v3
         with:
-          source_repo: "https://aws-sdk-kotlin-ci:${{ secrets.CI_USER_PAT }}@github.com/awslabs/aws-sdk-kotlin.git"
+          source_repo: "https://aws-sdk-kotlin-ci:${{ secrets.CI_USER_PAT }}@github.com/aws/aws-sdk-kotlin.git"
           source_branch: "main"
-          destination_repo: "https://aws-sdk-kotlin-ci:${{ secrets.CI_USER_PAT }}@github.com/awslabs/private-aws-sdk-kotlin-staging.git"
+          destination_repo: "https://aws-sdk-kotlin-ci:${{ secrets.CI_USER_PAT }}@github.com/aws/private-aws-sdk-kotlin-staging.git"
           destination_branch: "main"

@@ -2,7 +2,7 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import aws.sdk.kotlin.gradle.dsl.configurePublishing
+import aws.sdk.kotlin.gradle.dsl.configureNexusPublishing
 import aws.sdk.kotlin.gradle.kmp.kotlin
 import aws.sdk.kotlin.gradle.kmp.needsKmpConfigured
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -32,7 +32,8 @@ subprojects {
         plugin(libraries.plugins.aws.kotlin.repo.tools.kmp.get().pluginId)
     }
 
-    configurePublishing("aws-sdk-kotlin")
+    // TODO Use configurePublishing when migrating to Sonatype Publisher API / JReleaser
+    configureNexusPublishing("aws-sdk-kotlin")
 
     kotlin {
         explicitApi()
@@ -89,4 +90,12 @@ dependencies {
             modulePath = this@subprojects.name
         }
     }
+}
+val packagesToIgnore = listOf(
+    "aws.sdk.kotlin.runtime.auth.credentials.internal.sts",
+    "aws.sdk.kotlin.runtime.auth.credentials.internal.sso",
+    "aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc",
+)
+apiValidation {
+    ignoredPackages += packagesToIgnore
 }

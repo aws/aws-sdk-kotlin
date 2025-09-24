@@ -2,13 +2,13 @@
 [![Apache 2 licensed][apache-badge]][apache-url] [![Maven][maven-badge]][maven-url]
 
 [apache-badge]: https://img.shields.io/badge/license-APACHE2-blue.svg
-[apache-url]: https://github.com/awslabs/aws-sdk-kotlin/blob/main/LICENSE
+[apache-url]: https://github.com/aws/aws-sdk-kotlin/blob/main/LICENSE
 
 
 [maven-badge]: https://img.shields.io/maven-central/v/aws.sdk.kotlin/s3.svg?label=Maven
 [maven-url]: https://search.maven.org/search?q=g:aws.sdk.kotlin
 
-This repo contains the AWS SDK for Kotlin and its [public roadmap](https://github.com/awslabs/aws-sdk-kotlin/projects/2).
+This repo contains the AWS SDK for Kotlin and its [public roadmap](https://github.com/aws/aws-sdk-kotlin/projects/2).
 
 ## Getting Started
 
@@ -24,7 +24,7 @@ See the [Getting Started Guide](docs/GettingStarted.md) to learn how to use the 
 The SDK uses **GitHub Issues** to track feature requests and issues with the SDK. In addition, we use **GitHub Projects**
 to provide a high level overview of our roadmap and the features we are actively working on.
 
-You can provide feedback or report a bug by submitting an [issue](https://github.com/awslabs/aws-sdk-kotlin/issues/new/choose).
+You can provide feedback or report a bug by submitting an [issue](https://github.com/aws/aws-sdk-kotlin/issues/new/choose).
 This is the preferred mechanism to give feedback so that other users can engage in the conversation, +1 issues, etc.
 
 ## Contributing
@@ -146,7 +146,7 @@ See [Debugging](docs/debugging.md)
 
 ## Security
 
-Please refer to our [security policy](https://github.com/awslabs/aws-sdk-kotlin/security/policy).
+Please refer to our [security policy](https://github.com/aws/aws-sdk-kotlin/security/policy).
 
 ## Supported targets
 

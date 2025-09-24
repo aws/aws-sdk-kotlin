@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.runtime.http.interceptors.businessmetrics
 
 import aws.sdk.kotlin.runtime.http.BUSINESS_METRICS_MAX_LENGTH
@@ -26,7 +31,9 @@ internal fun formatMetrics(metrics: MutableSet<BusinessMetric>, logger: Logger):
             true
         }
     }
-    if (allowedMetrics.isEmpty()) return ""
+    if (allowedMetrics.isEmpty()) {
+        return ""
+    }
     val metricsString = allowedMetrics.joinToString(",", "m/") { it.identifier }
     val metricsByteArray = metricsString.encodeToByteArray()
 

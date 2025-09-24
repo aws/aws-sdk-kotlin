@@ -36,7 +36,7 @@ jobs:
       - name: Setup Build
         uses: ./aws-sdk-kotlin/.github/actions/setup-build
       - name: Configure Gradle
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
           working-directory: ./aws-sdk-kotlin
       - name: Test
@@ -68,18 +68,18 @@ jobs:
       - name: Setup Build
         uses: ./aws-sdk-kotlin/.github/actions/setup-build
 
-      # FIXME Re-enable Kotlin/Native builds when artifacts are available
-      - name: Disable Kotlin/Native builds
-        shell: bash
-        run: |
-          echo -e "\naws.kotlin.native=false" >> ./aws-sdk-kotlin/gradle.properties
-          echo -e "\naws.kotlin.native=false" >> ./smithy-kotlin/gradle.properties
-          echo -e "\naws.kotlin.native=false" >> ./aws-crt-kotlin/gradle.properties
-
       - name: Configure Gradle - smithy-kotlin
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
           working-directory: ./smithy-kotlin
+
+      - name: Disable native builds # FIXME remove this step once K/N is merged
+        shell: bash
+        run: |
+          echo "Appending aws.kotlin.native=false to smithy-kotlin/gradle.properties..."
+          echo -e "\n\naws.kotlin.native=false" >> ./smithy-kotlin/gradle.properties
+          echo "Appending aws.kotlin.native=false to aws-sdk-kotlin/gradle.properties..."
+          echo -e "\n\naws.kotlin.native=false" >> ./aws-sdk-kotlin/gradle.properties
 
       - name: Build smithy-kotlin
         working-directory: ./smithy-kotlin
@@ -91,7 +91,7 @@ jobs:
           ./gradlew publishToMavenLocal
 
       - name: Configure Gradle aws-sdk-kotlin
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
           working-directory: ./aws-sdk-kotlin
 

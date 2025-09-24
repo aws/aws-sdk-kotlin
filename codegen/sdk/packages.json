@@ -199,6 +199,12 @@
             "brazilName": "AwsSdkKotlinAutoScalingPlans"
         },
         {
+            "sdkId": "BCM Dashboards",
+            "namespace": "aws.sdk.kotlin.services.bcmdashboards",
+            "artifactName": "bcmdashboards",
+            "brazilName": "AwsSdkKotlinBcmDashboards"
+        },
+        {
             "sdkId": "BCM Data Exports",
             "namespace": "aws.sdk.kotlin.services.bcmdataexports",
             "artifactName": "bcmdataexports",
@@ -209,6 +215,12 @@
             "namespace": "aws.sdk.kotlin.services.bcmpricingcalculator",
             "artifactName": "bcmpricingcalculator",
             "brazilName": "AwsSdkKotlinBcmPricingCalculator"
+        },
+        {
+            "sdkId": "BCM Recommended Actions",
+            "namespace": "aws.sdk.kotlin.services.bcmrecommendedactions",
+            "artifactName": "bcmrecommendedactions",
+            "brazilName": "AwsSdkKotlinBcmRecommendedActions"
         },
         {
             "sdkId": "Backup",
@@ -1543,18 +1555,6 @@
             "brazilName": "AwsSdkKotlinOpensearchserverless"
         },
         {
-            "sdkId": "OpsWorks",
-            "namespace": "aws.sdk.kotlin.services.opsworks",
-            "artifactName": "opsworks",
-            "brazilName": "AwsSdkKotlinOpsworks"
-        },
-        {
-            "sdkId": "OpsWorksCM",
-            "namespace": "aws.sdk.kotlin.services.opsworkscm",
-            "artifactName": "opsworkscm",
-            "brazilName": "AwsSdkKotlinOpsworkscm"
-        },
-        {
             "sdkId": "Organizations",
             "namespace": "aws.sdk.kotlin.services.organizations",
             "artifactName": "organizations",
@@ -1883,12 +1883,6 @@
             "namespace": "aws.sdk.kotlin.services.sfn",
             "artifactName": "sfn",
             "brazilName": "AwsSdkKotlinSfn"
-        },
-        {
-            "sdkId": "SMS",
-            "namespace": "aws.sdk.kotlin.services.sms",
-            "artifactName": "sms",
-            "brazilName": "AwsSdkKotlinSms"
         },
         {
             "sdkId": "SNS",

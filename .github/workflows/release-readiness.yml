@@ -21,7 +21,7 @@ jobs:
           path: 'aws-sdk-kotlin'
 
       - name: Configure Gradle
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
           working-directory: ./aws-sdk-kotlin
 
@@ -36,7 +36,7 @@ jobs:
           ./gradlew -Paws.kotlin.native=false build
 
       - name: Checkout smithy-kotlin
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/checkout-head@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/checkout-head@main
         with:
           path: 'smithy-kotlin'
           repository: 'smithy-lang/smithy-kotlin'
