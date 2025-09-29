@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.5.49] - 09/26/2025
+
+## [1.5.48] - 09/26/2025
+
+### Features
+* (**bedrockagentruntime**) This release enhances the information provided through Flow Traces. New information includes source/next node tracking, execution chains for complex nodes, dependency action (operation) details, and dependency traces.
+* (**bedrockdataautomation**) Added support for configurable Speaker Labeling and Channel Labeling features for Audio modality.
+* (**billing**) Add ability to combine custom billing views to create new consolidated views.
+* (**connect**) Adds supports for manual contact picking (WorkList) operations on Routing Profiles, Agent Management and SearchContacts APIs.
+* (**costexplorer**) Support for payer account dimension and billing view health status.
+* (**dynamodbstreams**) Added support for IPv6 compatible endpoints for DynamoDB Streams.
+* (**redshift**) Support tagging and tag propagation to IAM Identity Center for Redshift Idc Applications
+
+### Documentation
+* (**ec2**) This release includes documentation updates for Amazon EBS General Purpose SSD (gp3) volumes with larger size and higher IOPS and throughput.
+
+## [1.5.47] - 09/25/2025
+
+### Features
+* (**glue**) Update GetConnection(s) API to return KmsKeyArn & Add 63 missing connection types
+* (**lightsail**) Attribute HTTP binding update for Get/Delete operations
+* (**networkfirewall**) Network Firewall now introduces Reject and Alert action support for stateful domain list rule groups, providing customers with more granular control over their network traffic.
+
+## [1.5.46] - 09/24/2025
+
+### Features
+* (**cloudwatch**) Fix default dualstack FIPS endpoints in AWS GovCloud(US) regions
+* (**dax**) This release adds support for IPv6-only, DUAL_STACK DAX instances
+
+### Documentation
+* (**appstream**) G6f instance support for AppStream 2.0
+* (**kms**) Documentation only updates for KMS.
+* (**neptune**) Doc-only update to address customer use.
+
 ## [1.5.45] - 09/23/2025
 
 ### Features
