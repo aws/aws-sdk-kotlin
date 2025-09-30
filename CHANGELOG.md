@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.50] - 09/29/2025
+
+### Features
+* (**bedrock**) Release for fixing GetFoundationModel API behavior. Imported and custom models have their own exclusive API and GetFM should not accept those ARNS as input
+* (**bedrockruntime**) New stop reason for Converse and ConverseStream
+* (**imagebuilder**) This release introduces several new features and improvements to enhance pipeline management, logging, and resource configuration.
+* (**vpclattice**) Adds support for specifying the number of IPv4 addresses in each ENI for the resource gateway for VPC Lattice.
+
 ## [1.5.49] - 09/26/2025
 
 ## [1.5.48] - 09/26/2025

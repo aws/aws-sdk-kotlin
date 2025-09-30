@@ -4,8 +4,9 @@ on:
   pull_request:
   workflow_dispatch:
 
-permissions: { }
-
+permissions:
+  id-token: write
+  contents: read
 # Allow one instance of this workflow per pull request, and cancel older runs when new changes are pushed
 concurrency:
   group: ci-pr-${{ github.ref }}
@@ -29,6 +30,9 @@ jobs:
           - 17
           - 21
     steps:
+      - name: Set start timestamp
+        id: start
+        run: printf 'timestamp=%(%s)T\n' >> "$GITHUB_OUTPUT"
       - name: Checkout sources
         uses: actions/checkout@v4
         with:
@@ -39,6 +43,13 @@ jobs:
         uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
           working-directory: ./aws-sdk-kotlin
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
+          aws-region: us-west-2
+      - name: Setup kat
+        uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
       - name: Test
         working-directory: ./aws-sdk-kotlin
         shell: bash
@@ -46,6 +57,25 @@ jobs:
           pwd
           ls -lsa
           ./gradlew -Ptest.java.version=${{ matrix.java-version }} jvmTest --stacktrace
+      - name: Calculate duration
+        id: end
+        if: always()
+        run: |
+          printf -v now '%(%s)T'
+          duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
+          echo "duration=$duration" >> "$GITHUB_OUTPUT"
+      - name: Emit metrics
+        if: always() # run this step even if previous steps failed or the job is canceled
+        uses: aws/aws-kotlin-repo-tools/.github/actions/emit-metrics@main
+        with:
+          namespace: CI Metrics
+          dimensions: |
+            Product=aws-sdk-kotlin
+            JobName=${{ github.job }}(${{ matrix.java-version }})
+            Branch=${{ github.base_ref || github.ref_name }}
+          metrics: |
+            WorkflowSucceeded:${{ job.status == 'success' && '1' || '0' }}:Count
+            WorkflowDuration:${{ steps.end.outputs.duration }}:Seconds
       - name: Save Test Reports
         if: failure()
         uses: actions/upload-artifact@v4
@@ -60,6 +90,10 @@ jobs:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
     steps:
+      - name: Set start timestamp
+        id: start
+        shell: bash
+        run: echo "timestamp=$(date +%s)" >> "$GITHUB_OUTPUT"
       - name: Checkout sources
         uses: actions/checkout@v4
         with:
@@ -68,6 +102,13 @@ jobs:
       - name: Setup Build
         uses: ./aws-sdk-kotlin/.github/actions/setup-build
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
+          aws-region: us-west-2
+      - name: Setup kat
+        uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
       - name: Configure Gradle - smithy-kotlin
         uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
@@ -106,6 +147,26 @@ jobs:
           ./gradlew test jvmTest
           ./gradlew testAllProtocols
 
+      - name: Calculate duration
+        id: end
+        if: always()
+        shell: bash
+        run: |
+          now=$(date +%s)
+          duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
+          echo "duration=$duration" >> "$GITHUB_OUTPUT"
+      - name: Emit metrics
+        if: always() # run this step even if previous steps failed or the job is canceled
+        uses: aws/aws-kotlin-repo-tools/.github/actions/emit-metrics@main
+        with:
+          namespace: CI Metrics
+          dimensions: |
+            Product=aws-sdk-kotlin
+            JobName=${{ github.job }}(${{ matrix.os }})
+            Branch=${{ github.base_ref || github.ref_name }}
+          metrics: |
+            WorkflowSucceeded:${{ job.status == 'success' && '1' || '0' }}:Count
+            WorkflowDuration:${{ steps.end.outputs.duration }}:Seconds
       - name: Save Test Reports
         if: failure()
         uses: actions/upload-artifact@v4
