@@ -12,8 +12,8 @@ atomicfu-version = "0.29.0"
 binary-compatibility-validator-version = "0.18.0"
 
 # smithy-kotlin codegen and runtime are versioned separately
-smithy-kotlin-runtime-version = "1.5.11"
-smithy-kotlin-codegen-version = "0.35.11"
+smithy-kotlin-runtime-version = "1.5.12"
+smithy-kotlin-codegen-version = "0.35.12"
 
 # codegen
 smithy-version = "1.60.2"
