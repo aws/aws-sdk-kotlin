@@ -44,7 +44,7 @@ internal actual suspend fun executeCommand(
         }
 
         // NOTE: CreateFileW returns HANDLE? in Kotlin/Native bindings
-        val hOut: HANDLE? = CreateFileW(
+        var hOut: HANDLE? = CreateFileW(
             /* lpFileName            = */ outPath,
             /* dwDesiredAccess       = */ GENERIC_WRITE.toUInt(),
             /* dwShareMode           = */ (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(),
@@ -95,7 +95,10 @@ internal actual suspend fun executeCommand(
                 val waitRc: UInt = WaitForSingleObject(pi.hProcess, timeoutMillis.toUInt())
                 if (waitRc == WAIT_TIMEOUT.toUInt()) {
                     TerminateProcess(pi.hProcess, 124u)
-                    CloseHandle(hOut)
+                    if (hOut != null && hOut != INVALID_HANDLE_VALUE) {
+                        CloseHandle(hOut)
+                        hOut = null
+                    }
                     CloseHandle(pi.hThread)
                     CloseHandle(pi.hProcess)
                     _wunlink(outPath.wideCString(this))
@@ -108,6 +111,13 @@ internal actual suspend fun executeCommand(
                     exitCodeVar.value = 0xFFFFFFFFu
                 }
                 val exitCode = exitCodeVar.value.toInt()
+
+                // 🔑 Close writer before reading back
+                if (hOut != null && hOut != INVALID_HANDLE_VALUE) {
+                    FlushFileBuffers(hOut)
+                    CloseHandle(hOut)
+                    hOut = null
+                }
 
                 // 7) read back bounded
                 val hIn: HANDLE? = CreateFileW(
@@ -157,7 +167,10 @@ internal actual suspend fun executeCommand(
                 CloseHandle(pi.hProcess)
             }
         } finally {
-            CloseHandle(hOut)
+            if (hOut != null && hOut != INVALID_HANDLE_VALUE) {
+                CloseHandle(hOut)
+                hOut = null
+            }
         }
     }
 }
