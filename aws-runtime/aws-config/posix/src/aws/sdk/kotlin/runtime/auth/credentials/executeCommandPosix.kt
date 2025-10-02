@@ -47,19 +47,9 @@ internal actual suspend fun executeCommand(
             close(writeFd)
         }
 
-        val shell = when (platformProvider.osInfo().family) {
-            OsFamily.Windows -> "C:\\Windows\\System32\\cmd.exe"
-            else -> "/bin/sh"
-        }
-
-        val shellArg = when (platformProvider.osInfo().family) {
-            OsFamily.Windows -> "/C"
-            else -> "-c"
-        }
-
         memScoped {
-            val argv = (arrayOf(shell, shellArg, command).map { it.cstr.ptr } + null).toCValues()
-            execvp(shell, argv)
+            val argv = (arrayOf("/bin/sh", "-c", command).map { it.cstr.ptr } + null).toCValues()
+            execvp("/bin/sh", argv)
         }
         _exit(127) // If exec fails
     }

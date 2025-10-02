@@ -4,7 +4,10 @@
  */
 package aws.smithy.kotlin.runtime.client.util
 
-import aws.sdk.kotlin.runtime.util.SdkDispatchers // adjust import
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderException
+import aws.smithy.kotlin.runtime.io.internal.SdkDispatchers
+import aws.smithy.kotlin.runtime.time.Clock
+import aws.smithy.kotlin.runtime.util.PlatformProvider
 import kotlinx.cinterop.*
 import kotlinx.coroutines.withContext
 import platform.posix._wunlink // to delete the temp file afterwards
