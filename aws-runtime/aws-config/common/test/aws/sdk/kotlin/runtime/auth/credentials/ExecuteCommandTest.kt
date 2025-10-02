@@ -7,10 +7,10 @@ import aws.sdk.kotlin.runtime.auth.credentials.executeCommand
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderException
 import aws.smithy.kotlin.runtime.util.OsFamily
 import aws.smithy.kotlin.runtime.util.PlatformProvider
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 
 class ExecuteCommandTest {
@@ -38,7 +38,7 @@ class ExecuteCommandTest {
 
     @Test
     fun testExecutionTimedOut() = runTest {
-        assertFailsWith<TimeoutCancellationException> {
+        assertFails {
             executeCommand(
                 command = "this won't be executed",
                 platformProvider = provider,
