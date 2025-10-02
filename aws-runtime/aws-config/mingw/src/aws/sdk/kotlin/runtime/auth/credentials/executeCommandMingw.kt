@@ -4,11 +4,11 @@
  */
 package aws.smithy.kotlin.runtime.client.util
 
+import aws.sdk.kotlin.runtime.util.SdkDispatchers // adjust import
 import kotlinx.cinterop.*
 import kotlinx.coroutines.withContext
-import aws.sdk.kotlin.runtime.util.SdkDispatchers // adjust import
-import platform.windows.*
 import platform.posix._wunlink // to delete the temp file afterwards
+import platform.windows.*
 
 @OptIn(ExperimentalForeignApi::class)
 private fun String.wideCString(mem: MemScope) = wcstr.getPointer(mem)
@@ -20,7 +20,8 @@ internal actual suspend fun executeCommand(
     maxOutputLengthBytes: Long,
     timeoutMillis: Long,
     clock: Clock,
-): Pair<Int, String> = withContext(SdkDispatchers.IO) { memScoped {
+): Pair<Int, String> = withContext(SdkDispatchers.IO) {
+    memScoped {
         // 1) Make a temp file to capture stdout+stderr
         val tmpDirBuf = allocArray<UShortVar>(MAX_PATH)
         val tmpNameBuf = allocArray<UShortVar>(MAX_PATH)
@@ -44,7 +45,7 @@ internal actual suspend fun executeCommand(
             sa.ptr,
             CREATE_ALWAYS,
             FILE_ATTRIBUTE_NORMAL.toUInt(),
-            null
+            null,
         )
         if (hOut == INVALID_HANDLE_VALUE) error("CreateFileW failed for temp output")
 
@@ -53,7 +54,11 @@ internal actual suspend fun executeCommand(
             // Prefer %ComSpec% if present, else fallback.
             val comspecBuf = allocArray<WCHARVar>(MAX_PATH)
             val comspecLen = GetEnvironmentVariableW("ComSpec".wideCString(this), comspecBuf, MAX_PATH)
-            val cmdExe = if (comspecLen > 0u) { comspecBuf } else { "C:\\Windows\\System32\\cmd.exe".wideCString(this) }
+            val cmdExe = if (comspecLen > 0u) {
+                comspecBuf
+            } else {
+                "C:\\Windows\\System32\\cmd.exe".wideCString(this)
+            }
 
             val cmdLine = (" /C " + command).wideCString(this)
 
@@ -69,15 +74,15 @@ internal actual suspend fun executeCommand(
 
             val created = CreateProcessW(
                 cmdExe,
-                cmdLine,        // mutable buffer OK; wcstr gives writable copy here
+                cmdLine, // mutable buffer OK; wcstr gives writable copy here
                 null,
                 null,
-                TRUE,           // inherit handles (so child gets hOut)
+                TRUE, // inherit handles (so child gets hOut)
                 CREATE_NO_WINDOW.toUInt(),
                 null,
                 null,
                 si.ptr,
-                pi.ptr
+                pi.ptr,
             )
             if (created == 0) error("CreateProcessW failed: ${GetLastError()}")
 
@@ -94,7 +99,6 @@ internal actual suspend fun executeCommand(
                     error("Process timed out after ${timeoutMillis}ms")
                 }
 
-
                 // 5) Get exit code
                 val exitCodeVar = alloc<DWORDVar>()
                 GetExitCodeProcess(pi.hProcess, exitCodeVar.ptr)
@@ -109,7 +113,7 @@ internal actual suspend fun executeCommand(
                     null,
                     OPEN_EXISTING,
                     FILE_ATTRIBUTE_NORMAL.toUInt(),
-                    null
+                    null,
                 )
                 if (hIn == INVALID_HANDLE_VALUE) {
                     // Clean up and bail
@@ -151,4 +155,5 @@ internal actual suspend fun executeCommand(
         } finally {
             CloseHandle(hOut)
         }
-} }
+    }
+}
