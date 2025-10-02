@@ -151,7 +151,11 @@ internal actual suspend fun executeCommand(
                     _wunlink(outPath.wideCString(this))
                 }
 
-                exitCode to sb.toString()
+                val normalized = sb.toString()
+                    .replace("\r\n", "\n")
+                    .replace("\r", "\n")
+
+                exitCode to normalized
             } finally {
                 CloseHandle(pi.hThread)
                 CloseHandle(pi.hProcess)
