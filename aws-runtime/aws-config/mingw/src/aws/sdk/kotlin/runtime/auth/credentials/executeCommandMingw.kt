@@ -43,7 +43,6 @@ internal actual suspend fun executeCommand(
             lpSecurityDescriptor = null
         }
 
-        // NOTE: CreateFileW returns HANDLE? in Kotlin/Native bindings
         var hOut: HANDLE? = CreateFileW(
             /* lpFileName            = */ outPath,
             /* dwDesiredAccess       = */ GENERIC_WRITE.toUInt(),
@@ -55,8 +54,13 @@ internal actual suspend fun executeCommand(
         )
         if (hOut == INVALID_HANDLE_VALUE) error("CreateFileW failed for temp output (GetLastError=${GetLastError()})")
 
+        // Ensure the handle is marked inheritable (some setups ignore SA if handle flags were flipped later)
+        if (hOut != null && hOut != INVALID_HANDLE_VALUE) {
+            SetHandleInformation(hOut, HANDLE_FLAG_INHERIT.toUInt(), HANDLE_FLAG_INHERIT.toUInt())
+        }
+
         try {
-            // 3) resolve shell
+            // 3) resolve shell (always cmd.exe)
             val comspecBuf = allocArray<UShortVar>(MAX_PATH)
             val comspecLen = GetEnvironmentVariableW("ComSpec", comspecBuf, MAX_PATH.toUInt())
             val cmdExe: String = if (comspecLen > 0u) comspecBuf.toKString() else "C:\\Windows\\System32\\cmd.exe"
@@ -71,7 +75,6 @@ internal actual suspend fun executeCommand(
                 dwFlags = STARTF_USESTDHANDLES.toUInt()
                 hStdOutput = hOut
                 hStdError = hOut
-                // GetStdHandle expects a DWORD/UInt
                 hStdInput = GetStdHandle(STD_INPUT_HANDLE.toUInt())
             }
             val pi = alloc<PROCESS_INFORMATION>()
@@ -161,7 +164,12 @@ internal actual suspend fun executeCommand(
                     _wunlink(outPath.wideCString(this))
                 }
 
-                exitCode to sb.toString()
+                // Normalize CRLF to LF (PowerShell/Windows) to make tests deterministic
+                val normalized = sb.toString()
+                    .replace("\r\n", "\n")
+                    .replace("\r", "\n")
+
+                exitCode to normalized
             } finally {
                 CloseHandle(pi.hThread)
                 CloseHandle(pi.hProcess)
