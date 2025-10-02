@@ -49,7 +49,7 @@ internal actual suspend fun executeCommand(
             /* dwDesiredAccess       = */ GENERIC_WRITE.toUInt(),
             /* dwShareMode           = */ (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(),
             /* lpSecurityAttributes  = */ sa.ptr,
-            /* dwCreationDisposition = */ CREATE_ALWAYS,
+            /* dwCreationDisposition = */ CREATE_ALWAYS.toUInt(),
             /* dwFlagsAndAttributes  = */ FILE_ATTRIBUTE_NORMAL.toUInt(),
             /* hTemplateFile         = */ null,
         )
@@ -115,7 +115,7 @@ internal actual suspend fun executeCommand(
                     /* dwDesiredAccess       = */ GENERIC_READ.toUInt(),
                     /* dwShareMode           = */ (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(),
                     /* lpSecurityAttributes  = */ null,
-                    /* dwCreationDisposition = */ OPEN_EXISTING,
+                    /* dwCreationDisposition = */ OPEN_EXISTING.toUInt(),
                     /* dwFlagsAndAttributes  = */ FILE_ATTRIBUTE_NORMAL.toUInt(),
                     /* hTemplateFile         = */ null,
                 )
