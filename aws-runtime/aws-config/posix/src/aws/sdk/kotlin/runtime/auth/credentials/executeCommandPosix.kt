@@ -79,6 +79,7 @@ internal actual suspend fun executeCommand(
                         throw CredentialsProviderException("Process output exceeded limit of $maxOutputLengthBytes bytes")
                     }
 
+                    @OptIn(UnsafeNumber::class)
                     val rc = read(readFd, buffer.refTo(0), nBytes.toULong()).toInt()
                     if (rc <= 0) break
                     totalBytesRead += rc
