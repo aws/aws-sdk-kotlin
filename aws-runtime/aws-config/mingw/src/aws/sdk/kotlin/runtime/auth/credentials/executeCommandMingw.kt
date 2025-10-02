@@ -27,104 +27,110 @@ internal actual suspend fun executeCommand(
     memScoped {
         // 1) Make a temp file to capture stdout+stderr
         val tmpDirBuf = allocArray<UShortVar>(MAX_PATH)
+        val gotTmp = GetTempPathW(MAX_PATH.toUInt(), tmpDirBuf)
+        if (gotTmp == 0u) error("GetTempPathW failed")
+
         val tmpNameBuf = allocArray<UShortVar>(MAX_PATH)
-        val gotTmp = GetTempPathW(MAX_PATH, tmpDirBuf) != 0u
-        if (!gotTmp) error("GetTempPathW failed")
+        val tmpDirStr = tmpDirBuf.toKString()
+        val gotName = GetTempFileNameW(tmpDirStr, "KNR", 0u, tmpNameBuf)
+        if (gotName == 0u) error("GetTempFileNameW failed")
+        val outPath: String = tmpNameBuf.toKString()
 
-        val gotName = GetTempFileNameW(tmpDirBuf, "KNR".wideCString(this), 0u, tmpNameBuf) != 0u
-        if (!gotName) error("GetTempFileNameW failed")
-        val outPath = tmpNameBuf
-
-        // Create the file for the child to write into (inherit handle)
+        // 2) Create the output file (child inherits this handle)
         val sa = alloc<SECURITY_ATTRIBUTES>().apply {
             nLength = sizeOf<SECURITY_ATTRIBUTES>().toUInt()
             bInheritHandle = TRUE
             lpSecurityDescriptor = null
         }
+
         val hOut: HANDLE = CreateFileW(
-            outPath,
-            (GENERIC_WRITE or FILE_GENERIC_WRITE).toUInt(),
-            FILE_SHARE_READ or FILE_SHARE_WRITE,
-            sa.ptr,
-            CREATE_ALWAYS,
-            FILE_ATTRIBUTE_NORMAL.toUInt(),
-            null,
+            /* lpFileName        = */ outPath,
+            /* dwDesiredAccess   = */ GENERIC_WRITE.toUInt(),
+            /* dwShareMode       = */ (FILE_SHARE_READ or FILE_SHARE_WRITE),
+            /* lpSecurityAttributes = */ sa.ptr,
+            /* dwCreationDisposition = */ CREATE_ALWAYS,
+            /* dwFlagsAndAttributes  = */ FILE_ATTRIBUTE_NORMAL.toUInt(),
+            /* hTemplateFile     = */ null,
         )
-        if (hOut == INVALID_HANDLE_VALUE) error("CreateFileW failed for temp output")
+        if (hOut == INVALID_HANDLE_VALUE) error("CreateFileW failed for temp output (GetLastError=${GetLastError()})")
 
         try {
-            // 2) Build command: use cmd.exe /C "<command>"
-            // Prefer %ComSpec% if present, else fallback.
-            val comspecBuf = allocArray<WCHARVar>(MAX_PATH)
-            val comspecLen = GetEnvironmentVariableW("ComSpec".wideCString(this), comspecBuf, MAX_PATH)
-            val cmdExe = if (comspecLen > 0u) {
-                comspecBuf
+            // 3) Resolve the shell (prefer %ComSpec%)
+            val comspecBuf = allocArray<UShortVar>(MAX_PATH)
+            val comspecLen = GetEnvironmentVariableW("ComSpec", comspecBuf, MAX_PATH.toUInt())
+            val cmdExe: String = if (comspecLen > 0u) {
+                comspecBuf.toKString()
             } else {
-                "C:\\Windows\\System32\\cmd.exe".wideCString(this)
+                "C:\\Windows\\System32\\cmd.exe"
             }
 
-            val cmdLine = (" /C " + command).wideCString(this)
+            // Build mutable command line buffer for CreateProcessW
+            // CreateProcessW expects the *command line* buffer to be mutable (it may write into it)
+            val cmdLineStr = "/C $command"
+            val cmdLineBuf = cmdLineStr.wideCString(this) // writable buffer from MemScope
 
-            // 3) Launch child with redirected stdout/stderr
+            // 4) Launch child with redirected stdout/stderr
             val si = alloc<STARTUPINFOW>().apply {
                 cb = sizeOf<STARTUPINFOW>().toUInt()
                 dwFlags = STARTF_USESTDHANDLES.toUInt()
                 hStdOutput = hOut
                 hStdError = hOut
-                hStdInput = GetStdHandle(STD_INPUT_HANDLE) // leave as-is
+                hStdInput = GetStdHandle(STD_INPUT_HANDLE)
             }
             val pi = alloc<PROCESS_INFORMATION>()
 
             val created = CreateProcessW(
-                cmdExe,
-                cmdLine, // mutable buffer OK; wcstr gives writable copy here
-                null,
-                null,
-                TRUE, // inherit handles (so child gets hOut)
-                CREATE_NO_WINDOW.toUInt(),
-                null,
-                null,
-                si.ptr,
-                pi.ptr,
+                /* lpApplicationName   = */ cmdExe,
+                /* lpCommandLine       = */ cmdLineBuf, // mutable
+                /* lpProcessAttributes = */ null,
+                /* lpThreadAttributes  = */ null,
+                /* bInheritHandles     = */ TRUE,
+                /* dwCreationFlags     = */ CREATE_NO_WINDOW.toUInt(),
+                /* lpEnvironment       = */ null,
+                /* lpCurrentDirectory  = */ null,
+                /* lpStartupInfo       = */ si.ptr,
+                /* lpProcessInformation= */ pi.ptr,
             )
-            if (created == 0) error("CreateProcessW failed: ${GetLastError()}")
+            if (created == 0) error("CreateProcessW failed (GetLastError=${GetLastError()})")
 
             try {
-                // 4) Wait up to timeout; if it times out, terminate
-                val waitRc = WaitForSingleObject(pi.hProcess, timeoutMillis.toUInt())
-                if (waitRc == WAIT_TIMEOUT) {
+                // 5) Wait up to timeout; if it times out, terminate
+                val waitRc: UInt = WaitForSingleObject(pi.hProcess, timeoutMillis.toUInt())
+                if (waitRc == WAIT_TIMEOUT.toUInt()) {
                     TerminateProcess(pi.hProcess, 124u)
-                    // close I/O + process handles and delete temp before throwing
                     CloseHandle(hOut)
                     CloseHandle(pi.hThread)
                     CloseHandle(pi.hProcess)
-                    _wunlink(outPath)
+                    _wunlink(outPath.wideCString(this))
                     error("Process timed out after ${timeoutMillis}ms")
                 }
 
-                // 5) Get exit code
+                // 6) Get exit code
                 val exitCodeVar = alloc<DWORDVar>()
-                GetExitCodeProcess(pi.hProcess, exitCodeVar.ptr)
+                if (GetExitCodeProcess(pi.hProcess, exitCodeVar.ptr) == 0) {
+                    // If this fails, propagate a generic error but still try to read output
+                    // (fall through with exitCode = -1)
+                    exitCodeVar.value = 0xFFFFFFFFu
+                }
                 val exitCode = exitCodeVar.value.toInt()
 
-                // 6) Read the file (up to maxOutputLengthBytes)
-                //    Re-open for reading (child still closed hOut on exit)
+                // 7) Read back the temp file (bounded)
                 val hIn: HANDLE = CreateFileW(
-                    outPath,
-                    GENERIC_READ.toUInt(),
-                    FILE_SHARE_READ or FILE_SHARE_WRITE,
-                    null,
-                    OPEN_EXISTING,
-                    FILE_ATTRIBUTE_NORMAL.toUInt(),
-                    null,
+                    /* lpFileName      = */ outPath,
+                    /* dwDesiredAccess = */ GENERIC_READ.toUInt(),
+                    /* dwShareMode     = */ (FILE_SHARE_READ or FILE_SHARE_WRITE),
+                    /* lpSecurityAttributes = */ null,
+                    /* dwCreationDisposition = */ OPEN_EXISTING,
+                    /* dwFlagsAndAttributes  = */ FILE_ATTRIBUTE_NORMAL.toUInt(),
+                    /* hTemplateFile   = */ null,
                 )
                 if (hIn == INVALID_HANDLE_VALUE) {
-                    // Clean up and bail
-                    _wunlink(outPath)
+                    _wunlink(outPath.wideCString(this))
                     CloseHandle(pi.hThread)
                     CloseHandle(pi.hProcess)
                     return@memScoped exitCode to ""
                 }
+
                 val sb = StringBuilder()
                 val buf = ByteArray(4096)
                 val bytesReadVar = alloc<DWORDVar>()
@@ -135,7 +141,7 @@ internal actual suspend fun executeCommand(
                         if (toRead <= 0) {
                             // ensure cleanup before throwing
                             CloseHandle(hIn)
-                            _wunlink(outPath)
+                            _wunlink(outPath.wideCString(this))
                             throw CredentialsProviderException("Process output exceeded limit of $maxOutputLengthBytes bytes")
                         }
                         val n = buf.usePinned {
@@ -148,8 +154,9 @@ internal actual suspend fun executeCommand(
                     }
                 } finally {
                     CloseHandle(hIn)
-                    _wunlink(outPath)
+                    _wunlink(outPath.wideCString(this))
                 }
+
                 exitCode to sb.toString()
             } finally {
                 CloseHandle(pi.hThread)
