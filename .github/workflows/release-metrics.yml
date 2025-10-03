@@ -26,4 +26,6 @@ jobs:
           source-version-override: ${{ github.ref }}
           env-vars-for-codebuild: GITHUB_REPOSITORY, UPLOAD, RELEASE_METRICS, IDENTIFIER
 
-permissions: { }
+permissions:
+  id-token: write
+  contents: read
