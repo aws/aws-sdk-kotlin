@@ -4,7 +4,8 @@
  */
 import aws.sdk.kotlin.gradle.dsl.configureLinting
 import aws.sdk.kotlin.gradle.dsl.configureMinorVersionStrategyRules
-import aws.sdk.kotlin.gradle.dsl.configureNexus
+import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalPublishTask
+import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalWaitForPublicationTask
 import aws.sdk.kotlin.gradle.util.typedProp
 
 buildscript {
@@ -89,12 +90,6 @@ dependencies {
     dokka(project(":services"))
     dokka(project(":hll"))
 }
-
-// Publishing
-configureNexus(
-    nexusUrl = "https://aws.oss.sonatype.org/service/local/",
-    snapshotRepositoryUrl = "https://aws.oss.sonatype.org/content/repositories/snapshots/",
-)
 
 // Code Style
 val lintPaths = listOf(
