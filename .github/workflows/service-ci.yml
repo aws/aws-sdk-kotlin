@@ -16,16 +16,16 @@ jobs:
 
       - name: Build and upload metrics
         id: build
-        uses: aws-actions/aws-codebuild-run-build@v1
-        with:
-          project-name: aws-sdk-kotlin-service-build
-          source-version-override: ${{ github.ref }}
-          env-vars-for-codebuild: GITHUB_REPOSITORY, UPLOAD, RELEASE_METRICS, IDENTIFIER
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
           UPLOAD: 'true'
           RELEASE_METRICS: 'false'
           IDENTIFIER: ${{ github.ref_name }}
+        uses: aws-actions/aws-codebuild-run-build@v1
+        with:
+          project-name: aws-sdk-kotlin-service-build
+          source-version-override: ${{ github.ref }}
+          env-vars-for-codebuild: GITHUB_REPOSITORY, UPLOAD, RELEASE_METRICS, IDENTIFIER
 
       - name: Process metrics
         uses: awslabs/aws-kotlin-repo-tools/.github/actions/artifact-size-metrics/download-and-process@asm-v2 # TODO: Change to main before merging
@@ -46,5 +46,8 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
-permissions: { }
+permissions:
+  pull-requests: write
+  id-token: write
+  contents: read
 
