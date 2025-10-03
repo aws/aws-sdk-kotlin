@@ -155,5 +155,4 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
 aws-kotlin-repo-tools-kmp = { id = "aws.sdk.kotlin.gradle.kmp", version.ref = "aws-kotlin-repo-tools-version" }
 aws-kotlin-repo-tools-smithybuild = { id = "aws.sdk.kotlin.gradle.smithybuild", version.ref = "aws-kotlin-repo-tools-version" }
-aws-kotlin-repo-tools-artifactsizemetrics = { id = "aws.sdk.kotlin.gradle.artifactsizemetrics", version.ref = "aws-kotlin-repo-tools-version" }
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.1"}
