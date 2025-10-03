@@ -104,6 +104,5 @@ val lintPaths = listOf(
 configureLinting(lintPaths)
 configureMinorVersionStrategyRules(lintPaths)
 
-val sdkVersion: String by project
 tasks.register<SonatypeCentralPortalPublishTask>("publishToCentralPortal") { }
 tasks.register<SonatypeCentralPortalWaitForPublicationTask>("waitForCentralPortalPublication") { }
