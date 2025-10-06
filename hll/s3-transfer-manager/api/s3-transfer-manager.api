@@ -1,0 +1,4 @@
+public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager {
+	public fun <init> ()V
+}
+
