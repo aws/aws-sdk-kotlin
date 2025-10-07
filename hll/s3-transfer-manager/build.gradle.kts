@@ -12,7 +12,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":aws-runtime:aws-http"))
-                implementation(project(":services:s3"))
+                implementation(project(":services:s3")) // TODO: Hardcode an S3 Client version to avoid breakages
             }
         }
     }
