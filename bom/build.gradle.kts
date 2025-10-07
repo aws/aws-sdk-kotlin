@@ -2,7 +2,7 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import aws.sdk.kotlin.gradle.dsl.configureNexusPublishing
+import aws.sdk.kotlin.gradle.dsl.configurePublishing
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
@@ -99,7 +99,7 @@ fun DependencyConstraintHandler.api(constraintNotation: Any) =
 createBomConstraintsAndVersionCatalog()
 
 // TODO Use configurePublishing when migrating to Sonatype Publisher API / JReleaser
-configureNexusPublishing("aws-sdk-kotlin")
+configurePublishing("aws-sdk-kotlin")
 
 publishing {
     publications {
