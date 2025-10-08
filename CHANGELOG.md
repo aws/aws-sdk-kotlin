@@ -1,5 +1,44 @@
 # Changelog
 
+## [1.5.56] - 10/07/2025
+
+### Features
+* (**proton**) Deprecating APIs in AWS Proton namespace.
+
+## [1.5.55] - 10/06/2025
+
+### Features
+* (**backup**) Adds optional MaxScheduledRunsPreview input to GetBackupPlan API to provide a preview of up to 10 next scheduled backup plan runs in the GetBackupPlan response.
+* (**bedrockagentcore**) Add support for batch memory management, agent card retrieval and session termination
+* (**bedrockagentcorecontrol**) Add support for VM lifecycle configuration parameters and A2A protocol
+* (**glue**) Adds labeling for DataQualityRuleResult for GetDataQualityResult and PublishDataQualityResult APIs
+* (**mediaconnect**) Enabling Tag-on-Create for AWS Elemental MediaConnect flow-based resource types
+* (**memorydb**) Support for DescribeMultiRegionParameterGroups and DescribeMultiRegionParameters API.
+* (**resourceexplorer2**) Add new AWS Resource Explorer APIs
+
+### Documentation
+* (**quicksight**) Documentation improvements for QuickSight API documentation to clarify that delete operation APIs are global.
+* (**rds**) Documentation updates to the CreateDBClusterMessage$PubliclyAccessible and CreateDBInstanceMessage$PubliclyAccessible properties.
+
+## [1.5.54] - 10/03/2025
+
+### Features
+* (**cleanrooms**) Added support for reading data sources across regions, and results delivery to allowedlisted regions.
+* (**medialive**) AWS Elemental MediaLive enables Mediapackage V2 users to configure ID3, KLV, Nielsen ID3, and Segment Length related parameters through the Mediapackage output group.
+* (**paymentcryptographydata**) Added a new API - translateKeyMaterial; allows keys wrapped by ECDH derived keys to be rewrapped under a static AES keyblock without first importing the key into the service.
+* (**qconnect**) Updated Amazon Q in Connect APIs to support Email Contact Recommendations.
+
+## [1.5.53] - 10/02/2025
+
+### Features
+* (**cloudformation**) Add new warning type 'EXCLUDED_RESOURCES'
+* (**connectcases**) New Search All Related Items API enables searching related items across cases
+* (**dynamodb**) Add support for dual-stack account endpoint generation
+* (**synthetics**) Adds support to configure canaries with pre-configured blueprint code on supported runtime versions.  This behavior can be controlled via the new BlueprintTypes property exposed in the CreateCanary and UpdateCanary APIs.
+
+### Documentation
+* (**guardduty**) Updated descriptions for the Location parameter in CreateTrustedEntitySet and CreateThreatEntitySet.
+
 ## [1.5.52] - 10/01/2025
 
 ### Features
