@@ -5,7 +5,7 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager
 
-// TODO: Add documentation to each thing in the context
+// TODO: Add PUBLIC documentation to each thing in the context
 /**
  * TODO
  */
@@ -25,7 +25,7 @@ public data class TransferContext(
     var transferredFiles: Long? = null,
 )
 
-// TODO: Add documentation to each hook
+// TODO: Add PUBLIC documentation to each hook
 /**
  * TODO
  */
