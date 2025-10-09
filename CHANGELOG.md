@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.5.57] - 10/08/2025
+
+### Features
+* (**bedrockagentcorecontrol**) Adding support for authorizer type AWS_IAM to AgentCore Control Gateway.
+* (**licensemanagerusersubscriptions**) Released support for IPv6 and dual-stack active directories
+* (**outposts**) This release adds the new StartOutpostDecommission API, which starts the decommission process to return Outposts racks or servers.
+* (**servicequotas**) introduces Service Quotas Automatic Management. Users can opt-in to monitoring and managing service quotas, receive notifications when quota usage reaches thresholds, configure notification channels, subscribe to EventBridge events for automation, and view notifications in the AWS Health dashboard.
+
+## [1.5.56] - 10/07/2025
+
+### Features
+* (**proton**) Deprecating APIs in AWS Proton namespace.
+
+## [1.5.55] - 10/06/2025
+
+### Features
+* (**backup**) Adds optional MaxScheduledRunsPreview input to GetBackupPlan API to provide a preview of up to 10 next scheduled backup plan runs in the GetBackupPlan response.
+* (**bedrockagentcore**) Add support for batch memory management, agent card retrieval and session termination
+* (**bedrockagentcorecontrol**) Add support for VM lifecycle configuration parameters and A2A protocol
+* (**glue**) Adds labeling for DataQualityRuleResult for GetDataQualityResult and PublishDataQualityResult APIs
+* (**mediaconnect**) Enabling Tag-on-Create for AWS Elemental MediaConnect flow-based resource types
+* (**memorydb**) Support for DescribeMultiRegionParameterGroups and DescribeMultiRegionParameters API.
+* (**resourceexplorer2**) Add new AWS Resource Explorer APIs
+
+### Documentation
+* (**quicksight**) Documentation improvements for QuickSight API documentation to clarify that delete operation APIs are global.
+* (**rds**) Documentation updates to the CreateDBClusterMessage$PubliclyAccessible and CreateDBInstanceMessage$PubliclyAccessible properties.
+
 ## [1.5.54] - 10/03/2025
 
 ### Features
