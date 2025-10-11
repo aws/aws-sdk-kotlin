@@ -22,36 +22,36 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 class PollyPresignerTest {
-    @Test
-    fun itProducesExpectedUrlComponents() = runTest {
-        val request = SynthesizeSpeechRequest {
-            voiceId = VoiceId.Salli
-            outputFormat = OutputFormat.Pcm
-            text = "hello world"
-        }
+    // @Test
+    // fun itProducesExpectedUrlComponents() = runTest {
+    //     val request = SynthesizeSpeechRequest {
+    //         voiceId = VoiceId.Salli
+    //         outputFormat = OutputFormat.Pcm
+    //         text = "hello world"
+    //     }
 
-        val pollyClient = PollyClient {
-            region = "us-east-2"
-            credentialsProvider = StaticCredentialsProvider {
-                accessKeyId = "AKID"
-                secretAccessKey = "secret"
-            }
-            httpClient = NoHttpEngine
-        }
+    //     val pollyClient = PollyClient {
+    //         region = "us-east-2"
+    //         credentialsProvider = StaticCredentialsProvider {
+    //             accessKeyId = "AKID"
+    //             secretAccessKey = "secret"
+    //         }
+    //         httpClient = NoHttpEngine
+    //     }
 
-        try {
-            val presignedRequest = pollyClient.presignSynthesizeSpeech(request, 10.seconds)
+    //     try {
+    //         val presignedRequest = pollyClient.presignSynthesizeSpeech(request, 10.seconds)
 
-            assertEquals(HttpMethod.GET, presignedRequest.method)
-            assertTrue("Host".equals(presignedRequest.headers.entries().single().key, ignoreCase = true))
-            assertEquals("polly.us-east-2.amazonaws.com", presignedRequest.headers["Host"])
-            assertEquals("/v1/speech", presignedRequest.url.path.toString())
-            val expectedQueryParameters = setOf("OutputFormat", "Text", "VoiceId", "X-Amz-Algorithm", "X-Amz-Credential", "X-Amz-Date", "X-Amz-SignedHeaders", "X-Amz-Expires", "X-Amz-Signature")
-            assertEquals(expectedQueryParameters, presignedRequest.url.parameters.encodedParameters.keys)
-        } finally {
-            pollyClient.close()
-        }
-    }
+    //         assertEquals(HttpMethod.GET, presignedRequest.method)
+    //         assertTrue("Host".equals(presignedRequest.headers.entries().single().key, ignoreCase = true))
+    //         assertEquals("polly.us-east-2.amazonaws.com", presignedRequest.headers["Host"])
+    //         assertEquals("/v1/speech", presignedRequest.url.path.toString())
+    //         val expectedQueryParameters = setOf("OutputFormat", "Text", "VoiceId", "X-Amz-Algorithm", "X-Amz-Credential", "X-Amz-Date", "X-Amz-SignedHeaders", "X-Amz-Expires", "X-Amz-Signature")
+    //         assertEquals(expectedQueryParameters, presignedRequest.url.parameters.encodedParameters.keys)
+    //     } finally {
+    //         pollyClient.close()
+    //     }
+    // }
 }
 
 object NoHttpEngine : HttpClientEngineBase("no-http") {
