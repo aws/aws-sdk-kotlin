@@ -138,7 +138,6 @@ subprojects {
         }
     }
 
-    // TODO Use configurePublishing when migrating to Sonatype Publisher API / JReleaser
     configurePublishing("aws-sdk-kotlin")
 
     publishing {
