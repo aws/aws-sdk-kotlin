@@ -100,7 +100,7 @@ val moveGenSrc by tasks.registering {
     }
 }
 
-listOf("jvmSourcesJar", "metadataSourcesJar", "jvmProcessResources").forEach {
+listOf("jvmSourcesJar", "metadataSourcesJar", "jvmProcessResources", "sourcesJar").forEach {
     tasks.named(it) {
         dependsOn(moveGenSrc)
     }
