@@ -25,15 +25,16 @@ jobs:
           TAG_DATE=$(git log -1 --format="%ci" "$PREVIOUS_TAG" | sed 's/ /T/' | sed 's/ +0000/Z/')
           echo "Using tag date: $TAG_DATE"
           
-          ISSUE_NUMBERS=$(gh pr list --search "is:pr is:open created:>=$TAG_DATE" --json number,body --jq '.[] | select(.body != null and (.body | test("issues/\\d+"))) | [.body | scan("issues/(\\d+)"; "g")] | .[]' | sort -u)
-          
-          if [ -z "$ISSUE_NUMBERS" ]; then
-            echo "No issues found in recent PRs"
-            exit 0
-          fi
+          ISSUE_NUMBERS=$(gh pr list \
+            --json number,body,createdAt \
+            --jq $'.[] | select(.createdAt > "'$TAG_DATE'") | .body' | \
+            grep -o 'issues/[0-9]*' | \
+            sed 's/issues\///'          
+          )
           
           echo "Found issues: $ISSUE_NUMBERS"
-          for issue_number in $ISSUE_NUMBERS; do
+          
+          for issue_number in $ISSUE_NUMBERS; do 
             echo "Commenting on issue #$issue_number"
             gh issue comment "$issue_number" --body "This issue was resolved and included in the latest release."
           done
