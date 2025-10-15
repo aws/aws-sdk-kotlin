@@ -26,16 +26,16 @@ jobs:
           echo "$TAG_DATE"
           
           PR_DATA=$(gh pr list \
-            --search "is:pr is:open created:>=$TAG_DATE OR is:open created:>=$TAG_DATE" \
+            --search "is:pr is:open created:>=$TAG_DATE \
             --json number,body \
             --jq '.[] | select(.body != null and (.body | test("issues/\\d+"))) | [.body | scan("issues/(\\d+)"; "g")] | .[]'  
           )
           echo "Found PRs:"
           echo "$PR_DATA"
           gh pr list \
-            --search "is:pr is:open created:>=$TAG_DATE OR is:open created:>=$TAG_DATE" \
+            --search "is:pr is:open created:>=$TAG_DATE \
             --json number,body \
-            --jq '.[] | select(.body != null and (.body | test("issues/\\d+"))) | [.body | scan("issues/(\\d+)"; "g")] | .[]'  
+            --jq '.[] | select(.body != null and (.body | test("issues/\\d+"))) | [.body | scan("issues/(\\d+)"; "g")] | .[]' \  
           | while read issue_number; do
             echo "Commenting on issue #$issue_number"
             gh issue comment "$issue_number" --body "This issue was resolved and included in the latest release."
