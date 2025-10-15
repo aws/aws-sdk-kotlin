@@ -16,11 +16,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Get previous release tag
-        id: get_previous_tag
-        run: |
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0) 
-          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
 
       - name: Comment on PRs with issue numbers
         env:
@@ -28,7 +23,7 @@ jobs:
         run: |
           PREVIOUS_TAG=$(git describe --tags --abbrev=0)
           TAG_DATE=$(git log -1 --format="%ci" "$PREVIOUS_TAG" | sed 's/ /T/' | sed 's/ +0000/Z/')
-          
+          echo "$TAG_DATE"
           gh pr list \
             --search "is:pr is:merged merged:>=$TAG_DATE OR is:open created:>=$TAG_DATE" \
             --json number,body \
