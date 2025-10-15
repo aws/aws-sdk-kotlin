@@ -23,20 +23,17 @@ jobs:
         run: |
           PREVIOUS_TAG=$(git describe --tags --abbrev=0)
           TAG_DATE=$(git log -1 --format="%ci" "$PREVIOUS_TAG" | sed 's/ /T/' | sed 's/ +0000/Z/')
-          echo "$TAG_DATE"
+          echo "Using tag date: $TAG_DATE"
           
-          PR_DATA=$(gh pr list \
-            --search "is:pr is:open created:>=$TAG_DATE" \
-            --json number,body \
-            --jq '.[] | select(.body != null and (.body | test("issues/\\d+"))) | [.body | scan("issues/(\\d+)"; "g")] | .[]'  
-          )
-          echo "Found PRs:"
-          echo "$PR_DATA"
-          gh pr list \
-            --search "is:pr is:open created:>=$TAG_DATE" \
-            --json number,body \
-            --jq '.[] | select(.body != null and (.body | test("issues/\\d+"))) | [.body | scan("issues/(\\d+)"; "g")] | .[]'  
-          | while read issue_number; do
+          ISSUE_NUMBERS=$(gh pr list --search "is:pr is:open created:>=$TAG_DATE" --json number,body --jq '.[] | select(.body != null and (.body | test("issues/\\d+"))) | [.body | scan("issues/(\\d+)"; "g")] | .[]' | sort -u)
+          
+          if [ -z "$ISSUE_NUMBERS" ]; then
+            echo "No issues found in recent PRs"
+            exit 0
+          fi
+          
+          echo "Found issues: $ISSUE_NUMBERS"
+          for issue_number in $ISSUE_NUMBERS; do
             echo "Commenting on issue #$issue_number"
             gh issue comment "$issue_number" --body "This issue was resolved and included in the latest release."
           done
