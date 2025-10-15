@@ -26,14 +26,14 @@ jobs:
           echo "$TAG_DATE"
           
           PR_DATA=$(gh pr list \
-            --search "is:pr is:open created:>=$TAG_DATE \
+            --search "is:pr is:open created:>=$TAG_DATE" \
             --json number,body \
             --jq '.[] | select(.body != null and (.body | test("issues/\\d+"))) | [.body | scan("issues/(\\d+)"; "g")] | .[]'  
           )
           echo "Found PRs:"
           echo "$PR_DATA"
           gh pr list \
-            --search "is:pr is:open created:>=$TAG_DATE \
+            --search "is:pr is:open created:>=$TAG_DATE" \
             --json number,body \
             --jq '.[] | select(.body != null and (.body | test("issues/\\d+"))) | [.body | scan("issues/(\\d+)"; "g")] | .[]' \  
           | while read issue_number; do
