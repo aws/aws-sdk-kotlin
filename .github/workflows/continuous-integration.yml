@@ -124,7 +124,7 @@ jobs:
         run: |
           # protocol tests require everything is published
           pwd
-          ./gradlew --parallel assemble 
+          ./gradlew assemble
           ./gradlew publishToMavenLocal
       - name: Configure Gradle aws-sdk-kotlin
         uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main

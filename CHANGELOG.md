@@ -1,5 +1,54 @@
 # Changelog
 
+## [1.5.62] - 10/15/2025
+
+### Features
+* (**bedrock**) Amazon Bedrock Automated Reasoning Policy now offers enhanced AWS KMS integration. The CreateAutomatedReasoningPolicy API includes a new kmsKeyId field, allowing customers to specify their preferred KMS key for encryption, improving control and compliance with AWS encryption mandates.
+* (**docdb**) Add support for NetworkType field in CreateDbCluster, ModifyDbCluster, RestoreDbClusterFromSnapshot and RestoreDbClusterToPointInTime for DocumentDB.
+* (**ec2**) Introducing EC2 Capacity Manager for monitoring and analyzing capacity usage across On-Demand Instances, Spot Instances, and Capacity Reservations.
+* (**elasticloadbalancingv2**) This release expands Listener Rule Conditions to support RegexValues and adds support for a new Transforms field in Listener Rules.
+* (**guardduty**) Added default pagination value for ListMalwareProtectionPlans API and updated UpdateFindingsFeedback API
+* (**lightsail**) Add support for manage Lightsail Bucket CORS configuration
+* (**timestreaminfluxdb**) This release adds support for creating and managing InfluxDB 3 Core and Enterprise DbClusters.
+
+## [1.5.61] - 10/14/2025
+
+### Features
+* (**appstream**) This release introduces support for Microsoft license included applications streaming.
+* (**backup**) The AWS Backup job attribute extension enhancement helps customers better understand the plan that initiated each job, and the properties of the resource each job creates.
+* (**connect**) SDK release for TaskTemplateInfo in Contact for DescribeContact response.
+* (**datazone**) Support creating scoped and trustedIdentityPropagation enabled connections.
+* (**ec2**) This release adds support for creating instant, point-in-time copies of EBS volumes within the same Availability Zone
+* (**transcribe**) Move UntagResource API body member to query parameter
+* (**transfer**) SFTP connectors now support routing connections via customers' VPC. This enables connections to remote servers that are only accessible in a customer's VPC environment, and to servers that are accessible over the internet but need connections coming from an IP address in a customer VPC's CIDR range.
+
+## [1.5.60] - 10/13/2025
+
+### Features
+* (**bedrockagentcore**) Updated InvokeAgentRuntime API to accept account id optionally and added CompleteResourceTokenAuth API.
+* (**bedrockagentcorecontrol**) Updated http status code in control plane apis of agentcore runtime, tools and identity. Additional included provider types for AgentCore Identity
+* (**ec2**) Release Amazon EC2 c8i, c8i-flex, m8a, and r8gb
+* (**observabilityadmin**) CloudWatch Observability Admin adds the ability to enable Resource tags for telemetry in a customer account. The release introduces new APIs to enable, disable and describe the status of Resource tags for telemetry feature. This new capability simplifies monitoring AWS resources using tags.
+
+## [1.5.59] - 10/10/2025
+
+### Features
+* (**bedrockagentcore**) Bedrock AgentCore release for Runtime, and Memory.
+* (**bedrockagentcorecontrol**) Bedrock AgentCore release for Gateway, and Memory including Self-Managed Strategies support for Memory.
+* (**cloudfront**) Added new viewer security policy, TLSv1.2_2025, for CloudFront.
+* (**glue**) Addition of AuditContext in GetTable/GetTables Request
+* (**lambda**) Add InvokedViaFunctionUrl context key to limit invocations to only FURL invokes.
+* (**odb**) This release adds APIs that allow you to specify CIDR ranges in your ODB peering connection.
+
+### Documentation
+* (**rds**) Updated the text in the Important section of the ModifyDBClusterParameterGroup page.
+
+## [1.5.58] - 10/09/2025
+
+### Features
+* (**quicksight**) This release adds support for ActionConnector and Flow, which are new resources associated with Amazon Quick Suite. Additional updates include expanded Data Source options, further branding customization, and new capabilities that can be restricted by Admins.
+* (**wafv2**) This release adds the ability to throw WafLimitsExceededException when the maximum number of Application Load Balancer (ALB) associations per AWS WAF v2 WebACL is exceeded.
+
 ## [1.5.57] - 10/08/2025
 
 ### Features
