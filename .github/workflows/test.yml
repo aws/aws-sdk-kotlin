@@ -74,6 +74,9 @@ jobs:
           echo "$ISSUE_NUMBERS" | tr ' ' '\n' | while read -r issue_number; do
             if [ -n "$issue_number" ]; then
               echo "Commenting on issue #$issue_number"
-              gh issue comment "$issue_number" --body "A change related to this issue was included in release: $CURRENT_TAG" || echo "::error Failed to comment on #$issue_number"
+              if ! gh issue comment "$issue_number" --body "A change related to this issue was included in release: $CURRENT_TAG"; then
+                echo "::error::Failed to comment on issue #$issue_number"
+                exit 1
+              fi
             fi
           done
