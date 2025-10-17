@@ -1,0 +1,8 @@
+{
+    "id": "d0acb5d7-6b4e-4163-92d0-444b89455052",
+    "type": "bugfix",
+    "description": "Bump **smithy-kotlin** to **v1.5.15** to pick up fixes for codegen member/package collision",
+    "issues": [
+        "smithy-lang/smithy-kotlin#1444"
+    ]
+}
