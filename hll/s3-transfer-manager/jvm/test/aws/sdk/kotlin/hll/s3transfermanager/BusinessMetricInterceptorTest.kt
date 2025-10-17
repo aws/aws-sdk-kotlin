@@ -36,7 +36,7 @@ class BusinessMetricInterceptorTest {
             interceptors += testInterceptor
             credentialsProvider = StaticCredentialsProvider(Credentials("akid", "secret"))
         }.use { s3Client ->
-            S3TransferManager {
+            S3TransferManager.Companion {
                 client = s3Client
             }.uploadFile {
                 bucket = "b"

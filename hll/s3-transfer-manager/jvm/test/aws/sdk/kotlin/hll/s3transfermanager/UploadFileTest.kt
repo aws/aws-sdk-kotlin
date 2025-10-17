@@ -23,7 +23,7 @@ class UploadFileTest {
         S3Client {
             region = "us-west-2"
         }.use { s3Client ->
-            S3TransferManager {
+            S3TransferManager.Companion {
                 client = s3Client
             }.uploadFile {
                 bucket = "aoperez"
@@ -43,7 +43,7 @@ class UploadFileTest {
         S3Client {
             region = "us-west-2"
         }.use { s3Client ->
-            S3TransferManager {
+            S3TransferManager.Companion {
                 client = s3Client
                 multipartUploadThreshold = 1
                 targePartSize = 5L * 1024L * 1024L // 5 MB

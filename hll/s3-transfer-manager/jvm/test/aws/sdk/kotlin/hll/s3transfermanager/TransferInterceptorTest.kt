@@ -15,6 +15,7 @@ import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials.Companion.invok
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.httptest.TestEngine
 import kotlinx.coroutines.runBlocking
+import kotlin.collections.plusAssign
 import kotlin.test.Test
 
 class TransferInterceptorTest {
@@ -27,7 +28,7 @@ class TransferInterceptorTest {
             httpClient = TestEngine()
             credentialsProvider = StaticCredentialsProvider(Credentials("akid", "secret"))
         }.use { s3Client ->
-            S3TransferManager {
+            S3TransferManager.Companion {
                 client = s3Client
                 interceptors += object : TransferInterceptor {
                     // Test reads
@@ -35,6 +36,7 @@ class TransferInterceptorTest {
                         assert(context.transferredBytes == 0L)
                         assert(context.request is PutObjectRequest)
                     }
+
                     override fun readBeforeTransferCompleted(context: TransferContext) {
                         assert(context.transferredBytes == message.length.toLong())
                         assert(context.response is PutObjectResponse)
@@ -47,6 +49,7 @@ class TransferInterceptorTest {
                         newContext.transferredBytes = message.length.toLong() * 10
                         return newContext
                     }
+
                     override fun readAfterTransferCompleted(context: TransferContext) {
                         assert(context.request is CompleteMultipartUploadRequest)
                         assert(context.transferredBytes == message.length.toLong() * 10)

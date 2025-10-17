@@ -15,11 +15,10 @@ kotlin {
                 implementation(libs.s3)
             }
         }
-        commonTest {
+        jvmTest {
             dependencies {
                 implementation(libs.smithy.kotlin.test.jvm)
                 implementation(libs.smithy.kotlin.testing.jvm)
-                implementation(libs.s3)
             }
         }
     }
