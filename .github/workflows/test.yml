@@ -57,7 +57,18 @@ jobs:
           
               ISSUE_NUMBERS="$ISSUE_NUMBERS $PR_ISSUES"
             fi
+          
+            # TESTING 
+            # testing fetching issue number
+            PR_ISSUES=$(gh pr view "$pr_number" --json body --jq '.body' | \
+                grep -o 'issues/[0-9]*' | \
+                sed 's/issues\///')
+            echo "  Found issues: $PR_ISSUES"
+            ISSUE_NUMBERS="$ISSUE_NUMBERS $PR_ISSUES" 
+          
           done
+          
+          
           
           # Comment on each issue found
           echo "$ISSUE_NUMBERS" | tr ' ' '\n' | while read -r issue_number; do
