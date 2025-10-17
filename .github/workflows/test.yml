@@ -33,7 +33,7 @@ jobs:
           ALL_PRS=$(gh pr list \
             --state open \
             --json number,body,createdAt \
-            --jq '[.[] | select(.createdAt > "$TAG_DATE") | .number]' 
+            --jq '[.[] | select(.createdAt > "'$TAG_DATE'") | .number]' 
           )
           echo "Found PRs: $ALL_PRS"
           
