@@ -5,8 +5,9 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager {
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun getMultipartDownloadType ()Laws/sdk/kotlin/hll/s3transfermanager/model/MultiPartDownloadType;
 	public final fun getMultipartUploadThreshold ()J
-	public final fun getPartSize ()J
+	public final fun getTargePartSize ()J
 	public final fun uploadFile (Laws/sdk/kotlin/hll/s3transfermanager/model/UploadFileRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun uploadFile (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Builder {
@@ -14,13 +15,13 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Builde
 	public final fun getClient ()Laws/sdk/kotlin/services/s3/S3Client;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun getMultipartDownloadType ()Laws/sdk/kotlin/hll/s3transfermanager/model/MultiPartDownloadType;
-	public final fun getMultipartUploadThreshold ()Ljava/lang/Long;
-	public final fun getPartSize ()Ljava/lang/Long;
+	public final fun getMultipartUploadThreshold ()J
+	public final fun getTargePartSize ()J
 	public final fun setClient (Laws/sdk/kotlin/services/s3/S3Client;)V
 	public final fun setInterceptors (Ljava/util/List;)V
 	public final fun setMultipartDownloadType (Laws/sdk/kotlin/hll/s3transfermanager/model/MultiPartDownloadType;)V
-	public final fun setMultipartUploadThreshold (Ljava/lang/Long;)V
-	public final fun setPartSize (Ljava/lang/Long;)V
+	public final fun setMultipartUploadThreshold (J)V
+	public final fun setTargePartSize (J)V
 }
 
 public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Companion {
@@ -158,6 +159,7 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadFileRequest 
 
 public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadFileRequest$Builder {
 	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/s3transfermanager/model/UploadFileRequest;
 	public final fun getAcl ()Laws/sdk/kotlin/services/s3/model/ObjectCannedAcl;
 	public final fun getBody ()Laws/smithy/kotlin/runtime/content/ByteStream;
 	public final fun getBucket ()Ljava/lang/String;

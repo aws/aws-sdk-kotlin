@@ -12,7 +12,13 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":aws-runtime:aws-http"))
-                implementation(project(":services:s3")) // TODO: Hardcode an S3 Client version to avoid breakages
+                implementation(libs.s3)
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation(libs.smithy.kotlin.test.jvm)
+                implementation(libs.smithy.kotlin.testing.jvm)
             }
         }
     }

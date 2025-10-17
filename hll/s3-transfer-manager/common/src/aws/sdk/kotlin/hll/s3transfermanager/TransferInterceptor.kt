@@ -5,10 +5,8 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager
 
-// TODO: Add PUBLIC documentation to each thing in the context
-/**
- * TODO
- */
+// TODO: KDocs
+
 public data class TransferContext(
     // Req/Resp
     var request: Any? = null,
@@ -25,10 +23,6 @@ public data class TransferContext(
     var transferredFiles: Long? = null,
 )
 
-// TODO: Add PUBLIC documentation to each hook
-/**
- * TODO
- */
 public interface TransferInterceptor {
     // Transfer initialization hooks
     public fun readBeforeTransferInitiated(context: TransferContext) {}
@@ -55,9 +49,6 @@ public interface TransferInterceptor {
     public fun modifyAfterTransferCompleted(context: TransferContext): TransferContext = context
 }
 
-/**
- * TODO
- */
 internal interface TransferHook
 internal object TransferInitiated : TransferHook
 internal object BytesTransferred : TransferHook

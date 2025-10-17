@@ -28,6 +28,9 @@ mockk-version = "1.13.13"
 slf4j-version = "2.0.16"
 jsoup-version = "1.20.1"
 
+# s3 transfer manager
+s3-version = "1.5.62"
+
 [libraries]
 aws-kotlin-repo-tools-build-support = { module="aws.sdk.kotlin.gradle:build-support", version.ref = "aws-kotlin-repo-tools-version" }
 
@@ -92,6 +95,8 @@ smithy-kotlin-telemetry-provider-micrometer = { module = "aws.smithy.kotlin:tele
 smithy-kotlin-telemetry-provider-otel = { module = "aws.smithy.kotlin:telemetry-provider-otel", version.ref = "smithy-kotlin-runtime-version" }
 smithy-kotlin-test-suite = { module = "aws.smithy.kotlin:test-suite", version.ref = "smithy-kotlin-runtime-version" }
 smithy-kotlin-testing = { module = "aws.smithy.kotlin:testing", version.ref = "smithy-kotlin-runtime-version" }
+smithy-kotlin-test-jvm = { module = "aws.smithy.kotlin:http-test-jvm", version.ref = "smithy-kotlin-runtime-version" }
+smithy-kotlin-testing-jvm = { module = "aws.smithy.kotlin:testing-jvm", version.ref = "smithy-kotlin-runtime-version" }
 
 smithy-kotlin-codegen = { module = "software.amazon.smithy.kotlin:smithy-kotlin-codegen", version.ref = "smithy-kotlin-codegen-version" }
 smithy-kotlin-codegen-testutils = { module = "software.amazon.smithy.kotlin:smithy-kotlin-codegen-testutils", version.ref = "smithy-kotlin-codegen-version" }
@@ -124,6 +129,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 mockk = { module = "io.mockk:mockk", version.ref = "mockk-version" }
 
 ddb-local = { module = "com.amazonaws:DynamoDBLocal", version.ref = "ddb-local-version" }
+s3 = { module = "aws.sdk.kotlin:s3", version.ref = "s3-version" }
 
 [bundles]
 # bundle of smithy-kotlin dependencies all AWS service clients have
