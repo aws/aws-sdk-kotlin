@@ -5,8 +5,11 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager
 
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.services.s3.S3Client
+import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials.Companion.invoke
 import aws.smithy.kotlin.runtime.businessmetrics.containsBusinessMetric
 import aws.smithy.kotlin.runtime.client.ProtocolResponseInterceptorContext
 import aws.smithy.kotlin.runtime.content.ByteStream
@@ -31,6 +34,7 @@ class BusinessMetricInterceptorTest {
             region = "us-west-2"
             httpClient = TestEngine()
             interceptors += testInterceptor
+            credentialsProvider = StaticCredentialsProvider(Credentials("akid", "secret"))
         }.use { s3Client ->
             S3TransferManager {
                 client = s3Client

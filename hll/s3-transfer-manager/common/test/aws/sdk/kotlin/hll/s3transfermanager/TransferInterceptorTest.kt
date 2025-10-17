@@ -5,10 +5,13 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager
 
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.CompleteMultipartUploadRequest
 import aws.sdk.kotlin.services.s3.model.PutObjectRequest
 import aws.sdk.kotlin.services.s3.model.PutObjectResponse
+import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials.Companion.invoke
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.httptest.TestEngine
 import kotlinx.coroutines.runBlocking
@@ -22,6 +25,7 @@ class TransferInterceptorTest {
         S3Client {
             region = "us-west-2"
             httpClient = TestEngine()
+            credentialsProvider = StaticCredentialsProvider(Credentials("akid", "secret"))
         }.use { s3Client ->
             S3TransferManager {
                 client = s3Client
