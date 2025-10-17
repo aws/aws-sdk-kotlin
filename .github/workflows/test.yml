@@ -35,6 +35,7 @@ jobs:
             --json number,body,createdAt \
             --jq '[.[] | select(.createdAt > "$TAG_DATE") | .number]' 
           )
+          echo "Found PRs: $ALL_PRS"
           
           # Find all issue number from PRs merged into release branch
           ISSUE_NUMBERS=""
@@ -42,6 +43,7 @@ jobs:
           
             # Get the merge commit SHA for this PR
             MERGE_COMMIT=$(gh pr view "$pr_number" --json mergeCommit --jq '.mergeCommit.oid')
+            echo "  PR $pr_number merge commit: $MERGE_COMMIT"
           
             # Check if this commit exists in the release branch
             if git merge-base --is-ancestor "$MERGE_COMMIT" origin/release 2>/dev/null; then
