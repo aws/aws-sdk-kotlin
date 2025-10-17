@@ -22,7 +22,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Get the previous tag
-          PREVIOUS_TAG=$(git tag --sort=-version:refname | sed -n '2p')
+          PREVIOUS_TAG=$(git tag --sort=-version:refname | sed -n '5p')
           CURRENT_TAG=$(git tag --sort=-version:refname | sed -n '1p')
   
           # Convert tag date to GitHub search format
