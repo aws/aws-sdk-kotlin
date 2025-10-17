@@ -73,7 +73,7 @@ jobs:
           # Comment on each issue found
           FAILURES=""
           
-          echo "$ISSUE_NUMBERS" | tr ' ' '\n' | while read -r issue_number; do
+          while read -r issue_number; do
             if [ -n "$issue_number" ]; then
               echo "Commenting on issue #$issue_number"
               if ! gh issue comment "$issue_number" --body "A change related to this issue was included in [release **$CURRENT_TAG**](https://github.com/${{ github.repository }}/releases/tag/$CURRENT_TAG)."; then
@@ -81,7 +81,7 @@ jobs:
                 FAILURES="$FAILURES #$issuenumber"
               fi
             fi
-          done
+          done < <(echo "$ISSUE_NUMBERS" | tr ' ' '\n')
           
           if [ -n "$FAILURES" ]; then
             echo "::error::Failed to update the following issue(s):$FAILURES"
