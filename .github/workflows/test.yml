@@ -20,21 +20,54 @@ jobs:
       - name: Comment on PRs with issue numbers
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0)
-          TAG_DATE=$(git log -1 --format="%ci" "$PREVIOUS_TAG" | sed 's/ /T/' | sed 's/ +0000/Z/')
-          echo "Using tag date: $TAG_DATE"
-          
-          ISSUE_NUMBERS=$(gh pr list \
-            --json number,body,createdAt \
-            --jq $'.[] | select(.createdAt > "'$TAG_DATE'") | .body' | \
-            grep -o 'issues/[0-9]*' | \
-            sed 's/issues\///'          
-          )
-          
-          echo "Found issues: $ISSUE_NUMBERS"
-          
-          for issue_number in $ISSUE_NUMBERS; do 
+runs:
+  using: composite
+  steps:
+    - name: Comment on issues
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        # Get the previous tag
+        PREVIOUS_TAG=$(git tag --sort=-version:refname | sed -n '2p')
+        CURRENT_TAG=$(git tag --sort=-version:refname | sed -n '1p')
+
+        # Convert tag date to GitHub search format
+        TAG_DATE=$(git log -1 --format="%ci" "$PREVIOUS_TAG" | sed 's/ /T/' | sed 's/ +0000/Z/')
+        echo "Using tag date: $TAG_DATE"
+        
+        # Find all PRs merged from the last release tag date
+        ALL_PRS=$(gh pr list \
+          --state open \
+          --json number,body,createdAt \
+          --jq '[.[] | select(.createdAt > "$TAG_DATE") | .number]' 
+        )
+        
+        # Find all issue number from PRs merged into release branch
+        ISSUE_NUMBERS=""
+        for pr_number in $(echo "$ALL_PRS" | jq -r '.[]'); do
+        
+          # Get the merge commit SHA for this PR
+          MERGE_COMMIT=$(gh pr view "$pr_number" --json mergeCommit --jq '.mergeCommit.oid')
+        
+          # Check if this commit exists in the release branch
+          if git merge-base --is-ancestor "$MERGE_COMMIT" origin/release 2>/dev/null; then
+            echo "PR $pr_number is in release branch"
+        
+            # Get issue numbers from this PR
+            PR_ISSUES=$(gh pr view "$pr_number" --json body --jq '.body' | \
+              grep -o 'issues/[0-9]*' | \
+              sed 's/issues\///')
+            echo "  Found issues: $PR_ISSUES"
+        
+            ISSUE_NUMBERS="$ISSUE_NUMBERS $PR_ISSUES"
+          fi
+        done
+        
+        # Comment on each issue found
+        echo "$ISSUE_NUMBERS" | tr ' ' '\n' | while read -r issue_number; do
+          if [ -n "$issue_number" ]; then
             echo "Commenting on issue #$issue_number"
-            gh issue comment "$issue_number" --body "This issue was resolved and included in the latest release."
-          done
+            gh issue comment "$issue_number" --body "A change related to this issue was included in release: $CURRENT_TAG" || echo "::error Failed to comment on #$issue_number"
+          fi
+        done
