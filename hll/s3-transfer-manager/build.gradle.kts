@@ -19,6 +19,7 @@ kotlin {
             dependencies {
                 implementation(libs.smithy.kotlin.test.jvm)
                 implementation(libs.smithy.kotlin.testing.jvm)
+                implementation(libs.s3)
             }
         }
     }
