@@ -78,7 +78,7 @@ jobs:
               echo "Commenting on issue #$issue_number"
               if ! gh issue comment "$issue_number" --body "A change related to this issue was included in [release **$CURRENT_TAG**](https://github.com/${{ github.repository }}/releases/tag/$CURRENT_TAG)."; then
                 echo "::error::Failed to comment on issue #$issue_number"
-                FAILURES="$FAILURES #$issuenumber"
+                FAILURES="$FAILURES #$issue_number"
               fi
             fi
           done < <(echo "$ISSUE_NUMBERS" | tr ' ' '\n')
