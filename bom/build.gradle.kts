@@ -16,7 +16,7 @@ plugins {
 
 val sdkVersion: String by project
 
-group = "aws.sdk.kotlin"
+group = "com.sonatype.central.testing.amazon"
 version = sdkVersion
 description = "Provides a BOM"
 

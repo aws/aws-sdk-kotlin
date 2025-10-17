@@ -26,7 +26,7 @@ val optinAnnotations = listOf(
 val libraries = libs
 
 subprojects {
-    group = "aws.sdk.kotlin"
+    group = "com.sonatype.central.testing.amazon"
     version = sdkVersion
 
     apply {

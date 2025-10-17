@@ -44,7 +44,7 @@ val hllPreviewVersion = if (sdkVersion.contains("-SNAPSHOT")) { // e.g. 1.3.29-b
 }
 
 subprojects {
-    group = "aws.sdk.kotlin"
+    group = "com.sonatype.central.testing.amazon"
     version = hllPreviewVersion
     configurePublishing("aws-sdk-kotlin")
 }

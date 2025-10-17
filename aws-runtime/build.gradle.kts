@@ -24,7 +24,7 @@ val libraries = libs
 subprojects {
     if (!needsKmpConfigured) return@subprojects
 
-    group = "aws.sdk.kotlin"
+    group = "com.sonatype.central.testing.amazon"
     version = sdkVersion
 
     apply {

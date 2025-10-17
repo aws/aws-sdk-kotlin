@@ -16,7 +16,7 @@ plugins {
 
 val sdkVersion: String by project
 description = "Codegen support for AWS SDK for Kotlin"
-group = "aws.sdk.kotlin"
+group = "com.sonatype.central.testing.amazon"
 version = sdkVersion
 
 dependencies {

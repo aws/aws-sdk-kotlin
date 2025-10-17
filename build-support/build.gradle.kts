@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
 }
 
-group = "aws.sdk.kotlin"
+group = "com.sonatype.central.testing.amazon"
 
 repositories {
     mavenLocal()
