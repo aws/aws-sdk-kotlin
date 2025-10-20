@@ -1,0 +1,8 @@
+{
+    "id": "f3bee672-bc64-4103-adad-5f6db9e139a6",
+    "type": "bugfix",
+    "description": "fixed a foo",
+    "issues": [
+        "awslabs/aws-sdk-kotlin#2000"
+    ]
+}
