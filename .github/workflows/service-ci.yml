@@ -43,7 +43,7 @@ jobs:
           fi
 
 concurrency:
-  group: ${{ github.ref }}
+  group: service-ci-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:

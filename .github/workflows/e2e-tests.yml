@@ -32,7 +32,7 @@ jobs:
           fi
 
 concurrency:
-  group: ${{ github.ref }}
+  group: e2e-tests-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
