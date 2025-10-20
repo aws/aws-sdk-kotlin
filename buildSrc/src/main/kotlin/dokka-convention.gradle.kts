@@ -3,13 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import org.jsoup.Jsoup
-import kotlin.io.path.ExperimentalPathApi
-import kotlin.io.path.PathWalkOption
-import kotlin.io.path.exists
-import kotlin.io.path.isDirectory
-import kotlin.io.path.name
-import kotlin.io.path.walk
+import aws.sdk.kotlin.dokka.TrimNavigation
 
 plugins {
     id("org.jetbrains.dokka")
@@ -80,58 +74,10 @@ dependencies {
     dokkaPlugin(project(":dokka-aws"))
 }
 
-tasks.register("trimNavigationFiles") {
-    description = "Trims navigation.html files to remove unrelated projects' side menus"
-    group = "documentation"
-
-    doLast {
-        val dokkaOutputDir = layout.buildDirectory.get().dir("dokka/html").asFile.toPath()
-
-        if (!dokkaOutputDir.exists()) {
-            logger.info("Dokka output directory not found at ${dokkaOutputDir.toAbsolutePath()}, skipping navigation trimming")
-            return@doLast
-        }
-
-        @OptIn(ExperimentalPathApi::class)
-        dokkaOutputDir.walk(PathWalkOption.INCLUDE_DIRECTORIES)
-            .filter { it.isDirectory() && it.resolve("navigation.html").exists() }
-            .forEach { moduleDir ->
-                val moduleName = moduleDir.name
-
-                val navigation = moduleDir.resolve("navigation.html").toFile()
-                val doc = Jsoup.parse(navigation)
-
-                // Remove all parent directory elements from all navigation links
-                doc.select("a[href^=../]").forEach { anchor ->
-                    var href = anchor.attr("href")
-
-                    while (href.startsWith("../")) {
-                        href = href.removePrefix("../")
-                    }
-
-                    anchor.attr("href", href)
-                }
-
-                // Trim side menus
-                doc.select("div.sideMenu > div.toc--part")
-                    .filterNot { it.id().startsWith("$moduleName-nav-submenu") }
-                    .forEach { moduleMenu ->
-                        val moduleRow = moduleMenu.select("div.toc--row").first()!!
-                        val toggleButton = moduleRow.select("button.toc--button").single()
-                        toggleButton.remove()
-
-                        moduleMenu.children()
-                            .filterNot { it == moduleRow }
-                            .forEach { it.remove() }
-                    }
-
-                // Update navigation.html
-                val trimmedSideMenuParts = doc.select("div.sideMenu > div.toc--part")
-                navigation.writeText("<div class=\"sideMenu\">\n$trimmedSideMenuParts\n</div>")
-            }
-    }
+val trimNavigationTask = tasks.register<TrimNavigation>("trimNavigationFiles") {
+    sourceDirectory.set(layout.buildDirectory.get().dir("dokka/html"))
 }
 
 tasks.dokkaGenerate {
-    finalizedBy("trimNavigationFiles")
+    finalizedBy(trimNavigationTask)
 }
