@@ -60,9 +60,12 @@ jobs:
           
             # TESTING 
             # testing fetching issue number
-            PR_ISSUES=$(gh pr view "$pr_number" --json body --jq '.body' | \
-                grep -o 'issues/[0-9]*' | \
-                sed 's/issues\///')
+            # Get issue numbers from changelog entries in this PR
+            PR_ISSUES=$(gh pr view "$pr_number" --json files --jq '.files[].path' | \
+              grep '\.changes/.*\.json$' | \
+              xargs -I {} cat {} 2>/dev/null | \
+              jq -r '.issues[]?' 2>/dev/null | \
+              sed 's/.*#//')
             echo "  Found issues: $PR_ISSUES"
             ISSUE_NUMBERS="$ISSUE_NUMBERS $PR_ISSUES" 
           
