@@ -5,10 +5,11 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager
 
-import aws.sdk.kotlin.hll.s3transfermanager.model.MultiPartDownloadType
+import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
 import aws.sdk.kotlin.hll.s3transfermanager.model.Part
 import aws.sdk.kotlin.hll.s3transfermanager.model.UploadFileRequest
 import aws.sdk.kotlin.hll.s3transfermanager.model.UploadFileResponse
+import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
 import aws.sdk.kotlin.hll.s3transfermanager.utils.buildCompleteMultipartUploadRequest
 import aws.sdk.kotlin.hll.s3transfermanager.utils.buildUploadPartRequest
 import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
@@ -41,9 +42,9 @@ import kotlinx.coroutines.coroutineScope
  */
 public class S3TransferManager private constructor(
     public val client: S3Client,
-    public val targePartSize: Long,
-    public val multipartUploadThreshold: Long,
-    public val multipartDownloadType: MultiPartDownloadType,
+    public val partSizeBytes: Long,
+    public val multipartUploadThresholdBytes: Long,
+    public val multipartDownloadType: MultipartDownloadType,
     public val interceptors: MutableList<TransferInterceptor>,
 ) {
     internal var context: TransferContext = TransferContext()
@@ -55,16 +56,16 @@ public class S3TransferManager private constructor(
 
     public class Builder {
         public var client: S3Client? = null
-        public var targePartSize: Long = 8_000_000
-        public var multipartUploadThreshold: Long = 16_000_000L
-        public var multipartDownloadType: MultiPartDownloadType = Part
+        public var partSizeBytes: Long = 8_000_000
+        public var multipartUploadThresholdBytes: Long = 16_000_000L
+        public var multipartDownloadType: MultipartDownloadType = Part
         public var interceptors: MutableList<TransferInterceptor> = mutableListOf()
 
         internal fun build(): S3TransferManager =
             S3TransferManager(
-                client = client?.withConfig { interceptors += BusinessMetricInterceptor } ?: error("client must be set"),
-                targePartSize = targePartSize,
-                multipartUploadThreshold = multipartUploadThreshold,
+                client = client?.withConfig { interceptors += S3TransferManagerBusinessMetricInterceptor } ?: error("client must be set"),
+                partSizeBytes = partSizeBytes,
+                multipartUploadThresholdBytes = multipartUploadThresholdBytes,
                 multipartDownloadType = multipartDownloadType,
                 interceptors = interceptors,
             )
@@ -117,17 +118,18 @@ public class S3TransferManager private constructor(
      * for large objects as needed.
      *
      * This function handles the complexity of splitting the data into parts,
-     * uploading each part, and completing the multipart upload. For object smaller than [multipartUploadThreshold],
+     * uploading each part, and completing the multipart upload. For object smaller than [multipartUploadThresholdBytes],
      * a standard single-part upload is performed automatically.
      *
-     * If the specified [targePartSize] for multipart uploads is too small to allow
+     * If the specified [partSizeBytes] for multipart uploads is too small to allow
      * all parts to fit within S3's limit of 10,000 parts, the part size will be
      * automatically increased so that exactly 10,000 parts are uploaded.
      */
     public suspend fun uploadFile(uploadFileRequest: UploadFileRequest): Deferred<UploadFileResponse> = coroutineScope {
-        val multiPartUpload = uploadFileRequest.contentLength >= multipartUploadThreshold
+        val contentLength = uploadFileRequest.body?.contentLength ?: throw S3TransferManagerException("UploadFileRequest.body.contentLength must be set")
+        val multiPartUpload = contentLength >= multipartUploadThresholdBytes
         val uploadedParts = mutableListOf<CompletedPart>()
-        var mpuUploadId = "null"
+        lateinit var mpuUploadId: String
 
         val logger = coroutineContext.logger<S3TransferManager>()
 
@@ -136,7 +138,7 @@ public class S3TransferManager private constructor(
          */
         suspend fun transferInitiated(multiPartUpload: Boolean) {
             context.transferredBytes = 0L
-            context.transferableBytes = uploadFileRequest.contentLength
+            context.transferableBytes = contentLength
             context.request = if (multiPartUpload) {
                 uploadFileRequest.toCreateMultiPartUploadRequest()
             } else {
@@ -145,7 +147,7 @@ public class S3TransferManager private constructor(
             operationHook(TransferInitiated) {
                 if (multiPartUpload) {
                     context.response = client.createMultipartUpload(context.request as CreateMultipartUploadRequest)
-                    mpuUploadId = (context.response as CreateMultipartUploadResponse).uploadId ?: throw Exception("Missing upload id in create multipart upload response")
+                    mpuUploadId = (context.response as CreateMultipartUploadResponse).uploadId ?: throw S3TransferManagerException("Missing upload id in create multipart upload response")
                 }
             }
         }
@@ -156,13 +158,13 @@ public class S3TransferManager private constructor(
         suspend fun transferBytes(multiPartUpload: Boolean) {
             if (multiPartUpload) {
                 try {
-                    val partSize = resolvePartSize(uploadFileRequest, this@S3TransferManager, logger)
-                    val numberOfParts = ceilDiv(uploadFileRequest.contentLength, partSize)
+                    val partSize = resolvePartSize(contentLength, this@S3TransferManager, logger)
+                    val numberOfParts = ceilDiv(contentLength, partSize)
                     val partSource = when (uploadFileRequest.body) {
                         is ByteStream.Buffer -> uploadFileRequest.body.bytes()
                         is ByteStream.ChannelStream -> uploadFileRequest.body.readFrom()
                         is ByteStream.SourceStream -> uploadFileRequest.body.readFrom()
-                        else -> error("Unhandled body type: ${uploadFileRequest.body?.let { it::class.simpleName } ?: "null"}")
+                        else -> throw S3TransferManagerException("Unhandled body type: ${uploadFileRequest.body?.let { it::class.simpleName } ?: "null"}")
                     }
                     val partBuffer = SdkBuffer()
                     var currentPartNumber = 1L
@@ -170,8 +172,8 @@ public class S3TransferManager private constructor(
                     while (context.transferredBytes!! < context.transferableBytes!!) {
                         partBuffer.getNextPart(partSource, partSize, this@S3TransferManager)
                         if (currentPartNumber != numberOfParts) {
-                            check(partBuffer.size == partSize) {
-                                "Part #$currentPartNumber size mismatch detected. Expected $partSize, actual: ${partBuffer.size}"
+                            if (partBuffer.size != partSize) {
+                                throw S3TransferManagerException("Part #$currentPartNumber size mismatch detected. Expected $partSize, actual: ${partBuffer.size}")
                             }
                         }
 
@@ -195,8 +197,8 @@ public class S3TransferManager private constructor(
                         currentPartNumber += 1
                     }
 
-                    check(uploadedParts.size == numberOfParts.toInt()) {
-                        "The number of uploaded parts does not match the expected count. Expected $numberOfParts, actual: ${uploadedParts.size}"
+                    if (uploadedParts.size != numberOfParts.toInt()) {
+                        throw S3TransferManagerException("The number of uploaded parts does not match the expected count. Expected $numberOfParts, actual: ${uploadedParts.size}")
                     }
                 } catch (uploadPartThrowable: Throwable) {
                     try {
@@ -207,9 +209,9 @@ public class S3TransferManager private constructor(
                             requestPayer = uploadFileRequest.requestPayer
                             uploadId = mpuUploadId
                         }
-                        throw Exception("Multipart upload failed (ID: $mpuUploadId). One or more parts could not be uploaded", uploadPartThrowable)
+                        throw S3TransferManagerException("Multipart upload failed (ID: $mpuUploadId). One or more parts could not be uploaded", uploadPartThrowable)
                     } catch (abortThrowable: Throwable) {
-                        throw Exception("Multipart upload failed (ID: $mpuUploadId). Unable to abort multipart upload.", abortThrowable)
+                        throw S3TransferManagerException("Multipart upload failed (ID: $mpuUploadId). Unable to abort multipart upload.", abortThrowable)
                     }
                 }
             } else {
@@ -232,20 +234,13 @@ public class S3TransferManager private constructor(
                     try {
                         context.response = client.completeMultipartUpload(context.request as CompleteMultipartUploadRequest)
                     } catch (t: Throwable) {
-                        throw Exception("Unable to complete multipart upload with ID: $mpuUploadId", t)
+                        throw S3TransferManagerException("Unable to complete multipart upload with ID: $mpuUploadId", t)
                     }
                 }
             }
         }
 
         async {
-            checkNotNull(uploadFileRequest.body?.contentLength) {
-                "UploadFileRequest.body.contentLength must be set"
-            }
-            check(uploadFileRequest.body.contentLength == uploadFileRequest.contentLength) {
-                "contentLength mismatch. uploadFileRequest: ${uploadFileRequest.contentLength}, uploadFileRequest.body.contentLength: ${uploadFileRequest.body.contentLength}"
-            }
-
             transferInitiated(multiPartUpload)
             transferBytes(multiPartUpload)
             transferComplete(multiPartUpload)
@@ -253,7 +248,7 @@ public class S3TransferManager private constructor(
             when (context.response) {
                 is PutObjectResponse -> (context.response as PutObjectResponse).toUploadFileResponse()
                 is CompleteMultipartUploadResponse -> (context.response as CompleteMultipartUploadResponse).toUploadFileResponse()
-                else -> error("Unexpected response: ${context.response?.let { it::class.simpleName } ?: "null"}")
+                else -> throw S3TransferManagerException("Unexpected response: ${context.response?.let { it::class.simpleName } ?: "null"}")
             }
         }
     }
@@ -263,10 +258,10 @@ public class S3TransferManager private constructor(
      * for large objects as needed.
      *
      * This function handles the complexity of splitting the data into parts,
-     * uploading each part, and completing the multipart upload. For object smaller than [multipartUploadThreshold],
+     * uploading each part, and completing the multipart upload. For object smaller than [multipartUploadThresholdBytes],
      * a standard single-part upload is performed automatically.
      *
-     * If the specified [targePartSize] for multipart uploads is too small to allow
+     * If the specified [partSizeBytes] for multipart uploads is too small to allow
      * all parts to fit within S3's limit of 10,000 parts, the part size will be
      * automatically increased so that exactly 10,000 parts are uploaded.
      */

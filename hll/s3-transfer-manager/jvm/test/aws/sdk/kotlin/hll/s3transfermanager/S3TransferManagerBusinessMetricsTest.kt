@@ -9,7 +9,6 @@ import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
-import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials.Companion.invoke
 import aws.smithy.kotlin.runtime.businessmetrics.containsBusinessMetric
 import aws.smithy.kotlin.runtime.client.ProtocolResponseInterceptorContext
 import aws.smithy.kotlin.runtime.content.ByteStream
@@ -20,9 +19,9 @@ import aws.smithy.kotlin.runtime.httptest.TestEngine
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 
-class BusinessMetricInterceptorTest {
+class S3TransferManagerBusinessMetricsTest {
     @Test
-    fun businessMetricExists(): Unit = runBlocking {
+    fun s3Transfer(): Unit = runBlocking {
         val message = "Hello World"
         val testInterceptor = object : HttpInterceptor {
             override fun readAfterTransmit(context: ProtocolResponseInterceptorContext<Any, HttpRequest, HttpResponse>) {
@@ -36,13 +35,12 @@ class BusinessMetricInterceptorTest {
             interceptors += testInterceptor
             credentialsProvider = StaticCredentialsProvider(Credentials("akid", "secret"))
         }.use { s3Client ->
-            S3TransferManager.Companion {
+            S3TransferManager {
                 client = s3Client
             }.uploadFile {
                 bucket = "b"
                 key = "k"
                 body = ByteStream.fromString(message)
-                contentLength = message.length.toLong()
             }
         }
     }

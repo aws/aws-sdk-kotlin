@@ -13,7 +13,7 @@ import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 /**
  * An interceptor that emits the S3 Transfer Manager business metric
  */
-internal object BusinessMetricInterceptor : HttpInterceptor {
+internal object S3TransferManagerBusinessMetricInterceptor : HttpInterceptor {
     override suspend fun modifyBeforeSerialization(context: RequestInterceptorContext<Any>): Any {
         context.executionContext.emitBusinessMetric(AwsBusinessMetric.S3_TRANSFER)
         return context.request

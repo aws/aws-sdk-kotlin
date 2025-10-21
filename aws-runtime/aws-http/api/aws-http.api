@@ -172,6 +172,8 @@ public final class aws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsB
 	public static final field DDB_MAPPER Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric;
 	public static final field S3_EXPRESS_BUCKET Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric;
 	public static final field S3_TRANSFER Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric;
+	public static final field S3_TRANSFER_DOWNLOAD_DIRECTORY Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric;
+	public static final field S3_TRANSFER_UPLOAD_DIRECTORY Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public fun getIdentifier ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;

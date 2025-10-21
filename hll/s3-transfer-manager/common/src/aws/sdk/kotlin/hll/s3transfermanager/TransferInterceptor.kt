@@ -5,6 +5,8 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager
 
+import aws.smithy.kotlin.runtime.content.ByteStream
+
 // TODO: KDocs
 
 public data class TransferContext(
@@ -14,7 +16,7 @@ public data class TransferContext(
 
     // Byte transfers
     var transferableBytes: Long? = null,
-    var currentBytes: ByteArray? = null,
+    var currentBytes: ByteStream? = null,
     var transferredBytes: Long? = null,
 
     // File transfers

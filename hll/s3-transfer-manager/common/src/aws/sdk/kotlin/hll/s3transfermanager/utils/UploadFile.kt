@@ -29,14 +29,14 @@ private const val MAX_NUMBER_PARTS = 10_000L
  * part size will be automatically increased so that exactly 10,000 parts
  * are uploaded.
  */
-internal fun resolvePartSize(uploadFileRequest: UploadFileRequest, tm: S3TransferManager, logger: Logger): Long {
-    val targetNumberOfParts = uploadFileRequest.contentLength / tm.targePartSize
+internal fun resolvePartSize(contentLength: Long, tm: S3TransferManager, logger: Logger): Long {
+    val targetNumberOfParts = contentLength / tm.partSizeBytes
     return if (targetNumberOfParts > MAX_NUMBER_PARTS) {
-        ceilDiv(uploadFileRequest.contentLength, MAX_NUMBER_PARTS).also {
+        ceilDiv(contentLength, MAX_NUMBER_PARTS).also {
             logger.debug { "Target part size is too small to meet the 10,000 S3 part limit. Increasing part size to $it" }
         }
     } else {
-        tm.targePartSize
+        tm.partSizeBytes
     }
 }
 

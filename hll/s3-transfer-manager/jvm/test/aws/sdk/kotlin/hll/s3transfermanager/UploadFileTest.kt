@@ -23,13 +23,12 @@ class UploadFileTest {
         S3Client {
             region = "us-west-2"
         }.use { s3Client ->
-            S3TransferManager.Companion {
+            S3TransferManager {
                 client = s3Client
             }.uploadFile {
                 bucket = "aoperez"
                 key = "k"
                 body = ByteStream.fromString(message)
-                contentLength = message.length.toLong()
             }
         }
     }
@@ -43,15 +42,14 @@ class UploadFileTest {
         S3Client {
             region = "us-west-2"
         }.use { s3Client ->
-            S3TransferManager.Companion {
+            S3TransferManager {
                 client = s3Client
-                multipartUploadThreshold = 1
-                targePartSize = 5L * 1024L * 1024L // 5 MB
+                multipartUploadThresholdBytes = 1
+                partSizeBytes = 5L * 1024L * 1024L // 5 MB
             }.uploadFile {
                 bucket = "aoperez"
                 key = "mpuK"
                 body = ByteStream.fromInputStream(file.inputStream(), messageLength)
-                contentLength = messageLength
             }
         }
     }

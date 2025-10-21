@@ -57,7 +57,6 @@ include(":aws-runtime:aws-http")
 include(":hll")
 include(":hll:hll-codegen")
 include(":hll:hll-mapping-core")
-include(":hll:s3-transfer-manager")
 include(":services")
 include(":tests")
 include(":tests:codegen")
@@ -90,6 +89,12 @@ if ("dynamodb".isBootstrappedService) {
     include(":hll:dynamodb-mapper:dynamodb-mapper-schema-generator-plugin")
 } else {
     logger.warn(":services:dynamodb is not bootstrapped, skipping :hll:dynamodb-mapper and subprojects")
+}
+
+if ("s3".isBootstrappedService) {
+    include(":hll:s3-transfer-manager")
+} else {
+    logger.warn(":services:s3 is not bootstrapped, skipping :hll:s3-transfer-manager and subprojects")
 }
 
 // Service benchmarks project

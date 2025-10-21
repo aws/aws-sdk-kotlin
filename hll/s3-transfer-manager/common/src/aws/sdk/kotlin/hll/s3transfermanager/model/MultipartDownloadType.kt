@@ -7,6 +7,6 @@ package aws.sdk.kotlin.hll.s3transfermanager.model
 
 // TODO: KDocs
 
-public sealed interface MultiPartDownloadType
-public object Range : MultiPartDownloadType
-public object Part : MultiPartDownloadType
+public sealed interface MultipartDownloadType
+public object Range : MultipartDownloadType
+public object Part : MultipartDownloadType

@@ -30,7 +30,6 @@ public class UploadFileRequest private constructor(
     public val contentDisposition: String?,
     public val contentEncoding: String?,
     public val contentLanguage: String?,
-    public val contentLength: Long,
     public val contentType: String?,
     public val expectedBucketOwner: String?,
     public val expires: Instant?,
@@ -46,13 +45,12 @@ public class UploadFileRequest private constructor(
     public val objectLockMode: ObjectLockMode?,
     public val objectLockRetainUntilDate: Instant?,
     public val requestPayer: RequestPayer?,
-    public val serverSideEncryption: ServerSideEncryption?,
-    public val source: String?,
     public val sseCustomerAlgorithm: String?,
     public val sseCustomerKey: String?,
     public val sseCustomerKeyMd5: String?,
     public val ssekmsEncryptionContext: String?,
     public val ssekmsKeyId: String?,
+    public val serverSideEncryption: ServerSideEncryption?,
     public val storageClass: StorageClass?,
     public val tagging: String?,
     public val websiteRedirectLocation: String?,
@@ -77,7 +75,6 @@ public class UploadFileRequest private constructor(
         public var contentDisposition: String? = null
         public var contentEncoding: String? = null
         public var contentLanguage: String? = null
-        public var contentLength: Long? = null
         public var contentType: String? = null
         public var expectedBucketOwner: String? = null
         public var expires: Instant? = null
@@ -93,13 +90,12 @@ public class UploadFileRequest private constructor(
         public var objectLockMode: ObjectLockMode? = null
         public var objectLockRetainUntilDate: Instant? = null
         public var requestPayer: RequestPayer? = null
-        public var source: String? = null
-        public var serverSideEncryption: ServerSideEncryption? = null
         public var sseCustomerAlgorithm: String? = null
         public var sseCustomerKey: String? = null
         public var sseCustomerKeyMd5: String? = null
         public var ssekmsEncryptionContext: String? = null
         public var ssekmsKeyId: String? = null
+        public var serverSideEncryption: ServerSideEncryption? = null
         public var storageClass: StorageClass? = null
         public var tagging: String? = null
         public var websiteRedirectLocation: String? = null
@@ -120,7 +116,6 @@ public class UploadFileRequest private constructor(
                 contentDisposition,
                 contentEncoding,
                 contentLanguage,
-                contentLength ?: error("contentLength must be set"),
                 contentType,
                 expectedBucketOwner,
                 expires,
@@ -136,13 +131,12 @@ public class UploadFileRequest private constructor(
                 objectLockMode,
                 objectLockRetainUntilDate,
                 requestPayer,
-                serverSideEncryption,
-                source,
                 sseCustomerAlgorithm,
                 sseCustomerKey,
                 sseCustomerKeyMd5,
                 ssekmsEncryptionContext,
                 ssekmsKeyId,
+                serverSideEncryption,
                 storageClass,
                 tagging,
                 websiteRedirectLocation,

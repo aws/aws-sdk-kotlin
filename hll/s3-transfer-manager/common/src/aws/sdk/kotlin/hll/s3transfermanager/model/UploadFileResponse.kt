@@ -8,6 +8,7 @@ package aws.sdk.kotlin.hll.s3transfermanager.model
 import aws.sdk.kotlin.services.s3.model.ChecksumType
 import aws.sdk.kotlin.services.s3.model.RequestCharged
 import aws.sdk.kotlin.services.s3.model.ServerSideEncryption
+import kotlin.String
 
 public class UploadFileResponse(
     public val bucketKeyEnabled: Boolean?,
@@ -20,8 +21,11 @@ public class UploadFileResponse(
     public val eTag: String?,
     public val expiration: String?,
     public val requestCharged: RequestCharged?,
-    public val serverSideEncryption: ServerSideEncryption?,
+    public val sseCustomerAlgorithm: String?,
+    public val sseCustomerKeyMd5: String?,
+    public val ssekmsEncryptionContext: String?,
     public val ssekmsKeyId: String?,
+    public val serverSideEncryption: ServerSideEncryption?,
     public val versionId: String?,
 ) {
     public companion object {
@@ -40,8 +44,11 @@ public class UploadFileResponse(
         public var eTag: String? = null
         public var expiration: String? = null
         public var requestCharged: RequestCharged? = null
-        public var serverSideEncryption: ServerSideEncryption? = null
+        public var sseCustomerAlgorithm: String? = null
+        public var sseCustomerKeyMd5: String? = null
+        public var ssekmsEncryptionContext: String? = null
         public var ssekmsKeyId: String? = null
+        public var serverSideEncryption: ServerSideEncryption? = null
         public var versionId: String? = null
 
         internal fun build(): UploadFileResponse =
@@ -56,8 +63,11 @@ public class UploadFileResponse(
                 eTag,
                 expiration,
                 requestCharged,
-                serverSideEncryption,
+                sseCustomerAlgorithm,
+                sseCustomerKeyMd5,
+                ssekmsEncryptionContext,
                 ssekmsKeyId,
+                serverSideEncryption,
                 versionId,
             )
     }

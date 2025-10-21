@@ -28,9 +28,6 @@ mockk-version = "1.13.13"
 slf4j-version = "2.0.16"
 jsoup-version = "1.20.1"
 
-# s3 transfer manager
-s3-version = "1.5.62"
-
 [libraries]
 aws-kotlin-repo-tools-build-support = { module="aws.sdk.kotlin.gradle:build-support", version.ref = "aws-kotlin-repo-tools-version" }
 
@@ -129,7 +126,6 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 mockk = { module = "io.mockk:mockk", version.ref = "mockk-version" }
 
 ddb-local = { module = "com.amazonaws:DynamoDBLocal", version.ref = "ddb-local-version" }
-s3 = { module = "aws.sdk.kotlin:s3", version.ref = "s3-version" }
 
 [bundles]
 # bundle of smithy-kotlin dependencies all AWS service clients have

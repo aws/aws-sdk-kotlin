@@ -24,8 +24,11 @@ internal fun PutObjectResponse.toUploadFileResponse(): UploadFileResponse =
         eTag = this@toUploadFileResponse.eTag
         expiration = this@toUploadFileResponse.expiration
         requestCharged = this@toUploadFileResponse.requestCharged
-        serverSideEncryption = this@toUploadFileResponse.serverSideEncryption
+        sseCustomerAlgorithm = this@toUploadFileResponse.sseCustomerAlgorithm
+        sseCustomerKeyMd5 = this@toUploadFileResponse.sseCustomerKeyMd5
+        ssekmsEncryptionContext = this@toUploadFileResponse.ssekmsEncryptionContext
         ssekmsKeyId = this@toUploadFileResponse.ssekmsKeyId
+        serverSideEncryption = this@toUploadFileResponse.serverSideEncryption
         versionId = this@toUploadFileResponse.versionId
     }
 
@@ -41,8 +44,8 @@ internal fun CompleteMultipartUploadResponse.toUploadFileResponse(): UploadFileR
         eTag = this@toUploadFileResponse.eTag
         expiration = this@toUploadFileResponse.expiration
         requestCharged = this@toUploadFileResponse.requestCharged
-        serverSideEncryption = this@toUploadFileResponse.serverSideEncryption
         ssekmsKeyId = this@toUploadFileResponse.ssekmsKeyId
+        serverSideEncryption = this@toUploadFileResponse.serverSideEncryption
         versionId = this@toUploadFileResponse.versionId
     }
 
@@ -62,7 +65,7 @@ internal fun UploadFileRequest.toPutObjectRequest(): PutObjectRequest =
         contentDisposition = this@toPutObjectRequest.contentDisposition
         contentEncoding = this@toPutObjectRequest.contentEncoding
         contentLanguage = this@toPutObjectRequest.contentLanguage
-        contentLength = this@toPutObjectRequest.contentLength
+        contentLength = this@toPutObjectRequest.body?.contentLength
         contentType = this@toPutObjectRequest.contentType
         expectedBucketOwner = this@toPutObjectRequest.expectedBucketOwner
         expires = this@toPutObjectRequest.expires
@@ -78,12 +81,12 @@ internal fun UploadFileRequest.toPutObjectRequest(): PutObjectRequest =
         objectLockMode = this@toPutObjectRequest.objectLockMode
         objectLockRetainUntilDate = this@toPutObjectRequest.objectLockRetainUntilDate
         requestPayer = this@toPutObjectRequest.requestPayer
-        serverSideEncryption = this@toPutObjectRequest.serverSideEncryption
         sseCustomerAlgorithm = this@toPutObjectRequest.sseCustomerAlgorithm
         sseCustomerKey = this@toPutObjectRequest.sseCustomerKey
         sseCustomerKeyMd5 = this@toPutObjectRequest.sseCustomerKeyMd5
         ssekmsEncryptionContext = this@toPutObjectRequest.ssekmsEncryptionContext
         ssekmsKeyId = this@toPutObjectRequest.ssekmsKeyId
+        serverSideEncryption = this@toPutObjectRequest.serverSideEncryption
         storageClass = this@toPutObjectRequest.storageClass
         tagging = this@toPutObjectRequest.tagging
         websiteRedirectLocation = this@toPutObjectRequest.websiteRedirectLocation
@@ -112,12 +115,12 @@ internal fun UploadFileRequest.toCreateMultiPartUploadRequest(): CreateMultipart
         objectLockMode = this@toCreateMultiPartUploadRequest.objectLockMode
         objectLockRetainUntilDate = this@toCreateMultiPartUploadRequest.objectLockRetainUntilDate
         requestPayer = this@toCreateMultiPartUploadRequest.requestPayer
-        serverSideEncryption = this@toCreateMultiPartUploadRequest.serverSideEncryption
         sseCustomerAlgorithm = this@toCreateMultiPartUploadRequest.sseCustomerAlgorithm
         sseCustomerKey = this@toCreateMultiPartUploadRequest.sseCustomerKey
         sseCustomerKeyMd5 = this@toCreateMultiPartUploadRequest.sseCustomerKeyMd5
         ssekmsEncryptionContext = this@toCreateMultiPartUploadRequest.ssekmsEncryptionContext
         ssekmsKeyId = this@toCreateMultiPartUploadRequest.ssekmsKeyId
+        serverSideEncryption = this@toCreateMultiPartUploadRequest.serverSideEncryption
         storageClass = this@toCreateMultiPartUploadRequest.storageClass
         tagging = this@toCreateMultiPartUploadRequest.tagging
         websiteRedirectLocation = this@toCreateMultiPartUploadRequest.websiteRedirectLocation
