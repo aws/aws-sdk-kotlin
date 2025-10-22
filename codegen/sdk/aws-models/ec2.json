@@ -1720,7 +1720,7 @@
                 "target": "com.amazonaws.ec2#AllocateAddressResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Allocates an Elastic IP address to your Amazon Web Services account. After you allocate the Elastic IP address you can associate  \n         it with an instance or network interface. After you release an Elastic IP address, it is released to the IP address \n         pool and can be allocated to a different Amazon Web Services account.</p>\n         <p>You can allocate an Elastic IP address from an address pool owned by Amazon Web Services or from an address pool created \n       from a public IPv4 address range that you have brought to Amazon Web Services for use with your Amazon Web Services resources using bring your own \n         IP addresses (BYOIP). For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">Bring Your Own IP Addresses (BYOIP)</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>If you release an Elastic IP address, you might be able to recover it. You cannot recover\n      an Elastic IP address that you released after it is allocated to another Amazon Web Services account. To attempt to recover an Elastic IP address that you released, specify\n      it in this operation.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>You can allocate a carrier IP address which is a public IP address from a telecommunication carrier, \n       to a network interface which resides in a subnet in a Wavelength Zone (for example an EC2 instance).</p>",
+                "smithy.api#documentation": "<p>Allocates an Elastic IP address to your Amazon Web Services account. After you allocate the Elastic IP address you can associate  \n         it with an instance or network interface. After you release an Elastic IP address, it is released to the IP address \n         pool and can be allocated to a different Amazon Web Services account.</p>\n         <p>You can allocate an Elastic IP address from one of the following address pools:</p>\n         <ul>\n            <li>\n               <p>Amazon's pool of IPv4 addresses</p>\n            </li>\n            <li>\n               <p>Public IPv4 address range that you own and bring to your Amazon Web Services account using \n           <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">Bring Your Own IP Addresses (BYOIP)</a>\n               </p>\n            </li>\n            <li>\n               <p>An IPv4 IPAM pool with an Amazon-provided or BYOIP public IPv4 address range</p>\n            </li>\n            <li>\n               <p>IPv4 addresses from your on-premises network made available for use with an Outpost\n          using a <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing\">customer-owned IP address\n            pool</a> (CoIP pool)</p>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>If you release an Elastic IP address, you might be able to recover it. You cannot recover\n      an Elastic IP address that you released after it is allocated to another Amazon Web Services account. To attempt to recover an Elastic IP address that you released, specify\n      it in this operation.</p>\n         <p>You can allocate a carrier IP address which is a public IP address from a telecommunication carrier, \n       to a network interface which resides in a subnet in a Wavelength Zone (for example an EC2 instance).</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To allocate an Elastic IP address",
@@ -1810,7 +1810,7 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "aws.protocols#ec2QueryName": "PublicIpv4Pool",
-                        "smithy.api#documentation": "<p>The ID of an address pool.</p>",
+                        "smithy.api#documentation": "<p>The ID of an address pool that you own.</p>",
                         "smithy.api#xmlName": "publicIpv4Pool"
                     }
                 },
@@ -1850,7 +1850,7 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "aws.protocols#ec2QueryName": "CarrierIp",
-                        "smithy.api#documentation": "<p>The carrier IP address. This option is only available for network interfaces that reside\n      in a subnet in a Wavelength Zone.</p>",
+                        "smithy.api#documentation": "<p>The carrier IP address. Available only for network interfaces that reside\n      in a subnet in a Wavelength Zone.</p>",
                         "smithy.api#xmlName": "carrierIp"
                     }
                 },
@@ -1858,7 +1858,7 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "aws.protocols#ec2QueryName": "PublicIp",
-                        "smithy.api#documentation": "<p>The Elastic IP address.</p>",
+                        "smithy.api#documentation": "<p>The Amazon-owned IP address. Not available when using an address pool that you own.</p>",
                         "smithy.api#xmlName": "publicIp"
                     }
                 }
@@ -2545,6 +2545,9 @@
                     "target": "com.amazonaws.ec2#CopyVolumes"
                 },
                 {
+                    "target": "com.amazonaws.ec2#CreateCapacityManagerDataExport"
+                },
+                {
                     "target": "com.amazonaws.ec2#CreateCapacityReservation"
                 },
                 {
@@ -2822,6 +2825,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#CreateVpnGateway"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DeleteCapacityManagerDataExport"
                 },
                 {
                     "target": "com.amazonaws.ec2#DeleteCarrierGateway"
@@ -3134,6 +3140,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#DescribeCapacityBlockStatus"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DescribeCapacityManagerDataExports"
                 },
                 {
                     "target": "com.amazonaws.ec2#DescribeCapacityReservationBillingRequests"
@@ -3637,6 +3646,9 @@
                     "target": "com.amazonaws.ec2#DisableAwsNetworkPerformanceMetricSubscription"
                 },
                 {
+                    "target": "com.amazonaws.ec2#DisableCapacityManager"
+                },
+                {
                     "target": "com.amazonaws.ec2#DisableEbsEncryptionByDefault"
                 },
                 {
@@ -3745,6 +3757,9 @@
                     "target": "com.amazonaws.ec2#EnableAwsNetworkPerformanceMetricSubscription"
                 },
                 {
+                    "target": "com.amazonaws.ec2#EnableCapacityManager"
+                },
+                {
                     "target": "com.amazonaws.ec2#EnableEbsEncryptionByDefault"
                 },
                 {
@@ -3824,6 +3839,15 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#GetAwsNetworkPerformanceData"
+                },
+                {
+                    "target": "com.amazonaws.ec2#GetCapacityManagerAttributes"
+                },
+                {
+                    "target": "com.amazonaws.ec2#GetCapacityManagerMetricData"
+                },
+                {
+                    "target": "com.amazonaws.ec2#GetCapacityManagerMetricDimensions"
                 },
                 {
                     "target": "com.amazonaws.ec2#GetCapacityReservationUsage"
@@ -4436,6 +4460,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#UnmonitorInstances"
+                },
+                {
+                    "target": "com.amazonaws.ec2#UpdateCapacityManagerOrganizationsAccess"
                 },
                 {
                     "target": "com.amazonaws.ec2#UpdateSecurityGroupRuleDescriptionsEgress"
@@ -10057,6 +10084,9 @@
                 }
             }
         },
+        "com.amazonaws.ec2#BoxedBoolean": {
+            "type": "boolean"
+        },
         "com.amazonaws.ec2#BoxedDouble": {
             "type": "double"
         },
@@ -11027,7 +11057,7 @@
                 "target": "com.amazonaws.ec2#CancelSpotFleetRequestsResponse"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Cancels the specified Spot Fleet requests.</p>\n         <p>After you cancel a Spot Fleet request, the Spot Fleet launches no new instances.</p>\n         <p>You must also specify whether a canceled Spot Fleet request should terminate its instances. If you\n            choose to terminate the instances, the Spot Fleet request enters the\n                <code>cancelled_terminating</code> state. Otherwise, the Spot Fleet request enters\n            the <code>cancelled_running</code> state and the instances continue to run until they\n            are interrupted or you terminate them manually.</p>\n         <p class=\"title\">\n            <b>Restrictions</b>\n         </p>\n         <ul>\n            <li>\n               <p>You can delete up to 100 fleets in a single request. If you exceed the specified\n               number, no fleets are deleted.</p>\n            </li>\n         </ul>",
+                "smithy.api#documentation": "<p>Cancels the specified Spot Fleet requests.</p>\n         <p>After you cancel a Spot Fleet request, the Spot Fleet launches no new instances.</p>\n         <p>You must also specify whether a canceled Spot Fleet request should terminate its instances. If you\n            choose to terminate the instances, the Spot Fleet request enters the\n                <code>cancelled_terminating</code> state. Otherwise, the Spot Fleet request enters\n            the <code>cancelled_running</code> state and the instances continue to run until they\n            are interrupted or you terminate them manually.</p>\n         <important>\n            <p>\n               <b>Terminating an instance is permanent and irreversible.</b>\n            </p>\n            <p>After you terminate an instance, you can no longer connect to it, and it can't be recovered. \n          All attached Amazon EBS volumes that are configured to be deleted on termination are also permanently \n          deleted and can't be recovered. All data stored on instance store volumes is permanently lost. \n          For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-ec2-instance-termination-works.html\">\n             How instance termination works</a>.</p>\n            <p>Before you terminate an instance, ensure that you have backed up all data that you need to \n             retain after the termination to persistent storage.</p>\n         </important>\n         <p class=\"title\">\n            <b>Restrictions</b>\n         </p>\n         <ul>\n            <li>\n               <p>You can delete up to 100 fleets in a single request. If you exceed the specified\n               number, no fleets are deleted.</p>\n            </li>\n         </ul>",
                 "smithy.api#examples": [
                     {
                         "title": "To cancel a Spot fleet request",
@@ -12030,6 +12060,342 @@
                 "target": "com.amazonaws.ec2#CapacityBlockStatus",
                 "traits": {
                     "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerCondition": {
+            "type": "structure",
+            "members": {
+                "DimensionCondition": {
+                    "target": "com.amazonaws.ec2#DimensionCondition",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe dimension-based condition that specifies how to filter the data based on dimension values.\n</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nRepresents a filter condition for Capacity Manager queries. Contains dimension-based filtering criteria used to narrow down metric data and dimension results.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerConditionSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#CapacityManagerCondition",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 20
+                }
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerDataExportId": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#CapacityManagerDataExportIdSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#CapacityManagerDataExportId",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerDataExportResponse": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerDataExportId": {
+                    "target": "com.amazonaws.ec2#CapacityManagerDataExportId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerDataExportId",
+                        "smithy.api#documentation": "<p>\nThe unique identifier for the data export configuration.\n</p>",
+                        "smithy.api#xmlName": "capacityManagerDataExportId"
+                    }
+                },
+                "S3BucketName": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "S3BucketName",
+                        "smithy.api#documentation": "<p>\nThe name of the S3 bucket where export files are delivered.\n</p>",
+                        "smithy.api#xmlName": "s3BucketName"
+                    }
+                },
+                "S3BucketPrefix": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "S3BucketPrefix",
+                        "smithy.api#documentation": "<p>\nThe S3 key prefix used for organizing export files within the bucket.\n</p>",
+                        "smithy.api#xmlName": "s3BucketPrefix"
+                    }
+                },
+                "Schedule": {
+                    "target": "com.amazonaws.ec2#Schedule",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Schedule",
+                        "smithy.api#documentation": "<p>\nThe frequency at which data exports are generated.\n</p>",
+                        "smithy.api#xmlName": "schedule"
+                    }
+                },
+                "OutputFormat": {
+                    "target": "com.amazonaws.ec2#OutputFormat",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OutputFormat",
+                        "smithy.api#documentation": "<p>\nThe file format of the exported data.\n</p>",
+                        "smithy.api#xmlName": "outputFormat"
+                    }
+                },
+                "CreateTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CreateTime",
+                        "smithy.api#documentation": "<p>\nThe timestamp when the data export configuration was created.\n</p>",
+                        "smithy.api#xmlName": "createTime"
+                    }
+                },
+                "LatestDeliveryStatus": {
+                    "target": "com.amazonaws.ec2#CapacityManagerDataExportStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "LatestDeliveryStatus",
+                        "smithy.api#documentation": "<p>\nThe status of the most recent export delivery.\n</p>",
+                        "smithy.api#xmlName": "latestDeliveryStatus"
+                    }
+                },
+                "LatestDeliveryStatusMessage": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "LatestDeliveryStatusMessage",
+                        "smithy.api#documentation": "<p>\nA message describing the status of the most recent export delivery, including any error details if the delivery failed.\n</p>",
+                        "smithy.api#xmlName": "latestDeliveryStatusMessage"
+                    }
+                },
+                "LatestDeliveryS3LocationUri": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "LatestDeliveryS3LocationUri",
+                        "smithy.api#documentation": "<p>\nThe S3 URI of the most recently delivered export file.\n</p>",
+                        "smithy.api#xmlName": "latestDeliveryS3LocationUri"
+                    }
+                },
+                "LatestDeliveryTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "LatestDeliveryTime",
+                        "smithy.api#documentation": "<p>\nThe timestamp when the most recent export was delivered to S3.\n</p>",
+                        "smithy.api#xmlName": "latestDeliveryTime"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.ec2#TagList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>\nThe tags associated with the data export configuration.\n</p>",
+                        "smithy.api#xmlName": "tagSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nContains information about a Capacity Manager data export configuration, including export settings, delivery status, and recent export activity.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerDataExportResponseSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#CapacityManagerDataExportResponse",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerDataExportStatus": {
+            "type": "enum",
+            "members": {
+                "PENDING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pending"
+                    }
+                },
+                "IN_PROGRESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "in-progress"
+                    }
+                },
+                "DELIVERED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delivered"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "failed"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerDimension": {
+            "type": "structure",
+            "members": {
+                "ResourceRegion": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ResourceRegion",
+                        "smithy.api#documentation": "<p>\n    The Amazon Web Services Region where the capacity resource is located.\n</p>",
+                        "smithy.api#xmlName": "resourceRegion"
+                    }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZoneId",
+                        "smithy.api#documentation": "<p>\nThe unique identifier of the Availability Zone where the capacity resource is located.\n</p>",
+                        "smithy.api#xmlName": "availabilityZoneId"
+                    }
+                },
+                "AccountId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AccountId",
+                        "smithy.api#documentation": "<p>\n    The Amazon Web Services account ID that owns the capacity resource.\n</p>",
+                        "smithy.api#xmlName": "accountId"
+                    }
+                },
+                "InstanceFamily": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceFamily",
+                        "smithy.api#documentation": "<p>\nThe EC2 instance family of the capacity resource.\n</p>",
+                        "smithy.api#xmlName": "instanceFamily"
+                    }
+                },
+                "InstanceType": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceType",
+                        "smithy.api#documentation": "<p>\nThe specific EC2 instance type of the capacity resource.\n</p>",
+                        "smithy.api#xmlName": "instanceType"
+                    }
+                },
+                "InstancePlatform": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstancePlatform",
+                        "smithy.api#documentation": "<p>\nThe platform or operating system of the instance.\n</p>",
+                        "smithy.api#xmlName": "instancePlatform"
+                    }
+                },
+                "ReservationArn": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationArn",
+                        "smithy.api#documentation": "<p>\n    The Amazon Resource Name (ARN) of the capacity reservation. This provides a unique identifier that can be used across Amazon Web Services services to reference the specific reservation.\n</p>",
+                        "smithy.api#xmlName": "reservationArn"
+                    }
+                },
+                "ReservationId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationId",
+                        "smithy.api#documentation": "<p>\nThe unique identifier of the capacity reservation.\n</p>",
+                        "smithy.api#xmlName": "reservationId"
+                    }
+                },
+                "ReservationType": {
+                    "target": "com.amazonaws.ec2#ReservationType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationType",
+                        "smithy.api#documentation": "<p>\nThe type of capacity reservation.\n</p>",
+                        "smithy.api#xmlName": "reservationType"
+                    }
+                },
+                "ReservationCreateTimestamp": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationCreateTimestamp",
+                        "smithy.api#documentation": "<p>\nThe timestamp when the capacity reservation was originally created, in milliseconds since epoch. This differs from the start timestamp as \nreservations can be created before they become active.\n</p>",
+                        "smithy.api#xmlName": "reservationCreateTimestamp"
+                    }
+                },
+                "ReservationStartTimestamp": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationStartTimestamp",
+                        "smithy.api#documentation": "<p>\nThe timestamp when the capacity reservation becomes active and available for use, in milliseconds since epoch. This is when the reservation begins providing capacity.\n</p>",
+                        "smithy.api#xmlName": "reservationStartTimestamp"
+                    }
+                },
+                "ReservationEndTimestamp": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationEndTimestamp",
+                        "smithy.api#documentation": "<p>\nThe timestamp when the capacity reservation expires and is no longer available, in milliseconds since epoch. After this time, the reservation will not provide any capacity.\n</p>",
+                        "smithy.api#xmlName": "reservationEndTimestamp"
+                    }
+                },
+                "ReservationEndDateType": {
+                    "target": "com.amazonaws.ec2#ReservationEndDateType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationEndDateType",
+                        "smithy.api#documentation": "<p>\nThe type of end date for the capacity reservation. This indicates whether the reservation has a fixed end date, is open-ended, or follows a specific termination pattern.\n</p>",
+                        "smithy.api#xmlName": "reservationEndDateType"
+                    }
+                },
+                "Tenancy": {
+                    "target": "com.amazonaws.ec2#CapacityTenancy",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Tenancy",
+                        "smithy.api#documentation": "<p>\nThe tenancy of the EC2 instances associated with this capacity dimension. Valid values are 'default' for shared tenancy, 'dedicated' for dedicated instances, or 'host' for dedicated hosts.\n</p>",
+                        "smithy.api#xmlName": "tenancy"
+                    }
+                },
+                "ReservationState": {
+                    "target": "com.amazonaws.ec2#ReservationState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationState",
+                        "smithy.api#documentation": "<p>\nThe current state of the capacity reservation.\n</p>",
+                        "smithy.api#xmlName": "reservationState"
+                    }
+                },
+                "ReservationInstanceMatchCriteria": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationInstanceMatchCriteria",
+                        "smithy.api#documentation": "<p>\nThe instance matching criteria for the capacity reservation, determining how instances are matched to the reservation.\n</p>",
+                        "smithy.api#xmlName": "reservationInstanceMatchCriteria"
+                    }
+                },
+                "ReservationUnusedFinancialOwner": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationUnusedFinancialOwner",
+                        "smithy.api#documentation": "<p>\n        The Amazon Web Services account ID that is financially responsible for unused capacity reservation costs. \n    </p>",
+                        "smithy.api#xmlName": "reservationUnusedFinancialOwner"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nRepresents dimension values for capacity metrics, including resource identifiers, geographic information, and reservation details used for grouping and filtering capacity data.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerStatus": {
+            "type": "enum",
+            "members": {
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                },
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
                 }
             }
         },
@@ -13158,6 +13524,23 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "capacity-block"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#CapacityTenancy": {
+            "type": "enum",
+            "members": {
+                "DEFAULT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "default"
+                    }
+                },
+                "DEDICATED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "dedicated"
                     }
                 }
             }
@@ -14726,6 +15109,23 @@
                 }
             }
         },
+        "com.amazonaws.ec2#Comparison": {
+            "type": "enum",
+            "members": {
+                "EQUALS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "equals"
+                    }
+                },
+                "IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "in"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#ComponentAccount": {
             "type": "string",
             "traits": {
@@ -14736,6 +15136,21 @@
             "type": "string",
             "traits": {
                 "smithy.api#pattern": "^[a-z]{2}-[a-z]+-[1-9]+$"
+            }
+        },
+        "com.amazonaws.ec2#ConditionValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#String",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 10
+                }
             }
         },
         "com.amazonaws.ec2#ConfirmProductInstance": {
@@ -15886,6 +16301,92 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The CPU performance to consider, using an instance family as the baseline reference.</p>"
+            }
+        },
+        "com.amazonaws.ec2#CreateCapacityManagerDataExport": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#CreateCapacityManagerDataExportRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#CreateCapacityManagerDataExportResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nCreates a new data export configuration for EC2 Capacity Manager. This allows you to automatically export capacity usage data to an S3 bucket on a scheduled basis. \nThe exported data includes metrics for On-Demand, Spot, and Capacity Reservations usage across your organization.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#CreateCapacityManagerDataExportRequest": {
+            "type": "structure",
+            "members": {
+                "S3BucketName": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe name of the S3 bucket where the capacity data export files will be delivered. The bucket must exist and you must have write permissions to it.\n</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "S3BucketPrefix": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe S3 key prefix for the exported data files. This allows you to organize exports in a specific folder structure within your bucket. If not specified, files are placed at the bucket root.\n</p>"
+                    }
+                },
+                "Schedule": {
+                    "target": "com.amazonaws.ec2#Schedule",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe frequency at which data exports are generated. \n</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "OutputFormat": {
+                    "target": "com.amazonaws.ec2#OutputFormat",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe file format for the exported data. Parquet format is recommended for large datasets and better compression.\n</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nUnique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see Ensure Idempotency.\n</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides an error response. \nIf you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                },
+                "TagSpecifications": {
+                    "target": "com.amazonaws.ec2#TagSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe tags to apply to the data export configuration. You can tag the export for organization and cost tracking purposes.\n</p>",
+                        "smithy.api#xmlName": "TagSpecification"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateCapacityManagerDataExportResult": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerDataExportId": {
+                    "target": "com.amazonaws.ec2#CapacityManagerDataExportId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerDataExportId",
+                        "smithy.api#documentation": "<p>\nThe unique identifier for the created data export configuration. Use this ID to reference the export in other API calls.\n</p>",
+                        "smithy.api#xmlName": "capacityManagerDataExportId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.ec2#CreateCapacityReservation": {
@@ -24169,7 +24670,7 @@
                 "target": "com.amazonaws.ec2#CreateVpcResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Creates a VPC with the specified CIDR blocks. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html\">IP addressing for your VPCs and subnets</a> in the \n        <i>Amazon VPC User Guide</i>.</p>\n         <p>You can optionally request an IPv6 CIDR block for the VPC. You can request an\n            Amazon-provided IPv6 CIDR block from Amazon's pool of IPv6 addresses or an IPv6 CIDR\n            block from an IPv6 address pool that you provisioned through bring your own IP addresses\n            (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">BYOIP</a>).</p>\n         <p>By default, each instance that you launch in the VPC has the default DHCP options, which\n\t\t\tinclude only a default DNS server that we provide (AmazonProvidedDNS). For more\n\t\t\tinformation, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html\">DHCP option sets</a> in the <i>Amazon VPC User Guide</i>.</p>\n         <p>You can specify the instance tenancy value for the VPC when you create it. You can't change\n          this value for the VPC after you create it. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-instance.html\">Dedicated Instances</a> in the\n          <i>Amazon EC2 User Guide</i>.</p>",
+                "smithy.api#documentation": "<p>Creates a VPC with the specified CIDR blocks.</p>\n         <p>A VPC must have an associated IPv4 CIDR block. You can choose an IPv4 CIDR block or an\n            IPAM-allocated IPv4 CIDR block. You can optionally associate an IPv6 CIDR block with a\n            VPC. You can choose an IPv6 CIDR block, an Amazon-provided IPv6 CIDR block, an\n            IPAM-allocated IPv6 CIDR block, or an IPv6 CIDR block that you brought to Amazon Web Services. For\n            more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html\">IP addressing for your VPCs and\n                subnets</a> in the <i>Amazon VPC User Guide</i>.</p>\n         <p>By default, each instance that you launch in the VPC has the default DHCP options, which\n\t\t\tinclude only a default DNS server that we provide (AmazonProvidedDNS). For more\n\t\t\tinformation, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html\">DHCP option sets</a> in the <i>Amazon VPC User Guide</i>.</p>\n         <p>You can specify DNS options and tenancy for a VPC when you create it. You can't change\n          the tenancy of a VPC after you create it. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/create-vpc-options.html\">VPC configuration options</a> in the\n          <i>Amazon VPC User Guide</i>.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To create a VPC",
@@ -25548,6 +26049,56 @@
         "com.amazonaws.ec2#DefaultingDhcpOptionsId": {
             "type": "string"
         },
+        "com.amazonaws.ec2#DeleteCapacityManagerDataExport": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DeleteCapacityManagerDataExportRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DeleteCapacityManagerDataExportResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nDeletes an existing Capacity Manager data export configuration. This stops future scheduled exports but does not delete previously exported files from S3.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#DeleteCapacityManagerDataExportRequest": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerDataExportId": {
+                    "target": "com.amazonaws.ec2#CapacityManagerDataExportId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe unique identifier of the data export configuration to delete.\n</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides an error response. \nIf you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteCapacityManagerDataExportResult": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerDataExportId": {
+                    "target": "com.amazonaws.ec2#CapacityManagerDataExportId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerDataExportId",
+                        "smithy.api#documentation": "<p>\nThe unique identifier of the deleted data export configuration.\n</p>",
+                        "smithy.api#xmlName": "capacityManagerDataExportId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#DeleteCarrierGateway": {
             "type": "operation",
             "input": {
@@ -26097,7 +26648,7 @@
                 "target": "com.amazonaws.ec2#DeleteFleetsResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Deletes the specified EC2 Fleet request.</p>\n         <p>After you delete an EC2 Fleet request, it launches no new instances.</p>\n         <p>You must also specify whether a deleted EC2 Fleet request should terminate its instances. If\n         you choose to terminate the instances, the EC2 Fleet request enters the\n            <code>deleted_terminating</code> state. Otherwise, it enters the\n            <code>deleted_running</code> state, and the instances continue to run until they are\n         interrupted or you terminate them manually.</p>\n         <p>A deleted <code>instant</code> fleet with running instances is not supported. When you\n         delete an <code>instant</code> fleet, Amazon EC2 automatically terminates all its instances. For\n         fleets with more than 1000 instances, the deletion request might fail. If your fleet has\n         more than 1000 instances, first terminate most of the instances manually, leaving 1000 or\n         fewer. Then delete the fleet, and the remaining instances will be terminated automatically.</p>\n         <p class=\"title\">\n            <b>Restrictions</b>\n         </p>\n         <ul>\n            <li>\n               <p>You can delete up to 25 fleets of type <code>instant</code> in a single\n               request.</p>\n            </li>\n            <li>\n               <p>You can delete up to 100 fleets of type <code>maintain</code> or\n                  <code>request</code> in a single request.</p>\n            </li>\n            <li>\n               <p>You can delete up to 125 fleets in a single request, provided you do not exceed\n               the quota for each fleet type, as specified above.</p>\n            </li>\n            <li>\n               <p>If you exceed the specified number of fleets to delete, no fleets are\n               deleted.</p>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/delete-fleet.html\">Delete an EC2 Fleet request and the instances\n            in the fleet</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+                "smithy.api#documentation": "<p>Deletes the specified EC2 Fleet request.</p>\n         <p>After you delete an EC2 Fleet request, it launches no new instances.</p>\n         <p>You must also specify whether a deleted EC2 Fleet request should terminate its instances. If\n         you choose to terminate the instances, the EC2 Fleet request enters the\n            <code>deleted_terminating</code> state. Otherwise, it enters the\n            <code>deleted_running</code> state, and the instances continue to run until they are\n         interrupted or you terminate them manually.</p>\n         <p>A deleted <code>instant</code> fleet with running instances is not supported. When you\n         delete an <code>instant</code> fleet, Amazon EC2 automatically terminates all its instances. For\n         fleets with more than 1000 instances, the deletion request might fail. If your fleet has\n         more than 1000 instances, first terminate most of the instances manually, leaving 1000 or\n         fewer. Then delete the fleet, and the remaining instances will be terminated automatically.</p>\n         <important>\n            <p>\n               <b>Terminating an instance is permanent and irreversible.</b>\n            </p>\n            <p>After you terminate an instance, you can no longer connect to it, and it can't be recovered. \n            All attached Amazon EBS volumes that are configured to be deleted on termination are also permanently \n            deleted and can't be recovered. All data stored on instance store volumes is permanently lost. \n            For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-ec2-instance-termination-works.html\">\n               How instance termination works</a>.</p>\n            <p>Before you terminate an instance, ensure that you have backed up all data that you need to \n            retain after the termination to persistent storage.</p>\n         </important>\n         <p class=\"title\">\n            <b>Restrictions</b>\n         </p>\n         <ul>\n            <li>\n               <p>You can delete up to 25 fleets of type <code>instant</code> in a single\n               request.</p>\n            </li>\n            <li>\n               <p>You can delete up to 100 fleets of type <code>maintain</code> or\n                  <code>request</code> in a single request.</p>\n            </li>\n            <li>\n               <p>You can delete up to 125 fleets in a single request, provided you do not exceed\n               the quota for each fleet type, as specified above.</p>\n            </li>\n            <li>\n               <p>If you exceed the specified number of fleets to delete, no fleets are\n               deleted.</p>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/delete-fleet.html\">Delete an EC2 Fleet request and the instances\n            in the fleet</a> in the <i>Amazon EC2 User Guide</i>.</p>"
             }
         },
         "com.amazonaws.ec2#DeleteFleetsRequest": {
@@ -27861,7 +28412,7 @@
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Return",
-                        "smithy.api#documentation": "<p>Returns <code>true</code> if the request succeeds, otherwise returns an error.</p>",
+                        "smithy.api#documentation": "<p>Is <code>true</code> if the request succeeds and an error otherwise.</p>",
                         "smithy.api#xmlName": "return"
                     }
                 }
@@ -31972,6 +32523,97 @@
                     "traits": {
                         "aws.protocols#ec2QueryName": "NextToken",
                         "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeCapacityManagerDataExports": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeCapacityManagerDataExportsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeCapacityManagerDataExportsResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nDescribes one or more Capacity Manager data export configurations. Returns information about export settings, delivery status, and recent export activity.\n</p>",
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "CapacityManagerDataExports",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeCapacityManagerDataExportsRequest": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerDataExportIds": {
+                    "target": "com.amazonaws.ec2#CapacityManagerDataExportIdSet",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe IDs of the data export configurations to describe. If not specified, all export configurations are returned.\n</p>",
+                        "smithy.api#xmlName": "CapacityManagerDataExportId"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#DescribeCapacityManagerDataExportsRequestMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe maximum number of results to return in a single call. If not specified, up to 1000 results are returned.\n</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe token for the next page of results. Use this value in a subsequent call to retrieve additional results.\n</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides an error response. \nIf you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nOne or more filters to narrow the results. Supported filters include export status, creation date, and S3 bucket name.\n</p>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeCapacityManagerDataExportsRequestMaxResults": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1,
+                    "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeCapacityManagerDataExportsResult": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerDataExports": {
+                    "target": "com.amazonaws.ec2#CapacityManagerDataExportResponseSet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerDataExportSet",
+                        "smithy.api#documentation": "<p>\nInformation about the data export configurations, including export settings, delivery status, and recent activity.\n</p>",
+                        "smithy.api#xmlName": "capacityManagerDataExportSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>\nThe token to use to retrieve the next page of results. This value is null when there are no more results to return.\n</p>",
                         "smithy.api#xmlName": "nextToken"
                     }
                 }
@@ -36772,7 +37414,7 @@
                 "Filters": {
                     "target": "com.amazonaws.ec2#FilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The filters.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>availability-zone</code> - The name of the Availability Zone (for\n                    example, <code>us-west-2a</code>) or Local Zone (for example,\n                        <code>us-west-2-lax-1b</code>) that the instance is in.</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-type</code> - The instance type (for example,\n                        <code>p4d.24xlarge</code>) or instance family (for example,\n                        <code>p4d*</code>). You can use the <code>*</code> wildcard to match zero or\n                    more characters, or the <code>?</code> wildcard to match zero or one\n                    character.</p>\n            </li>\n            <li>\n               <p>\n                  <code>zone-id</code> - The ID of the Availability Zone (for example,\n                        <code>usw2-az2</code>) or Local Zone (for example,\n                        <code>usw2-lax1-az1</code>) that the instance is in.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The filters.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>availability-zone</code> - The name of the Availability Zone (for\n                    example, <code>us-west-2a</code>) or Local Zone (for example,\n                    <code>us-west-2-lax-1b</code>) that the instance is in.</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-type</code> - The instance type (for example,\n                    <code>p4d.24xlarge</code>) or instance family (for example,\n                    <code>p4d*</code>). You can use the <code>*</code> wildcard to match zero or\n                    more characters, or the <code>?</code> wildcard to match zero or one\n                    character.</p>\n            </li>\n            <li>\n               <p>\n                  <code>zone-id</code> - The ID of the Availability Zone (for example,\n                    <code>usw2-az2</code>) or Local Zone (for example,\n                    <code>usw2-lax1-az1</code>) that the instance is in.</p>\n            </li>\n         </ul>",
                         "smithy.api#xmlName": "Filter"
                     }
                 }
@@ -42383,7 +43025,7 @@
                 "Filters": {
                     "target": "com.amazonaws.ec2#FilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>Security group VPC association filters.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>group-id</code>: The security group ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>group-owner-id</code>: The group owner ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>vpc-id</code>: The ID of the associated VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>vpc-owner-id</code>: The account ID of the VPC owner.</p>\n            </li>\n            <li>\n               <p>\n                  <code>state</code>: The state of the association.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag:<key></code>: The key/value combination of a tag assigned to the resource. Use\n                    the tag key in the filter name and the tag value as the filter value. For\n                    example, to find all resources that have a tag with the key <code>Owner</code>\n                    and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter\n                    name and <code>TeamA</code> for the filter value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag-key</code>: The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>Security group VPC association filters.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>group-id</code>: The security group ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>group-owner-id</code>: The group owner ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>state</code>: The state of the association.</p>\n            </li>\n            <li>\n               <p>\n                  <code>vpc-id</code>: The ID of the associated VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>vpc-owner-id</code>: The account ID of the VPC owner.</p>\n            </li>\n         </ul>",
                         "smithy.api#xmlName": "Filter"
                     }
                 },
@@ -48658,6 +49300,33 @@
                 }
             }
         },
+        "com.amazonaws.ec2#DimensionCondition": {
+            "type": "structure",
+            "members": {
+                "Dimension": {
+                    "target": "com.amazonaws.ec2#FilterByDimension",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe name of the dimension to filter by.\n</p>"
+                    }
+                },
+                "Comparison": {
+                    "target": "com.amazonaws.ec2#Comparison",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe comparison operator to use for the filter.\n</p>"
+                    }
+                },
+                "Values": {
+                    "target": "com.amazonaws.ec2#ConditionValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe list of values to match against the specified dimension. For 'equals' comparison, only the first value is used. For 'in' comparison, any matching value will satisfy the condition.\n</p>",
+                        "smithy.api#xmlName": "Value"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nSpecifies a condition for filtering capacity data based on dimension values. Used to create precise filters for metric queries and dimension lookups.\n</p>"
+            }
+        },
         "com.amazonaws.ec2#DirectoryServiceAuthentication": {
             "type": "structure",
             "members": {
@@ -48839,6 +49508,63 @@
                         "aws.protocols#ec2QueryName": "Output",
                         "smithy.api#documentation": "<p>Indicates whether the unsubscribe action was successful.</p>",
                         "smithy.api#xmlName": "output"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DisableCapacityManager": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DisableCapacityManagerRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DisableCapacityManagerResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nDisables EC2 Capacity Manager for your account. This stops data ingestion and removes access to capacity analytics and optimization recommendations. \nPreviously collected data is retained but no new data will be processed.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#DisableCapacityManagerRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides an error response. \nIf you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nUnique, case-sensitive identifier that you provide to ensure the idempotency of the request.\n</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DisableCapacityManagerResult": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerStatus": {
+                    "target": "com.amazonaws.ec2#CapacityManagerStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerStatus",
+                        "smithy.api#documentation": "<p>\nThe current status of Capacity Manager after the disable operation. \n</p>",
+                        "smithy.api#xmlName": "capacityManagerStatus"
+                    }
+                },
+                "OrganizationsAccess": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OrganizationsAccess",
+                        "smithy.api#documentation": "<p>\n    Indicates whether Organizations access is enabled. This will be <code>false</code> after disabling Capacity Manager.\n</p>",
+                        "smithy.api#xmlName": "organizationsAccess"
                     }
                 }
             },
@@ -50851,7 +51577,7 @@
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Return",
-                        "smithy.api#documentation": "<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+                        "smithy.api#documentation": "<p>Is <code>true</code> if the request succeeds and an error otherwise.</p>",
                         "smithy.api#xmlName": "return"
                     }
                 },
@@ -51458,7 +52184,7 @@
                 "VolumeInitializationRate": {
                     "target": "com.amazonaws.ec2#Integer",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download \n            the snapshot blocks from Amazon S3 to the volume. This is also known as \n            <i>volume initialization</i>. Specifying a volume initialization rate ensures that \n            the volume is initialized at a predictable and consistent rate after creation.</p>\n         <p>This parameter is supported only for volumes created from snapshots. Omit this parameter \n            if:</p>\n         <ul>\n            <li>\n               <p>You want to create the volume using fast snapshot restore. You must specify a snapshot \n                    that is enabled for fast snapshot restore. In this case, the volume is fully initialized at \n                    creation.</p>\n               <note>\n                  <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, \n                        the volume will be initialized at the specified rate instead of fast snapshot restore.</p>\n               </note>\n            </li>\n            <li>\n               <p>You want to create a volume that is initialized at the default rate.</p>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\">\n            Initialize Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>This parameter is not supported when using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p>\n         <p>Valid range: 100 - 300 MiB/s</p>"
+                        "smithy.api#documentation": "<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download the snapshot \n            blocks from Amazon S3 to the volume. This is also known as <i>volume \n                initialization</i>. Specifying a volume initialization rate ensures that the volume is initialized \n            at a predictable and consistent rate after creation. For more information, see \n            <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\">Initialize \n                Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>This parameter is supported only for volumes created from snapshots. Omit this parameter \n            if:</p>\n         <ul>\n            <li>\n               <p>You want to create the volume using fast snapshot restore. You must specify a snapshot \n                    that is enabled for fast snapshot restore. In this case, the volume is fully initialized at \n                    creation.</p>\n               <note>\n                  <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, \n                        the volume will be initialized at the specified rate instead of fast snapshot restore.</p>\n               </note>\n            </li>\n            <li>\n               <p>You want to create a volume that is initialized at the default rate.</p>\n            </li>\n         </ul>\n         <p>This parameter is not supported when using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a> \n            and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeImages.html\">DescribeImages</a>.</p>\n         <p>Valid range: 100 - 300 MiB/s</p>"
                     }
                 },
                 "AvailabilityZoneId": {
@@ -51975,7 +52701,7 @@
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
                         "aws.protocols#ec2QueryName": "PreserveClientIp",
-                        "smithy.api#documentation": "<p>Indicates whether your client's IP address is preserved as the source. The value is <code>true</code> or <code>false</code>.</p>\n         <ul>\n            <li>\n               <p>If <code>true</code>, your client's IP address is used when you connect to a resource.</p>\n            </li>\n            <li>\n               <p>If <code>false</code>, the elastic network interface IP address is used when you connect to a resource.</p>\n            </li>\n         </ul>\n         <p>Default: <code>true</code>\n         </p>",
+                        "smithy.api#documentation": "<p>Indicates whether your client's IP address is preserved as the source when you connect to a resource.\n            The following are the possible values.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>true</code> - Use the IP address of the client. Your instance must have an IPv4 address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>false</code> - Use the IP address of the network interface.</p>\n            </li>\n         </ul>\n         <p>Default: <code>false</code>\n         </p>",
                         "smithy.api#xmlName": "preserveClientIp"
                     }
                 },
@@ -52013,7 +52739,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The EC2 Instance Connect Endpoint.</p>"
+                "smithy.api#documentation": "<p>Describes an EC2 Instance Connect Endpoint.</p>"
             }
         },
         "com.amazonaws.ec2#Ec2InstanceConnectEndpointState": {
@@ -52788,6 +53514,69 @@
                         "aws.protocols#ec2QueryName": "Output",
                         "smithy.api#documentation": "<p>Indicates whether the subscribe action was successful.</p>",
                         "smithy.api#xmlName": "output"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#EnableCapacityManager": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#EnableCapacityManagerRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#EnableCapacityManagerResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nEnables EC2 Capacity Manager for your account. This starts data ingestion for your EC2 capacity usage across On-Demand, Spot, and Capacity Reservations. \nInitial data processing may take several hours to complete.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#EnableCapacityManagerRequest": {
+            "type": "structure",
+            "members": {
+                "OrganizationsAccess": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nSpecifies whether to enable cross-account access for Amazon Web Services Organizations. When enabled, Capacity Manager can aggregate data from all accounts in your organization. Default is false.\n</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides an error response. \nIf you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nUnique, case-sensitive identifier that you provide to ensure the idempotency of the request. \n</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#EnableCapacityManagerResult": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerStatus": {
+                    "target": "com.amazonaws.ec2#CapacityManagerStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerStatus",
+                        "smithy.api#documentation": "<p>\nThe current status of Capacity Manager after the enable operation.\n</p>",
+                        "smithy.api#xmlName": "capacityManagerStatus"
+                    }
+                },
+                "OrganizationsAccess": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OrganizationsAccess",
+                        "smithy.api#documentation": "<p>\nIndicates whether Organizations access is enabled for cross-account data aggregation.\n</p>",
+                        "smithy.api#xmlName": "organizationsAccess"
                     }
                 }
             },
@@ -55766,6 +56555,113 @@
                 "smithy.api#documentation": "<p>A filter name and value pair that is used to return a more specific list of results from a describe operation. \n         Filters can be used to match a set of resources by specific criteria, such as tags, attributes, or IDs.</p>\n         <p>If you specify multiple filters, the filters are joined with an <code>AND</code>, and the request returns only \n           results that match all of the specified filters.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI\">List and filter using the CLI and API</a> in the <i>Amazon EC2 User Guide</i>.</p>"
             }
         },
+        "com.amazonaws.ec2#FilterByDimension": {
+            "type": "enum",
+            "members": {
+                "RESOURCE_REGION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "resource-region"
+                    }
+                },
+                "AVAILABILITY_ZONE_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "availability-zone-id"
+                    }
+                },
+                "ACCOUNT_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "account-id"
+                    }
+                },
+                "INSTANCE_FAMILY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "instance-family"
+                    }
+                },
+                "INSTANCE_TYPE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "instance-type"
+                    }
+                },
+                "INSTANCE_PLATFORM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "instance-platform"
+                    }
+                },
+                "RESERVATION_ARN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-arn"
+                    }
+                },
+                "RESERVATION_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-id"
+                    }
+                },
+                "RESERVATION_TYPE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-type"
+                    }
+                },
+                "RESERVATION_CREATE_TIMESTAMP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-create-timestamp"
+                    }
+                },
+                "RESERVATION_START_TIMESTAMP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-start-timestamp"
+                    }
+                },
+                "RESERVATION_END_TIMESTAMP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-end-timestamp"
+                    }
+                },
+                "RESERVATION_END_DATE_TYPE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-end-date-type"
+                    }
+                },
+                "TENANCY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "tenancy"
+                    }
+                },
+                "RESERVATION_STATE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-state"
+                    }
+                },
+                "RESERVATION_INSTANCE_MATCH_CRITERIA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-instance-match-criteria"
+                    }
+                },
+                "RESERVATION_UNUSED_FINANCIAL_OWNER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-unused-financial-owner"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#FilterList": {
             "type": "list",
             "member": {
@@ -57925,6 +58821,318 @@
                     "traits": {
                         "aws.protocols#ec2QueryName": "NextToken",
                         "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerAttributes": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetCapacityManagerAttributesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetCapacityManagerAttributesResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nRetrieves the current configuration and status of EC2 Capacity Manager for your account, including enablement status, Organizations access settings, and data ingestion status.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerAttributesRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides an error response. \nIf you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerAttributesResult": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerStatus": {
+                    "target": "com.amazonaws.ec2#CapacityManagerStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerStatus",
+                        "smithy.api#documentation": "<p>\nThe current status of Capacity Manager.\n</p>",
+                        "smithy.api#xmlName": "capacityManagerStatus"
+                    }
+                },
+                "OrganizationsAccess": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OrganizationsAccess",
+                        "smithy.api#documentation": "<p>\nIndicates whether Organizations access is enabled for cross-account data aggregation.\n</p>",
+                        "smithy.api#xmlName": "organizationsAccess"
+                    }
+                },
+                "DataExportCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DataExportCount",
+                        "smithy.api#documentation": "<p>\nThe number of active data export configurations for this account. This count includes all data exports regardless of their current delivery status.\n</p>",
+                        "smithy.api#xmlName": "dataExportCount"
+                    }
+                },
+                "IngestionStatus": {
+                    "target": "com.amazonaws.ec2#IngestionStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IngestionStatus",
+                        "smithy.api#documentation": "<p>\nThe current data ingestion status. Initial ingestion may take several hours after enabling Capacity Manager.\n</p>",
+                        "smithy.api#xmlName": "ingestionStatus"
+                    }
+                },
+                "IngestionStatusMessage": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IngestionStatusMessage",
+                        "smithy.api#documentation": "<p>\nA descriptive message providing additional details about the current ingestion status. This may include error information if ingestion has \nfailed or progress details during initial setup.\n</p>",
+                        "smithy.api#xmlName": "ingestionStatusMessage"
+                    }
+                },
+                "EarliestDatapointTimestamp": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "EarliestDatapointTimestamp",
+                        "smithy.api#documentation": "<p>\nThe timestamp of the earliest data point available in Capacity Manager, in milliseconds since epoch. This indicates how far back historical data is available for queries.\n</p>",
+                        "smithy.api#xmlName": "earliestDatapointTimestamp"
+                    }
+                },
+                "LatestDatapointTimestamp": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "LatestDatapointTimestamp",
+                        "smithy.api#documentation": "<p>\nThe timestamp of the most recent data point ingested by Capacity Manager, in milliseconds since epoch. This indicates how current your capacity data is.\n</p>",
+                        "smithy.api#xmlName": "latestDatapointTimestamp"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerMetricData": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetCapacityManagerMetricDataRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetCapacityManagerMetricDataResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nRetrieves capacity usage metrics for your EC2 resources. Returns time-series data for metrics like unused capacity, utilization rates, and costs \nacross On-Demand, Spot, and Capacity Reservations. Data can be grouped and filtered by various dimensions such as region, account, and instance family.\n</p>",
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "MetricDataResults",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerMetricDataRequest": {
+            "type": "structure",
+            "members": {
+                "MetricNames": {
+                    "target": "com.amazonaws.ec2#MetricSet",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe names of the metrics to retrieve. Maximum of 10 metrics per request.\n</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#xmlName": "MetricName"
+                    }
+                },
+                "StartTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe start time for the metric data query, in ISO 8601 format. The time range (end time - start time) must be a multiple of the specified period.\n</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "EndTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe end time for the metric data query, in ISO 8601 format. If the end time is beyond the latest ingested data, it will be automatically adjusted to the latest available data point.\n</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Period": {
+                    "target": "com.amazonaws.ec2#Period",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe granularity, in seconds, of the returned data points. \n</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "GroupBy": {
+                    "target": "com.amazonaws.ec2#GroupBySet",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe dimensions by which to group the metric data. This determines how the data is aggregated and returned.\n</p>",
+                        "smithy.api#xmlName": "GroupBy"
+                    }
+                },
+                "FilterBy": {
+                    "target": "com.amazonaws.ec2#CapacityManagerConditionSet",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nConditions to filter the metric data. Each filter specifies a dimension, comparison operator ('equals', 'in'), and values to match against.\n</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#MaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe maximum number of data points to return. Valid range is 1 to 100,000. Use with NextToken for pagination of large result sets.\n</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe token for the next page of results. Use this value in a subsequent call to retrieve additional data points.\n</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have \nthe required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerMetricDataResult": {
+            "type": "structure",
+            "members": {
+                "MetricDataResults": {
+                    "target": "com.amazonaws.ec2#MetricDataResultSet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MetricDataResultSet",
+                        "smithy.api#documentation": "<p>\nThe metric data points returned by the query. Each result contains dimension values, timestamp, and metric values with their associated statistics.\n</p>",
+                        "smithy.api#xmlName": "metricDataResultSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>\nThe token to use to retrieve the next page of results. This value is null when there are no more results to return.\n</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerMetricDimensions": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetCapacityManagerMetricDimensionsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetCapacityManagerMetricDimensionsResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nRetrieves the available dimension values for capacity metrics within a specified time range. This is useful for discovering what accounts, \nregions, instance families, and other dimensions have data available for filtering and grouping.\n</p>",
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "MetricDimensionResults",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerMetricDimensionsRequest": {
+            "type": "structure",
+            "members": {
+                "GroupBy": {
+                    "target": "com.amazonaws.ec2#GroupBySet",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe dimensions to group by when retrieving available dimension values. This determines which dimension combinations are returned. Required parameter.\n</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#xmlName": "GroupBy"
+                    }
+                },
+                "FilterBy": {
+                    "target": "com.amazonaws.ec2#CapacityManagerConditionSet",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nConditions to filter which dimension values are returned. Each filter specifies a dimension, comparison operator, and values to match against.\n</p>"
+                    }
+                },
+                "StartTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe start time for the dimension query, in ISO 8601 format. Only dimensions with data in this time range will be returned. \n</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "EndTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe end time for the dimension query, in ISO 8601 format. Only dimensions with data in this time range will be returned. \n</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MetricNames": {
+                    "target": "com.amazonaws.ec2#MetricSet",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\nThe metric names to use as an additional filter when retrieving dimensions. Only dimensions that have data for these \nmetrics will be returned. Required parameter with maximum size of 1 for v1.\n</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#xmlName": "MetricName"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#MaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe maximum number of dimension combinations to return. Valid range is 1 to 1000. Use with NextToken for pagination.\n</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe token for the next page of results. Use this value in a subsequent call to retrieve additional dimension values.\n</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides \nan error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerMetricDimensionsResult": {
+            "type": "structure",
+            "members": {
+                "MetricDimensionResults": {
+                    "target": "com.amazonaws.ec2#MetricDimensionResultSet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MetricDimensionResultSet",
+                        "smithy.api#documentation": "<p>\nThe available dimension combinations that have data within the specified time range and filters.\n</p>",
+                        "smithy.api#xmlName": "metricDimensionResultSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>\nThe token to use to retrieve the next page of results. This value is null when there are no more results to return.\n</p>",
                         "smithy.api#xmlName": "nextToken"
                     }
                 }
@@ -62115,6 +63323,128 @@
                 "smithy.api#documentation": "<p>Describes the GPU accelerators for the instance type.</p>"
             }
         },
+        "com.amazonaws.ec2#GroupBy": {
+            "type": "enum",
+            "members": {
+                "RESOURCE_REGION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "resource-region"
+                    }
+                },
+                "AVAILABILITY_ZONE_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "availability-zone-id"
+                    }
+                },
+                "ACCOUNT_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "account-id"
+                    }
+                },
+                "INSTANCE_FAMILY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "instance-family"
+                    }
+                },
+                "INSTANCE_TYPE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "instance-type"
+                    }
+                },
+                "INSTANCE_PLATFORM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "instance-platform"
+                    }
+                },
+                "RESERVATION_ARN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-arn"
+                    }
+                },
+                "RESERVATION_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-id"
+                    }
+                },
+                "RESERVATION_TYPE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-type"
+                    }
+                },
+                "RESERVATION_CREATE_TIMESTAMP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-create-timestamp"
+                    }
+                },
+                "RESERVATION_START_TIMESTAMP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-start-timestamp"
+                    }
+                },
+                "RESERVATION_END_TIMESTAMP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-end-timestamp"
+                    }
+                },
+                "RESERVATION_END_DATE_TYPE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-end-date-type"
+                    }
+                },
+                "TENANCY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "tenancy"
+                    }
+                },
+                "RESERVATION_STATE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-state"
+                    }
+                },
+                "RESERVATION_INSTANCE_MATCH_CRITERIA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-instance-match-criteria"
+                    }
+                },
+                "RESERVATION_UNUSED_FINANCIAL_OWNER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-unused-financial-owner"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#GroupBySet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#GroupBy",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 20
+                }
+            }
+        },
         "com.amazonaws.ec2#GroupIdStringList": {
             "type": "list",
             "member": {
@@ -65909,6 +67239,29 @@
         },
         "com.amazonaws.ec2#InferenceDeviceName": {
             "type": "string"
+        },
+        "com.amazonaws.ec2#IngestionStatus": {
+            "type": "enum",
+            "members": {
+                "INITIAL_INGESTION_IN_PROGRESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "initial-ingestion-in-progress"
+                    }
+                },
+                "INGESTION_COMPLETE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ingestion-complete"
+                    }
+                },
+                "INGESTION_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ingestion-failed"
+                    }
+                }
+            }
         },
         "com.amazonaws.ec2#InitializationStatusDetails": {
             "type": "structure",
@@ -84995,6 +86348,319 @@
                 }
             }
         },
+        "com.amazonaws.ec2#Metric": {
+            "type": "enum",
+            "members": {
+                "RESERVATION_TOTAL_CAPACITY_HRS_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-total-capacity-hrs-vcpu"
+                    }
+                },
+                "RESERVATION_TOTAL_CAPACITY_HRS_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-total-capacity-hrs-inst"
+                    }
+                },
+                "RESERVATION_MAX_SIZE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-max-size-vcpu"
+                    }
+                },
+                "RESERVATION_MAX_SIZE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-max-size-inst"
+                    }
+                },
+                "RESERVATION_MIN_SIZE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-min-size-vcpu"
+                    }
+                },
+                "RESERVATION_MIN_SIZE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-min-size-inst"
+                    }
+                },
+                "RESERVATION_UNUSED_TOTAL_CAPACITY_HRS_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-unused-total-capacity-hrs-vcpu"
+                    }
+                },
+                "RESERVATION_UNUSED_TOTAL_CAPACITY_HRS_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-unused-total-capacity-hrs-inst"
+                    }
+                },
+                "RESERVATION_UNUSED_TOTAL_ESTIMATED_COST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-unused-total-estimated-cost"
+                    }
+                },
+                "RESERVATION_MAX_UNUSED_SIZE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-max-unused-size-vcpu"
+                    }
+                },
+                "RESERVATION_MAX_UNUSED_SIZE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-max-unused-size-inst"
+                    }
+                },
+                "RESERVATION_MIN_UNUSED_SIZE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-min-unused-size-vcpu"
+                    }
+                },
+                "RESERVATION_MIN_UNUSED_SIZE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-min-unused-size-inst"
+                    }
+                },
+                "RESERVATION_MAX_UTILIZATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-max-utilization"
+                    }
+                },
+                "RESERVATION_MIN_UTILIZATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-min-utilization"
+                    }
+                },
+                "RESERVATION_AVG_UTILIZATION_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-avg-utilization-vcpu"
+                    }
+                },
+                "RESERVATION_AVG_UTILIZATION_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-avg-utilization-inst"
+                    }
+                },
+                "RESERVATION_TOTAL_COUNT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-total-count"
+                    }
+                },
+                "RESERVATION_TOTAL_ESTIMATED_COST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-total-estimated-cost"
+                    }
+                },
+                "RESERVATION_AVG_FUTURE_SIZE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-avg-future-size-vcpu"
+                    }
+                },
+                "RESERVATION_AVG_FUTURE_SIZE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-avg-future-size-inst"
+                    }
+                },
+                "RESERVATION_MIN_FUTURE_SIZE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-min-future-size-vcpu"
+                    }
+                },
+                "RESERVATION_MIN_FUTURE_SIZE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-min-future-size-inst"
+                    }
+                },
+                "RESERVATION_MAX_FUTURE_SIZE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-max-future-size-vcpu"
+                    }
+                },
+                "RESERVATION_MAX_FUTURE_SIZE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-max-future-size-inst"
+                    }
+                },
+                "RESERVATION_AVG_COMMITTED_SIZE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-avg-committed-size-vcpu"
+                    }
+                },
+                "RESERVATION_AVG_COMMITTED_SIZE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-avg-committed-size-inst"
+                    }
+                },
+                "RESERVATION_MAX_COMMITTED_SIZE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-max-committed-size-vcpu"
+                    }
+                },
+                "RESERVATION_MAX_COMMITTED_SIZE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-max-committed-size-inst"
+                    }
+                },
+                "RESERVATION_MIN_COMMITTED_SIZE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-min-committed-size-vcpu"
+                    }
+                },
+                "RESERVATION_MIN_COMMITTED_SIZE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reservation-min-committed-size-inst"
+                    }
+                },
+                "RESERVED_TOTAL_USAGE_HRS_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reserved-total-usage-hrs-vcpu"
+                    }
+                },
+                "RESERVED_TOTAL_USAGE_HRS_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reserved-total-usage-hrs-inst"
+                    }
+                },
+                "RESERVED_TOTAL_ESTIMATED_COST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reserved-total-estimated-cost"
+                    }
+                },
+                "UNRESERVED_TOTAL_USAGE_HRS_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "unreserved-total-usage-hrs-vcpu"
+                    }
+                },
+                "UNRESERVED_TOTAL_USAGE_HRS_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "unreserved-total-usage-hrs-inst"
+                    }
+                },
+                "UNRESERVED_TOTAL_ESTIMATED_COST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "unreserved-total-estimated-cost"
+                    }
+                },
+                "SPOT_TOTAL_USAGE_HRS_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-total-usage-hrs-vcpu"
+                    }
+                },
+                "SPOT_TOTAL_USAGE_HRS_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-total-usage-hrs-inst"
+                    }
+                },
+                "SPOT_TOTAL_ESTIMATED_COST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-total-estimated-cost"
+                    }
+                },
+                "SPOT_AVG_RUN_TIME_BEFORE_INTERRUPTION_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-avg-run-time-before-interruption-inst"
+                    }
+                },
+                "SPOT_MAX_RUN_TIME_BEFORE_INTERRUPTION_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-max-run-time-before-interruption-inst"
+                    }
+                },
+                "SPOT_MIN_RUN_TIME_BEFORE_INTERRUPTION_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-min-run-time-before-interruption-inst"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#MetricDataResult": {
+            "type": "structure",
+            "members": {
+                "Dimension": {
+                    "target": "com.amazonaws.ec2#CapacityManagerDimension",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Dimension",
+                        "smithy.api#documentation": "<p>\nThe dimension values that identify this specific data point, such as account ID, region, and instance family.\n</p>",
+                        "smithy.api#xmlName": "dimension"
+                    }
+                },
+                "Timestamp": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Timestamp",
+                        "smithy.api#documentation": "<p>\nThe timestamp for this data point, indicating when the capacity usage occurred.\n</p>",
+                        "smithy.api#xmlName": "timestamp"
+                    }
+                },
+                "MetricValues": {
+                    "target": "com.amazonaws.ec2#MetricValueSet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MetricValueSet",
+                        "smithy.api#documentation": "<p>\nThe metric values and statistics for this data point, containing the actual capacity usage numbers.\n</p>",
+                        "smithy.api#xmlName": "metricValueSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nContains a single data point from a capacity metrics query, including the dimension values, timestamp, and metric values for that specific combination.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#MetricDataResultSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#MetricDataResult",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#MetricDimensionResultSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#CapacityManagerDimension",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
         "com.amazonaws.ec2#MetricPoint": {
             "type": "structure",
             "members": {
@@ -85043,6 +86709,21 @@
                 }
             }
         },
+        "com.amazonaws.ec2#MetricSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#Metric",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 40
+                }
+            }
+        },
         "com.amazonaws.ec2#MetricType": {
             "type": "enum",
             "members": {
@@ -85051,6 +86732,39 @@
                     "traits": {
                         "smithy.api#enumValue": "aggregate-latency"
                     }
+                }
+            }
+        },
+        "com.amazonaws.ec2#MetricValue": {
+            "type": "structure",
+            "members": {
+                "Metric": {
+                    "target": "com.amazonaws.ec2#Metric",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Metric",
+                        "smithy.api#documentation": "<p>\nThe name of the metric.\n</p>",
+                        "smithy.api#xmlName": "metric"
+                    }
+                },
+                "Value": {
+                    "target": "com.amazonaws.ec2#Double",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Value",
+                        "smithy.api#documentation": "<p>\nThe numerical value of the metric for the specified statistic and time period.\n</p>",
+                        "smithy.api#xmlName": "value"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nRepresents a single metric value with its associated statistic, such as the sum or average of unused capacity hours.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#MetricValueSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#MetricValue",
+                "traits": {
+                    "smithy.api#xmlName": "item"
                 }
             }
         },
@@ -86353,7 +88067,7 @@
                 "PreserveClientIp": {
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "<p>Indicates whether the client IP address is preserved as the source. The following are the possible values.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>true</code> - Use the client IP address as the source.</p>\n            </li>\n            <li>\n               <p>\n                  <code>false</code> - Use the network interface IP address as the source.</p>\n            </li>\n         </ul>\n         <note>\n            <p>\n               <code>PreserveClientIp=true</code> is only supported on IPv4 EC2 Instance Connect\n                Endpoints. If modifying <code>PreserveClientIp</code> to <code>true</code>, either\n                the endpoint's existing <code>IpAddressType</code> must be <code>ipv4</code>, or if\n                modifying <code>IpAddressType</code> in the same request, the new value must be\n                    <code>ipv4</code>.</p>\n         </note>\n         <p>Default: <code>false</code>\n         </p>"
+                        "smithy.api#documentation": "<p>Indicates whether the client IP address is preserved as the source when you connect to a resource. \n            The following are the possible values.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>true</code> - Use the IP address of the client. Your instance must have an IPv4 address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>false</code> - Use the IP address of the network interface.</p>\n            </li>\n         </ul>"
                     }
                 }
             },
@@ -86368,7 +88082,7 @@
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Return",
-                        "smithy.api#documentation": "<p>The return value of the request. Returns <code>true</code> if the specified product\n            code is owned by the requester and associated with the specified instance.</p>",
+                        "smithy.api#documentation": "<p>Is <code>true</code> if the request succeeds and an error otherwise.</p>",
                         "smithy.api#xmlName": "return"
                     }
                 }
@@ -94598,6 +96312,23 @@
                 }
             }
         },
+        "com.amazonaws.ec2#OutputFormat": {
+            "type": "enum",
+            "members": {
+                "CSV": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "csv"
+                    }
+                },
+                "PARQUET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "parquet"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#OwnerStringList": {
             "type": "list",
             "member": {
@@ -95292,6 +97023,15 @@
                 "target": "com.amazonaws.ec2#PerformanceFactorReferenceRequest",
                 "traits": {
                     "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#Period": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 3600,
+                    "max": 86400
                 }
             }
         },
@@ -101184,6 +102924,23 @@
                 "smithy.api#documentation": "<p>Describes a launch request for one or more instances, and includes owner, requester,\n            and security group information that applies to all instances in the launch\n            request.</p>"
             }
         },
+        "com.amazonaws.ec2#ReservationEndDateType": {
+            "type": "enum",
+            "members": {
+                "LIMITED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "limited"
+                    }
+                },
+                "UNLIMITED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "unlimited"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#ReservationFleetInstanceSpecification": {
             "type": "structure",
             "members": {
@@ -101255,6 +103012,54 @@
         "com.amazonaws.ec2#ReservationState": {
             "type": "enum",
             "members": {
+                "ACTIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "active"
+                    }
+                },
+                "EXPIRED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "expired"
+                    }
+                },
+                "CANCELLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "cancelled"
+                    }
+                },
+                "SCHEDULED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "scheduled"
+                    }
+                },
+                "PENDING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pending"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "failed"
+                    }
+                },
+                "DELAYED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delayed"
+                    }
+                },
+                "UNSUPPORTED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "unsupported"
+                    }
+                },
                 "PAYMENT_PENDING": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -101267,16 +103072,27 @@
                         "smithy.api#enumValue": "payment-failed"
                     }
                 },
-                "ACTIVE": {
-                    "target": "smithy.api#Unit",
-                    "traits": {
-                        "smithy.api#enumValue": "active"
-                    }
-                },
                 "RETIRED": {
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "retired"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#ReservationType": {
+            "type": "enum",
+            "members": {
+                "CAPACITY_BLOCK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "capacity-block"
+                    }
+                },
+                "ODCR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "odcr"
                     }
                 }
             }
@@ -103127,6 +104943,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "mac-modification-task"
+                    }
+                },
+                "capacity_manager_data_export": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "capacity-manager-data-export"
                     }
                 }
             }
@@ -106427,6 +108249,17 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "none"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#Schedule": {
+            "type": "enum",
+            "members": {
+                "HOURLY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hourly"
                     }
                 }
             }
@@ -113260,7 +115093,7 @@
                 "target": "com.amazonaws.ec2#TerminateInstancesResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Shuts down the specified instances. This operation is <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">idempotent</a>; if you\n            terminate an instance more than once, each call succeeds.</p>\n         <p>If you specify multiple instances and the request fails (for example, because of a\n            single incorrect instance ID), none of the instances are terminated.</p>\n         <p>If you terminate multiple instances across multiple Availability Zones, and one or\n            more of the specified instances are enabled for termination protection, the request\n            fails with the following results:</p>\n         <ul>\n            <li>\n               <p>The specified instances that are in the same Availability Zone as the\n                    protected instance are not terminated.</p>\n            </li>\n            <li>\n               <p>The specified instances that are in different Availability Zones, where no\n                    other specified instances are protected, are successfully terminated.</p>\n            </li>\n         </ul>\n         <p>For example, say you have the following instances:</p>\n         <ul>\n            <li>\n               <p>Instance A: <code>us-east-1a</code>; Not protected</p>\n            </li>\n            <li>\n               <p>Instance B: <code>us-east-1a</code>; Not protected</p>\n            </li>\n            <li>\n               <p>Instance C: <code>us-east-1b</code>; Protected</p>\n            </li>\n            <li>\n               <p>Instance D: <code>us-east-1b</code>; not protected</p>\n            </li>\n         </ul>\n         <p>If you attempt to terminate all of these instances in the same request, the request\n            reports failure with the following results:</p>\n         <ul>\n            <li>\n               <p>Instance A and Instance B are successfully terminated because none of the\n                    specified instances in <code>us-east-1a</code> are enabled for termination\n                    protection.</p>\n            </li>\n            <li>\n               <p>Instance C and Instance D fail to terminate because at least one of the\n                    specified instances in <code>us-east-1b</code> (Instance C) is enabled for\n                    termination protection.</p>\n            </li>\n         </ul>\n         <p>Terminated instances remain visible after termination (for approximately one\n            hour).</p>\n         <p>By default, Amazon EC2 deletes all EBS volumes that were attached when the instance\n            launched. Volumes attached after instance launch continue running.</p>\n         <p>By default, the TerminateInstances operation includes a graceful operating system (OS)\n            shutdown. To bypass the graceful shutdown, use the <code>skipOsShutdown</code>\n            parameter; however, this might risk data integrity.</p>\n         <p>You can stop, start, and terminate EBS-backed instances. You can only terminate\n            instance store-backed instances. What happens to an instance differs if you stop or\n            terminate it. For example, when you stop an instance, the root device and any other\n            devices attached to the instance persist. When you terminate an instance, any attached\n            EBS volumes with the <code>DeleteOnTermination</code> block device mapping parameter set\n            to <code>true</code> are automatically deleted. For more information about the\n            differences between stopping and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2\n                instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>When you terminate an instance, we attempt to terminate it forcibly after a short\n            while. If your instance appears stuck in the shutting-down state after a period of time,\n            there might be an issue with the underlying host computer. For more information about\n            terminating and troubleshooting terminating your instances, see <a href=\"https://docs.aws.amazon.com/\">Terminate Amazon EC2 instances</a> and\n                <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesShuttingDown.html\">Troubleshooting terminating your instance</a> in the\n                <i>Amazon EC2 User Guide</i>.</p>",
+                "smithy.api#documentation": "<p>Terminates (deletes) the specified instances. This operation is <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">idempotent</a>; if you\n            terminate an instance more than once, each call succeeds.</p>\n         <important>\n            <p>\n               <b>Terminating an instance is permanent and irreversible.</b>\n            </p>\n            <p>After you terminate an instance, you can no longer connect to it, and it can't be recovered. \n                All attached Amazon EBS volumes that are configured to be deleted on termination are also permanently \n                deleted and can't be recovered. All data stored on instance store volumes is permanently lost. \n                For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-ec2-instance-termination-works.html\">\n                    How instance termination works</a>.</p>\n            <p>Before you terminate an instance, ensure that you have backed up all data that you need to \n                retain after the termination to persistent storage.</p>\n         </important>\n         <p>If you specify multiple instances and the request fails (for example, because of a\n            single incorrect instance ID), none of the instances are terminated.</p>\n         <p>If you terminate multiple instances across multiple Availability Zones, and one or\n            more of the specified instances are enabled for termination protection, the request\n            fails with the following results:</p>\n         <ul>\n            <li>\n               <p>The specified instances that are in the same Availability Zone as the\n                    protected instance are not terminated.</p>\n            </li>\n            <li>\n               <p>The specified instances that are in different Availability Zones, where no\n                    other specified instances are protected, are successfully terminated.</p>\n            </li>\n         </ul>\n         <p>For example, say you have the following instances:</p>\n         <ul>\n            <li>\n               <p>Instance A: <code>us-east-1a</code>; Not protected</p>\n            </li>\n            <li>\n               <p>Instance B: <code>us-east-1a</code>; Not protected</p>\n            </li>\n            <li>\n               <p>Instance C: <code>us-east-1b</code>; Protected</p>\n            </li>\n            <li>\n               <p>Instance D: <code>us-east-1b</code>; not protected</p>\n            </li>\n         </ul>\n         <p>If you attempt to terminate all of these instances in the same request, the request\n            reports failure with the following results:</p>\n         <ul>\n            <li>\n               <p>Instance A and Instance B are successfully terminated because none of the\n                    specified instances in <code>us-east-1a</code> are enabled for termination\n                    protection.</p>\n            </li>\n            <li>\n               <p>Instance C and Instance D fail to terminate because at least one of the\n                    specified instances in <code>us-east-1b</code> (Instance C) is enabled for\n                    termination protection.</p>\n            </li>\n         </ul>\n         <p>Terminated instances remain visible after termination (for approximately one\n            hour).</p>\n         <p>By default, Amazon EC2 deletes all EBS volumes that were attached when the instance\n            launched. Volumes attached after instance launch continue running.</p>\n         <p>By default, the TerminateInstances operation includes a graceful operating system (OS)\n            shutdown. To bypass the graceful shutdown, use the <code>skipOsShutdown</code>\n            parameter; however, this might risk data integrity.</p>\n         <p>You can stop, start, and terminate EBS-backed instances. You can only terminate\n            instance store-backed instances. What happens to an instance differs if you stop or\n            terminate it. For example, when you stop an instance, the root device and any other\n            devices attached to the instance persist. When you terminate an instance, any attached\n            EBS volumes with the <code>DeleteOnTermination</code> block device mapping parameter set\n            to <code>true</code> are automatically deleted. For more information about the\n            differences between stopping and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2\n                instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>When you terminate an instance, we attempt to terminate it forcibly after a short\n            while. If your instance appears stuck in the shutting-down state after a period of time,\n            there might be an issue with the underlying host computer. For more information about\n            terminating and troubleshooting terminating your instances, see <a href=\"https://docs.aws.amazon.com/\">Terminate Amazon EC2 instances</a> and\n                <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesShuttingDown.html\">Troubleshooting terminating your instance</a> in the\n                <i>Amazon EC2 User Guide</i>.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To terminate an EC2 instance",
@@ -117914,6 +119747,71 @@
                 "traits": {
                     "smithy.api#xmlName": "item"
                 }
+            }
+        },
+        "com.amazonaws.ec2#UpdateCapacityManagerOrganizationsAccess": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#UpdateCapacityManagerOrganizationsAccessRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#UpdateCapacityManagerOrganizationsAccessResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nUpdates the Organizations access setting for EC2 Capacity Manager. This controls whether Capacity Manager can aggregate \ndata from all accounts in your Amazon Web Services Organization or only from the current account.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#UpdateCapacityManagerOrganizationsAccessRequest": {
+            "type": "structure",
+            "members": {
+                "OrganizationsAccess": {
+                    "target": "com.amazonaws.ec2#BoxedBoolean",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\n    Specifies whether to enable or disable cross-account access for Amazon Web Services Organizations. When enabled, Capacity Manager aggregates data from all accounts in your organization.\n</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides an error response. If \nyou have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nUnique, case-sensitive identifier that you provide to ensure the idempotency of the request.\n</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#UpdateCapacityManagerOrganizationsAccessResult": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerStatus": {
+                    "target": "com.amazonaws.ec2#CapacityManagerStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerStatus",
+                        "smithy.api#documentation": "<p>\nThe current status of Capacity Manager after the update operation.\n</p>",
+                        "smithy.api#xmlName": "capacityManagerStatus"
+                    }
+                },
+                "OrganizationsAccess": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OrganizationsAccess",
+                        "smithy.api#documentation": "<p>\nThe updated Organizations access setting indicating whether cross-account data aggregation is enabled.\n</p>",
+                        "smithy.api#xmlName": "organizationsAccess"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.ec2#UpdateSecurityGroupRuleDescriptionsEgress": {

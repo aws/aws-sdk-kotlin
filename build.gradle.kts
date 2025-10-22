@@ -35,14 +35,6 @@ plugins {
     // ensure the correct version of KGP ends up on our buildscript classpath
     id(libs.plugins.kotlin.multiplatform.get().pluginId) apply false
     id(libs.plugins.kotlin.jvm.get().pluginId) apply false
-    alias(libs.plugins.aws.kotlin.repo.tools.artifactsizemetrics)
-}
-
-artifactSizeMetrics {
-    artifactPrefixes = setOf(":services", ":aws-runtime")
-    closurePrefixes = setOf(":services")
-    significantChangeThresholdPercentage = 5.0
-    projectRepositoryName = "aws-sdk-kotlin"
 }
 
 val testJavaVersion = typedProp<String>("test.java.version")?.let {
