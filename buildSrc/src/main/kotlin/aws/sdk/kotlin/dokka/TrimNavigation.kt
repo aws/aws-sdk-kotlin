@@ -7,7 +7,7 @@ package aws.sdk.kotlin.dokka
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.WorkAction
@@ -16,6 +16,7 @@ import org.gradle.workers.WorkerExecutor
 import org.jsoup.Jsoup
 import java.io.File
 import javax.inject.Inject
+import kotlin.io.walk
 
 abstract class TrimNavigation @Inject constructor(private val workerExecutor: WorkerExecutor) : DefaultTask() {
     @get:InputDirectory
@@ -29,14 +30,15 @@ abstract class TrimNavigation @Inject constructor(private val workerExecutor: Wo
     @TaskAction
     fun trimNavigation() {
         val queue = workerExecutor.noIsolation()
+        val sourceDirectory = this.sourceDirectory.getAsFile().get()
 
+        logger.info("Searching for navigation.html files in $sourceDirectory")
         sourceDirectory
-            .asFileTree
-            .filter { it.isDirectory() && it.resolve("navigation.html").exists() }
-            .forEach { dir ->
+            .walk()
+            .filter { it.name == "navigation.html" && it.parentFile != sourceDirectory }
+            .forEach { file ->
                 queue.submit(TrimModule::class.java) {
-                    moduleDirectory = dir
-                    logger = this@TrimNavigation.logger
+                    navigationFile = file
                     projectRoot = project.layout.projectDirectory.asFile
                 }
             }
@@ -44,19 +46,17 @@ abstract class TrimNavigation @Inject constructor(private val workerExecutor: Wo
 }
 
 interface TrimModuleParameters : WorkParameters {
-    var logger: Logger
-    var moduleDirectory: File
+    var navigationFile: File
     var projectRoot: File
 }
 
 abstract class TrimModule : WorkAction<TrimModuleParameters> {
     override fun execute() {
-        val moduleDirectory = parameters.moduleDirectory
-        val moduleName = moduleDirectory.name
-        val navigation = moduleDirectory.resolve("navigation.html")
+        val navigation = parameters.navigationFile
+        val moduleName = navigation.parentFile.name
 
-        val logger = parameters.logger
         val relativePath = navigation.toRelativeString(parameters.projectRoot)
+        val logger = Logging.getLogger(TrimNavigation::class.java)
         logger.info("Trimming $relativePath...")
 
         val doc = Jsoup.parse(navigation)
