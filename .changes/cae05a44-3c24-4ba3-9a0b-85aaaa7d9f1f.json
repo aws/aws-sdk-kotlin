@@ -1,0 +1,8 @@
+{
+    "id": "cae05a44-3c24-4ba3-9a0b-85aaaa7d9f1f",
+    "type": "bugfix",
+    "description": "Correctly route applicationId to requests made by internal clients",
+    "issues": [
+        "https://github.com/aws/aws-sdk-kotlin/issues/1717"
+    ]
+}
