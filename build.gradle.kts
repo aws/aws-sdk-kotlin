@@ -8,6 +8,8 @@ import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalPublishTask
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalWaitForPublicationTask
 import aws.sdk.kotlin.gradle.util.typedProp
 import aws.sdk.kotlin.gradle.kmp.configureIosSimulatorTasks
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 buildscript {
     // NOTE: buildscript classpath for the root project is the parent classloader for the subprojects, we
@@ -108,5 +110,8 @@ val lintPaths = listOf(
 configureLinting(lintPaths)
 configureMinorVersionStrategyRules(lintPaths)
 
-tasks.register<SonatypeCentralPortalPublishTask>("publishToCentralPortal") { }
+tasks.register<SonatypeCentralPortalPublishTask>("publishToCentralPortal") {
+    timeoutDuration.set(90.minutes)
+    pollInterval.set(20.seconds)
+}
 tasks.register<SonatypeCentralPortalWaitForPublicationTask>("waitForCentralPortalPublication") { }
