@@ -38,6 +38,7 @@ object AwsRuntimeTypes {
         val AbstractAwsSdkClientFactory = symbol("AbstractAwsSdkClientFactory", "config")
 
         val AwsSdkClientConfig = symbol("AwsSdkClientConfig", "config")
+        val AwsSdkClientOption = symbol("AwsSdkClientOption", "config")
 
         object Endpoints : RuntimeTypePackage(AwsKotlinDependency.AWS_CONFIG, "config.endpoints") {
             val AccountIdEndpointMode = symbol("AccountIdEndpointMode")

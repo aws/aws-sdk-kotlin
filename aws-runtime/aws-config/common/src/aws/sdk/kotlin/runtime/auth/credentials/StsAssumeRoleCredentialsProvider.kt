@@ -12,6 +12,7 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.assumeRole
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.PolicyDescriptorType
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.RegionDisabledException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.Tag
+import aws.sdk.kotlin.runtime.config.AwsSdkClientOption
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
@@ -106,6 +107,7 @@ public class StsAssumeRoleCredentialsProvider(
             httpClient = provider.httpClient
             telemetryProvider = telemetry
             logMode = attributes.getOrNull(SdkClientOption.LogMode)
+            applicationId = attributes.getOrNull(AwsSdkClientOption.ApplicationId)
         }
 
         val resp = try {

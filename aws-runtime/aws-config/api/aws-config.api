@@ -265,6 +265,11 @@ public abstract interface class aws/sdk/kotlin/runtime/config/AwsSdkClientConfig
 	public abstract fun setUseFips (Ljava/lang/Boolean;)V
 }
 
+public final class aws/sdk/kotlin/runtime/config/AwsSdkClientOption {
+	public static final field INSTANCE Laws/sdk/kotlin/runtime/config/AwsSdkClientOption;
+	public final fun getApplicationId ()Laws/smithy/kotlin/runtime/collections/AttributeKey;
+}
+
 public final class aws/sdk/kotlin/runtime/config/AwsSdkSetting {
 	public static final field INSTANCE Laws/sdk/kotlin/runtime/config/AwsSdkSetting;
 	public final fun getAwsAccessKeyId ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
