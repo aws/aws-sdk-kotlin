@@ -14,7 +14,7 @@ dokka {
     moduleVersion.set(sdkVersion)
 
     dokkaGeneratorIsolation = ProcessIsolation {
-        maxHeapSize = "4g"
+        maxHeapSize = "16g"
     }
 
     pluginsConfiguration.html {
