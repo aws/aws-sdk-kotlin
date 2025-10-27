@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.codegen
 
 import software.amazon.smithy.kotlin.codegen.core.*
+import software.amazon.smithy.kotlin.codegen.integration.AppendingSectionWriter
 import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
 import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
 import software.amazon.smithy.kotlin.codegen.lang.KotlinTypes
@@ -12,6 +13,7 @@ import software.amazon.smithy.kotlin.codegen.model.asNullable
 import software.amazon.smithy.kotlin.codegen.model.knowledge.AwsSignatureVersion4
 import software.amazon.smithy.kotlin.codegen.model.nullable
 import software.amazon.smithy.kotlin.codegen.rendering.*
+import software.amazon.smithy.kotlin.codegen.rendering.protocol.HttpProtocolClientGenerator
 import software.amazon.smithy.kotlin.codegen.rendering.util.ConfigProperty
 import software.amazon.smithy.kotlin.codegen.rendering.util.ConfigPropertyType
 import software.amazon.smithy.kotlin.codegen.rendering.util.RuntimeConfigProperty
@@ -173,6 +175,12 @@ class AwsServiceConfigIntegration : KotlinIntegration {
                     writer.getContextValue(ServiceClientGenerator.Sections.CompanionObject.ServiceSymbol),
                 )
             },
+            SectionWriterBinding(
+                HttpProtocolClientGenerator.MergeServiceDefaults,
+                AppendingSectionWriter { writer ->
+                    writer.write("ctx.#T(#T.ApplicationId, config.#L)", RuntimeTypes.Core.Collections.putIfAbsentNotNull, AwsRuntimeTypes.Config.AwsSdkClientOption, UserAgentAppId.propertyName)
+                },
+            ),
         )
 
     override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> = buildList {

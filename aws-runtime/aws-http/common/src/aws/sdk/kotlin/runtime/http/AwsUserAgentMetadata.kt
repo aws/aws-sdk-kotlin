@@ -73,7 +73,7 @@ public data class AwsUserAgentMetadata(
             add(languageMetadata)
             execEnvMetadata?.let(::add)
             customMetadata?.typedExtras?.filterIsInstance<ConfigMetadata>()?.forEach(::add)
-            appId?.let { add(uaPair("app", it)) }
+            appId?.let { add(uaPair("app", value = it)) }
             customMetadata?.typedExtras?.filterIsInstance<FeatureMetadata>()?.forEach(::add)
             frameworkMetadata?.let(::add)
 
@@ -190,7 +190,7 @@ internal expect fun platformLanguageMetadata(): LanguageMetadata
  */
 @InternalSdkApi
 public data class ExecutionEnvMetadata(val name: String) {
-    override fun toString(): String = uaPair("exec-env", name)
+    override fun toString(): String = uaPair("exec-env", value = name)
 }
 
 /**
@@ -223,21 +223,28 @@ private fun detectExecEnv(platform: PlatformEnvironProvider): ExecutionEnvMetada
 // tchar_no_hash = "!" / "$" / "%" / "&" / "'" / "*" / "+" / "-" / "." /
 //                 "^" / "_" / "`" / "|" / "~" / DIGIT / ALPHA
 private val VALID_TCHAR_NO_HASH = setOf('!', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~')
+private val VALID_TCHAR = VALID_TCHAR_NO_HASH + '#'
 
-internal fun uaPair(category: String, key: String, value: String? = null): String =
-    if (value == null) {
-        "${category.encodeUaToken()}/${key.encodeUaToken()}"
-    } else {
-        "${category.encodeUaToken()}/${key.encodeUaToken()}#${value.encodeUaToken()}"
-    }
+internal fun uaPair(category: String, key: String? = null, value: String? = null): String = when {
+    key == null && value == null -> category.encodeUaName()
+    value == null -> "${category.encodeUaName()}/${key!!.encodeUaName()}"
+    key == null -> "${category.encodeUaName()}/${value.encodeUaValue()}"
+    else -> "${category.encodeUaName()}/${key.encodeUaName()}#${value.encodeUaValue()}"
+}
 
-private fun String.encodeUaToken(): String {
+private fun String.encodeUaName() = encodeUaString(VALID_TCHAR_NO_HASH)
+private fun String.encodeUaValue() = encodeUaString(VALID_TCHAR)
+
+/**
+ * Encode a UA string, allowing only A-Z, a-z, 0-9, and characters in `charSet`.
+ */
+private fun String.encodeUaString(charSet: Set<Char>): String {
     val str = this
     return buildString(str.length) {
         for (chr in str) {
             when (chr) {
                 ' ' -> append("_")
-                in 'a'..'z', in 'A'..'Z', in '0'..'9', in VALID_TCHAR_NO_HASH -> append(chr)
+                in 'a'..'z', in 'A'..'Z', in '0'..'9', in charSet -> append(chr)
                 else -> continue
             }
         }

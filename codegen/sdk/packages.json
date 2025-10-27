@@ -1699,6 +1699,12 @@
             "brazilName": "AwsSdkKotlinRdsData"
         },
         {
+            "sdkId": "RTBFabric",
+            "namespace": "aws.sdk.kotlin.services.rtbfabric",
+            "artifactName": "rtbfabric",
+            "brazilName": "AwsSdkKotlinRtbfabric"
+        },
+        {
             "sdkId": "RUM",
             "namespace": "aws.sdk.kotlin.services.rum",
             "artifactName": "rum",
