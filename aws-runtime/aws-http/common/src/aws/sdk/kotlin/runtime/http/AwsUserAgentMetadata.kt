@@ -225,7 +225,6 @@ private fun detectExecEnv(platform: PlatformEnvironProvider): ExecutionEnvMetada
 private val VALID_TCHAR_NO_HASH = setOf('!', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~')
 private val VALID_TCHAR = VALID_TCHAR_NO_HASH + '#'
 
-
 internal fun uaPair(category: String, key: String? = null, value: String? = null): String = when {
     key == null && value == null -> category.encodeUaName()
     value == null -> "${category.encodeUaName()}/${key!!.encodeUaName()}"
