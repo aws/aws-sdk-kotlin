@@ -1,0 +1,5 @@
+{
+    "id": "4e0bc6ce-d665-4ea9-adb7-5ba11a007f2e",
+    "type": "misc",
+    "description": "Remove QLDB, QLDB Session, RoboMaker, LookoutMetrics, LookoutVision, IoTFleetHub, and AppTest services"
+}

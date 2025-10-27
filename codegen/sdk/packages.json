@@ -127,12 +127,6 @@
             "brazilName": "AwsSdkKotlinAppsync"
         },
         {
-            "sdkId": "AppTest",
-            "namespace": "aws.sdk.kotlin.services.apptest",
-            "artifactName": "apptest",
-            "brazilName": "AwsSdkKotlinApptest"
-        },
-        {
             "sdkId": "Appflow",
             "namespace": "aws.sdk.kotlin.services.appflow",
             "artifactName": "appflow",
@@ -1069,12 +1063,6 @@
             "brazilName": "AwsSdkKotlinIotanalytics"
         },
         {
-            "sdkId": "IoTFleetHub",
-            "namespace": "aws.sdk.kotlin.services.iotfleethub",
-            "artifactName": "iotfleethub",
-            "brazilName": "AwsSdkKotlinIotfleethub"
-        },
-        {
             "sdkId": "IoTFleetWise",
             "namespace": "aws.sdk.kotlin.services.iotfleetwise",
             "artifactName": "iotfleetwise",
@@ -1271,18 +1259,6 @@
             "namespace": "aws.sdk.kotlin.services.lookoutequipment",
             "artifactName": "lookoutequipment",
             "brazilName": "AwsSdkKotlinLookoutequipment"
-        },
-        {
-            "sdkId": "LookoutMetrics",
-            "namespace": "aws.sdk.kotlin.services.lookoutmetrics",
-            "artifactName": "lookoutmetrics",
-            "brazilName": "AwsSdkKotlinLookoutmetrics"
-        },
-        {
-            "sdkId": "LookoutVision",
-            "namespace": "aws.sdk.kotlin.services.lookoutvision",
-            "artifactName": "lookoutvision",
-            "brazilName": "AwsSdkKotlinLookoutvision"
         },
         {
             "sdkId": "MPA",
@@ -1699,18 +1675,6 @@
             "brazilName": "AwsSdkKotlinQconnect"
         },
         {
-            "sdkId": "QLDB",
-            "namespace": "aws.sdk.kotlin.services.qldb",
-            "artifactName": "qldb",
-            "brazilName": "AwsSdkKotlinQldb"
-        },
-        {
-            "sdkId": "QLDB Session",
-            "namespace": "aws.sdk.kotlin.services.qldbsession",
-            "artifactName": "qldbsession",
-            "brazilName": "AwsSdkKotlinQldbSession"
-        },
-        {
             "sdkId": "QuickSight",
             "namespace": "aws.sdk.kotlin.services.quicksight",
             "artifactName": "quicksight",
@@ -1781,12 +1745,6 @@
             "namespace": "aws.sdk.kotlin.services.resourcegroupstaggingapi",
             "artifactName": "resourcegroupstaggingapi",
             "brazilName": "AwsSdkKotlinResourceGroupsTaggingApi"
-        },
-        {
-            "sdkId": "RoboMaker",
-            "namespace": "aws.sdk.kotlin.services.robomaker",
-            "artifactName": "robomaker",
-            "brazilName": "AwsSdkKotlinRobomaker"
         },
         {
             "sdkId": "RolesAnywhere",
