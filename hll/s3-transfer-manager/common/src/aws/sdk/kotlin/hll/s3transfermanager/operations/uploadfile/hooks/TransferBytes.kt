@@ -14,7 +14,7 @@ import aws.sdk.kotlin.hll.s3transfermanager.operationHook
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadfile.ceilDiv
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadfile.nextPartBytes
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadfile.resolvePartSize
-import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadfile.resolvePartSource
+import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadfile.resolveSource
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.abortMultipartUpload
@@ -64,7 +64,7 @@ internal suspend fun transferBytes(
         try {
             val partSize = resolvePartSize(contentLength, partSizeBytes, logger)
             val numberOfParts = ceilDiv(contentLength, partSize).toInt()
-            val partSource = resolvePartSource(uploadFileRequest.body!!)
+            val partSource = resolveSource(uploadFileRequest.body!!)
 
             val producer = produceParts(
                 context.transferableBytes!!,
@@ -107,12 +107,13 @@ internal suspend fun transferBytes(
             }
         }
     } else {
+        context.currentBytes = uploadFileRequest.body
+
         operationHook(
             BytesTransferred,
             context,
             interceptors,
         ) {
-            context.currentBytes = uploadFileRequest.body // TODO: This will consume the bytes
             context.response = client.putObject(context.request as PutObjectRequest)
             context.transferredBytes = context.transferableBytes
         }

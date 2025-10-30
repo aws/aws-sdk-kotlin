@@ -19,11 +19,52 @@ import aws.sdk.kotlin.services.s3.withConfig
  */
 public class S3TransferManager private constructor(s3Client: S3Client, builder: Builder) {
     public val client: S3Client = s3Client.withConfig { interceptors += S3TransferManagerBusinessMetricInterceptor }
+
+    /**
+     * Preferred part size for multipart uploads.
+     * If using this size would require more than 10,000 parts (the S3 limit),
+     * the smallest possible part size that results in 10,000 parts is used instead.
+     *
+     * Default to 8,000,000 bytes.
+     */
     public val partSizeBytes: Long = builder.partSizeBytes
+
+    /**
+     * Threshold size above which a file upload uses multipart upload
+     * instead of a single put object request.
+     *
+     * Defaults to 16,000,000 bytes.
+     */
     public val multipartUploadThresholdBytes: Long = builder.multipartUploadThresholdBytes
+
+    /**
+     * Strategy for multipart downloads, defined by [MultipartDownloadType].
+     * Downloads can be performed either by specifying byte ranges or by requesting individual parts.
+     *
+     * Defaults to [Part].
+     */
     public val multipartDownloadType: MultipartDownloadType = builder.multipartDownloadType
+
+    /**
+     * Mutable list of [TransferInterceptor]s, typically used to track transfers
+     * or inspect/modify low-level S3 requests.
+     */
     public val interceptors: MutableList<TransferInterceptor> = builder.interceptors
+
+    /**
+     * The maximum amount of parts to buffer in memory while waiting for uploads to complete.
+     * The actual number of parts buffered at any given time may be less than or equal but never greater.
+     *
+     * Defaults to 5.
+     */
     public val maxInMemoryParts: Int = builder.maxInMemoryParts
+
+    /**
+     * Maximum number of concurrent part uploads for a file.
+     * The actual number of uploads at any given time may be less than or equal but never greater.
+     *
+     * Defaults to 5.
+     */
     public val maxConcurrentPartUploads: Int = builder.maxConcurrentPartUploads
 
     public companion object {
@@ -32,12 +73,51 @@ public class S3TransferManager private constructor(s3Client: S3Client, builder: 
     }
 
     public class Builder {
-        // TODO: K-docs for each one
+        /**
+         * Preferred part size for multipart uploads.
+         * If using this size would require more than 10,000 parts (the S3 limit),
+         * the smallest possible part size that results in 10,000 parts is used instead.
+         *
+         * Default to 8,000,000 bytes.
+         */
         public var partSizeBytes: Long = 8_000_000
+
+        /**
+         * Threshold size above which a file upload uses multipart upload
+         * instead of a single put object request.
+         *
+         * Defaults to 16,000,000 bytes.
+         */
         public var multipartUploadThresholdBytes: Long = 16_000_000L
+
+        /**
+         * Strategy for multipart downloads, defined by [MultipartDownloadType].
+         * Downloads can be performed either by specifying byte ranges or by requesting individual parts.
+         *
+         * Defaults to [Part].
+         */
         public var multipartDownloadType: MultipartDownloadType = Part
+
+        /**
+         * Mutable list of [TransferInterceptor]s, typically used to track transfers
+         * or inspect/modify low-level S3 requests.
+         */
         public var interceptors: MutableList<TransferInterceptor> = mutableListOf()
+
+        /**
+         * The maximum amount of parts to buffer in memory while waiting for uploads to complete.
+         * The actual number of parts buffered at any given time may be less than or equal but never greater.
+         *
+         * Defaults to 5.
+         */
         public var maxInMemoryParts: Int = 5
+
+        /**
+         * Maximum number of concurrent part uploads for a file.
+         * The actual number of uploads at any given time may be less than or equal but never greater.
+         *
+         * Defaults to 5.
+         */
         public var maxConcurrentPartUploads: Int = 5
 
         internal fun build(client: S3Client): S3TransferManager =
@@ -45,16 +125,8 @@ public class S3TransferManager private constructor(s3Client: S3Client, builder: 
     }
 
     /**
-     * Uploads a byte stream to Amazon S3, automatically using multipart uploads
-     * for large objects as needed.
-     *
-     * This function handles the complexity of splitting the data into parts,
-     * uploading each part, and completing the multipart upload. For object smaller than [multipartUploadThresholdBytes],
-     * a standard single-part upload is performed automatically.
-     *
-     * If the specified [partSizeBytes] for multipart uploads is too small to allow
-     * all parts to fit within S3's limit of 10,000 parts, the part size will be
-     * automatically increased so that exactly 10,000 parts are uploaded.
+     * Uploads a file to S3 via [aws.smithy.kotlin.runtime.content.ByteStream].
+     * Uses multipart uploads with concurrent uploads if the object size is more than the configured [multipartUploadThresholdBytes].
      */
     public suspend fun uploadFile(
         uploadFileRequest: UploadFileRequest,
@@ -70,16 +142,8 @@ public class S3TransferManager private constructor(s3Client: S3Client, builder: 
         )
 
     /**
-     * Uploads a byte stream to Amazon S3, automatically using multipart uploads
-     * for large objects as needed.
-     *
-     * This function handles the complexity of splitting the data into parts,
-     * uploading each part, and completing the multipart upload. For object smaller than [multipartUploadThresholdBytes],
-     * a standard single-part upload is performed automatically.
-     *
-     * If the specified [partSizeBytes] for multipart uploads is too small to allow
-     * all parts to fit within S3's limit of 10,000 parts, the part size will be
-     * automatically increased so that exactly 10,000 parts are uploaded.
+     * Uploads a file to S3 via [aws.smithy.kotlin.runtime.content.ByteStream].
+     * Uses multipart uploads with concurrent uploads if the object size is more than the configured [multipartUploadThresholdBytes].
      */
     public suspend inline fun uploadFile(
         crossinline block: UploadFileRequest.Builder.() -> Unit,

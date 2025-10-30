@@ -43,7 +43,7 @@ internal fun resolvePartSize(contentLength: Long, targetPartSize: Long, logger: 
  *  [ByteStream.ChannelStream]
  *  [ByteStream.SourceStream]
  */
-internal fun resolvePartSource(body: ByteStream): Any =
+internal fun resolveSource(body: ByteStream): Any =
     when (body) {
         is ByteStream.Buffer -> body.bytes()
         is ByteStream.ChannelStream -> body.readFrom()
