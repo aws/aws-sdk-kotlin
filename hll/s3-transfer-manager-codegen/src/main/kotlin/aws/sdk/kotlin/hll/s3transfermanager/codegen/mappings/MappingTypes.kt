@@ -22,7 +22,7 @@ internal data class ConversionMapping(
 /**
  * High level S3 TM request/response from low level S3 operation members
  */
-internal data class IOMapping(
+internal data class IoMapping(
     val type: MappingType,
     val className: String,
     val sourceOperation: String,

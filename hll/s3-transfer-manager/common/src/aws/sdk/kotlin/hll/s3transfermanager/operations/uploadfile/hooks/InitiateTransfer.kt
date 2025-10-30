@@ -17,7 +17,7 @@ import aws.sdk.kotlin.services.s3.model.CreateMultipartUploadRequest
 import aws.sdk.kotlin.services.s3.model.CreateMultipartUploadResponse
 
 internal suspend fun initiateTransfer(
-    multiPartUpload: Boolean,
+    multipartUpload: Boolean,
     context: TransferContext,
     contentLength: Long,
     uploadFileRequest: UploadFileRequest,
@@ -26,7 +26,7 @@ internal suspend fun initiateTransfer(
 ): String? {
     context.transferredBytes = 0L
     context.transferableBytes = contentLength
-    context.request = if (multiPartUpload) {
+    context.request = if (multipartUpload) {
         uploadFileRequest.toCreateMultipartUploadRequest()
     } else {
         uploadFileRequest.toPutObjectRequest()
@@ -38,7 +38,7 @@ internal suspend fun initiateTransfer(
         context,
         interceptors,
     ) {
-        if (multiPartUpload) {
+        if (multipartUpload) {
             context.response = client.createMultipartUpload(context.request as CreateMultipartUploadRequest)
             mpuUploadId = (context.response as CreateMultipartUploadResponse).uploadId!!
         }

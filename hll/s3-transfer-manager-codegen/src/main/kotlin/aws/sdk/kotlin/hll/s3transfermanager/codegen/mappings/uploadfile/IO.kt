@@ -5,11 +5,11 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadfile
 
-import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.IOMapping
+import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.IoMapping
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.MappingType
 
-internal val uploadFileIOMappings = listOf(
-    IOMapping(
+internal val uploadFileIoMappings = listOf(
+    IoMapping(
         MappingType.REQUEST,
         "UploadFileRequest",
         "putObject",
@@ -54,7 +54,7 @@ internal val uploadFileIOMappings = listOf(
             "websiteRedirectLocation",
         ),
     ),
-    IOMapping(
+    IoMapping(
         MappingType.RESPONSE,
         "UploadFileResponse",
         "putObject",

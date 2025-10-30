@@ -12,10 +12,12 @@ import aws.smithy.kotlin.runtime.content.asByteStream
 import aws.smithy.kotlin.runtime.testing.RandomTempFile
 import kotlinx.coroutines.runBlocking
 import kotlin.invoke
+import kotlin.test.Ignore
 import kotlin.test.Test
 
 // TODO: Setup e2e test environment - can't run these every build and in CI
 class UploadFileTest {
+    @Ignore
     @Test
     fun singleObjectUpload(): Unit = runBlocking {
         S3Client {
@@ -29,6 +31,7 @@ class UploadFileTest {
         }
     }
 
+    @Ignore
     @Test
     fun emptyBody(): Unit = runBlocking {
         S3Client {
@@ -42,6 +45,7 @@ class UploadFileTest {
         }
     }
 
+    @Ignore
     @Test
     fun multipartUpload(): Unit = runBlocking {
         val messageLength = 10L * 1024L * 1024L // 10 MB
@@ -61,6 +65,7 @@ class UploadFileTest {
         }
     }
 
+    @Ignore
     @Test
     fun smallLastPart(): Unit = runBlocking {
         val messageLength = 12L * 1024L * 1024L // 12 MB (last part will only be 2MB)

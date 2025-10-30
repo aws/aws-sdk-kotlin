@@ -46,7 +46,7 @@ internal data class Part(
 )
 
 internal suspend fun transferBytes(
-    multiPartUpload: Boolean,
+    multipartUpload: Boolean,
     contentLength: Long,
     partSizeBytes: Long,
     logger: Logger,
@@ -60,7 +60,7 @@ internal suspend fun transferBytes(
 ): List<CompletedPart> = coroutineScope {
     val uploadedParts = mutableListOf<CompletedPart>()
 
-    if (multiPartUpload) {
+    if (multipartUpload) {
         try {
             val partSize = resolvePartSize(contentLength, partSizeBytes, logger)
             val numberOfParts = ceilDiv(contentLength, partSize).toInt()

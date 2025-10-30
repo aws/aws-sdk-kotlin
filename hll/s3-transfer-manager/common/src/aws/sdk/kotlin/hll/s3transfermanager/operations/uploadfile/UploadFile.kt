@@ -33,12 +33,12 @@ internal suspend fun uploadFileImplementation(
     maxConcurrentPartUploads: Int,
 ): UploadFileResponse = withContext(currentCoroutineContext() + TelemetryProviderContext(client.config.telemetryProvider)) {
     val contentLength = uploadFileRequest.body?.contentLength ?: throw S3TransferManagerException("Body content length must be known")
-    val multiPartUpload = contentLength > multipartUploadThresholdBytes
+    val multipartUpload = contentLength > multipartUploadThresholdBytes
     val logger = coroutineContext.logger<S3TransferManager>()
     val transferContext = TransferContext()
 
     val mpuUploadId = initiateTransfer(
-        multiPartUpload,
+        multipartUpload,
         transferContext,
         contentLength,
         uploadFileRequest,
@@ -47,7 +47,7 @@ internal suspend fun uploadFileImplementation(
     )
 
     val uploadedParts = transferBytes(
-        multiPartUpload,
+        multipartUpload,
         contentLength,
         partSizeBytes,
         logger,
@@ -61,7 +61,7 @@ internal suspend fun uploadFileImplementation(
     )
 
     completeTransfer(
-        multiPartUpload,
+        multipartUpload,
         transferContext,
         uploadFileRequest,
         mpuUploadId,

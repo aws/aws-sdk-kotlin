@@ -11,7 +11,7 @@ import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.conversionMappings
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.ioMappings
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.renderers.ConversionRenderer
-import aws.sdk.kotlin.hll.s3transfermanager.codegen.renderers.IORenderer
+import aws.sdk.kotlin.hll.s3transfermanager.codegen.renderers.IoRenderer
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
@@ -31,7 +31,7 @@ internal class S3TransferManagerSymbolProcessor(environment: SymbolProcessorEnvi
             )
 
         ioMappings.forEach { mapping ->
-            IORenderer(
+            IoRenderer(
                 ioMappingsContext,
                 mapping.className,
                 mapping,

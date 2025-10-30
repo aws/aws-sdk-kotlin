@@ -35,7 +35,7 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation(libs.smithy.kotlin.test.jvm)
+                implementation(libs.smithy.kotlin.http.test.jvm)
                 implementation(libs.smithy.kotlin.testing.jvm)
             }
         }

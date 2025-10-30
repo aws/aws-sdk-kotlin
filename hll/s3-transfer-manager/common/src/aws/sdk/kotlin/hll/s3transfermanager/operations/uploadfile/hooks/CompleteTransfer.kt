@@ -17,7 +17,7 @@ import aws.sdk.kotlin.services.s3.model.CompleteMultipartUploadRequest
 import aws.sdk.kotlin.services.s3.model.CompletedPart
 
 internal suspend fun completeTransfer(
-    multiPartUpload: Boolean,
+    multipartUpload: Boolean,
     context: TransferContext,
     uploadFileRequest: UploadFileRequest,
     mpuUploadId: String?,
@@ -25,7 +25,7 @@ internal suspend fun completeTransfer(
     interceptors: List<TransferInterceptor>,
     client: S3Client,
 ) {
-    if (multiPartUpload) {
+    if (multipartUpload) {
         context.request =
             uploadFileRequest.toCompleteMultipartUploadRequest(
                 mpuUploadId!!,
@@ -38,7 +38,7 @@ internal suspend fun completeTransfer(
         context,
         interceptors,
     ) {
-        if (multiPartUpload) {
+        if (multipartUpload) {
             try {
                 context.response = client.completeMultipartUpload(context.request as CompleteMultipartUploadRequest)
             } catch (e: Exception) {

@@ -9,7 +9,7 @@ import aws.sdk.kotlin.hll.codegen.core.ImportDirective
 import aws.sdk.kotlin.hll.codegen.model.TypeRef
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.RendererBase
-import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.IOMapping
+import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.IoMapping
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.utils.operationMembers
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.utils.renderMember
 import com.google.devtools.ksp.processing.Resolver
@@ -17,10 +17,10 @@ import com.google.devtools.ksp.processing.Resolver
 /**
  * Renders request and response types
  */
-internal class IORenderer(
+internal class IoRenderer(
     ctx: RenderContext,
     val className: String,
-    val mapping: IOMapping,
+    val mapping: IoMapping,
     val resolver: Resolver,
 ) : RendererBase(ctx, className) {
     override fun generate() {
