@@ -49,7 +49,7 @@ internal class S3TransferManagerSymbolProcessor(environment: SymbolProcessorEnvi
 
         ConversionRenderer(
             conversionMappingsContext,
-            "Converters", // TODO: Will this override the file after each conversion ?
+            "Converters",
             conversionMappings,
             resolver,
         ).render()
