@@ -3,6 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 description = "Common code-generation utilities used by AWS SDK for Kotlin's high level libraries"
 extra["displayName"] = "AWS :: SDK :: Kotlin :: HLL :: Codegen"
 extra["moduleName"] = "aws.sdk.kotlin.hll.codegen"
@@ -46,5 +55,16 @@ publishing {
             from(components["java"])
             artifact(sourcesJar)
         }
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType<KotlinCompile> {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }

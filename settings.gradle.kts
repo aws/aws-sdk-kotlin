@@ -93,6 +93,7 @@ if ("dynamodb".isBootstrappedService) {
 
 if ("s3".isBootstrappedService) {
     include(":hll:s3-transfer-manager")
+    include(":hll:s3-transfer-manager-codegen")
 } else {
     logger.warn(":services:s3 is not bootstrapped, skipping :hll:s3-transfer-manager and subprojects")
 }

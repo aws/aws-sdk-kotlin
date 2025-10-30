@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package aws.sdk.kotlin.hll.s3transfermanager
+package aws.sdk.kotlin.hll.s3transfermanager.utils
 
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.smithy.kotlin.runtime.businessmetrics.emitBusinessMetric

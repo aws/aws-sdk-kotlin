@@ -23,6 +23,7 @@ public data class Member(
     val type: Type,
     val mutable: Boolean = false,
     val attributes: Attributes = emptyAttributes(),
+    val kDocs: String? = null,
 ) {
     @InternalSdkApi
     public companion object {
@@ -34,6 +35,7 @@ public data class Member(
                 name = prop.simpleName.getShortName(),
                 type = Type.from(prop.type),
                 mutable = prop.isMutable,
+                kDocs = prop.docString,
             )
 
             return ModelParsingPlugin.transform(member, ModelParsingPlugin::postProcessMember)

@@ -97,7 +97,7 @@ internal class OperationRenderer(
         DataTypeGenerator(ctx, this, operation.request).generate()
         blankLine()
 
-        imports += ImportDirective(operation.request.lowLevel.type, operation.request.lowLevelName)
+        imports += ImportDirective(operation.request.lowLevel.type, operation.request.lowLevelName) // TODO: Bookmarking so I can implement this myself
 
         openBlock("private fun <T> #T.convert(", operation.request.type)
         requestMembers(MemberCodegenBehavior.Hoist) { write("#L: #T, ", name, type) }
