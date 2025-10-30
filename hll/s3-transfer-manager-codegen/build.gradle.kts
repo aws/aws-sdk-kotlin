@@ -7,10 +7,8 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: Apache-2.0
- */
+val sdkVersion: String by project
+version = sdkVersion
 
 description = "S3 Transfer Manager Code Generation"
 extra["displayName"] = "AWS :: SDK :: Kotlin :: HLL :: S3 Transfer Manager Codegen"

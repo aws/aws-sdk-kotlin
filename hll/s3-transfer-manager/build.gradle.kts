@@ -14,6 +14,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
+val sdkVersion: String by project
+version = sdkVersion
+
 description = "S3 Transfer Manager for the AWS SDK for Kotlin"
 extra["displayName"] = "AWS :: SDK :: Kotlin :: HLL :: S3 Transfer Manager"
 extra["moduleName"] = "aws.sdk.kotlin.hll.s3transfermanager"
