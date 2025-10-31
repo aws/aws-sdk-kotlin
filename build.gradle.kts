@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import aws.sdk.kotlin.gradle.dsl.configureLinting
-import aws.sdk.kotlin.gradle.kmp.configureIosSimulatorTasks
 import aws.sdk.kotlin.gradle.dsl.configureMinorVersionStrategyRules
+import aws.sdk.kotlin.gradle.kmp.configureIosSimulatorTasks
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalPublishTask
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalWaitForPublicationTask
 import aws.sdk.kotlin.gradle.util.typedProp

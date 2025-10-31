@@ -77,18 +77,20 @@ internal actual suspend fun executeCommand(
             }
             val pi = alloc<PROCESS_INFORMATION>()
 
-            check(CreateProcessW(
-                cmdExe, // lpApplicationName
-                cmdLineBuf, // lpCommandLine
-                null, // lpProcessAttributes
-                null, // lpThreadAttributes
-                TRUE, // bInheritHandles
-                CREATE_NO_WINDOW.toUInt(), // dwCreationFlags
-                null, // lpEnvironment
-                null, // lpCurrentDirectory
-                si.ptr, // lpStartupInfo
-                pi.ptr, // lpProcessInformation
-            ) == 0) { "CreateProcessW failed (GetLastError=${GetLastError()})" }
+            check(
+                CreateProcessW(
+                    cmdExe, // lpApplicationName
+                    cmdLineBuf, // lpCommandLine
+                    null, // lpProcessAttributes
+                    null, // lpThreadAttributes
+                    TRUE, // bInheritHandles
+                    CREATE_NO_WINDOW.toUInt(), // dwCreationFlags
+                    null, // lpEnvironment
+                    null, // lpCurrentDirectory
+                    si.ptr, // lpStartupInfo
+                    pi.ptr, // lpProcessInformation
+                ) == 0,
+            ) { "CreateProcessW failed (GetLastError=${GetLastError()})" }
 
             try {
                 // 5) wait + timeout
@@ -149,9 +151,15 @@ internal actual suspend fun executeCommand(
                         }
                         val n = buf.usePinned {
                             val ok = ReadFile(hIn, it.addressOf(0), toRead.toUInt(), bytesReadVar.ptr, null)
-                            if (ok == 0 || bytesReadVar.value == 0u) 0 else bytesReadVar.value.toInt()
+                            if (ok == 0 || bytesReadVar.value == 0u) {
+                                0
+                            } else {
+                                bytesReadVar.value.toInt()
+                            }
                         }
-                        if (n <= 0) break
+                        if (n <= 0) {
+                            break
+                        }
                         total += n
                         sb.append(buf.decodeToString(0, n))
                     }
