@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import aws.sdk.kotlin.gradle.dsl.configureLinting
+import aws.sdk.kotlin.gradle.kmp.configureIosSimulatorTasks
 import aws.sdk.kotlin.gradle.dsl.configureMinorVersionStrategyRules
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalPublishTask
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalWaitForPublicationTask
@@ -65,6 +66,8 @@ allprojects {
 
     // Enables running `./gradlew allDeps` to get a comprehensive list of dependencies for every subproject
     tasks.register<DependencyReportTask>("allDeps") { }
+
+    configureIosSimulatorTasks()
 }
 
 // Configure root module's documentation
