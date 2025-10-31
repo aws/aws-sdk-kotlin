@@ -1,0 +1,5 @@
+{
+    "id": "3bc2e0a5-d8d4-4051-a723-a54427a96e7e",
+    "type": "feature",
+    "description": "Enable configuring an HTTP engine on `ImdsClient`"
+}

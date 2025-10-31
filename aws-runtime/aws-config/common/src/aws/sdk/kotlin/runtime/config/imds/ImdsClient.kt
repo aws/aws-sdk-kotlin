@@ -172,9 +172,9 @@ public class ImdsClient private constructor(builder: Builder) : InstanceMetadata
         public var logMode: LogMode = LogMode.Default
 
         /**
-         * The HTTP engine to use to make requests with. This is here to facilitate testing and can otherwise be ignored
+         * The HTTP engine to use to make requests with
          */
-        internal var engine: HttpClientEngine? = null
+        public var engine: HttpClientEngine? = null
 
         /**
          * The source of time for token refreshes. This is here to facilitate testing and can otherwise be ignored
