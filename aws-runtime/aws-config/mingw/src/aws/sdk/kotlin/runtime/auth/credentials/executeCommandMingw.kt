@@ -27,13 +27,11 @@ internal actual suspend fun executeCommand(
     memScoped {
         // 1) temp path + file
         val tmpDirBuf = allocArray<UShortVar>(MAX_PATH)
-        val gotTmp = GetTempPathW(MAX_PATH.toUInt(), tmpDirBuf)
-        if (gotTmp == 0u) error("GetTempPathW failed")
+        check(GetTempPathW(MAX_PATH.toUInt(), tmpDirBuf) == 0u) { "GetTempPathW failed" }
 
         val tmpNameBuf = allocArray<UShortVar>(MAX_PATH)
         val tmpDirStr = tmpDirBuf.toKString()
-        val gotName = GetTempFileNameW(tmpDirStr, "KNR", 0u, tmpNameBuf)
-        if (gotName == 0u) error("GetTempFileNameW failed")
+        check(GetTempFileNameW(tmpDirStr, "KNR", 0u, tmpNameBuf) == 0u) { "GetTempFileNameW failed" }
         val outPath: String = tmpNameBuf.toKString()
 
         // 2) create output (inherit)
@@ -44,24 +42,17 @@ internal actual suspend fun executeCommand(
         }
 
         var hOut: HANDLE? = CreateFileW(
-            /* lpFileName            = */
-            outPath,
-            /* dwDesiredAccess       = */
-            GENERIC_WRITE.toUInt(),
-            /* dwShareMode           = */
-            (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(),
-            /* lpSecurityAttributes  = */
-            sa.ptr,
-            /* dwCreationDisposition = */
-            CREATE_ALWAYS.toUInt(),
-            /* dwFlagsAndAttributes  = */
-            FILE_ATTRIBUTE_NORMAL.toUInt(),
-            /* hTemplateFile         = */
-            null,
+            outPath, // lpFileName
+            GENERIC_WRITE.toUInt(), // dwDesiredAccess
+            (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(), // dwShareMode
+            sa.ptr, // lpSecurityAttributes
+            CREATE_ALWAYS.toUInt(), // dwCreationDisposition
+            FILE_ATTRIBUTE_NORMAL.toUInt(), // dwFlagsAndAttributes
+            null, // hTemplateFile
         )
-        if (hOut == INVALID_HANDLE_VALUE) error("CreateFileW failed for temp output (GetLastError=${GetLastError()})")
+        check(hOut != INVALID_HANDLE_VALUE) { "CreateFileW failed for temp output (GetLastError=${GetLastError()})" }
 
-        // Ensure the handle is marked inheritable (some setups ignore SA if handle flags were flipped later)
+        // Ensure the handle is marked inheritable
         if (hOut != null && hOut != INVALID_HANDLE_VALUE) {
             SetHandleInformation(hOut, HANDLE_FLAG_INHERIT.toUInt(), HANDLE_FLAG_INHERIT.toUInt())
         }
@@ -86,29 +77,18 @@ internal actual suspend fun executeCommand(
             }
             val pi = alloc<PROCESS_INFORMATION>()
 
-            val created = CreateProcessW(
-                /* lpApplicationName     = */
-                cmdExe,
-                /* lpCommandLine         = */
-                cmdLineBuf,
-                /* lpProcessAttributes   = */
-                null,
-                /* lpThreadAttributes    = */
-                null,
-                /* bInheritHandles       = */
-                TRUE,
-                /* dwCreationFlags       = */
-                CREATE_NO_WINDOW.toUInt(),
-                /* lpEnvironment         = */
-                null,
-                /* lpCurrentDirectory    = */
-                null,
-                /* lpStartupInfo         = */
-                si.ptr,
-                /* lpProcessInformation  = */
-                pi.ptr,
-            )
-            if (created == 0) error("CreateProcessW failed (GetLastError=${GetLastError()})")
+            check(CreateProcessW(
+                cmdExe, // lpApplicationName
+                cmdLineBuf, // lpCommandLine
+                null, // lpProcessAttributes
+                null, // lpThreadAttributes
+                TRUE, // bInheritHandles
+                CREATE_NO_WINDOW.toUInt(), // dwCreationFlags
+                null, // lpEnvironment
+                null, // lpCurrentDirectory
+                si.ptr, // lpStartupInfo
+                pi.ptr, // lpProcessInformation
+            ) == 0) { "CreateProcessW failed (GetLastError=${GetLastError()})" }
 
             try {
                 // 5) wait + timeout
@@ -132,29 +112,21 @@ internal actual suspend fun executeCommand(
                 }
                 val exitCode = exitCodeVar.value.toInt()
 
-                // 🔑 Close writer before reading back
                 if (hOut != null && hOut != INVALID_HANDLE_VALUE) {
                     FlushFileBuffers(hOut)
                     CloseHandle(hOut)
                     hOut = null
                 }
 
-                // 7) read back bounded
+                // 7) read output, bounded
                 val hIn: HANDLE? = CreateFileW(
-                    /* lpFileName            = */
-                    outPath,
-                    /* dwDesiredAccess       = */
-                    GENERIC_READ.toUInt(),
-                    /* dwShareMode           = */
-                    (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(),
-                    /* lpSecurityAttributes  = */
-                    null,
-                    /* dwCreationDisposition = */
-                    OPEN_EXISTING.toUInt(),
-                    /* dwFlagsAndAttributes  = */
-                    FILE_ATTRIBUTE_NORMAL.toUInt(),
-                    /* hTemplateFile         = */
-                    null,
+                    outPath, // lpFileName
+                    GENERIC_READ.toUInt(), // dwDesiredAccess
+                    (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(), // dwShareMode
+                    null, // lpSecurityAttributes
+                    OPEN_EXISTING.toUInt(), // dwCreationDisposition
+                    FILE_ATTRIBUTE_NORMAL.toUInt(), // dwFlagsAndAttributes
+                    null, // hTemplateFile
                 )
                 if (hIn == INVALID_HANDLE_VALUE) {
                     _wunlink(outPath.wideCString(this))
