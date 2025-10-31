@@ -44,13 +44,20 @@ internal actual suspend fun executeCommand(
         }
 
         var hOut: HANDLE? = CreateFileW(
-            /* lpFileName            = */ outPath,
-            /* dwDesiredAccess       = */ GENERIC_WRITE.toUInt(),
-            /* dwShareMode           = */ (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(),
-            /* lpSecurityAttributes  = */ sa.ptr,
-            /* dwCreationDisposition = */ CREATE_ALWAYS.toUInt(),
-            /* dwFlagsAndAttributes  = */ FILE_ATTRIBUTE_NORMAL.toUInt(),
-            /* hTemplateFile         = */ null,
+            /* lpFileName            = */
+            outPath,
+            /* dwDesiredAccess       = */
+            GENERIC_WRITE.toUInt(),
+            /* dwShareMode           = */
+            (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(),
+            /* lpSecurityAttributes  = */
+            sa.ptr,
+            /* dwCreationDisposition = */
+            CREATE_ALWAYS.toUInt(),
+            /* dwFlagsAndAttributes  = */
+            FILE_ATTRIBUTE_NORMAL.toUInt(),
+            /* hTemplateFile         = */
+            null,
         )
         if (hOut == INVALID_HANDLE_VALUE) error("CreateFileW failed for temp output (GetLastError=${GetLastError()})")
 
@@ -80,16 +87,26 @@ internal actual suspend fun executeCommand(
             val pi = alloc<PROCESS_INFORMATION>()
 
             val created = CreateProcessW(
-                /* lpApplicationName     = */ cmdExe,
-                /* lpCommandLine         = */ cmdLineBuf,
-                /* lpProcessAttributes   = */ null,
-                /* lpThreadAttributes    = */ null,
-                /* bInheritHandles       = */ TRUE,
-                /* dwCreationFlags       = */ CREATE_NO_WINDOW.toUInt(),
-                /* lpEnvironment         = */ null,
-                /* lpCurrentDirectory    = */ null,
-                /* lpStartupInfo         = */ si.ptr,
-                /* lpProcessInformation  = */ pi.ptr,
+                /* lpApplicationName     = */
+                cmdExe,
+                /* lpCommandLine         = */
+                cmdLineBuf,
+                /* lpProcessAttributes   = */
+                null,
+                /* lpThreadAttributes    = */
+                null,
+                /* bInheritHandles       = */
+                TRUE,
+                /* dwCreationFlags       = */
+                CREATE_NO_WINDOW.toUInt(),
+                /* lpEnvironment         = */
+                null,
+                /* lpCurrentDirectory    = */
+                null,
+                /* lpStartupInfo         = */
+                si.ptr,
+                /* lpProcessInformation  = */
+                pi.ptr,
             )
             if (created == 0) error("CreateProcessW failed (GetLastError=${GetLastError()})")
 
@@ -124,13 +141,20 @@ internal actual suspend fun executeCommand(
 
                 // 7) read back bounded
                 val hIn: HANDLE? = CreateFileW(
-                    /* lpFileName            = */ outPath,
-                    /* dwDesiredAccess       = */ GENERIC_READ.toUInt(),
-                    /* dwShareMode           = */ (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(),
-                    /* lpSecurityAttributes  = */ null,
-                    /* dwCreationDisposition = */ OPEN_EXISTING.toUInt(),
-                    /* dwFlagsAndAttributes  = */ FILE_ATTRIBUTE_NORMAL.toUInt(),
-                    /* hTemplateFile         = */ null,
+                    /* lpFileName            = */
+                    outPath,
+                    /* dwDesiredAccess       = */
+                    GENERIC_READ.toUInt(),
+                    /* dwShareMode           = */
+                    (FILE_SHARE_READ or FILE_SHARE_WRITE).toUInt(),
+                    /* lpSecurityAttributes  = */
+                    null,
+                    /* dwCreationDisposition = */
+                    OPEN_EXISTING.toUInt(),
+                    /* dwFlagsAndAttributes  = */
+                    FILE_ATTRIBUTE_NORMAL.toUInt(),
+                    /* hTemplateFile         = */
+                    null,
                 )
                 if (hIn == INVALID_HANDLE_VALUE) {
                     _wunlink(outPath.wideCString(this))

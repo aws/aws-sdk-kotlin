@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import aws.sdk.kotlin.gradle.kmp.NATIVE_ENABLED
 import com.amazonaws.services.dynamodbv2.local.main.ServerRunner
 import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer
 import com.google.devtools.ksp.gradle.KspTaskJvm
-import com.google.devtools.ksp.gradle.KspTaskMetadata
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.net.ServerSocket
 import java.nio.file.Files
