@@ -418,10 +418,12 @@ public final class aws/sdk/kotlin/runtime/config/imds/ImdsClient : aws/sdk/kotli
 public final class aws/sdk/kotlin/runtime/config/imds/ImdsClient$Builder {
 	public fun <init> ()V
 	public final fun getEndpointConfiguration ()Laws/sdk/kotlin/runtime/config/imds/EndpointConfiguration;
+	public final fun getEngine ()Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;
 	public final fun getLogMode ()Laws/smithy/kotlin/runtime/client/LogMode;
 	public final fun getMaxRetries ()I
 	public final fun getTokenTtl-UwyO8pc ()J
 	public final fun setEndpointConfiguration (Laws/sdk/kotlin/runtime/config/imds/EndpointConfiguration;)V
+	public final fun setEngine (Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;)V
 	public final fun setLogMode (Laws/smithy/kotlin/runtime/client/LogMode;)V
 	public final fun setMaxRetries (I)V
 	public final fun setTokenTtl-LRDsOJo (J)V
