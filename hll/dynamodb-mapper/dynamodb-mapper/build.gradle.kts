@@ -69,6 +69,13 @@ ksp {
 
 // FIXME This is a dirty hack for JVM-only builds which KSP doesn't consider to be "multiplatform". Explanation of
 //  hack follows in narrative, minimally-opinionated comments.
+//  FIXME We previously had a NATIVE_ENABLED branch here, but it failed with circular dependencies:
+//   Circular dependency between the following tasks:
+//      :hll:dynamodb-mapper:dynamodb-mapper:compileCommonMainKotlinMetadata
+//          \--- :hll:dynamodb-mapper:dynamodb-mapper:kspJvmAndNativeMainKotlinMetadata
+//          +--- :hll:dynamodb-mapper:dynamodb-mapper:compileCommonMainKotlinMetadata (*)
+//          \--- :hll:dynamodb-mapper:dynamodb-mapper:metadataCommonMainClasses
+//          \--- :hll:dynamodb-mapper:dynamodb-mapper:compileCommonMainKotlinMetadata (*)
 
 // Start by invoking the JVM-only KSP configuration
 dependencies.kspJvm(project(":hll:dynamodb-mapper:dynamodb-mapper-ops-codegen"))
