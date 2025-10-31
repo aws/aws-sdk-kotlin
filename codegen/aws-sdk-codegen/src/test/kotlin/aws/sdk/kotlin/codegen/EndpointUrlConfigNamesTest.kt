@@ -775,11 +775,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_IOT_EVENTS_DATA"
   },
   {
-    "service_id": "IoTFleetHub",
-    "services_section_name": "iotfleethub",
-    "service_envvar_name": "AWS_ENDPOINT_URL_IOTFLEETHUB"
-  },
-  {
     "service_id": "IoTFleetWise",
     "services_section_name": "iotfleetwise",
     "service_envvar_name": "AWS_ENDPOINT_URL_IOTFLEETWISE"
@@ -938,16 +933,6 @@ private const val TEST_SUITE_JSON = """
     "service_id": "LookoutEquipment",
     "services_section_name": "lookoutequipment",
     "service_envvar_name": "AWS_ENDPOINT_URL_LOOKOUTEQUIPMENT"
-  },
-  {
-    "service_id": "LookoutMetrics",
-    "services_section_name": "lookoutmetrics",
-    "service_envvar_name": "AWS_ENDPOINT_URL_LOOKOUTMETRICS"
-  },
-  {
-    "service_id": "LookoutVision",
-    "services_section_name": "lookoutvision",
-    "service_envvar_name": "AWS_ENDPOINT_URL_LOOKOUTVISION"
   },
   {
     "service_id": "m2",
@@ -1175,16 +1160,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_PROTON"
   },
   {
-    "service_id": "QLDB",
-    "services_section_name": "qldb",
-    "service_envvar_name": "AWS_ENDPOINT_URL_QLDB"
-  },
-  {
-    "service_id": "QLDB Session",
-    "services_section_name": "qldb_session",
-    "service_envvar_name": "AWS_ENDPOINT_URL_QLDB_SESSION"
-  },
-  {
     "service_id": "QuickSight",
     "services_section_name": "quicksight",
     "service_envvar_name": "AWS_ENDPOINT_URL_QUICKSIGHT"
@@ -1243,11 +1218,6 @@ private const val TEST_SUITE_JSON = """
     "service_id": "Resource Groups Tagging API",
     "services_section_name": "resource_groups_tagging_api",
     "service_envvar_name": "AWS_ENDPOINT_URL_RESOURCE_GROUPS_TAGGING_API"
-  },
-  {
-    "service_id": "RoboMaker",
-    "services_section_name": "robomaker",
-    "service_envvar_name": "AWS_ENDPOINT_URL_ROBOMAKER"
   },
   {
     "service_id": "RolesAnywhere",
@@ -1585,7 +1555,6 @@ private const val TEST_SUITE_JSON = """
 // language=JSON
 private const val JAVA_CLIENT_NAMES_JSON = """
 {
-  "LookoutMetrics": "LookoutMetricsClient",
   "AppRunner": "AppRunnerClient",
   "EC2": "Ec2Client",
   "Lex Models V2": "LexModelsV2Client",
@@ -1649,7 +1618,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "Lex Model Building Service": "LexModelBuildingClient",
   "Medical Imaging": "MedicalImagingClient",
   "Auto Scaling": "AutoScalingClient",
-  "RoboMaker": "RoboMakerClient",
   "SES": "SesClient",
   "Firehose": "FirehoseClient",
   "ivschat": "IvschatClient",
@@ -1773,7 +1741,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "CloudWatch Logs": "CloudWatchLogsClient",
   "Elastic Load Balancing v2": "ElasticLoadBalancingV2Client",
   "Kinesis Video Signaling": "KinesisVideoSignalingClient",
-  "LookoutVision": "LookoutVisionClient",
   "CloudSearch": "CloudSearchClient",
   "Route53Resolver": "Route53ResolverClient",
   "Connect Contact Lens": "ConnectContactLensClient",
@@ -1795,10 +1762,8 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "DynamoDB Streams": "DynamoDbStreamsClient",
   "ECR": "EcrClient",
   "Chime SDK Meetings": "ChimeSdkMeetingsClient",
-  "QLDB Session": "QldbSessionClient",
   "Resource Groups": "ResourceGroupsClient",
   "Route 53 Domains": "Route53DomainsClient",
-  "QLDB": "QldbClient",
   "Macie2": "Macie2Client",
   "Scheduler": "SchedulerClient",
   "Support App": "SupportAppClient",
@@ -1870,7 +1835,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "WorkDocs": "WorkDocsClient",
   "NetworkManager": "NetworkManagerClient",
   "Omics": "OmicsClient",
-  "IoTFleetHub": "IotFleetHubClient",
   "Cognito Sync": "CognitoSyncClient",
   "Outposts": "OutpostsClient",
   "Personalize": "PersonalizeClient",

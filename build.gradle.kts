@@ -7,7 +7,6 @@ import aws.sdk.kotlin.gradle.dsl.configureMinorVersionStrategyRules
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalPublishTask
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalWaitForPublicationTask
 import aws.sdk.kotlin.gradle.util.typedProp
-import aws.sdk.kotlin.gradle.kmp.configureIosSimulatorTasks
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -38,15 +37,6 @@ plugins {
     // ensure the correct version of KGP ends up on our buildscript classpath
     id(libs.plugins.kotlin.multiplatform.get().pluginId) apply false
     id(libs.plugins.kotlin.jvm.get().pluginId) apply false
-    alias(libs.plugins.aws.kotlin.repo.tools.artifactsizemetrics)
-    alias(libs.plugins.aws.kotlin.repo.tools.kmp)
-}
-
-artifactSizeMetrics {
-    artifactPrefixes = setOf(":services", ":aws-runtime")
-    closurePrefixes = setOf(":services")
-    significantChangeThresholdPercentage = 5.0
-    projectRepositoryName = "aws-sdk-kotlin"
 }
 
 val testJavaVersion = typedProp<String>("test.java.version")?.let {
@@ -75,8 +65,6 @@ allprojects {
 
     // Enables running `./gradlew allDeps` to get a comprehensive list of dependencies for every subproject
     tasks.register<DependencyReportTask>("allDeps") { }
-
-    configureIosSimulatorTasks()
 }
 
 // Configure root module's documentation
@@ -111,7 +99,7 @@ configureLinting(lintPaths)
 configureMinorVersionStrategyRules(lintPaths)
 
 tasks.register<SonatypeCentralPortalPublishTask>("publishToCentralPortal") {
-    timeoutDuration.set(170.minutes)
+    timeoutDuration.set(120.minutes)
     pollInterval.set(20.seconds)
 }
 tasks.register<SonatypeCentralPortalWaitForPublicationTask>("waitForCentralPortalPublication") { }

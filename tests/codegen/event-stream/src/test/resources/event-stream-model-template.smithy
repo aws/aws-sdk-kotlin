@@ -1,3 +1,5 @@
+$version: "2"
+
 namespace aws.sdk.kotlin.test
 
 use aws.protocols#restJson1
@@ -54,6 +56,8 @@ structure MessageWithHeaders {
     @eventHeader short: Short,
     @eventHeader string: String,
     @eventHeader timestamp: Timestamp,
+    @eventHeader enum: Enum,
+    @eventHeader intEnum: IntEnum,
 }
 structure MessageWithHeaderAndPayload {
     @eventHeader header: String,
@@ -80,4 +84,19 @@ union TestStream {
     MessageWithNoHeaderPayloadTraits: MessageWithNoHeaderPayloadTraits,
     MessageWithUnboundPayloadTraits: MessageWithUnboundPayloadTraits,
     SomeError: SomeError,
+}
+
+enum Enum {
+    DIAMOND
+    CLUB
+    HEART
+    SPADE
+}
+
+intEnum IntEnum {
+    JACK = 1
+    QUEEN = 2
+    KING = 3
+    ACE = 4
+    JOKER = 5
 }

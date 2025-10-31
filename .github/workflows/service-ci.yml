@@ -1,0 +1,52 @@
+name: Service CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Build and upload metrics
+        id: build
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          UPLOAD: 'true'
+          RELEASE_METRICS: 'false'
+          IDENTIFIER: ${{ github.ref_name }}
+        uses: aws-actions/aws-codebuild-run-build@v1
+        with:
+          project-name: aws-sdk-kotlin-service-build
+          source-version-override: ${{ github.ref }}
+          env-vars-for-codebuild: GITHUB_REPOSITORY, UPLOAD, RELEASE_METRICS, IDENTIFIER
+
+      - name: Process metrics
+        uses: awslabs/aws-kotlin-repo-tools/.github/actions/artifact-size-metrics/download-and-process@main
+        with:
+          download: 'true'
+
+      - name: Cancel
+        if: ${{ cancelled() }}
+        env:
+          BUILD_ID: ${{ steps.build.outputs.aws-build-id }}
+        run: |
+          if [ ! -z "$BUILD_ID"]; then
+            echo "Cancelling in-progress build: id=$BUILD_ID"
+            aws codebuild stop-build --id $BUILD_ID
+          fi
+
+concurrency:
+  group: service-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+

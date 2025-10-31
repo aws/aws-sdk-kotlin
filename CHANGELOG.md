@@ -1,5 +1,522 @@
 # Changelog
 
+## [1.5.72] - 10/30/2025
+
+### Features
+* (**amp**) Add Anomaly Detection APIs for Amazon Managed Prometheus
+* (**apigateway**) Update endpoint ruleset parameters casing
+* (**appconfig**) Update endpoint ruleset parameters casing
+* (**appflow**) Update endpoint ruleset parameters casing
+* (**applicationcostprofiler**) Update endpoint ruleset parameters casing
+* (**appmesh**) Update endpoint ruleset parameters casing
+* (**appsync**) Update endpoint ruleset parameters casing
+* (**artifact**) Update endpoint ruleset parameters casing
+* (**auditmanager**) Update endpoint ruleset parameters casing
+* (**bedrockagent**) Update endpoint ruleset parameters casing
+* (**bedrockagentcorecontrol**) Web-Bot-Auth support for AgentCore Browser tool to help reduce captcha challenges.
+* (**chime**) Update endpoint ruleset parameters casing
+* (**cleanrooms**) Added support for advanced Spark configurations to optimize SQL performance
+* (**cloudcontrol**) Update endpoint ruleset parameters casing
+* (**clouddirectory**) Update endpoint ruleset parameters casing
+* (**cloudsearch**) Update endpoint ruleset parameters casing
+* (**cloudwatch**) Update endpoint ruleset parameters casing
+* (**codecatalyst**) Update endpoint ruleset parameters casing
+* (**codecommit**) Update endpoint ruleset parameters casing
+* (**codedeploy**) Update endpoint ruleset parameters casing
+* (**cognitosync**) Update endpoint ruleset parameters casing
+* (**computeoptimizer**) Update endpoint ruleset parameters casing
+* (**connectcases**) Update endpoint ruleset parameters casing
+* (**deadline**) Update endpoint ruleset parameters casing
+* (**devopsguru**) Update endpoint ruleset parameters casing
+* (**docdb**) Adding FailoverState and TagList to GlobalCluster and SynchronizationStatus to GlobalClusterMember.
+* (**ecs**) Amazon ECS Service Connect now supports Envoy access logs, providing deeper observability into request-level traffic patterns and service interactions.
+* (**eksauth**) Update endpoint ruleset parameters casing
+* (**elasticache**) Update endpoint ruleset parameters casing
+* (**emrserverless**) This release adds the capability to enable User Background Sessions for customers running Trusted Identity Propagation enabled Interactive Sessions on EMR Serverless Applications.
+* (**firehose**) Update endpoint ruleset parameters casing
+* (**frauddetector**) Update endpoint ruleset parameters casing
+* (**geoplaces**) Update endpoint ruleset parameters casing
+* (**glue**) This release adds the capability to enable User Background Sessions for customers running Trusted Identity Propagation enabled Interactive Sessions on AWS Glue.
+* (**greengrassv2**) Update endpoint ruleset parameters casing
+* (**ioteventsdata**) Update endpoint ruleset parameters casing
+* (**iotmanagedintegrations**) Add a new GetManagedThingCertificate API to expose Iot ManagedIntegrations (MI) device certificate, and add  "-"  support for name, properties, actions and events in the CapabilityReportCapability object.
+* (**keyspacesstreams**) Update endpoint ruleset parameters casing
+* (**kms**) Add cross account VPC endpoint service connectivity support to CustomKeyStore.
+* (**licensemanagerlinuxsubscriptions**) Update endpoint ruleset parameters casing
+* (**marketplacereporting**) Update endpoint ruleset parameters casing
+* (**neptune**) Update endpoint ruleset parameters casing
+* (**s3outposts**) Update endpoint ruleset parameters casing
+* (**sagemakerruntime**) Update endpoint ruleset parameters casing
+* (**schemas**) Update endpoint ruleset parameters casing
+* (**serverlessapplicationrepository**) Update endpoint ruleset parameters casing
+* (**servicecatalog**) Update endpoint ruleset parameters casing
+* (**sso**) Update endpoint ruleset parameters casing
+* (**sts**) Update endpoint ruleset parameters casing
+
+### Documentation
+* (**rtbfabric**) RTB Fabric documentation update.
+
+## [1.5.71] - 10/29/2025
+
+### Features
+* (**bedrockruntime**) Add support for system tool and web citation response.
+
+## [1.5.70] - 10/28/2025
+
+### Features
+* (**apigatewayv2**) Update endpoint ruleset parameters casing
+* (**applicationsignals**) Added support for CloudWatch Synthetics Canary resources in ListAuditFindings API. This enhancement allows customers to retrieve audit findings specifically for CloudWatch Synthetics canaries and enables service-canary correlation analysis.
+* (**backupsearch**) Update endpoint ruleset parameters casing
+* (**bcmpricingcalculator**) Update endpoint ruleset parameters casing
+* (**bedrockagentruntime**) Update endpoint ruleset parameters casing
+* (**bedrockruntime**) Update endpoint ruleset parameters casing
+* (**cleanroomsml**) Update endpoint ruleset parameters casing
+* (**cloud9**) Update endpoint ruleset parameters casing
+* (**cloudsearchdomain**) Update endpoint ruleset parameters casing
+* (**cloudwatchevents**) Update endpoint ruleset parameters casing
+* (**codeconnections**) Update endpoint ruleset parameters casing
+* (**codegurusecurity**) Update endpoint ruleset parameters casing
+* (**detective**) Update endpoint ruleset parameters casing
+* (**ec2**) This released the DescribeCapacityReservationTopology API.
+* (**ecs**) Amazon ECS supports native linear and canary service deployments, allowing you to shift traffic in increments for more control.
+* (**efs**) Update endpoint ruleset parameters casing
+* (**elastictranscoder**) Update endpoint ruleset parameters casing
+* (**emrcontainers**) Update endpoint ruleset parameters casing
+* (**gameliftstreams**) Add stream group expiration date and expired status
+* (**glacier**) Update endpoint ruleset parameters casing
+* (**groundstation**) Enable use of AzEl ephemerides
+* (**inspectorscan**) Update endpoint ruleset parameters casing
+* (**kafkaconnect**) Update endpoint ruleset parameters casing
+* (**kendra**) Update endpoint ruleset parameters casing
+* (**kinesisvideo**) Update endpoint ruleset parameters casing
+* (**lambda**) Added SerializedRequestEntityTooLargeException to Lambda Invoke API
+* (**marketplacedeployment**) Update endpoint ruleset parameters casing
+* (**mediapackagevod**) Update endpoint ruleset parameters casing
+* (**migrationhuborchestrator**) Update endpoint ruleset parameters casing
+* (**notifications**) Update endpoint ruleset parameters casing
+* (**opensearch**) Update endpoint ruleset parameters casing
+* (**organizations**) Added Account State field to the ListDelegatedAdministrators API response.
+* (**partnercentralselling**) Update endpoint ruleset parameters casing
+* (**pipes**) Update endpoint ruleset parameters casing
+* (**ram**) Update endpoint ruleset parameters casing
+* (**resourcegroups**) Update endpoint ruleset parameters casing
+* (**s3**) Amazon Simple Storage Service / Features: Add conditional writes in CopyObject on destination key to prevent unintended object modifications.
+* (**s3control**) Update endpoint ruleset parameters casing
+* (**sagemaker**) Amazon SageMaker now supports deleting training and processing jobs in a terminal status.
+* (**sagemakerfeaturestoreruntime**) Update endpoint ruleset parameters casing
+* (**securityir**) Update endpoint ruleset parameters casing
+* (**servicecatalogappregistry**) Update endpoint ruleset parameters casing
+* (**sqs**) Update endpoint ruleset parameters casing
+* (**supportapp**) Update endpoint ruleset parameters casing
+* (**taxsettings**) Update endpoint ruleset parameters casing
+* (**transcribestreaming**) Update endpoint ruleset parameters casing
+* (**trustedadvisor**) Update endpoint ruleset parameters casing
+* (**workspaces**) Added IPv6 address support for WorkSpaces using Dual-Stack subnets
+* (**workspacesinstances**) Update endpoint ruleset parameters casing
+* (**xray**) Update endpoint ruleset parameters casing
+
+### Miscellaneous
+* Remove QLDB, QLDB Session, RoboMaker, LookoutMetrics, LookoutVision, IoTFleetHub, and AppTest services
+
+## [1.5.69] - 10/27/2025
+
+### Features
+* (**accessanalyzer**) Update endpoint ruleset parameters casing
+* (**aiops**) Update endpoint ruleset parameters casing
+* (**athena**) Update endpoint ruleset parameters casing
+* (**backupgateway**) Update endpoint ruleset parameters casing
+* (**bedrockdataautomation**) Update endpoint ruleset parameters casing
+* (**braket**) Update endpoint ruleset parameters casing
+* (**chimesdkidentity**) Update endpoint ruleset parameters casing
+* (**chimesdkmediapipelines**) Update endpoint ruleset parameters casing
+* (**codeartifact**) Update endpoint ruleset parameters casing
+* (**codeguruprofiler**) Update endpoint ruleset parameters casing
+* (**cognitoidentityprovider**) Update endpoint ruleset parameters casing
+* (**comprehend**) Update endpoint ruleset parameters casing
+* (**connectcampaigns**) Update endpoint ruleset parameters casing
+* (**controltower**) Update endpoint ruleset parameters casing
+* (**costexplorer**) Updated endpoint for eusc-de-east-1 region.
+* (**costoptimizationhub**) Update endpoint ruleset parameters casing
+* (**dax**) Update endpoint ruleset parameters casing
+* (**elasticbeanstalk**) Update endpoint ruleset parameters casing
+* (**entityresolution**) Update endpoint ruleset parameters casing
+* (**forecast**) Update endpoint ruleset parameters casing
+* (**greengrass**) Update endpoint ruleset parameters casing
+* (**iam**) Fixed missing SummaryMap keys in GetAccountSummary response that were being filtered out during deserialization in AWS Java SDK v2
+* (**invoicing**) Update endpoint ruleset parameters casing
+* (**kinesis**) Adds support for record sizes up to 10MiB and introduces new UpdateMaxRecordSize API to modify stream record size limits. Adds record size parameters to existing CreateStream and DescribeStreamSummary APIs for request and response payloads respectively.
+* (**launchwizard**) Update endpoint ruleset parameters casing
+* (**lexruntimeservice**) Update endpoint ruleset parameters casing
+* (**managedblockchain**) Update endpoint ruleset parameters casing
+* (**mturk**) Update endpoint ruleset parameters casing
+* (**neptunegraph**) Update endpoint ruleset parameters casing
+* (**outposts**) Update endpoint ruleset parameters casing
+* (**pinpoint**) Update endpoint ruleset parameters casing
+* (**rbin**) Update endpoint ruleset parameters casing
+* (**rdsdata**) Update endpoint ruleset parameters casing
+* (**redshiftserverless**) Update endpoint ruleset parameters casing
+* (**rekognition**) Update endpoint ruleset parameters casing
+* (**repostspace**) Update endpoint ruleset parameters casing
+* (**route53profiles**) Update endpoint ruleset parameters casing
+* (**route53resolver**) Update endpoint ruleset parameters casing
+* (**s3vectors**) Update endpoint ruleset parameters casing
+* (**scheduler**) Update endpoint ruleset parameters casing
+* (**secretsmanager**) Update endpoint ruleset parameters casing
+* (**ses**) Update endpoint ruleset parameters casing
+* (**sfn**) Update endpoint ruleset parameters casing
+* (**shield**) Update endpoint ruleset parameters casing
+* (**simspaceweaver**) Update endpoint ruleset parameters casing
+* (**socialmessaging**) Update endpoint ruleset parameters casing
+* (**ssmsap**) Update endpoint ruleset parameters casing
+* (**ssoadmin**) Update endpoint ruleset parameters casing
+* (**wafregional**) Update endpoint ruleset parameters casing
+* (**workmailmessageflow**) Update endpoint ruleset parameters casing
+
+## [1.5.68] - 10/24/2025
+
+### Features
+* (**acm**) Update endpoint ruleset parameters casing
+* (**amplifyuibuilder**) Update endpoint ruleset parameters casing
+* (**applicationsignals**) Update endpoint ruleset parameters casing
+* (**billing**) Update endpoint ruleset parameters casing
+* (**budgets**) Update endpoint ruleset parameters casing
+* (**chimesdkmessaging**) Update endpoint ruleset parameters casing
+* (**cloudtrail**) Update endpoint ruleset parameters casing
+* (**codepipeline**) Update endpoint ruleset parameters casing
+* (**datapipeline**) Update endpoint ruleset parameters casing
+* (**datazone**) This release adds support for MLflow connections Creation in DataZone
+* (**docdb**) Update endpoint ruleset parameters casing
+* (**dynamodbstreams**) Update endpoint ruleset parameters casing
+* (**eks**) Update endpoint ruleset parameters casing
+* (**elasticloadbalancing**) Update endpoint ruleset parameters casing
+* (**evs**) Update endpoint ruleset parameters casing
+* (**fis**) Update endpoint ruleset parameters casing
+* (**gameliftstreams**) Add status reasons for TERMINATED stream sessions
+* (**geomaps**) Added support for optional AdditionalFeatures parameter in the V2 GetTile API.
+* (**inspector**) Update endpoint ruleset parameters casing
+* (**iotmanagedintegrations**) Update endpoint ruleset parameters casing
+* (**iotwireless**) Update endpoint ruleset parameters casing
+* (**kinesisanalytics**) Update endpoint ruleset parameters casing
+* (**kinesisvideosignaling**) Update endpoint ruleset parameters casing
+* (**location**) Added support for mobile app restrictions in Amazon Location API keys.
+* (**lookoutvision**) Update endpoint ruleset parameters casing
+* (**mediapackage**) Update endpoint ruleset parameters casing
+* (**mediastore**) Update endpoint ruleset parameters casing
+* (**mediastoredata**) Update endpoint ruleset parameters casing
+* (**migrationhubstrategy**) Update endpoint ruleset parameters casing
+* (**mq**) Update endpoint ruleset parameters casing
+* (**panorama**) Update endpoint ruleset parameters casing
+* (**paymentcryptography**) Update endpoint ruleset parameters casing
+* (**paymentcryptographydata**) Update endpoint ruleset parameters casing
+* (**pcaconnectorad**) Update endpoint ruleset parameters casing
+* (**qbusiness**) Update endpoint ruleset parameters casing
+* (**robomaker**) Update endpoint ruleset parameters casing
+* (**route53domains**) Update endpoint ruleset parameters casing
+* (**rtbfabric**) Add support for custom rate limits.
+* (**s3tables**) Update endpoint ruleset parameters casing
+* (**sagemaker**) Added inference components model data caching feature
+* (**sagemakermetrics**) Update endpoint ruleset parameters casing
+* (**securityhub**) Release 3 layer filter support in GetFindingsV2, GetFindingStatisticsV2, GetResourcesV2,GetResourcesStatisticsV2, AutomationRule V2 APIs. Update filter casing in GetResourcesV2, GetResourcesStatisticsV2 APIs. Add new filters in GetFindingsV2, GetFindingStatisticsV2, AutomationRule V2 APIs.
+* (**servicediscovery**) Update endpoint ruleset parameters casing
+* (**snowdevicemanagement**) Update endpoint ruleset parameters casing
+* (**ssooidc**) Update endpoint ruleset parameters casing
+* (**supplychain**) Update endpoint ruleset parameters casing
+* (**translate**) Update endpoint ruleset parameters casing
+* (**verifiedpermissions**) Update endpoint ruleset parameters casing
+* (**vpclattice**) Update endpoint ruleset parameters casing
+* (**wisdom**) Update endpoint ruleset parameters casing
+* (**workspacesthinclient**) Update endpoint ruleset parameters casing
+
+### Fixes
+* [#1717](https://github.com/aws/aws-sdk-kotlin/issues/1717) Correctly route applicationId to requests made by internal clients
+
+## [1.5.67] - 10/23/2025
+
+### Features
+* (**account**) Update endpoint ruleset parameters casing
+* (**applicationautoscaling**) Update endpoint ruleset parameters casing
+* (**applicationdiscoveryservice**) Update endpoint ruleset parameters casing
+* (**bedrockagentcore**) Fixing the service documentation name
+* (**bedrockagentcorecontrol**) Fixing the service documentation name
+* (**chimesdkvoice**) Update endpoint ruleset parameters casing
+* (**cloudtraildata**) Update endpoint ruleset parameters casing
+* (**codebuild**) Update endpoint ruleset parameters casing
+* (**codestarconnections**) Update endpoint ruleset parameters casing
+* (**configservice**) Update endpoint ruleset parameters casing
+* (**connectcontactlens**) Update endpoint ruleset parameters casing
+* (**costandusagereportservice**) Update endpoint ruleset parameters casing
+* (**databasemigrationservice**) Update endpoint ruleset parameters casing
+* (**docdbelastic**) Update endpoint ruleset parameters casing
+* (**drs**) Update endpoint ruleset parameters casing
+* (**dsql**) Add support for resource-based policies for Aurora DSQL clusters. This will enable you to implement Block Public Access (BPA) which will help restrict access to your Aurora DSQL public or VPC endpoints.
+* (**ebs**) Update endpoint ruleset parameters casing
+* (**ecr**) Update endpoint ruleset parameters casing
+* (**ecrpublic**) Update endpoint ruleset parameters casing
+* (**healthlake**) Update endpoint ruleset parameters casing
+* (**internetmonitor**) Update endpoint ruleset parameters casing
+* (**iotevents**) Update endpoint ruleset parameters casing
+* (**iotjobsdataplane**) Update endpoint ruleset parameters casing
+* (**kinesisvideoarchivedmedia**) Update endpoint ruleset parameters casing
+* (**kinesisvideowebrtcstorage**) Update endpoint ruleset parameters casing
+* (**lambda**) Add NodeJs 24 (nodejs24.x) support to AWS Lambda.
+* (**macie2**) Update endpoint ruleset parameters casing
+* (**managedblockchainquery**) Update endpoint ruleset parameters casing
+* (**marketplacecommerceanalytics**) Update endpoint ruleset parameters casing
+* (**mediatailor**) Update endpoint ruleset parameters casing
+* (**mgn**) Update endpoint ruleset parameters casing
+* (**migrationhub**) Update endpoint ruleset parameters casing
+* (**mpa**) Update endpoint ruleset parameters casing
+* (**neptunedata**) Update endpoint ruleset parameters casing
+* (**networkmonitor**) Update endpoint ruleset parameters casing
+* (**omics**) Update endpoint ruleset parameters casing
+* (**opensearchserverless**) Update endpoint ruleset parameters casing
+* (**pcaconnectorscep**) Update endpoint ruleset parameters casing
+* (**personalizeevents**) Update endpoint ruleset parameters casing
+* (**pinpointemail**) Update endpoint ruleset parameters casing
+* (**resiliencehub**) Update endpoint ruleset parameters casing
+* (**rum**) Update endpoint ruleset parameters casing
+* (**sagemaker**) Update endpoint ruleset parameters casing
+* (**sagemakeredge**) Update endpoint ruleset parameters casing
+* (**savingsplans**) Update endpoint ruleset parameters casing
+* (**securitylake**) Update endpoint ruleset parameters casing
+* (**sesv2**) Update endpoint ruleset parameters casing
+* (**storagegateway**) Update endpoint ruleset parameters casing
+* (**synthetics**) Update endpoint ruleset parameters casing
+
+### Documentation
+* (**odb**) Doc-only update that removes duplicate values from descriptions of ODB peering APIs.
+
+## [1.5.66] - 10/22/2025
+
+### Features
+* (**appfabric**) Update endpoint ruleset parameters casing
+* (**autoscaling**) Update endpoint ruleset parameters casing
+* (**b2bi**) Update endpoint ruleset parameters casing
+* (**bcmdashboards**) Update endpoint ruleset parameters casing
+* (**chatbot**) Update endpoint ruleset parameters casing
+* (**cloudformation**) Update endpoint ruleset parameters casing
+* (**cloudhsm**) Update endpoint ruleset parameters casing
+* (**cloudhsmv2**) Update endpoint ruleset parameters casing
+* (**codegurureviewer**) Update endpoint ruleset parameters casing
+* (**cognitoidentity**) Update endpoint ruleset parameters casing
+* (**comprehendmedical**) Update endpoint ruleset parameters casing
+* (**connect**) This release added support for email address alias configuration and outbound campaign preview mode.
+* (**connectcampaignsv2**) Updated Amazon Connect Outbound Campaigns V2 SDK to support Preview Outbound Mode
+* (**connectparticipant**) Update endpoint ruleset parameters casing
+* (**costexplorer**) Update endpoint ruleset parameters casing
+* (**devicefarm**) This release adds support for optionally including an app as part of a CreateRemoteAccessSession request
+* (**directconnect**) Update endpoint ruleset parameters casing
+* (**directoryservicedata**) Update endpoint ruleset parameters casing
+* (**ec2**) This release adds AvailabilityZoneId support for CreateNetworkInterface and DescribeNetworkInterfaces APIs.
+* (**ec2instanceconnect**) Update endpoint ruleset parameters casing
+* (**forecastquery**) Update endpoint ruleset parameters casing
+* (**iam**) Updated OIDC and SAML apis to reject multiple simultaneous requests to change a unique object.
+* (**inspector2**) Update endpoint ruleset parameters casing
+* (**iot**) Update endpoint ruleset parameters casing
+* (**iotanalytics**) Update endpoint ruleset parameters casing
+* (**iotfleetwise**) Update endpoint ruleset parameters casing
+* (**iotsecuretunneling**) Update endpoint ruleset parameters casing
+* (**iotsitewise**) Update endpoint ruleset parameters casing
+* (**ivschat**) Update endpoint ruleset parameters casing
+* (**kinesisanalyticsv2**) Update endpoint ruleset parameters casing
+* (**lexmodelsv2**) Update endpoint ruleset parameters casing
+* (**mailmanager**) Update endpoint ruleset parameters casing
+* (**marketplaceagreement**) Update endpoint ruleset parameters casing
+* (**medialive**) Add 3 API operations for fetching alerts: ListAlerts (Channels), ListClusterAlerts (MediaLive Anywhere), and ListMultiplexAlerts
+* (**mwaa**) Update endpoint ruleset parameters casing
+* (**notificationscontacts**) Update endpoint ruleset parameters casing
+* (**oam**) Update endpoint ruleset parameters casing
+* (**pcs**) Update endpoint ruleset parameters casing
+* (**pinpointsmsvoicev2**) Update endpoint ruleset parameters casing
+* (**redshiftdata**) Update endpoint ruleset parameters casing
+* (**route53**) Amazon Route 53 now supports the ISOB West Region for private DNS for Amazon VPCs and cloudwatch healthchecks.
+* (**route53recoverycluster**) Update endpoint ruleset parameters casing
+* (**rtbfabric**) Update for general availability of AWS RTB Fabric service.
+* (**sagemakera2iruntime**) Update endpoint ruleset parameters casing
+* (**sns**) Update endpoint ruleset parameters casing
+* (**ssmincidents**) Update endpoint ruleset parameters casing
+* (**workdocs**) Update endpoint ruleset parameters casing
+* (**workmail**) Update endpoint ruleset parameters casing
+* (**workspaces**) Update endpoint ruleset parameters casing
+
+## [1.5.65] - 10/21/2025
+
+### Features
+* (**dynamodb**) Add AccountID based endpoint metric to endpoint rules.
+* (**emr**) Added RECONFIGURING to the InstanceFleetState convenience enum.
+* (**marketplacemetering**) Added ClientToken parameter to MeterUsage API for specifying idempotent requests.
+* (**mediaconvert**) This release adds the ability to set resolution for the black video generator and also adds the StartJobsQuery and GetJobsQueryResults APIs which allow asynchronous search of job history using new filters.
+
+## [1.5.64] - 10/17/2025
+
+### Features
+* (**amp**) Update endpoint ruleset parameters casing
+* (**amplifybackend**) Update endpoint ruleset parameters casing
+* (**appconfigdata**) Update endpoint ruleset parameters casing
+* (**appintegrations**) Update endpoint ruleset parameters casing
+* (**applicationinsights**) Update endpoint ruleset parameters casing
+* (**arczonalshift**) Update endpoint ruleset parameters casing
+* (**bcmrecommendedactions**) Update endpoint ruleset parameters casing
+* (**bedrockdataautomationruntime**) Update endpoint ruleset parameters casing
+* (**chimesdkmeetings**) Update endpoint ruleset parameters casing
+* (**cloudfront**) Update endpoint ruleset parameters casing
+* (**cloudfrontkeyvaluestore**) Update endpoint ruleset parameters casing
+* (**codestarnotifications**) Update endpoint ruleset parameters casing
+* (**controlcatalog**) Update endpoint ruleset parameters casing
+* (**datasync**) Update endpoint ruleset parameters casing
+* (**directoryservice**) Update endpoint ruleset parameters casing
+* (**dsql**) Update endpoint ruleset parameters casing
+* (**elasticsearchservice**) Update endpoint ruleset parameters casing
+* (**eventbridge**) Update endpoint ruleset parameters casing
+* (**evidently**) Update endpoint ruleset parameters casing
+* (**finspace**) Update endpoint ruleset parameters casing
+* (**finspacedata**) Update endpoint ruleset parameters casing
+* (**geomaps**) Added support for optional style parameters in maps, including Terrain, ContourDensity, Traffic, and TravelModes.
+* (**imagebuilder**) Update endpoint ruleset parameters casing
+* (**iotdataplane**) Update endpoint ruleset parameters casing
+* (**iotdeviceadvisor**) Update endpoint ruleset parameters casing
+* (**iotthingsgraph**) Update endpoint ruleset parameters casing
+* (**iottwinmaker**) Update endpoint ruleset parameters casing
+* (**kendraranking**) Update endpoint ruleset parameters casing
+* (**kinesisvideomedia**) Update endpoint ruleset parameters casing
+* (**lakeformation**) Update endpoint ruleset parameters casing
+* (**licensemanager**) Update endpoint ruleset parameters casing
+* (**licensemanagerusersubscriptions**) Update endpoint ruleset parameters casing
+* (**marketplacecatalog**) The ListEntities API now supports two new CAPI filters: DeliveryOptionTypes for SaaS products and CompatibleAWSServices for Container products.
+* (**mediaconnect**) Update endpoint ruleset parameters casing
+* (**migrationhubrefactorspaces**) Update endpoint ruleset parameters casing
+* (**networkfirewall**) Update endpoint ruleset parameters casing
+* (**networkmanager**) Update endpoint ruleset parameters casing
+* (**organizations**) Update endpoint ruleset parameters casing
+* (**pi**) Update endpoint ruleset parameters casing
+* (**qapps**) Update endpoint ruleset parameters casing
+* (**rolesanywhere**) Update endpoint ruleset parameters casing
+* (**route53recoveryreadiness**) Update endpoint ruleset parameters casing
+* (**sagemakergeospatial**) Update endpoint ruleset parameters casing
+* (**signer**) Update endpoint ruleset parameters casing
+* (**swf**) Releasing minor endpoint updates.
+* (**timestreamwrite**) Update endpoint ruleset parameters casing
+* (**tnb**) Update endpoint ruleset parameters casing
+* (**wellarchitected**) Update endpoint ruleset parameters casing
+
+### Fixes
+* [#1444](https://github.com/smithy-lang/smithy-kotlin/issues/1444) Bump **smithy-kotlin** to **v1.5.15** to pick up fixes for codegen member/package collision
+
+### Documentation
+* (**ec2**) Documentation updates for Amazon EC2.
+* (**gameliftstreams**) Updates documentation to clarify valid application binaries for an Amazon GameLift Streams application and provide descriptions of stream session error status reasons
+
+## [1.5.63] - 10/16/2025
+
+### Features
+* (**acmpca**) Update endpoint ruleset parameters casing
+* (**amplify**) Update endpoint ruleset parameters casing
+* (**apigatewaymanagementapi**) Update endpoint ruleset parameters casing
+* (**apprunner**) Update endpoint ruleset parameters casing
+* (**apptest**) Update endpoint ruleset parameters casing
+* (**autoscalingplans**) Updated FIPS endpoints for US GovCloud regions
+* (**batch**) Update endpoint ruleset parameters casing
+* (**bcmdataexports**) Update endpoint ruleset parameters casing
+* (**billingconductor**) New feature: service flat CLI and first AWS managed pricing plan (BasicPricingPlan)
+* (**customerprofiles**) Update endpoint ruleset parameters casing
+* (**databrew**) Update endpoint ruleset parameters casing
+* (**dataexchange**) Update endpoint ruleset parameters casing
+* (**dlm**) Update endpoint ruleset parameters casing
+* (**freetier**) Update endpoint ruleset parameters casing
+* (**gamelift**) Update endpoint ruleset parameters casing
+* (**georoutes**) Update endpoint ruleset parameters casing
+* (**globalaccelerator**) Update endpoint ruleset parameters casing
+* (**grafana**) Update endpoint ruleset parameters casing
+* (**identitystore**) Update endpoint ruleset parameters casing
+* (**ivs**) Update endpoint ruleset parameters casing
+* (**ivsrealtime**) Update endpoint ruleset parameters casing
+* (**kafka**) Update endpoint ruleset parameters casing
+* (**keyspaces**) Update endpoint ruleset parameters casing
+* (**kms**) Update endpoint ruleset parameters casing
+* (**lexmodelbuildingservice**) Update endpoint ruleset parameters casing
+* (**lexruntimev2**) Update endpoint ruleset parameters casing
+* (**lookoutequipment**) Update endpoint ruleset parameters casing
+* (**m2**) Update endpoint ruleset parameters casing
+* (**machinelearning**) Update endpoint ruleset parameters casing
+* (**marketplaceentitlementservice**) Update endpoint ruleset parameters casing
+* (**mediapackagev2**) Update endpoint ruleset parameters casing
+* (**medicalimaging**) Update endpoint ruleset parameters casing
+* (**memorydb**) Update endpoint ruleset parameters casing
+* (**migrationhubconfig**) Update endpoint ruleset parameters casing
+* (**networkflowmonitor**) Update endpoint ruleset parameters casing
+* (**osis**) Update endpoint ruleset parameters casing
+* (**personalize**) Update endpoint ruleset parameters casing
+* (**personalizeruntime**) Update endpoint ruleset parameters casing
+* (**pinpointsmsvoice**) Update endpoint ruleset parameters casing
+* (**polly**) Update endpoint ruleset parameters casing
+* (**pricing**) Update endpoint ruleset parameters casing
+* (**qldb**) Update endpoint ruleset parameters casing
+* (**qldbsession**) Update endpoint ruleset parameters casing
+* (**route53recoverycontrolconfig**) Update endpoint ruleset parameters casing
+* (**ssm**) Update endpoint ruleset parameters casing
+* (**ssmcontacts**) Update endpoint ruleset parameters casing
+* (**ssmguiconnect**) Update endpoint ruleset parameters casing
+* (**timestreamquery**) Update endpoint ruleset parameters casing
+* (**voiceid**) Update endpoint ruleset parameters casing
+* (**workspacesweb**) Update endpoint ruleset parameters casing
+
+## [1.5.62] - 10/15/2025
+
+### Features
+* (**bedrock**) Amazon Bedrock Automated Reasoning Policy now offers enhanced AWS KMS integration. The CreateAutomatedReasoningPolicy API includes a new kmsKeyId field, allowing customers to specify their preferred KMS key for encryption, improving control and compliance with AWS encryption mandates.
+* (**docdb**) Add support for NetworkType field in CreateDbCluster, ModifyDbCluster, RestoreDbClusterFromSnapshot and RestoreDbClusterToPointInTime for DocumentDB.
+* (**ec2**) Introducing EC2 Capacity Manager for monitoring and analyzing capacity usage across On-Demand Instances, Spot Instances, and Capacity Reservations.
+* (**elasticloadbalancingv2**) This release expands Listener Rule Conditions to support RegexValues and adds support for a new Transforms field in Listener Rules.
+* (**guardduty**) Added default pagination value for ListMalwareProtectionPlans API and updated UpdateFindingsFeedback API
+* (**lightsail**) Add support for manage Lightsail Bucket CORS configuration
+* (**timestreaminfluxdb**) This release adds support for creating and managing InfluxDB 3 Core and Enterprise DbClusters.
+
+## [1.5.61] - 10/14/2025
+
+### Features
+* (**appstream**) This release introduces support for Microsoft license included applications streaming.
+* (**backup**) The AWS Backup job attribute extension enhancement helps customers better understand the plan that initiated each job, and the properties of the resource each job creates.
+* (**connect**) SDK release for TaskTemplateInfo in Contact for DescribeContact response.
+* (**datazone**) Support creating scoped and trustedIdentityPropagation enabled connections.
+* (**ec2**) This release adds support for creating instant, point-in-time copies of EBS volumes within the same Availability Zone
+* (**transcribe**) Move UntagResource API body member to query parameter
+* (**transfer**) SFTP connectors now support routing connections via customers' VPC. This enables connections to remote servers that are only accessible in a customer's VPC environment, and to servers that are accessible over the internet but need connections coming from an IP address in a customer VPC's CIDR range.
+
+## [1.5.60] - 10/13/2025
+
+### Features
+* (**bedrockagentcore**) Updated InvokeAgentRuntime API to accept account id optionally and added CompleteResourceTokenAuth API.
+* (**bedrockagentcorecontrol**) Updated http status code in control plane apis of agentcore runtime, tools and identity. Additional included provider types for AgentCore Identity
+* (**ec2**) Release Amazon EC2 c8i, c8i-flex, m8a, and r8gb
+* (**observabilityadmin**) CloudWatch Observability Admin adds the ability to enable Resource tags for telemetry in a customer account. The release introduces new APIs to enable, disable and describe the status of Resource tags for telemetry feature. This new capability simplifies monitoring AWS resources using tags.
+
+## [1.5.59] - 10/10/2025
+
+### Features
+* (**bedrockagentcore**) Bedrock AgentCore release for Runtime, and Memory.
+* (**bedrockagentcorecontrol**) Bedrock AgentCore release for Gateway, and Memory including Self-Managed Strategies support for Memory.
+* (**cloudfront**) Added new viewer security policy, TLSv1.2_2025, for CloudFront.
+* (**glue**) Addition of AuditContext in GetTable/GetTables Request
+* (**lambda**) Add InvokedViaFunctionUrl context key to limit invocations to only FURL invokes.
+* (**odb**) This release adds APIs that allow you to specify CIDR ranges in your ODB peering connection.
+
+### Documentation
+* (**rds**) Updated the text in the Important section of the ModifyDBClusterParameterGroup page.
+
+## [1.5.58] - 10/09/2025
+
+### Features
+* (**quicksight**) This release adds support for ActionConnector and Flow, which are new resources associated with Amazon Quick Suite. Additional updates include expanded Data Source options, further branding customization, and new capabilities that can be restricted by Admins.
+* (**wafv2**) This release adds the ability to throw WafLimitsExceededException when the maximum number of Application Load Balancer (ALB) associations per AWS WAF v2 WebACL is exceeded.
+
+## [1.5.57] - 10/08/2025
+
+### Features
+* (**bedrockagentcorecontrol**) Adding support for authorizer type AWS_IAM to AgentCore Control Gateway.
+* (**licensemanagerusersubscriptions**) Released support for IPv6 and dual-stack active directories
+* (**outposts**) This release adds the new StartOutpostDecommission API, which starts the decommission process to return Outposts racks or servers.
+* (**servicequotas**) introduces Service Quotas Automatic Management. Users can opt-in to monitoring and managing service quotas, receive notifications when quota usage reaches thresholds, configure notification channels, subscribe to EventBridge events for automation, and view notifications in the AWS Health dashboard.
+
 ## [1.5.56] - 10/07/2025
 
 ### Features
