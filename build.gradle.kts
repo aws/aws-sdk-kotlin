@@ -103,7 +103,7 @@ configureLinting(lintPaths)
 configureMinorVersionStrategyRules(lintPaths)
 
 tasks.register<SonatypeCentralPortalPublishTask>("publishToCentralPortal") {
-    timeoutDuration.set(120.minutes)
+    timeoutDuration.set(150.minutes)
     pollInterval.set(20.seconds)
 }
 tasks.register<SonatypeCentralPortalWaitForPublicationTask>("waitForCentralPortalPublication") { }
