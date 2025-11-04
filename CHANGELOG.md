@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.75] - 11/04/2025
+
+### Features
+* (**pinpointsmsvoicev2**) This release adds support for the CarrierLookup API, which returns information about a destination phone number including if the number is valid, the carrier, and more.
+
 ## [1.5.74] - 11/03/2025
 
 ### Features
