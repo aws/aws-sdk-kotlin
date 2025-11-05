@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.5.76] - 11/05/2025
+
+### Features
+* (**cloudfront**) This release adds new and updated API operations. You can now use the IpAddressType field to specify either ipv4 or dualstack for your Anycast static IP list. You can also enable cross-account resource sharing to share your VPC origins with other AWS accounts
+* (**datazone**) Added support for Project Resource Tags
+* (**ec2**) This release adds AvailabilityZoneId support for DescribeFastSnapshotRestores, DisableFastSnapshotRestores, and EnableFastSnapshotRestores APIs.
+* (**fsx**) Amazon FSx now enables secure management of Active Directory credentials through AWS Secrets Manager integration. Customers can use Secret ARNs instead of direct credentials when joining resources to Active Directory domains.
+* (**groundstation**) Introduce CreateDataflowEndpointGroupV2 action
+* (**s3**) Launch IPv6 dual-stack support for S3 Express
+* (**sagemaker**) Add new fields in SageMaker Hyperpod DescribeCluster API response: TargetStateCount, SoftwareUpdateStatus and ActiveSoftwareDeploymentConfig to provide AMI update progress visibility .
+
 ## [1.5.75] - 11/04/2025
 
 ### Features
