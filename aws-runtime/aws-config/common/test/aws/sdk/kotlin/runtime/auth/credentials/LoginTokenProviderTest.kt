@@ -57,7 +57,7 @@ class LoginTokenProviderTest {
                     val outcomeObj = outcome.jsonObject
                     val result = outcomeObj["result"]!!.jsonPrimitive.content
                     when (result) {
-                        "credentials" -> TestOutcome.Success(
+                        "credentials" -> TestOutcome.Credentials(
                             accessKeyId = outcomeObj["accessKeyId"]!!.jsonPrimitive.content,
                             secretAccessKey = outcomeObj["secretAccessKey"]!!.jsonPrimitive.content,
                             sessionToken = outcomeObj["sessionToken"]!!.jsonPrimitive.content,
@@ -67,7 +67,10 @@ class LoginTokenProviderTest {
                         "cacheContents" -> TestOutcome.CacheContents(
                             cacheContents = outcomeObj.filterKeys { it != "result" }.mapValues { it.value.toString() },
                         )
-                        else -> TestOutcome.Error
+                        "error" -> TestOutcome.Error(
+                            message = outcomeObj["message"]!!.jsonPrimitive.content
+                        )
+                        else -> error("Unknown result type: $result")
                     }
                 }
                 return LoginTestCase(name, configContents, cacheContents, mockApiCalls, outcomes)
@@ -76,7 +79,7 @@ class LoginTokenProviderTest {
     }
 
     private sealed class TestOutcome {
-        data class Success(
+        data class Credentials(
             val accessKeyId: String,
             val secretAccessKey: String,
             val sessionToken: String,
@@ -88,7 +91,7 @@ class LoginTokenProviderTest {
             val cacheContents: Map<String, String>,
         ) : TestOutcome()
 
-        object Error : TestOutcome()
+        data class Error(val message: String) : TestOutcome()
     }
 
     @Test
@@ -118,12 +121,9 @@ class LoginTokenProviderTest {
 
             val testClock = ManualClock(Instant.fromIso8601("2025-11-19T00:00:00Z"))
 
-            val originalTestCase = testList[idx].jsonObject
-            val mockApiCalls = originalTestCase["mockApiCalls"]?.jsonArray
-
             val httpClient = if (testCase.mockApiCalls != null) {
                 buildTestConnection {
-                    mockApiCalls!!.forEach { mockCall ->
+                    testCase.mockApiCalls.forEach { mockCall ->
                         val responseCode = mockCall.jsonObject["responseCode"]?.jsonPrimitive?.int ?: 200
                         val statusCode = HttpStatusCode.fromValue(responseCode)
                         if (responseCode == 200) {
@@ -155,7 +155,7 @@ class LoginTokenProviderTest {
 
             testCase.outcomes.forEach { expectedOutcome ->
                 when (expectedOutcome) {
-                    is TestOutcome.Success -> {
+                    is TestOutcome.Credentials -> {
                         // Verify that credentials are successfully resolved and match expected values
                         val credentials = tokenProvider.resolve()
                         assertEquals(expectedOutcome.accessKeyId, credentials.accessKeyId, "[idx=$idx]: $testCase")
@@ -187,9 +187,14 @@ class LoginTokenProviderTest {
                     }
 
                     is TestOutcome.Error -> {
-                        assertFails("[idx=$idx]: $testCase") {
+                        val exception = assertFails("[idx=$idx]: $testCase") {
                             tokenProvider.resolve()
                         }
+                        assertEquals(
+                            exception.message?.contains(expectedOutcome.message),
+                            true,
+                            "[idx=$idx]: Expected error message to contain '${expectedOutcome.message}', but got: ${exception.message}"
+                        )
                     }
                 }
             }
@@ -236,7 +241,8 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
     },
     "outcomes": [
       {
-        "result": "error"
+        "result": "error",
+        "message": "Invalid or missing login session cache. Run `aws login` to initiate a new session"
       }
     ]
   },
@@ -253,7 +259,8 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
     },
     "outcomes": [
       {
-        "result": "error"
+        "result": "error",
+        "message": "missing `accessToken`"
       }
     ]
   },
@@ -276,7 +283,8 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
     },
     "outcomes": [
       {
-        "result": "error"
+        "result": "error",
+        "message": "missing `refreshToken`"
       }
     ]
   },
@@ -299,7 +307,8 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
     },
     "outcomes": [
       {
-        "result": "error"
+        "result": "error",
+        "message": "missing `clientId`"
       }
     ]
   },
@@ -322,7 +331,8 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
     },
     "outcomes": [
       {
-        "result": "error"
+        "result": "error",
+        "message": "missing `dpopKey`"
       }
     ]
   },
@@ -427,7 +437,8 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
     ],
     "outcomes": [
       {
-        "result": "error"
+        "result": "error",
+        "message": "Login token for login-session: arn:aws:sts::012345678910:assumed-role/Admin/admin is expired"
       }
     ]
   }

@@ -333,6 +333,7 @@ internal fun deserializeLoginToken(json: ByteArray): LoginToken {
     var idToken: String? = null
     var clientId: String? = null
     var dpopKey: String? = null
+    var hasAccessToken = false
 
     try {
         lexer.nextTokenOf<JsonToken.BeginObject>()
@@ -341,6 +342,7 @@ internal fun deserializeLoginToken(json: ByteArray): LoginToken {
                 is JsonToken.EndObject -> break@loop
                 is JsonToken.Name -> when (token.value) {
                     "accessToken" -> {
+                        hasAccessToken = true
                         lexer.nextTokenOf<JsonToken.BeginObject>()
                         while (true) {
                             when (val nestedToken = lexer.nextToken()) {
@@ -370,7 +372,7 @@ internal fun deserializeLoginToken(json: ByteArray): LoginToken {
     } catch (ex: Exception) {
         throw InvalidLoginTokenException("invalid cached login token", ex)
     }
-
+    if (!hasAccessToken) throw InvalidLoginTokenException("missing `accessToken`")
     if (accessKeyId == null) throw InvalidLoginTokenException("missing `accessKeyId`")
     if (secretAccessKey == null) throw InvalidLoginTokenException("missing `secretAccessKey`")
     if (sessionToken == null) throw InvalidLoginTokenException("missing `sessionToken`")
