@@ -1,0 +1,432 @@
+package aws.sdk.kotlin.runtime.auth.credentials
+
+import aws.sdk.kotlin.runtime.client.AwsClientOption
+import aws.smithy.kotlin.runtime.http.Headers
+import aws.smithy.kotlin.runtime.http.HttpBody
+import aws.smithy.kotlin.runtime.http.HttpStatusCode
+import aws.smithy.kotlin.runtime.http.response.HttpResponse
+import aws.smithy.kotlin.runtime.httptest.TestConnection
+import aws.smithy.kotlin.runtime.httptest.buildTestConnection
+import aws.smithy.kotlin.runtime.time.Instant
+import aws.smithy.kotlin.runtime.time.ManualClock
+import aws.smithy.kotlin.runtime.util.TestPlatformProvider
+import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.*
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlin.also
+import kotlin.collections.filterKeys
+import kotlin.collections.forEach
+import kotlin.collections.forEachIndexed
+import kotlin.collections.map
+import kotlin.collections.mapValues
+import kotlin.collections.set
+import kotlin.getOrThrow
+import kotlin.runCatching
+import kotlin.test.*
+import kotlin.text.decodeToString
+import kotlin.text.encodeToByteArray
+import kotlin.time.Duration.Companion.seconds
+import kotlin.to
+import kotlin.toString
+
+class LoginTokenProviderTest {
+    private data class LoginTestCase(
+        val name: String,
+        val configContents: String,
+        val cacheContents: Map<String, String>,
+        val mockApiCalls: JsonArray?,
+        val outcomes: List<TestOutcome>
+    ) {
+        companion object {
+            fun fromJson(json: JsonObject): LoginTestCase {
+                val name = json["documentation"]!!.jsonPrimitive.content
+                val configContents = json["configContents"]!!.jsonPrimitive.content
+                val cacheContents = json["cacheContents"]!!.jsonObject.mapValues { (_, value) ->
+                    value.toString()
+                }
+                val mockApiCalls = json["mockApiCalls"]?.jsonArray
+                val outcomes = json["outcomes"]!!.jsonArray.map { outcome ->
+                    val outcomeObj = outcome.jsonObject
+                    val result = outcomeObj["result"]!!.jsonPrimitive.content
+                    when (result) {
+                        "credentials" -> TestOutcome.Success(
+                            accessKeyId = outcomeObj["accessKeyId"]!!.jsonPrimitive.content,
+                            secretAccessKey = outcomeObj["secretAccessKey"]!!.jsonPrimitive.content,
+                            sessionToken = outcomeObj["sessionToken"]!!.jsonPrimitive.content,
+                            accountId = outcomeObj["accountId"]!!.jsonPrimitive.content,
+                            expiresAt = Instant.fromIso8601(outcomeObj["expiresAt"]!!.jsonPrimitive.content)
+                        )
+                        "cacheContents" -> TestOutcome.CacheContents(
+                            cacheContents = outcomeObj.filterKeys { it != "result" }.mapValues { it.value.toString() }
+                        )
+                        else -> TestOutcome.Error
+                    }
+                }
+                return LoginTestCase(name, configContents, cacheContents, mockApiCalls, outcomes)
+            }
+        }
+    }
+
+    private sealed class TestOutcome {
+        data class Success(
+            val accessKeyId: String,
+            val secretAccessKey: String,
+            val sessionToken: String,
+            val accountId: String,
+            val expiresAt: Instant
+        ) : TestOutcome()
+
+        data class CacheContents(
+            val cacheContents: Map<String, String>
+        ) : TestOutcome()
+
+        object Error : TestOutcome()
+    }
+
+    @Test
+    fun testLoginTokenCacheBehavior() = runTest {
+        val testList = Json.parseToJsonElement(LOGIN_TOKEN_PROVIDER_TEST_SUITE).jsonArray
+        testList.map { testCase ->
+            runCatching {
+                LoginTestCase.fromJson(testCase.jsonObject)
+            }.also {
+                if (it.isFailure) {
+                    fail("failed to parse test case: `$testCase`", it.exceptionOrNull())
+                }
+            }.getOrThrow()
+        }.forEachIndexed { idx, testCase ->
+            val loginSessionName = "arn:aws:sts::012345678910:assumed-role/Admin/admin"
+
+            // Setup filesystem with cache files
+            val fs = mutableMapOf<String, String>()
+            testCase.cacheContents.forEach { (filename, content) ->
+                fs["/home/.aws/login/cache/$filename"] = content
+            }
+
+            val testPlatform = TestPlatformProvider(
+                env = mapOf("HOME" to "/home"),
+                fs = fs
+            )
+
+            val testClock = ManualClock(Instant.fromIso8601("2025-11-19T00:00:00Z"))
+
+            val originalTestCase = testList[idx].jsonObject
+            val mockApiCalls = originalTestCase["mockApiCalls"]?.jsonArray
+
+            val httpClient = if (testCase.mockApiCalls != null) {
+                buildTestConnection {
+                    mockApiCalls!!.forEach { mockCall ->
+                        val responseCode = mockCall.jsonObject["responseCode"]?.jsonPrimitive?.int ?: 200
+                        val statusCode = HttpStatusCode.fromValue(responseCode)
+                        if (responseCode == 200) {
+                            val response = mockCall.jsonObject["response"]?.jsonObject["tokenOutput"]?.jsonObject
+                            val body = response.toString().encodeToByteArray()
+                            expect(
+                                HttpResponse(
+                                    statusCode,
+                                    Headers.Empty,
+                                    HttpBody.fromBytes(body)
+                                )
+                            )
+                        } else {
+                            expect(HttpResponse(statusCode, Headers.Empty, HttpBody.Empty))
+                        }
+                    }
+                }
+            } else {
+                TestConnection()
+            }
+
+            val tokenProvider = LoginTokenProvider(
+                loginSessionName = loginSessionName,
+                refreshBufferWindow = 0.seconds,
+                httpClient = httpClient,
+                platformProvider = testPlatform,
+                clock = testClock
+            )
+
+            testCase.outcomes.forEach { expectedOutcome ->
+                when (expectedOutcome) {
+                    is TestOutcome.Success -> {
+                        // Verify that credentials are successfully resolved and match expected values
+                        val credentials = tokenProvider.resolve()
+                        assertEquals(expectedOutcome.accessKeyId, credentials.accessKeyId, "[idx=$idx]: $testCase")
+                        assertEquals(
+                            expectedOutcome.secretAccessKey,
+                            credentials.secretAccessKey,
+                            "[idx=$idx]: $testCase"
+                        )
+                        assertEquals(expectedOutcome.sessionToken, credentials.sessionToken, "[idx=$idx]: $testCase")
+                        assertEquals(
+                            expectedOutcome.accountId,
+                            credentials.attributes.getOrNull(AwsClientOption.AccountId),
+                            "[idx=$idx]: $testCase"
+                        )
+                        assertEquals(expectedOutcome.expiresAt, credentials.expiration, "[idx=$idx]: $testCase")
+                        println("✓ Test passed: ${testCase.name}")
+                    }
+
+                    is TestOutcome.CacheContents -> {
+                        // Verify cache contents after token refresh
+                        expectedOutcome.cacheContents.forEach { (filename, expectedContent) ->
+                            val actualContent =
+                                testPlatform.readFileOrNull("/home/.aws/login/cache/$filename")?.decodeToString()
+                            assertNotNull(actualContent, "Cache file $filename should exist")
+
+                            val expectedJson = Json.parseToJsonElement(expectedContent).jsonObject
+                            val actualJson = Json.parseToJsonElement(actualContent).jsonObject
+                            assertEquals(expectedJson, actualJson, "Cache content mismatch for $filename")
+                        }
+                        println("✓ Cache contents verified: ${testCase.name}")
+                    }
+
+                    is TestOutcome.Error -> {
+                        assertFails("[idx=$idx]: $testCase") {
+                            tokenProvider.resolve()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// language=JSON
+private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
+[
+  {
+    "documentation": "Success - Valid credentials are returned immediately",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+      "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+        "accessToken": {
+          "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+          "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+          "sessionToken": "AQoEXAMPLEH4aoAH0gNCAPyJxz4BlCFFxWNE1OPTgk5TthT+FvwqnKwRcOIfrRh3c/LTo6UDdyJwOOvEVPvLXCrrrUtdnniCEXAMPLE/IvU1dYUg2RVAJBanLiHb4IgRmpRV3zrkuWJOgQs8IZZaIv2BXIa2R4OlgkBN9bkUDNCJiBeb/AXlzBBko7b15fjrBs2+cTQtpZ3CYWFXG8C5zqx37wnOE49mRl/+OtkIKGO7fAE",
+          "accountId": "012345678901",
+          "expiresAt": "3025-09-14T04:05:45Z"
+        },
+        "clientId": "arn:aws:signin:::devtools/same-device",
+        "refreshToken": "refresh_token",
+        "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+      }
+    },
+    "outcomes": [
+      {
+        "result": "credentials",
+        "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+        "sessionToken": "AQoEXAMPLEH4aoAH0gNCAPyJxz4BlCFFxWNE1OPTgk5TthT+FvwqnKwRcOIfrRh3c/LTo6UDdyJwOOvEVPvLXCrrrUtdnniCEXAMPLE/IvU1dYUg2RVAJBanLiHb4IgRmpRV3zrkuWJOgQs8IZZaIv2BXIa2R4OlgkBN9bkUDNCJiBeb/AXlzBBko7b15fjrBs2+cTQtpZ3CYWFXG8C5zqx37wnOE49mRl/+OtkIKGO7fAE",
+        "accountId": "012345678901",
+        "expiresAt": "3025-09-14T04:05:45Z"
+      }
+    ]
+  },
+  {
+    "documentation": "Failure - No cache file",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+    },
+    "outcomes": [
+      {
+        "result": "error"
+      }
+    ]
+  },
+  {
+    "documentation": "Failure - Missing accessToken",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+      "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+        "clientId": "arn:aws:signin:::devtools/same-device",
+        "refreshToken": "valid_refresh_token_456",
+        "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+      }
+    },
+    "outcomes": [
+      {
+        "result": "error"
+      }
+    ]
+  },
+  {
+    "documentation": "Failure - Missing refreshToken",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+      "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+        "accessToken": {
+          "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+          "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+          "sessionToken": "AQoEXAMPLEH4aoAH0gNCAPyJxz4BlCFFxWNE1OPTgk5TthT+FvwqnKwRcOIfrRh3c/LTo6UDdyJwOOvEVPvLXCrrrUtdnniCEXAMPLE/IvU1dYUg2RVAJBanLiHb4IgRmpRV3zrkuWJOgQs8IZZaIv2BXIa2R4OlgkBN9bkUDNCJiBeb/AXlzBBko7b15fjrBs2+cTQtpZ3CYWFXG8C5zqx37wnOE49mRl/+OtkIKGO7fAE",
+          "accountId": "012345678901",
+          "expiresAt": "2020-01-01T00:00:00Z"
+        },
+        "clientId": "arn:aws:signin:::devtools/same-device",
+        "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+      }
+    },
+    "outcomes": [
+      {
+        "result": "error"
+      }
+    ]
+  },
+  {
+    "documentation": "Failure - Missing clientId in cache",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+      "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+        "accessToken": {
+          "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+          "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+          "sessionToken": "AQoEXAMPLEH4aoAH0gNCAPyJxz4BlCFFxWNE1OPTgk5TthT+FvwqnKwRcOIfrRh3c/LTo6UDdyJwOOvEVPvLXCrrrUtdnniCEXAMPLE/IvU1dYUg2RVAJBanLiHb4IgRmpRV3zrkuWJOgQs8IZZaIv2BXIa2R4OlgkBN9bkUDNCJiBeb/AXlzBBko7b15fjrBs2+cTQtpZ3CYWFXG8C5zqx37wnOE49mRl/+OtkIKGO7fAE",
+          "accountId": "012345678901",
+          "expiresAt": "2020-01-01T00:00:00Z"
+        },
+        "refreshToken": "valid_refresh_token_789",
+        "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+      }
+    },
+    "outcomes": [
+      {
+        "result": "error"
+      }
+    ]
+  },
+  {
+    "documentation": "Failure - Missing dpopKey",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+      "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+        "accessToken": {
+          "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+          "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+          "sessionToken": "AQoEXAMPLEH4aoAH0gNCAPyJxz4BlCFFxWNE1OPTgk5TthT+FvwqnKwRcOIfrRh3c/LTo6UDdyJwOOvEVPvLXCrrrUtdnniCEXAMPLE/IvU1dYUg2RVAJBanLiHb4IgRmpRV3zrkuWJOgQs8IZZaIv2BXIa2R4OlgkBN9bkUDNCJiBeb/AXlzBBko7b15fjrBs2+cTQtpZ3CYWFXG8C5zqx37wnOE49mRl/+OtkIKGO7fAE",
+          "accountId": "012345678901",
+          "expiresAt": "2020-01-01T00:00:00Z"
+        },
+        "clientId": "arn:aws:signin:::devtools/same-device",
+        "refreshToken": "valid_refresh_token_101112",
+        "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ"
+      }
+    },
+    "outcomes": [
+      {
+        "result": "error"
+      }
+    ]
+  },
+  {
+    "documentation": "Success - Expired token triggers successful refresh",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+      "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+        "accessToken": {
+          "accessKeyId": "OLDEXPIREDKEY",
+          "secretAccessKey": "oldExpiredSecretKey",
+          "sessionToken": "oldExpiredSessionToken",
+          "accountId": "012345678901",
+          "expiresAt": "2020-01-01T00:00:00Z"
+        },
+        "clientId": "arn:aws:signin:::devtools/same-device",
+        "refreshToken": "valid_refresh_token",
+        "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+      }
+    },
+    "mockApiCalls": [
+      {
+        "request": {
+          "dpopProof": "mock_dpop_proof",
+          "tokenInput": {
+            "clientId": "arn:aws:signin:::devtools/same-device",
+            "refreshToken": "valid_refresh_token",
+            "grantType": "refresh_token"
+          }
+        },
+        "response": {
+          "tokenOutput": {
+            "accessToken": {
+              "accessKeyId": "NEWREFRESHEDKEY",
+              "secretAccessKey": "newRefreshedSecretKey",
+              "sessionToken": "newRefreshedSessionToken"
+            },
+            "refreshToken": "new_refresh_token",
+            "expiresIn": 900
+          }
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "result": "credentials",
+        "accessKeyId": "NEWREFRESHEDKEY",
+        "secretAccessKey": "newRefreshedSecretKey",
+        "sessionToken": "newRefreshedSessionToken",
+        "accountId": "012345678901",
+        "expiresAt": "2025-11-19T00:15:00Z"
+      },
+      {
+        "result": "cacheContents",
+        "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+          "accessToken": {
+            "accessKeyId": "NEWREFRESHEDKEY",
+            "secretAccessKey": "newRefreshedSecretKey",
+            "sessionToken": "newRefreshedSessionToken",
+            "accountId": "012345678901",
+            "expiresAt": "2025-11-19T00:15:00Z"
+          },
+          "clientId": "arn:aws:signin:::devtools/same-device",
+          "refreshToken": "new_refresh_token",
+          "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+          "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+        }
+      }
+    ]
+  },
+  {
+    "documentation": "Failure - Expired token triggers failed refresh",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+      "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+        "accessToken": {
+          "accessKeyId": "OLDEXPIREDKEY",
+          "secretAccessKey": "oldExpiredSecretKey",
+          "sessionToken": "oldExpiredSessionToken",
+          "accountId": "012345678901",
+          "expiresAt": "2020-01-01T00:00:00Z"
+        },
+        "clientId": "arn:aws:signin:::devtools/same-device",
+        "refreshToken": "expired_refresh_token",
+        "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+      }
+    },
+    "mockApiCalls": [
+      {
+        "request": {
+          "dpopProof": "mock_dpop_proof",
+          "tokenInput": {
+            "clientId": "arn:aws:signin:::devtools/same-device",
+            "refreshToken": "expired_refresh_token",
+            "grantType": "refresh_token"
+          }
+        },
+        "responseCode": 400
+      }
+    ],
+    "outcomes": [
+      {
+        "result": "error"
+      }
+    ]
+  }
+]
+"""
