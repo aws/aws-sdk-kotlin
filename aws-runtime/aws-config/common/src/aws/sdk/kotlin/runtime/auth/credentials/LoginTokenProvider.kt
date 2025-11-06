@@ -46,6 +46,7 @@ import kotlin.io.encoding.Base64
 import kotlin.io.encoding.Base64.Default.UrlSafe
 
 private const val DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS = 60 * 5 // note: can set longer refresh window to test token refresh
+private const val PROVIDER_NAME = "LOGIN"
 
 // HTTP interceptor that adds DPoP (Demonstration of Proof-of-Possession) headers to requests.
 internal class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor {
@@ -107,6 +108,7 @@ public class LoginTokenProvider (
             secretAccessKey = token.secretAccessKey,
             sessionToken = token.sessionToken,
             expiration = token.expiresAt,
+            providerName = PROVIDER_NAME,
             accountId = token.accountId
         )
     }
@@ -119,15 +121,13 @@ public class LoginTokenProvider (
             return token
         }
 
-        // token is within expiry window
-        if (token.canRefresh) {
-            return attemptRefresh(token)
+        return try {
+            attemptRefresh(token)
+        } catch (e: Exception) {
+            token.takeIf { clock.now() < it.expiresAt }?.also {
+                coroutineContext.debug<LoginTokenProvider> { "cached token is not refreshable but still valid until ${it.expiresAt} for login-session: $loginSessionName" }
+            } ?: throwTokenExpired()
         }
-
-        return token.takeIf { clock.now() < it.expiresAt }?.also {
-            coroutineContext.debug<LoginTokenProvider> { "cached token is not refreshable but still valid until ${it.expiresAt} for login-session: $loginSessionName" }
-        } ?: throwTokenExpired()
-        return token
     }
 
     private suspend fun attemptRefresh(oldToken: LoginToken): LoginToken {
@@ -168,7 +168,7 @@ public class LoginTokenProvider (
             interceptors += DpopInterceptor(oldToken.dpopKey) // note for implementer: this is for writing DpopProof in request header instead of sending in request
         }.use { client ->
             val result = client.createOAuth2Token {
-                dpopProof = generateDpopProof(oldToken.dpopKey!!, "https://ap-northeast-1.aws-signin-testing.amazon.com/v1/token") //TODO: remove this line once dpopProof being removed from model
+                dpopProof = generateDpopProof(oldToken.dpopKey, "https://ap-northeast-1.aws-signin-testing.amazon.com/v1/token") //TODO: remove this line once dpopProof being removed from model
                 tokenInput {
                     clientId = oldToken.clientId
                     grantType = "refresh_token"
@@ -181,10 +181,10 @@ public class LoginTokenProvider (
             return try {
                 oldToken.copy(
                     accessKeyId = result.tokenOutput!!.accessToken!!.accessKeyId,
-                    secretAccessKey = result.tokenOutput!!.accessToken!!.secretAccessKey,
-                    sessionToken = result.tokenOutput!!.accessToken!!.sessionToken,
-                    expiresAt = clock.now() + result.tokenOutput?.expiresIn!!.seconds,
-                    refreshToken = result.tokenOutput!!.refreshToken
+                    secretAccessKey = result.tokenOutput.accessToken.secretAccessKey,
+                    sessionToken = result.tokenOutput.accessToken.sessionToken,
+                    expiresAt = clock.now() + result.tokenOutput.expiresIn.seconds,
+                    refreshToken = result.tokenOutput.refreshToken
                 )
             } catch (e: Exception) {
                 throw InvalidLoginTokenException("Failed to parse token response", e)
@@ -322,15 +322,9 @@ internal data class LoginToken(
     val expiresAt: Instant,
     val refreshToken: String,
     val idToken: String? = null,
-    val clientId: String?,
+    val clientId: String,
     val dpopKey: String,
 )
-
-/**
- * Test if a token has the components to allow it to be refreshed for a new one
- */
-private val LoginToken.canRefresh: Boolean
-    get() = clientId != null && dpopKey != null && refreshToken != null
 
 internal fun deserializeLoginToken(json: ByteArray): LoginToken {
     val lexer = jsonStreamReader(json)

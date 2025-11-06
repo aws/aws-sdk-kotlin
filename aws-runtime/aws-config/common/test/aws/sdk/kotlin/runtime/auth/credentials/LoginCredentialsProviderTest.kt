@@ -136,12 +136,14 @@ class LoginCredentialsProviderTest {
 
         val actual = provider.resolve()
         val expected = credentials(
-            "AKID",
-            "secret",
-            "session-token",
+            accessKeyId = "AKID",
+            secretAccessKey = "secret",
+            sessionToken = "session-token",
             expiration = expectedExpiration,
+            providerName = "LOGIN",
             accountId = "123456789",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_LOGIN)
+
         assertEquals(expected, actual)
     }
 }
