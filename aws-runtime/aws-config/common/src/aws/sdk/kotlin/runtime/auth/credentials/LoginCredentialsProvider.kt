@@ -7,7 +7,6 @@ package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
-
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
 import aws.smithy.kotlin.runtime.collections.Attributes

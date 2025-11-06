@@ -38,12 +38,11 @@ import aws.smithy.kotlin.runtime.time.TimestampFormat
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.SingleFlightGroup
 import aws.smithy.kotlin.runtime.util.Uuid
-import aws.smithy.kotlin.runtime.text.encoding.encodeBase64String
 import kotlin.coroutines.coroutineContext
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.Base64.Default.UrlSafe
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 private const val DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS = 60 * 5 // note: can set longer refresh window to test token refresh
 private const val PROVIDER_NAME = "LOGIN"
@@ -89,13 +88,13 @@ internal class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor
  * @param platformProvider the platform provider to use
  * @param clock the source of time for the provider
  */
-public class LoginTokenProvider (
+public class LoginTokenProvider(
     public val loginSessionName: String,
     public val refreshBufferWindow: Duration = DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS.seconds,
     public val httpClient: HttpClientEngine? = null,
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     private val clock: Clock = Clock.System,
-): CredentialsProvider {
+) : CredentialsProvider {
 
     // debounce concurrent requests for a token
     private val sfg = SingleFlightGroup<LoginToken>()
@@ -109,7 +108,7 @@ public class LoginTokenProvider (
             sessionToken = token.sessionToken,
             expiration = token.expiresAt,
             providerName = PROVIDER_NAME,
-            accountId = token.accountId
+            accountId = token.accountId,
         )
     }
 
@@ -164,11 +163,11 @@ public class LoginTokenProvider (
         SigninClient.fromEnvironment {
             httpClient = this@LoginTokenProvider.httpClient
             telemetryProvider = telemetry
-            endpointUrl = Url.parse("https://ap-northeast-1.aws-signin-testing.amazon.com") //TODO: testing endpoint, remove this once service prod endpoint is available
+            endpointUrl = Url.parse("https://ap-northeast-1.aws-signin-testing.amazon.com") // TODO: testing endpoint, remove this once service prod endpoint is available
             interceptors += DpopInterceptor(oldToken.dpopKey) // note for implementer: this is for writing DpopProof in request header instead of sending in request
         }.use { client ->
             val result = client.createOAuth2Token {
-                dpopProof = generateDpopProof(oldToken.dpopKey, "https://ap-northeast-1.aws-signin-testing.amazon.com/v1/token") //TODO: remove this line once dpopProof being removed from model
+                dpopProof = generateDpopProof(oldToken.dpopKey, "https://ap-northeast-1.aws-signin-testing.amazon.com/v1/token") // TODO: remove this line once dpopProof being removed from model
                 tokenInput {
                     clientId = oldToken.clientId
                     grantType = "refresh_token"
@@ -176,7 +175,7 @@ public class LoginTokenProvider (
                 }
             }
 
-            //TODO: use model provided exception:
+            // TODO: use model provided exception:
             // If the CreateOAuth2Token call returns a TBD error with the TBD member set to TBD, then the SDK MUST return an error with TBD wording.
             return try {
                 oldToken.copy(
@@ -184,7 +183,7 @@ public class LoginTokenProvider (
                     secretAccessKey = result.tokenOutput.accessToken.secretAccessKey,
                     sessionToken = result.tokenOutput.accessToken.sessionToken,
                     expiresAt = clock.now() + result.tokenOutput.expiresIn.seconds,
-                    refreshToken = result.tokenOutput.refreshToken
+                    refreshToken = result.tokenOutput.refreshToken,
                 )
             } catch (e: Exception) {
                 throw InvalidLoginTokenException("Failed to parse token response", e)
@@ -194,9 +193,9 @@ public class LoginTokenProvider (
 }
 
 internal data class ECKeyData(
-    val d: ByteArray,  // private key scalar
-    val x: ByteArray,  // public key x coordinate
-    val y: ByteArray   // public key y coordinate
+    val d: ByteArray, // private key scalar
+    val x: ByteArray, // public key x coordinate
+    val y: ByteArray, // public key y coordinate
 )
 
 /**
@@ -235,13 +234,8 @@ private fun parseECKeyPem(pem: String): ECKeyData {
     return ECKeyData(d, x, y)
 }
 
-private fun ByteArray.padTo32(): ByteArray {
-    return if (size >= 32) {
-        takeLast(32).toByteArray()
-    } else {
-        ByteArray(32 - size) + this
-    }
-}
+private fun ByteArray.padTo32(): ByteArray =
+    if (size >= 32) takeLast(32).toByteArray() else ByteArray(32 - size) + this
 
 /**
  * Generates a DPoP (Demonstration of Proof-of-Possession) JWT proof for OAuth 2.0 requests.

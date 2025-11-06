@@ -85,7 +85,7 @@ public enum class AwsBusinessMetric(public override val identifier: String) : Bu
         CREDENTIALS_HTTP("z"),
         CREDENTIALS_IMDS("0"),
         CREDENTIALS_PROFILE_LOGIN("TBD"),
-        CREDENTIALS_LOGIN("TBD")
+        CREDENTIALS_LOGIN("TBD"),
     }
 
     override fun toString(): String = identifier

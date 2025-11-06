@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.client.AwsClientOption
@@ -38,7 +43,7 @@ class LoginTokenProviderTest {
         val configContents: String,
         val cacheContents: Map<String, String>,
         val mockApiCalls: JsonArray?,
-        val outcomes: List<TestOutcome>
+        val outcomes: List<TestOutcome>,
     ) {
         companion object {
             fun fromJson(json: JsonObject): LoginTestCase {
@@ -57,10 +62,10 @@ class LoginTokenProviderTest {
                             secretAccessKey = outcomeObj["secretAccessKey"]!!.jsonPrimitive.content,
                             sessionToken = outcomeObj["sessionToken"]!!.jsonPrimitive.content,
                             accountId = outcomeObj["accountId"]!!.jsonPrimitive.content,
-                            expiresAt = Instant.fromIso8601(outcomeObj["expiresAt"]!!.jsonPrimitive.content)
+                            expiresAt = Instant.fromIso8601(outcomeObj["expiresAt"]!!.jsonPrimitive.content),
                         )
                         "cacheContents" -> TestOutcome.CacheContents(
-                            cacheContents = outcomeObj.filterKeys { it != "result" }.mapValues { it.value.toString() }
+                            cacheContents = outcomeObj.filterKeys { it != "result" }.mapValues { it.value.toString() },
                         )
                         else -> TestOutcome.Error
                     }
@@ -76,11 +81,11 @@ class LoginTokenProviderTest {
             val secretAccessKey: String,
             val sessionToken: String,
             val accountId: String,
-            val expiresAt: Instant
+            val expiresAt: Instant,
         ) : TestOutcome()
 
         data class CacheContents(
-            val cacheContents: Map<String, String>
+            val cacheContents: Map<String, String>,
         ) : TestOutcome()
 
         object Error : TestOutcome()
@@ -108,7 +113,7 @@ class LoginTokenProviderTest {
 
             val testPlatform = TestPlatformProvider(
                 env = mapOf("HOME" to "/home"),
-                fs = fs
+                fs = fs,
             )
 
             val testClock = ManualClock(Instant.fromIso8601("2025-11-19T00:00:00Z"))
@@ -128,8 +133,8 @@ class LoginTokenProviderTest {
                                 HttpResponse(
                                     statusCode,
                                     Headers.Empty,
-                                    HttpBody.fromBytes(body)
-                                )
+                                    HttpBody.fromBytes(body),
+                                ),
                             )
                         } else {
                             expect(HttpResponse(statusCode, Headers.Empty, HttpBody.Empty))
@@ -145,7 +150,7 @@ class LoginTokenProviderTest {
                 refreshBufferWindow = 0.seconds,
                 httpClient = httpClient,
                 platformProvider = testPlatform,
-                clock = testClock
+                clock = testClock,
             )
 
             testCase.outcomes.forEach { expectedOutcome ->
@@ -157,13 +162,13 @@ class LoginTokenProviderTest {
                         assertEquals(
                             expectedOutcome.secretAccessKey,
                             credentials.secretAccessKey,
-                            "[idx=$idx]: $testCase"
+                            "[idx=$idx]: $testCase",
                         )
                         assertEquals(expectedOutcome.sessionToken, credentials.sessionToken, "[idx=$idx]: $testCase")
                         assertEquals(
                             expectedOutcome.accountId,
                             credentials.attributes.getOrNull(AwsClientOption.AccountId),
-                            "[idx=$idx]: $testCase"
+                            "[idx=$idx]: $testCase",
                         )
                         assertEquals(expectedOutcome.expiresAt, credentials.expiration, "[idx=$idx]: $testCase")
                     }

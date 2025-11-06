@@ -188,7 +188,7 @@ smithyBuild {
             """,
             )
         }
-        //Note: I removed the smoke test section in model to make build pass
+        // Note: I removed the smoke test section in model to make build pass
         create("signin-credentials-provider") {
             imports = listOf(
                 awsModelFile("sign-in.json"),

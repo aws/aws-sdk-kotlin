@@ -101,7 +101,7 @@ internal sealed class LeafProvider {
      * ```
      */
     data class LoginSession(
-        val loginSessionName: String
+        val loginSessionName: String,
     ) : LeafProvider()
 
     /**
