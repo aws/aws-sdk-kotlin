@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.5.77] - 11/06/2025
+
+### Features
+* (**accessanalyzer**) New field totalActiveErrors added to getFindingsStatistics response.
+* (**backup**) AWS Backup now supports customer-managed keys (CMK) for logically air-gapped vaults, enabling customers to maintain full control over their encryption key lifecycle. This feature helps organizations meet specific internal governance requirements or external regulatory compliance standards.
+* (**connect**) Added support for Conditional Questions in Evaluation Forms. Introduced Auto Evaluation capability for Evaluation Forms and Contact Evaluations. Added new API operations: SearchEvaluationForms and SearchContactEvaluations.
+* (**ec2**) Add Amazon EC2 R8a instance types
+* (**gamelift**) Amazon GameLift Servers now supports game builds that use the Windows 2022 operating system.
+* (**identitystore**) IdentityStore API: added new KMSExceptionReason fields to the Exception object; added multiple new fields to the User APIs - UserStatus, Birthdate, Website and Photos; added multiple new metadata fields for User, Groups and Membership APIs - CreatedAt, CreatedBy, UpdatedAt and UpdatedBy.
+* (**quicksight**) Support for New Data Prep Experience
+* (**s3tables**) Adds support for tagging APIs for S3 Tables
+* (**s3vectors**) Amazon S3 Vectors provides cost-effective, elastic, and durable vector storage for queries based on semantic meaning and similarity.
+* (**sagemaker**) Added NodeProvisioningMode parameter to UpdateCluster API to determine how instance provisioning is handled during cluster operations; in Continuous mode. Added VpcId field in UpdateDomain request for SageMaker Unified Studio domains with no VPC to add a customer VPC.
+* (**ssm**) Provides NoLongerSupportedException error message
+
 ## [1.5.76] - 11/05/2025
 
 ### Features
