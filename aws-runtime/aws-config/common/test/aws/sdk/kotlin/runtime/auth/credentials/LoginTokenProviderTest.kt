@@ -166,7 +166,6 @@ class LoginTokenProviderTest {
                             "[idx=$idx]: $testCase"
                         )
                         assertEquals(expectedOutcome.expiresAt, credentials.expiration, "[idx=$idx]: $testCase")
-                        println("✓ Test passed: ${testCase.name}")
                     }
 
                     is TestOutcome.CacheContents -> {
@@ -180,7 +179,6 @@ class LoginTokenProviderTest {
                             val actualJson = Json.parseToJsonElement(actualContent).jsonObject
                             assertEquals(expectedJson, actualJson, "Cache content mismatch for $filename")
                         }
-                        println("✓ Cache contents verified: ${testCase.name}")
                     }
 
                     is TestOutcome.Error -> {

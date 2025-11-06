@@ -45,17 +45,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.Base64.Default.UrlSafe
 
-private const val DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS = 60 * 5
-//internal class PrintAllHeadersInterceptor : HttpInterceptor {
-//
-//    override suspend fun modifyBeforeTransmit(context: ProtocolRequestInterceptorContext<Any, HttpRequest>): HttpRequest {
-//        context.protocolRequest.headers.entries().forEach { (name, values) ->
-//            println("$name: ${values.joinToString(", ")}")
-//        }
-//        return context.protocolRequest
-//    }
-//}
-
+private const val DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS = 60 * 5 // note: can set longer refresh window to test token refresh
 
 // HTTP interceptor that adds DPoP (Demonstration of Proof-of-Possession) headers to requests.
 internal class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor {
@@ -64,7 +54,6 @@ internal class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor
         val dpopHeader = generateDpopProof(dpopKeyPem, endpoint)
 
         val request = context.protocolRequest.toBuilder()
-        println("Setting DPoP header: $dpopHeader")
 
         request.header("DPoP", dpopHeader)
         return request.build()
@@ -74,8 +63,6 @@ internal class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor
     private fun extractRequestEndpoint(request: HttpRequest): String {
         val url = request.url
         return url.toString()
-//        val port = if (isStandardPort(url.scheme, url.port)) "" else ":${url.port}"
-//        return "${url.scheme}://${url.host}$port${url.encodedPath}"
     }
 }
 
@@ -162,9 +149,7 @@ public class LoginTokenProvider (
         val cacheKey = getLoginCacheFilename(loginSessionName)
         val filepath = normalizePath(platformProvider.filepath("~", ".aws", "login", "cache", cacheKey), platformProvider)
         try {
-            //println("attempting to write refreshed token")
             val contents = serializeLoginToken(refreshed)
-            //println("contents: "+ contents.decodeToString())
             platformProvider.writeFile(filepath, contents)
         } catch (ex: Exception) {
             coroutineContext.debug<LoginTokenProvider>(ex) { "failed to write refreshed token back to disk at $filepath" }
@@ -175,16 +160,15 @@ public class LoginTokenProvider (
 
     private suspend fun refreshToken(oldToken: LoginToken): LoginToken {
         val telemetry = coroutineContext.telemetryProvider
-        println("attempting to refresh token")
+
         SigninClient.fromEnvironment {
             httpClient = this@LoginTokenProvider.httpClient
             telemetryProvider = telemetry
-            endpointUrl = Url.parse("https://ap-northeast-1.aws-signin-testing.amazon.com") //TODO: use testing endpoint, remove this once service prod endpoint is available
+            endpointUrl = Url.parse("https://ap-northeast-1.aws-signin-testing.amazon.com") //TODO: testing endpoint, remove this once service prod endpoint is available
             interceptors += DpopInterceptor(oldToken.dpopKey) // note for implementer: this is for writing DpopProof in request header instead of sending in request
-            //interceptors += PrintAllHeadersInterceptor()
         }.use { client ->
             val result = client.createOAuth2Token {
-                dpopProof = generateDpopProof(oldToken.dpopKey!!, "https://ap-northeast-1.aws-signin-testing.amazon.com/v1/token") //TODO: remove this line once login model remove dpopproof field
+                dpopProof = generateDpopProof(oldToken.dpopKey!!, "https://ap-northeast-1.aws-signin-testing.amazon.com/v1/token") //TODO: remove this line once dpopProof being removed from model
                 tokenInput {
                     clientId = oldToken.clientId
                     grantType = "refresh_token"
@@ -216,7 +200,7 @@ internal data class ECKeyData(
 )
 
 /**
- * Parses a PEM-encoded EC private key and extracts the private key scalar and public key coordinates.
+ * Parses a PEM-encoded EC private key and extracts the private key scalar and public key (x, y) coordinates.
  * Supports both "EC PRIVATE KEY" and "PRIVATE KEY" PEM formats for P-256 curve keys.
  */
 private fun parseECKeyPem(pem: String): ECKeyData {
@@ -229,7 +213,7 @@ private fun parseECKeyPem(pem: String): ECKeyData {
         .replace("\r", "")
 
     val der = base64.decodeBase64Bytes()
-    println("DER hex: ${der.encodeToHex()}")
+
     // Extract private key scalar (32 bytes at offset 7)
     val d = der.copyOfRange(7, 39)
 
@@ -238,23 +222,16 @@ private fun parseECKeyPem(pem: String): ECKeyData {
     for (i in 40 until der.size) {
         if (der[i] == 0x04.toByte()) {
             publicKeyStart = i + 1
-            println("Found 0x04 at position $i, public key starts at ${i + 1}")
             break
         }
     }
 
     val remainingBytes = der.size - publicKeyStart
     val coordLen = remainingBytes / 2
-    println("Public key section: ${der.copyOfRange(publicKeyStart - 1, der.size).encodeToHex()}")
 
     val x = der.copyOfRange(publicKeyStart, publicKeyStart + coordLen).padTo32()
     val y = der.copyOfRange(publicKeyStart + coordLen, publicKeyStart + 2 * coordLen).padTo32()
-    println("Raw x (${x.size} bytes): ${x.encodeToHex()}")
-    println("Raw y (${y.size} bytes): ${y.encodeToHex()}")
 
-    println("d: ${d.encodeBase64String()}")
-    println("x: ${x.encodeBase64String()}")
-    println("y: ${y.encodeBase64String()}")
     return ECKeyData(d, x, y)
 }
 
@@ -289,17 +266,15 @@ private fun generateDpopProof(
         writeName("kty")
         writeValue("EC")
         writeName("x")
-        //writeValue(xB64)
         writeValue(base64UrlNoPadding.encode(ecKeyData.x))
         writeName("y")
-        //writeValue(yB64)
         writeValue(base64UrlNoPadding.encode(ecKeyData.y))
         writeName("crv")
         writeValue("P-256")
         endObject()
         endObject()
     }.bytes
-    println("header: ${header?.decodeToString()}")
+
     val payload = jsonStreamWriter().apply {
         beginObject()
         writeName("jti")
@@ -312,18 +287,13 @@ private fun generateDpopProof(
         writeValue(System.currentTimeMillis() / 1000)
         endObject()
     }.bytes
-    println("payload: ${payload?.decodeToString()}")
 
     val headerEncoded = base64UrlNoPadding.encode(header!!)
     val payloadEncoded = base64UrlNoPadding.encode(payload!!)
     val message = "$headerEncoded.$payloadEncoded"
-    println("message: $message")
 
     val privateKeyBytes = ecKeyData.d
     val signature = ecdsaSecp256r1Rs(privateKeyBytes, message.encodeToByteArray())
-
-    println("signature hex: ${signature.encodeToHex()}")
-    println("signature length: ${signature.size}")
 
     return "$message.${ base64UrlNoPadding.encode(signature) }"
 }

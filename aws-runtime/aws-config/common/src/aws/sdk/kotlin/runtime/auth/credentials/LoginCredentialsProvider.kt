@@ -25,11 +25,6 @@ public class LoginCredentialsProvider public constructor(
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     private val clock: Clock = Clock.System,
 ) : CredentialsProvider {
-//    private val signinTokenProvider = //Do we need to check nullibility here
-//        SigninTokenProvider(signinSession, enpoint = null, httpClient = httpClient, platformProvider = platformProvider, clock = clock)
-//    private val loginTokenProvider =
-//        LoginTokenProvider(loginSession, httpClient = httpClient, platformProvider = platformProvider, clock = clock)
-
     override suspend fun resolve(attributes: Attributes): Credentials {
         val logger = coroutineContext.logger<LoginCredentialsProvider>()
 
