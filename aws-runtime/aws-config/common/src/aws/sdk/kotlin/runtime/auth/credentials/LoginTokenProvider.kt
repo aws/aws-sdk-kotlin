@@ -44,7 +44,7 @@ import kotlin.io.encoding.Base64.Default.UrlSafe
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-private const val DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS = 60 * 5 // note: can set longer refresh window to test token refresh
+private const val DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS = 60 * 5
 private const val PROVIDER_NAME = "LOGIN"
 
 // HTTP interceptor that adds DPoP (Demonstration of Proof-of-Possession) headers to requests.

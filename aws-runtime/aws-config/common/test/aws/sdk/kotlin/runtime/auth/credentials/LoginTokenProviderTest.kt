@@ -202,6 +202,8 @@ class LoginTokenProviderTest {
     }
 }
 
+// Note to implementer: these test cases are copied from SEP: https://code.amazon.com/packages/AwsDrSeps/blobs/aadc5f3e3212c3b0a29a2ab6b1ce8dc548f7cfff/--/seps/accepted/shared/login/login-provider-test-cases.json
+// Error messages in 'outcomes' (e.g., "missing `accessToken`") are manually added. Update these when updating test cases.
 // language=JSON
 private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
 [
