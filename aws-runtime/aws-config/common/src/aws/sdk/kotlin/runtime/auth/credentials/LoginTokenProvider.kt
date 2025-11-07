@@ -203,6 +203,7 @@ internal data class ECKeyData(
  * Supports both "EC PRIVATE KEY" and "PRIVATE KEY" PEM formats for P-256 curve keys.
  */
 private fun parseECKeyPem(pem: String): ECKeyData {
+    // Note: adding PKCS#8 (BEGIN PRIVATE KEY) to support modeled test case, can be removed once model test case is updated
     val base64 = pem.replace("-----BEGIN EC PRIVATE KEY-----", "")
         .replace("-----END EC PRIVATE KEY-----", "")
         .replace("-----BEGIN PRIVATE KEY-----", "")
@@ -276,7 +277,7 @@ private fun generateDpopProof(
         writeName("htm")
         writeValue("POST")
         writeName("htu")
-        writeValue(endpoint) // hardcoded test endpoint, TODO: change it
+        writeValue(endpoint)
         writeName("iat")
         writeValue(System.currentTimeMillis() / 1000)
         endObject()
