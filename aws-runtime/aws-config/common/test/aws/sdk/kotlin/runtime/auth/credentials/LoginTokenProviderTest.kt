@@ -68,7 +68,7 @@ class LoginTokenProviderTest {
                             cacheContents = outcomeObj.filterKeys { it != "result" }.mapValues { it.value.toString() },
                         )
                         "error" -> TestOutcome.Error(
-                            message = outcomeObj["message"]!!.jsonPrimitive.content
+                            message = outcomeObj["message"]!!.jsonPrimitive.content,
                         )
                         else -> error("Unknown result type: $result")
                     }
@@ -193,7 +193,7 @@ class LoginTokenProviderTest {
                         assertEquals(
                             exception.message?.contains(expectedOutcome.message),
                             true,
-                            "[idx=$idx]: Expected error message to contain '${expectedOutcome.message}', but got: ${exception.message}"
+                            "[idx=$idx]: Expected error message to contain '${expectedOutcome.message}', but got: ${exception.message}",
                         )
                     }
                 }
