@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.5.78] - 11/07/2025
+
+### Features
+* (**controltower**) Added Parent Identifier support to ListEnabledControls and GetEnabledControl API. Implemented RemediationType support for Landing Zone operations: CreateLandingZone, UpdateLandingZone and GetLandingZone APIs
+* (**ec2**) Adds PrivateDnsPreference and PrivateDnsSpecifiedDomains to control private DNS resolution for resource and service network VPC endpoints and IpamScopeExternalAuthorityConfiguration to integrate Amazon VPC IPAM with a third-party IPAM service
+* (**kms**) Added support for new ECC_NIST_EDWARDS25519 AWS KMS key spec
+* (**opensearch**) This release introduces the Default Application feature, allowing users to set, change, or unset a preferred OpenSearch UI application on a per-region basis for a streamlined and consistent user experience.
+* (**vpclattice**) Amazon VPC Lattice now supports custom domain name for resource configurations
+* Emit additional tracing logs from the IMDS client
+* Upgrade **smithy-kotlin** to [**v1.5.19**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.5.19) containing a new CRT cipher suite
+
 ## [1.5.77] - 11/06/2025
 
 ### Features

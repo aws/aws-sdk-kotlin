@@ -1,5 +1,0 @@
-{
-    "id": "ad8d54e2-4cd7-4fd8-8657-408df2cef264",
-    "type": "feature",
-    "description": "Upgrade **smithy-kotlin** to [**v1.5.19**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.5.19) containing a new CRT cipher suite"
-}
