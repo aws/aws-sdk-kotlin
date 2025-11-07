@@ -95,7 +95,7 @@ class LoginTokenProviderTest {
     }
 
     @Test
-    fun testLoginTokenCacheBehavior() = runTest {
+    fun testLoginTokenBehavior() = runTest {
         val testList = Json.parseToJsonElement(LOGIN_TOKEN_PROVIDER_TEST_SUITE).jsonArray
         testList.map { testCase ->
             runCatching {

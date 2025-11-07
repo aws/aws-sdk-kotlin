@@ -279,7 +279,7 @@ private fun generateDpopProof(
         writeName("htu")
         writeValue(endpoint)
         writeName("iat")
-        writeValue(System.currentTimeMillis() / 1000)
+        writeValue(Clock.System.now().epochSeconds)
         endObject()
     }.bytes
 
