@@ -13,6 +13,8 @@ runs:
         ref: '0.4.2'
         sparse-checkout: |
           .github
+        token: ${{ secrets.CI_USER_PAT }}
+        fetch-depth: 0
     - name: Checkout smithy-kotlin
       uses: ./aws-kotlin-repo-tools/.github/actions/checkout-head
       with:
