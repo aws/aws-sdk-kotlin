@@ -5,13 +5,10 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager.codegen.renderers
 
-import aws.sdk.kotlin.hll.codegen.core.ImportDirective
-import aws.sdk.kotlin.hll.codegen.model.TypeRef
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.RendererBase
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.IoMapping
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.utils.operationMembers
-import aws.sdk.kotlin.hll.s3transfermanager.codegen.utils.renderMember
 import com.google.devtools.ksp.processing.Resolver
 
 /**
@@ -32,20 +29,16 @@ internal class IoRenderer(
             )
 
         withBlock(
-            "public class $className private constructor(builder: Builder) {",
+            "public class #L private constructor(builder: Builder) {",
             "}",
+            className,
         ) {
             members.forEach { member ->
-                val memberType = member.type as TypeRef
-
-                imports += ImportDirective(memberType) // Type: SomeType
-                memberType.genericArgs.forEach { genericArg ->
-                    imports += ImportDirective(genericArg as TypeRef) // Type: Map<SomeType, SomeType>
-                }
-
                 member.kDocs?.let { write(it) } // FIXME: KSP isn't detecting KDocs
                 write(
-                    "public val ${member.name}: ${member.type.renderMember()}? = builder.${member.name}",
+                    "public val #1L: #2T = builder.#1L",
+                    member.name,
+                    member.type,
                 )
             }
             blankLine()
@@ -54,7 +47,10 @@ internal class IoRenderer(
                 "public companion object {",
                 "}",
             ) {
-                write("public operator fun invoke(block: Builder.() -> Unit): $className = Builder().apply(block).build()")
+                write(
+                    "public operator fun invoke(block: Builder.() -> Unit): #L = Builder().apply(block).build()",
+                    className,
+                )
             }
             blankLine()
 
@@ -64,13 +60,18 @@ internal class IoRenderer(
             ) {
                 members.forEach { member ->
                     write(
-                        "public var ${member.name}: ${(member.type as TypeRef).renderMember()}? = null",
+                        "public var #L: #T = null",
+                        member.name,
+                        member.type,
                     )
                 }
                 blankLine()
 
                 write("@PublishedApi")
-                write("internal fun build(): $className = $className(this)")
+                write(
+                    "internal fun build(): #1L = #1L(this)",
+                    className,
+                )
             }
         }
     }

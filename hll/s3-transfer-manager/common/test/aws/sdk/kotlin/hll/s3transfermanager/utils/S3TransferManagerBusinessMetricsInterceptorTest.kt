@@ -37,7 +37,7 @@ class S3TransferManagerBusinessMetricsInterceptorTest {
             interceptors += listOf(testInterceptor)
             credentialsProvider = StaticCredentialsProvider(Credentials("akid", "secret"))
         }.use { s3Client ->
-            S3TransferManager(s3Client) {}.uploadFile {
+            S3TransferManager(s3Client) {}.uploadObject {
                 bucket = "b"
                 key = "k"
                 body = ByteStream.fromString(message)

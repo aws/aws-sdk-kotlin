@@ -92,8 +92,6 @@ smithy-kotlin-telemetry-provider-micrometer = { module = "aws.smithy.kotlin:tele
 smithy-kotlin-telemetry-provider-otel = { module = "aws.smithy.kotlin:telemetry-provider-otel", version.ref = "smithy-kotlin-runtime-version" }
 smithy-kotlin-test-suite = { module = "aws.smithy.kotlin:test-suite", version.ref = "smithy-kotlin-runtime-version" }
 smithy-kotlin-testing = { module = "aws.smithy.kotlin:testing", version.ref = "smithy-kotlin-runtime-version" }
-smithy-kotlin-http-test-jvm = { module = "aws.smithy.kotlin:http-test-jvm", version.ref = "smithy-kotlin-runtime-version" }
-smithy-kotlin-testing-jvm = { module = "aws.smithy.kotlin:testing-jvm", version.ref = "smithy-kotlin-runtime-version" }
 
 smithy-kotlin-codegen = { module = "software.amazon.smithy.kotlin:smithy-kotlin-codegen", version.ref = "smithy-kotlin-codegen-version" }
 smithy-kotlin-codegen-testutils = { module = "software.amazon.smithy.kotlin:smithy-kotlin-codegen-testutils", version.ref = "smithy-kotlin-codegen-version" }

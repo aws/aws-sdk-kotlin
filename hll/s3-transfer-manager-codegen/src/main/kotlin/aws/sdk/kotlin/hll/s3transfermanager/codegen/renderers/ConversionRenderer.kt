@@ -21,19 +21,24 @@ internal class ConversionRenderer(
         conversions.forEach { conversion ->
             val functionName = "to${conversion.destination.shortName}"
 
-            imports += ImportDirective(conversion.source)
-            imports += ImportDirective(conversion.destination)
-
             conversion.additionalImports.forEach {
                 imports += ImportDirective(it)
             }
 
             withBlock(
-                "internal fun ${conversion.source.shortName}.$functionName(${conversion.additionalParameters.joinToString(", ")}): ${conversion.destination.shortName} = ${conversion.destination.shortName} {",
+                "internal fun #1T.#2L(#3L): #4T = #4T {",
                 "}",
+                conversion.source,
+                functionName,
+                conversion.additionalParameters.joinToString(", "),
+                conversion.destination,
             ) {
                 conversion.members.forEach { member ->
-                    write("$member = this@$functionName.$member")
+                    write(
+                        "#1L = this@#2L.#1L",
+                        member,
+                        functionName,
+                    )
                 }
                 write(conversion.additionalLogic)
             }

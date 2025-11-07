@@ -6,8 +6,9 @@
 package aws.sdk.kotlin.hll.s3transfermanager.utils
 
 import aws.sdk.kotlin.hll.s3transfermanager.S3TransferManager
-import aws.sdk.kotlin.hll.s3transfermanager.TransferInterceptor
-import aws.sdk.kotlin.hll.s3transfermanager.TransferInterceptorContext
+import aws.sdk.kotlin.hll.s3transfermanager.interceptors.MutableTransferContext
+import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferContext
+import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferInterceptor
 import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.CompleteMultipartUploadRequest
@@ -36,26 +37,26 @@ class TransferInterceptorTest {
             S3TransferManager(s3Client) {
                 interceptors += object : TransferInterceptor {
                     // Test reads
-                    override fun readBeforeTransferInitiated(context: TransferInterceptorContext) {
+                    override fun readBeforeTransferInitiated(context: TransferContext) {
                         assert(context.transferredBytes == 0L)
-                        assert(context.request is PutObjectRequest)
+                        assert(context.s3Request is PutObjectRequest)
                     }
-                    override fun readBeforeTransferCompleted(context: TransferInterceptorContext) {
+                    override fun readBeforeTransferCompleted(context: TransferContext) {
                         assert(context.transferredBytes == message.length.toLong())
-                        assert(context.response is PutObjectResponse)
+                        assert(context.s3Response is PutObjectResponse)
                     }
 
                     // Test modifications
-                    override fun modifyBeforeTransferCompleted(context: TransferInterceptorContext) {
-                        context.request = CompleteMultipartUploadRequest {}
+                    override fun modifyBeforeTransferCompleted(context: MutableTransferContext) {
+                        context.s3Request = CompleteMultipartUploadRequest {}
                         context.transferredBytes = message.length.toLong() * 10
                     }
-                    override fun readAfterTransferCompleted(context: TransferInterceptorContext) {
-                        assert(context.request is CompleteMultipartUploadRequest)
+                    override fun readAfterTransferCompleted(context: TransferContext) {
+                        assert(context.s3Request is CompleteMultipartUploadRequest)
                         assert(context.transferredBytes == message.length.toLong() * 10)
                     }
                 }
-            }.uploadFile {
+            }.uploadObject {
                 bucket = "b"
                 key = "k"
                 body = ByteStream.fromString(message)
@@ -76,19 +77,19 @@ class TransferInterceptorTest {
                 S3TransferManager(s3Client) {
                     interceptors += listOf(
                         object : TransferInterceptor {
-                            override fun readBeforeTransferInitiated(context: TransferInterceptorContext): Unit =
+                            override fun readBeforeTransferInitiated(context: TransferContext): Unit =
                                 throw Exception("1")
                         },
                         object : TransferInterceptor {
-                            override fun readBeforeTransferInitiated(context: TransferInterceptorContext): Unit =
+                            override fun readBeforeTransferInitiated(context: TransferContext): Unit =
                                 throw Exception("2")
                         },
                         object : TransferInterceptor {
-                            override fun readBeforeTransferInitiated(context: TransferInterceptorContext): Unit =
+                            override fun readBeforeTransferInitiated(context: TransferContext): Unit =
                                 throw Exception("3")
                         },
                     )
-                }.uploadFile {
+                }.uploadObject {
                     bucket = "b"
                     key = "k"
                     body = ByteStream.fromString(message)

@@ -5,8 +5,8 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings
 
-import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadfile.uploadFileConversions
-import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadfile.uploadFileIoMappings
+import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadObject.uploadObjectConversions
+import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadObject.uploadObjectIoMappings
 
-internal val ioMappings = uploadFileIoMappings
-internal val conversionMappings = uploadFileConversions
+internal val ioMappings = uploadObjectIoMappings
+internal val conversionMappings = uploadObjectConversions

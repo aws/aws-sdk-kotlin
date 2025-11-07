@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadfile
+package aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadObject
 
 import aws.sdk.kotlin.hll.codegen.model.TypeRef
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.ConversionMapping
 
-internal val uploadFileConversions = listOf(
+internal val uploadObjectConversions = listOf(
     ConversionMapping(
         source = TypeRef(
             "aws.sdk.kotlin.services.s3.model",
@@ -16,7 +16,7 @@ internal val uploadFileConversions = listOf(
         ),
         destination = TypeRef(
             "aws.sdk.kotlin.hll.s3transfermanager.model",
-            "UploadFileResponse",
+            "UploadObjectResponse",
         ),
         setOf(
             "bucketKeyEnabled",
@@ -44,7 +44,7 @@ internal val uploadFileConversions = listOf(
         ),
         destination = TypeRef(
             "aws.sdk.kotlin.hll.s3transfermanager.model",
-            "UploadFileResponse",
+            "UploadObjectResponse",
         ),
         setOf(
             "bucketKeyEnabled",
@@ -65,7 +65,7 @@ internal val uploadFileConversions = listOf(
     ConversionMapping(
         source = TypeRef(
             "aws.sdk.kotlin.hll.s3transfermanager.model",
-            "UploadFileRequest",
+            "UploadObjectRequest",
         ),
         destination = TypeRef(
             "aws.sdk.kotlin.services.s3.model",
@@ -86,6 +86,7 @@ internal val uploadFileConversions = listOf(
             "contentDisposition",
             "contentEncoding",
             "contentLanguage",
+            "contentLength",
             "contentType",
             "expectedBucketOwner",
             "expires",
@@ -111,12 +112,11 @@ internal val uploadFileConversions = listOf(
             "tagging",
             "websiteRedirectLocation",
         ),
-        additionalLogic = "contentLength = this@toPutObjectRequest.body?.contentLength",
     ),
     ConversionMapping(
         source = TypeRef(
             "aws.sdk.kotlin.hll.s3transfermanager.model",
-            "UploadFileRequest",
+            "UploadObjectRequest",
         ),
         destination = TypeRef(
             "aws.sdk.kotlin.services.s3.model",
@@ -158,7 +158,7 @@ internal val uploadFileConversions = listOf(
     ConversionMapping(
         source = TypeRef(
             "aws.sdk.kotlin.hll.s3transfermanager.model",
-            "UploadFileRequest",
+            "UploadObjectRequest",
         ),
         destination = TypeRef(
             "aws.sdk.kotlin.services.s3.model",
@@ -205,7 +205,7 @@ internal val uploadFileConversions = listOf(
     ConversionMapping(
         source = TypeRef(
             "aws.sdk.kotlin.hll.s3transfermanager.model",
-            "UploadFileRequest",
+            "UploadObjectRequest",
         ),
         destination = TypeRef(
             "aws.sdk.kotlin.services.s3.model",

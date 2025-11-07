@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadfile
+package aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadObject
 
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.IoMapping
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.MappingType
 
-internal val uploadFileIoMappings = listOf(
+internal val uploadObjectIoMappings = listOf(
     IoMapping(
         MappingType.REQUEST,
-        "UploadFileRequest",
+        "UploadObjectRequest",
         "putObject",
         setOf(
             "acl",
@@ -28,6 +28,7 @@ internal val uploadFileIoMappings = listOf(
             "contentDisposition",
             "contentEncoding",
             "contentLanguage",
+            "contentLength",
             "contentType",
             "expectedBucketOwner",
             "expires",
@@ -56,7 +57,7 @@ internal val uploadFileIoMappings = listOf(
     ),
     IoMapping(
         MappingType.RESPONSE,
-        "UploadFileResponse",
+        "UploadObjectResponse",
         "putObject",
         setOf(
             "bucketKeyEnabled",

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package aws.sdk.kotlin.hll.s3transfermanager.operations.uploadfile
+package aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject
 
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
 import aws.smithy.kotlin.runtime.content.ByteStream
@@ -21,16 +21,22 @@ private const val MAX_NUMBER_PARTS = 10_000L
  * Determines the actual part size to use for a multipart S3 upload.
  *
  * This function calculates the part size based on the total size
- * of the file and the requested part size. If the requested part size is
+ * of the object and the requested part size. If the requested part size is
  * too small to allow the upload to fit within S3's 10,000-part limit, the
  * part size will be automatically increased so that exactly 10,000 parts
  * are uploaded.
  */
-internal fun resolvePartSize(contentLength: Long, targetPartSize: Long, logger: Logger): Long {
-    val targetNumberOfParts = contentLength / targetPartSize
+internal fun resolvePartSize(contentLength: Long, targetPartSize: Long, objectName: String?, logger: Logger): Long {
+    val targetNumberOfParts = ceilDiv(contentLength, targetPartSize)
     return if (targetNumberOfParts > MAX_NUMBER_PARTS) {
         ceilDiv(contentLength, MAX_NUMBER_PARTS).also {
-            logger.warn { "Target part size is too small to meet the $MAX_NUMBER_PARTS S3 part limit. Increasing part size to $it" }
+            logger.info {
+                buildString {
+                    append("The target part size of $targetPartSize bytes is too small to upload $objectName in $MAX_NUMBER_PARTS parts ")
+                    append("(the maximum allowed by S3). ")
+                    append("The object will be uploaded in parts of $it bytes instead.")
+                }
+            }
         }
     } else {
         targetPartSize
@@ -61,13 +67,18 @@ internal suspend fun nextPartBytes(
     partSource: Any,
     partSize: Long,
     lastPart: Boolean,
-    readBytes: Int,
-    readableBytes: Int,
+    readBytes: Long,
+    readableBytes: Long,
 ): SdkBuffer {
     val buffer = SdkBuffer()
 
     when (partSource) {
         is ByteArray -> {
+            // Long to Int is safe here because the ByteArray max size is Int.MAX_VALUE, it's size is managed as an Int.
+            val readBytes = readBytes.toInt()
+            val readableBytes = readableBytes.toInt()
+            val partSize = partSize.toInt()
+
             if (lastPart) {
                 buffer.write(
                     partSource.sliceArray(readBytes..<readableBytes),
@@ -75,7 +86,7 @@ internal suspend fun nextPartBytes(
             } else {
                 buffer.write(
                     partSource.sliceArray(
-                        readBytes..<readBytes + partSize.toInt(),
+                        readBytes..<readBytes + partSize,
                     ),
                 )
             }
