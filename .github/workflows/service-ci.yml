@@ -49,4 +49,6 @@ concurrency:
 permissions:
   id-token: write
   contents: read
+  actions: read
+  repository-projects: read
 
