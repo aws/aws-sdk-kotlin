@@ -6,13 +6,12 @@
 package aws.sdk.kotlin.runtime.config.imds
 
 import aws.smithy.kotlin.runtime.http.*
-import aws.smithy.kotlin.runtime.http.complete
 import aws.smithy.kotlin.runtime.http.operation.ModifyRequestMiddleware
 import aws.smithy.kotlin.runtime.http.operation.SdkHttpOperation
 import aws.smithy.kotlin.runtime.http.operation.SdkHttpRequest
 import aws.smithy.kotlin.runtime.http.operation.setResolvedEndpoint
 import aws.smithy.kotlin.runtime.http.request.HttpRequestBuilder
-import aws.smithy.kotlin.runtime.telemetry.logging.trace
+import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import aws.smithy.kotlin.runtime.time.Clock
 import aws.smithy.kotlin.runtime.util.CachedValue
 import aws.smithy.kotlin.runtime.util.ExpiringValue
@@ -49,7 +48,8 @@ internal class TokenMiddleware(
     }
 
     private suspend fun getToken(clock: Clock, req: SdkHttpRequest): Token {
-        coroutineContext.trace<TokenMiddleware> { "refreshing IMDS token" }
+        val logger = coroutineContext.logger<TokenMiddleware>()
+        logger.trace { "refreshing IMDS token" }
 
         val tokenReq = HttpRequestBuilder().apply {
             method = HttpMethod.PUT
@@ -63,6 +63,7 @@ internal class TokenMiddleware(
         setResolvedEndpoint(SdkHttpRequest(tokenReq), endpoint)
 
         val call = httpClient.call(tokenReq)
+        logger.trace { call.toTraceString() }
         return try {
             when (call.response.status) {
                 HttpStatusCode.OK -> {

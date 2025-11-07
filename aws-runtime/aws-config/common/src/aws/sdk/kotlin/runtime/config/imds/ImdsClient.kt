@@ -24,6 +24,7 @@ import aws.smithy.kotlin.runtime.io.Closeable
 import aws.smithy.kotlin.runtime.io.closeIfCloseable
 import aws.smithy.kotlin.runtime.io.middleware.Phase
 import aws.smithy.kotlin.runtime.operation.ExecutionContext
+import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import aws.smithy.kotlin.runtime.time.Clock
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import kotlin.coroutines.coroutineContext
@@ -111,11 +112,13 @@ public class ImdsClient private constructor(builder: Builder) : InstanceMetadata
      * ```
      */
     public override suspend fun get(path: String): String {
+        val logger = coroutineContext.logger<ImdsClient>()
         val op = SdkHttpOperation.build<Unit, String> {
             serializeWith = HttpSerializer.Unit
             deserializeWith = object : HttpDeserializer.NonStreaming<String> {
                 override fun deserialize(context: ExecutionContext, call: HttpCall, payload: ByteArray?): String {
                     val response = call.response
+                    logger.trace { call.toTraceString() }
                     if (response.status.isSuccess()) {
                         return payload!!.decodeToString()
                     } else {
@@ -240,3 +243,17 @@ public class EC2MetadataError(public val status: HttpStatusCode, message: String
     @Deprecated("This property is now deprecated and should be fetched from status.value. This declaration will be removed in version 1.6.x.")
     public val statusCode: Int = status.value
 }
+
+/**
+ * Formats an executed [HttpCall] into a form suitable for TRACE logging. Example output:
+ *
+ * `HTTP GET http://169.254.169.254/latest/meta-data/iam/security-credentials/ --> 200 OK`
+ */
+internal fun HttpCall.toTraceString() = listOf(
+    "HTTP",
+    request.method,
+    request.url,
+    "-->",
+    response.status.value,
+    response.status.description,
+).joinToString(" ")
