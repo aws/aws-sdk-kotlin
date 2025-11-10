@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.5.79] - 11/10/2025
+
+### Features
+* (**acmpca**) Private Certificate Authority service now supports ML-DSA key algorithms.
+* (**appstream**) AWS Appstream support for IPv6
+* (**backup**) AWS Backup supports backups of Amazon EKS clusters, including Kubernetes cluster state and persistent storage attached to the EKS cluster via a persistent volume claim (EBS volumes, EFS file systems, and S3 buckets).
+* (**braket**) Adds ExperimentalCapabilities field to CreateQuantumTask request and GetQuantumTask response objects. Enables use of experimental software capabilities when creating quantum tasks.
+* (**datazone**) Remove trackingServerName from DataZone Connection MLflowProperties
+* (**dsql**) Cluster endpoint added to CreateCluster and GetCluster API responses
+* (**ec2**) Amazon EC2 Fleet customers can now filter instance types based on encryption-in-transit support using Attribute-Based Instance Type Selection (ABIS), eliminating the manual effort of identifying and selecting compatible instance types for security-sensitive workloads.
+* (**guardduty**) Include tags filed in CreatePublishingDestinationRequest and DescribePublishingDestinationResponse.
+* (**iam**) Added CreateDelegationRequest API, which is not available for general use at this time.
+* (**invoicing**) Added new invoicing get-invoice-pdf API Operation
+* (**kafka**) Amazon MSK now supports intelligent rebalancing for MSK Express brokers.
+* (**sts**) Added GetDelegatedAccessToken API, which is not available for general use at this time.
+* (**verifiedpermissions**) Amazon Verified Permissions / Features : Adds support for entity Cedar tags.
+* (**wafv2**) AWS WAF now supports CLOUDWATCH_TELEMETRY_RULE_MANAGED as a LogScope option, enabling automated logging configuration through Amazon CloudWatch Logs for telemetry data collection and analysis.
+
 ## [1.5.78] - 11/07/2025
 
 ### Features
