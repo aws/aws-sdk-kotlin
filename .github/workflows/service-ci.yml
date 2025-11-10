@@ -16,7 +16,7 @@ jobs:
       - name: Checkout ools
         uses: actions/checkout@v2
         with:
-          repository: awslabs/aws-kotlin-repo-tools
+          repository: aws/aws-kotlin-repo-tools
           token: ${{ secrets.CI_USER_PAT }}
       - name: Build and upload metrics
         id: build
@@ -32,7 +32,7 @@ jobs:
           env-vars-for-codebuild: GITHUB_REPOSITORY, UPLOAD, RELEASE_METRICS, IDENTIFIER
 
       - name: Process metrics
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/artifact-size-metrics/download-and-process@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/artifact-size-metrics/download-and-process@main
         with:
           download: 'true'
 
