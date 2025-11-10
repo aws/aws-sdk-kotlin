@@ -71292,6 +71292,14 @@
                         "smithy.api#documentation": "<p>The baseline performance to consider, using an instance family as a baseline reference.\n         The instance family establishes the lowest acceptable level of performance. Amazon EC2 uses this\n         baseline to guide instance type selection, but there is no guarantee that the selected\n         instance types will always exceed the baseline for every application. Currently, this\n         parameter only supports CPU performance as a baseline performance factor. For more\n         information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-attribute-based-instance-type-selection.html#ec2fleet-abis-performance-protection\">Performance protection</a> in the <i>Amazon EC2 User Guide</i>.</p>",
                         "smithy.api#xmlName": "baselinePerformanceFactors"
                     }
+                },
+                "RequireEncryptionInTransit": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "RequireEncryptionInTransit",
+                        "smithy.api#documentation": "<p>Specifies whether instance types must support encrypting in-transit traffic between\n         instances. For more information, including the supported instance types, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/data-protection.html#encryption-transit\">Encryption in\n            transit</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>Default: <code>false</code>\n         </p>",
+                        "smithy.api#xmlName": "requireEncryptionInTransit"
+                    }
                 }
             },
             "traits": {
@@ -71461,6 +71469,12 @@
                     "target": "com.amazonaws.ec2#BaselinePerformanceFactorsRequest",
                     "traits": {
                         "smithy.api#documentation": "<p>The baseline performance to consider, using an instance family as a baseline reference.\n         The instance family establishes the lowest acceptable level of performance. Amazon EC2 uses this\n         baseline to guide instance type selection, but there is no guarantee that the selected\n         instance types will always exceed the baseline for every application. Currently, this\n         parameter only supports CPU performance as a baseline performance factor. For more\n         information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-attribute-based-instance-type-selection.html#ec2fleet-abis-performance-protection\">Performance protection</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+                    }
+                },
+                "RequireEncryptionInTransit": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether instance types must support encrypting in-transit traffic between\n         instances. For more information, including the supported instance types, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/data-protection.html#encryption-transit\">Encryption in\n            transit</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>Default: <code>false</code>\n         </p>"
                     }
                 }
             },
