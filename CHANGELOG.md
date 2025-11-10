@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.5.78] - 11/07/2025
+
+### Features
+* (**controltower**) Added Parent Identifier support to ListEnabledControls and GetEnabledControl API. Implemented RemediationType support for Landing Zone operations: CreateLandingZone, UpdateLandingZone and GetLandingZone APIs
+* (**ec2**) Adds PrivateDnsPreference and PrivateDnsSpecifiedDomains to control private DNS resolution for resource and service network VPC endpoints and IpamScopeExternalAuthorityConfiguration to integrate Amazon VPC IPAM with a third-party IPAM service
+* (**kms**) Added support for new ECC_NIST_EDWARDS25519 AWS KMS key spec
+* (**opensearch**) This release introduces the Default Application feature, allowing users to set, change, or unset a preferred OpenSearch UI application on a per-region basis for a streamlined and consistent user experience.
+* (**vpclattice**) Amazon VPC Lattice now supports custom domain name for resource configurations
+* Emit additional tracing logs from the IMDS client
+* Upgrade **smithy-kotlin** to [**v1.5.19**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.5.19) containing a new CRT cipher suite
+
+## [1.5.77] - 11/06/2025
+
+### Features
+* (**accessanalyzer**) New field totalActiveErrors added to getFindingsStatistics response.
+* (**backup**) AWS Backup now supports customer-managed keys (CMK) for logically air-gapped vaults, enabling customers to maintain full control over their encryption key lifecycle. This feature helps organizations meet specific internal governance requirements or external regulatory compliance standards.
+* (**connect**) Added support for Conditional Questions in Evaluation Forms. Introduced Auto Evaluation capability for Evaluation Forms and Contact Evaluations. Added new API operations: SearchEvaluationForms and SearchContactEvaluations.
+* (**ec2**) Add Amazon EC2 R8a instance types
+* (**gamelift**) Amazon GameLift Servers now supports game builds that use the Windows 2022 operating system.
+* (**identitystore**) IdentityStore API: added new KMSExceptionReason fields to the Exception object; added multiple new fields to the User APIs - UserStatus, Birthdate, Website and Photos; added multiple new metadata fields for User, Groups and Membership APIs - CreatedAt, CreatedBy, UpdatedAt and UpdatedBy.
+* (**quicksight**) Support for New Data Prep Experience
+* (**s3tables**) Adds support for tagging APIs for S3 Tables
+* (**s3vectors**) Amazon S3 Vectors provides cost-effective, elastic, and durable vector storage for queries based on semantic meaning and similarity.
+* (**sagemaker**) Added NodeProvisioningMode parameter to UpdateCluster API to determine how instance provisioning is handled during cluster operations; in Continuous mode. Added VpcId field in UpdateDomain request for SageMaker Unified Studio domains with no VPC to add a customer VPC.
+* (**ssm**) Provides NoLongerSupportedException error message
+
 ## [1.5.76] - 11/05/2025
 
 ### Features

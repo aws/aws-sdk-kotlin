@@ -19402,6 +19402,12 @@
                         "smithy.api#documentation": "<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
                         "smithy.api#idempotencyToken": {}
                     }
+                },
+                "ExternalAuthorityConfiguration": {
+                    "target": "com.amazonaws.ec2#ExternalAuthorityConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p>\n         <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>"
+                    }
                 }
             },
             "traits": {
@@ -52640,6 +52646,22 @@
                         "smithy.api#documentation": "<p>Indicates whether to enable private DNS only for inbound endpoints.</p>",
                         "smithy.api#xmlName": "privateDnsOnlyForInboundResolverEndpoint"
                     }
+                },
+                "PrivateDnsPreference": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PrivateDnsPreference",
+                        "smithy.api#documentation": "<p>\nThe preference for which private domains have a private hosted zone created for and associated with the specified VPC. Only supported when private DNS is enabled and when the VPC endpoint type is ServiceNetwork or Resource.\n</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ALL_DOMAINS</code> - VPC Lattice provisions private hosted zones for all custom domain names.</p>\n            </li>\n            <li>\n               <p>\n                  <code>VERIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone only if custom domain name has been verified by the provider.</p>\n            </li>\n            <li>\n               <p>\n                  <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> - VPC Lattice provisions private hosted zones for all verified custom domain names and other domain names that the resource consumer specifies. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SPECIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone for domain names specified by the resource consumer. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p>\n            </li>\n         </ul>",
+                        "smithy.api#xmlName": "privateDnsPreference"
+                    }
+                },
+                "PrivateDnsSpecifiedDomains": {
+                    "target": "com.amazonaws.ec2#PrivateDnsSpecifiedDomainSet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PrivateDnsSpecifiedDomainSet",
+                        "smithy.api#documentation": "<p>\nIndicates which of the private domains to create private hosted zones for and associate with the specified VPC. Only supported when private DNS is enabled and the private DNS preference is <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> or <code>SPECIFIED_DOMAINS_ONLY</code>. \n</p>",
+                        "smithy.api#xmlName": "privateDnsSpecifiedDomainSet"
+                    }
                 }
             },
             "traits": {
@@ -52659,6 +52681,19 @@
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
                         "smithy.api#documentation": "<p>Indicates whether to enable private DNS only for inbound endpoints. This option is\n          available only for services that support both gateway and interface endpoints. It routes\n          traffic that originates from the VPC to the gateway endpoint and traffic that originates\n          from on-premises to the interface endpoint.</p>"
+                    }
+                },
+                "PrivateDnsPreference": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n    The preference for which private domains have a private hosted zone created for and associated with the specified VPC. Only supported when private DNS is enabled and when the VPC endpoint type is ServiceNetwork or Resource.\n  </p>\n         <ul>\n            <li>\n               <p>\n                  <code>ALL_DOMAINS</code> - VPC Lattice provisions private hosted zones for all custom domain names.</p>\n            </li>\n            <li>\n               <p>\n                  <code>VERIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone only if custom domain name has been verified by the provider.</p>\n            </li>\n            <li>\n               <p>\n                  <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> - VPC Lattice provisions private hosted zones for all verified custom domain names and other domain names that the resource consumer specifies. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SPECIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone for domain names specified by the resource consumer. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "PrivateDnsSpecifiedDomains": {
+                    "target": "com.amazonaws.ec2#PrivateDnsSpecifiedDomainSet",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nIndicates which of the private domains to create private hosted zones for and associate with the specified VPC. Only supported when private DNS is enabled and the private DNS preference is verified-domains-and-specified-domains or specified-domains-only. \n</p>",
+                        "smithy.api#xmlName": "PrivateDnsSpecifiedDomain"
                     }
                 }
             },
@@ -56947,6 +56982,26 @@
         },
         "com.amazonaws.ec2#ExportVmTaskId": {
             "type": "string"
+        },
+        "com.amazonaws.ec2#ExternalAuthorityConfiguration": {
+            "type": "structure",
+            "members": {
+                "Type": {
+                    "target": "com.amazonaws.ec2#IpamScopeExternalAuthorityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of external authority.</p>"
+                    }
+                },
+                "ExternalResourceIdentifier": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier for the external resource managing this scope. For Infoblox integrations, this is the Infoblox resource identifier in the format <code><version>.identity.account.<entity_realm>.<entity_id></code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/integrate-infoblox-ipam.html\">Integrate VPC IPAM with Infoblox infrastructure</a> in the <i>Amazon VPC IPAM User Guide</i>..</p>"
+            }
         },
         "com.amazonaws.ec2#FailedCapacityReservationFleetCancellationResult": {
             "type": "structure",
@@ -78409,6 +78464,78 @@
                     "traits": {
                         "smithy.api#enumValue": "trn2.3xlarge"
                     }
+                },
+                "r8a_medium": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.medium"
+                    }
+                },
+                "r8a_large": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.large"
+                    }
+                },
+                "r8a_xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.xlarge"
+                    }
+                },
+                "r8a_2xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.2xlarge"
+                    }
+                },
+                "r8a_4xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.4xlarge"
+                    }
+                },
+                "r8a_8xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.8xlarge"
+                    }
+                },
+                "r8a_12xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.12xlarge"
+                    }
+                },
+                "r8a_16xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.16xlarge"
+                    }
+                },
+                "r8a_24xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.24xlarge"
+                    }
+                },
+                "r8a_48xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.48xlarge"
+                    }
+                },
+                "r8a_metal_24xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.metal-24xl"
+                    }
+                },
+                "r8a_metal_48xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8a.metal-48xl"
+                    }
                 }
             }
         },
@@ -82618,10 +82745,53 @@
                         "smithy.api#documentation": "<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value.\n    For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
                         "smithy.api#xmlName": "tagSet"
                     }
+                },
+                "ExternalAuthorityConfiguration": {
+                    "target": "com.amazonaws.ec2#IpamScopeExternalAuthorityConfiguration",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ExternalAuthorityConfiguration",
+                        "smithy.api#documentation": "<p>The external authority configuration for this IPAM scope, if configured.</p>\n         <p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p>\n         <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>",
+                        "smithy.api#xmlName": "externalAuthorityConfiguration"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>In IPAM, a scope is the highest-level container within IPAM. An IPAM contains two default scopes. Each scope represents the IP space for a single network. The private scope is intended for all private IP address space. The public scope is intended for all public IP address space. Scopes enable you to reuse IP addresses across multiple unconnected networks without causing IP address overlap or conflict.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/how-it-works-ipam.html\">How IPAM works</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#IpamScopeExternalAuthorityConfiguration": {
+            "type": "structure",
+            "members": {
+                "Type": {
+                    "target": "com.amazonaws.ec2#IpamScopeExternalAuthorityType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Type",
+                        "smithy.api#documentation": "<p>The type of external authority managing this scope. Currently supports <code>Infoblox</code> for integration with Infoblox Universal DDI.</p>",
+                        "smithy.api#xmlName": "type"
+                    }
+                },
+                "ExternalResourceIdentifier": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ExternalResourceIdentifier",
+                        "smithy.api#documentation": "<p>The identifier for the external resource managing this scope. For Infoblox integrations, this is the Infoblox resource identifier in the format <code><version>.identity.account.<entity_realm>.<entity_id></code>.</p>",
+                        "smithy.api#xmlName": "externalResourceIdentifier"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p>\n         <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>"
+            }
+        },
+        "com.amazonaws.ec2#IpamScopeExternalAuthorityType": {
+            "type": "enum",
+            "members": {
+                "infoblox": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "infoblox"
+                    }
+                }
             }
         },
         "com.amazonaws.ec2#IpamScopeId": {
@@ -91044,6 +91214,18 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "smithy.api#documentation": "<p>The description of the scope you want to modify.</p>"
+                    }
+                },
+                "ExternalAuthorityConfiguration": {
+                    "target": "com.amazonaws.ec2#ExternalAuthorityConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p>\n         <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>"
+                    }
+                },
+                "RemoveExternalAuthorityConfiguration": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Remove the external authority configuration. <code>true</code> to remove.</p>"
                     }
                 }
             },
@@ -100185,7 +100367,7 @@
                     "target": "com.amazonaws.ec2#DnsNameState",
                     "traits": {
                         "aws.protocols#ec2QueryName": "State",
-                        "smithy.api#documentation": "<p>The verification state of the VPC endpoint service.</p>\n         <p>>Consumers\n            of the endpoint service can use the private name only when the state is\n                <code>verified</code>.</p>",
+                        "smithy.api#documentation": "<p>The verification state of the VPC endpoint service.</p>\n         <p>Consumers\n            of the endpoint service can use the private name only when the state is\n                <code>verified</code>.</p>",
                         "smithy.api#xmlName": "state"
                     }
                 },
@@ -100306,6 +100488,21 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Describes the options for instance hostnames.</p>"
+            }
+        },
+        "com.amazonaws.ec2#PrivateDnsSpecifiedDomainSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#String",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 10
+                }
             }
         },
         "com.amazonaws.ec2#PrivateIpAddressConfigSet": {
