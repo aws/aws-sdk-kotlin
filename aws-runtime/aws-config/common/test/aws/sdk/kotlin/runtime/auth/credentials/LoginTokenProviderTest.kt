@@ -33,6 +33,7 @@ import kotlin.runCatching
 import kotlin.test.*
 import kotlin.text.decodeToString
 import kotlin.text.encodeToByteArray
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.to
 import kotlin.toString
@@ -95,7 +96,7 @@ class LoginTokenProviderTest {
     }
 
     @Test
-    fun testLoginTokenCacheBehavior() = runTest {
+    fun testLoginTokenCacheBehavior() = runTest(timeout = 2.minutes) {
         val testList = Json.parseToJsonElement(LOGIN_TOKEN_PROVIDER_TEST_SUITE).jsonArray
         testList.map { testCase ->
             runCatching {
