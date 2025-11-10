@@ -1,5 +1,5 @@
 {
     "id": "930c7904-1735-466b-9acc-c46e960c26c9",
     "type": "feature",
-    "description": "added a new credentials provider for AWS Login token authentication"
+    "description": "Adds a new credentials provider for AWS Login token authentication"
 }

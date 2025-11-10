@@ -20,11 +20,10 @@ import kotlin.coroutines.coroutineContext
  * [CredentialsProvider] that uses AWS Login to source credentials.
  *
  * The provider does not initiate or perform the AWS Login flow. It is expected that you have
- * already performed the login flow using (e.g. using the AWS CLI `aws login`). The provider
+ * already performed the login flow using the AWS CLI (`aws login`). The provider
  * expects a valid non-expired access token for the AWS Login session in `~/.aws/login/cache` or
  * the directory specified by the `AWS_LOGIN_CACHE_DIRECTORY` environment variable.
- * If a cached token is not found, it is expired, or the file is malformed an exception will be thrown.
- *
+ * If a cached token is not found, is expired, or the file is malformed an exception will be thrown.
  *
  * **Instantiating AWS Login provider directly**
  *
@@ -60,7 +59,12 @@ public class LoginCredentialsProvider public constructor(
         val logger = coroutineContext.logger<LoginCredentialsProvider>()
 
         val loginTokenProvider =
-            LoginTokenProvider(loginSession, httpClient = httpClient, platformProvider = platformProvider, clock = clock)
+            LoginTokenProvider(
+                loginSession,
+                httpClient = httpClient,
+                platformProvider = platformProvider,
+                clock = clock,
+            )
 
         logger.trace { "Attempting to load token using token provider for login-session: `$loginSession`" }
         val creds = loginTokenProvider.resolve(attributes)

@@ -50,19 +50,13 @@ private const val PROVIDER_NAME = "LOGIN"
 // HTTP interceptor that adds DPoP (Demonstration of Proof-of-Possession) headers to requests.
 internal class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor {
     override suspend fun modifyBeforeTransmit(context: ProtocolRequestInterceptorContext<Any, HttpRequest>): HttpRequest {
-        val endpoint = extractRequestEndpoint(context.protocolRequest)
+        val endpoint = context.protocolRequest.url.toString()
         val dpopHeader = generateDpopProof(dpopKeyPem, endpoint)
 
         val request = context.protocolRequest.toBuilder()
 
         request.header("DPoP", dpopHeader)
         return request.build()
-    }
-
-    // extracts the full request endpoint URL for use in DPoP proof generation.
-    private fun extractRequestEndpoint(request: HttpRequest): String {
-        val url = request.url
-        return url.toString()
     }
 }
 
@@ -74,7 +68,6 @@ internal class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor
  * A utility such as the AWS CLI must be used to initially create the login session and cached token file before the
  * application using the provider will need to retrieve the login token. If the token has not been cached already,
  * this provider will return an error when attempting to retrieve the token.
- * See [Configure AWS Login](doc link TBD)
  *
  * This provider will attempt to refresh the cached login token periodically if needed when [resolve] is
  * called and a refresh token is available.
@@ -122,7 +115,7 @@ public class LoginTokenProvider(
 
         return try {
             attemptRefresh(token)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             token.takeIf { clock.now() < it.expiresAt }?.also {
                 coroutineContext.debug<LoginTokenProvider> { "cached token is not refreshable but still valid until ${it.expiresAt} for login-session: $loginSessionName" }
             } ?: throwTokenExpired()
@@ -146,9 +139,10 @@ public class LoginTokenProvider(
 
     private suspend fun writeToken(refreshed: LoginToken) {
         val cacheKey = getLoginCacheFilename(loginSessionName)
-        val filepath = normalizePath(platformProvider.filepath("~", ".aws", "login", "cache", cacheKey), platformProvider)
+        val directory = platformProvider.getenv("AWS_LOGIN_IN_CACHE_DIRECTORY") ?: platformProvider.filepath("~", ".aws", "login", "cache")
+        val filepath = normalizePath(platformProvider.filepath(directory, cacheKey), platformProvider)
+        val contents = serializeLoginToken(refreshed)
         try {
-            val contents = serializeLoginToken(refreshed)
             platformProvider.writeFile(filepath, contents)
         } catch (ex: Exception) {
             coroutineContext.debug<LoginTokenProvider>(ex) { "failed to write refreshed token back to disk at $filepath" }

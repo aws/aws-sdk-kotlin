@@ -92,7 +92,7 @@ internal sealed class LeafProvider {
     ) : LeafProvider()
 
     /**
-     * A provider that uses for AWS login
+     * A provider that uses AWS login
      *
      * Example
      * ```ini

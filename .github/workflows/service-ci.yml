@@ -13,11 +13,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
           aws-region: us-west-2
-      - name: Checkout ools
-        uses: actions/checkout@v2
-        with:
-          repository: aws/aws-kotlin-repo-tools
-          token: ${{ secrets.CI_USER_PAT }}
+
       - name: Build and upload metrics
         id: build
         env:

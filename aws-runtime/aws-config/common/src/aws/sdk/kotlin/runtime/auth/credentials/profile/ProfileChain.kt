@@ -274,7 +274,7 @@ private fun AwsProfile.ssoSessionCreds(config: AwsSharedConfig): LeafProviderRes
  * Attempt to load [LeafProvider.LoginSession] from the current profile or `null` if the profile
  * does not contain a login session configuration.
  */
-private fun AwsProfile.loginSessionCreds(config: AwsSharedConfig): LeafProviderResult? {
+private fun AwsProfile.loginSessionCreds(): LeafProviderResult? {
     val sessionName = getOrNull(LOGIN_SESSION) ?: return null
     return LeafProviderResult.Ok(LeafProvider.LoginSession(sessionName))
 }
@@ -359,7 +359,7 @@ private fun AwsProfile.leafProvider(config: AwsSharedConfig): LeafProvider {
     return webIdentityTokenCreds()
         .orElse { ssoSessionCreds(config) }
         .orElse(::legacySsoCreds)
-        .orElse { loginSessionCreds(config) }
+        .orElse { loginSessionCreds() }
         .unwrapOrElse(::processCreds)
         .unwrap()
 }
