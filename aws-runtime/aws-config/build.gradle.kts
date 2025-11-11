@@ -189,7 +189,7 @@ smithyBuild {
             )
         }
 
-        // FIXME: Shape from smoke tests fails projection: aws.test#AwsVendorParams
+        // FIXME: Shape from smoke tests fails projection: aws.test#AwsVendorParams (curr smoke tests temporarily removed from model)
         create("signin-credentials-provider") {
             imports = listOf(
                 awsModelFile("sign-in.json"),
