@@ -44,6 +44,7 @@ import kotlin.coroutines.coroutineContext
  * credentials each time the provider is used to source credentials.
  *
  * @param loginSession The Login Session from the profile
+ * @param region The AWS region used to call the log in service.
  * @param httpClient The [HttpClientEngine] instance to use to make requests. NOTE: This engine's resources and lifetime
  * are NOT managed by the provider. Caller is responsible for closing.
  * @param platformProvider The platform provider
@@ -51,6 +52,7 @@ import kotlin.coroutines.coroutineContext
  */
 public class LoginCredentialsProvider public constructor(
     public val loginSession: String,
+    public val region: String? = null,
     public val httpClient: HttpClientEngine? = null,
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     private val clock: Clock = Clock.System,
@@ -61,6 +63,7 @@ public class LoginCredentialsProvider public constructor(
         val loginTokenProvider =
             LoginTokenProvider(
                 loginSession,
+                region,
                 httpClient = httpClient,
                 platformProvider = platformProvider,
                 clock = clock,

@@ -128,6 +128,7 @@ class LoginCredentialsProviderTest {
 
         val provider = LoginCredentialsProvider(
             loginSession = "arn:aws:iam::123456789:user/TestUser",
+            region = "us-west-2",
             httpClient = engine,
             platformProvider = testPlatform,
             clock = testClock,

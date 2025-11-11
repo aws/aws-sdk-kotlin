@@ -24,7 +24,6 @@ import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.http.request.header
 import aws.smithy.kotlin.runtime.http.request.toBuilder
 import aws.smithy.kotlin.runtime.io.use
-import aws.smithy.kotlin.runtime.net.url.Url
 import aws.smithy.kotlin.runtime.serde.json.JsonToken
 import aws.smithy.kotlin.runtime.serde.json.jsonStreamReader
 import aws.smithy.kotlin.runtime.serde.json.jsonStreamWriter
@@ -77,6 +76,7 @@ private class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor 
  * called and a refresh token is available.
  *
  * @param loginSessionName the name of the login session from the shared config file to load tokens for
+ * @param region The AWS region used to call the log in service.
  * @param refreshBufferWindow amount of time before the actual credential expiration time when credentials are
  * considered expired. For example, if credentials are expiring in 15 minutes, and the buffer time is 10 seconds,
  * then any requests made after 14 minutes and 50 seconds will load new credentials. Defaults to 5 minutes.
@@ -87,6 +87,7 @@ private class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor 
  */
 public class LoginTokenProvider(
     public val loginSessionName: String,
+    public val region: String? = null,
     public val refreshBufferWindow: Duration = DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS.seconds,
     public val httpClient: HttpClientEngine? = null,
     public val platformProvider: PlatformProvider = PlatformProvider.System,
@@ -119,10 +120,10 @@ public class LoginTokenProvider(
 
         return try {
             attemptRefresh(token)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
             token.takeIf { clock.now() < it.expiresAt }?.also {
                 coroutineContext.debug<LoginTokenProvider> { "cached token is not refreshable but still valid until ${it.expiresAt} for login-session: $loginSessionName" }
-            } ?: throwTokenExpired()
+            } ?: throwTokenExpired(e)
         }
     }
 
@@ -160,6 +161,7 @@ public class LoginTokenProvider(
         val telemetry = coroutineContext.telemetryProvider
 
         SigninClient.fromEnvironment {
+            region = this@LoginTokenProvider.region
             httpClient = this@LoginTokenProvider.httpClient
             telemetryProvider = telemetry
             interceptors += DpopInterceptor(oldToken.dpopKey)
@@ -267,7 +269,11 @@ private fun parseECKeyPem(pem: String): ECKeyData {
 }
 
 private fun ByteArray.padTo32(): ByteArray =
-    if (size >= 32) takeLast(32).toByteArray() else ByteArray(32 - size) + this
+    if (size >= 32) {
+        takeLast(32).toByteArray()
+    } else {
+        ByteArray(32 - size) + this
+    }
 
 /**
  * Generates a DPoP (Demonstration of Proof-of-Possession) JWT proof for OAuth 2.0 requests.

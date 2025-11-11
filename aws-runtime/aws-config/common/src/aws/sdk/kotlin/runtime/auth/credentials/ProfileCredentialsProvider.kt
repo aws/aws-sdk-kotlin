@@ -200,7 +200,7 @@ public class ProfileCredentialsProvider @InternalSdkApi constructor(
                 credentialsBusinessMetrics.add(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE_SSO_LEGACY)
             }
 
-            is LeafProvider.LoginSession -> LoginCredentialsProvider(loginSessionName).also {
+            is LeafProvider.LoginSession -> LoginCredentialsProvider(loginSessionName, region.get()).also {
                 credentialsBusinessMetrics.add(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE_LOGIN)
             }
 
