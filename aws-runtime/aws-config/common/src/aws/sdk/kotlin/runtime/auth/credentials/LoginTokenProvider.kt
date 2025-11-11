@@ -162,7 +162,6 @@ public class LoginTokenProvider(
         SigninClient.fromEnvironment {
             httpClient = this@LoginTokenProvider.httpClient
             telemetryProvider = telemetry
-            endpointUrl = Url.parse("https://ap-northeast-1.aws-signin-testing.amazon.com") // TODO: testing endpoint, remove this once service prod endpoint is available
             interceptors += DpopInterceptor(oldToken.dpopKey)
         }.use { client ->
             return try {
