@@ -9,6 +9,8 @@ import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.SigninClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.createOAuth2Token
+import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.AccessDeniedException
+import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.OAuth2ErrorCode
 import aws.sdk.kotlin.runtime.config.profile.normalizePath
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
@@ -47,8 +49,10 @@ import kotlin.time.Duration.Companion.seconds
 private const val DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS = 60 * 5
 private const val PROVIDER_NAME = "LOGIN"
 
-// HTTP interceptor that adds DPoP (Demonstration of Proof-of-Possession) headers to requests.
-internal class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor {
+/**
+ * HTTP interceptor that adds DPoP (Demonstration of Proof-of-Possession) headers to requests.
+ */
+private class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor {
     override suspend fun modifyBeforeTransmit(context: ProtocolRequestInterceptorContext<Any, HttpRequest>): HttpRequest {
         val endpoint = context.protocolRequest.url.toString()
         val dpopHeader = generateDpopProof(dpopKeyPem, endpoint)
@@ -149,7 +153,8 @@ public class LoginTokenProvider(
         }
     }
 
-    private fun throwTokenExpired(cause: Throwable? = null): Nothing = throw InvalidLoginTokenException("Login token for login-session: $loginSessionName is expired", cause)
+    private fun throwTokenExpired(cause: Throwable? = null, message: String? = null): Nothing =
+        throw InvalidLoginTokenException(message ?: "Login token for login-session: $loginSessionName is expired", cause)
 
     private suspend fun refreshToken(oldToken: LoginToken): LoginToken {
         val telemetry = coroutineContext.telemetryProvider
@@ -158,20 +163,17 @@ public class LoginTokenProvider(
             httpClient = this@LoginTokenProvider.httpClient
             telemetryProvider = telemetry
             endpointUrl = Url.parse("https://ap-northeast-1.aws-signin-testing.amazon.com") // TODO: testing endpoint, remove this once service prod endpoint is available
-            interceptors += DpopInterceptor(oldToken.dpopKey) // note for implementer: this is for writing DpopProof in request header instead of sending in request
+            interceptors += DpopInterceptor(oldToken.dpopKey)
         }.use { client ->
-            val result = client.createOAuth2Token {
-                dpopProof = generateDpopProof(oldToken.dpopKey, "https://ap-northeast-1.aws-signin-testing.amazon.com/v1/token") // TODO: remove this line once dpopProof being removed from model
-                tokenInput {
-                    clientId = oldToken.clientId
-                    grantType = "refresh_token"
-                    refreshToken = oldToken.refreshToken
-                }
-            }
-
-            // TODO: use model provided exception:
-            // If the CreateOAuth2Token call returns a TBD error with the TBD member set to TBD, then the SDK MUST return an error with TBD wording.
             return try {
+                val result = client.createOAuth2Token {
+                    tokenInput {
+                        clientId = oldToken.clientId
+                        grantType = "refresh_token"
+                        refreshToken = oldToken.refreshToken
+                    }
+                }
+
                 oldToken.copy(
                     accessKeyId = result.tokenOutput!!.accessToken!!.accessKeyId,
                     secretAccessKey = result.tokenOutput.accessToken.secretAccessKey,
@@ -180,7 +182,46 @@ public class LoginTokenProvider(
                     refreshToken = result.tokenOutput.refreshToken,
                 )
             } catch (e: Exception) {
-                throw InvalidLoginTokenException("Failed to parse token response", e)
+                if (e is AccessDeniedException) {
+                    when (e.error) {
+                        is OAuth2ErrorCode.AuthcodeExpired -> {
+                            throwTokenExpired(
+                                e,
+                                buildString {
+                                    append("Unable to complete the login process due to an expired authorization code. ")
+                                    append("Please reauthenticate using 'aws login'.")
+                                },
+                            )
+                        }
+                        is OAuth2ErrorCode.TokenExpired -> {
+                            throwTokenExpired(
+                                e,
+                                "Your session has expired. Please reauthenticate.",
+                            )
+                        }
+                        is OAuth2ErrorCode.UserCredentialsChanged -> {
+                            throwTokenExpired(
+                                e,
+                                buildString {
+                                    append("Unable to refresh credentials because of a change in your password. ")
+                                    append("Please reauthenticate with your new password.")
+                                },
+                            )
+                        }
+                        is OAuth2ErrorCode.InsufficientPermissions -> {
+                            throwTokenExpired(
+                                e,
+                                buildString {
+                                    append("Unable to refresh credentials due to insufficient permissions. ")
+                                    append("You may be missing permission for the 'CreateOAuth2Token' action.")
+                                },
+                            )
+                        }
+                        else -> throw e
+                    }
+                } else {
+                    throw e
+                }
             }
         }
     }
@@ -197,11 +238,8 @@ internal data class ECKeyData(
  * Supports both "EC PRIVATE KEY" and "PRIVATE KEY" PEM formats for P-256 curve keys.
  */
 private fun parseECKeyPem(pem: String): ECKeyData {
-    // Note: adding PKCS#8 (BEGIN PRIVATE KEY) to support modeled test case, can be removed once model test case is updated
     val base64 = pem.replace("-----BEGIN EC PRIVATE KEY-----", "")
         .replace("-----END EC PRIVATE KEY-----", "")
-        .replace("-----BEGIN PRIVATE KEY-----", "")
-        .replace("-----END PRIVATE KEY-----", "")
         .replace("\\s".toRegex(), "")
         .replace("\n", "")
         .replace("\r", "")

@@ -223,7 +223,7 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
         "clientId": "arn:aws:signin:::devtools/same-device",
         "refreshToken": "refresh_token",
         "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
-        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+        "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
       }
     },
     "outcomes": [
@@ -257,7 +257,7 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
         "clientId": "arn:aws:signin:::devtools/same-device",
         "refreshToken": "valid_refresh_token_456",
         "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
-        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+        "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
       }
     },
     "outcomes": [
@@ -281,7 +281,7 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
         },
         "clientId": "arn:aws:signin:::devtools/same-device",
         "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
-        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+        "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
       }
     },
     "outcomes": [
@@ -305,7 +305,7 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
         },
         "refreshToken": "valid_refresh_token_789",
         "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
-        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+        "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
       }
     },
     "outcomes": [
@@ -354,13 +354,12 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
         "clientId": "arn:aws:signin:::devtools/same-device",
         "refreshToken": "valid_refresh_token",
         "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
-        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+        "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
       }
     },
     "mockApiCalls": [
       {
         "request": {
-          "dpopProof": "mock_dpop_proof",
           "tokenInput": {
             "clientId": "arn:aws:signin:::devtools/same-device",
             "refreshToken": "valid_refresh_token",
@@ -402,7 +401,7 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
           "clientId": "arn:aws:signin:::devtools/same-device",
           "refreshToken": "new_refresh_token",
           "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
-          "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+          "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
         }
       }
     ]
@@ -422,13 +421,12 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
         "clientId": "arn:aws:signin:::devtools/same-device",
         "refreshToken": "expired_refresh_token",
         "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
-        "dpopKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg+PNauWi/ihtwHHbq\n1tgc8Vgpwx0qQlNSN38y+z0igWehRANCAAR2Ntw6BXJ1v8jb9XjzKZJ+gL5f/3Jq\nIqiH2PUGKWxoFwNlcNB83FivEXEzlTbuCQK5OezOYb3gbvHuzKkB0nDX\n-----END PRIVATE KEY-----"
+        "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
       }
     },
     "mockApiCalls": [
       {
         "request": {
-          "dpopProof": "mock_dpop_proof",
           "tokenInput": {
             "clientId": "arn:aws:signin:::devtools/same-device",
             "refreshToken": "expired_refresh_token",

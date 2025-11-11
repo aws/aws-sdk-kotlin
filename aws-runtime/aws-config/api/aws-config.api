@@ -261,6 +261,63 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/internal/ManagedCrede
 	public static final fun manage (Laws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider;)Laws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider;
 }
 
+public abstract class aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode {
+	public static final field Companion Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$Companion;
+	public abstract fun getValue ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$AuthcodeExpired : aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode {
+	public static final field INSTANCE Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$AuthcodeExpired;
+	public fun getValue ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$Companion {
+	public final fun fromValue (Ljava/lang/String;)Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode;
+	public final fun values ()Ljava/util/List;
+}
+
+public final class aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$InsufficientPermissions : aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode {
+	public static final field INSTANCE Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$InsufficientPermissions;
+	public fun getValue ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$InvalidRequest : aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode {
+	public static final field INSTANCE Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$InvalidRequest;
+	public fun getValue ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$SdkUnknown : aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$SdkUnknown;
+	public static synthetic fun copy$default (Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$SdkUnknown;Ljava/lang/String;ILjava/lang/Object;)Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$SdkUnknown;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$ServerError : aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode {
+	public static final field INSTANCE Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$ServerError;
+	public fun getValue ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$TokenExpired : aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode {
+	public static final field INSTANCE Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$TokenExpired;
+	public fun getValue ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$UserCredentialsChanged : aws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode {
+	public static final field INSTANCE Laws/sdk/kotlin/runtime/auth/credentials/internal/signin/model/OAuth2ErrorCode$UserCredentialsChanged;
+	public fun getValue ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract class aws/sdk/kotlin/runtime/config/AbstractAwsSdkClientFactory : aws/smithy/kotlin/runtime/client/AbstractSdkClientFactory {
 	public fun <init> ()V
 	protected fun finalizeEnvironmentalConfig (Laws/smithy/kotlin/runtime/client/SdkClient$Builder;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

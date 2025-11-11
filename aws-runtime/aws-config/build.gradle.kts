@@ -188,7 +188,8 @@ smithyBuild {
             """,
             )
         }
-        // Note: I removed the smoke test section in model to make build pass
+
+        // FIXME: Shape from smoke tests fails projection: aws.test#AwsVendorParams
         create("signin-credentials-provider") {
             imports = listOf(
                 awsModelFile("sign-in.json"),
