@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.80] - 11/11/2025
+
+### Features
+* (**bedrockdataautomation**) Added support for Language Expansion feature for BDA Audio modality.
+* (**ec2**) AWS Site-to-Site VPN now supports VPN connections with up to 5 Gbps bandwidth per tunnel, a 4x improvement from existing limit of 1.25 Gbps.
+* (**medicalimaging**) Added new fields in existing APIs.
+* (**rtbfabric**) Added LogSettings and LinkAttribute fields to external links
+* (**securityir**) Added support for configuring communication preferences as well as clearly displaying case comment author identities.
+
+### Documentation
+* (**batch**) Documentation-only update: update API and doc descriptions per EKS ImageType default value switch from AL2 to AL2023.
+
 ## [1.5.79] - 11/10/2025
 
 ### Features

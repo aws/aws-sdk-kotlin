@@ -127197,6 +127197,14 @@
                         "smithy.api#documentation": "<p>Indicates the VPN tunnel options.</p>",
                         "smithy.api#xmlName": "tunnelOptionSet"
                     }
+                },
+                "TunnelBandwidth": {
+                    "target": "com.amazonaws.ec2#VpnTunnelBandwidth",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TunnelBandwidth",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe configured bandwidth for the VPN tunnel. Represents the current throughput capacity setting for the tunnel connection. <code>standard</code> tunnel bandwidth supports up to 1.25 Gbps per tunnel while <code>large</code>\n\t\t\tsupports up to 5 Gbps per tunnel. If no tunnel bandwidth was specified for the connection, <code>standard</code> is used as the default value.\n\t\t</p>",
+                        "smithy.api#xmlName": "tunnelBandwidth"
+                    }
                 }
             },
             "traits": {
@@ -127258,6 +127266,12 @@
                     "target": "com.amazonaws.ec2#TransitGatewayAttachmentId",
                     "traits": {
                         "smithy.api#documentation": "<p>The transit gateway attachment ID to use for the VPN tunnel.</p>\n         <p>Required if <code>OutsideIpAddressType</code> is set to <code>PrivateIpv4</code>.</p>"
+                    }
+                },
+                "TunnelBandwidth": {
+                    "target": "com.amazonaws.ec2#VpnTunnelBandwidth",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe desired bandwidth specification for the VPN tunnel, used when creating or modifying VPN connection options to set the tunnel's throughput \n\t\t\tcapacity. <code>standard</code> supports up to 1.25 Gbps per tunnel, while <code>large</code> supports up to 5 Gbps per tunnel. The default value is <code>standard</code>. Existing\n\t\t\tVPN connections without a bandwidth setting will automatically default to <code>standard</code>.\n\t\t</p>"
                     }
                 },
                 "StaticRoutesOnly": {
@@ -127463,6 +127477,23 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "Static"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#VpnTunnelBandwidth": {
+            "type": "enum",
+            "members": {
+                "standard": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "standard"
+                    }
+                },
+                "large": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "large"
                     }
                 }
             }
