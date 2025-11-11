@@ -19,7 +19,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           UPLOAD: 'true'
           RELEASE_METRICS: 'true'
-          IDENTIFIER: 'null' # Only needed for pull requests
+          IDENTIFIER: ${{ github.ref_name }}
         uses: aws-actions/aws-codebuild-run-build@v1
         with:
           project-name: aws-sdk-kotlin-service-build
