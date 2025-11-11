@@ -1,7 +1,8 @@
 name: Release metrics
 
 on:
-  pull_request: # TODO: Change back to release when done testing
+  release:
+    types: [ published ]
 
 jobs:
   build-sdk:
