@@ -1,0 +1,782 @@
+{
+  "smithy": "2.0",
+  "shapes": {
+    "com.amazonaws.trebucheteventheadertraitonenum#GetTest": {
+      "type": "operation",
+      "input": {
+        "target": "com.amazonaws.trebucheteventheadertraitonenum#TestRequest"
+      },
+      "output": {
+        "target": "com.amazonaws.trebucheteventheadertraitonenum#TestResult"
+      },
+      "traits": {
+        "smithy.api#documentation": "<para>I don't have doc</para>"
+      }
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#InvokeEndpointWithBidirectionalStream": {
+      "type": "operation",
+      "input": {
+        "target": "com.amazonaws.trebucheteventheadertraitonenum#InvokeEndpointWithBidirectionalStreamInput"
+      },
+      "output": {
+        "target": "com.amazonaws.trebucheteventheadertraitonenum#InvokeEndpointWithBidirectionalStreamInput"
+      }
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#InvokeEndpointWithBidirectionalStreamInput": {
+      "type": "structure",
+      "members": {
+        "body": {
+          "target": "com.amazonaws.trebucheteventheadertraitonenum#RequestEventStream",
+          "traits": {
+            "smithy.api#httpPayload": {},
+            "smithy.api#required": {}
+          }
+        }
+      }
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#RequestEventStream": {
+      "type": "union",
+      "members": {
+        "payloadPart": {
+          "target": "com.amazonaws.trebucheteventheadertraitonenum#RequestPayloadPart"
+        }
+      },
+      "traits": {
+        "smithy.api#streaming": {}
+      }
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#RequestPayloadPart": {
+      "type": "structure",
+      "members": {
+        "bytes": {
+          "target": "com.amazonaws.trebucheteventheadertraitonenum#partBlob",
+          "traits": {
+            "smithy.api#eventPayload": {}
+          }
+        },
+        "isUtf8TextEventHeader": {
+          "target": "com.amazonaws.trebucheteventheadertraitonenum#utf8TextEventHeaderEnum",
+          "traits": {
+            "smithy.api#eventHeader": {}
+          }
+        }
+      }
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#TestFeatureArn": {
+      "type": "structure",
+      "members": {
+        "featureArn": {
+          "target": "smithy.api#String",
+          "traits": {
+            "smithy.api#documentation": "<para>TestFeatureArn Docs</para>"
+          }
+        }
+      }
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#TestFeatureName": {
+      "type": "structure",
+      "members": {
+        "featureName": {
+          "target": "smithy.api#String",
+          "traits": {
+            "smithy.api#documentation": "<para>TestFeatureName Docs</para>"
+          }
+        }
+      }
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#TestRequest": {
+      "type": "structure",
+      "members": {
+        "featureName": {
+          "target": "com.amazonaws.trebucheteventheadertraitonenum#TestFeatureName",
+          "traits": {
+            "smithy.api#documentation": "<para>TestRequest Docs</para>"
+          }
+        }
+      },
+      "traits": {
+        "smithy.api#input": {}
+      }
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#TestResult": {
+      "type": "structure",
+      "members": {
+        "featureArn": {
+          "target": "com.amazonaws.trebucheteventheadertraitonenum#TestFeatureArn",
+          "traits": {
+            "smithy.api#documentation": "<para>TestResult Docs</para>"
+          }
+        }
+      },
+      "traits": {
+        "smithy.api#output": {}
+      }
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#TrebuchetEventHeaderTraitOnEnum": {
+      "type": "service",
+      "version": "2019-02-07",
+      "operations": [
+        {
+          "target": "com.amazonaws.trebucheteventheadertraitonenum#GetTest"
+        },
+        {
+          "target": "com.amazonaws.trebucheteventheadertraitonenum#InvokeEndpointWithBidirectionalStream"
+        }
+      ],
+      "traits": {
+        "aws.api#service": {
+          "sdkId": "TrebuchetEventHeaderTraitOnEnum",
+          "arnNamespace": "trebucheteventheadertraitonenum",
+          "cloudFormationName": "TrebuchetEventHeaderTraitOnEnum",
+          "cloudTrailEventSource": "trebucheteventheadertraitonenum.amazonaws.com"
+        },
+        "aws.auth#sigv4": {
+          "name": "trebucheteventheadertraitonenum"
+        },
+        "aws.protocols#awsJson1_1": {},
+        "smithy.api#documentation": "<para>Test Doc</para>",
+        "smithy.api#title": "AWS TrebuchetEventHeaderTraitOnEnum",
+        "smithy.rules#endpointRuleSet": {
+          "version": "1.0",
+          "parameters": {
+            "Region": {
+              "builtIn": "AWS::Region",
+              "required": false,
+              "documentation": "The AWS region used to dispatch the request.",
+              "type": "string"
+            },
+            "UseDualStack": {
+              "builtIn": "AWS::UseDualStack",
+              "required": true,
+              "default": false,
+              "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
+              "type": "boolean"
+            },
+            "UseFIPS": {
+              "builtIn": "AWS::UseFIPS",
+              "required": true,
+              "default": false,
+              "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
+              "type": "boolean"
+            },
+            "Endpoint": {
+              "builtIn": "SDK::Endpoint",
+              "required": false,
+              "documentation": "Override the endpoint used to send this request",
+              "type": "string"
+            }
+          },
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "fn": "isSet",
+                  "argv": [
+                    {
+                      "ref": "Endpoint"
+                    }
+                  ]
+                }
+              ],
+              "rules": [
+                {
+                  "conditions": [
+                    {
+                      "fn": "booleanEquals",
+                      "argv": [
+                        {
+                          "ref": "UseFIPS"
+                        },
+                        true
+                      ]
+                    }
+                  ],
+                  "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                  "type": "error"
+                },
+                {
+                  "conditions": [],
+                  "rules": [
+                    {
+                      "conditions": [
+                        {
+                          "fn": "booleanEquals",
+                          "argv": [
+                            {
+                              "ref": "UseDualStack"
+                            },
+                            true
+                          ]
+                        }
+                      ],
+                      "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                      "type": "error"
+                    },
+                    {
+                      "conditions": [],
+                      "endpoint": {
+                        "url": {
+                          "ref": "Endpoint"
+                        },
+                        "properties": {},
+                        "headers": {}
+                      },
+                      "type": "endpoint"
+                    }
+                  ],
+                  "type": "tree"
+                }
+              ],
+              "type": "tree"
+            },
+            {
+              "conditions": [],
+              "rules": [
+                {
+                  "conditions": [
+                    {
+                      "fn": "isSet",
+                      "argv": [
+                        {
+                          "ref": "Region"
+                        }
+                      ]
+                    }
+                  ],
+                  "rules": [
+                    {
+                      "conditions": [
+                        {
+                          "fn": "aws.partition",
+                          "argv": [
+                            {
+                              "ref": "Region"
+                            }
+                          ],
+                          "assign": "PartitionResult"
+                        }
+                      ],
+                      "rules": [
+                        {
+                          "conditions": [
+                            {
+                              "fn": "booleanEquals",
+                              "argv": [
+                                {
+                                  "ref": "UseFIPS"
+                                },
+                                true
+                              ]
+                            },
+                            {
+                              "fn": "booleanEquals",
+                              "argv": [
+                                {
+                                  "ref": "UseDualStack"
+                                },
+                                true
+                              ]
+                            }
+                          ],
+                          "rules": [
+                            {
+                              "conditions": [
+                                {
+                                  "fn": "booleanEquals",
+                                  "argv": [
+                                    true,
+                                    {
+                                      "fn": "getAttr",
+                                      "argv": [
+                                        {
+                                          "ref": "PartitionResult"
+                                        },
+                                        "supportsFIPS"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "fn": "booleanEquals",
+                                  "argv": [
+                                    true,
+                                    {
+                                      "fn": "getAttr",
+                                      "argv": [
+                                        {
+                                          "ref": "PartitionResult"
+                                        },
+                                        "supportsDualStack"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ],
+                              "rules": [
+                                {
+                                  "conditions": [],
+                                  "rules": [
+                                    {
+                                      "conditions": [],
+                                      "endpoint": {
+                                        "url": "https://trebucheteventheadertraitonenum-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                        "properties": {},
+                                        "headers": {}
+                                      },
+                                      "type": "endpoint"
+                                    }
+                                  ],
+                                  "type": "tree"
+                                }
+                              ],
+                              "type": "tree"
+                            },
+                            {
+                              "conditions": [],
+                              "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                              "type": "error"
+                            }
+                          ],
+                          "type": "tree"
+                        },
+                        {
+                          "conditions": [
+                            {
+                              "fn": "booleanEquals",
+                              "argv": [
+                                {
+                                  "ref": "UseFIPS"
+                                },
+                                true
+                              ]
+                            }
+                          ],
+                          "rules": [
+                            {
+                              "conditions": [
+                                {
+                                  "fn": "booleanEquals",
+                                  "argv": [
+                                    {
+                                      "fn": "getAttr",
+                                      "argv": [
+                                        {
+                                          "ref": "PartitionResult"
+                                        },
+                                        "supportsFIPS"
+                                      ]
+                                    },
+                                    true
+                                  ]
+                                }
+                              ],
+                              "rules": [
+                                {
+                                  "conditions": [],
+                                  "rules": [
+                                    {
+                                      "conditions": [],
+                                      "endpoint": {
+                                        "url": "https://trebucheteventheadertraitonenum-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                        "properties": {},
+                                        "headers": {}
+                                      },
+                                      "type": "endpoint"
+                                    }
+                                  ],
+                                  "type": "tree"
+                                }
+                              ],
+                              "type": "tree"
+                            },
+                            {
+                              "conditions": [],
+                              "error": "FIPS is enabled but this partition does not support FIPS",
+                              "type": "error"
+                            }
+                          ],
+                          "type": "tree"
+                        },
+                        {
+                          "conditions": [
+                            {
+                              "fn": "booleanEquals",
+                              "argv": [
+                                {
+                                  "ref": "UseDualStack"
+                                },
+                                true
+                              ]
+                            }
+                          ],
+                          "rules": [
+                            {
+                              "conditions": [
+                                {
+                                  "fn": "booleanEquals",
+                                  "argv": [
+                                    true,
+                                    {
+                                      "fn": "getAttr",
+                                      "argv": [
+                                        {
+                                          "ref": "PartitionResult"
+                                        },
+                                        "supportsDualStack"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ],
+                              "rules": [
+                                {
+                                  "conditions": [],
+                                  "rules": [
+                                    {
+                                      "conditions": [],
+                                      "endpoint": {
+                                        "url": "https://trebucheteventheadertraitonenum.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                        "properties": {},
+                                        "headers": {}
+                                      },
+                                      "type": "endpoint"
+                                    }
+                                  ],
+                                  "type": "tree"
+                                }
+                              ],
+                              "type": "tree"
+                            },
+                            {
+                              "conditions": [],
+                              "error": "DualStack is enabled but this partition does not support DualStack",
+                              "type": "error"
+                            }
+                          ],
+                          "type": "tree"
+                        },
+                        {
+                          "conditions": [],
+                          "rules": [
+                            {
+                              "conditions": [],
+                              "endpoint": {
+                                "url": "https://trebucheteventheadertraitonenum.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                              },
+                              "type": "endpoint"
+                            }
+                          ],
+                          "type": "tree"
+                        }
+                      ],
+                      "type": "tree"
+                    }
+                  ],
+                  "type": "tree"
+                },
+                {
+                  "conditions": [],
+                  "error": "Invalid Configuration: Missing Region",
+                  "type": "error"
+                }
+              ],
+              "type": "tree"
+            }
+          ]
+        },
+        "smithy.rules#endpointTests": {
+          "testCases": [
+            {
+              "documentation": "For region us-east-1 with FIPS enabled and DualStack enabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum-fips.us-east-1.api.aws"
+                }
+              },
+              "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true
+              }
+            },
+            {
+              "documentation": "For region us-east-1 with FIPS enabled and DualStack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum-fips.us-east-1.amazonaws.com"
+                }
+              },
+              "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+              }
+            },
+            {
+              "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum.us-east-1.api.aws"
+                }
+              },
+              "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+              }
+            },
+            {
+              "documentation": "For region us-east-1 with FIPS disabled and DualStack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum.us-east-1.amazonaws.com"
+                }
+              },
+              "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+              }
+            },
+            {
+              "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum-fips.cn-north-1.api.amazonwebservices.com.cn"
+                }
+              },
+              "params": {
+                "Region": "cn-north-1",
+                "UseFIPS": true,
+                "UseDualStack": true
+              }
+            },
+            {
+              "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum-fips.cn-north-1.amazonaws.com.cn"
+                }
+              },
+              "params": {
+                "Region": "cn-north-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+              }
+            },
+            {
+              "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum.cn-north-1.api.amazonwebservices.com.cn"
+                }
+              },
+              "params": {
+                "Region": "cn-north-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+              }
+            },
+            {
+              "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum.cn-north-1.amazonaws.com.cn"
+                }
+              },
+              "params": {
+                "Region": "cn-north-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+              }
+            },
+            {
+              "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum-fips.us-gov-east-1.api.aws"
+                }
+              },
+              "params": {
+                "Region": "us-gov-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true
+              }
+            },
+            {
+              "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum-fips.us-gov-east-1.amazonaws.com"
+                }
+              },
+              "params": {
+                "Region": "us-gov-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+              }
+            },
+            {
+              "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack enabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum.us-gov-east-1.api.aws"
+                }
+              },
+              "params": {
+                "Region": "us-gov-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+              }
+            },
+            {
+              "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum.us-gov-east-1.amazonaws.com"
+                }
+              },
+              "params": {
+                "Region": "us-gov-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+              }
+            },
+            {
+              "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum-fips.us-iso-east-1.c2s.ic.gov"
+                }
+              },
+              "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+              }
+            },
+            {
+              "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum.us-iso-east-1.c2s.ic.gov"
+                }
+              },
+              "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+              }
+            },
+            {
+              "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum-fips.us-isob-east-1.sc2s.sgov.gov"
+                }
+              },
+              "params": {
+                "Region": "us-isob-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+              }
+            },
+            {
+              "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://trebucheteventheadertraitonenum.us-isob-east-1.sc2s.sgov.gov"
+                }
+              },
+              "params": {
+                "Region": "us-isob-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+              }
+            },
+            {
+              "documentation": "For custom endpoint with region set and fips disabled and dualstack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://example.com"
+                }
+              },
+              "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Endpoint": "https://example.com"
+              }
+            },
+            {
+              "documentation": "For custom endpoint with region not set and fips disabled and dualstack disabled",
+              "expect": {
+                "endpoint": {
+                  "url": "https://example.com"
+                }
+              },
+              "params": {
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Endpoint": "https://example.com"
+              }
+            },
+            {
+              "documentation": "For custom endpoint with fips enabled and dualstack disabled",
+              "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+              },
+              "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Endpoint": "https://example.com"
+              }
+            },
+            {
+              "documentation": "For custom endpoint with fips disabled and dualstack enabled",
+              "expect": {
+                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+              },
+              "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Endpoint": "https://example.com"
+              }
+            },
+            {
+              "documentation": "Missing region",
+              "expect": {
+                "error": "Invalid Configuration: Missing Region"
+              }
+            }
+          ],
+          "version": "1.0"
+        }
+      }
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#partBlob": {
+      "type": "blob"
+    },
+    "com.amazonaws.trebucheteventheadertraitonenum#utf8TextEventHeaderEnum": {
+      "type": "enum",
+      "members": {
+        "FALSE": {
+          "target": "smithy.api#Unit",
+          "traits": {
+            "smithy.api#enumValue": "FALSE"
+          }
+        },
+        "TRUE": {
+          "target": "smithy.api#Unit",
+          "traits": {
+            "smithy.api#enumValue": "TRUE"
+          }
+        }
+      }
+    }
+  }
+}
