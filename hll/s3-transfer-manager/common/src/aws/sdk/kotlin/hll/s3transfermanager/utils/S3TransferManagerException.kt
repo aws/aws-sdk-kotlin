@@ -11,4 +11,4 @@ package aws.sdk.kotlin.hll.s3transfermanager.utils
  * @param message Description of the error.
  * @param cause The underlying cause of the exception, if any.
  */
-internal class S3TransferManagerException(message: String, cause: Throwable? = null) : Exception(message, cause)
+public class S3TransferManagerException(message: String, cause: Throwable? = null) : Exception(message, cause)

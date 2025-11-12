@@ -66,7 +66,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
     public val maxConcurrentPartUploads: Int = builder.maxConcurrentPartUploads
 
     public companion object {
-        public operator fun invoke(client: S3Client, block: Builder.() -> Unit): S3TransferManager =
+        public operator fun invoke(client: S3Client, block: Builder.() -> Unit = {}): S3TransferManager =
             Builder().apply(block).build(client)
     }
 

@@ -6,7 +6,7 @@
 package aws.sdk.kotlin.hll.s3transfermanager.codegen.utils
 
 /**
- * Exception thrown when an error occurs during S3 transfer codegen.
+ * Exception thrown when an error occurs during S3 Transfer Manager codegen.
  *
  * @param message Description of the error.
  * @param cause The underlying cause of the exception, if any.

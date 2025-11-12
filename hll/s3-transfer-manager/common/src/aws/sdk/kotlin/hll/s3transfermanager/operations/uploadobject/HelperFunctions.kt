@@ -74,7 +74,7 @@ internal suspend fun nextPartBytes(
 
     when (partSource) {
         is ByteArray -> {
-            // Long to Int is safe here because the ByteArray max size is Int.MAX_VALUE, it's size is managed as an Int.
+            // Long to Int is safe here because the ByteArray max size is Int.MAX_VALUE, its size is managed as an Int.
             val readBytes = readBytes.toInt()
             val readableBytes = readableBytes.toInt()
             val partSize = partSize.toInt()

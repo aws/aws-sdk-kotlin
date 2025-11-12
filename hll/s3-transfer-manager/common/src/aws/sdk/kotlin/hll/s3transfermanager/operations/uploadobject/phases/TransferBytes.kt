@@ -27,6 +27,7 @@ import aws.sdk.kotlin.services.s3.model.UploadPartResponse
 import aws.smithy.kotlin.runtime.telemetry.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -70,19 +71,26 @@ internal suspend fun transferBytes(
                 bufferSemaphore,
             )
 
-            val mutex = Mutex()
-            repeat(maxConcurrentPartUploads) {
-                consumer(
-                    producer,
-                    uploadObjectRequest,
-                    mpuUploadId!!,
-                    context,
-                    interceptors,
-                    client,
-                    uploadedParts,
-                    mutex,
-                    bufferSemaphore,
-                )
+            try {
+                repeat(maxConcurrentPartUploads) {
+                    consumer(
+                        producer,
+                        uploadObjectRequest,
+                        mpuUploadId!!,
+                        context,
+                        interceptors,
+                        client,
+                        uploadedParts,
+                        Mutex(),
+                        bufferSemaphore,
+                    )
+                }
+            } catch (e: Exception) {
+                // Consume remaining in memory parts and reduce part count
+                producer.consumeEach {
+                    bufferSemaphore.release()
+                }
+                throw e
             }
 
             if (uploadedParts.size != numberOfParts) {

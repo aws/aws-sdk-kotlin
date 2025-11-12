@@ -30,23 +30,13 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Builde
 
 public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Companion {
 	public final fun invoke (Laws/sdk/kotlin/services/s3/S3Client;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/s3transfermanager/S3TransferManager;
+	public static synthetic fun invoke$default (Laws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Companion;Laws/sdk/kotlin/services/s3/S3Client;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Laws/sdk/kotlin/hll/s3transfermanager/S3TransferManager;
 }
 
 public final class aws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext : aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptorContext {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;)V
 	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/lang/Object;
-	public final fun component2 ()Ljava/lang/Object;
-	public final fun component3 ()Ljava/lang/Object;
-	public final fun component4 ()Ljava/lang/Object;
-	public final fun component5 ()Ljava/lang/Long;
-	public final fun component6 ()Ljava/lang/Long;
-	public final fun component7 ()Ljava/lang/Long;
-	public final fun component8 ()Ljava/lang/Long;
-	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;)Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;
-	public static synthetic fun copy$default (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;ILjava/lang/Object;)Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;
-	public fun equals (Ljava/lang/Object;)Z
 	public fun getS3Request ()Ljava/lang/Object;
 	public fun getS3Response ()Ljava/lang/Object;
 	public fun getTmRequest ()Ljava/lang/Object;
@@ -55,7 +45,6 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTran
 	public fun getTransferableObjects ()Ljava/lang/Long;
 	public fun getTransferredBytes ()Ljava/lang/Long;
 	public fun getTransferredObjects ()Ljava/lang/Long;
-	public fun hashCode ()I
 	public fun setS3Request (Ljava/lang/Object;)V
 	public fun setS3Response (Ljava/lang/Object;)V
 	public fun setTmRequest (Ljava/lang/Object;)V
@@ -64,24 +53,12 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTran
 	public fun setTransferableObjects (Ljava/lang/Long;)V
 	public fun setTransferredBytes (Ljava/lang/Long;)V
 	public fun setTransferredObjects (Ljava/lang/Long;)V
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext : aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptorContext {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;)V
 	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/lang/Object;
-	public final fun component2 ()Ljava/lang/Object;
-	public final fun component3 ()Ljava/lang/Object;
-	public final fun component4 ()Ljava/lang/Object;
-	public final fun component5 ()Ljava/lang/Long;
-	public final fun component6 ()Ljava/lang/Long;
-	public final fun component7 ()Ljava/lang/Long;
-	public final fun component8 ()Ljava/lang/Long;
-	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;)Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;
-	public static synthetic fun copy$default (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;ILjava/lang/Object;)Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;
-	public fun equals (Ljava/lang/Object;)Z
 	public fun getS3Request ()Ljava/lang/Object;
 	public fun getS3Response ()Ljava/lang/Object;
 	public fun getTmRequest ()Ljava/lang/Object;
@@ -90,8 +67,6 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferCon
 	public fun getTransferableObjects ()Ljava/lang/Long;
 	public fun getTransferredBytes ()Ljava/lang/Long;
 	public fun getTransferredObjects ()Ljava/lang/Long;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor {
@@ -345,5 +320,10 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectRespon
 
 public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectResponse$Companion {
 	public final fun invoke (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectResponse;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/utils/S3TransferManagerException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 

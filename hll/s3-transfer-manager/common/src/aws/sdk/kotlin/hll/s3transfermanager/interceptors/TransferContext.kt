@@ -56,7 +56,7 @@ public interface TransferInterceptorContext {
  * The context around an [aws.sdk.kotlin.hll.s3transfermanager.S3TransferManager] transfer.
  * Used to track transfer progress or to modify in progress transfers.
  */
-public data class TransferContext(
+public class TransferContext(
     override val s3Request: Any? = null,
     override val s3Response: Any? = null,
     override val tmRequest: Any? = null,
@@ -71,7 +71,7 @@ public data class TransferContext(
  * The context around an [aws.sdk.kotlin.hll.s3transfermanager.S3TransferManager] transfer.
  * Used to track transfer progress or to modify in progress transfers.
  */
-public data class MutableTransferContext(
+public class MutableTransferContext(
     override var s3Request: Any? = null,
     override var s3Response: Any? = null,
     override var tmRequest: Any? = null,
@@ -83,6 +83,18 @@ public data class MutableTransferContext(
 ) : TransferInterceptorContext {
     internal fun immutableCopy() =
         TransferContext(
+            s3Request,
+            s3Response,
+            tmRequest,
+            tmResponse,
+            transferableBytes,
+            transferredBytes,
+            transferableObjects,
+            transferredObjects,
+        )
+
+    internal fun copy() =
+        MutableTransferContext(
             s3Request,
             s3Response,
             tmRequest,
