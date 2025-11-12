@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.81] - 11/12/2025
+
+### Features
+* (**amp**) Add VPC source configuration support enabling Amazon Managed Service for Prometheus Collector to collect metrics from MSK clusters.
+* (**connect**) Updated Authentication Profile APIs to add support for automatic logout on user inactivity
+* (**databasemigrationservice**) Added support of SQL statements creation, metadata model discovery and selection rules transformation.
+* (**ec2**) Adds complete AMI ancestry tracing from immediate parent through each preceding generation back to the root AMI
+* (**elasticloadbalancingv2**) This release expands ALB Authentication to support JWT verification and adds support for a new JWT validation action in listener rule.
+* (**redshift**) Added GetIdentityCenterAuthToken API to retrieve encrypted authentication tokens for Identity Center integrated applications. This API enables programmatic access to secure Identity Center tokens with proper error handling and parameter validation across supported SDK languages.
+* (**s3tables**) Adds support for request metrics metrics APIs for S3 Tables
+* (**sagemaker**) Add support for trn2.3xlarge instance type for SageMaker Hyperpod
+
 ## [1.5.80] - 11/11/2025
 
 ### Features
