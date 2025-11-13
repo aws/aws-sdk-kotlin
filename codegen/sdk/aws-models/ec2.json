@@ -191,6 +191,48 @@
                     "traits": {
                         "smithy.api#enumValue": "t4g"
                     }
+                },
+                "L40S": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "l40s"
+                    }
+                },
+                "L4": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "l4"
+                    }
+                },
+                "GAUDI_HL_205": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "gaudi-hl-205"
+                    }
+                },
+                "INFERENTIA2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "inferentia2"
+                    }
+                },
+                "TRAINIUM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "trainium"
+                    }
+                },
+                "TRAINIUM2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "trainium2"
+                    }
+                },
+                "U30": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "u30"
+                    }
                 }
             }
         },
@@ -266,6 +308,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "inference"
+                    }
+                },
+                "MEDIA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "media"
                     }
                 }
             }
@@ -71335,7 +71383,7 @@
                     "target": "com.amazonaws.ec2#AcceleratorTypeSet",
                     "traits": {
                         "aws.protocols#ec2QueryName": "AcceleratorTypeSet",
-                        "smithy.api#documentation": "<p>The accelerator types that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Inference accelerators, specify <code>inference</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator type</p>",
+                        "smithy.api#documentation": "<p>The accelerator types that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Inference accelerators, specify <code>inference</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Media accelerators, specify <code>media</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator type</p>",
                         "smithy.api#xmlName": "acceleratorTypeSet"
                     }
                 },
@@ -71359,7 +71407,7 @@
                     "target": "com.amazonaws.ec2#AcceleratorNameSet",
                     "traits": {
                         "aws.protocols#ec2QueryName": "AcceleratorNameSet",
-                        "smithy.api#documentation": "<p>The accelerators that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator</p>",
+                        "smithy.api#documentation": "<p>The accelerators that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia2 chips, specify <code>inferentia2</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Habana Gaudi HL-205 GPUs, specify <code>gaudi-hl-205</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA L4 GPUs, specify <code>l4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA L40S GPUs, specify <code>l40s</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Trainium chips, specify <code>trainium</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Trainium2 chips, specify <code>trainium2</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx U30 cards, specify <code>u30</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator</p>",
                         "smithy.api#xmlName": "acceleratorNameSet"
                     }
                 },
@@ -71526,7 +71574,7 @@
                 "AcceleratorTypes": {
                     "target": "com.amazonaws.ec2#AcceleratorTypeSet",
                     "traits": {
-                        "smithy.api#documentation": "<p>The accelerator types that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Inference accelerators, specify <code>inference</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator type</p>",
+                        "smithy.api#documentation": "<p>The accelerator types that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Inference accelerators, specify <code>inference</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Media accelerators, specify <code>media</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator type</p>",
                         "smithy.api#xmlName": "AcceleratorType"
                     }
                 },
@@ -71546,7 +71594,7 @@
                 "AcceleratorNames": {
                     "target": "com.amazonaws.ec2#AcceleratorNameSet",
                     "traits": {
-                        "smithy.api#documentation": "<p>The accelerators that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator</p>",
+                        "smithy.api#documentation": "<p>The accelerators that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia2 chips, specify <code>inferentia2</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Habana Gaudi HL-205 GPUs, specify <code>gaudi-hl-205</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA L4 GPUs, specify <code>l4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA L40S GPUs, specify <code>l40s</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Trainium chips, specify <code>trainium</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Trainium2 chips, specify <code>trainium2</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx U30 cards, specify <code>u30</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator</p>",
                         "smithy.api#xmlName": "AcceleratorName"
                     }
                 },
