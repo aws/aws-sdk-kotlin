@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.82] - 11/13/2025
+
+### Features
+* (**cloudformation**) CloudFormation now supports GetHookResult API with annotations to retrieve structured compliance check results and remediation guidance for each evaluated resource, replacing the previous single-message limitation with detailed validation outcomes.
+* (**controlcatalog**) Added support for related control mappings with new RELATED_CONTROL mapping type in ListControlMappings API.
+* (**ec2**) Added support for new accelerator types ("media") and accelerator names ("L4", "L40s", "GAUDI_HL_205", "INFERENTIA2", "TRAINIUM", "TRAINIUM2", "U30") in Attributes Based Instance Type Selection for launched instance types.
+* (**ecr**) Add Amazon ECR FIPS PrivateLink endpoint support
+* (**elasticloadbalancingv2**) QUIC and TCP_QUIC protocol support for Network Load Balancer (NLB). This capability enables customers to forward QUIC traffic to their targets with ultra-low latency while maintaining session stickiness using QUIC Connection IDs.
+* (**iotwireless**) Integration of Device Location with Amazon Sidewalk network for Amazon Sidewalk enabled devices
+* (**mediaconvert**) Lowers minimum duration for black video generator. Adds support for embedding and signing C2PA content credentials in DASH and CMAF HLS outputs.
+* (**rds**) Updated endpoint and service metadata
+* (**sagemaker**) Added support for minor version upgrades and AWS Identity Center integration for SageMaker Hadron Partner Apps, enabling automated version management and IdC group-based access control.
+* (**workspacesweb**) Support for managing web content filtering for defining, tracking and regulating type of content accessed with WorkSpaces Secure Browser as part of browser settings.
+
 ## [1.5.81] - 11/12/2025
 
 ### Features
