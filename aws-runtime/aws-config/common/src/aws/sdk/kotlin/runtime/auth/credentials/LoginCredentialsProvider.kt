@@ -32,12 +32,10 @@ import kotlin.coroutines.coroutineContext
  * the directory specified by the `AWS_LOGIN_CACHE_DIRECTORY` environment variable.
  *
  * ```
- * val source = LoginCredentialsProvider(
- *     loginSession = "my-login-session"
- * )
- *
  * // Wrap the provider with a caching provider to cache the credentials until their expiration time
- * val loginProvider = CachedCredentialsProvider(source)
+ * val loginProvider = LoginCredentialsProvider(
+ *      loginSession = "my-login-session"
+ * ).cached()
  * ```
  * It is important that you wrap the provider with [CachedCredentialsProvider] if you are programmatically constructing
  * the provider directly. This prevents your application from accessing the cached access token and requesting new

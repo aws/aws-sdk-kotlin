@@ -71,6 +71,9 @@ kotlin {
 fun awsModelFile(name: String): String =
     rootProject.file("codegen/sdk/aws-models/$name").relativeTo(project.layout.buildDirectory.get().asFile).toString()
 
+fun awsShapeFile(name: String): String =
+    rootProject.file("codegen/sdk/aws-shapes/$name").relativeTo(project.layout.buildDirectory.get().asFile).toString()
+
 val codegen by configurations.getting
 dependencies {
     codegen(project(":codegen:aws-sdk-codegen"))
@@ -189,10 +192,10 @@ smithyBuild {
             )
         }
 
-        // FIXME: Shape from smoke tests fails projection: aws.test#AwsVendorParams (curr smoke tests temporarily removed from model)
         create("signin-credentials-provider") {
             imports = listOf(
                 awsModelFile("sign-in.json"),
+                awsShapeFile("shapes.json"),
             )
 
             val serviceShape = "com.amazonaws.signin#Signin"

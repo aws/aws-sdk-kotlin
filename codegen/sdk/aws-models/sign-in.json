@@ -113,7 +113,26 @@
         "smithy.api#http": {
           "method": "POST",
           "uri": "/v1/token"
-        }
+        },
+        "smithy.test#smokeTests": [
+          {
+            "id": "TokenOperationSmokeTest",
+            "params": {
+              "tokenInput": {
+                "clientId": "aws:signin:::cli/same-device",
+                "grantType": "authorization_code",
+                "code": "test-code",
+                "redirectUri": "https://example.com",
+                "codeVerifier": "test-code-verifier-1234567890abcdefghijklmnop"
+              }
+            },
+            "vendorParamsShape": "aws.test#AwsVendorParams",
+            "vendorParams": {},
+            "expect": {
+              "failure": {}
+            }
+          }
+        ]
       }
     },
     "com.amazonaws.signin#CreateOAuth2TokenRequest": {

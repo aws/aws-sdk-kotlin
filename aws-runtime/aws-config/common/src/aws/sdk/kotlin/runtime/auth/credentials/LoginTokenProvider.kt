@@ -144,13 +144,14 @@ public class LoginTokenProvider(
 
     private suspend fun writeToken(refreshed: LoginToken) {
         val cacheKey = getLoginCacheFilename(loginSessionName)
-        val directory = platformProvider.getenv("AWS_LOGIN_IN_CACHE_DIRECTORY") ?: platformProvider.filepath("~", ".aws", "login", "cache")
+        val directory = resolveCacheDir(platformProvider)
         val filepath = normalizePath(platformProvider.filepath(directory, cacheKey), platformProvider)
         val contents = serializeLoginToken(refreshed)
         try {
             platformProvider.writeFile(filepath, contents)
         } catch (ex: Exception) {
             coroutineContext.debug<LoginTokenProvider>(ex) { "failed to write refreshed token back to disk at $filepath" }
+            throw ex
         }
     }
 
@@ -333,12 +334,16 @@ private fun generateDpopProof(
 internal suspend fun readLoginTokenFromCache(cacheKey: String, platformProvider: PlatformProvider): LoginToken {
     val key = getLoginCacheFilename(cacheKey)
     val bytes = with(platformProvider) {
-        val directory = getenv("AWS_LOGIN_IN_CACHE_DIRECTORY") ?: filepath("~", ".aws", "login", "cache")
+        val directory = resolveCacheDir(this)
         val defaultCacheLocation = normalizePath(directory, this)
         readFileOrNull(filepath(defaultCacheLocation, key))
     } ?: throw ProviderConfigurationException("Invalid or missing login session cache. Run `aws login` to initiate a new session")
     return deserializeLoginToken(bytes)
 }
+
+private fun resolveCacheDir(platformProvider: PlatformProvider) =
+    platformProvider.getenv("AWS_LOGIN_IN_CACHE_DIRECTORY")
+        ?: platformProvider.filepath("~", ".aws", "login", "cache")
 
 internal fun getLoginCacheFilename(cacheKey: String): String {
     val sha256HexDigest = cacheKey.trim().encodeToByteArray().sha256().encodeToHex()

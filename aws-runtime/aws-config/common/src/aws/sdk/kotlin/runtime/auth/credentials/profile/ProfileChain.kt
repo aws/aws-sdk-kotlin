@@ -359,7 +359,7 @@ private fun AwsProfile.leafProvider(config: AwsSharedConfig): LeafProvider {
     return webIdentityTokenCreds()
         .orElse { ssoSessionCreds(config) }
         .orElse(::legacySsoCreds)
-        .orElse { loginSessionCreds() }
+        .orElse(::loginSessionCreds)
         .unwrapOrElse(::processCreds)
         .unwrap()
 }
