@@ -11,6 +11,7 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.SigninClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.createOAuth2Token
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.AccessDeniedException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.OAuth2ErrorCode
+import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.withConfig
 import aws.sdk.kotlin.runtime.config.profile.normalizePath
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
@@ -30,7 +31,6 @@ import aws.smithy.kotlin.runtime.serde.json.jsonStreamWriter
 import aws.smithy.kotlin.runtime.serde.json.nextTokenOf
 import aws.smithy.kotlin.runtime.telemetry.logging.debug
 import aws.smithy.kotlin.runtime.telemetry.logging.error
-import aws.smithy.kotlin.runtime.telemetry.telemetryProvider
 import aws.smithy.kotlin.runtime.text.encoding.decodeBase64Bytes
 import aws.smithy.kotlin.runtime.text.encoding.encodeToHex
 import aws.smithy.kotlin.runtime.time.Clock
@@ -85,13 +85,15 @@ private class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor 
  * @param platformProvider the platform provider to use
  * @param clock the source of time for the provider
  */
-public class LoginTokenProvider(
-    public val loginSessionName: String,
-    public val region: String? = null,
-    public val refreshBufferWindow: Duration = DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS.seconds,
-    public val httpClient: HttpClientEngine? = null,
-    public val platformProvider: PlatformProvider = PlatformProvider.System,
-    private val clock: Clock = Clock.System,
+internal class LoginTokenProvider(
+    val loginSessionName: String,
+    val region: String? = null,
+    val refreshBufferWindow: Duration = DEFAULT_SIGNIN_TOKEN_REFRESH_BUFFER_SECONDS.seconds,
+    val httpClient: HttpClientEngine? = null,
+    val platformProvider: PlatformProvider = PlatformProvider.System,
+    val clock: Clock = Clock.System,
+    val cacheDirectory: String,
+    val client: SigninClient,
 ) : CredentialsProvider {
 
     // debounce concurrent requests for a token
@@ -111,7 +113,7 @@ public class LoginTokenProvider(
     }
 
     private suspend fun getToken(attributes: Attributes): LoginToken {
-        val token = readLoginTokenFromCache(loginSessionName, platformProvider)
+        val token = readLoginTokenFromCache(loginSessionName, platformProvider, cacheDirectory)
 
         if (clock.now() < (token.expiresAt - refreshBufferWindow)) {
             coroutineContext.debug<LoginTokenProvider> { "using cached token for login-session: $loginSessionName" }
@@ -144,8 +146,7 @@ public class LoginTokenProvider(
 
     private suspend fun writeToken(refreshed: LoginToken) {
         val cacheKey = getLoginCacheFilename(loginSessionName)
-        val directory = resolveCacheDir(platformProvider)
-        val filepath = normalizePath(platformProvider.filepath(directory, cacheKey), platformProvider)
+        val filepath = normalizePath(platformProvider.filepath(cacheDirectory, cacheKey), platformProvider)
         val contents = serializeLoginToken(refreshed)
         try {
             platformProvider.writeFile(filepath, contents)
@@ -159,12 +160,7 @@ public class LoginTokenProvider(
         throw InvalidLoginTokenException(message ?: "Login token for login-session: $loginSessionName is expired", cause)
 
     private suspend fun refreshToken(oldToken: LoginToken): LoginToken {
-        val telemetry = coroutineContext.telemetryProvider
-
-        SigninClient.fromEnvironment {
-            region = this@LoginTokenProvider.region
-            httpClient = this@LoginTokenProvider.httpClient
-            telemetryProvider = telemetry
+        client.withConfig {
             interceptors += DpopInterceptor(oldToken.dpopKey)
         }.use { client ->
             return try {
@@ -331,19 +327,14 @@ private fun generateDpopProof(
     return "$message.${ base64UrlNoPadding.encode(signature) }"
 }
 
-internal suspend fun readLoginTokenFromCache(cacheKey: String, platformProvider: PlatformProvider): LoginToken {
+internal suspend fun readLoginTokenFromCache(cacheKey: String, platformProvider: PlatformProvider, cacheDirectory: String): LoginToken {
     val key = getLoginCacheFilename(cacheKey)
     val bytes = with(platformProvider) {
-        val directory = resolveCacheDir(this)
-        val defaultCacheLocation = normalizePath(directory, this)
+        val defaultCacheLocation = normalizePath(cacheDirectory, this)
         readFileOrNull(filepath(defaultCacheLocation, key))
     } ?: throw ProviderConfigurationException("Invalid or missing login session cache. Run `aws login` to initiate a new session")
     return deserializeLoginToken(bytes)
 }
-
-private fun resolveCacheDir(platformProvider: PlatformProvider) =
-    platformProvider.getenv("AWS_LOGIN_IN_CACHE_DIRECTORY")
-        ?: platformProvider.filepath("~", ".aws", "login", "cache")
 
 internal fun getLoginCacheFilename(cacheKey: String): String {
     val sha256HexDigest = cacheKey.trim().encodeToByteArray().sha256().encodeToHex()

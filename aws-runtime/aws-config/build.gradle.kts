@@ -71,14 +71,12 @@ kotlin {
 fun awsModelFile(name: String): String =
     rootProject.file("codegen/sdk/aws-models/$name").relativeTo(project.layout.buildDirectory.get().asFile).toString()
 
-fun awsShapeFile(name: String): String =
-    rootProject.file("codegen/sdk/aws-shapes/$name").relativeTo(project.layout.buildDirectory.get().asFile).toString()
-
 val codegen by configurations.getting
 dependencies {
     codegen(project(":codegen:aws-sdk-codegen"))
     codegen(libs.smithy.cli)
     codegen(libs.smithy.model)
+    codegen(libs.smithy.aws.smoke.test.model)
 }
 
 smithyBuild {
@@ -195,7 +193,6 @@ smithyBuild {
         create("signin-credentials-provider") {
             imports = listOf(
                 awsModelFile("sign-in.json"),
-                awsShapeFile("shapes.json"),
             )
 
             val serviceShape = "com.amazonaws.signin#Signin"

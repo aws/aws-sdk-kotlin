@@ -152,6 +152,8 @@ class LoginTokenProviderTest {
                 httpClient = httpClient,
                 platformProvider = testPlatform,
                 clock = testClock,
+                cacheDirectory = resolveCacheDir(testPlatform),
+                client = signinClient(providedHttpClient = httpClient),
             )
 
             testCase.outcomes.forEach { expectedOutcome ->

@@ -1,9 +1,0 @@
-{
-  "smithy": "2.0",
-  "shapes": {
-    "aws.test#AwsVendorParams": {
-      "type": "structure",
-      "members": {}
-    }
-  }
-}

@@ -5,8 +5,10 @@
 
 package aws.sdk.kotlin.runtime.auth.credentials
 
+import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.SigninClient
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
+import aws.smithy.kotlin.runtime.auth.awscredentials.CloseableCredentialsProvider
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
 import aws.smithy.kotlin.runtime.collections.Attributes
@@ -14,6 +16,7 @@ import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
 import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import aws.smithy.kotlin.runtime.time.Clock
 import aws.smithy.kotlin.runtime.util.PlatformProvider
+import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.coroutineContext
 
 /**
@@ -54,7 +57,10 @@ public class LoginCredentialsProvider public constructor(
     public val httpClient: HttpClientEngine? = null,
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     private val clock: Clock = Clock.System,
-) : CredentialsProvider {
+) : CloseableCredentialsProvider {
+    private val cacheDirectory = resolveCacheDir(platformProvider)
+    private val client = runBlocking { signinClient(region, httpClient) }
+
     override suspend fun resolve(attributes: Attributes): Credentials {
         val logger = coroutineContext.logger<LoginCredentialsProvider>()
 
@@ -65,6 +71,8 @@ public class LoginCredentialsProvider public constructor(
                 httpClient = httpClient,
                 platformProvider = platformProvider,
                 clock = clock,
+                cacheDirectory = cacheDirectory,
+                client = client,
             )
 
         logger.trace { "Attempting to load token using token provider for login-session: `$loginSession`" }
@@ -72,4 +80,17 @@ public class LoginCredentialsProvider public constructor(
 
         return creds.withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_LOGIN)
     }
+
+    override fun close() {
+        client.close()
+    }
 }
+
+internal fun resolveCacheDir(platformProvider: PlatformProvider) =
+    platformProvider.getenv("AWS_LOGIN_IN_CACHE_DIRECTORY") ?: platformProvider.filepath("~", ".aws", "login", "cache")
+
+internal suspend fun signinClient(providedRegion: String? = null, providedHttpClient: HttpClientEngine? = null) =
+    SigninClient.fromEnvironment {
+        region = providedRegion
+        httpClient = providedHttpClient
+    }
