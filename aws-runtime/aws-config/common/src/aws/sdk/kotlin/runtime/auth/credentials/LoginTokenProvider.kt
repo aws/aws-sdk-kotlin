@@ -259,13 +259,13 @@ private fun parseECKeyPem(pem: String): ECKeyData {
     val remainingBytes = der.size - publicKeyStart
     val coordLen = remainingBytes / 2
 
-    val x = der.copyOfRange(publicKeyStart, publicKeyStart + coordLen).padTo32()
-    val y = der.copyOfRange(publicKeyStart + coordLen, publicKeyStart + 2 * coordLen).padTo32()
+    val x = der.copyOfRange(publicKeyStart, publicKeyStart + coordLen).padOrTrimTo32()
+    val y = der.copyOfRange(publicKeyStart + coordLen, publicKeyStart + 2 * coordLen).padOrTrimTo32()
 
     return ECKeyData(d, x, y)
 }
 
-private fun ByteArray.padTo32(): ByteArray =
+private fun ByteArray.padOrTrimTo32(): ByteArray =
     if (size >= 32) {
         takeLast(32).toByteArray()
     } else {
