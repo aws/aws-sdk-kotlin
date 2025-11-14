@@ -10,8 +10,8 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.scanPaginated
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.IntConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.services.dynamodb.scan
 import aws.sdk.kotlin.services.dynamodb.withConfig
@@ -35,8 +35,8 @@ class DynamoDbMapperTest : DdbLocalTest() {
         private val dummyConverter = SimpleItemConverter(
             ::DummyData,
             { this },
-            AttributeDescriptor("foo", DummyData::foo, DummyData::foo::set, StringConverter),
-            AttributeDescriptor("bar", DummyData::bar, DummyData::bar::set, IntConverter),
+            AttributeDescriptor("foo", DummyData::foo, DummyData::foo::set, StringValueConverter),
+            AttributeDescriptor("bar", DummyData::bar, DummyData::bar::set, NumberValueConverters.Int),
         )
 
         private val dummySchema = ItemSchema(dummyConverter, KeySpec.String("foo"), KeySpec.Number("bar"))
@@ -72,7 +72,7 @@ class DynamoDbMapperTest : DdbLocalTest() {
         interceptor.reset()
 
         // Original client can be closed, mapper is unaffected
-        lowLevelAccess { close() }
+        lowLevelAccess<Unit> { close() }
         table.scanPaginated { }.collect()
         interceptor.assertMetric(AwsBusinessMetric.DDB_MAPPER)
     }

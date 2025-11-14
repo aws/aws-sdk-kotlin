@@ -106,17 +106,17 @@ internal class OperationRenderer(
         requestMembers(MemberCodegenBehavior.PassThrough) { write("#L = this@convert.#L", name, highLevel.name) }
         requestMembers(MemberCodegenBehavior.MapKeys) {
             write(
-                "this@convert.#L?.let { #L = schema.converter.convertTo(it, schema.keyAttributeNames).#T(schema.keyAttributeNames) }",
+                "this@convert.#L?.let { #L = schema.converter.convertRight(it).#T(schema.keyAttributeNames) }",
                 highLevel.name,
                 name,
                 MapperTypes.Model.intersectKeys,
             )
         }
         requestMembers(MemberCodegenBehavior.MapAll) {
-            write("this@convert.#L?.let { #L = schema.converter.convertTo(it) }", highLevel.name, name)
+            write("this@convert.#L?.let { #L = schema.converter.convertRight(it) }", highLevel.name, name)
         }
         requestMembers(MemberCodegenBehavior.ListMapAll) {
-            write("#L = this@convert.#L?.map { schema.converter.convertTo(it) }", name, highLevel.name)
+            write("#L = this@convert.#L?.map { schema.converter.convertRight(it) }", name, highLevel.name)
         }
         requestMembers(MemberCodegenBehavior.Hoist) { write("this.#1L = #1L", name) }
 
@@ -168,7 +168,7 @@ internal class OperationRenderer(
 
             responseMembers(MemberCodegenBehavior.MapKeys, MemberCodegenBehavior.MapAll) {
                 write(
-                    "#L = this@convert.#L?.#T()?.let(schema.converter::convertFrom)",
+                    "#L = this@convert.#L?.#T()?.let(schema.converter::convertLeft)",
                     highLevel.name,
                     name,
                     MapperTypes.Model.toItem,
@@ -177,7 +177,7 @@ internal class OperationRenderer(
 
             responseMembers(MemberCodegenBehavior.ListMapAll) {
                 write(
-                    "#L = this@convert.#L?.map { schema.converter.convertFrom(it.#T()) }",
+                    "#L = this@convert.#L?.map { schema.converter.convertLeft(it.#T()) }",
                     highLevel.name,
                     name,
                     MapperTypes.Model.toItem,

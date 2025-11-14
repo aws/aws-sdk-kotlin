@@ -31,8 +31,8 @@ public class SetsTest {
             nullableSet = null,
         )
 
-        val item = SetsConverter.convertTo(sets)
-        val converted = SetsConverter.convertFrom(item)
+        val item = SetsConverter.convertRight(sets)
+        val converted = SetsConverter.convertLeft(item)
         assertEquals(sets, converted)
     }
 }

@@ -10,8 +10,8 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.getItem
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.IntConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import kotlinx.coroutines.test.runTest
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -25,8 +25,8 @@ class PutItemTest : DdbLocalTest() {
         private val converter = SimpleItemConverter(
             ::Item,
             { this },
-            AttributeDescriptor("id", Item::id, Item::id::set, StringConverter),
-            AttributeDescriptor("value", Item::value, Item::value::set, IntConverter),
+            AttributeDescriptor("id", Item::id, Item::id::set, StringValueConverter),
+            AttributeDescriptor("value", Item::value, Item::value::set, NumberValueConverters.Int),
         )
         private val schema = ItemSchema(converter, KeySpec.String("id"))
     }

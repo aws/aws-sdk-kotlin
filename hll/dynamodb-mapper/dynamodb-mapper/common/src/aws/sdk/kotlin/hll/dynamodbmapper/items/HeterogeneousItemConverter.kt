@@ -6,6 +6,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
+import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.smithy.kotlin.runtime.ExperimentalApi
 
@@ -101,23 +102,20 @@ public class HeterogeneousItemConverter<T>(
     public val typeAttribute: String,
     public val subConverters: Map<String, ItemConverter<T>>,
 ) : ItemConverter<T> {
-    override fun convertFrom(to: Item): T {
-        val attr = to[typeAttribute] ?: error("Missing $typeAttribute")
+    override val left: MonoConverter<Item, T> = MonoConverter { item ->
+        val attr = item[typeAttribute] ?: error("Missing $typeAttribute")
         val typeValue = attr.asSOrNull() ?: error("No string value for $attr")
         val converter = subConverters[typeValue] ?: error("No converter for $typeValue")
-        return converter.convertFrom(to)
+        converter.convertLeft(item)
     }
 
-    override fun convertTo(from: T, onlyAttributes: Set<String>?): Item {
-        val typeValue = typeMapper(from)
+    override val right: MonoConverter<T, Item> = MonoConverter { obj ->
+        val typeValue = typeMapper(obj)
         val converter = subConverters[typeValue] ?: error("No converter for $typeValue")
 
-        return buildItem {
-            if (onlyAttributes?.contains(typeAttribute) != false) {
-                put(typeAttribute, AttributeValue.S(typeValue))
-            }
-
-            putAll(converter.convertTo(from, onlyAttributes))
+        buildItem {
+            put(typeAttribute, AttributeValue.S(typeValue))
+            putAll(converter.convertRight(obj))
         }
     }
 }

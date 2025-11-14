@@ -635,43 +635,25 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/items/AttributeDescriptorKt
 	public static final fun AttributeDescriptor (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/dynamodbmapper/items/AttributeDescriptor;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/items/DocumentConverter : aws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter {
-	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/items/DocumentConverter;
-	public fun convertFrom (Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;)Laws/smithy/kotlin/runtime/content/Document;
-	public synthetic fun convertFrom (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertTo (Laws/smithy/kotlin/runtime/content/Document;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-	public fun convertTo (Laws/smithy/kotlin/runtime/content/Document;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-	public synthetic fun convertTo (Ljava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-	public synthetic fun convertTo (Ljava/lang/Object;)Ljava/lang/Object;
-	public synthetic fun convertTo (Ljava/lang/Object;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/items/DocumentItemConverterKt {
+	public static final fun getDocumentItemConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/items/HeterogeneousItemConverter : aws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter {
+public final class aws/sdk/kotlin/hll/dynamodbmapper/items/HeterogeneousItemConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
 	public fun <init> (Lkotlin/jvm/functions/Function1;Ljava/lang/String;Ljava/util/Map;)V
-	public fun convertFrom (Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;)Ljava/lang/Object;
-	public synthetic fun convertFrom (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertTo (Ljava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-	public synthetic fun convertTo (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertTo (Ljava/lang/Object;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
+	public fun convertLeft (Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;)Ljava/lang/Object;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun getLeft ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
+	public fun getRight ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
 	public final fun getSubConverters ()Ljava/util/Map;
 	public final fun getTypeAttribute ()Ljava/lang/String;
 	public final fun getTypeMapper ()Lkotlin/jvm/functions/Function1;
 }
 
-public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
-	public fun convertTo (Ljava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-	public synthetic fun convertTo (Ljava/lang/Object;)Ljava/lang/Object;
-	public abstract fun convertTo (Ljava/lang/Object;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-	public static synthetic fun convertTo$default (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter;Ljava/lang/Object;Ljava/util/Set;ILjava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-}
-
-public final class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter$DefaultImpls {
-	public static fun convertTo (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter;Ljava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-	public static synthetic fun convertTo$default (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter;Ljava/lang/Object;Ljava/util/Set;ILjava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-}
-
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema {
-	public abstract fun getConverter ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter;
+	public abstract fun getConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public abstract fun getKeyAttributeNames ()Ljava/util/Set;
 }
 
@@ -694,10 +676,10 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionK
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchemaKt {
-	public static final fun ItemSchema (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;)Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
-	public static final fun ItemSchema (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;)Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
-	public static final fun withKeySpec (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;)Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
-	public static final fun withKeySpec (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;)Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
+	public static final fun ItemSchema (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;)Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+	public static final fun ItemSchema (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;)Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
+	public static final fun withKeySpec (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;)Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+	public static final fun withKeySpec (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;)Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec {
@@ -721,14 +703,15 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec$
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec$String : aws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec {
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/items/SimpleItemConverter : aws/sdk/kotlin/hll/dynamodbmapper/items/ItemConverter {
+public final class aws/sdk/kotlin/hll/dynamodbmapper/items/SimpleItemConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
 	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;[Laws/sdk/kotlin/hll/dynamodbmapper/items/AttributeDescriptor;)V
-	public fun convertFrom (Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;)Ljava/lang/Object;
-	public synthetic fun convertFrom (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertTo (Ljava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-	public synthetic fun convertTo (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertTo (Ljava/lang/Object;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
+	public fun convertLeft (Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;)Ljava/lang/Object;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun getDescriptors ()Ljava/util/Map;
+	public fun getLeft ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
+	public fun getRight ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/Index : aws/sdk/kotlin/hll/dynamodbmapper/model/IndexSpec, aws/sdk/kotlin/hll/dynamodbmapper/model/ItemSource, aws/sdk/kotlin/hll/dynamodbmapper/operations/IndexOperations {
@@ -1266,147 +1249,143 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/pipeline/SerializeInputKt {
 	public static final fun SerializeInput (Ljava/lang/Object;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema;)Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/SerializeInput;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/ItemToValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
-	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/ItemToValueConverter;
-	public fun convertFrom (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-	public synthetic fun convertFrom (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertTo (Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
-	public synthetic fun convertTo (Ljava/lang/Object;)Ljava/lang/Object;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/ItemValueConverterKt {
+	public static final fun getItemValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/NullableConverter : aws/sdk/kotlin/hll/mapping/core/converters/SplittingConverter {
-	public fun <init> (Lkotlin/reflect/KClass;)V
-	public fun convertFrom (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Laws/sdk/kotlin/hll/mapping/core/util/Either;
-	public synthetic fun convertFrom (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertTo (Ljava/lang/Object;)Laws/sdk/kotlin/hll/mapping/core/util/Either;
-	public synthetic fun convertTo (Ljava/lang/Object;)Ljava/lang/Object;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/NullableValueConverterKt {
+	public static final fun NullableValueConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static synthetic fun NullableValueConverter$default (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;ILjava/lang/Object;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun asNullable (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static synthetic fun asNullable$default (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;ILjava/lang/Object;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getNullValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/ListConverterKt {
-	public static final fun ListConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getListConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/ListValueConverterKt {
+	public static final fun ListValueConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static synthetic fun ListValueConverter$default (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;ILjava/lang/Object;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getAttributeValueListValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/MapConverterKt {
-	public static final fun MapConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun MapConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getMapConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/MapValueConverterKt {
+	public static final fun MapValueConverterByEntryConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static synthetic fun MapValueConverterByEntryConverter$default (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;ILjava/lang/Object;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun MapValueConverterByKeyAndValueConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static synthetic fun MapValueConverterByKeyAndValueConverter$default (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;ILjava/lang/Object;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun MapValueConverterByValueConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static synthetic fun MapValueConverterByValueConverter$default (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;ILjava/lang/Object;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getAttributeValueMapValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/NumberSetConverters {
-	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/collections/NumberSetConverters;
-	public final fun getStringListToAttributeValueNumberSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getStringSetToAttributeValueNumberSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun of (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/NumberSetValueConverters {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/collections/NumberSetValueConverters;
+	public final fun getByte ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getDouble ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getFloat ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getInt ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getLong ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getShort ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getString ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getStringList ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getUByte ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getUInt ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getULong ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getUShort ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun of (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static synthetic fun of$default (Laws/sdk/kotlin/hll/dynamodbmapper/values/collections/NumberSetValueConverters;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;ILjava/lang/Object;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/NumberSetConvertersKt {
-	public static final fun getByteSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getDoubleSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getFloatSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getIntSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getLongSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getShortSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getUByteSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getUIntSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getULongSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getUShortSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-}
-
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/PrimitiveSetConvertersKt {
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/PrimitiveSetValueConvertersKt {
 	public static final fun getByteArraySetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getCharArraySetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getCharSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getStringListToAttributeValueStringSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getStringSetConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getCharArraySetValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getCharSetValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getStringListValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getStringSetValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BooleanConverterKt {
-	public static final fun getBooleanConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BooleanValueConverterKt {
 	public static final fun getBooleanToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getBooleanValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/ByteArrayConverterKt {
-	public static final fun getByteArrayConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/ByteArrayValueConverterKt {
+	public static final fun getByteArrayValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/EnumConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
-	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
-	public fun convertFrom (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Ljava/lang/Enum;
-	public synthetic fun convertFrom (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertTo (Ljava/lang/Enum;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
-	public synthetic fun convertTo (Ljava/lang/Object;)Ljava/lang/Object;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/NumberToStringConverters {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/NumberToStringConverters;
+	public final fun getAuto ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getByte ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getDouble ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getFloat ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getInt ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getLong ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getShort ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getUByte ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getUInt ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getULong ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getUShort ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/NumberConverters {
-	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/NumberConverters;
-	public final fun getAutoNumberToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getByteToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getDoubleToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getFloatToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getIntToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getLongToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getShortToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getStringToAttributeValueNumberConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getUByteToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getUIntToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getULongToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getUShortToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun of (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/NumberValueConverters {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/NumberValueConverters;
+	public final fun getAuto ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getByte ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getDouble ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getFloat ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getInt ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getLong ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getShort ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getUByte ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getUInt ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getULong ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getUShort ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/NumberConvertersKt {
-	public static final fun getAutoNumberConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getByteConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getDoubleConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getFloatConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getIntConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getLongConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getShortConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getUByteConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getUIntConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getULongConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getUShortConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/NumberValueConvertersKt {
+	public static final fun getNumericalStringValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/TextConverters {
 	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/TextConverters;
-	public final fun getCharArrayToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getCharToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public final fun getStringToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getChar ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getCharArray ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public final fun getString ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/TextConvertersKt {
-	public static final fun getCharArrayConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getCharConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun getStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/TextValueConvertersKt {
+	public static final fun getCharArrayValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getCharValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getStringValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/DocumentConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
-	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/DocumentConverter$Companion;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/DocumentValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/DocumentValueConverter$Companion;
 	public fun <init> ()V
-	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/dynamodbmapper/values/NullableConverter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
-	public synthetic fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/dynamodbmapper/values/NullableConverter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun convertFrom (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Laws/smithy/kotlin/runtime/content/Document;
-	public synthetic fun convertFrom (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertTo (Laws/smithy/kotlin/runtime/content/Document;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
-	public synthetic fun convertTo (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Lkotlin/jvm/functions/Function1;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
+	public synthetic fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Lkotlin/jvm/functions/Function1;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Laws/smithy/kotlin/runtime/content/Document;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Laws/smithy/kotlin/runtime/content/Document;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun getLeft ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
+	public fun getRight ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/DocumentConverter$Companion {
-	public final fun getDefault ()Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/DocumentConverter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/DocumentValueConverter$Companion {
+	public final fun getDefault ()Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/DocumentValueConverter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/InstantConverter {
-	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/InstantConverter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/InstantValueConverter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/InstantValueConverter;
 	public final fun getDefault ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public final fun getEpochMs ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public final fun getEpochS ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public final fun getIso8601 ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/UrlConverterKt {
-	public static final fun getUrlConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/UrlValueConverterKt {
 	public static final fun getUrlToStringConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+	public static final fun getUrlValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 

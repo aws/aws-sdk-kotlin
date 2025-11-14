@@ -40,8 +40,8 @@ public class MapsTest {
             nullableMapNullableValue = null,
         )
 
-        val item = MapsConverter.convertTo(maps)
-        val converted = MapsConverter.convertFrom(item)
+        val item = MapsConverter.convertRight(maps)
+        val converted = MapsConverter.convertLeft(item)
         assertEquals(maps, converted)
     }
 }
