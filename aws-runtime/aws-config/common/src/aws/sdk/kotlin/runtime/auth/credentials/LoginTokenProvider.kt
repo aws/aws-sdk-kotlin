@@ -233,7 +233,7 @@ internal data class ECKeyData(
 
 /**
  * Parses a PEM-encoded EC private key and extracts the private key scalar and public key (x, y) coordinates.
- * Supports both "EC PRIVATE KEY" and "PRIVATE KEY" PEM formats for P-256 curve keys.
+ * Supports "EC PRIVATE KEY" PEM formats for P-256 curve keys.
  */
 private fun parseECKeyPem(pem: String): ECKeyData {
     val base64 = pem.replace("-----BEGIN EC PRIVATE KEY-----", "")
@@ -259,15 +259,15 @@ private fun parseECKeyPem(pem: String): ECKeyData {
     val remainingBytes = der.size - publicKeyStart
     val coordLen = remainingBytes / 2
 
-    val x = der.copyOfRange(publicKeyStart, publicKeyStart + coordLen).padOrTrimTo32()
-    val y = der.copyOfRange(publicKeyStart + coordLen, publicKeyStart + 2 * coordLen).padOrTrimTo32()
+    val x = der.copyOfRange(publicKeyStart, publicKeyStart + coordLen).padTo32()
+    val y = der.copyOfRange(publicKeyStart + coordLen, publicKeyStart + 2 * coordLen).padTo32()
 
     return ECKeyData(d, x, y)
 }
 
-private fun ByteArray.padOrTrimTo32(): ByteArray =
-    if (size >= 32) {
-        takeLast(32).toByteArray()
+private fun ByteArray.padTo32(): ByteArray =
+    if (size > 32) {
+        error("Unexpected byte array of size $size; expected 32 bytes or less")
     } else {
         ByteArray(32 - size) + this
     }
