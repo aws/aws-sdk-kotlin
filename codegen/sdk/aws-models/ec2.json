@@ -53511,6 +53511,14 @@
                         "smithy.api#documentation": "<p>The public DNS names of the endpoint.</p>",
                         "smithy.api#xmlName": "publicDnsNames"
                     }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZoneId",
+                        "smithy.api#documentation": "<p>The ID of the Availability Zone of the EC2 Instance Connect Endpoint.</p>",
+                        "smithy.api#xmlName": "availabilityZoneId"
+                    }
                 }
             },
             "traits": {
