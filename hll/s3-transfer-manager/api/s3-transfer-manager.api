@@ -1,0 +1,329 @@
+public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager {
+	public static final field Companion Laws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Companion;
+	public synthetic fun <init> (Laws/sdk/kotlin/services/s3/S3Client;Laws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getInterceptors ()Ljava/util/List;
+	public final fun getMaxConcurrentPartUploads ()I
+	public final fun getMaxInMemoryParts ()I
+	public final fun getMultipartDownloadType ()Laws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType;
+	public final fun getMultipartUploadThresholdBytes ()J
+	public final fun getS3Client ()Laws/sdk/kotlin/services/s3/S3Client;
+	public final fun getTargetPartSizeBytes ()J
+	public final fun uploadObject (Laws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun uploadObject (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Builder {
+	public fun <init> ()V
+	public final fun getInterceptors ()Ljava/util/List;
+	public final fun getMaxConcurrentPartUploads ()I
+	public final fun getMaxInMemoryParts ()I
+	public final fun getMultipartDownloadType ()Laws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType;
+	public final fun getMultipartUploadThresholdBytes ()J
+	public final fun getTargetPartSizeBytes ()J
+	public final fun setInterceptors (Ljava/util/List;)V
+	public final fun setMaxConcurrentPartUploads (I)V
+	public final fun setMaxInMemoryParts (I)V
+	public final fun setMultipartDownloadType (Laws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType;)V
+	public final fun setMultipartUploadThresholdBytes (J)V
+	public final fun setTargetPartSizeBytes (J)V
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Companion {
+	public final fun invoke (Laws/sdk/kotlin/services/s3/S3Client;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/s3transfermanager/S3TransferManager;
+	public static synthetic fun invoke$default (Laws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Companion;Laws/sdk/kotlin/services/s3/S3Client;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Laws/sdk/kotlin/hll/s3transfermanager/S3TransferManager;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext : aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptorContext {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getS3Request ()Ljava/lang/Object;
+	public fun getS3Response ()Ljava/lang/Object;
+	public fun getTmRequest ()Ljava/lang/Object;
+	public fun getTmResponse ()Ljava/lang/Object;
+	public fun getTransferableBytes ()Ljava/lang/Long;
+	public fun getTransferableObjects ()Ljava/lang/Long;
+	public fun getTransferredBytes ()Ljava/lang/Long;
+	public fun getTransferredObjects ()Ljava/lang/Long;
+	public fun setS3Request (Ljava/lang/Object;)V
+	public fun setS3Response (Ljava/lang/Object;)V
+	public fun setTmRequest (Ljava/lang/Object;)V
+	public fun setTmResponse (Ljava/lang/Object;)V
+	public fun setTransferableBytes (Ljava/lang/Long;)V
+	public fun setTransferableObjects (Ljava/lang/Long;)V
+	public fun setTransferredBytes (Ljava/lang/Long;)V
+	public fun setTransferredObjects (Ljava/lang/Long;)V
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext : aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptorContext {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Long;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getS3Request ()Ljava/lang/Object;
+	public fun getS3Response ()Ljava/lang/Object;
+	public fun getTmRequest ()Ljava/lang/Object;
+	public fun getTmResponse ()Ljava/lang/Object;
+	public fun getTransferableBytes ()Ljava/lang/Long;
+	public fun getTransferableObjects ()Ljava/lang/Long;
+	public fun getTransferredBytes ()Ljava/lang/Long;
+	public fun getTransferredObjects ()Ljava/lang/Long;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor {
+	public fun modifyAfterBytesTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public fun modifyAfterObjectTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public fun modifyAfterTransferCompleted (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public fun modifyAfterTransferInitiated (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public fun modifyBeforeBytesTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public fun modifyBeforeObjectTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public fun modifyBeforeTransferCompleted (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public fun modifyBeforeTransferInitiated (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public fun readAfterBytesTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public fun readAfterObjectTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public fun readAfterTransferCompleted (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public fun readAfterTransferInitiated (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public fun readBeforeBytesTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public fun readBeforeObjectTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public fun readBeforeTransferCompleted (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public fun readBeforeTransferInitiated (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor$DefaultImpls {
+	public static fun modifyAfterBytesTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public static fun modifyAfterObjectTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public static fun modifyAfterTransferCompleted (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public static fun modifyAfterTransferInitiated (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public static fun modifyBeforeBytesTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public static fun modifyBeforeObjectTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public static fun modifyBeforeTransferCompleted (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public static fun modifyBeforeTransferInitiated (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/MutableTransferContext;)V
+	public static fun readAfterBytesTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public static fun readAfterObjectTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public static fun readAfterTransferCompleted (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public static fun readAfterTransferInitiated (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public static fun readBeforeBytesTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public static fun readBeforeObjectTransferred (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public static fun readBeforeTransferCompleted (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+	public static fun readBeforeTransferInitiated (Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptor;Laws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferContext;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/s3transfermanager/interceptors/TransferInterceptorContext {
+	public abstract fun getS3Request ()Ljava/lang/Object;
+	public abstract fun getS3Response ()Ljava/lang/Object;
+	public abstract fun getTmRequest ()Ljava/lang/Object;
+	public abstract fun getTmResponse ()Ljava/lang/Object;
+	public abstract fun getTransferableBytes ()Ljava/lang/Long;
+	public abstract fun getTransferableObjects ()Ljava/lang/Long;
+	public abstract fun getTransferredBytes ()Ljava/lang/Long;
+	public abstract fun getTransferredObjects ()Ljava/lang/Long;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType {
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType$Part : aws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType$Part;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType$Range : aws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType$Range;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectRequest {
+	public static final field Companion Laws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectRequest$Companion;
+	public synthetic fun <init> (Laws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectRequest$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAcl ()Laws/sdk/kotlin/services/s3/model/ObjectCannedAcl;
+	public final fun getBody ()Laws/smithy/kotlin/runtime/content/ByteStream;
+	public final fun getBucket ()Ljava/lang/String;
+	public final fun getBucketKeyEnabled ()Ljava/lang/Boolean;
+	public final fun getCacheControl ()Ljava/lang/String;
+	public final fun getChecksumAlgorithm ()Laws/sdk/kotlin/services/s3/model/ChecksumAlgorithm;
+	public final fun getChecksumCrc32 ()Ljava/lang/String;
+	public final fun getChecksumCrc32C ()Ljava/lang/String;
+	public final fun getChecksumCrc64Nvme ()Ljava/lang/String;
+	public final fun getChecksumSha1 ()Ljava/lang/String;
+	public final fun getChecksumSha256 ()Ljava/lang/String;
+	public final fun getContentDisposition ()Ljava/lang/String;
+	public final fun getContentEncoding ()Ljava/lang/String;
+	public final fun getContentLanguage ()Ljava/lang/String;
+	public final fun getContentLength ()Ljava/lang/Long;
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getExpectedBucketOwner ()Ljava/lang/String;
+	public final fun getExpires ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getGrantFullControl ()Ljava/lang/String;
+	public final fun getGrantRead ()Ljava/lang/String;
+	public final fun getGrantReadAcp ()Ljava/lang/String;
+	public final fun getGrantWriteAcp ()Ljava/lang/String;
+	public final fun getIfMatch ()Ljava/lang/String;
+	public final fun getIfNoneMatch ()Ljava/lang/String;
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getMetadata ()Ljava/util/Map;
+	public final fun getObjectLockLegalHoldStatus ()Laws/sdk/kotlin/services/s3/model/ObjectLockLegalHoldStatus;
+	public final fun getObjectLockMode ()Laws/sdk/kotlin/services/s3/model/ObjectLockMode;
+	public final fun getObjectLockRetainUntilDate ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getRequestPayer ()Laws/sdk/kotlin/services/s3/model/RequestPayer;
+	public final fun getServerSideEncryption ()Laws/sdk/kotlin/services/s3/model/ServerSideEncryption;
+	public final fun getSseCustomerAlgorithm ()Ljava/lang/String;
+	public final fun getSseCustomerKey ()Ljava/lang/String;
+	public final fun getSseCustomerKeyMd5 ()Ljava/lang/String;
+	public final fun getSsekmsEncryptionContext ()Ljava/lang/String;
+	public final fun getSsekmsKeyId ()Ljava/lang/String;
+	public final fun getStorageClass ()Laws/sdk/kotlin/services/s3/model/StorageClass;
+	public final fun getTagging ()Ljava/lang/String;
+	public final fun getWebsiteRedirectLocation ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectRequest$Builder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectRequest;
+	public final fun getAcl ()Laws/sdk/kotlin/services/s3/model/ObjectCannedAcl;
+	public final fun getBody ()Laws/smithy/kotlin/runtime/content/ByteStream;
+	public final fun getBucket ()Ljava/lang/String;
+	public final fun getBucketKeyEnabled ()Ljava/lang/Boolean;
+	public final fun getCacheControl ()Ljava/lang/String;
+	public final fun getChecksumAlgorithm ()Laws/sdk/kotlin/services/s3/model/ChecksumAlgorithm;
+	public final fun getChecksumCrc32 ()Ljava/lang/String;
+	public final fun getChecksumCrc32C ()Ljava/lang/String;
+	public final fun getChecksumCrc64Nvme ()Ljava/lang/String;
+	public final fun getChecksumSha1 ()Ljava/lang/String;
+	public final fun getChecksumSha256 ()Ljava/lang/String;
+	public final fun getContentDisposition ()Ljava/lang/String;
+	public final fun getContentEncoding ()Ljava/lang/String;
+	public final fun getContentLanguage ()Ljava/lang/String;
+	public final fun getContentLength ()Ljava/lang/Long;
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getExpectedBucketOwner ()Ljava/lang/String;
+	public final fun getExpires ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getGrantFullControl ()Ljava/lang/String;
+	public final fun getGrantRead ()Ljava/lang/String;
+	public final fun getGrantReadAcp ()Ljava/lang/String;
+	public final fun getGrantWriteAcp ()Ljava/lang/String;
+	public final fun getIfMatch ()Ljava/lang/String;
+	public final fun getIfNoneMatch ()Ljava/lang/String;
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getMetadata ()Ljava/util/Map;
+	public final fun getObjectLockLegalHoldStatus ()Laws/sdk/kotlin/services/s3/model/ObjectLockLegalHoldStatus;
+	public final fun getObjectLockMode ()Laws/sdk/kotlin/services/s3/model/ObjectLockMode;
+	public final fun getObjectLockRetainUntilDate ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getRequestPayer ()Laws/sdk/kotlin/services/s3/model/RequestPayer;
+	public final fun getServerSideEncryption ()Laws/sdk/kotlin/services/s3/model/ServerSideEncryption;
+	public final fun getSseCustomerAlgorithm ()Ljava/lang/String;
+	public final fun getSseCustomerKey ()Ljava/lang/String;
+	public final fun getSseCustomerKeyMd5 ()Ljava/lang/String;
+	public final fun getSsekmsEncryptionContext ()Ljava/lang/String;
+	public final fun getSsekmsKeyId ()Ljava/lang/String;
+	public final fun getStorageClass ()Laws/sdk/kotlin/services/s3/model/StorageClass;
+	public final fun getTagging ()Ljava/lang/String;
+	public final fun getWebsiteRedirectLocation ()Ljava/lang/String;
+	public final fun setAcl (Laws/sdk/kotlin/services/s3/model/ObjectCannedAcl;)V
+	public final fun setBody (Laws/smithy/kotlin/runtime/content/ByteStream;)V
+	public final fun setBucket (Ljava/lang/String;)V
+	public final fun setBucketKeyEnabled (Ljava/lang/Boolean;)V
+	public final fun setCacheControl (Ljava/lang/String;)V
+	public final fun setChecksumAlgorithm (Laws/sdk/kotlin/services/s3/model/ChecksumAlgorithm;)V
+	public final fun setChecksumCrc32 (Ljava/lang/String;)V
+	public final fun setChecksumCrc32C (Ljava/lang/String;)V
+	public final fun setChecksumCrc64Nvme (Ljava/lang/String;)V
+	public final fun setChecksumSha1 (Ljava/lang/String;)V
+	public final fun setChecksumSha256 (Ljava/lang/String;)V
+	public final fun setContentDisposition (Ljava/lang/String;)V
+	public final fun setContentEncoding (Ljava/lang/String;)V
+	public final fun setContentLanguage (Ljava/lang/String;)V
+	public final fun setContentLength (Ljava/lang/Long;)V
+	public final fun setContentType (Ljava/lang/String;)V
+	public final fun setExpectedBucketOwner (Ljava/lang/String;)V
+	public final fun setExpires (Laws/smithy/kotlin/runtime/time/Instant;)V
+	public final fun setGrantFullControl (Ljava/lang/String;)V
+	public final fun setGrantRead (Ljava/lang/String;)V
+	public final fun setGrantReadAcp (Ljava/lang/String;)V
+	public final fun setGrantWriteAcp (Ljava/lang/String;)V
+	public final fun setIfMatch (Ljava/lang/String;)V
+	public final fun setIfNoneMatch (Ljava/lang/String;)V
+	public final fun setKey (Ljava/lang/String;)V
+	public final fun setMetadata (Ljava/util/Map;)V
+	public final fun setObjectLockLegalHoldStatus (Laws/sdk/kotlin/services/s3/model/ObjectLockLegalHoldStatus;)V
+	public final fun setObjectLockMode (Laws/sdk/kotlin/services/s3/model/ObjectLockMode;)V
+	public final fun setObjectLockRetainUntilDate (Laws/smithy/kotlin/runtime/time/Instant;)V
+	public final fun setRequestPayer (Laws/sdk/kotlin/services/s3/model/RequestPayer;)V
+	public final fun setServerSideEncryption (Laws/sdk/kotlin/services/s3/model/ServerSideEncryption;)V
+	public final fun setSseCustomerAlgorithm (Ljava/lang/String;)V
+	public final fun setSseCustomerKey (Ljava/lang/String;)V
+	public final fun setSseCustomerKeyMd5 (Ljava/lang/String;)V
+	public final fun setSsekmsEncryptionContext (Ljava/lang/String;)V
+	public final fun setSsekmsKeyId (Ljava/lang/String;)V
+	public final fun setStorageClass (Laws/sdk/kotlin/services/s3/model/StorageClass;)V
+	public final fun setTagging (Ljava/lang/String;)V
+	public final fun setWebsiteRedirectLocation (Ljava/lang/String;)V
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectRequest$Companion {
+	public final fun invoke (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectRequest;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectResponse {
+	public static final field Companion Laws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectResponse$Companion;
+	public synthetic fun <init> (Laws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectResponse$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getBucketKeyEnabled ()Ljava/lang/Boolean;
+	public final fun getChecksumCrc32 ()Ljava/lang/String;
+	public final fun getChecksumCrc32C ()Ljava/lang/String;
+	public final fun getChecksumCrc64Nvme ()Ljava/lang/String;
+	public final fun getChecksumSha1 ()Ljava/lang/String;
+	public final fun getChecksumSha256 ()Ljava/lang/String;
+	public final fun getChecksumType ()Laws/sdk/kotlin/services/s3/model/ChecksumType;
+	public final fun getETag ()Ljava/lang/String;
+	public final fun getExpiration ()Ljava/lang/String;
+	public final fun getRequestCharged ()Laws/sdk/kotlin/services/s3/model/RequestCharged;
+	public final fun getServerSideEncryption ()Laws/sdk/kotlin/services/s3/model/ServerSideEncryption;
+	public final fun getSseCustomerAlgorithm ()Ljava/lang/String;
+	public final fun getSseCustomerKeyMd5 ()Ljava/lang/String;
+	public final fun getSsekmsEncryptionContext ()Ljava/lang/String;
+	public final fun getSsekmsKeyId ()Ljava/lang/String;
+	public final fun getVersionId ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectResponse$Builder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectResponse;
+	public final fun getBucketKeyEnabled ()Ljava/lang/Boolean;
+	public final fun getChecksumCrc32 ()Ljava/lang/String;
+	public final fun getChecksumCrc32C ()Ljava/lang/String;
+	public final fun getChecksumCrc64Nvme ()Ljava/lang/String;
+	public final fun getChecksumSha1 ()Ljava/lang/String;
+	public final fun getChecksumSha256 ()Ljava/lang/String;
+	public final fun getChecksumType ()Laws/sdk/kotlin/services/s3/model/ChecksumType;
+	public final fun getETag ()Ljava/lang/String;
+	public final fun getExpiration ()Ljava/lang/String;
+	public final fun getRequestCharged ()Laws/sdk/kotlin/services/s3/model/RequestCharged;
+	public final fun getServerSideEncryption ()Laws/sdk/kotlin/services/s3/model/ServerSideEncryption;
+	public final fun getSseCustomerAlgorithm ()Ljava/lang/String;
+	public final fun getSseCustomerKeyMd5 ()Ljava/lang/String;
+	public final fun getSsekmsEncryptionContext ()Ljava/lang/String;
+	public final fun getSsekmsKeyId ()Ljava/lang/String;
+	public final fun getVersionId ()Ljava/lang/String;
+	public final fun setBucketKeyEnabled (Ljava/lang/Boolean;)V
+	public final fun setChecksumCrc32 (Ljava/lang/String;)V
+	public final fun setChecksumCrc32C (Ljava/lang/String;)V
+	public final fun setChecksumCrc64Nvme (Ljava/lang/String;)V
+	public final fun setChecksumSha1 (Ljava/lang/String;)V
+	public final fun setChecksumSha256 (Ljava/lang/String;)V
+	public final fun setChecksumType (Laws/sdk/kotlin/services/s3/model/ChecksumType;)V
+	public final fun setETag (Ljava/lang/String;)V
+	public final fun setExpiration (Ljava/lang/String;)V
+	public final fun setRequestCharged (Laws/sdk/kotlin/services/s3/model/RequestCharged;)V
+	public final fun setServerSideEncryption (Laws/sdk/kotlin/services/s3/model/ServerSideEncryption;)V
+	public final fun setSseCustomerAlgorithm (Ljava/lang/String;)V
+	public final fun setSseCustomerKeyMd5 (Ljava/lang/String;)V
+	public final fun setSsekmsEncryptionContext (Ljava/lang/String;)V
+	public final fun setSsekmsKeyId (Ljava/lang/String;)V
+	public final fun setVersionId (Ljava/lang/String;)V
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectResponse$Companion {
+	public final fun invoke (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectResponse;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/utils/S3TransferManagerException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+

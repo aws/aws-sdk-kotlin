@@ -62,6 +62,9 @@ internal fun formatMetrics(metrics: MutableSet<BusinessMetric>, logger: Logger):
 public enum class AwsBusinessMetric(public override val identifier: String) : BusinessMetric {
     S3_EXPRESS_BUCKET("J"),
     DDB_MAPPER("d"),
+    S3_TRANSFER("G"),
+    S3_TRANSFER_UPLOAD_DIRECTORY("9"),
+    S3_TRANSFER_DOWNLOAD_DIRECTORY("+"),
     ;
 
     @InternalApi

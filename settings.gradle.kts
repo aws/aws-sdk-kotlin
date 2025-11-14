@@ -91,6 +91,13 @@ if ("dynamodb".isBootstrappedService) {
     logger.warn(":services:dynamodb is not bootstrapped, skipping :hll:dynamodb-mapper and subprojects")
 }
 
+if ("s3".isBootstrappedService) {
+    include(":hll:s3-transfer-manager")
+    include(":hll:s3-transfer-manager-codegen")
+} else {
+    logger.warn(":services:s3 is not bootstrapped, skipping :hll:s3-transfer-manager and subprojects")
+}
+
 // Service benchmarks project
 val benchmarkServices = listOf(
     // keep this list in sync with tests/benchmarks/service-benchmarks/build.gradle.kts
