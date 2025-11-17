@@ -16,4 +16,4 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * the `+` operator.
  */
 @ExperimentalApi
-public val ItemValueConverter : ValueConverter<Item> = Converter(AttributeValue::M) { it.asM().toItem() }
+public val ItemValueConverter: ValueConverter<Item> = Converter(AttributeValue::M) { it.asM().toItem() }

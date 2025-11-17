@@ -60,4 +60,4 @@ class KeyFilterTest {
     }
 }
 
-val DummyConverter = Converter<Any, Item>( { error("Not needed") }, { error("Not needed") })
+val DummyConverter = Converter<Any, Item>({ error("Not needed") }, { error("Not needed") })

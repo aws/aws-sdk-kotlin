@@ -14,5 +14,6 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * @param E The [Enum] type for which to create a [ValueConverter]
  */
 @ExperimentalApi
+@Suppress("ktlint:standard:function-naming")
 public inline fun <reified E : Enum<E>> EnumValueConverter(): ValueConverter<E> =
     Converter<E, String>({ it.name }, { enumValueOf(it) }) + StringValueConverter
