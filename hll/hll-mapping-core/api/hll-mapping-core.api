@@ -38,19 +38,19 @@ public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/Collec
 	public static final fun SetToListConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/ListMappingConverterKt {
+public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/ListMappingConvertersKt {
 	public static final fun ListMappingConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public static final fun ListMappingMonoConverter (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
 }
 
-public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/MapMappingConverterKt {
+public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/MapMappingConvertersKt {
 	public static final fun MapMappingConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public static final fun MapMappingConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public static final fun MapMappingMonoConverter (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
 	public static final fun MapMappingMonoConverter (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
 }
 
-public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/SetMappingConverterKt {
+public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/SetMappingConvertersKt {
 	public static final fun SetMappingConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public static final fun SetMappingMonoConverter (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
 }
