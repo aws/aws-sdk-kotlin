@@ -1,7 +1,7 @@
 # HLL Converters
 
-This package and subpackages provide a framework for typed data mapping, including base interfaces and some reusable
-implementations. This document describes the theory behind the conversion framework and how it may be applied.
+This module provides a framework for typed data mapping, including base interfaces and some reusable implementations.
+This document describes the theory behind the conversion framework and how it may be applied.
 
 ## Terminology
 
@@ -135,7 +135,7 @@ Converters may be wrapped by a collection converter in order to transform collec
 
 ![](docs/img/element-mapping-converter.png)
 
-Collection converters are typically build using factory functions which accept one or more delegate converters as
+Collection converters are typically built using factory functions which accept one or more delegate converters as
 arguments. For example:
 
 ```kotlin
@@ -144,3 +144,14 @@ fun <L, R> ListMappingConverter(delegate: Converter<L, R>): Converter<List<L>, L
 
 The preceding function creates a converter which transforms between `List<L>` and `List<R>` by mapping over each element
 and using the delegate converter to transform between element types `L` and `R`.
+
+The following example illustrates composing an element converter with a list mapping converter:
+
+```kotlin
+val intToLong: Converter<Int, Long> = ...
+val intListToLongList: Converter<List<Int>, List<Long>> = ListMappingConverter(intToLong)
+```
+
+In the preceding example, `intToLong` is passed as a delegate to the `ListMappingConverter` factory function and a list
+mapping converter is returned. When a list is transformed through this converter, each element is passed to the delegate
+for individual transformation in either direction.
