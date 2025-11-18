@@ -39,8 +39,8 @@ public class PrimitivesTest {
             document = Document.Number(5),
         )
 
-        val item = PrimitivesConverter.convertTo(primitive)
-        val converted = PrimitivesConverter.convertFrom(item)
+        val item = PrimitivesConverter.convertRight(primitive)
+        val converted = PrimitivesConverter.convertLeft(item)
         assertEquals(primitive, converted)
     }
 }

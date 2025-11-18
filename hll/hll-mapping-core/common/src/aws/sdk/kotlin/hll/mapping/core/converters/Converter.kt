@@ -4,77 +4,64 @@
  */
 package aws.sdk.kotlin.hll.mapping.core.converters
 
+import aws.sdk.kotlin.hll.mapping.core.converters.internal.ConverterImpl
 import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
- * Models two-way conversion between a type [T] and a type [F]
- * @param F The type being converted from
- * @param T The type being converted to
+ * A type for two-way conversion between a **left** type [L] and **right** type [R]. As a general convention, **left**
+ * is for types which are closer to user code and business logic. Conversely, **right** is for types which are farther
+ * from user code and business logic. Alternatively, one may think of **left** types as "my" types and **right** types
+ * as "their" types. Note that these distinctions are often subjective so consult documentation in the library which
+ * uses this converter for more details and context.
+ * @param L The **left** type
+ * @param R The **right** type
  */
 @ExperimentalApi
-public interface Converter<F, T> :
-    ConvertsTo<F, T>,
-    ConvertsFrom<F, T>
+public interface Converter<L, R> {
+    public companion object {
+        public fun <T> identity(): Converter<T, T> = Converter({ it }, { it })
+    }
+
+    /**
+     * Gets a [MonoConverter] that converts from **left** type [L] to **right** type [R]
+     */
+    public val right: MonoConverter<L, R>
+
+    /**
+     * Gets a [MonoConverter] that converts from **right** type [R] to **left** type [L]
+     */
+    public val left: MonoConverter<R, L>
+
+    /**
+     * Converts a **left** value into a **right** value
+     */
+    public fun convertRight(from: L): R = right.convert(from)
+
+    /**
+     * Converts a **right** value into a **left** value
+     */
+    public fun convertLeft(from: R): L = left.convert(from)
+}
 
 /**
  * Creates a new two-way converter from symmetrical one-way converters
- * @param F The type being converted from
- * @param T The type being converted to
- * @param convertTo A converter instance for converting one-way from [F] to [T]
- * @param convertFrom A converter instance for converting one-way from [T] to [F]
+ * @param L The type being converted from
+ * @param R The type being converted to
+ * @param right A converter instance for converting one-way from [L] to [R]
+ * @param left A converter instance for converting one-way from [R] to [L]
  */
 @ExperimentalApi
-public fun <F, T> Converter(convertTo: ConvertsTo<F, T>, convertFrom: ConvertsFrom<F, T>): Converter<F, T> =
-    object : Converter<F, T>, ConvertsTo<F, T> by convertTo, ConvertsFrom<F, T> by convertFrom { }
+public fun <L, R> Converter(right: MonoConverter<L, R>, left: MonoConverter<R, L>): Converter<L, R> =
+    ConverterImpl(right, left)
 
 /**
- * Chains this converter with another converter, yielding a new converter which performs a two-stage conversion. (Note
- * that these two "stages" are conceptual. Each of these stages may consist of multiple logical steps in their actual
- * implementation.)
- * @param F The source type of this converter
- * @param T The target type of this converter and the source type of the given [converter]
- * @param T2 The target type of the given [converter]
- * @param converter The converter to chain together with this converter. Note that the source type of the given
- * [converter] must be the same as the target type of this converter.
+ * Chains this converter with a subsequent converter, yielding a new converter which performs two-stage transformations.
+ * @param L The **left** type of this converter
+ * @param M The **middle** type, which is the **right** type of this converter and the **left** type of the next
+ * converter
+ * @param R The **right** type of the next converter
+ * @param next The subsequent converter to chain
  */
 @ExperimentalApi
-public fun <F, T, T2> Converter<F, T>.andThenTo(converter: Converter<T, T2>): Converter<F, T2> =
-    Converter(this.andThenConvertsTo(converter), converter.andThenConvertsFrom(this))
-
-/**
- * Chains this converter with another converter, yielding a new converter which performs a two-stage conversion. (Note
- * that these two "stages" are conceptual. Each of these stages may consist of multiple logical steps in their actual
- * implementation.)
- * @param F The source type of this converter and the target type of the given [converter]
- * @param F2 The source type of the given [converter]
- * @param T The target type of this converter
- * @param converter The converter to chain together with this converter. Note that the target type of the given
- * [converter] must be the same as the source type of this converter.
- */
-@ExperimentalApi
-public fun <F, F2, T> Converter<F, T>.andThenFrom(converter: Converter<F2, F>): Converter<F2, T> =
-    Converter(converter.andThenConvertsTo(this), this.andThenConvertsFrom(converter))
-
-/**
- * Adds validation before conversions by running [validate] on [F] values before converting them to type [T]. Validators
- * are expected to throw an exception if the expected condition is not met.
- * @param F The type being converted from
- * @param T The type being converted to
- * @param validate A function which accepts an [F] value and throws an exception if the expected condition is not
- * met
- */
-@ExperimentalApi
-public fun <F, T> Converter<F, T>.validatingFrom(validate: (F) -> Unit): Converter<F, T> =
-    Converter(this.firstValidatingFrom(validate), this)
-
-/**
- * Adds validation before conversions by running [validate] on [T] values before converting them to type [F]. Validators
- * are expected to throw an exception if the expected condition is not met.
- * @param F The type being converted to
- * @param T The type being converted from
- * @param validate A function which accepts a [T] value and throws an exception if the expected condition is not
- * met
- */
-@ExperimentalApi
-public fun <F, T> Converter<F, T>.validatingTo(validate: (T) -> Unit): Converter<F, T> =
-    Converter(this, this.firstValidatingTo(validate))
+public operator fun <L, M, R> Converter<L, M>.plus(next: Converter<M, R>): Converter<L, R> =
+    Converter(this.right + next.right, next.left + this.left)

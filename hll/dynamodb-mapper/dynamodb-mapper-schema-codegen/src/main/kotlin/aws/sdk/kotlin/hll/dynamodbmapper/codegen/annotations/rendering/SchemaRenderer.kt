@@ -5,7 +5,9 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.rendering
 
 import aws.sdk.kotlin.hll.codegen.model.*
-import aws.sdk.kotlin.hll.codegen.rendering.*
+import aws.sdk.kotlin.hll.codegen.rendering.BuilderRenderer
+import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
+import aws.sdk.kotlin.hll.codegen.rendering.RendererBase
 import aws.sdk.kotlin.hll.codegen.util.visibility
 import aws.sdk.kotlin.hll.dynamodbmapper.*
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.AnnotationsProcessorOptions
@@ -176,19 +178,19 @@ internal class SchemaRenderer(
 
         when {
             type.nullable -> {
-                writeInline("#T(", MapperTypes.Values.NullableConverter)
+                writeInline("#T(", MapperTypes.Values.NullableValueConverter)
                 renderValueConverter(ksType.makeNotNullable())
                 writeInline(")")
             }
 
-            ksType.isEnum -> writeInline("#T()", MapperTypes.Values.Scalars.enumConverter(type))
+            ksType.isEnum -> writeInline("#T()", MapperTypes.Values.Scalars.enumValueConverter(type))
 
             // FIXME Handle multi-module codegen rather than assuming nested classes will be in the same [ctx.pkg]
             ksType.isUserClass -> writeInline("#T", TypeRef(ctx.pkg, "${ksType.declaration.simpleName.asString()}ValueConverter"))
 
             type.isGenericFor(Types.Kotlin.Collections.List) -> {
                 val listElementType = ksType.singleArgument()
-                writeInline("#T(", MapperTypes.Values.Collections.ListConverter)
+                writeInline("#T(", MapperTypes.Values.Collections.ListValueConverter)
                 renderValueConverter(listElementType)
                 writeInline(")")
             }
@@ -200,7 +202,7 @@ internal class SchemaRenderer(
                     checkNotNull(it.type?.resolve()) { "Failed to resolved argument type for $it" }
                 }
 
-                writeInline("#T(#T, ", MapperTypes.Values.Collections.MapConverter, keyType.mapKeyConverter)
+                writeInline("#T(#T, ", MapperTypes.Values.Collections.MapValueConverter, keyType.mapKeyConverter)
                 renderValueConverter(valueType)
                 writeInline(")")
             }
@@ -210,25 +212,25 @@ internal class SchemaRenderer(
             else -> writeInline(
                 "#T",
                 when (type) {
-                    Types.Smithy.Instant -> MapperTypes.Values.SmithyTypes.DefaultInstantConverter
-                    Types.Smithy.Url -> MapperTypes.Values.SmithyTypes.UrlConverter
-                    Types.Smithy.Document -> MapperTypes.Values.SmithyTypes.DefaultDocumentConverter
+                    Types.Smithy.Instant -> MapperTypes.Values.SmithyTypes.DefaultInstantValueConverter
+                    Types.Smithy.Url -> MapperTypes.Values.SmithyTypes.UrlValueConverter
+                    Types.Smithy.Document -> MapperTypes.Values.SmithyTypes.DefaultDocumentValueConverter
 
-                    Types.Kotlin.Boolean -> MapperTypes.Values.Scalars.BooleanConverter
-                    Types.Kotlin.String -> MapperTypes.Values.Scalars.StringConverter
-                    Types.Kotlin.CharArray -> MapperTypes.Values.Scalars.CharArrayConverter
-                    Types.Kotlin.Char -> MapperTypes.Values.Scalars.CharConverter
-                    Types.Kotlin.Byte -> MapperTypes.Values.Scalars.ByteConverter
-                    Types.Kotlin.ByteArray -> MapperTypes.Values.Scalars.ByteArrayConverter
-                    Types.Kotlin.Short -> MapperTypes.Values.Scalars.ShortConverter
-                    Types.Kotlin.Int -> MapperTypes.Values.Scalars.IntConverter
-                    Types.Kotlin.Long -> MapperTypes.Values.Scalars.LongConverter
-                    Types.Kotlin.Double -> MapperTypes.Values.Scalars.DoubleConverter
-                    Types.Kotlin.Float -> MapperTypes.Values.Scalars.FloatConverter
-                    Types.Kotlin.UByte -> MapperTypes.Values.Scalars.UByteConverter
-                    Types.Kotlin.UInt -> MapperTypes.Values.Scalars.UIntConverter
-                    Types.Kotlin.UShort -> MapperTypes.Values.Scalars.UShortConverter
-                    Types.Kotlin.ULong -> MapperTypes.Values.Scalars.ULongConverter
+                    Types.Kotlin.Boolean -> MapperTypes.Values.Scalars.BooleanValueConverter
+                    Types.Kotlin.String -> MapperTypes.Values.Scalars.StringValueConverter
+                    Types.Kotlin.CharArray -> MapperTypes.Values.Scalars.CharArrayValueConverter
+                    Types.Kotlin.Char -> MapperTypes.Values.Scalars.CharValueConverter
+                    Types.Kotlin.Byte -> MapperTypes.Values.Scalars.ByteValueConverter
+                    Types.Kotlin.ByteArray -> MapperTypes.Values.Scalars.ByteArrayValueConverter
+                    Types.Kotlin.Short -> MapperTypes.Values.Scalars.ShortValueConverter
+                    Types.Kotlin.Int -> MapperTypes.Values.Scalars.IntValueConverter
+                    Types.Kotlin.Long -> MapperTypes.Values.Scalars.LongValueConverter
+                    Types.Kotlin.Double -> MapperTypes.Values.Scalars.DoubleValueConverter
+                    Types.Kotlin.Float -> MapperTypes.Values.Scalars.FloatValueConverter
+                    Types.Kotlin.UByte -> MapperTypes.Values.Scalars.UByteValueConverter
+                    Types.Kotlin.UInt -> MapperTypes.Values.Scalars.UIntValueConverter
+                    Types.Kotlin.UShort -> MapperTypes.Values.Scalars.UShortValueConverter
+                    Types.Kotlin.ULong -> MapperTypes.Values.Scalars.ULongValueConverter
 
                     else -> error("Unsupported attribute type $type")
                 },
@@ -266,19 +268,19 @@ internal class SchemaRenderer(
 
     private val KSType.setValueConverter: Type
         get() = when (Type.from(this)) {
-            Types.Kotlin.String -> MapperTypes.Values.Collections.StringSetConverter
-            Types.Kotlin.Char -> MapperTypes.Values.Collections.CharSetConverter
-            Types.Kotlin.CharArray -> MapperTypes.Values.Collections.CharArraySetConverter
-            Types.Kotlin.Byte -> MapperTypes.Values.Collections.ByteSetConverter
-            Types.Kotlin.Double -> MapperTypes.Values.Collections.DoubleSetConverter
-            Types.Kotlin.Float -> MapperTypes.Values.Collections.FloatSetConverter
-            Types.Kotlin.Int -> MapperTypes.Values.Collections.IntSetConverter
-            Types.Kotlin.Long -> MapperTypes.Values.Collections.LongSetConverter
-            Types.Kotlin.Short -> MapperTypes.Values.Collections.ShortSetConverter
-            Types.Kotlin.UByte -> MapperTypes.Values.Collections.UByteSetConverter
-            Types.Kotlin.UInt -> MapperTypes.Values.Collections.UIntSetConverter
-            Types.Kotlin.ULong -> MapperTypes.Values.Collections.ULongSetConverter
-            Types.Kotlin.UShort -> MapperTypes.Values.Collections.UShortSetConverter
+            Types.Kotlin.String -> MapperTypes.Values.Collections.StringSetValueConverter
+            Types.Kotlin.Char -> MapperTypes.Values.Collections.CharSetValueConverter
+            Types.Kotlin.CharArray -> MapperTypes.Values.Collections.CharArraySetValueConverter
+            Types.Kotlin.Byte -> MapperTypes.Values.Collections.ByteSetValueConverter
+            Types.Kotlin.Double -> MapperTypes.Values.Collections.DoubleSetValueConverter
+            Types.Kotlin.Float -> MapperTypes.Values.Collections.FloatSetValueConverter
+            Types.Kotlin.Int -> MapperTypes.Values.Collections.IntSetValueConverter
+            Types.Kotlin.Long -> MapperTypes.Values.Collections.LongSetValueConverter
+            Types.Kotlin.Short -> MapperTypes.Values.Collections.ShortSetValueConverter
+            Types.Kotlin.UByte -> MapperTypes.Values.Collections.UByteSetValueConverter
+            Types.Kotlin.UInt -> MapperTypes.Values.Collections.UIntSetValueConverter
+            Types.Kotlin.ULong -> MapperTypes.Values.Collections.ULongSetValueConverter
+            Types.Kotlin.UShort -> MapperTypes.Values.Collections.UShortSetValueConverter
             else -> error("Unsupported set element $this")
         }
 

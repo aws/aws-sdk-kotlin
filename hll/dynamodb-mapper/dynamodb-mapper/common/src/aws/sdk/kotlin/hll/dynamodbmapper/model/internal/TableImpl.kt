@@ -22,8 +22,7 @@ internal fun <T, PK> tableImpl(
     name: String,
     schema: ItemSchema.PartitionKey<T, PK>,
 ): Table.PartitionKey<T, PK> {
-    val tableName = name // shadowed below
-    val specImpl = TableSpecPartitionKeyImpl(mapper, tableName, schema)
+    val specImpl = TableSpecPartitionKeyImpl(mapper, name, schema)
     val opsImpl = TableOperationsImpl(specImpl)
     return object :
         Table.PartitionKey<T, PK>,

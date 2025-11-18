@@ -10,7 +10,7 @@ import kotlin.test.Test
 
 class DocumentValueConverterTest : ValueConvertersTest() {
     @Test
-    fun testKitchenSink() = given(DocumentConverter.Default) {
+    fun testKitchenSink() = given(DocumentValueConverter.Default) {
         val expectedDocument = buildDocument {
             "name" to "Ian"
             "pets" to buildList {

@@ -22,8 +22,8 @@ public class NullableItemTest {
             instant = Instant.now(),
         )
 
-        val item = NullableItemConverter.convertTo(nullable)
-        val converted = NullableItemConverter.convertFrom(item)
+        val item = NullableItemConverter.convertRight(nullable)
+        val converted = NullableItemConverter.convertLeft(item)
         assertEquals(nullable, converted)
     }
 }

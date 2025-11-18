@@ -10,9 +10,9 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.IntConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.values.smithytypes.InstantConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.smithytypes.InstantValueConverter
 import aws.smithy.kotlin.runtime.time.Instant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -34,10 +34,10 @@ class ScanTest : DdbLocalTest() {
         private val converter = SimpleItemConverter(
             ::Product,
             { this },
-            AttributeDescriptor("id", Product::id, Product::id::set, IntConverter),
-            AttributeDescriptor("name", Product::name, Product::name::set, StringConverter),
-            AttributeDescriptor("modelNumber", Product::modelNumber, Product::modelNumber::set, StringConverter),
-            AttributeDescriptor("released", Product::released, Product::released::set, InstantConverter.Iso8601),
+            AttributeDescriptor("id", Product::id, Product::id::set, NumberValueConverters.Int),
+            AttributeDescriptor("name", Product::name, Product::name::set, StringValueConverter),
+            AttributeDescriptor("modelNumber", Product::modelNumber, Product::modelNumber::set, StringValueConverter),
+            AttributeDescriptor("released", Product::released, Product::released::set, InstantValueConverter.Iso8601),
         )
 
         private val schema = ItemSchema(converter, KeySpec.Number("id"))

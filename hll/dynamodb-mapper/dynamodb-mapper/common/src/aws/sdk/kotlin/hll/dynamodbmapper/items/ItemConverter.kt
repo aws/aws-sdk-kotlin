@@ -13,7 +13,4 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * @param T The type of objects which will be converted
  */
 @ExperimentalApi
-public interface ItemConverter<T> : Converter<T, Item> {
-    public fun convertTo(from: T, onlyAttributes: Set<String>? = null): Item
-    public override fun convertTo(from: T): Item = convertTo(from, null)
-}
+public typealias ItemConverter<T> = Converter<T, Item>

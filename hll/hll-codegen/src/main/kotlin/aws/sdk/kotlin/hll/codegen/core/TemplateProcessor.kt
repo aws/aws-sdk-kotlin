@@ -81,7 +81,7 @@ private class ImportingTypeProcessor(private val pkg: String, private val import
 
             if (existingImport == null) {
                 imports += ImportDirective("${type.pkg}.${type.baseName}")
-            } else if (existingImport.fullName != type.fullName) {
+            } else if (existingImport.fullName != "${type.pkg}.${type.baseName}") {
                 append(type.pkg)
                 append('.')
             }

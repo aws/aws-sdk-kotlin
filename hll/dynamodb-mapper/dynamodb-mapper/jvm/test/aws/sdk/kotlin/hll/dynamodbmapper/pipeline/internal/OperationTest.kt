@@ -12,7 +12,11 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.withKeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.PersistenceSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
-import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.*
+import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.HReqContext
+import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
+import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
+import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
+import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
@@ -167,8 +171,13 @@ class OperationTest {
 private data class Foo(val value: String)
 
 private val fooConverter = object : ItemConverter<Foo> {
-    override fun convertFrom(to: Item): Foo = Foo(to["foo"]!!.asS())
-    override fun convertTo(from: Foo, onlyAttributes: Set<String>?): Item = itemOf("foo" to AttributeValue.S(from.value))
+    override val left: MonoConverter<Item, Foo> = MonoConverter { item ->
+        Foo(item["foo"]!!.asS())
+    }
+
+    override val right: MonoConverter<Foo, Item> = MonoConverter { obj ->
+        itemOf("foo" to AttributeValue.S(obj.value))
+    }
 }
 private val fooSchema = fooConverter.withKeySpec(KeySpec.String("foo"))
 
@@ -178,9 +187,9 @@ private data class LFooResponse(val foo: Item)
 private data class HFooResponse(val foo: Foo)
 
 private fun HFooRequest.convert(table: String, schema: ItemSchema<Foo>) =
-    LFooRequest(table, schema.converter.convertTo(foo))
+    LFooRequest(table, schema.converter.convertRight(foo))
 
 private fun LFooResponse.convert(schema: ItemSchema<Foo>) =
-    HFooResponse(schema.converter.convertFrom(foo))
+    HFooResponse(schema.converter.convertLeft(foo))
 
 private suspend fun dummyInvoke(req: LFooRequest) = LFooResponse(req.foo)

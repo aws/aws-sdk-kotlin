@@ -5,12 +5,14 @@
 
 package aws.sdk.kotlin.hll.dynamodbmapper.operations
 
-import aws.sdk.kotlin.hll.dynamodbmapper.items.*
-import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
+import aws.sdk.kotlin.hll.dynamodbmapper.items.AttributeDescriptor
+import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
+import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.IntConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.test.runTest
@@ -41,20 +43,13 @@ class PaginatedScanTest : DdbLocalTest() {
             override fun toString() = "$rankName of $suit" // Easier when debugging big outputs
         }
 
-        private val converter = object : ItemConverter<Card> {
-            val delegate = SimpleItemConverter(
-                ::Card,
-                { this },
-                AttributeDescriptor("rank", Card::rank, Card::rank::set, IntConverter),
-                AttributeDescriptor("suit", Card::suit, Card::suit::set, StringConverter),
-                AttributeDescriptor("description", Card::description, Card::description::set, StringConverter),
-            )
-
-            override fun convertFrom(to: Item): Card = delegate.convertFrom(to)
-
-            override fun convertTo(from: Card, onlyAttributes: Set<String>?): Item =
-                delegate.convertTo(from, null) // Ignore `onlyAttributes` arg to mock badly-behaved converter
-        }
+        private val converter = SimpleItemConverter(
+            ::Card,
+            { this },
+            AttributeDescriptor("rank", Card::rank, Card::rank::set, NumberValueConverters.Int),
+            AttributeDescriptor("suit", Card::suit, Card::suit::set, StringValueConverter),
+            AttributeDescriptor("description", Card::description, Card::description::set, StringValueConverter),
+        )
 
         private val schema = ItemSchema(converter, KeySpec.String("suit"), KeySpec.Number("rank"))
 

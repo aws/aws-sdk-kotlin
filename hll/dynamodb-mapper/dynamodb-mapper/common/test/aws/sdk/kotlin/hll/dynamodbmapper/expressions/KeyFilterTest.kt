@@ -6,10 +6,10 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.FilterImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.toExpression
-import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
+import aws.sdk.kotlin.hll.mapping.core.converters.Converter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -60,7 +60,4 @@ class KeyFilterTest {
     }
 }
 
-object DummyConverter : ItemConverter<Any> {
-    override fun convertFrom(to: Item) = error("Not needed")
-    override fun convertTo(from: Any, onlyAttributes: Set<String>?) = error("Not needed")
-}
+val DummyConverter = Converter<Any, Item>({ error("Not needed") }, { error("Not needed") })

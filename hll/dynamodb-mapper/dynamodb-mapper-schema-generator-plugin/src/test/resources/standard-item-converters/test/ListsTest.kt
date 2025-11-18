@@ -36,8 +36,8 @@ public class ListsTest {
             nullableListNullableElement = null,
         )
 
-        val item = ListsConverter.convertTo(lists)
-        val converted = ListsConverter.convertFrom(item)
+        val item = ListsConverter.convertRight(lists)
+        val converted = ListsConverter.convertLeft(item)
         assertEquals(lists, converted)
     }
 }

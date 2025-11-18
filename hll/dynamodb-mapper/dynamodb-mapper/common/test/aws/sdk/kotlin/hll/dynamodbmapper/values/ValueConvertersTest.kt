@@ -7,7 +7,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.values
 import aws.sdk.kotlin.hll.dynamodbmapper.util.attr
 import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAttr
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import kotlin.jvm.JvmName
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -55,12 +54,12 @@ abstract class ValueConvertersTest {
             steps.forEach { (direction, highLevel, lowLevel) ->
                 when (direction) {
                     Direction.TO_ATTRIBUTE_VALUE -> {
-                        val result = runCatching { converter.convertTo(highLevel.requireInput()) }
+                        val result = runCatching { converter.convertRight(highLevel.requireInput()) }
                         lowLevel.assert(result, "Test $index failed converting to attribute value")
                     }
 
                     Direction.FROM_ATTRIBUTE_VALUE -> {
-                        val result = runCatching { converter.convertFrom(lowLevel.requireInput()) }
+                        val result = runCatching { converter.convertLeft(lowLevel.requireInput()) }
                         highLevel.assert(result, "Test $index failed converting from attribute value")
                     }
                 }

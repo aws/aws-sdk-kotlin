@@ -4,9 +4,10 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.items
 
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.BooleanConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.IntConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.model.intersectKeys
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.BooleanValueConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -17,20 +18,20 @@ class SimpleItemConverterTest {
         val converter = SimpleItemConverter(
             ::ProductBuilder,
             ProductBuilder::build,
-            AttributeDescriptor("id", Product::id, ProductBuilder::id::set, IntConverter),
-            AttributeDescriptor("name", Product::name, ProductBuilder::name::set, StringConverter),
-            AttributeDescriptor("in-stock", Product::inStock, ProductBuilder::inStock::set, BooleanConverter),
+            AttributeDescriptor("id", Product::id, ProductBuilder::id::set, NumberValueConverters.Int),
+            AttributeDescriptor("name", Product::name, ProductBuilder::name::set, StringValueConverter),
+            AttributeDescriptor("in-stock", Product::inStock, ProductBuilder::inStock::set, BooleanValueConverter),
         )
 
         val foo = Product(42, "Foo 2.0", inStock = true)
-        val item = converter.convertTo(foo)
+        val item = converter.convertRight(foo)
 
         assertEquals(3, item.size)
         assertEquals(42, item.getValue("id").asN().toInt())
         assertEquals("Foo 2.0", item.getValue("name").asS())
         assertTrue(item.getValue("in-stock").asBool())
 
-        val unconverted = converter.convertFrom(item)
+        val unconverted = converter.convertLeft(item)
         assertEquals(foo, unconverted)
     }
 
@@ -39,13 +40,13 @@ class SimpleItemConverterTest {
         val converter = SimpleItemConverter(
             ::ProductBuilder,
             ProductBuilder::build,
-            AttributeDescriptor("id", Product::id, ProductBuilder::id::set, IntConverter),
-            AttributeDescriptor("name", Product::name, ProductBuilder::name::set, StringConverter),
-            AttributeDescriptor("in-stock", Product::inStock, ProductBuilder::inStock::set, BooleanConverter),
+            AttributeDescriptor("id", Product::id, ProductBuilder::id::set, NumberValueConverters.Int),
+            AttributeDescriptor("name", Product::name, ProductBuilder::name::set, StringValueConverter),
+            AttributeDescriptor("in-stock", Product::inStock, ProductBuilder::inStock::set, BooleanValueConverter),
         )
 
         val foo = Product(42, "Foo 2.0", inStock = true)
-        val item = converter.convertTo(foo, setOf("id", "name"))
+        val item = converter.convertRight(foo).intersectKeys(setOf("id", "name"))
 
         assertEquals(2, item.size)
         assertEquals(42, item.getValue("id").asN().toInt())
