@@ -192,7 +192,7 @@ smithyBuild {
 
         create("signin-credentials-provider") {
             imports = listOf(
-                awsModelFile("sign-in.json"),
+                awsModelFile("signin.json"),
             )
 
             val serviceShape = "com.amazonaws.signin#Signin"
