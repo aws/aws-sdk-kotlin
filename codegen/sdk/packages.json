@@ -1567,6 +1567,12 @@
             "brazilName": "AwsSdkKotlinPanorama"
         },
         {
+            "sdkId": "PartnerCentral Channel",
+            "namespace": "aws.sdk.kotlin.services.partnercentralchannel",
+            "artifactName": "partnercentralchannel",
+            "brazilName": "AwsSdkKotlinPartnercentralChannel"
+        },
+        {
             "sdkId": "PartnerCentral Selling",
             "namespace": "aws.sdk.kotlin.services.partnercentralselling",
             "artifactName": "partnercentralselling",
@@ -2033,6 +2039,12 @@
             "namespace": "aws.sdk.kotlin.services.shield",
             "artifactName": "shield",
             "brazilName": "AwsSdkKotlinShield"
+        },
+        {
+            "sdkId": "Signin",
+            "namespace": "aws.sdk.kotlin.services.signin",
+            "artifactName": "signin",
+            "brazilName": "AwsSdkKotlinSignin"
         },
         {
             "sdkId": "SimSpaceWeaver",

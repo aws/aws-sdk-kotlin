@@ -2671,6 +2671,9 @@
                     "target": "com.amazonaws.ec2#CreateIpamExternalResourceVerificationToken"
                 },
                 {
+                    "target": "com.amazonaws.ec2#CreateIpamPolicy"
+                },
+                {
                     "target": "com.amazonaws.ec2#CreateIpamPool"
                 },
                 {
@@ -2936,6 +2939,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#DeleteIpamExternalResourceVerificationToken"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DeleteIpamPolicy"
                 },
                 {
                     "target": "com.amazonaws.ec2#DeleteIpamPool"
@@ -3382,6 +3388,9 @@
                     "target": "com.amazonaws.ec2#DescribeIpamExternalResourceVerificationTokens"
                 },
                 {
+                    "target": "com.amazonaws.ec2#DescribeIpamPolicies"
+                },
+                {
                     "target": "com.amazonaws.ec2#DescribeIpamPools"
                 },
                 {
@@ -3760,6 +3769,9 @@
                     "target": "com.amazonaws.ec2#DisableIpamOrganizationAdminAccount"
                 },
                 {
+                    "target": "com.amazonaws.ec2#DisableIpamPolicy"
+                },
+                {
                     "target": "com.amazonaws.ec2#DisableRouteServerPropagation"
                 },
                 {
@@ -3874,6 +3886,9 @@
                     "target": "com.amazonaws.ec2#EnableIpamOrganizationAdminAccount"
                 },
                 {
+                    "target": "com.amazonaws.ec2#EnableIpamPolicy"
+                },
+                {
                     "target": "com.amazonaws.ec2#EnableReachabilityAnalyzerOrganizationSharing"
                 },
                 {
@@ -3964,6 +3979,9 @@
                     "target": "com.amazonaws.ec2#GetEbsEncryptionByDefault"
                 },
                 {
+                    "target": "com.amazonaws.ec2#GetEnabledIpamPolicy"
+                },
+                {
                     "target": "com.amazonaws.ec2#GetFlowLogsIntegrationTemplate"
                 },
                 {
@@ -4001,6 +4019,12 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#GetIpamDiscoveredResourceCidrs"
+                },
+                {
+                    "target": "com.amazonaws.ec2#GetIpamPolicyAllocationRules"
+                },
+                {
+                    "target": "com.amazonaws.ec2#GetIpamPolicyOrganizationTargets"
                 },
                 {
                     "target": "com.amazonaws.ec2#GetIpamPoolAllocations"
@@ -4208,6 +4232,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#ModifyIpam"
+                },
+                {
+                    "target": "com.amazonaws.ec2#ModifyIpamPolicyAllocationRules"
                 },
                 {
                     "target": "com.amazonaws.ec2#ModifyIpamPool"
@@ -7423,6 +7450,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
                     }
+                },
+                "AvailabilityZone": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>For regional NAT gateways only: The Availability Zone where you want to associate an Elastic IP address (EIP). The regional NAT gateway uses a separate EIP in each AZ to handle outbound NAT traffic from that AZ.</p>\n         <p>A regional NAT gateway is a single NAT Gateway that works across multiple availability zones (AZs) in your VPC, providing redundancy, scalability and availability across all the AZs in a Region.</p>"
+                    }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>For regional NAT gateways only: The ID of the Availability Zone where you want to associate an Elastic IP address (EIP). The regional NAT gateway uses a separate EIP in each AZ to handle outbound NAT traffic from that AZ. Use this instead of AvailabilityZone for consistent identification of AZs across Amazon Web Services Regions. </p>\n         <p>A regional NAT gateway is a single NAT Gateway that works across multiple availability zones (AZs) in your VPC, providing redundancy, scalability and availability across all the AZs in a Region.</p>"
+                    }
                 }
             },
             "traits": {
@@ -9515,8 +9554,59 @@
                 }
             }
         },
+        "com.amazonaws.ec2#AutoProvisionZonesState": {
+            "type": "enum",
+            "members": {
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                },
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#AutoRecoveryFlag": {
             "type": "boolean"
+        },
+        "com.amazonaws.ec2#AutoScalingIpsState": {
+            "type": "enum",
+            "members": {
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                },
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityMode": {
+            "type": "enum",
+            "members": {
+                "ZONAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "zonal"
+                    }
+                },
+                "REGIONAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "regional"
+                    }
+                }
+            }
         },
         "com.amazonaws.ec2#AvailabilityZone": {
             "type": "structure",
@@ -9620,6 +9710,42 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Describes Availability Zones, Local Zones, and Wavelength Zones.</p>"
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityZoneAddress": {
+            "type": "structure",
+            "members": {
+                "AvailabilityZone": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>For regional NAT gateways only: The Availability Zone where this specific NAT gateway configuration will be active. Each AZ in a regional NAT gateway has its own configuration to handle outbound NAT traffic from that AZ. </p>\n         <p>A regional NAT gateway is a single NAT Gateway that works across multiple availability zones (AZs) in your VPC, providing redundancy, scalability and availability across all the AZs in a Region.</p>"
+                    }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>For regional NAT gateways only: The ID of the Availability Zone where this specific NAT gateway configuration will be active. Each AZ in a regional NAT gateway has its own configuration to handle outbound NAT traffic from that AZ. Use this instead of AvailabilityZone for consistent identification of AZs across Amazon Web Services Regions. </p>\n         <p>A regional NAT gateway is a single NAT Gateway that works across multiple availability zones (AZs) in your VPC, providing redundancy, scalability and availability across all the AZs in a Region.</p>"
+                    }
+                },
+                "AllocationIds": {
+                    "target": "com.amazonaws.ec2#AllocationIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The allocation IDs of the Elastic IP addresses (EIPs) to be used for handling outbound NAT traffic in this specific Availability Zone.</p>",
+                        "smithy.api#xmlName": "AllocationId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>For regional NAT gateways only: The configuration specifying which Elastic IP address (EIP) to use for handling outbound NAT traffic from a specific Availability Zone. </p>\n         <p>A regional NAT gateway is a single NAT Gateway that works across multiple availability zones (AZs) in your VPC, providing redundancy, scalability and availability across all the AZs in a Region.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateways-regional.html\">Regional NAT gateways for automatic multi-AZ expansion</a> in the <i>Amazon VPC User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityZoneAddresses": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#AvailabilityZoneAddress",
+                "traits": {
+                    "smithy.api#xmlName": "AvailabilityZoneAddress"
+                }
             }
         },
         "com.amazonaws.ec2#AvailabilityZoneId": {
@@ -18958,6 +19084,70 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#CreateIpamPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#CreateIpamPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#CreateIpamPolicyResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Creates an IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/define-public-ipv4-allocation-strategy-with-ipam-policies.html\">Define public IPv4 allocation strategy with IPAM policies</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#CreateIpamPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "TagSpecifications": {
+                    "target": "com.amazonaws.ec2#TagSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags to assign to the IPAM policy.</p>",
+                        "smithy.api#xmlName": "TagSpecification"
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure the idempotency of the request.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "IpamId": {
+                    "target": "com.amazonaws.ec2#IpamId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the IPAM for which you're creating the policy.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateIpamPolicyResult": {
+            "type": "structure",
+            "members": {
+                "IpamPolicy": {
+                    "target": "com.amazonaws.ec2#IpamPolicy",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicy",
+                        "smithy.api#documentation": "<p>Information about the created IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>",
+                        "smithy.api#xmlName": "ipamPolicy"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#CreateIpamPool": {
             "type": "operation",
             "input": {
@@ -20484,6 +20674,12 @@
         "com.amazonaws.ec2#CreateNatGatewayRequest": {
             "type": "structure",
             "members": {
+                "AvailabilityMode": {
+                    "target": "com.amazonaws.ec2#AvailabilityMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to create a zonal (single-AZ) or regional (multi-AZ) NAT gateway. Defaults to <code>zonal</code>.</p>\n         <p>A zonal NAT gateway is a NAT Gateway that provides redundancy and scalability within a single availability zone. A regional NAT gateway is a single NAT Gateway that works across multiple availability zones (AZs) in your VPC, providing redundancy, scalability and availability across all the AZs in a Region.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateways-regional.html\">Regional NAT gateways for automatic multi-AZ expansion</a> in the <i>Amazon VPC User Guide</i>.</p>"
+                    }
+                },
                 "AllocationId": {
                     "target": "com.amazonaws.ec2#AllocationId",
                     "traits": {
@@ -20506,9 +20702,20 @@
                 "SubnetId": {
                     "target": "com.amazonaws.ec2#SubnetId",
                     "traits": {
-                        "smithy.api#clientOptional": {},
-                        "smithy.api#documentation": "<p>The ID of the subnet in which to create the NAT gateway.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The ID of the subnet in which to create the NAT gateway.</p>"
+                    }
+                },
+                "VpcId": {
+                    "target": "com.amazonaws.ec2#VpcId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the VPC where you want to create a regional NAT gateway.</p>"
+                    }
+                },
+                "AvailabilityZoneAddresses": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneAddresses",
+                    "traits": {
+                        "smithy.api#documentation": "<p>For regional NAT gateways only: Specifies which Availability Zones you want the NAT gateway to support and the Elastic IP addresses (EIPs) to use in each AZ. The regional NAT gateway uses these EIPs to handle outbound NAT traffic from their respective AZs. If not specified, the NAT gateway will automatically expand to new AZs and associate EIPs upon detection of an elastic network interface. If you specify this parameter, auto-expansion is disabled and you must manually manage AZ coverage.</p>\n         <p>A regional NAT gateway is a single NAT Gateway that works across multiple availability zones (AZs) in your VPC, providing redundancy, scalability and availability across all the AZs in a Region.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateways-regional.html\">Regional NAT gateways for automatic multi-AZ expansion</a> in the <i>Amazon VPC User Guide</i>.</p>",
+                        "smithy.api#xmlName": "AvailabilityZoneAddress"
                     }
                 },
                 "TagSpecifications": {
@@ -27518,6 +27725,56 @@
                         "aws.protocols#ec2QueryName": "IpamExternalResourceVerificationToken",
                         "smithy.api#documentation": "<p>The verification token.</p>",
                         "smithy.api#xmlName": "ipamExternalResourceVerificationToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteIpamPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DeleteIpamPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DeleteIpamPolicyResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes an IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DeleteIpamPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "IpamPolicyId": {
+                    "target": "com.amazonaws.ec2#IpamPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the IPAM policy to delete.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteIpamPolicyResult": {
+            "type": "structure",
+            "members": {
+                "IpamPolicy": {
+                    "target": "com.amazonaws.ec2#IpamPolicy",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicy",
+                        "smithy.api#documentation": "<p>Information about the deleted IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>",
+                        "smithy.api#xmlName": "ipamPolicy"
                     }
                 }
             },
@@ -39002,7 +39259,7 @@
                 "target": "com.amazonaws.ec2#DescribeIpamExternalResourceVerificationTokensResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Describe verification tokens. A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP).\n</p>"
+                "smithy.api#documentation": "<p>Describe verification tokens.</p>\n         <p>A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP).\n</p>"
             }
         },
         "com.amazonaws.ec2#DescribeIpamExternalResourceVerificationTokensRequest": {
@@ -39062,6 +39319,82 @@
                         "aws.protocols#ec2QueryName": "IpamExternalResourceVerificationTokenSet",
                         "smithy.api#documentation": "<p>Verification tokens.</p>",
                         "smithy.api#xmlName": "ipamExternalResourceVerificationTokenSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeIpamPolicies": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeIpamPoliciesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeIpamPoliciesResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes one or more IPAM policies.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DescribeIpamPoliciesRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>One or more filters for the IPAM policy description.</p>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#IpamMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return in a single call.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
+                },
+                "IpamPolicyIds": {
+                    "target": "com.amazonaws.ec2#ValueStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the IPAM policies to describe.</p>",
+                        "smithy.api#xmlName": "IpamPolicyId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeIpamPoliciesResult": {
+            "type": "structure",
+            "members": {
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                },
+                "IpamPolicies": {
+                    "target": "com.amazonaws.ec2#IpamPolicySet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicySet",
+                        "smithy.api#documentation": "<p>Information about the IPAM policies.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>",
+                        "smithy.api#xmlName": "ipamPolicySet"
                     }
                 }
             },
@@ -39358,7 +39691,7 @@
                 "NextToken": {
                     "target": "com.amazonaws.ec2#NextToken",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>"
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
                     }
                 },
                 "MaxResults": {
@@ -39394,7 +39727,7 @@
                     "target": "com.amazonaws.ec2#NextToken",
                     "traits": {
                         "aws.protocols#ec2QueryName": "NextToken",
-                        "smithy.api#documentation": "<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
                         "smithy.api#xmlName": "nextToken"
                     }
                 }
@@ -39476,7 +39809,7 @@
                     "target": "com.amazonaws.ec2#NextToken",
                     "traits": {
                         "aws.protocols#ec2QueryName": "NextToken",
-                        "smithy.api#documentation": "<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
                         "smithy.api#xmlName": "nextToken"
                     }
                 }
@@ -51431,6 +51764,62 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#DisableIpamPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DisableIpamPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DisableIpamPolicyResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Disables an IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DisableIpamPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "IpamPolicyId": {
+                    "target": "com.amazonaws.ec2#IpamPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the IPAM policy to disable.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "OrganizationTargetId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Amazon Web Services Organizations target for which to disable the IPAM policy. This parameter is required only when IPAM is integrated with Amazon Web Services Organizations. When IPAM is not integrated with Amazon Web Services Organizations, omit this parameter and the policy will be disabled for the current account.</p>\n         <p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DisableIpamPolicyResult": {
+            "type": "structure",
+            "members": {
+                "Return": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Return",
+                        "smithy.api#documentation": "<p>Returns true if the IPAM policy was successfully disabled.</p>",
+                        "smithy.api#xmlName": "return"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#DisableRouteServerPropagation": {
             "type": "operation",
             "input": {
@@ -55598,6 +55987,62 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#EnableIpamPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#EnableIpamPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#EnableIpamPolicyResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Enables an IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/define-public-ipv4-allocation-strategy-with-ipam-policies.html\">Define public IPv4 allocation strategy with IPAM policies</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#EnableIpamPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "IpamPolicyId": {
+                    "target": "com.amazonaws.ec2#IpamPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the IPAM policy to enable.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "OrganizationTargetId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Amazon Web Services Organizations target for which to enable the IPAM policy. This parameter is required only when IPAM is integrated with Amazon Web Services Organizations. When IPAM is not integrated with Amazon Web Services Organizations, omit this parameter and the policy will apply to the current account.</p>\n         <p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#EnableIpamPolicyResult": {
+            "type": "structure",
+            "members": {
+                "IpamPolicyId": {
+                    "target": "com.amazonaws.ec2#IpamPolicyId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicyId",
+                        "smithy.api#documentation": "<p>The ID of the IPAM policy that was enabled.</p>",
+                        "smithy.api#xmlName": "ipamPolicyId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#EnableReachabilityAnalyzerOrganizationSharing": {
             "type": "operation",
             "input": {
@@ -57562,7 +58007,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/integrate-infoblox-ipam.html\">Integrate VPC IPAM with Infoblox infrastructure</a> in the <i>Amazon VPC IPAM User Guide</i>..</p>"
+                "smithy.api#documentation": "<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/integrate-infoblox-ipam.html\">Integrate VPC IPAM with Infoblox infrastructure</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
             }
         },
         "com.amazonaws.ec2#FailedCapacityReservationFleetCancellationResult": {
@@ -59384,6 +59829,12 @@
                     "traits": {
                         "smithy.api#enumValue": "TransitGatewayAttachment"
                     }
+                },
+                "RegionalNatGateway": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RegionalNatGateway"
+                    }
                 }
             }
         },
@@ -61088,6 +61539,64 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#GetEnabledIpamPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetEnabledIpamPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetEnabledIpamPolicyResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Gets the enabled IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>"
+            }
+        },
+        "com.amazonaws.ec2#GetEnabledIpamPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetEnabledIpamPolicyResult": {
+            "type": "structure",
+            "members": {
+                "IpamPolicyEnabled": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicyEnabled",
+                        "smithy.api#documentation": "<p>Indicates whether the IPAM policy is enabled.</p>",
+                        "smithy.api#xmlName": "ipamPolicyEnabled"
+                    }
+                },
+                "IpamPolicyId": {
+                    "target": "com.amazonaws.ec2#IpamPolicyId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicyId",
+                        "smithy.api#documentation": "<p>The ID of the enabled IPAM policy.</p>",
+                        "smithy.api#xmlName": "ipamPolicyId"
+                    }
+                },
+                "ManagedBy": {
+                    "target": "com.amazonaws.ec2#IpamPolicyManagedBy",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ManagedBy",
+                        "smithy.api#documentation": "<p>The entity that manages the IPAM policy.</p>",
+                        "smithy.api#xmlName": "managedBy"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#GetFlowLogsIntegrationTemplate": {
             "type": "operation",
             "input": {
@@ -61325,7 +61834,7 @@
                 "target": "com.amazonaws.ec2#GetImageAncestryResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Retrieves the ancestry chain of the specified AMI, tracing its lineage back to the root\n      AMI. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-ancestry.html\">AMI ancestry</a> in\n      <i>Amazon EC2 User Guide</i>.</p>"
+                "smithy.api#documentation": "<p>Retrieves the ancestry chain of the specified AMI, tracing its lineage back to the root\n      AMI. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-ancestry.html\">AMI ancestry</a> in\n        <i>Amazon EC2 User Guide</i>.</p>"
             }
         },
         "com.amazonaws.ec2#GetImageAncestryRequest": {
@@ -62077,6 +62586,172 @@
                     "traits": {
                         "aws.protocols#ec2QueryName": "NextToken",
                         "smithy.api#documentation": "<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#GetIpamPolicyAllocationRules": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetIpamPolicyAllocationRulesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetIpamPolicyAllocationRulesResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Gets the allocation rules for an IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>\n         <p>Allocation rules are optional configurations within an IPAM policy that map Amazon Web Services resource types to specific IPAM pools. If no rules are defined, the resource types default to using Amazon-provided IP addresses.</p>"
+            }
+        },
+        "com.amazonaws.ec2#GetIpamPolicyAllocationRulesRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "IpamPolicyId": {
+                    "target": "com.amazonaws.ec2#IpamPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the IPAM policy for which to get allocation rules.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>One or more filters for the allocation rules.</p>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "Locale": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The locale for which to get the allocation rules.</p>"
+                    }
+                },
+                "ResourceType": {
+                    "target": "com.amazonaws.ec2#IpamPolicyResourceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource type for which to get the allocation rules.</p>\n         <p>The Amazon Web Services service or resource type that can use IP addresses through IPAM policies. Supported services and resource types include:</p>\n         <ul>\n            <li>\n               <p>Elastic IP addresses</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#IpamMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return in a single call.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetIpamPolicyAllocationRulesResult": {
+            "type": "structure",
+            "members": {
+                "IpamPolicyDocuments": {
+                    "target": "com.amazonaws.ec2#IpamPolicyDocumentSet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicyDocumentSet",
+                        "smithy.api#documentation": "<p>The IPAM policy documents containing the allocation rules.</p>\n         <p>Allocation rules are optional configurations within an IPAM policy that map Amazon Web Services resource types to specific IPAM pools. If no rules are defined, the resource types default to using Amazon-provided IP addresses.</p>",
+                        "smithy.api#xmlName": "ipamPolicyDocumentSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#GetIpamPolicyOrganizationTargets": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetIpamPolicyOrganizationTargetsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetIpamPolicyOrganizationTargetsResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Gets the Amazon Web Services Organizations targets for an IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>\n         <p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p>"
+            }
+        },
+        "com.amazonaws.ec2#GetIpamPolicyOrganizationTargetsRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#IpamMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return in a single call.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
+                },
+                "IpamPolicyId": {
+                    "target": "com.amazonaws.ec2#IpamPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the IPAM policy for which to get Amazon Web Services Organizations targets.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>One or more filters for the Amazon Web Services Organizations targets.</p>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetIpamPolicyOrganizationTargetsResult": {
+            "type": "structure",
+            "members": {
+                "OrganizationTargets": {
+                    "target": "com.amazonaws.ec2#IpamPolicyOrganizationTargetSet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OrganizationTargetSet",
+                        "smithy.api#documentation": "<p>The Amazon Web Services Organizations targets for an IPAM policy.</p>",
+                        "smithy.api#xmlName": "organizationTargetSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results.</p>",
                         "smithy.api#xmlName": "nextToken"
                     }
                 }
@@ -66483,7 +67158,7 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "aws.protocols#ec2QueryName": "ImageOwnerAlias",
-                        "smithy.api#documentation": "<p>The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> |\n      <code>aws-marketplace</code> ) of this AMI, if one is assigned. Otherwise, the value is\n      <code>null</code>.</p>",
+                        "smithy.api#documentation": "<p>The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> |\n        <code>aws-marketplace</code> ) of this AMI, if one is assigned. Otherwise, the value is\n        <code>null</code>.</p>",
                         "smithy.api#xmlName": "imageOwnerAlias"
                     }
                 },
@@ -81143,6 +81818,335 @@
                 }
             }
         },
+        "com.amazonaws.ec2#IpamPolicy": {
+            "type": "structure",
+            "members": {
+                "OwnerId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OwnerId",
+                        "smithy.api#documentation": "<p>The account ID that owns the IPAM policy.</p>",
+                        "smithy.api#xmlName": "ownerId"
+                    }
+                },
+                "IpamPolicyId": {
+                    "target": "com.amazonaws.ec2#IpamPolicyId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicyId",
+                        "smithy.api#documentation": "<p>The ID of the IPAM policy.</p>",
+                        "smithy.api#xmlName": "ipamPolicyId"
+                    }
+                },
+                "IpamPolicyArn": {
+                    "target": "com.amazonaws.ec2#ResourceArn",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicyArn",
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IPAM policy.</p>",
+                        "smithy.api#xmlName": "ipamPolicyArn"
+                    }
+                },
+                "IpamPolicyRegion": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicyRegion",
+                        "smithy.api#documentation": "<p>The Region of the IPAM policy.</p>",
+                        "smithy.api#xmlName": "ipamPolicyRegion"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.ec2#IpamPolicyState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The state of the IPAM policy.</p>",
+                        "smithy.api#xmlName": "state"
+                    }
+                },
+                "StateMessage": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "StateMessage",
+                        "smithy.api#documentation": "<p>A message about the state of the IPAM policy.</p>",
+                        "smithy.api#xmlName": "stateMessage"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.ec2#TagList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>The tags assigned to the IPAM policy.</p>",
+                        "smithy.api#xmlName": "tagSet"
+                    }
+                },
+                "IpamId": {
+                    "target": "com.amazonaws.ec2#IpamId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamId",
+                        "smithy.api#documentation": "<p>The ID of the IPAM this policy belongs to.</p>",
+                        "smithy.api#xmlName": "ipamId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Information about an IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>"
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyAllocationRule": {
+            "type": "structure",
+            "members": {
+                "SourceIpamPoolId": {
+                    "target": "com.amazonaws.ec2#IpamPoolId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceIpamPoolId",
+                        "smithy.api#documentation": "<p>The ID of the source IPAM pool for the allocation rule.</p>\n         <p>An IPAM pool is a collection of IP addresses in IPAM that can be allocated to Amazon Web Services resources.</p>",
+                        "smithy.api#xmlName": "sourceIpamPoolId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Information about an IPAM policy allocation rule.</p>\n         <p>Allocation rules are optional configurations within an IPAM policy that map Amazon Web Services resource types to specific IPAM pools. If no rules are defined, the resource types default to using Amazon-provided IP addresses.</p>"
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyAllocationRuleList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#IpamPolicyAllocationRule",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyAllocationRuleListRequest": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#IpamPolicyAllocationRuleRequest",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyAllocationRuleRequest": {
+            "type": "structure",
+            "members": {
+                "SourceIpamPoolId": {
+                    "target": "com.amazonaws.ec2#IpamPoolId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the source IPAM pool for the requested allocation rule.</p>\n         <p>An IPAM pool is a collection of IP addresses in IPAM that can be allocated to Amazon Web Services resources.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Information about a requested IPAM policy allocation rule.</p>\n         <p>Allocation rules are optional configurations within an IPAM policy that map Amazon Web Services resource types to specific IPAM pools. If no rules are defined, the resource types default to using Amazon-provided IP addresses.</p>"
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyDocument": {
+            "type": "structure",
+            "members": {
+                "IpamPolicyId": {
+                    "target": "com.amazonaws.ec2#IpamPolicyId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicyId",
+                        "smithy.api#documentation": "<p>The ID of the IPAM policy.</p>",
+                        "smithy.api#xmlName": "ipamPolicyId"
+                    }
+                },
+                "Locale": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Locale",
+                        "smithy.api#documentation": "<p>The locale of the IPAM policy document.</p>",
+                        "smithy.api#xmlName": "locale"
+                    }
+                },
+                "ResourceType": {
+                    "target": "com.amazonaws.ec2#IpamPolicyResourceType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ResourceType",
+                        "smithy.api#documentation": "<p>The resource type of the IPAM policy document.</p>\n         <p>The Amazon Web Services service or resource type that can use IP addresses through IPAM policies. Supported services and resource types include:</p>\n         <ul>\n            <li>\n               <p>Elastic IP addresses</p>\n            </li>\n         </ul>",
+                        "smithy.api#xmlName": "resourceType"
+                    }
+                },
+                "AllocationRules": {
+                    "target": "com.amazonaws.ec2#IpamPolicyAllocationRuleList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AllocationRuleSet",
+                        "smithy.api#documentation": "<p>The allocation rules in the IPAM policy document.</p>\n         <p>Allocation rules are optional configurations within an IPAM policy that map Amazon Web Services resource types to specific IPAM pools. If no rules are defined, the resource types default to using Amazon-provided IP addresses.</p>",
+                        "smithy.api#xmlName": "allocationRuleSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Information about an IPAM policy.</p>"
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyDocumentSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#IpamPolicyDocument",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyId": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#IpamPolicyManagedBy": {
+            "type": "enum",
+            "members": {
+                "account": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "account"
+                    }
+                },
+                "delegated_administrator_for_ipam": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delegated-administrator-for-ipam"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyOrganizationTarget": {
+            "type": "structure",
+            "members": {
+                "OrganizationTargetId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OrganizationTargetId",
+                        "smithy.api#documentation": "<p>The ID of a Amazon Web Services Organizations target for an IPAM policy.</p>",
+                        "smithy.api#xmlName": "organizationTargetId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Amazon Web Services Organizations target for an IPAM policy.</p>"
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyOrganizationTargetSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#IpamPolicyOrganizationTarget",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyResourceType": {
+            "type": "enum",
+            "members": {
+                "alb": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "alb"
+                    }
+                },
+                "eip": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eip"
+                    }
+                },
+                "rds": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "rds"
+                    }
+                },
+                "rnat": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "rnat"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicySet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#IpamPolicy",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#IpamPolicyState": {
+            "type": "enum",
+            "members": {
+                "create_in_progress": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "create-in-progress"
+                    }
+                },
+                "create_complete": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "create-complete"
+                    }
+                },
+                "create_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "create-failed"
+                    }
+                },
+                "modify_in_progress": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "modify-in-progress"
+                    }
+                },
+                "modify_complete": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "modify-complete"
+                    }
+                },
+                "modify_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "modify-failed"
+                    }
+                },
+                "delete_in_progress": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delete-in-progress"
+                    }
+                },
+                "delete_complete": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delete-complete"
+                    }
+                },
+                "delete_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delete-failed"
+                    }
+                },
+                "isolate_in_progress": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "isolate-in-progress"
+                    }
+                },
+                "isolate_complete": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "isolate-complete"
+                    }
+                },
+                "restore_in_progress": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "restore-in-progress"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#IpamPool": {
             "type": "structure",
             "members": {
@@ -91428,6 +92432,79 @@
                 "smithy.api#documentation": "<p>Modify the configurations of an IPAM.\n      </p>"
             }
         },
+        "com.amazonaws.ec2#ModifyIpamPolicyAllocationRules": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#ModifyIpamPolicyAllocationRulesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#ModifyIpamPolicyAllocationRulesResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Modifies the allocation rules in an IPAM policy.</p>\n         <p>An IPAM policy is a set of rules that define how public IPv4 addresses from IPAM pools are allocated to Amazon Web Services resources. Each rule maps an Amazon Web Services service to IPAM pools that the service will use to get IP addresses. A single policy can have multiple rules and be applied to multiple Amazon Web Services Regions. If the IPAM pool run out of addresses then the services fallback to Amazon-provided IP addresses. A policy can be applied to an individual Amazon Web Services account or an entity within Amazon Web Services Organizations.</p>\n         <p>Allocation rules are optional configurations within an IPAM policy that map Amazon Web Services resource types to specific IPAM pools. If no rules are defined, the resource types default to using Amazon-provided IP addresses.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ModifyIpamPolicyAllocationRulesRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "IpamPolicyId": {
+                    "target": "com.amazonaws.ec2#IpamPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the IPAM policy whose allocation rules you want to modify.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Locale": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The locale for which to modify the allocation rules.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ResourceType": {
+                    "target": "com.amazonaws.ec2#IpamPolicyResourceType",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The resource type for which to modify the allocation rules.</p>\n         <p>The Amazon Web Services service or resource type that can use IP addresses through IPAM policies. Supported services and resource types include:</p>\n         <ul>\n            <li>\n               <p>Elastic IP addresses</p>\n            </li>\n         </ul>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "AllocationRules": {
+                    "target": "com.amazonaws.ec2#IpamPolicyAllocationRuleListRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The new allocation rules to apply to the IPAM policy.</p>\n         <p>Allocation rules are optional configurations within an IPAM policy that map Amazon Web Services resource types to specific IPAM pools. If no rules are defined, the resource types default to using Amazon-provided IP addresses.</p>",
+                        "smithy.api#xmlName": "AllocationRule"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#ModifyIpamPolicyAllocationRulesResult": {
+            "type": "structure",
+            "members": {
+                "IpamPolicyDocument": {
+                    "target": "com.amazonaws.ec2#IpamPolicyDocument",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPolicyDocument",
+                        "smithy.api#documentation": "<p>The modified IPAM policy containing the updated allocation rules.</p>",
+                        "smithy.api#xmlName": "ipamPolicyDocument"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#ModifyIpamPool": {
             "type": "operation",
             "input": {
@@ -96237,6 +97314,38 @@
                         "smithy.api#documentation": "<p>Indicates whether the NAT gateway supports public or private connectivity.</p>",
                         "smithy.api#xmlName": "connectivityType"
                     }
+                },
+                "AvailabilityMode": {
+                    "target": "com.amazonaws.ec2#AvailabilityMode",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityMode",
+                        "smithy.api#documentation": "<p>Indicates whether this is a zonal (single-AZ) or regional (multi-AZ) NAT gateway.</p>\n         <p>A zonal NAT gateway is a NAT Gateway that provides redundancy and scalability within a single availability zone. A regional NAT gateway is a single NAT Gateway that works across multiple availability zones (AZs) in your VPC, providing redundancy, scalability and availability across all the AZs in a Region.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateways-regional.html\">Regional NAT gateways for automatic multi-AZ expansion</a> in the <i>Amazon VPC User Guide</i>.</p>",
+                        "smithy.api#xmlName": "availabilityMode"
+                    }
+                },
+                "AutoScalingIps": {
+                    "target": "com.amazonaws.ec2#AutoScalingIpsState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AutoScalingIps",
+                        "smithy.api#documentation": "<p>For regional NAT gateways only: Indicates whether Amazon Web Services automatically allocates additional Elastic IP addresses (EIPs) in an AZ when the NAT gateway needs more ports due to increased concurrent connections to a single destination from that AZ.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateways-regional.html\">Regional NAT gateways for automatic multi-AZ expansion</a> in the <i>Amazon VPC User Guide</i>.</p>",
+                        "smithy.api#xmlName": "autoScalingIps"
+                    }
+                },
+                "AutoProvisionZones": {
+                    "target": "com.amazonaws.ec2#AutoProvisionZonesState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AutoProvisionZones",
+                        "smithy.api#documentation": "<p>For regional NAT gateways only: Indicates whether Amazon Web Services automatically manages AZ coverage. When enabled, the NAT gateway associates EIPs in all AZs where your VPC has subnets to handle outbound NAT traffic, expands to new AZs when you create subnets there, and retracts from AZs where you've removed all subnets. When disabled, you must manually manage which AZs the NAT gateway supports and their corresponding EIPs.</p>\n         <p>A regional NAT gateway is a single NAT Gateway that works across multiple availability zones (AZs) in your VPC, providing redundancy, scalability and availability across all the AZs in a Region.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateways-regional.html\">Regional NAT gateways for automatic multi-AZ expansion</a> in the <i>Amazon VPC User Guide</i>.</p>",
+                        "smithy.api#xmlName": "autoProvisionZones"
+                    }
+                },
+                "RouteTableId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "RouteTableId",
+                        "smithy.api#documentation": "<p>For regional NAT gateways only, this is the ID of the NAT gateway.</p>",
+                        "smithy.api#xmlName": "routeTableId"
+                    }
                 }
             },
             "traits": {
@@ -96308,6 +97417,22 @@
                         "aws.protocols#ec2QueryName": "Status",
                         "smithy.api#documentation": "<p>The address status.</p>",
                         "smithy.api#xmlName": "status"
+                    }
+                },
+                "AvailabilityZone": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneName",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZone",
+                        "smithy.api#documentation": "<p>The Availability Zone where this Elastic IP address (EIP) is being used to handle outbound NAT traffic.</p>",
+                        "smithy.api#xmlName": "availabilityZone"
+                    }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZoneId",
+                        "smithy.api#documentation": "<p>The ID of the Availability Zone where this Elastic IP address (EIP) is being used to handle outbound NAT traffic. Use this instead of AvailabilityZone for consistent identification of AZs across Amazon Web Services Regions.</p>",
+                        "smithy.api#xmlName": "availabilityZoneId"
                     }
                 }
             },
@@ -107857,6 +108982,12 @@
                         "smithy.api#enumValue": "ipam-prefix-list-resolver"
                     }
                 },
+                "ipam_policy": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ipam-policy"
+                    }
+                },
                 "ipam_prefix_list_resolver_target": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -113417,6 +114548,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "rnat"
+                    }
+                },
+                "rds": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "rds"
                     }
                 }
             }
