@@ -151,6 +151,8 @@ internal const val SSO_ACCOUNT_ID = "sso_account_id"
 internal const val SSO_ROLE_NAME = "sso_role_name"
 internal const val SSO_SESSION = "sso_session"
 
+internal const val LOGIN_SESSION = "login_session"
+
 internal const val CREDENTIAL_PROCESS = "credential_process"
 
 private fun AwsProfile.roleArnOrNull(): RoleArn? {
@@ -269,6 +271,15 @@ private fun AwsProfile.ssoSessionCreds(config: AwsSharedConfig): LeafProviderRes
 }
 
 /**
+ * Attempt to load [LeafProvider.LoginSession] from the current profile or `null` if the profile
+ * does not contain a login session configuration.
+ */
+private fun AwsProfile.loginSessionCreds(): LeafProviderResult? {
+    val sessionName = getOrNull(LOGIN_SESSION) ?: return null
+    return LeafProviderResult.Ok(LeafProvider.LoginSession(sessionName))
+}
+
+/**
  * Attempt to load [LeafProvider.Process] from the current profile or exception if the current profile does not contain
  * a credentials process command to execute
  */
@@ -348,6 +359,7 @@ private fun AwsProfile.leafProvider(config: AwsSharedConfig): LeafProvider {
     return webIdentityTokenCreds()
         .orElse { ssoSessionCreds(config) }
         .orElse(::legacySsoCreds)
+        .orElse(::loginSessionCreds)
         .unwrapOrElse(::processCreds)
         .unwrap()
 }

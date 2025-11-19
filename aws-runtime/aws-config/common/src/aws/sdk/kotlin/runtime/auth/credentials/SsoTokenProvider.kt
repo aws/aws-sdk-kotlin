@@ -244,7 +244,7 @@ internal fun serializeSsoToken(token: SsoToken): ByteArray =
         endObject()
     }.bytes ?: error("serializing SsoToken failed")
 
-private fun JsonStreamWriter.writeNotNull(name: String, value: String?) {
+internal fun JsonStreamWriter.writeNotNull(name: String, value: String?) {
     if (value == null) return
     writeName(name)
     writeValue(value)

@@ -28,7 +28,7 @@ jobs:
           env-vars-for-codebuild: GITHUB_REPOSITORY, UPLOAD, RELEASE_METRICS, IDENTIFIER
 
       - name: Process metrics
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/artifact-size-metrics/download-and-process@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/artifact-size-metrics/download-and-process@main
         with:
           download: 'true'
 
@@ -49,4 +49,3 @@ concurrency:
 permissions:
   id-token: write
   contents: read
-
