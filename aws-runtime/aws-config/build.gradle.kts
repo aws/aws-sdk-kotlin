@@ -76,6 +76,7 @@ dependencies {
     codegen(project(":codegen:aws-sdk-codegen"))
     codegen(libs.smithy.cli)
     codegen(libs.smithy.model)
+    codegen(libs.smithy.aws.smoke.test.model)
 }
 
 smithyBuild {
@@ -182,6 +183,41 @@ smithyBuild {
                 "args": {
                     "operations": [
                         "com.amazonaws.ssooidc#CreateToken"
+                    ]
+                }
+            }
+            """,
+            )
+        }
+
+        create("signin-credentials-provider") {
+            imports = listOf(
+                awsModelFile("signin.json"),
+            )
+
+            val serviceShape = "com.amazonaws.signin#Signin"
+            smithyKotlinPlugin {
+                serviceShapeId = serviceShape
+                packageName = "$basePackage.signin"
+                packageVersion = project.version.toString()
+                packageDescription = "Internal Signin credentials provider"
+                sdkId = "Signin"
+                buildSettings {
+                    generateDefaultBuildFiles = false
+                    generateFullProject = false
+                }
+                apiSettings {
+                    visibility = "internal"
+                }
+            }
+
+            transforms = listOf(
+                """
+            {
+                "name": "awsSmithyKotlinIncludeOperations",
+                "args": {
+                    "operations": [
+                        "com.amazonaws.signin#CreateOAuth2Token"
                     ]
                 }
             }
