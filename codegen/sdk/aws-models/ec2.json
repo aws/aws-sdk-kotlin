@@ -191,6 +191,48 @@
                     "traits": {
                         "smithy.api#enumValue": "t4g"
                     }
+                },
+                "L40S": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "l40s"
+                    }
+                },
+                "L4": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "l4"
+                    }
+                },
+                "GAUDI_HL_205": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "gaudi-hl-205"
+                    }
+                },
+                "INFERENTIA2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "inferentia2"
+                    }
+                },
+                "TRAINIUM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "trainium"
+                    }
+                },
+                "TRAINIUM2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "trainium2"
+                    }
+                },
+                "U30": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "u30"
+                    }
                 }
             }
         },
@@ -266,6 +308,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "inference"
+                    }
+                },
+                "MEDIA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "media"
                     }
                 }
             }
@@ -2824,6 +2872,9 @@
                     "target": "com.amazonaws.ec2#CreateVpcPeeringConnection"
                 },
                 {
+                    "target": "com.amazonaws.ec2#CreateVpnConcentrator"
+                },
+                {
                     "target": "com.amazonaws.ec2#CreateVpnConnection"
                 },
                 {
@@ -3079,6 +3130,9 @@
                     "target": "com.amazonaws.ec2#DeleteVpcPeeringConnection"
                 },
                 {
+                    "target": "com.amazonaws.ec2#DeleteVpnConcentrator"
+                },
+                {
                     "target": "com.amazonaws.ec2#DeleteVpnConnection"
                 },
                 {
@@ -3299,6 +3353,12 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#DescribeInstances"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DescribeInstanceSqlHaHistoryStates"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DescribeInstanceSqlHaStates"
                 },
                 {
                     "target": "com.amazonaws.ec2#DescribeInstanceStatus"
@@ -3634,6 +3694,9 @@
                     "target": "com.amazonaws.ec2#DescribeVpcs"
                 },
                 {
+                    "target": "com.amazonaws.ec2#DescribeVpnConcentrators"
+                },
+                {
                     "target": "com.amazonaws.ec2#DescribeVpnConnections"
                 },
                 {
@@ -3689,6 +3752,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#DisableImageDeregistrationProtection"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DisableInstanceSqlHaStandbyDetections"
                 },
                 {
                     "target": "com.amazonaws.ec2#DisableIpamOrganizationAdminAccount"
@@ -3802,6 +3868,9 @@
                     "target": "com.amazonaws.ec2#EnableImageDeregistrationProtection"
                 },
                 {
+                    "target": "com.amazonaws.ec2#EnableInstanceSqlHaStandbyDetections"
+                },
+                {
                     "target": "com.amazonaws.ec2#EnableIpamOrganizationAdminAccount"
                 },
                 {
@@ -3902,6 +3971,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#GetHostReservationPurchasePreview"
+                },
+                {
+                    "target": "com.amazonaws.ec2#GetImageAncestry"
                 },
                 {
                     "target": "com.amazonaws.ec2#GetImageBlockPublicAccessState"
@@ -25597,6 +25669,69 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#CreateVpnConcentrator": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#CreateVpnConcentratorRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#CreateVpnConcentratorResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Creates a VPN concentrator that aggregates multiple VPN connections to a transit gateway.</p>"
+            }
+        },
+        "com.amazonaws.ec2#CreateVpnConcentratorRequest": {
+            "type": "structure",
+            "members": {
+                "Type": {
+                    "target": "com.amazonaws.ec2#VpnConcentratorType",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The type of VPN concentrator to create.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TransitGatewayId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the transit gateway to attach the VPN concentrator to.</p>"
+                    }
+                },
+                "TagSpecifications": {
+                    "target": "com.amazonaws.ec2#TagSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags to apply to the VPN concentrator during creation.</p>",
+                        "smithy.api#xmlName": "TagSpecification"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateVpnConcentratorResult": {
+            "type": "structure",
+            "members": {
+                "VpnConcentrator": {
+                    "target": "com.amazonaws.ec2#VpnConcentrator",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VpnConcentrator",
+                        "smithy.api#documentation": "<p>Information about the VPN concentrator.</p>",
+                        "smithy.api#xmlName": "vpnConcentrator"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#CreateVpnConnection": {
             "type": "operation",
             "input": {
@@ -25638,6 +25773,12 @@
                     "target": "com.amazonaws.ec2#TransitGatewayId",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the transit gateway. If you specify a transit gateway, you cannot specify a virtual private\n            gateway.</p>"
+                    }
+                },
+                "VpnConcentratorId": {
+                    "target": "com.amazonaws.ec2#VpnConcentratorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the VPN concentrator to associate with the VPN connection.</p>"
                     }
                 },
                 "TagSpecifications": {
@@ -31038,6 +31179,56 @@
             },
             "traits": {
                 "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteVpnConcentrator": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DeleteVpnConcentratorRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DeleteVpnConcentratorResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes the specified VPN concentrator.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DeleteVpnConcentratorRequest": {
+            "type": "structure",
+            "members": {
+                "VpnConcentratorId": {
+                    "target": "com.amazonaws.ec2#VpnConcentratorId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the VPN concentrator to delete.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteVpnConcentratorResult": {
+            "type": "structure",
+            "members": {
+                "Return": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Return",
+                        "smithy.api#documentation": "<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+                        "smithy.api#xmlName": "return"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.ec2#DeleteVpnConnection": {
@@ -37659,6 +37850,179 @@
                     "traits": {
                         "aws.protocols#ec2QueryName": "NextToken",
                         "smithy.api#documentation": "<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there\n         are no more items to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeInstanceSqlHaHistoryStates": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeInstanceSqlHaHistoryStatesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeInstanceSqlHaHistoryStatesResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the historical SQL Server High Availability states for Amazon EC2 \n      instances that are enabled for Amazon EC2 High Availability for SQL Server monitoring.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DescribeInstanceSqlHaHistoryStatesRequest": {
+            "type": "structure",
+            "members": {
+                "InstanceIds": {
+                    "target": "com.amazonaws.ec2#InstanceIdStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the SQL Server High Availability instances to describe. If omitted, the API returns \n      historical states for all SQL Server High Availability instances.</p>",
+                        "smithy.api#xmlName": "InstanceId"
+                    }
+                },
+                "StartTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The start data and time of the period for which to get the historical \n      SQL Server High Availability states. If omitted, the API returns all available historical states.</p>\n         <p>Timezone: UTC</p>\n         <p>Format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>\n         </p>"
+                    }
+                },
+                "EndTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The end data and time of the period for which to get historical SQL Server High Availability \n      states. If omitted, the API returns historical states up to the current \n      date and time.</p>\n         <p>Timezone: UTC</p>\n         <p>Format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>\n         </p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results.</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#DescribeInstanceSqlHaStatesRequestMaxResultsInteger",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return for the request in a \n    single page. The remaining results can be seen by sending another request with the \n    returned <code>nextToken</code> value.</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>One or more filters to apply to the results. Supported filters \n    include:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>tag:<key></code> - The tag key and value pair assigned to the \n  instance. For example, to find all instances tagged with <code>Owner:TeamA</code>, specify \n  <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag-key</code> - The tag key assigned to the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>haStatus</code> - The SQL Server High Availability status of the SQL Server High Availability instance (<code>processing</code> | \n      <code>active</code> | <code>standby</code> | <code>invalid</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>sqlServerLicenseUsage</code> - The license type for the SQL Server license \n      (<code>full</code> | <code>waived</code>).</p>\n            </li>\n         </ul>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, \n    without actually making the request, and provides an error response. If you have the \n    required permissions, the error response is <code>DryRunOperation</code>. Otherwise, \n    it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeInstanceSqlHaHistoryStatesResult": {
+            "type": "structure",
+            "members": {
+                "Instances": {
+                    "target": "com.amazonaws.ec2#RegisteredInstanceList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceSet",
+                        "smithy.api#documentation": "<p>Information about the historical SQL Server High Availability states of the SQL Server High Availability instances.</p>",
+                        "smithy.api#xmlName": "instanceSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. \n    This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeInstanceSqlHaStates": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeInstanceSqlHaStatesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeInstanceSqlHaStatesResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the SQL Server High Availability states for Amazon EC2 instances that are \n      enabled for Amazon EC2 High Availability for SQL Server monitoring.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DescribeInstanceSqlHaStatesRequest": {
+            "type": "structure",
+            "members": {
+                "InstanceIds": {
+                    "target": "com.amazonaws.ec2#InstanceIdStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the SQL Server High Availability instances to describe. If omitted, the API returns \n      SQL Server High Availability states for all SQL Server High Availability instances.</p>",
+                        "smithy.api#xmlName": "InstanceId"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results.</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#DescribeInstanceSqlHaStatesRequestMaxResultsInteger",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return for the request in a \n    single page. The remaining results can be seen by sending another request with the \n    returned <code>nextToken</code> value.</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>One or more filters to apply to the results. Supported filters \n    include:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>tag:<key></code> - The tag key and value pair assigned to the \n  instance. For example, to find all instances tagged with <code>Owner:TeamA</code>, specify \n  <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag-key</code> - The tag key assigned to the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>haStatus</code> - The SQL Server High Availability status of the SQL Server High Availability instance (<code>processing</code> | \n      <code>active</code> | <code>standby</code> | <code>invalid</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>sqlServerLicenseUsage</code> - The license type for the SQL Server license \n      (<code>full</code> | <code>waived</code>).</p>\n            </li>\n         </ul>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, \n    without actually making the request, and provides an error response. If you have the \n    required permissions, the error response is <code>DryRunOperation</code>. Otherwise, \n    it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeInstanceSqlHaStatesRequestMaxResultsInteger": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1,
+                    "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeInstanceSqlHaStatesResult": {
+            "type": "structure",
+            "members": {
+                "Instances": {
+                    "target": "com.amazonaws.ec2#RegisteredInstanceList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceSet",
+                        "smithy.api#documentation": "<p>Information about the SQL Server High Availability instances.</p>",
+                        "smithy.api#xmlName": "instanceSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. \n    This value is <code>null</code> when there are no more results to return.</p>",
                         "smithy.api#xmlName": "nextToken"
                     }
                 }
@@ -49175,6 +49539,88 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#DescribeVpnConcentrators": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeVpnConcentratorsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeVpnConcentratorsResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes one or more of your VPN concentrators.</p>",
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "VpnConcentrators",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeVpnConcentratorsRequest": {
+            "type": "structure",
+            "members": {
+                "VpnConcentratorIds": {
+                    "target": "com.amazonaws.ec2#VpnConcentratorIdStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>One or more VPN concentrator IDs.</p>",
+                        "smithy.api#xmlName": "VpnConcentratorId"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>One or more filters to limit the results.</p>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#GVCDMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return with a single call.\n\tTo retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeVpnConcentratorsResult": {
+            "type": "structure",
+            "members": {
+                "VpnConcentrators": {
+                    "target": "com.amazonaws.ec2#VpnConcentratorList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VpnConcentratorSet",
+                        "smithy.api#documentation": "<p>Information about the VPN concentrators.</p>",
+                        "smithy.api#xmlName": "vpnConcentratorSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#DescribeVpnConnections": {
             "type": "operation",
             "input": {
@@ -50877,6 +51323,57 @@
                         "aws.protocols#ec2QueryName": "Return",
                         "smithy.api#documentation": "<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
                         "smithy.api#xmlName": "return"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DisableInstanceSqlHaStandbyDetections": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DisableInstanceSqlHaStandbyDetectionsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DisableInstanceSqlHaStandbyDetectionsResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Disable Amazon EC2 instances running in an SQL Server High Availability cluster from SQL Server High Availability \n      instance standby detection monitoring. Once disabled, Amazon Web Services no longer monitors the \n      metadata for the instances to determine whether they are active or standby nodes in the \n      SQL Server High Availability cluster.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DisableInstanceSqlHaStandbyDetectionsRequest": {
+            "type": "structure",
+            "members": {
+                "InstanceIds": {
+                    "target": "com.amazonaws.ec2#InstanceIdUpdateStringList",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The IDs of the instances to disable from SQL Server High Availability standby detection monitoring.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#xmlName": "InstanceId"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, \n    without actually making the request, and provides an error response. If you have the \n    required permissions, the error response is <code>DryRunOperation</code>. Otherwise, \n    it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DisableInstanceSqlHaStandbyDetectionsResult": {
+            "type": "structure",
+            "members": {
+                "Instances": {
+                    "target": "com.amazonaws.ec2#RegisteredInstanceList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceSet",
+                        "smithy.api#documentation": "<p>Information about the instances that were disabled from SQL Server High Availability standby \n      detection monitoring.</p>",
+                        "smithy.api#xmlName": "instanceSet"
                     }
                 }
             },
@@ -53460,6 +53957,14 @@
                         "smithy.api#documentation": "<p>The public DNS names of the endpoint.</p>",
                         "smithy.api#xmlName": "publicDnsNames"
                     }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZoneId",
+                        "smithy.api#documentation": "<p>The ID of the Availability Zone of the EC2 Instance Connect Endpoint.</p>",
+                        "smithy.api#xmlName": "availabilityZoneId"
+                    }
                 }
             },
             "traits": {
@@ -54979,6 +55484,63 @@
                         "aws.protocols#ec2QueryName": "Return",
                         "smithy.api#documentation": "<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
                         "smithy.api#xmlName": "return"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#EnableInstanceSqlHaStandbyDetections": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#EnableInstanceSqlHaStandbyDetectionsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#EnableInstanceSqlHaStandbyDetectionsResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Enable Amazon EC2 instances running in an SQL Server High Availability cluster for SQL Server High Availability \n      instance standby detection monitoring. Once enabled, Amazon Web Services monitors the metadata for \n      the instances to determine whether they are active or standby nodes in the SQL Server High Availability cluster. \n      If the instances are determined to be standby failover nodes, Amazon Web Services \n      automatically applies SQL Server licensing fee waiver for those instances.</p>\n         <p>To register an instance, it must be running a Windows SQL Server license-included \n      AMI and have the Amazon Web Services Systems Manager agent installed and running. Only Windows Server 2019 and later \n      and SQL Server (Standard and Enterprise editions) 2017 and later are supported. For more \n      information, see <a href=\"https://docs.aws.amazon.com/sql-server-ec2/latest/userguide/prerequisites-and-requirements.html\">\n        Prerequisites for using SQL Server High Availability instance standby detection</a>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#EnableInstanceSqlHaStandbyDetectionsRequest": {
+            "type": "structure",
+            "members": {
+                "InstanceIds": {
+                    "target": "com.amazonaws.ec2#InstanceIdUpdateStringList",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The IDs of the instances to enable for SQL Server High Availability standby detection monitoring.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#xmlName": "InstanceId"
+                    }
+                },
+                "SqlServerCredentials": {
+                    "target": "com.amazonaws.ec2#SecretArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the Secrets Manager secret containing the SQL Server access credentials. The specified \n      secret must contain valid SQL Server credentials for the specified instances. If not specified, \n      deafult local user credentials will be used by the Amazon Web Services Systems Manager agent. To enable \n      instances with different credentials, you must make separate requests.</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, \n    without actually making the request, and provides an error response. If you have the \n    required permissions, the error response is <code>DryRunOperation</code>. Otherwise, \n    it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#EnableInstanceSqlHaStandbyDetectionsResult": {
+            "type": "structure",
+            "members": {
+                "Instances": {
+                    "target": "com.amazonaws.ec2#RegisteredInstanceList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceSet",
+                        "smithy.api#documentation": "<p>Information about the instances that were enabled for SQL Server High Availability standby \n      detection monitoring.</p>",
+                        "smithy.api#xmlName": "instanceSet"
                     }
                 }
             },
@@ -60754,6 +61316,56 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#GetImageAncestry": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetImageAncestryRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetImageAncestryResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves the ancestry chain of the specified AMI, tracing its lineage back to the root\n      AMI. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-ancestry.html\">AMI ancestry</a> in\n      <i>Amazon EC2 User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#GetImageAncestryRequest": {
+            "type": "structure",
+            "members": {
+                "ImageId": {
+                    "target": "com.amazonaws.ec2#ImageId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the AMI whose ancestry you want to trace.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n\t\t\tand provides an error response. If you have the required permissions, the error response is \n\t\t\t<code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetImageAncestryResult": {
+            "type": "structure",
+            "members": {
+                "ImageAncestryEntries": {
+                    "target": "com.amazonaws.ec2#ImageAncestryEntryList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ImageAncestryEntrySet",
+                        "smithy.api#documentation": "<p>A list of entries in the AMI ancestry chain, from the specified AMI to the root\n      AMI.</p>",
+                        "smithy.api#xmlName": "imageAncestryEntrySet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#GetImageBlockPublicAccessState": {
             "type": "operation",
             "input": {
@@ -64536,6 +65148,35 @@
                 }
             }
         },
+        "com.amazonaws.ec2#HaStatus": {
+            "type": "enum",
+            "members": {
+                "processing": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "processing"
+                    }
+                },
+                "active": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "active"
+                    }
+                },
+                "standby": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "standby"
+                    }
+                },
+                "invalid": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "invalid"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#HibernationFlag": {
             "type": "boolean"
         },
@@ -65817,6 +66458,63 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Describes an image.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ImageAncestryEntry": {
+            "type": "structure",
+            "members": {
+                "CreationDate": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CreationDate",
+                        "smithy.api#documentation": "<p>The date and time when this AMI was created.</p>",
+                        "smithy.api#xmlName": "creationDate"
+                    }
+                },
+                "ImageId": {
+                    "target": "com.amazonaws.ec2#ImageId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ImageId",
+                        "smithy.api#documentation": "<p>The ID of this AMI.</p>",
+                        "smithy.api#xmlName": "imageId"
+                    }
+                },
+                "ImageOwnerAlias": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ImageOwnerAlias",
+                        "smithy.api#documentation": "<p>The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> |\n      <code>aws-marketplace</code> ) of this AMI, if one is assigned. Otherwise, the value is\n      <code>null</code>.</p>",
+                        "smithy.api#xmlName": "imageOwnerAlias"
+                    }
+                },
+                "SourceImageId": {
+                    "target": "com.amazonaws.ec2#ImageId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceImageId",
+                        "smithy.api#documentation": "<p>The ID of the parent AMI.</p>",
+                        "smithy.api#xmlName": "sourceImageId"
+                    }
+                },
+                "SourceImageRegion": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceImageRegion",
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region of the parent AMI.</p>",
+                        "smithy.api#xmlName": "sourceImageRegion"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Information about a single AMI in the ancestry chain and its source (parent) AMI.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ImageAncestryEntryList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#ImageAncestryEntry",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
             }
         },
         "com.amazonaws.ec2#ImageAttribute": {
@@ -69904,6 +70602,21 @@
                 }
             }
         },
+        "com.amazonaws.ec2#InstanceIdUpdateStringList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#InstanceId",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 30
+                }
+            }
+        },
         "com.amazonaws.ec2#InstanceIdWithVolumeResolver": {
             "type": "string"
         },
@@ -71225,7 +71938,7 @@
                     "target": "com.amazonaws.ec2#AcceleratorTypeSet",
                     "traits": {
                         "aws.protocols#ec2QueryName": "AcceleratorTypeSet",
-                        "smithy.api#documentation": "<p>The accelerator types that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Inference accelerators, specify <code>inference</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator type</p>",
+                        "smithy.api#documentation": "<p>The accelerator types that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Inference accelerators, specify <code>inference</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Media accelerators, specify <code>media</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator type</p>",
                         "smithy.api#xmlName": "acceleratorTypeSet"
                     }
                 },
@@ -71249,7 +71962,7 @@
                     "target": "com.amazonaws.ec2#AcceleratorNameSet",
                     "traits": {
                         "aws.protocols#ec2QueryName": "AcceleratorNameSet",
-                        "smithy.api#documentation": "<p>The accelerators that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator</p>",
+                        "smithy.api#documentation": "<p>The accelerators that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia2 chips, specify <code>inferentia2</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Habana Gaudi HL-205 GPUs, specify <code>gaudi-hl-205</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA L4 GPUs, specify <code>l4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA L40S GPUs, specify <code>l40s</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Trainium chips, specify <code>trainium</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Trainium2 chips, specify <code>trainium2</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx U30 cards, specify <code>u30</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator</p>",
                         "smithy.api#xmlName": "acceleratorNameSet"
                     }
                 },
@@ -71416,7 +72129,7 @@
                 "AcceleratorTypes": {
                     "target": "com.amazonaws.ec2#AcceleratorTypeSet",
                     "traits": {
-                        "smithy.api#documentation": "<p>The accelerator types that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Inference accelerators, specify <code>inference</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator type</p>",
+                        "smithy.api#documentation": "<p>The accelerator types that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Inference accelerators, specify <code>inference</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Media accelerators, specify <code>media</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator type</p>",
                         "smithy.api#xmlName": "AcceleratorType"
                     }
                 },
@@ -71436,7 +72149,7 @@
                 "AcceleratorNames": {
                     "target": "com.amazonaws.ec2#AcceleratorNameSet",
                     "traits": {
-                        "smithy.api#documentation": "<p>The accelerators that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator</p>",
+                        "smithy.api#documentation": "<p>The accelerators that must be on the instance type.</p>\n         <ul>\n            <li>\n               <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Inferentia2 chips, specify <code>inferentia2</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Habana Gaudi HL-205 GPUs, specify <code>gaudi-hl-205</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA L4 GPUs, specify <code>l4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA L40S GPUs, specify <code>l40s</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Trainium chips, specify <code>trainium</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Amazon Web Services Trainium2 chips, specify <code>trainium2</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx U30 cards, specify <code>u30</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p>\n            </li>\n            <li>\n               <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p>\n            </li>\n         </ul>\n         <p>Default: Any accelerator</p>",
                         "smithy.api#xmlName": "AcceleratorName"
                     }
                 },
@@ -102558,6 +103271,79 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#RegisteredInstance": {
+            "type": "structure",
+            "members": {
+                "InstanceId": {
+                    "target": "com.amazonaws.ec2#InstanceId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceId",
+                        "smithy.api#documentation": "<p>The ID of the SQL Server High Availability instance.</p>",
+                        "smithy.api#xmlName": "instanceId"
+                    }
+                },
+                "SqlServerLicenseUsage": {
+                    "target": "com.amazonaws.ec2#SqlServerLicenseUsage",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SqlServerLicenseUsage",
+                        "smithy.api#documentation": "<p>The license type for the SQL Server license. Valid values include:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>full</code> - The SQL Server High Availability instance is using a full SQL Server license.</p>\n            </li>\n            <li>\n               <p>\n                  <code>waived</code> - The SQL Server High Availability instance is waived from the SQL Server license.</p>\n            </li>\n         </ul>",
+                        "smithy.api#xmlName": "sqlServerLicenseUsage"
+                    }
+                },
+                "HaStatus": {
+                    "target": "com.amazonaws.ec2#HaStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "HaStatus",
+                        "smithy.api#documentation": "<p>The SQL Server High Availability status of the instance. Valid values are:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>processing</code> - The SQL Server High Availability status for the SQL Server High Availability instance is being updated.</p>\n            </li>\n            <li>\n               <p>\n                  <code>active</code> - The SQL Server High Availability instance is an active node in an SQL Server High Availability cluster.</p>\n            </li>\n            <li>\n               <p>\n                  <code>standby</code> - The SQL Server High Availability instance is a standby failover node in an SQL Server High Availability \n          cluster.</p>\n            </li>\n            <li>\n               <p>\n                  <code>invalid</code> - An error occurred due to misconfigured permissions, or unable \n          to dertemine SQL Server High Availability status for the SQL Server High Availability instance.</p>\n            </li>\n         </ul>",
+                        "smithy.api#xmlName": "haStatus"
+                    }
+                },
+                "ProcessingStatus": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ProcessingStatus",
+                        "smithy.api#documentation": "<p>A brief description of the SQL Server High Availability status. If the instance is in the <code>invalid</code> \n      High Availability status, this parameter includes the error message.</p>",
+                        "smithy.api#xmlName": "processingStatus"
+                    }
+                },
+                "LastUpdatedTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "LastUpdatedTime",
+                        "smithy.api#documentation": "<p>The date and time when the instance's SQL Server High Availability status was last updated, in the ISO 8601 format\n      in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p>",
+                        "smithy.api#xmlName": "lastUpdatedTime"
+                    }
+                },
+                "SqlServerCredentials": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SqlServerCredentials",
+                        "smithy.api#documentation": "<p>The ARN of the Secrets Manager secret containing the SQL Server access credentials for the SQL Server High Availability instance. \n      If not specified, deafult local user credentials will be used by the Amazon Web Services Systems Manager agent.</p>",
+                        "smithy.api#xmlName": "sqlServerCredentials"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.ec2#TagList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>The tags assigned to the SQL Server High Availability instance.</p>",
+                        "smithy.api#xmlName": "tagSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes an Amazon EC2 instance that is enabled for SQL Server High Availability standby \n      detection monitoring.</p>"
+            }
+        },
+        "com.amazonaws.ec2#RegisteredInstanceList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#RegisteredInstance",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
         "com.amazonaws.ec2#RejectCapacityReservationBillingOwnership": {
             "type": "operation",
             "input": {
@@ -107082,6 +107868,12 @@
                     "traits": {
                         "smithy.api#enumValue": "capacity-manager-data-export"
                     }
+                },
+                "vpn_concentrator": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "vpn-concentrator"
+                    }
                 }
             }
         },
@@ -111373,6 +112165,12 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#SecretArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^(?=.{20,2048}$)arn:aws[a-z-]*:secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=.@-]+$"
+            }
+        },
         "com.amazonaws.ec2#SecurityGroup": {
             "type": "structure",
             "members": {
@@ -114918,6 +115716,23 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "rack"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#SqlServerLicenseUsage": {
+            "type": "enum",
+            "members": {
+                "full": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "full"
+                    }
+                },
+                "waived": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "waived"
                     }
                 }
             }
@@ -118559,6 +119374,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "vpn"
+                    }
+                },
+                "vpn_concentrator": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "vpn-concentrator"
                     }
                 },
                 "direct_connect_gateway": {
@@ -126900,6 +127721,94 @@
                 }
             }
         },
+        "com.amazonaws.ec2#VpnConcentrator": {
+            "type": "structure",
+            "members": {
+                "VpnConcentratorId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VpnConcentratorId",
+                        "smithy.api#documentation": "<p>The ID of the VPN concentrator.</p>",
+                        "smithy.api#xmlName": "vpnConcentratorId"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The current state of the VPN concentrator.</p>",
+                        "smithy.api#xmlName": "state"
+                    }
+                },
+                "TransitGatewayId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayId",
+                        "smithy.api#documentation": "<p>The ID of the transit gateway associated with the VPN concentrator.</p>",
+                        "smithy.api#xmlName": "transitGatewayId"
+                    }
+                },
+                "TransitGatewayAttachmentId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayAttachmentId",
+                        "smithy.api#documentation": "<p>The ID of the transit gateway attachment for the VPN concentrator.</p>",
+                        "smithy.api#xmlName": "transitGatewayAttachmentId"
+                    }
+                },
+                "Type": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Type",
+                        "smithy.api#documentation": "<p>The type of VPN concentrator.</p>",
+                        "smithy.api#xmlName": "type"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.ec2#TagList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>Any tags assigned to the VPN concentrator.</p>",
+                        "smithy.api#xmlName": "tagSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a VPN concentrator.</p>"
+            }
+        },
+        "com.amazonaws.ec2#VpnConcentratorId": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#VpnConcentratorIdStringList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#VpnConcentratorId",
+                "traits": {
+                    "smithy.api#xmlName": "VpnConcentratorId"
+                }
+            }
+        },
+        "com.amazonaws.ec2#VpnConcentratorList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#VpnConcentrator",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#VpnConcentratorType": {
+            "type": "enum",
+            "members": {
+                "ipsec_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ipsec.1"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#VpnConnection": {
             "type": "structure",
             "members": {
@@ -126917,6 +127826,14 @@
                         "aws.protocols#ec2QueryName": "TransitGatewayId",
                         "smithy.api#documentation": "<p>The ID of the transit gateway associated with the VPN connection.</p>",
                         "smithy.api#xmlName": "transitGatewayId"
+                    }
+                },
+                "VpnConcentratorId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VpnConcentratorId",
+                        "smithy.api#documentation": "<p>The ID of the VPN concentrator associated with the VPN connection.</p>",
+                        "smithy.api#xmlName": "vpnConcentratorId"
                     }
                 },
                 "CoreNetworkArn": {
@@ -127197,6 +128114,14 @@
                         "smithy.api#documentation": "<p>Indicates the VPN tunnel options.</p>",
                         "smithy.api#xmlName": "tunnelOptionSet"
                     }
+                },
+                "TunnelBandwidth": {
+                    "target": "com.amazonaws.ec2#VpnTunnelBandwidth",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TunnelBandwidth",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe configured bandwidth for the VPN tunnel. Represents the current throughput capacity setting for the tunnel connection. <code>standard</code> tunnel bandwidth supports up to 1.25 Gbps per tunnel while <code>large</code>\n\t\t\tsupports up to 5 Gbps per tunnel. If no tunnel bandwidth was specified for the connection, <code>standard</code> is used as the default value.\n\t\t</p>",
+                        "smithy.api#xmlName": "tunnelBandwidth"
+                    }
                 }
             },
             "traits": {
@@ -127258,6 +128183,12 @@
                     "target": "com.amazonaws.ec2#TransitGatewayAttachmentId",
                     "traits": {
                         "smithy.api#documentation": "<p>The transit gateway attachment ID to use for the VPN tunnel.</p>\n         <p>Required if <code>OutsideIpAddressType</code> is set to <code>PrivateIpv4</code>.</p>"
+                    }
+                },
+                "TunnelBandwidth": {
+                    "target": "com.amazonaws.ec2#VpnTunnelBandwidth",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe desired bandwidth specification for the VPN tunnel, used when creating or modifying VPN connection options to set the tunnel's throughput \n\t\t\tcapacity. <code>standard</code> supports up to 1.25 Gbps per tunnel, while <code>large</code> supports up to 5 Gbps per tunnel. The default value is <code>standard</code>. Existing\n\t\t\tVPN connections without a bandwidth setting will automatically default to <code>standard</code>.\n\t\t</p>"
                     }
                 },
                 "StaticRoutesOnly": {
@@ -127463,6 +128394,23 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "Static"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#VpnTunnelBandwidth": {
+            "type": "enum",
+            "members": {
+                "standard": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "standard"
+                    }
+                },
+                "large": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "large"
                     }
                 }
             }

@@ -1279,6 +1279,12 @@
             "brazilName": "AwsSdkKotlinMwaa"
         },
         {
+            "sdkId": "MWAA Serverless",
+            "namespace": "aws.sdk.kotlin.services.mwaaserverless",
+            "artifactName": "mwaaserverless",
+            "brazilName": "AwsSdkKotlinMwaaServerless"
+        },
+        {
             "sdkId": "Machine Learning",
             "namespace": "aws.sdk.kotlin.services.machinelearning",
             "artifactName": "machinelearning",
