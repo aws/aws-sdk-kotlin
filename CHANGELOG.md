@@ -1,5 +1,48 @@
 # Changelog
 
+## [1.5.86] - 11/19/2025
+
+### Features
+* (**apigateway**) API Gateway now supports response streaming and new security policies for REST APIs and custom domain names.
+* (**apigatewayv2**) Support for API Gateway portals and portal products.
+* (**backup**) Amazon GuardDuty Malware Protection now supports AWS Backup, extending malware detection capabilities to EC2, EBS, and S3 backups.
+* (**bcmpricingcalculator**) Add GroupSharingPreference, CostCategoryGroupSharingPreferenceArn, and CostCategoryGroupSharingPreferenceEffectiveDate to Bill Estimate. Add GroupSharingPreference and CostCategoryGroupSharingPreferenceArn to Bill Scenario.
+* (**bedrockruntime**) This release includes support for Search Results.
+* (**billing**) Added name filtering support to ListBillingViews API through the new names parameter to efficiently filter billing views by name.
+* (**billingconductor**) This release adds support for Billing Transfers, enabling management of billing transfers with billing groups on AWS Billing Conductor.
+* (**cloudtrail**) AWS CloudTrail now supports Insights for data events, expanding beyond management events to automatically detect unusual activity on data plane operations.
+* (**cloudwatchlogs**) Adding support for ocsf version 1.5, add optional parameter MappingVersion
+* (**connectcampaignsv2**) This release added support for ring timer configuration for campaign calls.
+* (**costexplorer**) Add support for COST_CATEGORY, TAG, and LINKED_ACCOUNT AWS managed cost anomaly detection monitors
+* (**costoptimizationhub**) Release ListEfficiencyMetrics API
+* (**datazone**) Amazon DataZone now supports business metadata (readme and metadata forms) at the individual attribute (column) level, a new rule type for glossary terms, and the ability to update the owner of the root domain unit.
+* (**dynamodb**) Extended Global Secondary Index (GSI) composite keys to support up to 8 attributes.
+* (**ec2**) This launch adds support for two new features: Regional NAT Gateway and IPAM Policies. IPAM policies offers customers central control for public IPv4 assignments across AWS services. Regional NAT is a single NAT Gateway that automatically expands across AZs in a VPC to maintain high availability.
+* (**ecr**) Add support for ECR archival storage class and Inspector org policy for scanning
+* (**ecs**) Added support for Amazon ECS Managed Instances infrastructure optimization configuration.
+* (**emr**) Add CloudWatch Logs integration for Spark driver, executor and step logs
+* (**fsx**) Adding File Server Resource Manager configuration to FSx Windows
+* (**guardduty**) Add support for scanning and viewing scan results for backup resource types
+* (**health**) Adds actionability and personas properties to Health events exposed through DescribeEvents, DescribeEventsForOrganization, DescribeEventDetails, and DescribeEventTypes APIs. Adds filtering by actionabilities and personas in EventFilter, OrganizationEventFilter, EventTypeFilter.
+* (**iam**) Added the EnableOutboundWebIdentityFederation, DisableOutboundWebIdentityFederation and GetOutboundWebIdentityFederationInfo APIs for the IAM outbound federation feature.
+* (**inspector2**) This release introduces BLOCKED_BY_ORGANIZATION_POLICY error code and IMAGE_ARCHIVED scanStatusReason. BLOCKED_BY_ORGANIZATION_POLICY error code is returned when an operation is blocked by an AWS Organizations policy. IMAGE_ARCHIVED scanStatusReason is returned when an Image is archived in ECR.
+* (**invoicing**) Add support for adding Billing transfers in Invoice configuration
+* (**lambda**) Added support for creating and invoking Tenant Isolated functions in AWS Lambda APIs.
+* (**mediaconnect**) This release adds support for global routing in AWS Elemental MediaConnect. You can now use router inputs and router outputs to manage global video and audio routing workflows both within the AWS-Cloud and over the public internet.
+* (**medialive**) MediaLive is adding support for MediaConnect Router by supporting a new input type called MEDIACONNECT_ROUTER. This new input type will provide seamless encrypted transport between MediaConnect Router and your MediaLive channel.
+* (**networkfirewall**) Partner Managed Rulegroup feature support
+* (**networkflowmonitor**) Added new enum value (AWS::EKS::Cluster) for type field under MonitorLocalResource
+* (**partnercentralchannel**) Initial GA launch of Partner Central Channel
+* (**route53**) Add dual-stack endpoint support for Route53
+* (**rum**) CloudWatch RUM now supports mobile application monitoring for Android and iOS platforms
+* (**s3**) Adds support for blocking SSE-C writes to general purpose buckets.
+* (**sagemaker**) Added support for enhanced metrics for SageMaker AI Endpoints. This features provides Utilization Metrics at instance and container granularity and also provides easy configuration of metric publish frequency from 10 sec -> 5 mins
+* (**secretsmanager**) Adds support to create, update, retrieve, rotate, and delete managed external secrets.
+* (**sfn**) Adds support to TestState for mocked results and exceptions, along with additional inspection data.
+* (**signin**) AWS Sign-In manages authentication for AWS services. This service provides secure authentication flows for accessing AWS resources from the console and developer tools. This release adds the CreateOAuth2Token API, which can be used to fetch OAuth2 access tokens and refresh tokens from Sign-In.
+* (**sts**) IAM now supports outbound identity federation via the STS GetWebIdentityToken API, enabling AWS workloads to securely authenticate with external services using short-lived JSON Web Tokens.
+* (**transcribestreaming**) This release adds support for additional locales in AWS transcribe streaming.
+
 ## [1.5.85] - 11/18/2025
 
 ### Features
