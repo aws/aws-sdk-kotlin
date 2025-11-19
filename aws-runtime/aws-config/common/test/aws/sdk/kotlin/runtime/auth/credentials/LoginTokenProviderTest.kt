@@ -148,6 +148,7 @@ class LoginTokenProviderTest {
 
             val tokenProvider = LoginTokenProvider(
                 loginSessionName = loginSessionName,
+                region = "us-west-2",
                 refreshBufferWindow = 0.seconds,
                 httpClient = httpClient,
                 platformProvider = testPlatform,
