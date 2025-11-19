@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.87] - 11/19/2025
+
+### Features
+* Adds a new credentials provider for AWS Login token authentication
+
 ## [1.5.86] - 11/19/2025
 
 ### Features
