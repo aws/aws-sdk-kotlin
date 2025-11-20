@@ -2818,6 +2818,12 @@
                     "target": "com.amazonaws.ec2#CreateTransitGatewayConnectPeer"
                 },
                 {
+                    "target": "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicy"
+                },
+                {
+                    "target": "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicyEntry"
+                },
+                {
                     "target": "com.amazonaws.ec2#CreateTransitGatewayMulticastDomain"
                 },
                 {
@@ -2861,6 +2867,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#CreateVpcBlockPublicAccessExclusion"
+                },
+                {
+                    "target": "com.amazonaws.ec2#CreateVpcEncryptionControl"
                 },
                 {
                     "target": "com.amazonaws.ec2#CreateVpcEndpoint"
@@ -3079,6 +3088,12 @@
                     "target": "com.amazonaws.ec2#DeleteTransitGatewayConnectPeer"
                 },
                 {
+                    "target": "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicy"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicyEntry"
+                },
+                {
                     "target": "com.amazonaws.ec2#DeleteTransitGatewayMulticastDomain"
                 },
                 {
@@ -3122,6 +3137,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#DeleteVpcBlockPublicAccessExclusion"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DeleteVpcEncryptionControl"
                 },
                 {
                     "target": "com.amazonaws.ec2#DeleteVpcEndpointConnectionNotifications"
@@ -3610,6 +3628,9 @@
                     "target": "com.amazonaws.ec2#DescribeTransitGatewayConnects"
                 },
                 {
+                    "target": "com.amazonaws.ec2#DescribeTransitGatewayMeteringPolicies"
+                },
+                {
                     "target": "com.amazonaws.ec2#DescribeTransitGatewayMulticastDomains"
                 },
                 {
@@ -3674,6 +3695,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#DescribeVpcClassicLinkDnsSupport"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DescribeVpcEncryptionControls"
                 },
                 {
                     "target": "com.amazonaws.ec2#DescribeVpcEndpointAssociations"
@@ -4093,6 +4117,9 @@
                     "target": "com.amazonaws.ec2#GetTransitGatewayAttachmentPropagations"
                 },
                 {
+                    "target": "com.amazonaws.ec2#GetTransitGatewayMeteringPolicyEntries"
+                },
+                {
                     "target": "com.amazonaws.ec2#GetTransitGatewayMulticastDomainAssociations"
                 },
                 {
@@ -4118,6 +4145,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#GetVerifiedAccessGroupPolicy"
+                },
+                {
+                    "target": "com.amazonaws.ec2#GetVpcResourcesBlockingEncryptionEnforcement"
                 },
                 {
                     "target": "com.amazonaws.ec2#GetVpnConnectionDeviceSampleConfiguration"
@@ -4151,6 +4181,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#ListSnapshotsInRecycleBin"
+                },
+                {
+                    "target": "com.amazonaws.ec2#ListVolumesInRecycleBin"
                 },
                 {
                     "target": "com.amazonaws.ec2#LockSnapshot"
@@ -4306,6 +4339,9 @@
                     "target": "com.amazonaws.ec2#ModifyTransitGateway"
                 },
                 {
+                    "target": "com.amazonaws.ec2#ModifyTransitGatewayMeteringPolicy"
+                },
+                {
                     "target": "com.amazonaws.ec2#ModifyTransitGatewayPrefixListReference"
                 },
                 {
@@ -4346,6 +4382,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#ModifyVpcBlockPublicAccessOptions"
+                },
+                {
+                    "target": "com.amazonaws.ec2#ModifyVpcEncryptionControl"
                 },
                 {
                     "target": "com.amazonaws.ec2#ModifyVpcEndpoint"
@@ -4529,6 +4568,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#RestoreSnapshotTier"
+                },
+                {
+                    "target": "com.amazonaws.ec2#RestoreVolumeFromRecycleBin"
                 },
                 {
                     "target": "com.amazonaws.ec2#RevokeClientVpnIngress"
@@ -10690,6 +10732,14 @@
                         "smithy.api#documentation": "<p>If you have <a href=\"https://docs.aws.amazon.com/local-zones/latest/ug/how-local-zones-work.html\">Local Zones</a> enabled, you can choose a network border group for Local Zones when you provision and advertise a BYOIPv4 CIDR. Choose the network border group carefully as the EIP and the Amazon Web Services resource it is associated with must reside in the same network border group.</p>\n         <p>You can provision BYOIP address ranges to and advertise them in the following Local Zone network border groups:</p>\n         <ul>\n            <li>\n               <p>us-east-1-dfw-2</p>\n            </li>\n            <li>\n               <p>us-west-2-lax-1</p>\n            </li>\n            <li>\n               <p>us-west-2-phx-2</p>\n            </li>\n         </ul>\n         <note>\n            <p>You cannot provision or advertise BYOIPv6 address ranges in Local Zones at this time.</p>\n         </note>",
                         "smithy.api#xmlName": "networkBorderGroup"
                     }
+                },
+                "AdvertisementType": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AdvertisementType",
+                        "smithy.api#documentation": "<p>Specifies the advertisement method for the BYOIP CIDR. Valid values are:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>unicast</code>: IP is advertised from a single location (regional services like EC2)</p>\n            </li>\n            <li>\n               <p>\n                  <code>anycast</code>: IP is advertised from multiple global locations simultaneously (global services like CloudFront)</p>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/tutorials-byoip-cloudfront.html\">Bring your own IP to CloudFront using IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+                        "smithy.api#xmlName": "advertisementType"
+                    }
                 }
             },
             "traits": {
@@ -10732,6 +10782,12 @@
                         "smithy.api#enumValue": "failed-provision"
                     }
                 },
+                "pending_advertising": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pending-advertising"
+                    }
+                },
                 "pending_deprovision": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -10742,6 +10798,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "pending-provision"
+                    }
+                },
+                "pending_withdrawal": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pending-withdrawal"
                     }
                 },
                 "provisioned": {
@@ -15242,6 +15304,30 @@
                         "smithy.api#documentation": "<p>Configured log format. Default format is <code>json</code>.</p>\n         <p>Valid values: <code>json</code> | <code>text</code>\n         </p>",
                         "smithy.api#xmlName": "logOutputFormat"
                     }
+                },
+                "BgpLogEnabled": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "BgpLogEnabled",
+                        "smithy.api#documentation": "<p>Indicates whether Border Gateway Protocol (BGP) logging is enabled for the VPN connection. Default value is <code>False</code>.</p>\n         <p>Valid values: <code>True</code> | <code>False</code>\n         </p>",
+                        "smithy.api#xmlName": "bgpLogEnabled"
+                    }
+                },
+                "BgpLogGroupArn": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "BgpLogGroupArn",
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the CloudWatch log group for BGP logs.</p>",
+                        "smithy.api#xmlName": "bgpLogGroupArn"
+                    }
+                },
+                "BgpLogOutputFormat": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "BgpLogOutputFormat",
+                        "smithy.api#documentation": "<p>The output format for BGP logs sent to CloudWatch. Default format is <code>json</code>.</p>\n         <p>Valid values: <code>json</code> | <code>text</code>\n         </p>",
+                        "smithy.api#xmlName": "bgpLogOutputFormat"
+                    }
                 }
             },
             "traits": {
@@ -15267,6 +15353,24 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "smithy.api#documentation": "<p>Set log format. Default format is <code>json</code>.</p>\n         <p>Valid values: <code>json</code> | <code>text</code>\n         </p>"
+                    }
+                },
+                "BgpLogEnabled": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to enable BGP logging for the VPN connection. Default value is <code>False</code>.</p>\n         <p>Valid values: <code>True</code> | <code>False</code>\n         </p>"
+                    }
+                },
+                "BgpLogGroupArn": {
+                    "target": "com.amazonaws.ec2#CloudWatchLogGroupArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the CloudWatch log group where BGP logs will be sent.</p>"
+                    }
+                },
+                "BgpLogOutputFormat": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The desired output format for BGP logs to be sent to CloudWatch. Default format is <code>json</code>.</p>\n         <p>Valid values: <code>json</code> | <code>text</code>\n         </p>"
                     }
                 }
             },
@@ -23627,6 +23731,189 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicyResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Creates a metering policy for a transit gateway to track and measure network traffic.</p>"
+            }
+        },
+        "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicyEntry": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicyEntryRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicyEntryResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Creates an entry in a transit gateway metering policy to define traffic measurement rules.</p>"
+            }
+        },
+        "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicyEntryRequest": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicyId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the transit gateway metering policy to add the entry to.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PolicyRuleNumber": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The rule number for the metering policy entry. Rules are processed in order from lowest to highest number.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "SourceTransitGatewayAttachmentId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the source transit gateway attachment for traffic matching.</p>"
+                    }
+                },
+                "SourceTransitGatewayAttachmentType": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentResourceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the source transit gateway attachment for traffic matching. Note that the <code>tgw-peering</code> resource type has been deprecated. To configure metering policies for Connect, use the transport attachment type.</p>"
+                    }
+                },
+                "SourceCidrBlock": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The source CIDR block for traffic matching.</p>"
+                    }
+                },
+                "SourcePortRange": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The source port range for traffic matching.</p>"
+                    }
+                },
+                "DestinationTransitGatewayAttachmentId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the destination transit gateway attachment for traffic matching.</p>"
+                    }
+                },
+                "DestinationTransitGatewayAttachmentType": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentResourceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the destination transit gateway attachment for traffic matching. Note that the <code>tgw-peering</code> resource type has been deprecated. To configure metering policies for Connect, use the transport attachment type.</p>"
+                    }
+                },
+                "DestinationCidrBlock": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The destination CIDR block for traffic matching.</p>"
+                    }
+                },
+                "DestinationPortRange": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The destination port range for traffic matching.</p>"
+                    }
+                },
+                "Protocol": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The protocol for traffic matching (1, 6, 17, etc.).</p>"
+                    }
+                },
+                "MeteredAccount": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPayerType",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The Amazon Web Services account ID to which the metered traffic should be attributed.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicyEntryResult": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicyEntry": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyEntry",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayMeteringPolicyEntry",
+                        "smithy.api#documentation": "<p>Information about the created transit gateway metering policy entry.</p>",
+                        "smithy.api#xmlName": "transitGatewayMeteringPolicyEntry"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the transit gateway for which to create the metering policy.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MiddleboxAttachmentIds": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentIdStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the middlebox attachments to include in the metering policy.</p>",
+                        "smithy.api#xmlName": "MiddleboxAttachmentId"
+                    }
+                },
+                "TagSpecifications": {
+                    "target": "com.amazonaws.ec2#TagSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags to assign to the metering policy.</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateTransitGatewayMeteringPolicyResult": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicy": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicy",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayMeteringPolicy",
+                        "smithy.api#documentation": "<p>Information about the created transit gateway metering policy.</p>",
+                        "smithy.api#xmlName": "transitGatewayMeteringPolicy"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#CreateTransitGatewayMulticastDomain": {
             "type": "operation",
             "input": {
@@ -25350,6 +25637,63 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#CreateVpcEncryptionControl": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#CreateVpcEncryptionControlRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#CreateVpcEncryptionControlResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Creates a VPC Encryption Control configuration for a specified VPC. VPC Encryption Control enables you to enforce encryption for all data in transit within and between VPCs to meet compliance requirements for standards like HIPAA, FedRAMP, and PCI DSS.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#CreateVpcEncryptionControlRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "VpcId": {
+                    "target": "com.amazonaws.ec2#VpcId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the VPC for which to create the encryption control configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TagSpecifications": {
+                    "target": "com.amazonaws.ec2#TagSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags to apply to the VPC Encryption Control resource.</p>",
+                        "smithy.api#xmlName": "TagSpecification"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateVpcEncryptionControlResult": {
+            "type": "structure",
+            "members": {
+                "VpcEncryptionControl": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControl",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VpcEncryptionControl",
+                        "smithy.api#documentation": "<p>Information about the VPC Encryption Control configuration.</p>",
+                        "smithy.api#xmlName": "vpcEncryptionControl"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#CreateVpcEndpoint": {
             "type": "operation",
             "input": {
@@ -25822,6 +26166,12 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the location from which we advertise the IPV6 CIDR block. Use this parameter to limit the address to this location.</p>\n         <p> You must set <code>AmazonProvidedIpv6CidrBlock</code> to <code>true</code> to use this parameter.</p>"
+                    }
+                },
+                "VpcEncryptionControl": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the encryption control configuration to apply to the VPC during creation. VPC Encryption Control enables you to enforce encryption for all data in transit within and between VPCs to meet compliance requirements.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
                     }
                 },
                 "TagSpecifications": {
@@ -30408,6 +30758,114 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicyResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes a transit gateway metering policy.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicyEntry": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicyEntryRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicyEntryResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes an entry from a transit gateway metering policy.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicyEntryRequest": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicyId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the transit gateway metering policy containing the entry to delete.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PolicyRuleNumber": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The rule number of the metering policy entry to delete.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicyEntryResult": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicyEntry": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyEntry",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayMeteringPolicyEntry",
+                        "smithy.api#documentation": "<p>Information about the deleted transit gateway metering policy entry.</p>",
+                        "smithy.api#xmlName": "transitGatewayMeteringPolicyEntry"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicyId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the transit gateway metering policy to delete.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteTransitGatewayMeteringPolicyResult": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicy": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicy",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayMeteringPolicy",
+                        "smithy.api#documentation": "<p>Information about the deleted transit gateway metering policy.</p>",
+                        "smithy.api#xmlName": "transitGatewayMeteringPolicy"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#DeleteTransitGatewayMulticastDomain": {
             "type": "operation",
             "input": {
@@ -31200,6 +31658,56 @@
                         "aws.protocols#ec2QueryName": "VpcBlockPublicAccessExclusion",
                         "smithy.api#documentation": "<p>Details about an exclusion.</p>",
                         "smithy.api#xmlName": "vpcBlockPublicAccessExclusion"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteVpcEncryptionControl": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DeleteVpcEncryptionControlRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DeleteVpcEncryptionControlResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes a VPC Encryption Control configuration. This removes the encryption policy enforcement from the specified VPC.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DeleteVpcEncryptionControlRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "VpcEncryptionControlId": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the VPC Encryption Control resource to delete.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteVpcEncryptionControlResult": {
+            "type": "structure",
+            "members": {
+                "VpcEncryptionControl": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControl",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VpcEncryptionControl",
+                        "smithy.api#documentation": "<p>Information about the deleted VPC Encryption Control configuration.</p>",
+                        "smithy.api#xmlName": "vpcEncryptionControl"
                     }
                 }
             },
@@ -38980,7 +39488,7 @@
                 "Filters": {
                     "target": "com.amazonaws.ec2#FilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The filters.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>affinity</code> - The affinity setting for an instance running on a\n                    Dedicated Host (<code>default</code> | <code>host</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>architecture</code> - The instance architecture (<code>i386</code> |\n                        <code>x86_64</code> | <code>arm64</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>availability-zone</code> - The Availability Zone of the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>availability-zone-id</code> - The ID of the Availability Zone of the\n                    instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>block-device-mapping.attach-time</code> - The attach time for an EBS\n                    volume mapped to the instance, for example,\n                        <code>2022-09-15T17:15:20.000Z</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>block-device-mapping.delete-on-termination</code> - A Boolean that\n                    indicates whether the EBS volume is deleted on instance termination.</p>\n            </li>\n            <li>\n               <p>\n                  <code>block-device-mapping.device-name</code> - The device name specified in\n                    the block device mapping (for example, <code>/dev/sdh</code> or\n                        <code>xvdh</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>block-device-mapping.status</code> - The status for the EBS volume\n                        (<code>attaching</code> | <code>attached</code> | <code>detaching</code> |\n                        <code>detached</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>block-device-mapping.volume-id</code> - The volume ID of the EBS\n                    volume.</p>\n            </li>\n            <li>\n               <p>\n                  <code>boot-mode</code> - The boot mode that was specified by the AMI\n                        (<code>legacy-bios</code> | <code>uefi</code> |\n                    <code>uefi-preferred</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>capacity-reservation-id</code> - The ID of the Capacity Reservation into which the\n                    instance was launched.</p>\n            </li>\n            <li>\n               <p>\n                  <code>capacity-reservation-specification.capacity-reservation-preference</code>\n                    - The instance's Capacity Reservation preference (<code>open</code> | <code>none</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>capacity-reservation-specification.capacity-reservation-target.capacity-reservation-id</code>\n                    - The ID of the targeted Capacity Reservation.</p>\n            </li>\n            <li>\n               <p>\n                  <code>capacity-reservation-specification.capacity-reservation-target.capacity-reservation-resource-group-arn</code>\n                    - The ARN of the targeted Capacity Reservation group.</p>\n            </li>\n            <li>\n               <p>\n                  <code>client-token</code> - The idempotency token you provided when you\n                    launched the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>current-instance-boot-mode</code> - The boot mode that is used to launch\n                    the instance at launch or start (<code>legacy-bios</code> |\n                    <code>uefi</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>dns-name</code> - The public DNS name of the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ebs-optimized</code> - A Boolean that indicates whether the instance is\n                    optimized for Amazon EBS I/O.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ena-support</code> - A Boolean that indicates whether the instance is\n                    enabled for enhanced networking with ENA.</p>\n            </li>\n            <li>\n               <p>\n                  <code>enclave-options.enabled</code> - A Boolean that indicates whether the\n                    instance is enabled for Amazon Web Services Nitro Enclaves.</p>\n            </li>\n            <li>\n               <p>\n                  <code>hibernation-options.configured</code> - A Boolean that indicates whether\n                    the instance is enabled for hibernation. A value of <code>true</code> means that\n                    the instance is enabled for hibernation.</p>\n            </li>\n            <li>\n               <p>\n                  <code>host-id</code> - The ID of the Dedicated Host on which the instance is\n                    running, if applicable.</p>\n            </li>\n            <li>\n               <p>\n                  <code>hypervisor</code> - The hypervisor type of the instance\n                        (<code>ovm</code> | <code>xen</code>). The value <code>xen</code> is used\n                    for both Xen and Nitro hypervisors.</p>\n            </li>\n            <li>\n               <p>\n                  <code>iam-instance-profile.arn</code> - The instance profile associated with\n                    the instance. Specified as an ARN.</p>\n            </li>\n            <li>\n               <p>\n                  <code>iam-instance-profile.id</code> - The instance profile associated with\n                    the instance. Specified as an ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>image-id</code> - The ID of the image used to launch the\n                    instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-id</code> - The ID of the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-lifecycle</code> - Indicates whether this is a Spot Instance, a Scheduled Instance, or\n                     a Capacity Block (<code>spot</code> | <code>scheduled</code> | <code>capacity-block</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-state-code</code> - The state of the instance, as a 16-bit\n                    unsigned integer. The high byte is used for internal purposes and should be\n                    ignored. The low byte is set based on the state represented. The valid values\n                    are: 0 (pending), 16 (running), 32 (shutting-down), 48 (terminated), 64\n                    (stopping), and 80 (stopped).</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-state-name</code> - The state of the instance\n                        (<code>pending</code> | <code>running</code> | <code>shutting-down</code> |\n                        <code>terminated</code> | <code>stopping</code> |\n                    <code>stopped</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-type</code> - The type of instance (for example,\n                        <code>t2.micro</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance.group-id</code> - The ID of the security group for the\n                    instance. </p>\n            </li>\n            <li>\n               <p>\n                  <code>instance.group-name</code> - The name of the security group for the\n                    instance. </p>\n            </li>\n            <li>\n               <p>\n                  <code>ip-address</code> - The public IPv4 address of the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ipv6-address</code> - The IPv6 address of the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>kernel-id</code> - The kernel ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>key-name</code> - The name of the key pair used when the instance was\n                    launched.</p>\n            </li>\n            <li>\n               <p>\n                  <code>launch-index</code> - When launching multiple instances, this is the\n                    index for the instance in the launch group (for example, 0, 1, 2, and so on).\n                </p>\n            </li>\n            <li>\n               <p>\n                  <code>launch-time</code> - The time when the instance was launched, in the ISO\n                    8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example,\n                        <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard\n                        (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an\n                    entire day.</p>\n            </li>\n            <li>\n               <p>\n                  <code>maintenance-options.auto-recovery</code> - The current automatic\n                    recovery behavior of the instance (<code>disabled</code> | <code>default</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.http-endpoint</code> - The status of access to the HTTP\n                    metadata endpoint on your instance (<code>enabled</code> |\n                    <code>disabled</code>)</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.http-protocol-ipv4</code> - Indicates whether the IPv4\n                    endpoint is enabled (<code>disabled</code> | <code>enabled</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.http-protocol-ipv6</code> - Indicates whether the IPv6\n                    endpoint is enabled (<code>disabled</code> | <code>enabled</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.http-put-response-hop-limit</code> - The HTTP metadata\n                    request put response hop limit (integer, possible values <code>1</code> to\n                        <code>64</code>)</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.http-tokens</code> - The metadata request authorization\n                    state (<code>optional</code> | <code>required</code>)</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.instance-metadata-tags</code> - The status of access to\n                    instance tags from the instance metadata (<code>enabled</code> |\n                        <code>disabled</code>)</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.state</code> - The state of the metadata option changes\n                        (<code>pending</code> | <code>applied</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>monitoring-state</code> - Indicates whether detailed monitoring is\n                    enabled (<code>disabled</code> | <code>enabled</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.allocation-id</code> - The allocation ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.association-id</code> - The association ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.carrier-ip</code> - The carrier IP address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.customer-owned-ip</code> - The customer-owned IP address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.ip-owner-id</code> - The owner\n                    ID of the private IPv4 address associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.public-dns-name</code> - The public DNS name.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.public-ip</code> - The ID of the\n                    association of an Elastic IP address (IPv4) with a network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.primary</code> - Specifies whether the IPv4\n                    address of the network interface is the primary private IPv4 address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.private-dns-name</code> - The private DNS name.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.private-ip-address</code> - The private IPv4\n                    address associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.allocation-id</code> - The allocation ID\n                    returned when you allocated the Elastic IP address (IPv4) for your network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.association-id</code> - The association ID\n                    returned when the network interface was associated with an IPv4 address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.carrier-ip</code> - The customer-owned IP address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.customer-owned-ip</code> - The customer-owned IP address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.ip-owner-id</code> - The owner of the\n                    Elastic IP address (IPv4) associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.public-dns-name</code> - The public DNS name.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.public-ip</code> - The address of the\n                    Elastic IP address (IPv4) bound to the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.attach-time</code> - The time that the\n                    network interface was attached to an instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.attachment-id</code> - The ID of the\n                    interface attachment.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.delete-on-termination</code> - Specifies\n                    whether the attachment is deleted when an instance is terminated.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.device-index</code> - The device index to\n                    which the network interface is attached.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.instance-id</code> - The ID of the instance\n                    to which the network interface is attached.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.instance-owner-id</code> - The owner ID of\n                    the instance to which the network interface is attached.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.network-card-index</code> - The index of the network card.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.status</code> - The status of the\n                    attachment (<code>attaching</code> | <code>attached</code> |\n                    <code>detaching</code> | <code>detached</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.availability-zone</code> - The Availability Zone for\n                    the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.deny-all-igw-traffic</code> - A Boolean that indicates whether \n                a network interface with an IPv6 address is unreachable from the public internet.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.description</code> - The description of the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.group-id</code> - The ID of a security group\n                    associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.group-name</code> - The name of a security group\n                    associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv4-prefixes.ipv4-prefix</code> - The IPv4 prefixes that are assigned to the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv6-address</code> - The IPv6 address associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv6-addresses.ipv6-address</code> - The IPv6 address\n                    associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv6-addresses.is-primary-ipv6</code> - A Boolean that indicates whether this\n                    is the primary IPv6 address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv6-native</code> - A Boolean that indicates whether this is\n                    an IPv6 only network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv6-prefixes.ipv6-prefix</code> - The IPv6 prefix assigned to the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.mac-address</code> - The MAC address of the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.network-interface-id</code> - The ID of the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.operator.managed</code> - A Boolean that indicates\n                    whether the instance has a managed network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.operator.principal</code> - The principal that manages\n                    the network interface. Only valid for instances with managed network interfaces,\n                    where <code>managed</code> is <code>true</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.outpost-arn</code> - The ARN of the Outpost.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.owner-id</code> - The ID of the owner of the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.private-dns-name</code> - The private DNS name of the\n                    network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.private-ip-address</code> - The private IPv4 address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.public-dns-name</code> - The public DNS name.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.requester-id</code> - The requester ID for the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.requester-managed</code> - Indicates whether the\n                    network interface is being managed by Amazon Web Services.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.status</code> - The status of the network interface\n                        (<code>available</code>) | <code>in-use</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.source-dest-check</code> - Whether the network\n                    interface performs source/destination checking. A value of <code>true</code>\n                    means that checking is enabled, and <code>false</code> means that checking is\n                    disabled. The value must be <code>false</code> for the network interface to\n                    perform network address translation (NAT) in your VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.subnet-id</code> - The ID of the subnet for the\n                    network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.tag-key</code> - The key of a tag assigned to the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.tag-value</code> - The value of a tag assigned to the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.vpc-id</code> - The ID of the VPC for the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-performance-options.bandwidth-weighting</code> - Where the performance boost \n        \t\t\tis applied, if applicable. Valid values: <code>default</code>, <code>vpc-1</code>, \n        \t\t\t<code>ebs-1</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>operator.managed</code> - A Boolean that indicates whether this is a\n                    managed instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>operator.principal</code> - The principal that manages the instance.\n                    Only valid for managed instances, where <code>managed</code> is\n                        <code>true</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>outpost-arn</code> - The Amazon Resource Name (ARN) of the\n                    Outpost.</p>\n            </li>\n            <li>\n               <p>\n                  <code>owner-id</code> - The Amazon Web Services account ID of the instance\n                    owner.</p>\n            </li>\n            <li>\n               <p>\n                  <code>placement-group-name</code> - The name of the placement group for the\n                    instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>placement-partition-number</code> - The partition in which the instance is\n                    located.</p>\n            </li>\n            <li>\n               <p>\n                  <code>platform</code> - The platform. To list only Windows instances, use\n                        <code>windows</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>platform-details</code> - The platform (<code>Linux/UNIX</code> |\n                        <code>Red Hat BYOL Linux</code> | <code> Red Hat Enterprise Linux</code> |\n                    <code>Red Hat Enterprise Linux with HA</code> | <code>Red Hat Enterprise Linux with High Availability</code> | <code>Red Hat Enterprise\n                        Linux with SQL Server Standard and HA</code> | <code>Red Hat Enterprise\n                        Linux with SQL Server Enterprise and HA</code> | <code>Red Hat Enterprise\n                        Linux with SQL Server Standard</code> | <code>Red Hat Enterprise Linux with\n                        SQL Server Web</code> | <code>Red Hat Enterprise Linux with SQL Server\n                        Enterprise</code> | <code>SQL Server Enterprise</code> | <code>SQL Server\n                        Standard</code> | <code>SQL Server Web</code> | <code>SUSE Linux</code> |\n                        <code>Ubuntu Pro</code> | <code>Windows</code> | <code>Windows BYOL</code> |\n                        <code>Windows with SQL Server Enterprise</code> | <code>Windows with SQL\n                        Server Standard</code> | <code>Windows with SQL Server Web</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-dns-name</code> - The private IPv4 DNS name of the\n                    instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-dns-name-options.enable-resource-name-dns-a-record</code> - A\n                    Boolean that indicates whether to respond to DNS queries for instance hostnames\n                    with DNS A records.</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-dns-name-options.enable-resource-name-dns-aaaa-record</code> - A\n                    Boolean that indicates whether to respond to DNS queries for instance hostnames\n                    with DNS AAAA records.</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-dns-name-options.hostname-type</code> - The type of hostname\n                    (<code>ip-name</code> | <code>resource-name</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-ip-address</code> - The private IPv4 address of the instance.\n                    This can only be used to filter by the primary IP address of the network\n                    interface attached to the instance. To filter by additional IP addresses\n                    assigned to the network interface, use the filter\n                        <code>network-interface.addresses.private-ip-address</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>product-code</code> - The product code associated with the AMI used to\n                    launch the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>product-code.type</code> - The type of product code (<code>devpay</code>\n                    | <code>marketplace</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>ramdisk-id</code> - The RAM disk ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>reason</code> - The reason for the current state of the instance (for\n                    example, shows \"User Initiated [date]\" when you stop or terminate the instance).\n                    Similar to the state-reason-code filter.</p>\n            </li>\n            <li>\n               <p>\n                  <code>requester-id</code> - The ID of the entity that launched the instance on\n                    your behalf (for example, Amazon Web Services Management Console, Auto Scaling, and so\n                    on).</p>\n            </li>\n            <li>\n               <p>\n                  <code>reservation-id</code> - The ID of the instance's reservation. A\n                    reservation ID is created any time you launch an instance. A reservation ID has\n                    a one-to-one relationship with an instance launch request, but can be associated\n                    with more than one instance if you launch multiple instances using the same\n                    launch request. For example, if you launch one instance, you get one reservation\n                    ID. If you launch ten instances using the same launch request, you also get one\n                    reservation ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>root-device-name</code> - The device name of the root device volume (for\n                    example, <code>/dev/sda1</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>root-device-type</code> - The type of the root device volume\n                        (<code>ebs</code> | <code>instance-store</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>source-dest-check</code> - Indicates whether the instance performs\n                    source/destination checking. A value of <code>true</code> means that checking is\n                    enabled, and <code>false</code> means that checking is disabled. The value must\n                    be <code>false</code> for the instance to perform network address translation\n                    (NAT) in your VPC. </p>\n            </li>\n            <li>\n               <p>\n                  <code>spot-instance-request-id</code> - The ID of the Spot Instance\n                    request.</p>\n            </li>\n            <li>\n               <p>\n                  <code>state-reason-code</code> - The reason code for the state change.</p>\n            </li>\n            <li>\n               <p>\n                  <code>state-reason-message</code> - A message that describes the state\n                    change.</p>\n            </li>\n            <li>\n               <p>\n                  <code>subnet-id</code> - The ID of the subnet for the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag:<key></code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value.\n    For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources that have a tag with a specific key, regardless of the tag value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tenancy</code> - The tenancy of an instance (<code>dedicated</code> |\n                        <code>default</code> | <code>host</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>tpm-support</code> - Indicates if the instance is configured for\n                    NitroTPM support (<code>v2.0</code>). </p>\n            </li>\n            <li>\n               <p>\n                  <code>usage-operation</code> - The usage operation value for the instance\n                        (<code>RunInstances</code> | <code>RunInstances:00g0</code> |\n                        <code>RunInstances:0010</code> | <code>RunInstances:1010</code> |\n                        <code>RunInstances:1014</code> | <code>RunInstances:1110</code> |\n                        <code>RunInstances:0014</code> | <code>RunInstances:0210</code> |\n                        <code>RunInstances:0110</code> | <code>RunInstances:0100</code> |\n                        <code>RunInstances:0004</code> | <code>RunInstances:0200</code> |\n                        <code>RunInstances:000g</code> | <code>RunInstances:0g00</code> |\n                        <code>RunInstances:0002</code> | <code>RunInstances:0800</code> |\n                        <code>RunInstances:0102</code> | <code>RunInstances:0006</code> |\n                        <code>RunInstances:0202</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>usage-operation-update-time</code> - The time that the usage operation\n                    was last updated, for example, <code>2022-09-15T17:15:20.000Z</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>virtualization-type</code> - The virtualization type of the instance\n                        (<code>paravirtual</code> | <code>hvm</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>vpc-id</code> - The ID of the VPC that the instance is running in.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The filters.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>affinity</code> - The affinity setting for an instance running on a\n                    Dedicated Host (<code>default</code> | <code>host</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>architecture</code> - The instance architecture (<code>i386</code> |\n                        <code>x86_64</code> | <code>arm64</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>availability-zone</code> - The Availability Zone of the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>availability-zone-id</code> - The ID of the Availability Zone of the\n                    instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>block-device-mapping.attach-time</code> - The attach time for an EBS\n                    volume mapped to the instance, for example,\n                        <code>2022-09-15T17:15:20.000Z</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>block-device-mapping.delete-on-termination</code> - A Boolean that\n                    indicates whether the EBS volume is deleted on instance termination.</p>\n            </li>\n            <li>\n               <p>\n                  <code>block-device-mapping.device-name</code> - The device name specified in\n                    the block device mapping (for example, <code>/dev/sdh</code> or\n                        <code>xvdh</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>block-device-mapping.status</code> - The status for the EBS volume\n                        (<code>attaching</code> | <code>attached</code> | <code>detaching</code> |\n                        <code>detached</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>block-device-mapping.volume-id</code> - The volume ID of the EBS\n                    volume.</p>\n            </li>\n            <li>\n               <p>\n                  <code>boot-mode</code> - The boot mode that was specified by the AMI\n                        (<code>legacy-bios</code> | <code>uefi</code> |\n                    <code>uefi-preferred</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>capacity-reservation-id</code> - The ID of the Capacity Reservation into which the\n                    instance was launched.</p>\n            </li>\n            <li>\n               <p>\n                  <code>capacity-reservation-specification.capacity-reservation-preference</code>\n                    - The instance's Capacity Reservation preference (<code>open</code> | <code>none</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>capacity-reservation-specification.capacity-reservation-target.capacity-reservation-id</code>\n                    - The ID of the targeted Capacity Reservation.</p>\n            </li>\n            <li>\n               <p>\n                  <code>capacity-reservation-specification.capacity-reservation-target.capacity-reservation-resource-group-arn</code>\n                    - The ARN of the targeted Capacity Reservation group.</p>\n            </li>\n            <li>\n               <p>\n                  <code>client-token</code> - The idempotency token you provided when you\n                    launched the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>current-instance-boot-mode</code> - The boot mode that is used to launch\n                    the instance at launch or start (<code>legacy-bios</code> |\n                    <code>uefi</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>dns-name</code> - The public DNS name of the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ebs-optimized</code> - A Boolean that indicates whether the instance is\n                    optimized for Amazon EBS I/O.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ena-support</code> - A Boolean that indicates whether the instance is\n                    enabled for enhanced networking with ENA.</p>\n            </li>\n            <li>\n               <p>\n                  <code>enclave-options.enabled</code> - A Boolean that indicates whether the\n                    instance is enabled for Amazon Web Services Nitro Enclaves.</p>\n            </li>\n            <li>\n               <p>\n                  <code>hibernation-options.configured</code> - A Boolean that indicates whether\n                    the instance is enabled for hibernation. A value of <code>true</code> means that\n                    the instance is enabled for hibernation.</p>\n            </li>\n            <li>\n               <p>\n                  <code>host-id</code> - The ID of the Dedicated Host on which the instance is\n                    running, if applicable.</p>\n            </li>\n            <li>\n               <p>\n                  <code>hypervisor</code> - The hypervisor type of the instance\n                        (<code>ovm</code> | <code>xen</code>). The value <code>xen</code> is used\n                    for both Xen and Nitro hypervisors.</p>\n            </li>\n            <li>\n               <p>\n                  <code>iam-instance-profile.arn</code> - The instance profile associated with\n                    the instance. Specified as an ARN.</p>\n            </li>\n            <li>\n               <p>\n                  <code>iam-instance-profile.id</code> - The instance profile associated with\n                    the instance. Specified as an ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>image-id</code> - The ID of the image used to launch the\n                    instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-id</code> - The ID of the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-lifecycle</code> - Indicates whether this is a Spot Instance, a Scheduled Instance, or\n                     a Capacity Block (<code>spot</code> | <code>scheduled</code> | <code>capacity-block</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-state-code</code> - The state of the instance, as a 16-bit\n                    unsigned integer. The high byte is used for internal purposes and should be\n                    ignored. The low byte is set based on the state represented. The valid values\n                    are: 0 (pending), 16 (running), 32 (shutting-down), 48 (terminated), 64\n                    (stopping), and 80 (stopped).</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-state-name</code> - The state of the instance\n                        (<code>pending</code> | <code>running</code> | <code>shutting-down</code> |\n                        <code>terminated</code> | <code>stopping</code> |\n                    <code>stopped</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance-type</code> - The type of instance (for example,\n                        <code>t2.micro</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>instance.group-id</code> - The ID of the security group for the\n                    instance. </p>\n            </li>\n            <li>\n               <p>\n                  <code>instance.group-name</code> - The name of the security group for the\n                    instance. </p>\n            </li>\n            <li>\n               <p>\n                  <code>ip-address</code> - The public IPv4 address of the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ipv6-address</code> - The IPv6 address of the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>kernel-id</code> - The kernel ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>key-name</code> - The name of the key pair used when the instance was\n                    launched.</p>\n            </li>\n            <li>\n               <p>\n                  <code>launch-index</code> - When launching multiple instances, this is the\n                    index for the instance in the launch group (for example, 0, 1, 2, and so on).\n                </p>\n            </li>\n            <li>\n               <p>\n                  <code>launch-time</code> - The time when the instance was launched, in the ISO\n                    8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example,\n                        <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard\n                        (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an\n                    entire day.</p>\n            </li>\n            <li>\n               <p>\n                  <code>maintenance-options.auto-recovery</code> - The current automatic\n                    recovery behavior of the instance (<code>disabled</code> | <code>default</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.http-endpoint</code> - The status of access to the HTTP\n                    metadata endpoint on your instance (<code>enabled</code> |\n                    <code>disabled</code>)</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.http-protocol-ipv4</code> - Indicates whether the IPv4\n                    endpoint is enabled (<code>disabled</code> | <code>enabled</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.http-protocol-ipv6</code> - Indicates whether the IPv6\n                    endpoint is enabled (<code>disabled</code> | <code>enabled</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.http-put-response-hop-limit</code> - The HTTP metadata\n                    request put response hop limit (integer, possible values <code>1</code> to\n                        <code>64</code>)</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.http-tokens</code> - The metadata request authorization\n                    state (<code>optional</code> | <code>required</code>)</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.instance-metadata-tags</code> - The status of access to\n                    instance tags from the instance metadata (<code>enabled</code> |\n                        <code>disabled</code>)</p>\n            </li>\n            <li>\n               <p>\n                  <code>metadata-options.state</code> - The state of the metadata option changes\n                        (<code>pending</code> | <code>applied</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>monitoring-state</code> - Indicates whether detailed monitoring is\n                    enabled (<code>disabled</code> | <code>enabled</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.allocation-id</code> - The allocation ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.association-id</code> - The association ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.carrier-ip</code> - The carrier IP address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.customer-owned-ip</code> - The customer-owned IP address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.ip-owner-id</code> - The owner\n                    ID of the private IPv4 address associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.public-dns-name</code> - The public DNS name.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.association.public-ip</code> - The ID of the\n                    association of an Elastic IP address (IPv4) with a network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.primary</code> - Specifies whether the IPv4\n                    address of the network interface is the primary private IPv4 address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.private-dns-name</code> - The private DNS name.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.addresses.private-ip-address</code> - The private IPv4\n                    address associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.allocation-id</code> - The allocation ID\n                    returned when you allocated the Elastic IP address (IPv4) for your network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.association-id</code> - The association ID\n                    returned when the network interface was associated with an IPv4 address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.carrier-ip</code> - The customer-owned IP address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.customer-owned-ip</code> - The customer-owned IP address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.ip-owner-id</code> - The owner of the\n                    Elastic IP address (IPv4) associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.public-dns-name</code> - The public DNS name.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.association.public-ip</code> - The address of the\n                    Elastic IP address (IPv4) bound to the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.attach-time</code> - The time that the\n                    network interface was attached to an instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.attachment-id</code> - The ID of the\n                    interface attachment.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.delete-on-termination</code> - Specifies\n                    whether the attachment is deleted when an instance is terminated.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.device-index</code> - The device index to\n                    which the network interface is attached.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.instance-id</code> - The ID of the instance\n                    to which the network interface is attached.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.instance-owner-id</code> - The owner ID of\n                    the instance to which the network interface is attached.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.network-card-index</code> - The index of the network card.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.attachment.status</code> - The status of the\n                    attachment (<code>attaching</code> | <code>attached</code> |\n                    <code>detaching</code> | <code>detached</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.availability-zone</code> - The Availability Zone for\n                    the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.deny-all-igw-traffic</code> - A Boolean that indicates whether \n                a network interface with an IPv6 address is unreachable from the public internet.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.description</code> - The description of the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.group-id</code> - The ID of a security group\n                    associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.group-name</code> - The name of a security group\n                    associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv4-prefixes.ipv4-prefix</code> - The IPv4 prefixes that are assigned to the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv6-address</code> - The IPv6 address associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv6-addresses.ipv6-address</code> - The IPv6 address\n                    associated with the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv6-addresses.is-primary-ipv6</code> - A Boolean that indicates whether this\n                    is the primary IPv6 address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv6-native</code> - A Boolean that indicates whether this is\n                    an IPv6 only network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.ipv6-prefixes.ipv6-prefix</code> - The IPv6 prefix assigned to the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.mac-address</code> - The MAC address of the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.network-interface-id</code> - The ID of the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.operator.managed</code> - A Boolean that indicates\n                    whether the instance has a managed network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.operator.principal</code> - The principal that manages\n                    the network interface. Only valid for instances with managed network interfaces,\n                    where <code>managed</code> is <code>true</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.outpost-arn</code> - The ARN of the Outpost.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.owner-id</code> - The ID of the owner of the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.private-dns-name</code> - The private DNS name of the\n                    network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.private-ip-address</code> - The private IPv4 address.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.public-dns-name</code> - The public DNS name.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.requester-id</code> - The requester ID for the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.requester-managed</code> - Indicates whether the\n                    network interface is being managed by Amazon Web Services.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.status</code> - The status of the network interface\n                        (<code>available</code>) | <code>in-use</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.source-dest-check</code> - Whether the network\n                    interface performs source/destination checking. A value of <code>true</code>\n                    means that checking is enabled, and <code>false</code> means that checking is\n                    disabled. The value must be <code>false</code> for the network interface to\n                    perform network address translation (NAT) in your VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.subnet-id</code> - The ID of the subnet for the\n                    network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.tag-key</code> - The key of a tag assigned to the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.tag-value</code> - The value of a tag assigned to the network interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-interface.vpc-id</code> - The ID of the VPC for the network\n                    interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>network-performance-options.bandwidth-weighting</code> - Where the performance boost \n        \t\t\tis applied, if applicable. Valid values: <code>default</code>, <code>vpc-1</code>, \n        \t\t\t<code>ebs-1</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>operator.managed</code> - A Boolean that indicates whether this is a\n                    managed instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>operator.principal</code> - The principal that manages the instance.\n                    Only valid for managed instances, where <code>managed</code> is\n                        <code>true</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>outpost-arn</code> - The Amazon Resource Name (ARN) of the\n                    Outpost.</p>\n            </li>\n            <li>\n               <p>\n                  <code>owner-id</code> - The Amazon Web Services account ID of the instance\n                    owner.</p>\n            </li>\n            <li>\n               <p>\n                  <code>placement-group-name</code> - The name of the placement group for the\n                    instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>placement-partition-number</code> - The partition in which the instance is\n                    located.</p>\n            </li>\n            <li>\n               <p>\n                  <code>platform</code> - The platform. To list only Windows instances, use\n                        <code>windows</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>platform-details</code> - The platform (<code>Linux/UNIX</code> |\n                        <code>Red Hat BYOL Linux</code> | <code> Red Hat Enterprise Linux</code> |\n                    <code>Red Hat Enterprise Linux with HA</code> | <code>Red Hat Enterprise Linux with High Availability</code> | <code>Red Hat Enterprise\n                        Linux with SQL Server Standard and HA</code> | <code>Red Hat Enterprise\n                        Linux with SQL Server Enterprise and HA</code> | <code>Red Hat Enterprise\n                        Linux with SQL Server Standard</code> | <code>Red Hat Enterprise Linux with\n                        SQL Server Web</code> | <code>Red Hat Enterprise Linux with SQL Server\n                        Enterprise</code> | <code>SQL Server Enterprise</code> | <code>SQL Server\n                        Standard</code> | <code>SQL Server Web</code> | <code>SUSE Linux</code> |\n                        <code>Ubuntu Pro</code> | <code>Windows</code> | <code>Windows BYOL</code> |\n                        <code>Windows with SQL Server Enterprise</code> | <code>Windows with SQL\n                        Server Standard</code> | <code>Windows with SQL Server Web</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-dns-name</code> - The private IPv4 DNS name of the\n                    instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-dns-name-options.enable-resource-name-dns-a-record</code> - A\n                    Boolean that indicates whether to respond to DNS queries for instance hostnames\n                    with DNS A records.</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-dns-name-options.enable-resource-name-dns-aaaa-record</code> - A\n                    Boolean that indicates whether to respond to DNS queries for instance hostnames\n                    with DNS AAAA records.</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-dns-name-options.hostname-type</code> - The type of hostname\n                    (<code>ip-name</code> | <code>resource-name</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-ip-address</code> - The private IPv4 address of the instance.\n                    This can only be used to filter by the primary IP address of the network\n                    interface attached to the instance. To filter by additional IP addresses\n                    assigned to the network interface, use the filter\n                        <code>network-interface.addresses.private-ip-address</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>product-code</code> - The product code associated with the AMI used to\n                    launch the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>product-code.type</code> - The type of product code (<code>devpay</code>\n                    | <code>marketplace</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>ramdisk-id</code> - The RAM disk ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>reason</code> - The reason for the current state of the instance (for\n                    example, shows \"User Initiated [date]\" when you stop or terminate the instance).\n                    Similar to the state-reason-code filter.</p>\n            </li>\n            <li>\n               <p>\n                  <code>requester-id</code> - The ID of the entity that launched the instance on\n                    your behalf (for example, Amazon Web Services Management Console, Amazon EC2 Auto Scaling, and so\n                    on).</p>\n            </li>\n            <li>\n               <p>\n                  <code>reservation-id</code> - The ID of the instance's reservation. A\n                    reservation ID is created any time you launch an instance. A reservation ID has\n                    a one-to-one relationship with an instance launch request, but can be associated\n                    with more than one instance if you launch multiple instances using the same\n                    launch request. For example, if you launch one instance, you get one reservation\n                    ID. If you launch ten instances using the same launch request, you also get one\n                    reservation ID.</p>\n            </li>\n            <li>\n               <p>\n                  <code>root-device-name</code> - The device name of the root device volume (for\n                    example, <code>/dev/sda1</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>root-device-type</code> - The type of the root device volume\n                        (<code>ebs</code> | <code>instance-store</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>source-dest-check</code> - Indicates whether the instance performs\n                    source/destination checking. A value of <code>true</code> means that checking is\n                    enabled, and <code>false</code> means that checking is disabled. The value must\n                    be <code>false</code> for the instance to perform network address translation\n                    (NAT) in your VPC. </p>\n            </li>\n            <li>\n               <p>\n                  <code>spot-instance-request-id</code> - The ID of the Spot Instance\n                    request.</p>\n            </li>\n            <li>\n               <p>\n                  <code>state-reason-code</code> - The reason code for the state change.</p>\n            </li>\n            <li>\n               <p>\n                  <code>state-reason-message</code> - A message that describes the state\n                    change.</p>\n            </li>\n            <li>\n               <p>\n                  <code>subnet-id</code> - The ID of the subnet for the instance.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag:<key></code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value.\n    For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources that have a tag with a specific key, regardless of the tag value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tenancy</code> - The tenancy of an instance (<code>dedicated</code> |\n                        <code>default</code> | <code>host</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>tpm-support</code> - Indicates if the instance is configured for\n                    NitroTPM support (<code>v2.0</code>). </p>\n            </li>\n            <li>\n               <p>\n                  <code>usage-operation</code> - The usage operation value for the instance\n                        (<code>RunInstances</code> | <code>RunInstances:00g0</code> |\n                        <code>RunInstances:0010</code> | <code>RunInstances:1010</code> |\n                        <code>RunInstances:1014</code> | <code>RunInstances:1110</code> |\n                        <code>RunInstances:0014</code> | <code>RunInstances:0210</code> |\n                        <code>RunInstances:0110</code> | <code>RunInstances:0100</code> |\n                        <code>RunInstances:0004</code> | <code>RunInstances:0200</code> |\n                        <code>RunInstances:000g</code> | <code>RunInstances:0g00</code> |\n                        <code>RunInstances:0002</code> | <code>RunInstances:0800</code> |\n                        <code>RunInstances:0102</code> | <code>RunInstances:0006</code> |\n                        <code>RunInstances:0202</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>usage-operation-update-time</code> - The time that the usage operation\n                    was last updated, for example, <code>2022-09-15T17:15:20.000Z</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>virtualization-type</code> - The virtualization type of the instance\n                        (<code>paravirtual</code> | <code>hvm</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>vpc-id</code> - The ID of the VPC that the instance is running in.</p>\n            </li>\n         </ul>",
                         "smithy.api#xmlName": "Filter"
                     }
                 },
@@ -46940,6 +47448,81 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#DescribeTransitGatewayMeteringPolicies": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeTransitGatewayMeteringPoliciesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeTransitGatewayMeteringPoliciesResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes one or more transit gateway metering policies.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DescribeTransitGatewayMeteringPoliciesRequest": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicyIds": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyIdStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the transit gateway metering policies to describe.</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>One or more filters to apply when describing transit gateway metering policies.</p>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return with a single call.\n\tTo retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeTransitGatewayMeteringPoliciesResult": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicies": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayMeteringPolicies",
+                        "smithy.api#documentation": "<p>Information about the transit gateway metering policies.</p>",
+                        "smithy.api#xmlName": "transitGatewayMeteringPolicies"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#DescribeTransitGatewayMulticastDomains": {
             "type": "operation",
             "input": {
@@ -49000,6 +49583,98 @@
                         "aws.protocols#ec2QueryName": "VpcSet",
                         "smithy.api#documentation": "<p>The ClassicLink status of the VPCs.</p>",
                         "smithy.api#xmlName": "vpcSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeVpcEncryptionControls": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeVpcEncryptionControlsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeVpcEncryptionControlsResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes one or more VPC Encryption Control configurations. VPC Encryption Control enables you to enforce encryption for all data in transit within and between VPCs to meet compliance requirements You can filter the results to return information about specific encryption controls or VPCs.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#DescribeVpcEncryptionControlsMaxResults": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 5,
+                    "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeVpcEncryptionControlsRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The filters to apply to the request.</p>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "VpcEncryptionControlIds": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the VPC Encryption Control configurations to describe.</p>",
+                        "smithy.api#xmlName": "VpcEncryptionControlId"
+                    }
+                },
+                "VpcIds": {
+                    "target": "com.amazonaws.ec2#VpcIdStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the VPCs to describe encryption control configurations for.</p>",
+                        "smithy.api#xmlName": "VpcId"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#DescribeVpcEncryptionControlsMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of items to return for this request.\n\tTo get the next page of items, make another request with the token returned in the output.\n\tFor more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeVpcEncryptionControlsResult": {
+            "type": "structure",
+            "members": {
+                "VpcEncryptionControls": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VpcEncryptionControlSet",
+                        "smithy.api#documentation": "<p>Information about the VPC Encryption Control configurations.</p>",
+                        "smithy.api#xmlName": "vpcEncryptionControlSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
                     }
                 }
             },
@@ -56526,6 +57201,76 @@
         },
         "com.amazonaws.ec2#EncryptionInTransitSupported": {
             "type": "boolean"
+        },
+        "com.amazonaws.ec2#EncryptionStateValue": {
+            "type": "enum",
+            "members": {
+                "enabling": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabling"
+                    }
+                },
+                "enabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                },
+                "disabling": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabling"
+                    }
+                },
+                "disabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#EncryptionSupport": {
+            "type": "structure",
+            "members": {
+                "EncryptionState": {
+                    "target": "com.amazonaws.ec2#EncryptionStateValue",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "EncryptionState",
+                        "smithy.api#documentation": "<p>The current encryption state of the resource.</p>",
+                        "smithy.api#xmlName": "encryptionState"
+                    }
+                },
+                "StateMessage": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "StateMessage",
+                        "smithy.api#documentation": "<p>A message describing the encryption state.</p>",
+                        "smithy.api#xmlName": "stateMessage"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the encryption support status for a transit gateway.</p>"
+            }
+        },
+        "com.amazonaws.ec2#EncryptionSupportOptionValue": {
+            "type": "enum",
+            "members": {
+                "enable": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enable"
+                    }
+                },
+                "disable": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disable"
+                    }
+                }
+            }
         },
         "com.amazonaws.ec2#EndDateType": {
             "type": "enum",
@@ -64615,6 +65360,83 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#GetTransitGatewayMeteringPolicyEntries": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetTransitGatewayMeteringPolicyEntriesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetTransitGatewayMeteringPolicyEntriesResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves the entries for a transit gateway metering policy.</p>"
+            }
+        },
+        "com.amazonaws.ec2#GetTransitGatewayMeteringPolicyEntriesRequest": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicyId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the transit gateway metering policy to retrieve entries for.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>One or more filters to apply when retrieving metering policy entries.</p>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return with a single call.\n\tTo retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetTransitGatewayMeteringPolicyEntriesResult": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicyEntries": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyEntryList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayMeteringPolicyEntries",
+                        "smithy.api#documentation": "<p>Information about the transit gateway metering policy entries.</p>",
+                        "smithy.api#xmlName": "transitGatewayMeteringPolicyEntries"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#GetTransitGatewayMulticastDomainAssociations": {
             "type": "operation",
             "input": {
@@ -65288,6 +66110,85 @@
                         "aws.protocols#ec2QueryName": "PolicyDocument",
                         "smithy.api#documentation": "<p>The Verified Access policy document.</p>",
                         "smithy.api#xmlName": "policyDocument"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#GetVpcResourcesBlockingEncryptionEnforcement": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetVpcResourcesBlockingEncryptionEnforcementRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetVpcResourcesBlockingEncryptionEnforcementResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Gets information about resources in a VPC that are blocking encryption enforcement.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#GetVpcResourcesBlockingEncryptionEnforcementMaxResults": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 5,
+                    "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.ec2#GetVpcResourcesBlockingEncryptionEnforcementRequest": {
+            "type": "structure",
+            "members": {
+                "VpcId": {
+                    "target": "com.amazonaws.ec2#VpcId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the VPC to check for resources blocking encryption enforcement.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#GetVpcResourcesBlockingEncryptionEnforcementMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of items to return for this request.\n\tTo get the next page of items, make another request with the token returned in the output.\n\tFor more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetVpcResourcesBlockingEncryptionEnforcementResult": {
+            "type": "structure",
+            "members": {
+                "NonCompliantResources": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionNonCompliantResourceList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NonCompliantResourceSet",
+                        "smithy.api#documentation": "<p>Information about resources that are blocking encryption enforcement.</p>",
+                        "smithy.api#xmlName": "nonCompliantResourceSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
                     }
                 }
             },
@@ -82470,6 +83371,12 @@
                     "traits": {
                         "smithy.api#enumValue": "eip"
                     }
+                },
+                "anycast_ip_list": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "anycast-ip-list"
+                    }
                 }
             }
         },
@@ -82489,6 +83396,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ec2"
+                    }
+                },
+                "global_services": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "global-services"
                     }
                 }
             }
@@ -83669,6 +84582,12 @@
                         "smithy.api#enumValue": "global-accelerator"
                     }
                 },
+                "CLOUDFRONT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "cloudfront"
+                    }
+                },
                 "OTHER": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -83796,6 +84715,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ec2-public-ip"
+                    }
+                },
+                "ANYCAST_IP_LIST_IP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "anycast-ip-list-ip"
                     }
                 }
             }
@@ -84382,6 +85307,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "eni"
+                    }
+                },
+                "anycast_ip_list": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "anycast-ip-list"
                     }
                 }
             }
@@ -87765,6 +88696,75 @@
                         "aws.protocols#ec2QueryName": "SnapshotSet",
                         "smithy.api#documentation": "<p>Information about the snapshots.</p>",
                         "smithy.api#xmlName": "snapshotSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to include in another request to get the next page of items. \n  This value is <code>null</code> when there are no more items to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#ListVolumesInRecycleBin": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#ListVolumesInRecycleBinRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#ListVolumesInRecycleBinResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Lists one or more volumes that are currently in the Recycle Bin.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ListVolumesInRecycleBinRequest": {
+            "type": "structure",
+            "members": {
+                "VolumeIds": {
+                    "target": "com.amazonaws.ec2#VolumeIdStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the volumes to list. Omit this parameter to list all of the \n      volumes that are in the Recycle Bin.</p>",
+                        "smithy.api#xmlName": "VolumeId"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of items to return for this request.\n\tTo get the next page of items, make another request with the token returned in the output. \n\tFor more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>\n         <p>Valid range: 5 - 500</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token returned from a previous paginated request.\n  Pagination continues from the end of the items returned by the previous request.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#ListVolumesInRecycleBinResult": {
+            "type": "structure",
+            "members": {
+                "Volumes": {
+                    "target": "com.amazonaws.ec2#VolumeRecycleBinInfoList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VolumeSet",
+                        "smithy.api#documentation": "<p>Information about the volumes.</p>",
+                        "smithy.api#xmlName": "volumeSet"
                     }
                 },
                 "NextToken": {
@@ -94403,6 +95403,70 @@
                 "smithy.api#documentation": "<p>Modifies the specified transit gateway. When you modify a transit gateway, the modified options are applied to new transit gateway attachments only. Your existing transit gateway attachments are not modified.</p>"
             }
         },
+        "com.amazonaws.ec2#ModifyTransitGatewayMeteringPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#ModifyTransitGatewayMeteringPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#ModifyTransitGatewayMeteringPolicyResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Modifies a transit gateway metering policy.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ModifyTransitGatewayMeteringPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicyId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the transit gateway metering policy to modify.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "AddMiddleboxAttachmentIds": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentIdStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of middlebox attachments to add to the metering policy.</p>",
+                        "smithy.api#xmlName": "AddMiddleboxAttachmentId"
+                    }
+                },
+                "RemoveMiddleboxAttachmentIds": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentIdStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of middlebox attachments to remove from the metering policy.</p>",
+                        "smithy.api#xmlName": "RemoveMiddleboxAttachmentId"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#ModifyTransitGatewayMeteringPolicyResult": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicy": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicy",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayMeteringPolicy",
+                        "smithy.api#documentation": "<p>Information about the modified transit gateway metering policy.</p>",
+                        "smithy.api#xmlName": "transitGatewayMeteringPolicy"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#ModifyTransitGatewayOptions": {
             "type": "structure",
             "members": {
@@ -94470,6 +95534,12 @@
                     "target": "com.amazonaws.ec2#Long",
                     "traits": {
                         "smithy.api#documentation": "<p>A private Autonomous System Number (ASN) for the Amazon side of a BGP session. \n            The range is 64512 to 65534 for 16-bit ASNs and 4200000000 to 4294967294 for 32-bit ASNs.</p>\n         <p>The modify ASN operation is not allowed on a transit gateway if it has the following attachments:</p>\n         <ul>\n            <li>\n               <p>Dynamic VPN</p>\n            </li>\n            <li>\n               <p>Static VPN</p>\n            </li>\n            <li>\n               <p>Direct Connect Gateway</p>\n            </li>\n            <li>\n               <p>Connect</p>\n            </li>\n         </ul>\n         <p>You must first delete all transit gateway attachments configured prior to modifying the ASN on\n            the transit gateway.</p>"
+                    }
+                },
+                "EncryptionSupport": {
+                    "target": "com.amazonaws.ec2#EncryptionSupportOptionValue",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Enable or disable encryption support for VPC Encryption Control.</p>"
                     }
                 }
             },
@@ -95830,6 +96900,110 @@
                         "aws.protocols#ec2QueryName": "VpcBlockPublicAccessOptions",
                         "smithy.api#documentation": "<p>Details related to the VPC Block Public Access (BPA) options.</p>",
                         "smithy.api#xmlName": "vpcBlockPublicAccessOptions"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#ModifyVpcEncryptionControl": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#ModifyVpcEncryptionControlRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#ModifyVpcEncryptionControlResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Modifies the encryption control configuration for a VPC. You can update the encryption mode and exclusion settings for various gateway types and peering connections.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ModifyVpcEncryptionControlRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "VpcEncryptionControlId": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the VPC Encryption Control resource to modify.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Mode": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The encryption mode for the VPC Encryption Control configuration.</p>"
+                    }
+                },
+                "InternetGatewayExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude internet gateway traffic from encryption enforcement.</p>"
+                    }
+                },
+                "EgressOnlyInternetGatewayExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude egress-only internet gateway traffic from encryption enforcement.</p>"
+                    }
+                },
+                "NatGatewayExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude NAT gateway traffic from encryption enforcement.</p>"
+                    }
+                },
+                "VirtualPrivateGatewayExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude virtual private gateway traffic from encryption enforcement.</p>"
+                    }
+                },
+                "VpcPeeringExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude VPC peering connection traffic from encryption enforcement.</p>"
+                    }
+                },
+                "LambdaExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude Lambda function traffic from encryption enforcement.</p>"
+                    }
+                },
+                "VpcLatticeExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude VPC Lattice traffic from encryption enforcement.</p>"
+                    }
+                },
+                "ElasticFileSystemExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude Elastic File System traffic from encryption enforcement.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#ModifyVpcEncryptionControlResult": {
+            "type": "structure",
+            "members": {
+                "VpcEncryptionControl": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControl",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VpcEncryptionControl",
+                        "smithy.api#documentation": "<p>Information about the VPC Encryption Control configuration.</p>",
+                        "smithy.api#xmlName": "vpcEncryptionControl"
                     }
                 }
             },
@@ -108784,6 +109958,12 @@
                         "smithy.api#enumValue": "transit-gateway-policy-table"
                     }
                 },
+                "transit_gateway_metering_policy": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "transit-gateway-metering-policy"
+                    }
+                },
                 "transit_gateway_route_table": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -108914,6 +110094,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "vpc-block-public-access-exclusion"
+                    }
+                },
+                "vpc_encryption_control": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "vpc-encryption-control"
                     }
                 },
                 "route_server": {
@@ -109781,6 +110967,56 @@
                         "aws.protocols#ec2QueryName": "IsPermanentRestore",
                         "smithy.api#documentation": "<p>Indicates whether the snapshot is permanently restored. <code>true</code> indicates a permanent \n      restore. <code>false</code> indicates a temporary restore.</p>",
                         "smithy.api#xmlName": "isPermanentRestore"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#RestoreVolumeFromRecycleBin": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#RestoreVolumeFromRecycleBinRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#RestoreVolumeFromRecycleBinResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Restores a volume from the Recycle Bin. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/recycle-bin-working-with-volumes.html#recycle-bin-restore-volumes\">Restore \n      volumes from the Recycle Bin</a> in the <i>Amazon EBS User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#RestoreVolumeFromRecycleBinRequest": {
+            "type": "structure",
+            "members": {
+                "VolumeId": {
+                    "target": "com.amazonaws.ec2#VolumeId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the volume to restore.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#RestoreVolumeFromRecycleBinResult": {
+            "type": "structure",
+            "members": {
+                "Return": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Return",
+                        "smithy.api#documentation": "<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+                        "smithy.api#xmlName": "return"
                     }
                 }
             },
@@ -120930,6 +122166,303 @@
                 }
             }
         },
+        "com.amazonaws.ec2#TransitGatewayMeteringPayerType": {
+            "type": "enum",
+            "members": {
+                "source_attachment_owner": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "source-attachment-owner"
+                    }
+                },
+                "destination_attachment_owner": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "destination-attachment-owner"
+                    }
+                },
+                "transit_gateway_owner": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "transit-gateway-owner"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#TransitGatewayMeteringPolicy": {
+            "type": "structure",
+            "members": {
+                "TransitGatewayMeteringPolicyId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayMeteringPolicyId",
+                        "smithy.api#documentation": "<p>The ID of the transit gateway metering policy.</p>",
+                        "smithy.api#xmlName": "transitGatewayMeteringPolicyId"
+                    }
+                },
+                "TransitGatewayId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TransitGatewayId",
+                        "smithy.api#documentation": "<p>The ID of the transit gateway associated with the metering policy.</p>",
+                        "smithy.api#xmlName": "transitGatewayId"
+                    }
+                },
+                "MiddleboxAttachmentIds": {
+                    "target": "com.amazonaws.ec2#ValueStringList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MiddleboxAttachmentIdSet",
+                        "smithy.api#documentation": "<p>The IDs of the middlebox attachments associated with the metering policy.</p>",
+                        "smithy.api#xmlName": "middleboxAttachmentIdSet"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The state of the transit gateway metering policy.</p>",
+                        "smithy.api#xmlName": "state"
+                    }
+                },
+                "UpdateEffectiveAt": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "UpdateEffectiveAt",
+                        "smithy.api#documentation": "<p>The date and time when the metering policy update becomes effective.</p>",
+                        "smithy.api#xmlName": "updateEffectiveAt"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.ec2#TagList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>The tags assigned to the transit gateway metering policy.</p>",
+                        "smithy.api#xmlName": "tagSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a transit gateway metering policy.</p>"
+            }
+        },
+        "com.amazonaws.ec2#TransitGatewayMeteringPolicyEntry": {
+            "type": "structure",
+            "members": {
+                "PolicyRuleNumber": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PolicyRuleNumber",
+                        "smithy.api#documentation": "<p>The rule number of the metering policy entry.</p>",
+                        "smithy.api#xmlName": "policyRuleNumber"
+                    }
+                },
+                "MeteredAccount": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPayerType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MeteredAccount",
+                        "smithy.api#documentation": "<p>The Amazon Web Services account ID to which the metered traffic is attributed.</p>",
+                        "smithy.api#xmlName": "meteredAccount"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyEntryState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The state of the metering policy entry.</p>",
+                        "smithy.api#xmlName": "state"
+                    }
+                },
+                "UpdatedAt": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "UpdatedAt",
+                        "smithy.api#documentation": "<p>The date and time when the metering policy entry was last updated.</p>",
+                        "smithy.api#xmlName": "updatedAt"
+                    }
+                },
+                "UpdateEffectiveAt": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "UpdateEffectiveAt",
+                        "smithy.api#documentation": "<p>The date and time when the metering policy entry update becomes effective.</p>",
+                        "smithy.api#xmlName": "updateEffectiveAt"
+                    }
+                },
+                "MeteringPolicyRule": {
+                    "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyRule",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MeteringPolicyRule",
+                        "smithy.api#documentation": "<p>The metering policy rule that defines traffic matching criteria.</p>",
+                        "smithy.api#xmlName": "meteringPolicyRule"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes an entry in a transit gateway metering policy.</p>"
+            }
+        },
+        "com.amazonaws.ec2#TransitGatewayMeteringPolicyEntryList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyEntry",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#TransitGatewayMeteringPolicyEntryState": {
+            "type": "enum",
+            "members": {
+                "available": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "available"
+                    }
+                },
+                "deleted": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "deleted"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#TransitGatewayMeteringPolicyId": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#TransitGatewayMeteringPolicyIdStringList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicyId",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#TransitGatewayMeteringPolicyList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#TransitGatewayMeteringPolicy",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#TransitGatewayMeteringPolicyRule": {
+            "type": "structure",
+            "members": {
+                "SourceTransitGatewayAttachmentId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceTransitGatewayAttachmentId",
+                        "smithy.api#documentation": "<p>The ID of the source transit gateway attachment.</p>",
+                        "smithy.api#xmlName": "sourceTransitGatewayAttachmentId"
+                    }
+                },
+                "SourceTransitGatewayAttachmentType": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentResourceType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceTransitGatewayAttachmentType",
+                        "smithy.api#documentation": "<p>The type of the source transit gateway attachment. Note that the <code>tgw-peering</code> resource type has been deprecated. To configure metering policies for Connect, use the transport attachment type.</p>",
+                        "smithy.api#xmlName": "sourceTransitGatewayAttachmentType"
+                    }
+                },
+                "SourceCidrBlock": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceCidrBlock",
+                        "smithy.api#documentation": "<p>The source CIDR block for the rule.</p>",
+                        "smithy.api#xmlName": "sourceCidrBlock"
+                    }
+                },
+                "SourcePortRange": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourcePortRange",
+                        "smithy.api#documentation": "<p>The source port range for the rule.</p>",
+                        "smithy.api#xmlName": "sourcePortRange"
+                    }
+                },
+                "DestinationTransitGatewayAttachmentId": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DestinationTransitGatewayAttachmentId",
+                        "smithy.api#documentation": "<p>The ID of the destination transit gateway attachment.</p>",
+                        "smithy.api#xmlName": "destinationTransitGatewayAttachmentId"
+                    }
+                },
+                "DestinationTransitGatewayAttachmentType": {
+                    "target": "com.amazonaws.ec2#TransitGatewayAttachmentResourceType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DestinationTransitGatewayAttachmentType",
+                        "smithy.api#documentation": "<p>The type of the destination transit gateway attachment. Note that the <code>tgw-peering</code> resource type has been deprecated. To configure metering policies for Connect, use the transport attachment type.</p>",
+                        "smithy.api#xmlName": "destinationTransitGatewayAttachmentType"
+                    }
+                },
+                "DestinationCidrBlock": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DestinationCidrBlock",
+                        "smithy.api#documentation": "<p>The destination CIDR block for the rule.</p>",
+                        "smithy.api#xmlName": "destinationCidrBlock"
+                    }
+                },
+                "DestinationPortRange": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DestinationPortRange",
+                        "smithy.api#documentation": "<p>The destination port range for the rule.</p>",
+                        "smithy.api#xmlName": "destinationPortRange"
+                    }
+                },
+                "Protocol": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Protocol",
+                        "smithy.api#documentation": "<p>The protocol for the rule (1, 6, 17, etc.).</p>",
+                        "smithy.api#xmlName": "protocol"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the traffic matching criteria for a transit gateway metering policy rule.</p>"
+            }
+        },
+        "com.amazonaws.ec2#TransitGatewayMeteringPolicyState": {
+            "type": "enum",
+            "members": {
+                "available": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "available"
+                    }
+                },
+                "deleted": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "deleted"
+                    }
+                },
+                "pending": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pending"
+                    }
+                },
+                "modifying": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "modifying"
+                    }
+                },
+                "deleting": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "deleting"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#TransitGatewayMulitcastDomainAssociationState": {
             "type": "enum",
             "members": {
@@ -121575,6 +123108,14 @@
                         "aws.protocols#ec2QueryName": "MulticastSupport",
                         "smithy.api#documentation": "<p>Indicates whether multicast is enabled on the transit gateway</p>",
                         "smithy.api#xmlName": "multicastSupport"
+                    }
+                },
+                "EncryptionSupport": {
+                    "target": "com.amazonaws.ec2#EncryptionSupport",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "EncryptionSupport",
+                        "smithy.api#documentation": "<p>Defines if the Transit Gateway supports VPC Encryption Control.</p>",
+                        "smithy.api#xmlName": "encryptionSupport"
                     }
                 }
             },
@@ -126674,6 +128215,143 @@
                 }
             }
         },
+        "com.amazonaws.ec2#VolumeRecycleBinInfo": {
+            "type": "structure",
+            "members": {
+                "VolumeId": {
+                    "target": "com.amazonaws.ec2#VolumeId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VolumeId",
+                        "smithy.api#documentation": "<p>The ID of the volume.</p>",
+                        "smithy.api#xmlName": "volumeId"
+                    }
+                },
+                "VolumeType": {
+                    "target": "com.amazonaws.ec2#VolumeType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VolumeType",
+                        "smithy.api#documentation": "<p>The volume type.</p>",
+                        "smithy.api#xmlName": "volumeType"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.ec2#VolumeState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The state of the volume.</p>",
+                        "smithy.api#xmlName": "state"
+                    }
+                },
+                "Size": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Size",
+                        "smithy.api#documentation": "<p>The size of the volume, in GiB.</p>",
+                        "smithy.api#xmlName": "size"
+                    }
+                },
+                "Iops": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Iops",
+                        "smithy.api#documentation": "<p>The number of I/O operations per second (IOPS) for the volume.</p>",
+                        "smithy.api#xmlName": "iops"
+                    }
+                },
+                "Throughput": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Throughput",
+                        "smithy.api#documentation": "<p>The throughput that the volume supports, in MiB/s.</p>",
+                        "smithy.api#xmlName": "throughput"
+                    }
+                },
+                "OutpostArn": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OutpostArn",
+                        "smithy.api#documentation": "<p>The ARN of the Outpost on which the volume is stored. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes-outposts.html\">Amazon EBS volumes on Outposts</a> in the \n      <i>Amazon EBS User Guide</i>.</p>",
+                        "smithy.api#xmlName": "outpostArn"
+                    }
+                },
+                "AvailabilityZone": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZone",
+                        "smithy.api#documentation": "<p>The Availability Zone for the volume.</p>",
+                        "smithy.api#xmlName": "availabilityZone"
+                    }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZoneId",
+                        "smithy.api#documentation": "<p>The ID of the Availability Zone for the volume.</p>",
+                        "smithy.api#xmlName": "availabilityZoneId"
+                    }
+                },
+                "SourceVolumeId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceVolumeId",
+                        "smithy.api#documentation": "<p>The ID of the source volume.</p>",
+                        "smithy.api#xmlName": "sourceVolumeId"
+                    }
+                },
+                "SnapshotId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SnapshotId",
+                        "smithy.api#documentation": "<p>The snapshot from which the volume was created, if applicable.</p>",
+                        "smithy.api#xmlName": "snapshotId"
+                    }
+                },
+                "Operator": {
+                    "target": "com.amazonaws.ec2#OperatorResponse",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Operator",
+                        "smithy.api#documentation": "<p>The service provider that manages the volume.</p>",
+                        "smithy.api#xmlName": "operator"
+                    }
+                },
+                "CreateTime": {
+                    "target": "com.amazonaws.ec2#DateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CreateTime",
+                        "smithy.api#documentation": "<p>The time stamp when volume creation was initiated.</p>",
+                        "smithy.api#xmlName": "createTime"
+                    }
+                },
+                "RecycleBinEnterTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "RecycleBinEnterTime",
+                        "smithy.api#documentation": "<p>The date and time when the volume entered the Recycle Bin.</p>",
+                        "smithy.api#xmlName": "recycleBinEnterTime"
+                    }
+                },
+                "RecycleBinExitTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "RecycleBinExitTime",
+                        "smithy.api#documentation": "<p>The date and time when the volume is to be permanently deleted from the Recycle Bin.</p>",
+                        "smithy.api#xmlName": "recycleBinExitTime"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Information about a volume that is currently in the Recycle Bin.</p>"
+            }
+        },
+        "com.amazonaws.ec2#VolumeRecycleBinInfoList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#VolumeRecycleBinInfo",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
         "com.amazonaws.ec2#VolumeState": {
             "type": "enum",
             "members": {
@@ -127710,6 +129388,7 @@
                     "target": "com.amazonaws.ec2#VpcId",
                     "traits": {
                         "aws.protocols#ec2QueryName": "VpcId",
+                        "smithy.api#documentation": "<p>The ID of the VPC associated with the encryption control configuration.</p>",
                         "smithy.api#xmlName": "vpcId"
                     }
                 },
@@ -127717,6 +129396,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlId",
                     "traits": {
                         "aws.protocols#ec2QueryName": "VpcEncryptionControlId",
+                        "smithy.api#documentation": "<p>The ID of the VPC Encryption Control configuration.</p>",
                         "smithy.api#xmlName": "vpcEncryptionControlId"
                     }
                 },
@@ -127724,6 +129404,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlMode",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Mode",
+                        "smithy.api#documentation": "<p>The encryption mode for the VPC Encryption Control configuration.</p>",
                         "smithy.api#xmlName": "mode"
                     }
                 },
@@ -127731,6 +129412,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlState",
                     "traits": {
                         "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The current state of the VPC Encryption Control configuration.</p>",
                         "smithy.api#xmlName": "state"
                     }
                 },
@@ -127738,6 +129420,7 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "aws.protocols#ec2QueryName": "StateMessage",
+                        "smithy.api#documentation": "<p>A message providing additional information about the encryption control state.</p>",
                         "smithy.api#xmlName": "stateMessage"
                     }
                 },
@@ -127745,6 +129428,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlExclusions",
                     "traits": {
                         "aws.protocols#ec2QueryName": "ResourceExclusions",
+                        "smithy.api#documentation": "<p>Information about resource exclusions for the VPC Encryption Control configuration.</p>",
                         "smithy.api#xmlName": "resourceExclusions"
                     }
                 },
@@ -127752,9 +129436,77 @@
                     "target": "com.amazonaws.ec2#TagList",
                     "traits": {
                         "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>The tags assigned to the VPC Encryption Control configuration.</p>",
                         "smithy.api#xmlName": "tagSet"
                     }
                 }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the configuration and state of VPC encryption controls.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#VpcEncryptionControlConfiguration": {
+            "type": "structure",
+            "members": {
+                "Mode": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlMode",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The encryption mode for the VPC Encryption Control configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "InternetGatewayExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude internet gateway traffic from encryption enforcement.</p>"
+                    }
+                },
+                "EgressOnlyInternetGatewayExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude egress-only internet gateway traffic from encryption enforcement.</p>"
+                    }
+                },
+                "NatGatewayExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude NAT gateway traffic from encryption enforcement.</p>"
+                    }
+                },
+                "VirtualPrivateGatewayExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude virtual private gateway traffic from encryption enforcement.</p>"
+                    }
+                },
+                "VpcPeeringExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude VPC peering connection traffic from encryption enforcement.</p>"
+                    }
+                },
+                "LambdaExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude Lambda function traffic from encryption enforcement.</p>"
+                    }
+                },
+                "VpcLatticeExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude VPC Lattice traffic from encryption enforcement.</p>"
+                    }
+                },
+                "ElasticFileSystemExclusion": {
+                    "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to exclude Elastic File System traffic from encryption enforcement.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the configuration settings for VPC Encryption Control.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
             }
         },
         "com.amazonaws.ec2#VpcEncryptionControlExclusion": {
@@ -127764,6 +129516,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlExclusionState",
                     "traits": {
                         "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The current state of the exclusion configuration.</p>",
                         "smithy.api#xmlName": "state"
                     }
                 },
@@ -127771,9 +129524,13 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "aws.protocols#ec2QueryName": "StateMessage",
+                        "smithy.api#documentation": "<p>A message providing additional information about the exclusion state.</p>",
                         "smithy.api#xmlName": "stateMessage"
                     }
                 }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes an exclusion configuration for VPC Encryption Control.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
             }
         },
         "com.amazonaws.ec2#VpcEncryptionControlExclusionState": {
@@ -127805,6 +129562,23 @@
                 }
             }
         },
+        "com.amazonaws.ec2#VpcEncryptionControlExclusionStateInput": {
+            "type": "enum",
+            "members": {
+                "enable": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enable"
+                    }
+                },
+                "disable": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disable"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#VpcEncryptionControlExclusions": {
             "type": "structure",
             "members": {
@@ -127812,6 +129586,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlExclusion",
                     "traits": {
                         "aws.protocols#ec2QueryName": "InternetGateway",
+                        "smithy.api#documentation": "<p>The exclusion configuration for internet gateway traffic.</p>",
                         "smithy.api#xmlName": "internetGateway"
                     }
                 },
@@ -127819,6 +129594,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlExclusion",
                     "traits": {
                         "aws.protocols#ec2QueryName": "EgressOnlyInternetGateway",
+                        "smithy.api#documentation": "<p>The exclusion configuration for egress-only internet gateway traffic.</p>",
                         "smithy.api#xmlName": "egressOnlyInternetGateway"
                     }
                 },
@@ -127826,6 +129602,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlExclusion",
                     "traits": {
                         "aws.protocols#ec2QueryName": "NatGateway",
+                        "smithy.api#documentation": "<p>The exclusion configuration for NAT gateway traffic.</p>",
                         "smithy.api#xmlName": "natGateway"
                     }
                 },
@@ -127833,6 +129610,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlExclusion",
                     "traits": {
                         "aws.protocols#ec2QueryName": "VirtualPrivateGateway",
+                        "smithy.api#documentation": "<p>The exclusion configuration for virtual private gateway traffic.</p>",
                         "smithy.api#xmlName": "virtualPrivateGateway"
                     }
                 },
@@ -127840,6 +129618,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlExclusion",
                     "traits": {
                         "aws.protocols#ec2QueryName": "VpcPeering",
+                        "smithy.api#documentation": "<p>The exclusion configuration for VPC peering connection traffic.</p>",
                         "smithy.api#xmlName": "vpcPeering"
                     }
                 },
@@ -127847,6 +129626,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlExclusion",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Lambda",
+                        "smithy.api#documentation": "<p>The exclusion configuration for Lambda function traffic.</p>",
                         "smithy.api#xmlName": "lambda"
                     }
                 },
@@ -127854,6 +129634,7 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlExclusion",
                     "traits": {
                         "aws.protocols#ec2QueryName": "VpcLattice",
+                        "smithy.api#documentation": "<p>The exclusion configuration for VPC Lattice traffic.</p>",
                         "smithy.api#xmlName": "vpcLattice"
                     }
                 },
@@ -127861,13 +129642,35 @@
                     "target": "com.amazonaws.ec2#VpcEncryptionControlExclusion",
                     "traits": {
                         "aws.protocols#ec2QueryName": "ElasticFileSystem",
+                        "smithy.api#documentation": "<p>The exclusion configuration for Elastic File System traffic.</p>",
                         "smithy.api#xmlName": "elasticFileSystem"
                     }
                 }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the exclusion configurations for various resource types in VPC Encryption Control.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
             }
         },
         "com.amazonaws.ec2#VpcEncryptionControlId": {
             "type": "string"
+        },
+        "com.amazonaws.ec2#VpcEncryptionControlIdList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#VpcEncryptionControlId",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#VpcEncryptionControlList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#VpcEncryptionControl",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
         },
         "com.amazonaws.ec2#VpcEncryptionControlMode": {
             "type": "enum",
@@ -127942,6 +129745,55 @@
                     "traits": {
                         "smithy.api#enumValue": "delete-failed"
                     }
+                }
+            }
+        },
+        "com.amazonaws.ec2#VpcEncryptionNonCompliantResource": {
+            "type": "structure",
+            "members": {
+                "Id": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Id",
+                        "smithy.api#documentation": "<p>The ID of the non-compliant resource.</p>",
+                        "smithy.api#xmlName": "id"
+                    }
+                },
+                "Type": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Type",
+                        "smithy.api#documentation": "<p>The type of the non-compliant resource.</p>",
+                        "smithy.api#xmlName": "type"
+                    }
+                },
+                "Description": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Description",
+                        "smithy.api#documentation": "<p>A description of the non-compliant resource.</p>",
+                        "smithy.api#xmlName": "description"
+                    }
+                },
+                "IsExcludable": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IsExcludable",
+                        "smithy.api#documentation": "<p>Indicates whether the resource can be excluded from encryption enforcement.</p>",
+                        "smithy.api#xmlName": "isExcludable"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a resource that is not compliant with VPC encryption requirements.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-encryption-controls.html\">Enforce VPC encryption in transit</a> in the <i>Amazon VPC User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#VpcEncryptionNonCompliantResourceList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#VpcEncryptionNonCompliantResource",
+                "traits": {
+                    "smithy.api#xmlName": "item"
                 }
             }
         },
