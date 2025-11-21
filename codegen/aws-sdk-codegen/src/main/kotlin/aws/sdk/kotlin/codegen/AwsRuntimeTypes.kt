@@ -64,6 +64,7 @@ object AwsRuntimeTypes {
         object Region : RuntimeTypePackage(AwsKotlinDependency.AWS_CONFIG, "region") {
             val DefaultRegionProviderChain = symbol("DefaultRegionProviderChain")
             val resolveRegion = symbol("resolveRegion")
+            val validateRegion = symbol("validateRegion")
         }
     }
 
