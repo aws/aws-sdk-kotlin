@@ -541,6 +541,12 @@
             "brazilName": "AwsSdkKotlinComputeOptimizer"
         },
         {
+            "sdkId": "Compute Optimizer Automation",
+            "namespace": "aws.sdk.kotlin.services.computeoptimizerautomation",
+            "artifactName": "computeoptimizerautomation",
+            "brazilName": "AwsSdkKotlinComputeOptimizerAutomation"
+        },
+        {
             "sdkId": "Config Service",
             "namespace": "aws.sdk.kotlin.services.configservice",
             "artifactName": "configservice",
@@ -1967,6 +1973,12 @@
             "namespace": "aws.sdk.kotlin.services.sagemakerruntime",
             "artifactName": "sagemakerruntime",
             "brazilName": "AwsSdkKotlinSagemakerRuntime"
+        },
+        {
+            "sdkId": "SageMaker Runtime HTTP2",
+            "namespace": "aws.sdk.kotlin.services.sagemakerruntimehttp2",
+            "artifactName": "sagemakerruntimehttp2",
+            "brazilName": "AwsSdkKotlinSagemakerRuntimeHttp2"
         },
         {
             "sdkId": "Sagemaker Edge",
