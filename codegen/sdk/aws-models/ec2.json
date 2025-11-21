@@ -2665,6 +2665,9 @@
                     "target": "com.amazonaws.ec2#CreateInternetGateway"
                 },
                 {
+                    "target": "com.amazonaws.ec2#CreateInterruptibleCapacityReservationAllocation"
+                },
+                {
                     "target": "com.amazonaws.ec2#CreateIpam"
                 },
                 {
@@ -4640,6 +4643,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#UpdateCapacityManagerOrganizationsAccess"
+                },
+                {
+                    "target": "com.amazonaws.ec2#UpdateInterruptibleCapacityReservationAllocation"
                 },
                 {
                     "target": "com.amazonaws.ec2#UpdateSecurityGroupRuleDescriptionsEgress"
@@ -12930,6 +12936,30 @@
                         "smithy.api#documentation": "<p>The ID of the Capacity Block.</p>",
                         "smithy.api#xmlName": "capacityBlockId"
                     }
+                },
+                "Interruptible": {
+                    "target": "com.amazonaws.ec2#BoxedBoolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Interruptible",
+                        "smithy.api#documentation": "<p>\n\t\t\tIndicates whether this Capacity Reservation is interruptible, meaning instances may be terminated when the owner reclaims capacity.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptible"
+                    }
+                },
+                "InterruptibleCapacityAllocation": {
+                    "target": "com.amazonaws.ec2#InterruptibleCapacityAllocation",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterruptibleCapacityAllocation",
+                        "smithy.api#documentation": "<p>\n\t\t\tContains allocation details for interruptible reservations, including current allocated instances and target instance counts within the interruptibleCapacityAllocation object.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptibleCapacityAllocation"
+                    }
+                },
+                "InterruptionInfo": {
+                    "target": "com.amazonaws.ec2#InterruptionInfo",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterruptionInfo",
+                        "smithy.api#documentation": "<p>\n\t\t\tInformation about the interruption configuration and association with the source reservation for interruptible Capacity Reservations.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptionInfo"
+                    }
                 }
             },
             "traits": {
@@ -17141,7 +17171,7 @@
                     "target": "com.amazonaws.ec2#Integer",
                     "traits": {
                         "smithy.api#clientOptional": {},
-                        "smithy.api#documentation": "<p>The number of instances for which to reserve capacity.</p>\n         <note>\n            <p>You can request future-dated Capacity Reservations for an instance count with a\n\t\t\t\tminimum of 64 vCPUs. For example, if you request a future-dated Capacity\n\t\t\t\tReservation for <code>m5.xlarge</code> instances, you must request at least 25\n\t\t\t\tinstances (<i>16 * m5.xlarge = 64 vCPUs</i>).</p>\n         </note>\n         <p>Valid range: 1 - 1000</p>",
+                        "smithy.api#documentation": "<p>The number of instances for which to reserve capacity.</p>\n         <note>\n            <p>You can request future-dated Capacity Reservations for an instance count with a\n\t\t\t\tminimum of 32 vCPUs. For example, if you request a future-dated Capacity\n\t\t\t\tReservation for <code>m5.xlarge</code> instances, you must request at least 8\n\t\t\t\tinstances (<i>8 * m5.xlarge = 32 vCPUs</i>).</p>\n         </note>\n         <p>Valid range: 1 - 1000</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -19105,6 +19135,102 @@
                         "aws.protocols#ec2QueryName": "InternetGateway",
                         "smithy.api#documentation": "<p>Information about the internet gateway.</p>",
                         "smithy.api#xmlName": "internetGateway"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateInterruptibleCapacityReservationAllocation": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#CreateInterruptibleCapacityReservationAllocationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#CreateInterruptibleCapacityReservationAllocationResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\n\t\t\tCreates an interruptible Capacity Reservation by specifying the number of unused instances you want to allocate from your source reservation. This helps you make unused capacity available for other workloads within your account while maintaining control to reclaim it.\n\t\t</p>"
+            }
+        },
+        "com.amazonaws.ec2#CreateInterruptibleCapacityReservationAllocationRequest": {
+            "type": "structure",
+            "members": {
+                "CapacityReservationId": {
+                    "target": "com.amazonaws.ec2#CapacityReservationId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\n\t\t\tThe ID of the source Capacity Reservation from which to create the interruptible Capacity Reservation. Your Capacity Reservation must be in active state with no end date set and have available capacity for allocation.\n\t\t</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "InstanceCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\n\t\t\tThe number of instances to allocate from your source reservation. You can only allocate available instances (also called unused capacity).\n\t\t</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tUnique, case-sensitive identifier that you provide to ensure the idempotency of the request.\n\t\t</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tChecks whether you have the required permissions for the action, without actually making the request, and provides an error response.\n\t\t</p>"
+                    }
+                },
+                "TagSpecifications": {
+                    "target": "com.amazonaws.ec2#TagSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe tags to apply to the interruptible Capacity Reservation during creation.\n\t\t</p>",
+                        "smithy.api#xmlName": "TagSpecification"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateInterruptibleCapacityReservationAllocationResult": {
+            "type": "structure",
+            "members": {
+                "SourceCapacityReservationId": {
+                    "target": "com.amazonaws.ec2#CapacityReservationId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceCapacityReservationId",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe ID of the source Capacity Reservation from which the interruptible Capacity Reservation was created.\n\t\t</p>",
+                        "smithy.api#xmlName": "sourceCapacityReservationId"
+                    }
+                },
+                "TargetInstanceCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TargetInstanceCount",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe number of instances allocated to the interruptible reservation.\n\t\t</p>",
+                        "smithy.api#xmlName": "targetInstanceCount"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.ec2#InterruptibleCapacityReservationAllocationStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Status",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe current status of the allocation request (creating, active, updating).\n\t\t</p>",
+                        "smithy.api#xmlName": "status"
+                    }
+                },
+                "InterruptionType": {
+                    "target": "com.amazonaws.ec2#InterruptionType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterruptionType",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe type of interruption applied to the interruptible reservation.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptionType"
                     }
                 }
             },
@@ -38148,7 +38274,7 @@
                 "target": "com.amazonaws.ec2#InstanceAttribute"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Describes the specified attribute of the specified instance. You can specify only one\n            attribute at a time.\n        </p>",
+                "smithy.api#documentation": "<p>Describes the specified attribute of the specified instance. You can specify only one\n            attribute at a time. Available attributes include SQL license exemption configuration\n            for instances registered with the SQL LE service.\n        </p>",
                 "smithy.api#examples": [
                     {
                         "title": "To describe the block device mapping for an instance",
@@ -38805,7 +38931,7 @@
                 "target": "com.amazonaws.ec2#DescribeInstanceStatusResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Describes the status of the specified instances or all of your instances. By default,\n            only running instances are described, unless you specifically indicate to return the\n            status of all instances.</p>\n         <p>Instance status includes the following components:</p>\n         <ul>\n            <li>\n               <p>\n                  <b>Status checks</b> - Amazon EC2 performs status\n                    checks on running EC2 instances to identify hardware and software issues. For\n                    more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html\">Status checks for your instances</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstances.html\">Troubleshoot\n                        instances with failed status checks</a> in the <i>Amazon EC2 User\n                        Guide</i>.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Scheduled events</b> - Amazon EC2 can schedule\n                    events (such as reboot, stop, or terminate) for your instances related to\n                    hardware issues, software updates, or system maintenance. For more information,\n                    see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html\">Scheduled events for your instances</a> in the <i>Amazon EC2 User\n                        Guide</i>.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Instance state</b> - You can manage your instances\n                    from the moment you launch them through their termination. For more information,\n                    see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance\n                        lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p>\n            </li>\n         </ul>\n         <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an\n            API command you run that creates or modifies resources might not be immediately\n            available to all subsequent commands you run. For guidance on how to manage eventual\n            consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the\n                Amazon EC2 API</a> in the <i>Amazon EC2 Developer\n            Guide</i>.</p>\n         <note>\n            <p>The order of the elements in the response, including those within nested\n                structures, might vary. Applications should not assume the elements appear in a\n                particular order.</p>\n         </note>",
+                "smithy.api#documentation": "<p>Describes the status of the specified instances or all of your instances. By default,\n            only running instances are described, unless you specifically indicate to return the\n            status of all instances.</p>\n         <p>Instance status includes the following components:</p>\n         <ul>\n            <li>\n               <p>\n                  <b>Status checks</b> - Amazon EC2 performs status\n                    checks on running EC2 instances to identify hardware and software issues. For\n                    more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html\">Status checks for your instances</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstances.html\">Troubleshoot\n                        instances with failed status checks</a> in the <i>Amazon EC2 User\n                        Guide</i>.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Scheduled events</b> - Amazon EC2 can schedule\n                    events (such as reboot, stop, or terminate) for your instances related to\n                    hardware issues, software updates, or system maintenance. For more information,\n                    see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html\">Scheduled events for your instances</a> in the <i>Amazon EC2 User\n                        Guide</i>.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Instance state</b> - You can manage your instances\n                    from the moment you launch them through their termination. For more information,\n                    see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance\n                        lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p>\n            </li>\n            <li>\n               <p>\n                  <b>SQL license exemption monitoring</b> - For instances\n                    registered with the SQL LE service, status includes SQL license exemption monitoring\n                    health and processing status to provide operational visibility into license exemption\n                    functionality.</p>\n            </li>\n         </ul>\n         <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an\n            API command you run that creates or modifies resources might not be immediately\n            available to all subsequent commands you run. For guidance on how to manage eventual\n            consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the\n                Amazon EC2 API</a> in the <i>Amazon EC2 Developer\n            Guide</i>.</p>\n         <note>\n            <p>The order of the elements in the response, including those within nested\n                structures, might vary. Applications should not assume the elements appear in a\n                particular order.</p>\n         </note>",
                 "smithy.api#examples": [
                     {
                         "title": "To describe the status of an instance",
@@ -39252,7 +39378,7 @@
                 "target": "com.amazonaws.ec2#DescribeInstancesResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Describes the specified instances or all instances.</p>\n         <p>If you specify instance IDs, the output includes information for only the specified\n            instances. If you specify filters, the output includes information for only those\n            instances that meet the filter criteria. If you do not specify instance IDs or filters,\n            the output includes information for all instances, which can affect performance. We\n            recommend that you use pagination to ensure that the operation returns quickly and\n            successfully.</p>\n         <p>If you specify an instance ID that is not valid, an error is returned. If you specify\n            an instance that you do not own, it is not included in the output.</p>\n         <p>Recently terminated instances might appear in the returned results. This interval is\n            usually less than one hour.</p>\n         <p>If you describe instances in the rare case where an Availability Zone is experiencing\n            a service disruption and you specify instance IDs that are in the affected zone, or do\n            not specify any instance IDs at all, the call fails. If you describe instances and\n            specify only instance IDs that are in an unaffected zone, the call works\n            normally.</p>\n         <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an\n            API command you run that creates or modifies resources might not be immediately\n            available to all subsequent commands you run. For guidance on how to manage eventual\n            consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the\n                Amazon EC2 API</a> in the <i>Amazon EC2 Developer\n            Guide</i>.</p>\n         <important>\n            <p>We strongly recommend using only paginated requests. Unpaginated requests are\n                susceptible to throttling and timeouts.</p>\n         </important>\n         <note>\n            <p>The order of the elements in the response, including those within nested\n                structures, might vary. Applications should not assume the elements appear in a\n                particular order.</p>\n         </note>",
+                "smithy.api#documentation": "<p>Describes the specified instances or all instances.</p>\n         <p>If you specify instance IDs, the output includes information for only the specified\n            instances. If you specify filters, the output includes information for only those\n            instances that meet the filter criteria. If you do not specify instance IDs or filters,\n            the output includes information for all instances, which can affect performance. We\n            recommend that you use pagination to ensure that the operation returns quickly and\n            successfully.</p>\n         <p>The response includes SQL license exemption status information for instances registered\n            with the SQL LE service, providing visibility into license exemption configuration and status.</p>\n         <p>If you specify an instance ID that is not valid, an error is returned. If you specify\n            an instance that you do not own, it is not included in the output.</p>\n         <p>Recently terminated instances might appear in the returned results. This interval is\n            usually less than one hour.</p>\n         <p>If you describe instances in the rare case where an Availability Zone is experiencing\n            a service disruption and you specify instance IDs that are in the affected zone, or do\n            not specify any instance IDs at all, the call fails. If you describe instances and\n            specify only instance IDs that are in an unaffected zone, the call works\n            normally.</p>\n         <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an\n            API command you run that creates or modifies resources might not be immediately\n            available to all subsequent commands you run. For guidance on how to manage eventual\n            consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the\n                Amazon EC2 API</a> in the <i>Amazon EC2 Developer\n            Guide</i>.</p>\n         <important>\n            <p>We strongly recommend using only paginated requests. Unpaginated requests are\n                susceptible to throttling and timeouts.</p>\n         </important>\n         <note>\n            <p>The order of the elements in the response, including those within nested\n                structures, might vary. Applications should not assume the elements appear in a\n                particular order.</p>\n         </note>",
                 "smithy.api#examples": [
                     {
                         "title": "To describe an Amazon EC2 instance",
@@ -61777,6 +61903,30 @@
                         "smithy.api#documentation": "<p>Information about the Capacity Reservation usage.</p>",
                         "smithy.api#xmlName": "instanceUsageSet"
                     }
+                },
+                "Interruptible": {
+                    "target": "com.amazonaws.ec2#BoxedBoolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Interruptible",
+                        "smithy.api#documentation": "<p>\n\t\t\tIndicates whether the Capacity Reservation is interruptible, meaning instances may be terminated when the owner reclaims capacity.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptible"
+                    }
+                },
+                "InterruptibleCapacityAllocation": {
+                    "target": "com.amazonaws.ec2#InterruptibleCapacityAllocation",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterruptibleCapacityAllocation",
+                        "smithy.api#documentation": "<p>\n\t\t\tInformation about the capacity allocated to the interruptible Capacity Reservation, including instance counts and allocation status.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptibleCapacityAllocation"
+                    }
+                },
+                "InterruptionInfo": {
+                    "target": "com.amazonaws.ec2#InterruptionInfo",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterruptionInfo",
+                        "smithy.api#documentation": "<p>\n\t\t\tDetails about the interruption configuration and source reservation for interruptible Capacity Reservations.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptionInfo"
+                    }
                 }
             },
             "traits": {
@@ -72468,6 +72618,12 @@
                     "traits": {
                         "smithy.api#enumValue": "capacity-block"
                     }
+                },
+                "interruptible_capacity_reservation": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "interruptible-capacity-reservation"
+                    }
                 }
             }
         },
@@ -81441,6 +81597,130 @@
                 "target": "com.amazonaws.ec2#InternetGateway",
                 "traits": {
                     "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#InterruptibleCapacityAllocation": {
+            "type": "structure",
+            "members": {
+                "InstanceCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceCount",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe current number of instances allocated to the interruptible reservation.\n\t\t</p>",
+                        "smithy.api#xmlName": "instanceCount"
+                    }
+                },
+                "TargetInstanceCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TargetInstanceCount",
+                        "smithy.api#documentation": "<p>\n\t\t\tAfter your modify request, the requested number of instances allocated to interruptible reservation.\n\t\t</p>",
+                        "smithy.api#xmlName": "targetInstanceCount"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.ec2#InterruptibleCapacityReservationAllocationStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Status",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe current status of the allocation (updating during reclamation, active when complete).\n\t\t</p>",
+                        "smithy.api#xmlName": "status"
+                    }
+                },
+                "InterruptibleCapacityReservationId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterruptibleCapacityReservationId",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe ID of the interruptible Capacity Reservation created from the allocation.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptibleCapacityReservationId"
+                    }
+                },
+                "InterruptionType": {
+                    "target": "com.amazonaws.ec2#InterruptionType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterruptionType",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe type of interruption policy applied to the interruptible reservation.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptionType"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\n\t\t\tRepresents the allocation of capacity from a source reservation to an interruptible reservation, tracking current and target instance counts for allocation management.\n\t\t</p>"
+            }
+        },
+        "com.amazonaws.ec2#InterruptibleCapacityReservationAllocationStatus": {
+            "type": "enum",
+            "members": {
+                "pending": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pending"
+                    }
+                },
+                "active": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "active"
+                    }
+                },
+                "updating": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "updating"
+                    }
+                },
+                "canceling": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "canceling"
+                    }
+                },
+                "canceled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "canceled"
+                    }
+                },
+                "failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "failed"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#InterruptionInfo": {
+            "type": "structure",
+            "members": {
+                "SourceCapacityReservationId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceCapacityReservationId",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe ID of the source Capacity Reservation from which the interruptible reservation was created.\n\t\t</p>",
+                        "smithy.api#xmlName": "sourceCapacityReservationId"
+                    }
+                },
+                "InterruptionType": {
+                    "target": "com.amazonaws.ec2#InterruptionType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterruptionType",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe interruption type that determines how instances are terminated when capacity is reclaimed.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptionType"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\n\t\t\tContains information about how and when instances in an interruptible reservation can be terminated when capacity is reclaimed.\n\t\t</p>"
+            }
+        },
+        "com.amazonaws.ec2#InterruptionType": {
+            "type": "enum",
+            "members": {
+                "adhoc": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "adhoc"
+                    }
                 }
             }
         },
@@ -90653,6 +90933,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "capacity-block"
+                    }
+                },
+                "interruptible_capacity_reservation": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "interruptible-capacity-reservation"
                     }
                 }
             }
@@ -125438,6 +125724,104 @@
                         "aws.protocols#ec2QueryName": "OrganizationsAccess",
                         "smithy.api#documentation": "<p>\nThe updated Organizations access setting indicating whether cross-account data aggregation is enabled.\n</p>",
                         "smithy.api#xmlName": "organizationsAccess"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#UpdateInterruptibleCapacityReservationAllocation": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#UpdateInterruptibleCapacityReservationAllocationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#UpdateInterruptibleCapacityReservationAllocationResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\n\t\t\tModifies the number of instances allocated to an interruptible reservation, allowing you to add more capacity or reclaim capacity to your source Capacity Reservation.\n\t\t</p>"
+            }
+        },
+        "com.amazonaws.ec2#UpdateInterruptibleCapacityReservationAllocationRequest": {
+            "type": "structure",
+            "members": {
+                "CapacityReservationId": {
+                    "target": "com.amazonaws.ec2#CapacityReservationId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\n\t\t\tThe ID of the source Capacity Reservation containing the interruptible allocation to modify.\n\t\t</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TargetInstanceCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>\n\t\t\tThe new number of instances to allocate. Enter a higher number to add more capacity to share, or a lower number to reclaim capacity to your source Capacity Reservation.\n\t\t</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tChecks whether you have the required permissions for the action, without actually making the request, and provides an error response.\n\t\t</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#UpdateInterruptibleCapacityReservationAllocationResult": {
+            "type": "structure",
+            "members": {
+                "InterruptibleCapacityReservationId": {
+                    "target": "com.amazonaws.ec2#CapacityReservationId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterruptibleCapacityReservationId",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe ID of the interruptible Capacity Reservation that was modified.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptibleCapacityReservationId"
+                    }
+                },
+                "SourceCapacityReservationId": {
+                    "target": "com.amazonaws.ec2#CapacityReservationId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceCapacityReservationId",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe ID of the source Capacity Reservation to which capacity was reclaimed or from which capacity was allocated.\n\t\t</p>",
+                        "smithy.api#xmlName": "sourceCapacityReservationId"
+                    }
+                },
+                "InstanceCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceCount",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe current number of instances allocated to the interruptible reservation.\n\t\t</p>",
+                        "smithy.api#xmlName": "instanceCount"
+                    }
+                },
+                "TargetInstanceCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TargetInstanceCount",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe requested number of instances for the interruptible Capacity Reservation.\n\t\t</p>",
+                        "smithy.api#xmlName": "targetInstanceCount"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.ec2#InterruptibleCapacityReservationAllocationStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Status",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe current status of the allocation (updating during reclamation, active when complete).\n\t\t</p>",
+                        "smithy.api#xmlName": "status"
+                    }
+                },
+                "InterruptionType": {
+                    "target": "com.amazonaws.ec2#InterruptionType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterruptionType",
+                        "smithy.api#documentation": "<p>\n\t\t\tThe interruption type for the interruptible reservation.\n\t\t</p>",
+                        "smithy.api#xmlName": "interruptionType"
                     }
                 }
             },
