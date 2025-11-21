@@ -1,3 +1,7 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 package aws.sdk.kotlin.runtime.region
 
 import aws.sdk.kotlin.runtime.ConfigurationException
@@ -28,7 +32,7 @@ private fun combinations(ofSet: Set<Char>, length: Int): Set<String> {
 }
 
 private object TestData {
-    private val validChars = charSet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.+~%!$&'()*+,;=")
+    private val validChars = charSet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~%!$&'()*+,;=")
 
     /**
      * Non-exhaustive set of [actual AWS regions][1].

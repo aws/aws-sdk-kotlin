@@ -1,3 +1,7 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 package aws.sdk.kotlin.runtime.region
 
 import aws.sdk.kotlin.runtime.ConfigurationException
@@ -9,7 +13,7 @@ internal fun charSet(range: CharRange) = range.toSet()
 private object Rfc3986CharSets {
     val alpha = charSet('A'..'Z') + charSet('a'..'z')
     val digit = charSet('0'..'9')
-    val unreserved = alpha + digit + charSet("-.+~")
+    val unreserved = alpha + digit + charSet("-._~")
     val hexdig = digit + charSet('A'..'F')
     val pctEncoded = hexdig + '%'
     val subDelims = charSet("!$&'()*+,;=")
