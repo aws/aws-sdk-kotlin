@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.90] - 11/24/2025
+
+### Features
+* (**cloudfront**) Add TrustStore, ConnectionFunction APIs to CloudFront SDK
+* (**cloudwatchlogs**) New CloudWatch Logs feature - LogGroup Deletion Protection, a capability that allows customers to safeguard their critical CloudWatch log groups from accidental or unintended deletion.
+
 ## [1.5.89] - 11/21/2025
 
 ### Features
