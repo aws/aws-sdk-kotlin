@@ -707,3 +707,8 @@ public final class aws/sdk/kotlin/runtime/region/ResolveRegionKt {
 	public static synthetic fun resolveSigV4aSigningRegionSet$default (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
+public final class aws/sdk/kotlin/runtime/region/ValidateRegionKt {
+	public static final fun isRegionValid (Ljava/lang/String;)Z
+	public static final fun validateRegion (Ljava/lang/String;)Ljava/lang/String;
+}
+
