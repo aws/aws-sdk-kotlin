@@ -6,13 +6,11 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.KeyFilterImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SortKeyFilterImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents a filter which limits a Query operation to a specific partition key and optional sort key criteria (if
  * applicable)
  */
-@ExperimentalApi
 public interface KeyFilter {
     /**
      * The required value of the partition key
@@ -30,7 +28,6 @@ public interface KeyFilter {
  * @param partitionKey The value required for the partition key. This must be set to a byte array, string, or number
  * (including unsigned numbers).
  */
-@ExperimentalApi
 public fun KeyFilter(partitionKey: Any): KeyFilter = KeyFilterImpl(partitionKey, null)
 
 /**
@@ -40,6 +37,5 @@ public fun KeyFilter(partitionKey: Any): KeyFilter = KeyFilterImpl(partitionKey,
  * (including unsigned numbers).
  * @param sortKey A DSL block that sets the condition for the sort key. See [SortKeyFilter] for more details.
  */
-@ExperimentalApi
 public fun KeyFilter(partitionKey: Any, sortKey: SortKeyFilter.() -> SortKeyExpr): KeyFilter =
     KeyFilterImpl(partitionKey, SortKeyFilterImpl.run(sortKey))

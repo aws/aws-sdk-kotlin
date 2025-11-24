@@ -4,6 +4,8 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper
 
+import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper.Companion.Config
+import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper.Config.Companion.Builder
 import aws.sdk.kotlin.hll.dynamodbmapper.internal.DynamoDbMapperImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.internal.MapperConfigBuilderImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
@@ -11,14 +13,11 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.Table
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * A high-level client for DynamoDB which maps custom data types into DynamoDB attributes and vice versa.
  */
-@ExperimentalApi
 public interface DynamoDbMapper {
-    @ExperimentalApi
     public companion object {
         /**
          * Instantiate a new [Config] object
@@ -112,7 +111,6 @@ public interface DynamoDbMapper {
  * @param client The low-level DynamoDB client to use for underlying calls to the service
  * @param config A DSL configuration block
  */
-@ExperimentalApi
 public fun DynamoDbMapper(
     client: DynamoDbClient,
     config: DynamoDbMapper.Config.Builder.() -> Unit = { },

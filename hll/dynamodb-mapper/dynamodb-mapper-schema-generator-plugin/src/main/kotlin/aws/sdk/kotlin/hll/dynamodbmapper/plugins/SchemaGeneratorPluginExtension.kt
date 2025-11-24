@@ -8,11 +8,9 @@ package aws.sdk.kotlin.hll.dynamodbmapper.plugins
 import aws.sdk.kotlin.hll.codegen.rendering.Visibility
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.GenerateBuilderClasses
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 internal const val SCHEMA_GENERATOR_PLUGIN_EXTENSION = "dynamoDbMapper"
 
-@ExperimentalApi
 public open class SchemaGeneratorPluginExtension {
     /**
      * Determines when a builder class should be generated for user classes. Defaults to "WHEN_REQUIRED".

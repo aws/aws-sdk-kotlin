@@ -7,7 +7,6 @@ package aws.sdk.kotlin.hll.mapping.core.converters.collections
 import aws.sdk.kotlin.hll.mapping.core.converters.Converter
 import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.hll.mapping.core.converters.reversedBy
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Creates a map-mapping [MonoConverter] which turns values of type `Map<AK, AV>` into values of type `Map<BK, BV>`
@@ -17,7 +16,6 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * @param BV The value type to convert to
  * @param delegate A [MonoConverter] from type `Pair<AK, AV>` to type `Pair<BK, BV>` to use for each map entry
  */
-@ExperimentalApi
 @Suppress("ktlint:standard:function-naming")
 public fun <AK, AV, BK, BV> MapMappingMonoConverter(
     delegate: MonoConverter<Pair<AK, AV>, Pair<BK, BV>>,
@@ -36,7 +34,6 @@ public fun <AK, AV, BK, BV> MapMappingMonoConverter(
  * @param keyDelegate A [MonoConverter] from type [AK] to type [BK] to use for each map key
  * @param valueDelegate A [MonoConverter] from type [AV] to type [BV] to use for each map value
  */
-@ExperimentalApi
 @Suppress("ktlint:standard:function-naming")
 public fun <AK, AV, BK, BV> MapMappingMonoConverter(
     keyDelegate: MonoConverter<AK, BK>,
@@ -56,7 +53,6 @@ public fun <AK, AV, BK, BV> MapMappingMonoConverter(
  * @param RV The **right** value type
  * @param delegate A [Converter] between values of type `Pair<AK, AV>` and type `Pair<BK, BV>` to use for each map entry
  */
-@ExperimentalApi
 @Suppress("ktlint:standard:function-naming")
 public fun <LK, LV, RK, RV> MapMappingConverter(
     delegate: Converter<Pair<LK, LV>, Pair<RK, RV>>,
@@ -73,7 +69,6 @@ public fun <LK, LV, RK, RV> MapMappingConverter(
  * @param keyDelegate A [Converter] between values of type [LK] and type [RK] to use for each map key
  * @param valueDelegate A [Converter] between values of type [LV] to type [RV] to use for each map value
  */
-@ExperimentalApi
 @Suppress("ktlint:standard:function-naming")
 public fun <LK, LV, RK, RV> MapMappingConverter(
     keyDelegate: Converter<LK, RK>,

@@ -4,13 +4,10 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
-
 /**
  * A [visitor](https://en.wikipedia.org/wiki/Visitor_pattern) that can traverse an [Expression]
  * @param T The type of value used for state tracking by this visitor
  */
-@ExperimentalApi
 public interface ExpressionVisitor<T> {
     /**
      * Visit an [AndExpr]

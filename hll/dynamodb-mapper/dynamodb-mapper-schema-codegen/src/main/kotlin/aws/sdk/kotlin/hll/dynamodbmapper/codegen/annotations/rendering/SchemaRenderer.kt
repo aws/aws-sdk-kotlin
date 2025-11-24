@@ -111,7 +111,6 @@ internal class SchemaRenderer(
     }
 
     private fun renderItemConverter() {
-        write("@#T", Types.Smithy.ExperimentalApi)
         withBlock("#Lobject #L : #T by #T(", ")", ctx.attributes.visibility, converterName, MapperTypes.Items.itemConverter(classType), MapperTypes.Items.SimpleItemConverter) {
             if (shouldRenderBuilder) {
                 write("builderFactory = ::#L,", builderName)
@@ -136,7 +135,6 @@ internal class SchemaRenderer(
      */
     private fun renderValueConverter() {
         // TODO Offer alternate serialization options besides AttributeValue.M?
-        write("@#T", Types.Smithy.ExperimentalApi)
         write(
             "#Lval #L : #T = #T.#T(#T)",
             ctx.attributes.visibility,
@@ -291,7 +289,6 @@ internal class SchemaRenderer(
             MapperTypes.Items.itemSchemaPartitionKey(classType, partitionKeyProp.typeRef)
         }
 
-        write("@#T", Types.Smithy.ExperimentalApi)
         withBlock("#Lobject #L : #T {", "}", ctx.attributes.visibility, schemaName, schemaType) {
             write("override val converter: #1T = #1T", itemConverter)
             write("override val partitionKey: #T = #T(#S)", MapperTypes.Items.keySpec(partitionKeyProp.keySpec), partitionKeyProp.keySpecType, partitionKeyName)
@@ -322,7 +319,6 @@ internal class SchemaRenderer(
         docs("Returns a reference to a table named [name] containing items representing [#T]", classType)
 
         val fnName = "get${className}Table"
-        write("@#T", Types.Smithy.ExperimentalApi)
         write(
             "#Lfun #T.#L(name: String): #T = #L(name, #L)",
             ctx.attributes.visibility,

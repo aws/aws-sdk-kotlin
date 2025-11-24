@@ -4,12 +4,10 @@
  */
 package org.example
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import org.example.dynamodbmapper.generatedschemas.ListsConverter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalApi::class)
 public class ListsTest {
     @Test
     fun converterTest() {

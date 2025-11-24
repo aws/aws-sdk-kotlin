@@ -10,7 +10,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.NULL_ATTR
 import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.hll.mapping.core.converters.reversedBy
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.InternalApi
 import aws.smithy.kotlin.runtime.content.Document
 import aws.smithy.kotlin.runtime.util.toNumber
@@ -27,7 +26,6 @@ private val itemToDoc = MonoConverter<Item, Document> {
 }
 
 // FIXME Combine with DocumentValueConverter or refactor to commonize as much code as possible
-@ExperimentalApi
 public val DocumentItemConverter: ItemConverter<Document> = docToItem reversedBy itemToDoc
 
 @OptIn(InternalApi::class)

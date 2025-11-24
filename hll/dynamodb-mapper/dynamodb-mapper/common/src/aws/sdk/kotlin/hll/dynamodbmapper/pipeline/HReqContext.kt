@@ -7,14 +7,12 @@ package aws.sdk.kotlin.hll.dynamodbmapper.pipeline
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.HReqContextImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Contextual data for stages in the pipeline dealing with high-level requests (i.e., before serialization)
  * @param T The type of objects being converted to/from DynamoDB items
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  */
-@ExperimentalApi
 public interface HReqContext<T, HReq> : SerializeInput<T, HReq> {
 
     /**
@@ -39,7 +37,6 @@ public interface HReqContext<T, HReq> : SerializeInput<T, HReq> {
  * @param mapperContext Additional, generalized context which may be useful to interceptors
  * @param error The most recent error which occurred, if any. Defaults to null.
  */
-@ExperimentalApi
 public fun <T, HReq> HReqContext(
     highLevelRequest: HReq,
     serializeSchema: ItemSchema<T>,

@@ -7,7 +7,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.pipeline
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.LResContextImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
 import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
 
@@ -19,7 +18,6 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItem
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
  */
-@ExperimentalApi
 public interface LResContext<T, HReq, LReq, LRes> :
     LReqContext<T, HReq, LReq>,
     DeserializeInput<T, LRes>
@@ -38,7 +36,6 @@ public interface LResContext<T, HReq, LReq, LRes> :
  * @param deserializeSchema The [ItemSchema] to use for deserializing items into objects
  * @param error The most recent error which occurred, if any. Defaults to null.
  */
-@ExperimentalApi
 public fun <T, HReq, LReq, LRes> LResContext(
     highLevelRequest: HReq,
     serializeSchema: ItemSchema<T>,

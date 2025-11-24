@@ -5,12 +5,10 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.model
 
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.ItemSourceOperations
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents a source of DynamoDB items (such as a table or secondary index)
  */
-@ExperimentalApi
 public interface ItemSource<T> :
     PersistenceSpec<T>,
     ItemSourceOperations<T> {
@@ -21,7 +19,6 @@ public interface ItemSource<T> :
      * @param T The type of objects which will be read from and/or written to this item source
      * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
      */
-    @ExperimentalApi
     public interface PartitionKey<T, PK> :
         ItemSource<T>,
         PersistenceSpec.PartitionKey<T, PK>
@@ -33,7 +30,6 @@ public interface ItemSource<T> :
      * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
      * @param SK The type of the sort key property, either [String], [Number], or [ByteArray]
      */
-    @ExperimentalApi
     public interface CompositeKey<T, PK, SK> :
         ItemSource<T>,
         PersistenceSpec.CompositeKey<T, PK, SK>

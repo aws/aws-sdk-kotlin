@@ -6,14 +6,12 @@ package aws.sdk.kotlin.hll.dynamodbmapper.model
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.TableOperations
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents a table in DynamoDB and an associated item schema. Operations on this table will invoke low-level
  * operations after mapping objects to items and vice versa.
  * @param T The type of objects which will be read from and/or written to this table
  */
-@ExperimentalApi
 public interface Table<T> :
     TableSpec<T>,
     TableOperations<T>,
@@ -24,7 +22,6 @@ public interface Table<T> :
      * @param T The type of objects which will be read from and/or written to this table
      * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
      */
-    @ExperimentalApi
     public interface PartitionKey<T, PK> :
         Table<T>,
         ItemSource.PartitionKey<T, PK> {
@@ -38,7 +35,6 @@ public interface Table<T> :
      * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
      * @param SK The type of the sort key property, either [String], [Number], or [ByteArray]
      */
-    @ExperimentalApi
     public interface CompositeKey<T, PK, SK> :
         Table<T>,
         ItemSource.CompositeKey<T, PK, SK> {

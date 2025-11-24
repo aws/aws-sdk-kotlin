@@ -6,14 +6,12 @@ package aws.sdk.kotlin.hll.dynamodbmapper.model
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Specifies how items can be read from and written to a specific DynamoDB location (such as a table or a secondary
  * index)
  * @param T The type of objects which will be read from and/or written to this item source
  */
-@ExperimentalApi
 public interface PersistenceSpec<T> {
     /**
      * The [DynamoDbMapper] which holds the underlying DynamoDB service client used to invoke operations
@@ -29,7 +27,6 @@ public interface PersistenceSpec<T> {
      * Specifies how items can be read from and written to a specific DynamoDB location (such as a table or a secondary
      * index) whose primary key consists of a single partition key
      */
-    @ExperimentalApi
     public interface PartitionKey<T, PK> : PersistenceSpec<T> {
         override val schema: ItemSchema.PartitionKey<T, PK>
     }
@@ -38,7 +35,6 @@ public interface PersistenceSpec<T> {
      * Specifies how items can be read from and written to a specific DynamoDB location (such as a table or a secondary
      * index) whose primary key consists of a composite of a partition key and a sort key
      */
-    @ExperimentalApi
     public interface CompositeKey<T, PK, SK> : PersistenceSpec<T> {
         override val schema: ItemSchema.CompositeKey<T, PK, SK>
     }

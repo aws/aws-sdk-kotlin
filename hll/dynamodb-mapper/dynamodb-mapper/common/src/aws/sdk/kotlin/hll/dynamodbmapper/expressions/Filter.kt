@@ -5,8 +5,6 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAttr
-import aws.smithy.kotlin.runtime.ExperimentalApi
-import kotlin.jvm.JvmName
 
 /**
  * A DSL interface providing support for "low-level" filter expressions. Implementations of this interface provide
@@ -181,7 +179,6 @@ import kotlin.jvm.JvmName
  * attr("bar").exists()    // Checks whether any value exists for `bar` (including `null`)
  * ```
  */
-@ExperimentalApi
 public interface Filter {
     // ATTRIBUTES
 

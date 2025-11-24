@@ -4,15 +4,12 @@
  */
 package aws.sdk.kotlin.hll.mapping.core.converters
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
-
 /**
  * A type for one-way conversion from values of type [A] to values of type [B]. A symmetrical pair of one-way converters
  * form the two halves of a [Converter] which provides two-way conversion.
  * @param A the type to convert from
  * @param B the type to convert to
  */
-@ExperimentalApi
 public fun interface MonoConverter<A, B> {
     public companion object {
         public fun <T> identity(): MonoConverter<T, T> = MonoConverter { it }
@@ -31,7 +28,6 @@ public fun interface MonoConverter<A, B> {
  * @param C The "to" type of the next converter
  * @param next The subsequent converter to chain
  */
-@ExperimentalApi
 public operator fun <A, B, C> MonoConverter<A, B>.plus(next: MonoConverter<B, C>): MonoConverter<A, C> =
     MonoConverter { next.convert(this.convert(it)) }
 
@@ -41,6 +37,5 @@ public operator fun <A, B, C> MonoConverter<A, B>.plus(next: MonoConverter<B, C>
  * @param B The "from" type of the other converter and the "to" type of this converter
  * @param other The other converter to pair with
  */
-@ExperimentalApi
 public infix fun <A, B> MonoConverter<A, B>.reversedBy(other: MonoConverter<B, A>): Converter<A, B> =
     Converter(this, other)

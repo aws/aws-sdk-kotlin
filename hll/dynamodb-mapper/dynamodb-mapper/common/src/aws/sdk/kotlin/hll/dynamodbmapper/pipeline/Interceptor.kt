@@ -9,7 +9,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemResponse
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
 import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
 
@@ -75,7 +74,6 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItem
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
  * @param HRes The type of high-level response object (e.g., [GetItemResponse])
  */
-@ExperimentalApi
 public interface Interceptor<T, HReq, LReq, LRes, HRes> {
     // Hooks functions are defined in the same order as pipeline execution below:
 
@@ -182,5 +180,4 @@ public interface Interceptor<T, HReq, LReq, LRes, HRes> {
 /**
  * A universal interceptor which acts on any type of high-level objects, requests, and responses
  */
-@ExperimentalApi
 public typealias InterceptorAny = Interceptor<*, *, *, *, *>

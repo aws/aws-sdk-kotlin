@@ -5,13 +5,11 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.BooleanFuncExprImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents a function expression that yields a boolean result as described in
  * [DynamoDB's **function** documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html#Expressions.OperatorsAndFunctions.Functions)
  */
-@ExperimentalApi
 public interface BooleanFuncExpr :
     BooleanExpr,
     SortKeyExpr {
@@ -39,7 +37,6 @@ public interface BooleanFuncExpr :
  * @param path The attribute path to pass as the function's first argument
  * @param additionalOperands Any additional arguments used by the function
  */
-@ExperimentalApi
 public fun BooleanFuncExpr(
     func: BooleanFunc,
     path: AttributePath,
@@ -52,7 +49,6 @@ public fun BooleanFuncExpr(
  * @param path The attribute path to pass as the function's first argument
  * @param additionalOperands Any additional arguments used by the function
  */
-@ExperimentalApi
 public fun BooleanFuncExpr(
     func: BooleanFunc,
     path: AttributePath,

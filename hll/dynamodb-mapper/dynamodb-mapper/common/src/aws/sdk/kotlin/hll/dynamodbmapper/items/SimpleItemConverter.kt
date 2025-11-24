@@ -8,7 +8,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
 import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * An item converter which uses attribute descriptors to convert objects to items and vice versa. This converter
@@ -23,7 +22,6 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * [T] are the same type, this may be an identity function.
  * @param descriptors A collection of [AttributeDescriptor] which describe how to construct and parse attributes
  */
-@ExperimentalApi
 public class SimpleItemConverter<T, B>(
     private val builderFactory: () -> B,
     private val build: B.() -> T,

@@ -6,7 +6,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.AttributeDescriptorImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConverter
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Describes a single item attribute and how it is converted from an object of type [T] and to a build object of type
@@ -15,7 +14,6 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * @param T The type of object from which values are extracted
  * @param B The type of builder object in which values are mutated
  */
-@ExperimentalApi
 public interface AttributeDescriptor<A, T, B> {
     /**
      * The name of the attribute
@@ -49,7 +47,6 @@ public interface AttributeDescriptor<A, T, B> {
  * @param converter A [ValueConverter] which defines how an object value is converted to an attribute value and vice
  * versa
  */
-@ExperimentalApi
 public fun <A, T, B> AttributeDescriptor(
     name: String,
     getter: (T) -> A,
