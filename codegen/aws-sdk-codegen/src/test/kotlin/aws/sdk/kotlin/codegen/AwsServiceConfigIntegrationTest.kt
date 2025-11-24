@@ -9,7 +9,10 @@ import org.junit.jupiter.api.Test
 import software.amazon.smithy.kotlin.codegen.core.KotlinWriter
 import software.amazon.smithy.kotlin.codegen.model.expectShape
 import software.amazon.smithy.kotlin.codegen.rendering.ServiceClientConfigGenerator
-import software.amazon.smithy.kotlin.codegen.test.*
+import software.amazon.smithy.kotlin.codegen.test.newTestContext
+import software.amazon.smithy.kotlin.codegen.test.shouldContainOnlyOnceWithDiff
+import software.amazon.smithy.kotlin.codegen.test.toRenderingContext
+import software.amazon.smithy.kotlin.codegen.test.toSmithyModel
 import software.amazon.smithy.model.shapes.ServiceShape
 
 class AwsServiceConfigIntegrationTest {
@@ -45,7 +48,7 @@ class AwsServiceConfigIntegrationTest {
         val contents = writer.toString()
 
         val expectedProps = """
-    override val region: String? = builder.region ?: runBlocking { builder.regionProvider?.getRegion() ?: resolveRegion() }
+    override val region: String? = (builder.region ?: runBlocking { builder.regionProvider?.getRegion() ?: resolveRegion() })?.let { validateRegion(it) }
     override val regionProvider: RegionProvider = builder.regionProvider ?: DefaultRegionProviderChain()
     override val credentialsProvider: CredentialsProvider = builder.credentialsProvider ?: DefaultChainCredentialsProvider(httpClient = httpClient, region = region).manage()
 """
