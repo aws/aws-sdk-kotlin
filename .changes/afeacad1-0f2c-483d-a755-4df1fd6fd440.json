@@ -1,5 +1,0 @@
-{
-    "id": "afeacad1-0f2c-483d-a755-4df1fd6fd440",
-    "type": "feature",
-    "description": "Validate caller-specified AWS regions in client config (i.e., `region` and `regionProvider`)"
-}
