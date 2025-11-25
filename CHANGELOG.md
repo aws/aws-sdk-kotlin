@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.91] - 11/25/2025
+
+### Features
+* (**ec2**) This release adds support to view Network firewall proxy appliances attached to an existing NAT Gateway via DescribeNatGateways API NatGatewayAttachedAppliance structure.
+* (**networkfirewall**) Network Firewall release of the Proxy feature.
+* (**organizations**) Add support for policy operations on the S3_POLICY and BEDROCK_POLICY policy type.
+* (**route53**) Adds support for new route53 feature: accelerated recovery.
+* Validate caller-specified AWS regions in client config (i.e., `region` and `regionProvider`)
+
 ## [1.5.90] - 11/24/2025
 
 ### Features
