@@ -98799,6 +98799,14 @@
                         "smithy.api#xmlName": "autoProvisionZones"
                     }
                 },
+                "AttachedAppliances": {
+                    "target": "com.amazonaws.ec2#NatGatewayAttachedApplianceList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AttachedApplianceSet",
+                        "smithy.api#documentation": "<p>The proxy appliances attached to the NAT Gateway for filtering and inspecting traffic to prevent data exfiltration.</p>",
+                        "smithy.api#xmlName": "attachedApplianceSet"
+                    }
+                },
                 "RouteTableId": {
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
@@ -98947,6 +98955,154 @@
                     "traits": {
                         "smithy.api#enumValue": "failed"
                     }
+                }
+            }
+        },
+        "com.amazonaws.ec2#NatGatewayApplianceModifyState": {
+            "type": "enum",
+            "members": {
+                "MODIFYING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "modifying"
+                    }
+                },
+                "COMPLETED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "completed"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "failed"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#NatGatewayApplianceState": {
+            "type": "enum",
+            "members": {
+                "ATTACHING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "attaching"
+                    }
+                },
+                "ATTACHED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "attached"
+                    }
+                },
+                "DETACHING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "detaching"
+                    }
+                },
+                "DETACHED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "detached"
+                    }
+                },
+                "ATTACH_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "attach-failed"
+                    }
+                },
+                "DETACH_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "detach-failed"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#NatGatewayApplianceType": {
+            "type": "enum",
+            "members": {
+                "NETWORK_FIREWALL_PROXY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "network-firewall-proxy"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#NatGatewayAttachedAppliance": {
+            "type": "structure",
+            "members": {
+                "Type": {
+                    "target": "com.amazonaws.ec2#NatGatewayApplianceType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Type",
+                        "smithy.api#documentation": "<p>The type of appliance attached to the NAT Gateway. For network firewall proxy functionality, this will be \"network-firewall-proxy\".</p>",
+                        "smithy.api#xmlName": "type"
+                    }
+                },
+                "ApplianceArn": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ApplianceArn",
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the attached appliance, identifying the specific proxy or security appliance resource.</p>",
+                        "smithy.api#xmlName": "applianceArn"
+                    }
+                },
+                "VpcEndpointId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VpcEndpointId",
+                        "smithy.api#documentation": "<p>The VPC endpoint ID used to route traffic from application VPCs to the proxy for inspection and filtering.</p>",
+                        "smithy.api#xmlName": "vpcEndpointId"
+                    }
+                },
+                "AttachmentState": {
+                    "target": "com.amazonaws.ec2#NatGatewayApplianceState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AttachmentState",
+                        "smithy.api#documentation": "<p>The current attachment state of the appliance.</p>",
+                        "smithy.api#xmlName": "attachmentState"
+                    }
+                },
+                "ModificationState": {
+                    "target": "com.amazonaws.ec2#NatGatewayApplianceModifyState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ModificationState",
+                        "smithy.api#documentation": "<p>The current modification state of the appliance.</p>",
+                        "smithy.api#xmlName": "modificationState"
+                    }
+                },
+                "FailureCode": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "FailureCode",
+                        "smithy.api#documentation": "<p>The failure code if the appliance attachment or modification operation failed.</p>",
+                        "smithy.api#xmlName": "failureCode"
+                    }
+                },
+                "FailureMessage": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "FailureMessage",
+                        "smithy.api#documentation": "<p>A descriptive message explaining the failure if the appliance attachment or modification operation failed.</p>",
+                        "smithy.api#xmlName": "failureMessage"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Information about an appliance attached to a NAT Gateway, providing managed security solutions for traffic filtering and inspection.</p>"
+            }
+        },
+        "com.amazonaws.ec2#NatGatewayAttachedApplianceList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#NatGatewayAttachedAppliance",
+                "traits": {
+                    "smithy.api#xmlName": "item"
                 }
             }
         },
