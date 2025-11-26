@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.92] - 11/26/2025
+
+### Features
+* (**bedrockruntime**) Bedrock Runtime Reserved Service Support
+* (**computeoptimizer**) Compute Optimizer now identifies idle NAT Gateway resources for cost optimization based on traffic patterns and backup configuration analysis. Access recommendations via the GetIdleRecommendations API.
+* (**costoptimizationhub**) This release enables AWS Cost Optimization Hub to show cost optimization recommendations for NAT Gateway.
+
 ## [1.5.91] - 11/25/2025
 
 ### Features
