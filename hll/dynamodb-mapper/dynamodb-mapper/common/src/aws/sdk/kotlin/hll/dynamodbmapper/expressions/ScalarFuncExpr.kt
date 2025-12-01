@@ -5,13 +5,11 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.ScalarFuncExprImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents a function expression that yields a non-boolean result as described in
  * [DynamoDB's **function** documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html#Expressions.OperatorsAndFunctions.Functions)
  */
-@ExperimentalApi
 public interface ScalarFuncExpr : BooleanExpr {
     /**
      * The specific non-boolean function to use
@@ -37,7 +35,6 @@ public interface ScalarFuncExpr : BooleanExpr {
  * @param path The attribute path to pass as the function's first argument
  * @param additionalOperands Any additional arguments used by the function
  */
-@ExperimentalApi
 public fun ScalarFuncExpr(
     func: ScalarFunc,
     path: AttributePath,
@@ -50,7 +47,6 @@ public fun ScalarFuncExpr(
  * @param path The attribute path to pass as the function's first argument
  * @param additionalOperands Any additional arguments used by the function
  */
-@ExperimentalApi
 public fun ScalarFuncExpr(
     func: ScalarFunc,
     path: AttributePath,

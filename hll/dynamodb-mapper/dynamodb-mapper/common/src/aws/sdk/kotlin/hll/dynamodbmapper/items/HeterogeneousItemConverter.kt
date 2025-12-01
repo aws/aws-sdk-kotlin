@@ -8,7 +8,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
 import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * An item converter which handles heterogeneous (i.e., incongruent) data types by way of a string discriminator
@@ -96,7 +95,6 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * [typeMapper] function returns a type name which does not exist in this map, or if an item is read containing a type
  * attribute value which does not exist in this map, an exception will be thrown.
  */
-@ExperimentalApi
 public class HeterogeneousItemConverter<T>(
     public val typeMapper: (T) -> String,
     public val typeAttribute: String,

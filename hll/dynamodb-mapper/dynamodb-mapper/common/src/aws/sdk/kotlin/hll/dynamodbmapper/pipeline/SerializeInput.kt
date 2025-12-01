@@ -7,14 +7,12 @@ package aws.sdk.kotlin.hll.dynamodbmapper.pipeline
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.SerializeInputImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Defines input to the serialization step of the pipeline
  * @param T The type of objects being converted to/from DynamoDB items
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  */
-@ExperimentalApi
 public interface SerializeInput<T, HReq> {
     /**
      * The high-level request object which is to be serialized into a low-level request object
@@ -34,6 +32,5 @@ public interface SerializeInput<T, HReq> {
  * @param highLevelRequest The high-level request object which is to be serialized into a low-level request object
  * @param serializeSchema The [ItemSchema] to use for serializing objects into items
  */
-@ExperimentalApi
 public fun <T, HReq> SerializeInput(highLevelRequest: HReq, serializeSchema: ItemSchema<T>): SerializeInput<T, HReq> =
     SerializeInputImpl(highLevelRequest, serializeSchema)

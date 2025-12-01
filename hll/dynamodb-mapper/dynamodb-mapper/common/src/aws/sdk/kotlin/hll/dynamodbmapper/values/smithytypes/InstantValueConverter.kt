@@ -10,7 +10,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.values.smithytypes.InstantValueConverter.EpochS
 import aws.sdk.kotlin.hll.mapping.core.converters.Converter
 import aws.sdk.kotlin.hll.mapping.core.converters.plus
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.TimestampFormat
 import aws.smithy.kotlin.runtime.time.epochMilliseconds
@@ -19,7 +18,6 @@ import aws.smithy.kotlin.runtime.time.fromEpochMilliseconds
 /**
  * Provides access to [ValueConverter] types for various [Instant] representations
  */
-@ExperimentalApi
 public object InstantValueConverter {
     /**
      * Converts between [Instant] and

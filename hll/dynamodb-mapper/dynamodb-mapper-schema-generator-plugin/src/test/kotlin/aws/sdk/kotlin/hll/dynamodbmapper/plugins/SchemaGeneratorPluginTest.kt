@@ -207,9 +207,7 @@ class SchemaGeneratorPluginTest {
     fun testGenerateBuilderOption() {
         val pluginConfiguration = """
         import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.GenerateBuilderClasses
-        import aws.smithy.kotlin.runtime.ExperimentalApi
         
-        @OptIn(ExperimentalApi::class)
         dynamoDbMapper {
             generateBuilderClasses = GenerateBuilderClasses.ALWAYS
         }
@@ -240,9 +238,7 @@ class SchemaGeneratorPluginTest {
     fun testVisibilityOption() {
         val pluginConfiguration = """
         import aws.sdk.kotlin.hll.codegen.rendering.Visibility
-        import aws.smithy.kotlin.runtime.ExperimentalApi
         
-        @OptIn(ExperimentalApi::class)
         dynamoDbMapper {
             visibility = Visibility.INTERNAL
         }
@@ -270,9 +266,6 @@ class SchemaGeneratorPluginTest {
     @Test
     fun testGenerateGetTableFunctionOption() {
         val pluginConfiguration = """
-        import aws.smithy.kotlin.runtime.ExperimentalApi
-        
-        @OptIn(ExperimentalApi::class)
         dynamoDbMapper {
             generateGetTableExtension = false
         }
@@ -301,9 +294,7 @@ class SchemaGeneratorPluginTest {
     fun testRelativeDestinationPackage() {
         val pluginConfiguration = """
         import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
-        import aws.smithy.kotlin.runtime.ExperimentalApi
         
-        @OptIn(ExperimentalApi::class)
         dynamoDbMapper {
             destinationPackage = DestinationPackage.Relative("hello.moto")
         }
@@ -328,9 +319,7 @@ class SchemaGeneratorPluginTest {
     fun testAbsoluteDestinationPackage() {
         val pluginConfiguration = """
         import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
-        import aws.smithy.kotlin.runtime.ExperimentalApi
         
-        @OptIn(ExperimentalApi::class)
         dynamoDbMapper {
             destinationPackage = DestinationPackage.Absolute("absolutely.my.`package`")
         }

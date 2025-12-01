@@ -7,7 +7,6 @@ package aws.sdk.kotlin.hll.mapping.core.converters.collections
 import aws.sdk.kotlin.hll.mapping.core.converters.Converter
 import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.hll.mapping.core.converters.reversedBy
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Creates a list-mapping [MonoConverter] which turns values of type `List<L>` into values of type `List<R>`
@@ -15,7 +14,6 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * @param B The element type to convert to
  * @param delegate A [MonoConverter] from type [A] to type [B] to use for each list element
  */
-@ExperimentalApi
 @Suppress("ktlint:standard:function-naming")
 public fun <A, B> ListMappingMonoConverter(delegate: MonoConverter<A, B>): MonoConverter<List<A>, List<B>> =
     MonoConverter { it.map(delegate::convert) }
@@ -26,7 +24,6 @@ public fun <A, B> ListMappingMonoConverter(delegate: MonoConverter<A, B>): MonoC
  * @param L The **left** element type
  * @param R The **right** element type
  */
-@ExperimentalApi
 @Suppress("ktlint:standard:function-naming")
 public fun <L, R> ListMappingConverter(delegate: Converter<L, R>): Converter<List<L>, List<R>> =
     ListMappingMonoConverter(delegate.right) reversedBy ListMappingMonoConverter(delegate.left)

@@ -6,14 +6,12 @@ package aws.sdk.kotlin.hll.dynamodbmapper.plugins
 
 import aws.sdk.kotlin.hll.codegen.rendering.RenderOptions
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.AnnotationsProcessorOptions
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 
-@ExperimentalApi
 public class SchemaGeneratorPlugin : Plugin<Project> {
     override fun apply(project: Project): Unit = project.run {
         val extension = createExtension()

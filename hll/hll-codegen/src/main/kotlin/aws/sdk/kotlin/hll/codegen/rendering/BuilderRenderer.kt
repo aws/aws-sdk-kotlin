@@ -43,7 +43,6 @@ public class BuilderRenderer(
 
         val genericParams = members.flatMap { it.type.genericVars() }.asParamsList()
 
-        write("@#T", Types.Smithy.ExperimentalApi)
         withBlock("#Lclass #L#L {", "}", ctx.attributes.visibility, builderName, genericParams) {
             members.forEach(::renderProperty)
             blankLine()

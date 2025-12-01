@@ -4,15 +4,12 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
-
 /**
  * Identifies a
  * [DynamoDB expression function](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html#Expressions.OperatorsAndFunctions.Functions)
  * which returns a boolean value
  * @param exprString The literal name of the function to use in expression strings
  */
-@ExperimentalApi
 public enum class BooleanFunc(public val exprString: String) {
     /**
      * The `attribute_exist` function

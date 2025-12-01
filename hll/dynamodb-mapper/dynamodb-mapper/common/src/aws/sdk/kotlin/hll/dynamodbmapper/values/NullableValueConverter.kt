@@ -9,7 +9,6 @@ import aws.sdk.kotlin.hll.mapping.core.converters.Converter
 import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.hll.mapping.core.converters.reversedBy
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Converts between `null` values and
@@ -17,7 +16,6 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * This converter is not generally useful on its own and is typically combined with a type-specific non-nullable
  * delegate in a [NullableValueConverter].
  */
-@ExperimentalApi
 public val NullValueConverter: ValueConverter<Nothing?> =
     MonoConverter<Nothing?, AttributeValue> { NULL_ATTR } reversedBy MonoConverter {
         require(it is AttributeValue.Null)
@@ -31,7 +29,6 @@ public val NullValueConverter: ValueConverter<Nothing?> =
  * @param delegate The delegate converter for non-null values
  * @param nullValueConverter A [Converter] for `null` values. The default is [NullValueConverter].
  */
-@ExperimentalApi
 @Suppress("ktlint:standard:function-naming")
 public fun <V : Any> NullableValueConverter(
     delegate: ValueConverter<V>,
@@ -54,7 +51,6 @@ public fun <V : Any> NullableValueConverter(
     return Converter(right, left)
 }
 
-@ExperimentalApi
 public fun <V : Any> ValueConverter<V>.asNullable(
     nullValueConverter: ValueConverter<Nothing?> = NullValueConverter,
 ): ValueConverter<V?> = NullableValueConverter(this, nullValueConverter)

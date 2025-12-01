@@ -5,14 +5,12 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.ComparisonExprImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents a comparison expression as described in
  * [DynamoDB's **making comparisons** documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html#Expressions.OperatorsAndFunctions.Comparators).
  * The specific type of comparison is identified by the [comparator] field.
  */
-@ExperimentalApi
 public interface ComparisonExpr :
     BooleanExpr,
     SortKeyExpr {
@@ -40,6 +38,5 @@ public interface ComparisonExpr :
  * @param left The left value being compared
  * @param right The right value being compared
  */
-@ExperimentalApi
 public fun ComparisonExpr(comparator: Comparator, left: Expression, right: Expression): ComparisonExpr =
     ComparisonExprImpl(comparator, left, right)

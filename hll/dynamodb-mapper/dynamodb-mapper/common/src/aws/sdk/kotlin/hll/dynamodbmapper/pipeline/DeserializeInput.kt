@@ -6,7 +6,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.pipeline
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.DeserializeInputImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
 
 /**
@@ -14,7 +13,6 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItem
  * @param T The type of objects being converted to/from DynamoDB items
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
  */
-@ExperimentalApi
 public interface DeserializeInput<T, LRes> {
     /**
      * The low-level response which is to be deserialized into a high-level response object
@@ -34,7 +32,6 @@ public interface DeserializeInput<T, LRes> {
  * @param lowLevelResponse The low-level response which is to be deserialized into a high-level response object
  * @param deserializeSchema The [ItemSchema] to use for deserializing items into objects
  */
-@ExperimentalApi
 public fun <T, LRes> DeserializeInput(
     lowLevelResponse: LRes,
     deserializeSchema: ItemSchema<T>,

@@ -7,17 +7,14 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.AttrPathIndexImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.AttrPathNameImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.AttributePathImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents an element in an [AttributePath]
  */
-@ExperimentalApi
 public sealed interface AttrPathElement {
     /**
      * Represents the name of a top-level attribute or a key in a map
      */
-    @ExperimentalApi
     public interface Name : AttrPathElement {
         /**
          * The name or key of this element
@@ -28,7 +25,6 @@ public sealed interface AttrPathElement {
     /**
      * Represents an index into a list/set
      */
-    @ExperimentalApi
     public interface Index : AttrPathElement {
         /**
          * The index (starting at `0`)
@@ -46,7 +42,6 @@ public sealed interface AttrPathElement {
  *
  * See [Filter] for more information about creating references to attributes.
  */
-@ExperimentalApi
 public interface AttributePath : Expression {
     /**
      * The [AttrPathElement] for this path
@@ -68,7 +63,6 @@ public interface AttributePath : Expression {
  * @param parent The parent [AttributePath] (if any) of this element. If [parent] is `null` then this instance
  * represents a top-level attribute.
  */
-@ExperimentalApi
 public fun AttributePath(name: String, parent: AttributePath? = null): AttributePath =
     AttributePathImpl(AttrPathNameImpl(name), parent)
 
@@ -77,6 +71,5 @@ public fun AttributePath(name: String, parent: AttributePath? = null): Attribute
  * @param index The index (starting at `0`) of this element
  * @param parent The parent [AttributePath] of this element
  */
-@ExperimentalApi
 public fun AttributePath(index: Int, parent: AttributePath): AttributePath =
     AttributePathImpl(AttrPathIndexImpl(index), parent)

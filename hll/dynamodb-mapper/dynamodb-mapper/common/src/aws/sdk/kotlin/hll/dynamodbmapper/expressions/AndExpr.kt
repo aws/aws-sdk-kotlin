@@ -5,14 +5,12 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.AndExprImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents an `AND` expression as described in
  * [DynamoDB's **logical evaluations** documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html#Expressions.OperatorsAndFunctions.LogicalEvaluations).
  * This expression will be true if `(operand[0] && operand[1] && ... && operand[n - 1])`.
  */
-@ExperimentalApi
 public interface AndExpr : BooleanExpr {
     /**
      * A list of 2 or more [BooleanExpr] conditions which are ANDed together
@@ -26,5 +24,4 @@ public interface AndExpr : BooleanExpr {
  * Creates a new [AndExpr] with the given [operands]
  * @param operands A list of 2 or more [BooleanExpr] conditions which are ANDed together
  */
-@ExperimentalApi
 public fun AndExpr(operands: List<BooleanExpr>): AndExpr = AndExprImpl(operands)

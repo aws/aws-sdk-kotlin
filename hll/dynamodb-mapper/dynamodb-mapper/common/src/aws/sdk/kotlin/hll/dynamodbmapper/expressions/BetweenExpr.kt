@@ -5,14 +5,12 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.BetweenExprImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents a `BETWEEN` expression as described in
  * [DynamoDB's **making comparisons** documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html#Expressions.OperatorsAndFunctions.Comparators).
  * This expression will be true if `value >= min && value <= max`.
  */
-@ExperimentalApi
 public interface BetweenExpr :
     BooleanExpr,
     SortKeyExpr {
@@ -40,6 +38,5 @@ public interface BetweenExpr :
  * @param min The minimum bound for the comparison
  * @param max The maximum bound for the comparison
  */
-@ExperimentalApi
 public fun BetweenExpr(value: Expression, min: Expression, max: Expression): BetweenExpr =
     BetweenExprImpl(value, min, max)

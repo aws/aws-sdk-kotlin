@@ -4,13 +4,11 @@
  */
 package org.example
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.time.Instant
 import org.example.dynamodbmapper.generatedschemas.NullableItemConverter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalApi::class)
 public class NullableItemTest {
     @Test
     fun converterTest() {

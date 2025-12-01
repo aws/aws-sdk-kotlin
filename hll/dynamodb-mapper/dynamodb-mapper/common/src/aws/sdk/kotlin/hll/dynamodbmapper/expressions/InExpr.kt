@@ -5,14 +5,12 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.InExprImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents an `IN` expression as described in
  * [DynamoDB's **making comparisons** documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html#Expressions.OperatorsAndFunctions.Comparators).
  * This expression will be true if `value in set` (or, equivalently, if `set.contains(value)`).
  */
-@ExperimentalApi
 public interface InExpr : BooleanExpr {
     /**
      * The value to check for in [set]
@@ -32,5 +30,4 @@ public interface InExpr : BooleanExpr {
  * @param value The value to check for in [set]
  * @param set The set of values to compare against [value]
  */
-@ExperimentalApi
 public fun InExpr(value: Expression, set: Collection<Expression>): InExpr = InExprImpl(value, set)

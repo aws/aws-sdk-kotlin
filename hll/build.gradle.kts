@@ -27,7 +27,6 @@ val sdkVersion: String by project
 val libraries = libs
 
 val optinAnnotations = listOf(
-    "aws.smithy.kotlin.runtime.ExperimentalApi",
     "aws.smithy.kotlin.runtime.InternalApi",
     "aws.sdk.kotlin.runtime.InternalSdkApi",
     "kotlin.RequiresOptIn",

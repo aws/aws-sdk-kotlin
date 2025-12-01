@@ -4,13 +4,9 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
-import kotlin.jvm.JvmName
-
 /**
  * Represents a sort key independent of schema
  */
-@ExperimentalApi
 public interface SortKey
 
 /**
@@ -75,7 +71,6 @@ public interface SortKey
  * sortKey startsWith "abc" // Checks whether the value of the sort key starts with `"abc"`
  * ```
  */
-@ExperimentalApi
 public interface SortKeyFilter {
     /**
      * Gets an attribute reference to the sort key

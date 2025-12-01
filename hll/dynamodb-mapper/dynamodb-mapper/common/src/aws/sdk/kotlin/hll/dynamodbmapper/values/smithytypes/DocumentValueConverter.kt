@@ -17,7 +17,6 @@ import aws.sdk.kotlin.hll.mapping.core.converters.collections.ListMappingConvert
 import aws.sdk.kotlin.hll.mapping.core.converters.collections.MapMappingConverter
 import aws.sdk.kotlin.hll.mapping.core.converters.plus
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.content.Document
 
 /**
@@ -29,7 +28,6 @@ import aws.smithy.kotlin.runtime.content.Document
  * * [Document.List] ↔ [DynamoDB `L` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.Document.List)
  * * [Document.Map] ↔ [DynamoDB `M` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.Document.Map)
  */
-@ExperimentalApi
 public class DocumentValueConverter(
     private val numberValueConverter: ValueConverter<Number> = NumberValueConverters.Auto,
     private val stringValueConverter: ValueConverter<String> = StringValueConverter,
@@ -42,7 +40,6 @@ public class DocumentValueConverter(
     private val listValueConverter = ListMappingConverter(nullableConverter) + attributeValueListValueConverter
     private val mapValueConverter = MapMappingConverter(Converter.identity<String>(), nullableConverter) + attributeValueMapValueConverter
 
-    @ExperimentalApi
     public companion object {
         /**
          * The default instance of [DocumentValueConverter]

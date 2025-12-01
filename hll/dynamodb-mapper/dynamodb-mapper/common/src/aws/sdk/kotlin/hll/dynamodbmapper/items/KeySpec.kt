@@ -5,33 +5,27 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Defines a specification for a single key attribute
  * @param K The type of the key property, either [kotlin.String], [kotlin.Number], or [kotlin.ByteArray]
  */
-@ExperimentalApi
 public sealed interface KeySpec<in K> {
     /**
      * A [KeySpec] for a [kotlin.ByteArray]-typed field
      */
-    @ExperimentalApi
     public interface ByteArray : KeySpec<kotlin.ByteArray>
 
     /**
      * A [KeySpec] for a [kotlin.Number]-typed field
      */
-    @ExperimentalApi
     public interface Number : KeySpec<kotlin.Number>
 
     /**
      * A [KeySpec] for a [kotlin.String]-typed field
      */
-    @ExperimentalApi
     public interface String : KeySpec<kotlin.String>
 
-    @ExperimentalApi
     public companion object {
         /**
          * Creates a new [ByteArray] key specification

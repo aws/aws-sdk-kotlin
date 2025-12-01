@@ -105,7 +105,6 @@ internal class OperationsTypeRenderer(
             write("operations after mapping objects to items and vice versa")
             write("@param T The type of objects which will be read from and/or written to this #L", entityName)
         }
-        write("@#T", Types.Smithy.ExperimentalApi)
         writeInline("public interface #T ", interfaceType)
 
         parentType?.let { writeInline(": #T ", parentType) }

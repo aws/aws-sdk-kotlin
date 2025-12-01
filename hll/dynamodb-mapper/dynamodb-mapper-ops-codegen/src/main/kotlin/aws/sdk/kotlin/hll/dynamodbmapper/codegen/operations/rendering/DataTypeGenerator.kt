@@ -5,8 +5,14 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.rendering
 
 import aws.sdk.kotlin.hll.codegen.core.CodeGenerator
-import aws.sdk.kotlin.hll.codegen.model.*
-import aws.sdk.kotlin.hll.codegen.rendering.*
+import aws.sdk.kotlin.hll.codegen.model.Member
+import aws.sdk.kotlin.hll.codegen.model.Structure
+import aws.sdk.kotlin.hll.codegen.model.asParamsList
+import aws.sdk.kotlin.hll.codegen.model.genericVars
+import aws.sdk.kotlin.hll.codegen.rendering.BuilderRenderer
+import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
+import aws.sdk.kotlin.hll.codegen.rendering.RenderOptions
+import aws.sdk.kotlin.hll.codegen.rendering.Visibility
 import aws.sdk.kotlin.hll.codegen.util.plus
 
 /**
@@ -60,9 +66,7 @@ internal class DataTypeGenerator(
     private val structure: Structure,
 ) : CodeGenerator by generator {
     fun generate() {
-        write("@#T", Types.Smithy.ExperimentalApi)
         withBlock("public interface #T {", "}", structure.type) {
-            write("@#T", Types.Smithy.ExperimentalApi)
             write("public companion object { }") // leave room for future expansion
             blankLine()
             members { write("public val #L: #T", name, type) }
@@ -85,7 +89,6 @@ internal class DataTypeGenerator(
         BuilderRenderer(this, structure.type, implType, structure.members, builderCtx).render()
 
         blankLine()
-        write("@#T", Types.Smithy.ExperimentalApi)
         withBlock(
             "public fun #1L#2T.toBuilder(): #3L#4L = #3L#4L().apply {",
             "}",
@@ -98,7 +101,6 @@ internal class DataTypeGenerator(
         }
 
         blankLine()
-        write("@#T", Types.Smithy.ExperimentalApi)
         withBlock(
             "public fun #1L#2T.copy(block: #3L#4L.() -> Unit): #2T =",
             "",
@@ -111,7 +113,6 @@ internal class DataTypeGenerator(
         }
 
         blankLine()
-        write("@#T", Types.Smithy.ExperimentalApi)
         withBlock(
             "public fun #L#L(block: #L#L.() -> Unit): #T =",
             "",

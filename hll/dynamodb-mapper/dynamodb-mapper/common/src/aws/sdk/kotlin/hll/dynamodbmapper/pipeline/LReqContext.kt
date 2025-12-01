@@ -7,7 +7,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.pipeline
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.LReqContextImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
 
 /**
@@ -17,7 +16,6 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemR
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  */
-@ExperimentalApi
 public interface LReqContext<T, HReq, LReq> : HReqContext<T, HReq> {
     /**
      * The low-level request object which is to be used in the low-level operation invocation
@@ -36,7 +34,6 @@ public interface LReqContext<T, HReq, LReq> : HReqContext<T, HReq> {
  * @param lowLevelRequest The low-level request object which is to be used in the low-level operation invocation
  * @param error The most recent error which occurred, if any. Defaults to null.
  */
-@ExperimentalApi
 public fun <T, HReq, LReq> LReqContext(
     highLevelRequest: HReq,
     serializeSchema: ItemSchema<T>,

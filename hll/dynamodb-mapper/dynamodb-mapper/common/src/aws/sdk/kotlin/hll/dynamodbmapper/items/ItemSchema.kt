@@ -6,14 +6,12 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaCompositeKeyImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaPartitionKeyImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Defines a schema for handling objects of a certain type, including an [ItemConverter] for converting between objects
  * items and a [KeySpec] for identifying primary keys.
  * @param T The type of objects described by this schema
  */
-@ExperimentalApi
 public interface ItemSchema<T> {
     /**
      * The [ItemConverter] used to convert between objects and items
@@ -30,7 +28,6 @@ public interface ItemSchema<T> {
      * @param T The type of objects described by this schema
      * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
      */
-    @ExperimentalApi
     public interface PartitionKey<T, in PK> : ItemSchema<T> {
         /**
          * The [KeySpec] for the partition key
@@ -47,7 +44,6 @@ public interface ItemSchema<T> {
      * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
      * @param SK The type of the sort key property, either [String], [Number], or [ByteArray]
      */
-    @ExperimentalApi
     public interface CompositeKey<T, PK, SK> : PartitionKey<T, PK> {
         /**
          * The [KeySpec] for the sort key
@@ -66,7 +62,6 @@ public interface ItemSchema<T> {
  * @param converter The [ItemConverter] used to convert between objects and items
  * @param partitionKey The [KeySpec] for the partition key
  */
-@ExperimentalApi
 @Suppress("FunctionName")
 public fun <T, PK> ItemSchema(converter: ItemConverter<T>, partitionKey: KeySpec<PK>): ItemSchema.PartitionKey<T, PK> =
     ItemSchemaPartitionKeyImpl(converter, partitionKey)
@@ -80,7 +75,6 @@ public fun <T, PK> ItemSchema(converter: ItemConverter<T>, partitionKey: KeySpec
  * @param partitionKey The [KeySpec] for the partition key
  * @param sortKey The [KeySpec] for the sort key
  */
-@ExperimentalApi
 @Suppress("FunctionName")
 public fun <T, PK, SK> ItemSchema(
     converter: ItemConverter<T>,
@@ -94,7 +88,6 @@ public fun <T, PK, SK> ItemSchema(
  * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
  * @param partitionKey The [KeySpec] that describes the partition key
  */
-@ExperimentalApi
 public fun <T, PK> ItemConverter<T>.withKeySpec(partitionKey: KeySpec<PK>): ItemSchema.PartitionKey<T, PK> =
     ItemSchema(this, partitionKey)
 
@@ -106,7 +99,6 @@ public fun <T, PK> ItemConverter<T>.withKeySpec(partitionKey: KeySpec<PK>): Item
  * @param partitionKey The [KeySpec] that describes the partition key
  * @param sortKey The [KeySpec] that describes the sort key
  */
-@ExperimentalApi
 public fun <T, PK, SK> ItemConverter<T>.withKeySpec(
     partitionKey: KeySpec<PK>,
     sortKey: KeySpec<SK>,

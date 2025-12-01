@@ -4,8 +4,6 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
-
 /**
  * Represents any kind of expression. This is an abstract top-level interface and describes no details about an
  * expression on its own. Expressions may be of various specific types (e.g., [AttributePath], [ComparisonExpr],
@@ -14,7 +12,6 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * [Expression] and its derivatives support the [visitor design pattern](https://en.wikipedia.org/wiki/Visitor_pattern)
  * by way of an [accept] method.
  */
-@ExperimentalApi
 public sealed interface Expression {
     /**
      * Accepts a visitor that is traversing an expression tree by dispatching to a subtype implementation. Subtype
@@ -30,7 +27,6 @@ public sealed interface Expression {
  * items. This is a [marker interface](https://en.wikipedia.org/wiki/Marker_interface_pattern) which adds no additional
  * declarations.
  */
-@ExperimentalApi
 public sealed interface BooleanExpr : Expression
 
 /**
@@ -38,5 +34,4 @@ public sealed interface BooleanExpr : Expression
  * key. This is a [marker interface](https://en.wikipedia.org/wiki/Marker_interface_pattern) which adds no additional
  * declarations.
  */
-@ExperimentalApi
 public sealed interface SortKeyExpr : Expression

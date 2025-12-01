@@ -6,12 +6,10 @@ package org.example
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import org.example.dynamodbmapper.generatedschemas.UserConverter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalApi::class)
 class UserTest {
     @Test
     fun testConversion() {

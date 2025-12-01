@@ -11,13 +11,11 @@ import aws.sdk.kotlin.hll.mapping.core.converters.collections.SetMappingConverte
 import aws.sdk.kotlin.hll.mapping.core.converters.collections.SetToListConverter
 import aws.sdk.kotlin.hll.mapping.core.converters.plus
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Converts between a [Set] of [ByteArray] elements and
  * [DynamoDB `BS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
  */
-@ExperimentalApi
 public val ByteArraySetConverter: ValueConverter<Set<ByteArray>> = Converter(
     right = { from -> AttributeValue.Bs(from.toList()) },
     left = { to -> to.asBs().toSet() },
@@ -27,7 +25,6 @@ public val ByteArraySetConverter: ValueConverter<Set<ByteArray>> = Converter(
  * Converts between a [List] of [String] elements and
  * [DynamoDB `SS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
  */
-@ExperimentalApi
 public val StringListValueConverter: ValueConverter<List<String>> =
     Converter(AttributeValue::Ss, AttributeValue::asSs)
 
@@ -35,7 +32,6 @@ public val StringListValueConverter: ValueConverter<List<String>> =
  * Converts between a [Set] of [String] elements and
  * [DynamoDB `SS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
  */
-@ExperimentalApi
 public val StringSetValueConverter: ValueConverter<Set<String>> =
     SetToListConverter<String>() + StringListValueConverter
 
@@ -43,7 +39,6 @@ public val StringSetValueConverter: ValueConverter<Set<String>> =
  * Converts between a [Set] of [CharArray] elements and
  * [DynamoDB `SS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
  */
-@ExperimentalApi
 public val CharArraySetValueConverter: ValueConverter<Set<CharArray>> =
     SetMappingConverter(TextConverters.CharArray) + StringSetValueConverter
 
@@ -51,6 +46,5 @@ public val CharArraySetValueConverter: ValueConverter<Set<CharArray>> =
  * Converts between a [Set] of [Char] elements and
  * [DynamoDB `SS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
  */
-@ExperimentalApi
 public val CharSetValueConverter: ValueConverter<Set<Char>> =
     SetMappingConverter(TextConverters.Char) + StringSetValueConverter
