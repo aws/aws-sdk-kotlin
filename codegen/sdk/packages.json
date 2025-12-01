@@ -1573,6 +1573,18 @@
             "brazilName": "AwsSdkKotlinPanorama"
         },
         {
+            "sdkId": "PartnerCentral Account",
+            "namespace": "aws.sdk.kotlin.services.partnercentralaccount",
+            "artifactName": "partnercentralaccount",
+            "brazilName": "AwsSdkKotlinPartnercentralAccount"
+        },
+        {
+            "sdkId": "PartnerCentral Benefits",
+            "namespace": "aws.sdk.kotlin.services.partnercentralbenefits",
+            "artifactName": "partnercentralbenefits",
+            "brazilName": "AwsSdkKotlinPartnercentralBenefits"
+        },
+        {
             "sdkId": "PartnerCentral Channel",
             "namespace": "aws.sdk.kotlin.services.partnercentralchannel",
             "artifactName": "partnercentralchannel",
@@ -1805,6 +1817,12 @@
             "namespace": "aws.sdk.kotlin.services.route53recoveryreadiness",
             "artifactName": "route53recoveryreadiness",
             "brazilName": "AwsSdkKotlinRoute53RecoveryReadiness"
+        },
+        {
+            "sdkId": "Route53GlobalResolver",
+            "namespace": "aws.sdk.kotlin.services.route53globalresolver",
+            "artifactName": "route53globalresolver",
+            "brazilName": "AwsSdkKotlinRoute53globalresolver"
         },
         {
             "sdkId": "Route53Profiles",
