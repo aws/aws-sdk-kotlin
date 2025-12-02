@@ -1507,6 +1507,12 @@
             "brazilName": "AwsSdkKotlinNotificationscontacts"
         },
         {
+            "sdkId": "Nova Act",
+            "namespace": "aws.sdk.kotlin.services.novaact",
+            "artifactName": "novaact",
+            "brazilName": "AwsSdkKotlinNovaAct"
+        },
+        {
             "sdkId": "OAM",
             "namespace": "aws.sdk.kotlin.services.oam",
             "artifactName": "oam",
