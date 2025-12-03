@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.95] - 12/03/2025
+
+### Features
+* (**bedrock**) Adding support in Amazon Bedrock to customize models with reinforcement fine-tuning (RFT) and support for updating the existing Custom Model Deployments.
+* (**sagemaker**) Introduces Serverless training: A fully managed compute infrastructure that abstracts away all infrastructure complexity, allowing you to focus purely on model development.
+    
+    Added AI model customization assets used to train, refine, and evaluate custom models during the model customization process.
+
 ## [1.5.94] - 12/02/2025
 
 ### Features
