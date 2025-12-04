@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.96] - 12/04/2025
+
+### Features
+* (**lambda**) Add DisallowedByVpcEncryptionControl to the LastUpdateStatusReasonCode and StateReasonCode enums to represent failures caused by VPC Encryption Controls.
+
 ## [1.5.95] - 12/03/2025
 
 ### Features
