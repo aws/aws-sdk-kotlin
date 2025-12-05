@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.97] - 12/05/2025
+
+### Features
+* (**iam**) Adding the ExpirationTime attribute to the delegation request resource.
+* (**inspector2**) This release adds a new ScanStatus called "Unsupported Code Artifacts". This ScanStatus will be returned when a Lambda function was not code scanned because it has unsupported code artifacts.
+* (**partnercentralaccount**) Adding Verification API's to Partner Central Account SDK.
+* (**sesv2**) Updating the desired url for `PutEmailIdentityDkimSigningAttributes` from v1 to v2
+
+### Fixes
+* Upgrade to **smithy-kotlin** [**v1.5.21**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.5.21) to pick up bug fixes for logging context
+
+### Documentation
+* (**ecs**) Updating stop-task API to encapsulate containers with custom stop signal
+
 ## [1.5.96] - 12/04/2025
 
 ### Features
