@@ -36,7 +36,11 @@ class LoginCredentialsProviderTest {
     }
 
     @Test
-    fun testExpiredToken() = runTest(timeout = 2.minutes) {
+    fun testExpiredToken() = runTest(
+        // TODO: Figure out why this test takes so long to run on some developer machines (@aoperez)
+        // TODO: Remove custom timeout
+        timeout = 2.minutes
+    ) {
         val engine = TestConnection()
 
         val epoch = "2025-09-15T04:05:45Z"
