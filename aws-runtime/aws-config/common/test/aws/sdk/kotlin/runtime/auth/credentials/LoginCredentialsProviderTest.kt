@@ -23,6 +23,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.text.encodeToByteArray
+import kotlin.time.Duration.Companion.minutes
 import kotlin.to
 
 class LoginCredentialsProviderTest {
@@ -35,7 +36,7 @@ class LoginCredentialsProviderTest {
     }
 
     @Test
-    fun testExpiredToken() = runTest {
+    fun testExpiredToken() = runTest(timeout = 2.minutes) {
         val engine = TestConnection()
 
         val epoch = "2025-09-15T04:05:45Z"
