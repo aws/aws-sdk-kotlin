@@ -38931,7 +38931,7 @@
                 "target": "com.amazonaws.ec2#DescribeInstanceStatusResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Describes the status of the specified instances or all of your instances. By default,\n            only running instances are described, unless you specifically indicate to return the\n            status of all instances.</p>\n         <p>Instance status includes the following components:</p>\n         <ul>\n            <li>\n               <p>\n                  <b>Status checks</b> - Amazon EC2 performs status\n                    checks on running EC2 instances to identify hardware and software issues. For\n                    more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html\">Status checks for your instances</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstances.html\">Troubleshoot\n                        instances with failed status checks</a> in the <i>Amazon EC2 User\n                        Guide</i>.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Scheduled events</b> - Amazon EC2 can schedule\n                    events (such as reboot, stop, or terminate) for your instances related to\n                    hardware issues, software updates, or system maintenance. For more information,\n                    see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html\">Scheduled events for your instances</a> in the <i>Amazon EC2 User\n                        Guide</i>.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Instance state</b> - You can manage your instances\n                    from the moment you launch them through their termination. For more information,\n                    see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance\n                        lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p>\n            </li>\n            <li>\n               <p>\n                  <b>SQL license exemption monitoring</b> - For instances\n                    registered with the SQL LE service, status includes SQL license exemption monitoring\n                    health and processing status to provide operational visibility into license exemption\n                    functionality.</p>\n            </li>\n         </ul>\n         <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an\n            API command you run that creates or modifies resources might not be immediately\n            available to all subsequent commands you run. For guidance on how to manage eventual\n            consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the\n                Amazon EC2 API</a> in the <i>Amazon EC2 Developer\n            Guide</i>.</p>\n         <note>\n            <p>The order of the elements in the response, including those within nested\n                structures, might vary. Applications should not assume the elements appear in a\n                particular order.</p>\n         </note>",
+                "smithy.api#documentation": "<p>Describes the status of the specified instances or all of your instances. By default,\n            only running instances are described, unless you specifically indicate to return the\n            status of all instances.</p>\n         <p>Instance status includes the following components:</p>\n         <ul>\n            <li>\n               <p>\n                  <b>Status checks</b> - Amazon EC2 performs status\n                    checks on running EC2 instances to identify hardware and software issues. For\n                    more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html\">Status checks for your instances</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstances.html\">Troubleshoot\n                        instances with failed status checks</a> in the <i>Amazon EC2 User\n                        Guide</i>.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Scheduled events</b> - Amazon EC2 can schedule\n                    events (such as reboot, stop, or terminate) for your instances related to\n                    hardware issues, software updates, or system maintenance. For more information,\n                    see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html\">Scheduled events for your instances</a> in the <i>Amazon EC2 User\n                        Guide</i>.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Instance state</b> - You can manage your instances\n                    from the moment you launch them through their termination. For more information,\n                    see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance\n                        lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p>\n            </li>\n         </ul>\n         <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an\n            API command you run that creates or modifies resources might not be immediately\n            available to all subsequent commands you run. For guidance on how to manage eventual\n            consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the\n                Amazon EC2 API</a> in the <i>Amazon EC2 Developer\n            Guide</i>.</p>\n         <note>\n            <p>The order of the elements in the response, including those within nested\n                structures, might vary. Applications should not assume the elements appear in a\n                particular order.</p>\n         </note>",
                 "smithy.api#examples": [
                     {
                         "title": "To describe the status of an instance",
@@ -62729,7 +62729,7 @@
                 "target": "com.amazonaws.ec2#GetImageAncestryResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Retrieves the ancestry chain of the specified AMI, tracing its lineage back to the root\n      AMI. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-ancestry.html\">AMI ancestry</a> in\n        <i>Amazon EC2 User Guide</i>.</p>"
+                "smithy.api#documentation": "<p>Retrieves the ancestry chain of the specified AMI, tracing its lineage back to the root\n      AMI. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-ancestry.html\">AMI ancestry</a> in\n      <i>Amazon EC2 User Guide</i>.</p>"
             }
         },
         "com.amazonaws.ec2#GetImageAncestryRequest": {
@@ -68209,7 +68209,7 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "aws.protocols#ec2QueryName": "ImageOwnerAlias",
-                        "smithy.api#documentation": "<p>The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> |\n        <code>aws-marketplace</code> ) of this AMI, if one is assigned. Otherwise, the value is\n        <code>null</code>.</p>",
+                        "smithy.api#documentation": "<p>The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> |\n      <code>aws-marketplace</code> ) of this AMI, if one is assigned. Otherwise, the value is\n      <code>null</code>.</p>",
                         "smithy.api#xmlName": "imageOwnerAlias"
                     }
                 },
@@ -80994,6 +80994,84 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "r8a.metal-48xl"
+                    }
+                },
+                "p6_b300_48xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "p6-b300.48xlarge"
+                    }
+                },
+                "c8a_medium": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.medium"
+                    }
+                },
+                "c8a_large": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.large"
+                    }
+                },
+                "c8a_xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.xlarge"
+                    }
+                },
+                "c8a_2xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.2xlarge"
+                    }
+                },
+                "c8a_4xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.4xlarge"
+                    }
+                },
+                "c8a_8xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.8xlarge"
+                    }
+                },
+                "c8a_12xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.12xlarge"
+                    }
+                },
+                "c8a_16xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.16xlarge"
+                    }
+                },
+                "c8a_24xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.24xlarge"
+                    }
+                },
+                "c8a_48xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.48xlarge"
+                    }
+                },
+                "c8a_metal_24xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.metal-24xl"
+                    }
+                },
+                "c8a_metal_48xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8a.metal-48xl"
                     }
                 }
             }
