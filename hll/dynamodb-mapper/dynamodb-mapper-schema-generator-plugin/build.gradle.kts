@@ -89,16 +89,6 @@ tasks.test {
 // FIXME Commonize the following functions into the aws-kotlin-repo-tools build-support
 val sdkVersion: String by project
 
-private fun String.ensureSuffix(suffix: String): String = if (endsWith(suffix)) this else plus(suffix)
-
-val hllPreviewVersion = if (sdkVersion.contains("-SNAPSHOT")) { // e.g. 1.3.29-beta-SNAPSHOT
-    sdkVersion
-        .removeSuffix("-SNAPSHOT")
-        .ensureSuffix("-beta-SNAPSHOT")
-} else {
-    sdkVersion.ensureSuffix("-beta") // e.g. 1.3.29-beta
-}
-
 /**
  * Create a file containing the sdkVersion to use as a resource
  * This saves us from having to manually change version numbers in multiple places
@@ -111,7 +101,7 @@ val generateSdkVersionFile by tasks.registering {
     outputs.file(versionFile)
     sourceSets.main.get().output.dir(resourcesDir)
     doLast {
-        versionFile.writeText(hllPreviewVersion)
+        versionFile.writeText(sdkVersion)
     }
 }
 
