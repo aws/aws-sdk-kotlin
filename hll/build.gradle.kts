@@ -32,19 +32,9 @@ val optinAnnotations = listOf(
     "kotlin.RequiresOptIn",
 )
 
-private fun String.ensureSuffix(suffix: String): String = if (endsWith(suffix)) this else plus(suffix)
-
-val hllPreviewVersion = if (sdkVersion.contains("-SNAPSHOT")) { // e.g. 1.3.29-beta-SNAPSHOT
-    sdkVersion
-        .removeSuffix("-SNAPSHOT")
-        .ensureSuffix("-beta-SNAPSHOT")
-} else {
-    sdkVersion.ensureSuffix("-beta") // e.g. 1.3.29-beta
-}
-
 subprojects {
     group = "aws.sdk.kotlin"
-    version = hllPreviewVersion
+    version = sdkVersion
     // TODO Use configurePublishing when migrating to Sonatype Publisher API / JReleaser
     configurePublishing("aws-sdk-kotlin")
 }
