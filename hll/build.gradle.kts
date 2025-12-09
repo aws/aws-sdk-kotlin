@@ -46,7 +46,6 @@ val hllPreviewVersion = if (sdkVersion.contains("-SNAPSHOT")) { // e.g. 1.3.29-b
 subprojects {
     group = "aws.sdk.kotlin"
     version = hllPreviewVersion
-    // TODO Use configurePublishing when migrating to Sonatype Publisher API / JReleaser
     configurePublishing("aws-sdk-kotlin")
 }
 
