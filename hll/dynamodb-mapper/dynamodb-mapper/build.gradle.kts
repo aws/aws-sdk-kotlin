@@ -56,17 +56,34 @@ kotlin {
     }
 }
 
+val OPERATIONS_ALLOWLIST = listOf(
+    "deleteItem",
+    "getItem",
+    "putItem",
+    "query",
+    "scan",
+)
+
 ksp {
     arg("pkg", "aws.sdk.kotlin.hll.dynamodbmapper.operations")
+    arg("op-allowlist", OPERATIONS_ALLOWLIST.joinToString(";"))
+}
 
-    val allowlist = listOf(
-        "deleteItem",
-        "getItem",
-        "putItem",
-        "query",
-        "scan",
-    )
-    arg("op-allowlist", allowlist.joinToString(";"))
+// Add code-generated operations to API ignore list
+parent?.parent?.extensions?.configure<kotlinx.validation.ApiValidationExtension> {
+    val prefix = "aws/sdk/kotlin/hll/dynamodbmapper/operations/"
+
+    OPERATIONS_ALLOWLIST.forEach {
+        val pascal = it.replaceFirstChar { c -> c.uppercase() }
+
+        listOf("Request", "Response").forEach { type ->
+            val className = "$prefix$pascal$type" // e.g. PutItem
+            ignoredClasses += className
+            ignoredClasses += "${className}Builder" // e.g. PutItemRequestBuilder
+            ignoredClasses += "${className}\$Companion" // e.g. PutItemRequest$Companion
+        }
+        ignoredClasses += "$prefix${pascal}Kt" // e.g. PutItemKt
+    }
 }
 
 if (project.NATIVE_ENABLED) {
