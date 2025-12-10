@@ -56,17 +56,17 @@ kotlin {
     }
 }
 
-val operationsAllowlist = listOf(
-    "deleteItem",
-    "getItem",
-    "putItem",
-    "query",
-    "scan",
-)
-
 ksp {
     arg("pkg", "aws.sdk.kotlin.hll.dynamodbmapper.operations")
-    arg("op-allowlist", operationsAllowlist.joinToString(";"))
+
+    val allowlist = listOf(
+        "deleteItem",
+        "getItem",
+        "putItem",
+        "query",
+        "scan",
+    )
+    arg("op-allowlist", allowlist.joinToString(";"))
 }
 
 if (project.NATIVE_ENABLED) {
