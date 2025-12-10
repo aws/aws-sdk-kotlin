@@ -69,23 +69,6 @@ ksp {
     arg("op-allowlist", operationsAllowlist.joinToString(";"))
 }
 
-// Add code-generated operations to API ignore list
-parent?.parent?.extensions?.configure<kotlinx.validation.ApiValidationExtension> {
-    val prefix = "aws/sdk/kotlin/hll/dynamodbmapper/operations/"
-
-    operationsAllowlist.forEach {
-        val pascal = it.replaceFirstChar { c -> c.uppercase() }
-
-        listOf("Request", "Response").forEach { type ->
-            val className = "$prefix$pascal$type" // e.g. PutItem
-            ignoredClasses += className
-            ignoredClasses += "${className}Builder" // e.g. PutItemRequestBuilder
-            ignoredClasses += "${className}\$Companion" // e.g. PutItemRequest$Companion
-        }
-        ignoredClasses += "$prefix${pascal}Kt" // e.g. PutItemKt
-    }
-}
-
 if (project.NATIVE_ENABLED) {
     // Configure KSP for multiplatform: https://kotlinlang.org/docs/ksp-multiplatform.html
     // https://github.com/google/ksp/issues/963#issuecomment-1894144639
