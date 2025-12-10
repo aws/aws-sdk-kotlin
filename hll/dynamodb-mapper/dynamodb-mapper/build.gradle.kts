@@ -56,7 +56,7 @@ kotlin {
     }
 }
 
-val OPERATIONS_ALLOWLIST = listOf(
+val operationsAllowlist = listOf(
     "deleteItem",
     "getItem",
     "putItem",
@@ -66,14 +66,14 @@ val OPERATIONS_ALLOWLIST = listOf(
 
 ksp {
     arg("pkg", "aws.sdk.kotlin.hll.dynamodbmapper.operations")
-    arg("op-allowlist", OPERATIONS_ALLOWLIST.joinToString(";"))
+    arg("op-allowlist", operationsAllowlist.joinToString(";"))
 }
 
 // Add code-generated operations to API ignore list
 parent?.parent?.extensions?.configure<kotlinx.validation.ApiValidationExtension> {
     val prefix = "aws/sdk/kotlin/hll/dynamodbmapper/operations/"
 
-    OPERATIONS_ALLOWLIST.forEach {
+    operationsAllowlist.forEach {
         val pascal = it.replaceFirstChar { c -> c.uppercase() }
 
         listOf("Request", "Response").forEach { type ->
