@@ -165,9 +165,7 @@ tasks.generateSmithyProjections {
 val stageSdkTasks = servicesProvider.map { discoveredServices ->
     logger.lifecycle("discoveredServices = ${discoveredServices.joinToString { it.sdkId }}")
     discoveredServices.map { service ->
-        val taskName = "stageSdk-${service.projectionName}"
-
-        tasks.register<Copy>(taskName) {
+        tasks.register<Copy>("stageSdk-${service.projectionName}") {
             val projectionOutputDir = smithyBuild.smithyKotlinProjectionPath(service.projectionName).get()
 
             description = "Copy generated files for ${service.sdkId} to services directory"
