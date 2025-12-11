@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.101] - 12/11/2025
+
+### Features
+* (**lambda**) Add Dotnet 10 (dotnet10) support to AWS Lambda.
+* (**organizations**) Add support for policy operations on the NETWORK SECURITY DIRECTOR POLICY policy type.
+* (**quicksight**) This release adds new GetIdentityContext API, Dashboard customization options for tables and pivot tables, Visual styling options- borders and decals, map GeocodingPreferences, KeyPairCredentials for DataSourceCredentials. Snapshot APIs now support registered users. Parameters limit increased to 400
+* (**secretsmanager**) Add SortBy parameter to ListSecrets
+* (**sesv2**) Update GetEmailIdentity and CreateEmailIdentity response to include SigningHostedZone in DkimAttributes. Updated PutEmailIdentityDkimSigningAttributes Response to include SigningHostedZone.
+
 ## [1.5.100] - 12/10/2025
 
 ### Features
