@@ -172,7 +172,7 @@ val stageSdkTasks = servicesProvider.map { discoveredServices ->
             group = "codegen"
             dependsOn(tasks.generateSmithyProjections)
 
-            doFirst { logger.lifecycle("Copying $projectionOutputDir to ${service.destinationDir}") }
+            doFirst { logger.info("Copying $projectionOutputDir to ${service.destinationDir}") }
 
             // Set base service directory
             into(service.destinationDir)
