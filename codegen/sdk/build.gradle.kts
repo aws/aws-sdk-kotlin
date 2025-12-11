@@ -162,30 +162,41 @@ tasks.generateSmithyProjections {
     }
 }
 
-val stageSdks = tasks.register("stageSdks") {
-    group = "codegen"
-    description = "relocate generated SDK(s) from build directory to services/ dir"
-    dependsOn(tasks.generateSmithyProjections)
-    doLast {
-        val discoveredServices = servicesProvider.get()
-        logger.lifecycle("discoveredServices = ${discoveredServices.joinToString { it.sdkId }}")
-        discoveredServices.forEach {
-            val projectionOutputDir = smithyBuild.smithyKotlinProjectionPath(it.projectionName).get()
-            logger.info("copying $projectionOutputDir to ${it.destinationDir}")
-            copy {
-                from("$projectionOutputDir/src")
-                into("${it.destinationDir}/generated-src")
+val stageSdkTasks = servicesProvider.map { discoveredServices ->
+    logger.lifecycle("discoveredServices = ${discoveredServices.joinToString { it.sdkId }}")
+    discoveredServices.map { service ->
+        val taskName = "stageSdk-${service.projectionName}"
+
+        tasks.register<Copy>(taskName) {
+            val projectionOutputDir = smithyBuild.smithyKotlinProjectionPath(service.projectionName).get()
+
+            description = "Copy generated files for ${service.sdkId} to services directory"
+            group = "codegen"
+            dependsOn(tasks.generateSmithyProjections)
+
+            doFirst { logger.lifecycle("Copying $projectionOutputDir to ${service.destinationDir}") }
+
+            // Copy src directory
+            from("$projectionOutputDir/src")
+            into("${service.destinationDir}/generated-src")
+
+            // Copy build file
+            from("$projectionOutputDir/build.gradle.kts") {
+                into("..")
             }
-            copy {
-                from("$projectionOutputDir/build.gradle.kts")
-                into(it.destinationDir)
-            }
-            copy {
-                from("$projectionOutputDir/OVERVIEW.md")
-                into(it.destinationDir)
+
+            // Copy overview
+            from("$projectionOutputDir/OVERVIEW.md") {
+                into("..")
             }
         }
     }
+}
+
+val stageSdks = tasks.register("stageSdks") {
+    group = "codegen"
+    description = "Relocate generated SDK(s) from build directory to services/ dir"
+    dependsOn(stageSdkTasks)
 }
 
 tasks.register("bootstrap") {
