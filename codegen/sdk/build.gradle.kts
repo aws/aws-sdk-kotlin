@@ -174,18 +174,13 @@ val stageSdkTasks = servicesProvider.map { discoveredServices ->
 
             doFirst { logger.lifecycle("Copying $projectionOutputDir to ${service.destinationDir}") }
 
-            // Copy src directory
-            from("$projectionOutputDir/src")
-            into("${service.destinationDir}/generated-src")
+            // Set base service directory
+            into(service.destinationDir)
 
-            // Copy build file
-            from("$projectionOutputDir/build.gradle.kts") {
-                into("..")
-            }
-
-            // Copy overview
-            from("$projectionOutputDir/OVERVIEW.md") {
-                into("..")
+            from("$projectionOutputDir/build.gradle.kts")
+            from("$projectionOutputDir/OVERVIEW.md")
+            from("$projectionOutputDir/src") {
+                into("generated-src")
             }
         }
     }
