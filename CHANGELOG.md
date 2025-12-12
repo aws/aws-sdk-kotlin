@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.102] - 12/12/2025
+
+### Features
+* (**bcmrecommendedactions**) Added new freetier action types to RecommendedAction.type.
+* (**connect**) Amazon Connect now offers automated post-chat surveys triggered when customers end conversations. This captures timely feedback while experience is fresh, using either a no-code form builder or Amazon Lex-powered interactive surveys.
+* (**datasync**) Adds Enhanced mode support for NFS and SMB locations. SMB credentials are now managed via Secrets Manager, and may be encrypted with service or customer managed keys. Increases AgentArns maximum count to 8 (max 4 per TaskMode). Adds folder counters to DescribeTaskExecution for Enhanced mode tasks.
+* (**workspacesweb**) Adds support for portal branding customization, enabling administrators to personalize end-user portals with custom assets.
+
 ## [1.5.101] - 12/11/2025
 
 ### Features
