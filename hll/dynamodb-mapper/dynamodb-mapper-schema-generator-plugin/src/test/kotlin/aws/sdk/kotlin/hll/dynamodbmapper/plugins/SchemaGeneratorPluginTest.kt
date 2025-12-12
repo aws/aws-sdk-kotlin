@@ -38,21 +38,21 @@ class SchemaGeneratorPluginTest {
 
         // Apply the plugin and necessary dependencies
         val buildFileContent = """
-        repositories {
-            mavenCentral()
-            mavenLocal()
-        }
-        
-        plugins {
-            id("org.jetbrains.kotlin.jvm") version "$kotlinVersion"
-            id("aws.sdk.kotlin.hll.dynamodbmapper.schema.generator")
-        }
-        
-        dependencies {
-            implementation("aws.sdk.kotlin:dynamodb-mapper:$sdkVersion")
-            implementation("aws.sdk.kotlin:dynamodb-mapper-annotations:$sdkVersion")
-            implementation("aws.sdk.kotlin:dynamodb-mapper-schema-generator-plugin:$sdkVersion")
-        }
+            repositories {
+                mavenCentral()
+                mavenLocal()
+            }
+            
+            plugins {
+                id("org.jetbrains.kotlin.jvm") version "$kotlinVersion"
+                id("aws.sdk.kotlin.hll.dynamodbmapper.schema.generator")
+            }
+            
+            dependencies {
+                implementation("aws.sdk.kotlin:dynamodb-mapper:$sdkVersion")
+                implementation("aws.sdk.kotlin:dynamodb-mapper-annotations:$sdkVersion")
+                implementation("aws.sdk.kotlin:dynamodb-mapper-schema-generator-plugin:$sdkVersion")
+            }
         
         """.trimIndent()
         buildFile.writeText(buildFileContent)
@@ -102,36 +102,36 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
-        object UserConverter : ItemConverter<User> by SimpleItemConverter(
-            builderFactory = ::UserBuilder,
-            build = UserBuilder::build,
-            descriptors = arrayOf(
-                AttributeDescriptor(
-                    "id",
-                    User::id,
-                    UserBuilder::id::set,
-                    NumberValueConverters.Int,
-                ),
-                AttributeDescriptor(
-                    "fName",
-                    User::givenName,
-                    UserBuilder::givenName::set,
-                    StringValueConverter,
-                ),
-                AttributeDescriptor(
-                    "lName",
-                    User::surname,
-                    UserBuilder::surname::set,
-                    StringValueConverter,
-                ),
-                AttributeDescriptor(
-                    "age",
-                    User::age,
-                    UserBuilder::age::set,
-                    NumberValueConverters.Int,
-                ),
-            ),
-        )
+                public object UserConverter : ItemConverter<User> by SimpleItemConverter(
+                    builderFactory = ::UserBuilder,
+                    build = UserBuilder::build,
+                    descriptors = arrayOf(
+                        AttributeDescriptor(
+                            "id",
+                            User::id,
+                            UserBuilder::id::set,
+                            NumberValueConverters.Int,
+                        ),
+                        AttributeDescriptor(
+                            "fName",
+                            User::givenName,
+                            UserBuilder::givenName::set,
+                            StringValueConverter,
+                        ),
+                        AttributeDescriptor(
+                            "lName",
+                            User::surname,
+                            UserBuilder::surname::set,
+                            StringValueConverter,
+                        ),
+                        AttributeDescriptor(
+                            "age",
+                            User::age,
+                            UserBuilder::age::set,
+                            NumberValueConverters.Int,
+                        ),
+                    ),
+                )
             """.trimIndent(),
         )
 
@@ -139,15 +139,18 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
-        object UserSchema : ItemSchema.PartitionKey<User, Int> {
-            override val converter: UserConverter = UserConverter
-            override val partitionKey: KeySpec<Number> = KeySpec.Number("id")
-        }
+                public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
+                    override val converter: UserConverter = UserConverter
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                }
             """.trimIndent(),
         )
 
         // GetTable
-        assertContains(schemaContents, "fun DynamoDbMapper.getUserTable(name: String): Table.PartitionKey<User, Int> = getTable(name, UserSchema)".trimIndent())
+        assertContains(
+            schemaContents,
+            "public fun DynamoDbMapper.getUserTable(name: String): Table.PartitionKey<User, KeyType.Key1<Int>> = getTable(name, UserSchema)",
+        )
     }
 
     @Test
@@ -169,36 +172,36 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
-        object BuilderNotRequiredConverter : ItemConverter<BuilderNotRequired> by SimpleItemConverter(
-            builderFactory = { BuilderNotRequired() },
-            build = { this },
-            descriptors = arrayOf(
-                AttributeDescriptor(
-                    "id",
-                    BuilderNotRequired::id,
-                    BuilderNotRequired::id::set,
-                    NumberValueConverters.Int,
-                ),
-                AttributeDescriptor(
-                    "fName",
-                    BuilderNotRequired::givenName,
-                    BuilderNotRequired::givenName::set,
-                    StringValueConverter,
-                ),
-                AttributeDescriptor(
-                    "lName",
-                    BuilderNotRequired::surname,
-                    BuilderNotRequired::surname::set,
-                    StringValueConverter,
-                ),
-                AttributeDescriptor(
-                    "age",
-                    BuilderNotRequired::age,
-                    BuilderNotRequired::age::set,
-                    NumberValueConverters.Int,
-                ),
-            ),
-        )
+                public object BuilderNotRequiredConverter : ItemConverter<BuilderNotRequired> by SimpleItemConverter(
+                    builderFactory = { BuilderNotRequired() },
+                    build = { this },
+                    descriptors = arrayOf(
+                        AttributeDescriptor(
+                            "id",
+                            BuilderNotRequired::id,
+                            BuilderNotRequired::id::set,
+                            NumberValueConverters.Int,
+                        ),
+                        AttributeDescriptor(
+                            "fName",
+                            BuilderNotRequired::givenName,
+                            BuilderNotRequired::givenName::set,
+                            StringValueConverter,
+                        ),
+                        AttributeDescriptor(
+                            "lName",
+                            BuilderNotRequired::surname,
+                            BuilderNotRequired::surname::set,
+                            StringValueConverter,
+                        ),
+                        AttributeDescriptor(
+                            "age",
+                            BuilderNotRequired::age,
+                            BuilderNotRequired::age::set,
+                            NumberValueConverters.Int,
+                        ),
+                    ),
+                )
             """.trimIndent(),
         )
     }
@@ -206,12 +209,12 @@ class SchemaGeneratorPluginTest {
     @Test
     fun testGenerateBuilderOption() {
         val pluginConfiguration = """
-        import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.GenerateBuilderClasses
-        
-        dynamoDbMapper {
-            generateBuilderClasses = GenerateBuilderClasses.ALWAYS
-        }
-        
+            import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.GenerateBuilderClasses
+            
+            dynamoDbMapper {
+                generateBuilderClasses = GenerateBuilderClasses.ALWAYS
+            }
+            
         """.trimIndent()
         buildFile.prependText(pluginConfiguration)
 
@@ -237,12 +240,12 @@ class SchemaGeneratorPluginTest {
     @Test
     fun testVisibilityOption() {
         val pluginConfiguration = """
-        import aws.sdk.kotlin.hll.codegen.rendering.Visibility
-        
-        dynamoDbMapper {
-            visibility = Visibility.INTERNAL
-        }
-        
+            import aws.sdk.kotlin.hll.codegen.rendering.Visibility
+            
+            dynamoDbMapper {
+                visibility = Visibility.INTERNAL
+            }
+            
         """.trimIndent()
         buildFile.prependText(pluginConfiguration)
 
@@ -266,10 +269,10 @@ class SchemaGeneratorPluginTest {
     @Test
     fun testGenerateGetTableFunctionOption() {
         val pluginConfiguration = """
-        dynamoDbMapper {
-            generateGetTableExtension = false
-        }
-        
+            dynamoDbMapper {
+                generateGetTableExtension = false
+            }
+            
         """.trimIndent()
         buildFile.prependText(pluginConfiguration)
 
@@ -293,12 +296,12 @@ class SchemaGeneratorPluginTest {
     @Test
     fun testRelativeDestinationPackage() {
         val pluginConfiguration = """
-        import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
-        
-        dynamoDbMapper {
-            destinationPackage = DestinationPackage.Relative("hello.moto")
-        }
-        
+            import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
+            
+            dynamoDbMapper {
+                destinationPackage = DestinationPackage.Relative("hello.moto")
+            }
+            
         """.trimIndent()
         buildFile.prependText(pluginConfiguration)
 
@@ -318,12 +321,12 @@ class SchemaGeneratorPluginTest {
     @Test
     fun testAbsoluteDestinationPackage() {
         val pluginConfiguration = """
-        import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
-        
-        dynamoDbMapper {
-            destinationPackage = DestinationPackage.Absolute("absolutely.my.`package`")
-        }
-        
+            import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
+            
+            dynamoDbMapper {
+                destinationPackage = DestinationPackage.Absolute("absolutely.my.`package`")
+            }
+            
         """.trimIndent()
         buildFile.prependText(pluginConfiguration)
 
@@ -344,9 +347,9 @@ class SchemaGeneratorPluginTest {
     fun testGeneratedItemConverter() {
         buildFile.appendText(
             """
-            dependencies {
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
 
             """.trimIndent(),
         )
@@ -406,10 +409,10 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
-            public object CustomUserSchema : ItemSchema.PartitionKey<CustomUser, Int> {
-                override val converter: MyCustomUserConverter = MyCustomUserConverter
-                override val partitionKey: KeySpec<Number> = KeySpec.Number("id")
-            }
+                public object CustomUserSchema : ItemSchema.PartitionKey<CustomUser, KeyType.Key1<Int>> {
+                    override val converter: MyCustomUserConverter = MyCustomUserConverter
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                }
             """.trimIndent(),
         )
     }
@@ -418,10 +421,10 @@ class SchemaGeneratorPluginTest {
     fun testPrimitives() {
         buildFile.appendText(
             """
-            dependencies {
-                implementation("aws.smithy.kotlin:runtime-core:$smithyKotlinVersion")
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    implementation("aws.smithy.kotlin:runtime-core:$smithyKotlinVersion")
+                    testImplementation(kotlin("test")) 
+                }
             """.trimIndent(),
         )
 
@@ -445,10 +448,10 @@ class SchemaGeneratorPluginTest {
     fun testNullableTypes() {
         buildFile.appendText(
             """
-            dependencies {
-                implementation("aws.smithy.kotlin:runtime-core:$smithyKotlinVersion")
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    implementation("aws.smithy.kotlin:runtime-core:$smithyKotlinVersion")
+                    testImplementation(kotlin("test")) 
+                }
             """.trimIndent(),
         )
 
@@ -472,9 +475,9 @@ class SchemaGeneratorPluginTest {
     fun testLists() {
         buildFile.appendText(
             """
-            dependencies {
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
             """.trimIndent(),
         )
 
@@ -498,9 +501,9 @@ class SchemaGeneratorPluginTest {
     fun testSets() {
         buildFile.appendText(
             """
-            dependencies {
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
             """.trimIndent(),
         )
 
@@ -524,9 +527,9 @@ class SchemaGeneratorPluginTest {
     fun testMaps() {
         buildFile.appendText(
             """
-            dependencies {
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
             """.trimIndent(),
         )
 
@@ -562,10 +565,10 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
-        object RenamedPartitionKeySchema : ItemSchema.PartitionKey<RenamedPartitionKey, Int> {
-            override val converter: RenamedPartitionKeyConverter = RenamedPartitionKeyConverter
-            override val partitionKey: KeySpec<Number> = KeySpec.Number("user_id")
-        }
+                public object RenamedPartitionKeySchema : ItemSchema.PartitionKey<RenamedPartitionKey, KeyType.Key1<Int>> {
+                    override val converter: RenamedPartitionKeyConverter = RenamedPartitionKeyConverter
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("user_id")
+                }
             """.trimIndent(),
         )
     }

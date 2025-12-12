@@ -6,15 +6,16 @@ package aws.sdk.kotlin.hll.dynamodbmapper.model.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.model.TableSpec
 
-internal data class TableSpecPartitionKeyImpl<T, PK>(
+internal data class TableSpecPartitionKeyImpl<T, PK : KeyType>(
     override val mapper: DynamoDbMapper,
     override val tableName: String,
     override val schema: ItemSchema.PartitionKey<T, PK>,
 ) : TableSpec.PartitionKey<T, PK>
 
-internal data class TableSpecCompositeKeyImpl<T, PK, SK>(
+internal data class TableSpecCompositeKeyImpl<T, PK : KeyType, SK : KeyType>(
     override val mapper: DynamoDbMapper,
     override val tableName: String,
     override val schema: ItemSchema.CompositeKey<T, PK, SK>,

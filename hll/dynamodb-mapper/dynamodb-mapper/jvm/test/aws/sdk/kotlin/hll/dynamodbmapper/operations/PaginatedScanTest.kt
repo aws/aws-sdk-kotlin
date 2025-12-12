@@ -51,7 +51,7 @@ class PaginatedScanTest : DdbLocalTest() {
             AttributeDescriptor("description", Card::description, Card::description::set, StringValueConverter),
         )
 
-        private val schema = ItemSchema(converter, KeySpec.String("suit"), KeySpec.Number("rank"))
+        private val schema = ItemSchema(converter, KeySpec.string("suit"), KeySpec.number<Int>("rank"))
 
         private val allCards = listOf("Spades", "Clubs", "Hearts", "Diamonds").flatMap { suit ->
             (2..14).map { rank ->

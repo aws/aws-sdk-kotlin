@@ -6,48 +6,57 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.*
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
+import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.attrs
+import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.values
 import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAttr
-import aws.sdk.kotlin.hll.dynamodbmapper.util.requireNull
 
-internal data class KeyFilterImpl(override val partitionKey: Any, override val sortKey: SortKeyExpr?) : KeyFilter {
-    init {
-        require(
-            partitionKey is ByteArray ||
-                partitionKey is Number ||
-                partitionKey is String ||
-                partitionKey is UByte ||
-                partitionKey is UInt ||
-                partitionKey is ULong ||
-                partitionKey is UShort,
-        ) { "Partition key values must be either a ByteArray, Number, String, or an unsigned number type" }
+internal data class KeyFilterImpl(
+    override val partitionKey: KeyType,
+    override val sortKeyExpressions: List<SortKeyExpr>,
+) : KeyFilter
+
+internal fun KeyFilter.toExpression(schema: ItemSchema<*>): Expression {
+    val conditions = when (schema) {
+        is ItemSchema.PartitionKey<*, *> -> {
+            require(sortKeyExpressions.isEmpty()) { "A sort key condition is not allowed on schema without a sort key" }
+            pkConditions(schema.partitionKey, partitionKey)
+        }
+
+        is ItemSchema.CompositeKey<*, *, *> ->
+            pkConditions(schema.partitionKey, partitionKey) + skConditions(schema.sortKey, sortKeyExpressions)
+    }
+
+    return if (conditions.size == 1) conditions.single() else FilterImpl.and(conditions)
+}
+
+private fun pkConditions(spec: KeySpec<*>, value: KeyType): List<BooleanExpr> = FilterImpl.run {
+    val attrs = spec.attrs
+    val values = value.values
+    require(attrs.size == values.size) {
+        "Provided number of partition keys ${values.size} does not match the number of keys defined in the schema ${attrs.size}"
+    }
+
+    attrs.zip(values).map { (attr, value) ->
+        attr(attr.name) eq LiteralExpr(dynamicAttr(value))
     }
 }
 
-internal fun KeyFilter.toExpression(schema: ItemSchema<*>) = when (schema) {
-    is ItemSchema.CompositeKey<*, *, *> -> {
-        val pkCondition = pkCondition(schema, partitionKey)
+private fun skConditions(spec: KeySpec<*>, sortKeyExpressions: List<SortKeyExpr>): List<BooleanExpr> = FilterImpl.run {
+    val attrs = spec.attrs
+    require(attrs.size >= sortKeyExpressions.size) {
+        "Provided number of sort key expressions (${sortKeyExpressions.size}) is greater than the number of keys defined in the schema (${attrs.size})"
+    }
 
-        sortKey?.let { sortKey ->
-            FilterImpl.run {
-                val skAttr = attr(schema.sortKey.name)
-                val skCondition = when (sortKey) {
-                    is BetweenExpr -> BetweenExpr(skAttr, sortKey.min, sortKey.max)
-                    is ComparisonExpr -> ComparisonExpr(sortKey.comparator, skAttr, sortKey.right)
-                    is BooleanFuncExpr -> BooleanFuncExpr(sortKey.func, skAttr, sortKey.additionalOperands)
-                }
-
-                and(pkCondition, skCondition)
+    attrs
+        .zip(sortKeyExpressions)
+        .map { (attr, expression) ->
+            val skAttr = attr(attr.name)
+            when (expression) {
+                is BetweenExpr -> BetweenExpr(skAttr, expression.min, expression.max)
+                is ComparisonExpr -> ComparisonExpr(expression.comparator, skAttr, expression.right)
+                is BooleanFuncExpr -> BooleanFuncExpr(expression.func, skAttr, expression.additionalOperands)
             }
-        } ?: pkCondition
-    }
-
-    is ItemSchema.PartitionKey<*, *> -> {
-        requireNull(sortKey) { "Sort key condition not allowed on schema without a sort key" }
-        pkCondition(schema, partitionKey)
-    }
-
-    else -> error("Unknown schema type ${schema::class} (expected ItemSchema.CompositeKey or ItemSchema.PartitionKey)")
+        }
 }
-
-private fun pkCondition(schema: ItemSchema.PartitionKey<*, *>, partitionKey: Any) =
-    FilterImpl.run { attr(schema.partitionKey.name) eq LiteralExpr(dynamicAttr(partitionKey)) }

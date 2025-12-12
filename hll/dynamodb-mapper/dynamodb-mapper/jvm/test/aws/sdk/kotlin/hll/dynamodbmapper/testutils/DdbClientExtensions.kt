@@ -5,8 +5,10 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.testutils
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyAttrSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.attrs
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
@@ -30,7 +32,9 @@ suspend fun DynamoDbClient.createTable(
     gsis: Map<String, ItemSchema<*>>,
     lsis: Map<String, ItemSchema<*>>,
 ) {
-    val keys = schema.toKeys()
+    val partitionKeyAttrs = schema.partitionKeyAttrs()
+    val sortKeyAttrs = schema.sortKeyAttrs()
+
     val throughput = ProvisionedThroughput {
         // provisioned throughput is required but ignored by DDB Local so just use dummy values
         readCapacityUnits = 1
@@ -42,10 +46,15 @@ suspend fun DynamoDbClient.createTable(
 
         attributeDefinitions = deriveAttributes(schema, gsis, lsis)
 
-        keySchema = keys.mapIndexed { index, key ->
+        keySchema = partitionKeyAttrs.map { attr ->
             KeySchemaElement {
-                attributeName = key.name
-                keyType = if (index == 0) KeyType.Hash else KeyType.Range
+                attributeName = attr.name
+                keyType = KeyType.Hash
+            }
+        } + sortKeyAttrs.map { attr ->
+            KeySchemaElement {
+                attributeName = attr.name
+                keyType = KeyType.Range
             }
         }
 
@@ -114,15 +123,18 @@ private fun deriveAttributes(
     gsis: Map<String, ItemSchema<*>>,
     lsis: Map<String, ItemSchema<*>>,
 ): List<AttributeDefinition> {
-    val allKeys = schema.toKeys() + gsis.values.flatMap { it.toKeys() } + lsis.values.flatMap { it.toKeys() }
-    return allKeys
-        .associateBy(KeySpec<*>::name)
-        .map { (name, key) ->
-            AttributeDefinition {
-                attributeName = name
-                attributeType = key.toScalarAttributeType()
-            }
-        }
+    val keyAttrs = schema.allKeyAttrs() +
+        gsis.values.flatMap { it.allKeyAttrs() } +
+        lsis.values.flatMap { it.allKeyAttrs() }
+
+    return keyAttrs
+        .distinctBy { it.name }
+        .map { it.toAttributeDefinition() }
+}
+
+private fun KeyAttrSpec<*>.toAttributeDefinition() = AttributeDefinition {
+    attributeName = name
+    attributeType = type
 }
 
 /**
@@ -136,21 +148,25 @@ private val ItemSchema<*>.allAttributeNames: Set<String>
     }
 
 /**
- * Converts this [KeySpec] to a [ScalarAttributeType]
+ * Extracts the partition and sort key attributes from this [ItemSchema] as a list
  */
-private fun KeySpec<*>.toScalarAttributeType() = when (this) {
-    is KeySpec.ByteArray -> ScalarAttributeType.B
-    is KeySpec.Number -> ScalarAttributeType.N
-    is KeySpec.String -> ScalarAttributeType.S
+private fun ItemSchema<*>.allKeyAttrs() = partitionKeyAttrs() + sortKeyAttrs()
+
+/**
+ * Extracts the partition key attributes from this [ItemSchema] as a list
+ */
+private fun ItemSchema<*>.partitionKeyAttrs() = when (this) {
+    is ItemSchema.PartitionKey<*, *> -> partitionKey.attrs
+    is ItemSchema.CompositeKey<*, *, *> -> partitionKey.attrs
 }
 
 /**
- * Extracts the [KeySpec] instances from this [ItemSchema]
+ * Extracts the sort key attributes from this [ItemSchema] as a list. The returned list will be empty if the schema has
+ * no sort key.
  */
-private fun ItemSchema<*>.toKeys() = when (this) {
-    is ItemSchema.CompositeKey<*, *, *> -> listOf(partitionKey, sortKey)
-    is ItemSchema.PartitionKey<*, *> -> listOf(partitionKey)
-    else -> error("Unknown schema type ${this::class}")
+private fun ItemSchema<*>.sortKeyAttrs() = when (this) {
+    is ItemSchema.PartitionKey<*, *> -> listOf()
+    is ItemSchema.CompositeKey<*, *, *> -> sortKey.attrs
 }
 
 /**

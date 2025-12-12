@@ -41,8 +41,8 @@ class QueryTest : DdbLocalTest() {
             AttributeDescriptor("tenureYears", NamedEmp::tenureYears, NamedEmp::tenureYears::set, NumberValueConverters.Int),
         )
 
-        private val namedEmpSchema = ItemSchema(empConverter, KeySpec.String("companyId"), KeySpec.String("empId"))
-        private val empsByNameSchema = ItemSchema(empConverter, KeySpec.String("companyId"), KeySpec.String("name"))
+        private val namedEmpSchema = ItemSchema(empConverter, KeySpec.string("companyId"), KeySpec.string("empId"))
+        private val empsByNameSchema = ItemSchema(empConverter, KeySpec.string("companyId"), KeySpec.string("name"))
 
         private data class TitleEmp(
             var title: String = "",
@@ -60,7 +60,7 @@ class QueryTest : DdbLocalTest() {
             AttributeDescriptor("companyId", TitleEmp::companyId, TitleEmp::companyId::set, StringValueConverter),
         )
 
-        private val titleSchema = ItemSchema(titleConverter, KeySpec.String("title"), KeySpec.String("name"))
+        private val titleSchema = ItemSchema(titleConverter, KeySpec.string("title"), KeySpec.string("name"))
     }
 
     @BeforeAll
@@ -145,7 +145,7 @@ class QueryTest : DdbLocalTest() {
         val table = mapper.getTable(TABLE_NAME, namedEmpSchema)
 
         val items = table.queryPaginated {
-            keyCondition = KeyFilter("foo-corp") { sortKey startsWith "AB0" }
+            keyCondition = KeyFilter("foo-corp", { sortKey startsWith "AB0" })
         }.items().toList()
 
         val expected = listOf(

@@ -6,12 +6,13 @@ package aws.sdk.kotlin.hll.dynamodbmapper.model.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Index
 import aws.sdk.kotlin.hll.dynamodbmapper.model.IndexSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.IndexOperations
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.IndexOperationsImpl
 
-internal fun <T, PK> indexImpl(
+internal fun <T, PK : KeyType> indexImpl(
     mapper: DynamoDbMapper,
     tableName: String,
     indexName: String,
@@ -25,7 +26,7 @@ internal fun <T, PK> indexImpl(
         IndexOperations<T> by opsImpl { }
 }
 
-internal fun <T, PK, SK> indexImpl(
+internal fun <T, PK : KeyType, SK : KeyType> indexImpl(
     mapper: DynamoDbMapper,
     tableName: String,
     indexName: String,

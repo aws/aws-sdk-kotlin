@@ -30,7 +30,7 @@ class DeleteItemTest : DdbLocalTest() {
             AttributeDescriptor("id", Item::id, Item::id::set, StringValueConverter),
             AttributeDescriptor("value", Item::value, Item::value::set, NumberValueConverters.Int),
         )
-        private val schema = ItemSchema(converter, KeySpec.String("id"))
+        private val schema = ItemSchema(converter, KeySpec.string("id"))
     }
 
     @BeforeAll

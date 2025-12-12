@@ -51,25 +51,22 @@ internal class SchemaRenderer(
     private val properties = classDeclaration
         .getAllProperties()
         .filterNot { it.modifiers.contains(Modifier.PRIVATE) || it.isAnnotationPresent(DynamoDbIgnore::class) }
+        .toList()
 
-    init {
-        check(properties.count { it.isPk } == 1) {
-            "Expected exactly one @DynamoDbPartitionKey annotation on a property"
-        }
-        check(properties.count { it.isSk } <= 1) {
-            "Expected at most one @DynamoDbSortKey annotation on a property"
+    private val partitionKeyProps = properties.filter { it.isPk }.also {
+        require(it.size in 1..4) {
+            "Expected between 1 and 4 properties annotated with @DynamoDbPartitionKey, found ${it.size}"
         }
     }
 
-    private val partitionKeyProp = properties.single { it.isPk }
-    private val partitionKeyName = partitionKeyProp
-        .getAnnotationsByType(DynamoDbAttribute::class)
-        .singleOrNull()?.name ?: partitionKeyProp.name
+    private val sortKeyProps = properties.filter { it.isSk }.also {
+        require(it.size in 0..4) {
+            "Expected between 0 and 4 properties annotated with @DynamoDbSortKey, found ${it.size}"
+        }
+    }
 
-    private val sortKeyProp = properties.singleOrNull { it.isSk }
-    private val sortKeyName = sortKeyProp
-        ?.getAnnotationsByType(DynamoDbAttribute::class)
-        ?.singleOrNull()?.name ?: sortKeyProp?.name
+    private val partitionKeyTypeRefs = partitionKeyProps.map { it.typeRef }
+    private val sortKeyTypeRefs = sortKeyProps.map { it.typeRef }
 
     /**
      * Skip rendering a class builder if:
@@ -283,40 +280,76 @@ internal class SchemaRenderer(
         }
 
     private fun renderSchema() {
-        val schemaType = if (sortKeyProp != null) {
-            MapperTypes.Items.itemSchemaCompositeKey(classType, partitionKeyProp.typeRef, sortKeyProp.typeRef)
+        val schemaType = if (sortKeyProps.isEmpty()) {
+            MapperTypes.Items.itemSchemaPartitionKey(classType, partitionKeyTypeRefs)
         } else {
-            MapperTypes.Items.itemSchemaPartitionKey(classType, partitionKeyProp.typeRef)
+            MapperTypes.Items.itemSchemaCompositeKey(classType, partitionKeyTypeRefs, sortKeyTypeRefs)
         }
 
         withBlock("#Lobject #L : #T {", "}", ctx.attributes.visibility, schemaName, schemaType) {
             write("override val converter: #1T = #1T", itemConverter)
-            write("override val partitionKey: #T = #T(#S)", MapperTypes.Items.keySpec(partitionKeyProp.keySpec), partitionKeyProp.keySpecType, partitionKeyName)
-            if (sortKeyProp != null) {
-                write("override val sortKey: #T = #T(#S)", MapperTypes.Items.keySpec(sortKeyProp.keySpec), sortKeyProp.keySpecType, sortKeyName!!)
+
+            writeInline("override val partitionKey: #T = ", MapperTypes.Items.keySpec(partitionKeyTypeRefs))
+            keySpecInstantiation(partitionKeyProps)
+            write()
+
+            if (sortKeyProps.isNotEmpty()) {
+                writeInline("override val sortKey: #T = ", MapperTypes.Items.keySpec(sortKeyTypeRefs))
+                keySpecInstantiation(sortKeyProps)
+                write()
             }
         }
+
         blankLine()
     }
 
-    private val KSPropertyDeclaration.keySpec: TypeRef
-        get() = when (typeName) {
-            "kotlin.ByteArray" -> Types.Kotlin.ByteArray
-            "kotlin.Int" -> Types.Kotlin.Number
-            "kotlin.String" -> Types.Kotlin.String
-            else -> error("Unsupported key type $typeName, expected ByteArray, Int, or String")
+    private fun keySpecInstantiation(keyProps: List<KSPropertyDeclaration>) {
+        val first = keyProps.first()
+        val rest = keyProps.drop(1)
+
+        val firstTypeRef = when (first.typeRef) {
+            Types.Kotlin.ByteArray -> MapperTypes.Items.KeySpecByteArray
+
+            Types.Kotlin.Byte,
+            Types.Kotlin.Int,
+            Types.Kotlin.Long,
+            Types.Kotlin.Short,
+            -> MapperTypes.Items.keySpecNumber(first.typeRef)
+
+            Types.Kotlin.String -> MapperTypes.Items.KeySpecString
+
+            else -> error("Unsupported key attribute type ${first.typeRef}")
         }
 
-    private val KSPropertyDeclaration.keySpecType: TypeRef
-        get() = when (typeName) {
-            "kotlin.ByteArray" -> MapperTypes.Items.KeySpecByteArray
-            "kotlin.Int" -> MapperTypes.Items.KeySpecNumber
-            "kotlin.String" -> MapperTypes.Items.KeySpecString
-            else -> error("Unsupported key type $typeName, expected ByteArray, Int, or String")
+        writeInline("#T(#S)", firstTypeRef, first.ddbName)
+
+        rest.forEach { prop ->
+            val typeRef = when (prop.typeRef) {
+                Types.Kotlin.ByteArray -> MapperTypes.Items.KeySpecThenByteArray
+
+                Types.Kotlin.Byte,
+                Types.Kotlin.Int,
+                Types.Kotlin.Long,
+                Types.Kotlin.Short,
+                -> MapperTypes.Items.keySpecThenNumber(prop.typeRef)
+
+                Types.Kotlin.String -> MapperTypes.Items.KeySpecThenString
+
+                else -> error("Unsupported key attribute type ${prop.typeRef}")
+            }
+
+            writeInline(".#T(#S)", typeRef, prop.ddbName)
         }
+    }
 
     private fun renderGetTable() {
         docs("Returns a reference to a table named [name] containing items representing [#T]", classType)
+
+        val tableType = if (sortKeyProps.isEmpty()) {
+            MapperTypes.Model.tablePartitionKey(classType, partitionKeyTypeRefs)
+        } else {
+            MapperTypes.Model.tableCompositeKey(classType, partitionKeyTypeRefs, sortKeyTypeRefs)
+        }
 
         val fnName = "get${className}Table"
         write(
@@ -324,11 +357,7 @@ internal class SchemaRenderer(
             ctx.attributes.visibility,
             MapperTypes.DynamoDbMapper,
             fnName,
-            if (sortKeyProp != null) {
-                MapperTypes.Model.tableCompositeKey(classType, partitionKeyProp.typeRef, sortKeyProp.typeRef)
-            } else {
-                MapperTypes.Model.tablePartitionKey(classType, partitionKeyProp.typeRef)
-            },
+            tableType,
             "getTable",
             schemaName,
         )

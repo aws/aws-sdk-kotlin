@@ -4,6 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.model
 
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.IndexOperations
 
 /**
@@ -19,19 +20,19 @@ public interface Index<T> :
     /**
      * Represents a secondary index whose primary key is a single partition key
      * @param T The type of objects which will be read from this index
-     * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
+     * @param PK The type of the partition key property, either [KeyType] or one of its specific derivations
      */
-    public interface PartitionKey<T, PK> :
+    public interface PartitionKey<T, PK : KeyType> :
         Index<T>,
         PersistenceSpec.PartitionKey<T, PK>
 
     /**
      * Represents a secondary index whose primary key is a composite of a partition key and a sort key
      * @param T The type of objects which will be read from this index
-     * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
-     * @param SK The type of the sort key property, either [String], [Number], or [ByteArray]
+     * @param PK The type of the partition key property, either [KeyType] or one of its specific derivations
+     * @param SK The type of the sort key property, either [KeyType] or one of its specific derivations
      */
-    public interface CompositeKey<T, PK, SK> :
+    public interface CompositeKey<T, PK : KeyType, SK : KeyType> :
         Index<T>,
         PersistenceSpec.CompositeKey<T, PK, SK>
 }
