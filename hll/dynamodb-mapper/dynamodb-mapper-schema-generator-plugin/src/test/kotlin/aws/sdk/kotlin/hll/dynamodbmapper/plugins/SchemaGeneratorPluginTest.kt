@@ -569,4 +569,41 @@ class SchemaGeneratorPluginTest {
             """.trimIndent(),
         )
     }
+
+    @Test
+    fun testDynamoDbAttributeConverter() {
+        createClassFile("attribute-converter/Employee")
+        createClassFile("attribute-converter/HealthcareConverter")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas/EmployeeSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        assertContains(schemaContents, "import org.example.OccupationConverter")
+        assertContains(
+            schemaContents,
+            """        AttributeDescriptor(
+            "occupation",
+            Employee::occupation,
+            Employee::occupation::set,
+            org.example.OccupationConverter(),
+        ),""",
+        )
+
+        // Test cross-package converter
+        assertContains(schemaContents, "import a.different.pkg.HealthcareConverter")
+        assertContains(
+            schemaContents,
+            """        AttributeDescriptor(
+            "healthcare",
+            Employee::healthcare,
+            Employee::healthcare::set,
+            a.different.pkg.HealthcareConverter(),
+        ),""",
+        )
+    }
 }

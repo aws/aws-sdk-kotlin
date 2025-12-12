@@ -4,6 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.rendering
 
+import aws.sdk.kotlin.hll.codegen.core.ImportDirective
 import aws.sdk.kotlin.hll.codegen.model.*
 import aws.sdk.kotlin.hll.codegen.rendering.BuilderRenderer
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
@@ -18,6 +19,7 @@ import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.getConstructors
 import com.google.devtools.ksp.isAnnotationPresent
+import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.*
 
 /**
@@ -27,6 +29,7 @@ import com.google.devtools.ksp.symbol.*
  */
 @OptIn(KspExperimental::class)
 internal class SchemaRenderer(
+    private val logger: KSPLogger,
     private val classDeclaration: KSClassDeclaration,
     private val ctx: RenderContext,
 ) : RendererBase(ctx, "${classDeclaration.qualifiedName!!.getShortName()}Schema") {
@@ -148,6 +151,7 @@ internal class SchemaRenderer(
     }
 
     private fun renderAttributeDescriptor(prop: KSPropertyDeclaration) {
+        logger.info("Rendering an attribute descriptor for ${prop.simpleName.asString()}")
         withBlock("#T(", "),", MapperTypes.Items.AttributeDescriptor) {
             write("#S,", prop.ddbName) // key
             write("#L,", "$className::${prop.name}") // getter
@@ -160,8 +164,25 @@ internal class SchemaRenderer(
             }
 
             // converter
-            renderValueConverter(prop.type.resolve())
-            write(",")
+            // KSP requires extra work to get a class argument out of an annotation, can't just use getAnnotationsByType
+            // https://slack-chats.kotlinlang.org/t/8480301/hello-again-how-do-you-get-a-kclass-out-from-an-annotation-a
+            val attributeValueConverterFqn = prop.annotations
+                .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbAttributeConverter::class.qualifiedName }
+                ?.arguments
+                ?.single()
+                ?.value
+                ?.let { it as? KSType }
+                ?.declaration
+                ?.qualifiedName
+                ?.asString()
+
+            attributeValueConverterFqn?.let {
+                imports += ImportDirective(it)
+                write("$it(),")
+            } ?: run {
+                renderValueConverter(prop.type.resolve())
+                write(",")
+            }
         }
     }
 
@@ -229,7 +250,6 @@ internal class SchemaRenderer(
                     Types.Kotlin.UInt -> MapperTypes.Values.Scalars.UIntValueConverter
                     Types.Kotlin.UShort -> MapperTypes.Values.Scalars.UShortValueConverter
                     Types.Kotlin.ULong -> MapperTypes.Values.Scalars.ULongValueConverter
-
                     else -> error("Unsupported attribute type $type")
                 },
             )
