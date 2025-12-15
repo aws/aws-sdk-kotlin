@@ -91627,6 +91627,42 @@
                     "traits": {
                         "smithy.api#enumValue": "spot-min-run-time-before-interruption-inst"
                     }
+                },
+                "SPOT_TOTAL_INTERRUPTIONS_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-total-interruptions-inst"
+                    }
+                },
+                "SPOT_TOTAL_INTERRUPTIONS_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-total-interruptions-vcpu"
+                    }
+                },
+                "SPOT_TOTAL_COUNT_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-total-count-inst"
+                    }
+                },
+                "SPOT_TOTAL_COUNT_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-total-count-vcpu"
+                    }
+                },
+                "SPOT_INTERRUPTION_RATE_INST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-interruption-rate-inst"
+                    }
+                },
+                "SPOT_INTERRUPTION_RATE_VCPU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "spot-interruption-rate-vcpu"
+                    }
                 }
             }
         },
