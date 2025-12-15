@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.5.103] - 12/15/2025
+
+### Features
+* (**cloudwatchlogs**) This release allows you to import your historical CloudTrail Lake data into CloudWatch with a few steps, enabling you to easily consolidate operational, security, and compliance data in one place.
+* (**connect**) Amazon Connect now supports outbound WhatsApp contacts via the Send message block or StartOutboundChatContact API. Send proactive messages for surveys, reminders, and updates. Offer customers the option to switch to WhatsApp while in queue, eliminating hold time.
+* (**ec2**) EC2 Capacity Manager now supports SpotTotalCount, SpotTotalInterruptions and SpotInterruptionRate metrics for both vCPU and instance units.
+* (**entityresolution**) Support Customer Profiles Integration for AWS Entity Resolution
+* (**glacier**) Documentation updates for Amazon Glacier's maintenance mode
+* (**health**) Updating Health API endpoint generation for dualstack only regions
+* (**mediatailor**) Added support for Ad Decision Server Configuration enabling HTTP POST requests with custom bodies, headers, GZIP compression, and dynamic variables. No changes required for existing GET request configurations.
+* (**route53resolver**) Adds support for enabling detailed metrics on Route 53 Resolver endpoints using RniEnhancedMetricsEnabled and TargetNameServerMetricsEnabled in the CreateResolverEndpoint and UpdateResolverEndpoint APIs, providing enhanced visibility into Resolver endpoint and target name server performance.
+* (**s3**) This release adds support for the new optional field 'LifecycleExpirationDate' in S3 Inventory configurations.
+* (**servicequotas**) Add support for SQ Dashboard Api
+
+### Documentation
+* (**bedrockagentcorecontrol**) This release updates broken links for AgentCore Policy APIs in the AWS CLI and SDK resources.
+
 ## [1.5.102] - 12/12/2025
 
 ### Features
