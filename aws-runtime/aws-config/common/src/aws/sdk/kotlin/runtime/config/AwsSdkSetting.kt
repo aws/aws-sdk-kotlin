@@ -247,6 +247,7 @@ public fun AwsSdkSetting.resolveEndpointUrl(
     sysPropSuffix: String,
     envSuffix: String,
 ): Url? {
-    val serviceSetting = EnvironmentSetting(Url::parse)("aws.endpointUrl$sysPropSuffix", "AWS_ENDPOINT_URL_$envSuffix")
+    val serviceSetting = EnvironmentSetting(Url::parse)("aws.endpointUrl", "AWS_ENDPOINT_URL_")
+        .withCaseInsensitiveSuffixes(sysPropSuffix, envSuffix)
     return serviceSetting.resolve(provider) ?: AwsEndpointUrl.resolve(provider)
 }
