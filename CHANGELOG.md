@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.104] - 12/16/2025
+
+### Features
+* (**iot**) Add support for dynamic payloads in IoT Device Management Commands
+* (**timestreaminfluxdb**) This release adds support for rebooting InfluxDB DbInstances and DbClusters
+
 ## [1.5.103] - 12/15/2025
 
 ### Features
