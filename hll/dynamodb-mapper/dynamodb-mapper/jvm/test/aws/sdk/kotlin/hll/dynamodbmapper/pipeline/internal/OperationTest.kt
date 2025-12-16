@@ -179,7 +179,7 @@ private val fooConverter = object : ItemConverter<Foo> {
         itemOf("foo" to AttributeValue.S(obj.value))
     }
 }
-private val fooSchema = fooConverter.withKeySpec(KeySpec.String("foo"))
+private val fooSchema = fooConverter.withKeySpec(KeySpec.string("foo"))
 
 private data class HFooRequest(val foo: Foo)
 private data class LFooRequest(val table: String, val foo: Item)

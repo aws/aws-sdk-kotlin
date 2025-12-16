@@ -48,16 +48,55 @@ public object MapperTypes {
         public fun itemSchema(typeVar: String): TypeRef =
             TypeRef(MapperPkg.Hl.Items, "ItemSchema", genericArgs = listOf(TypeVar(typeVar)))
 
-        public fun itemSchemaPartitionKey(objectType: TypeRef, pkType: TypeRef): TypeRef =
-            TypeRef(MapperPkg.Hl.Items, "ItemSchema.PartitionKey", genericArgs = listOf(objectType, pkType))
+        public fun itemSchemaPartitionKey(objectType: TypeRef, pkTypes: List<TypeRef>): TypeRef =
+            TypeRef(
+                MapperPkg.Hl.Items,
+                "ItemSchema.PartitionKey",
+                genericArgs = listOf(
+                    objectType,
+                    keyType(pkTypes),
+                ),
+            )
 
-        public fun itemSchemaCompositeKey(objectType: TypeRef, pkType: TypeRef, skType: TypeRef): TypeRef =
-            TypeRef(MapperPkg.Hl.Items, "ItemSchema.CompositeKey", genericArgs = listOf(objectType, pkType, skType))
+        public fun itemSchemaCompositeKey(objectType: TypeRef, pkTypes: List<TypeRef>, skTypes: List<TypeRef>): TypeRef =
+            TypeRef(
+                MapperPkg.Hl.Items,
+                "ItemSchema.CompositeKey",
+                genericArgs = listOf(
+                    objectType,
+                    keyType(pkTypes),
+                    keyType(skTypes),
+                ),
+            )
 
-        public fun keySpec(keyType: TypeRef): TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec", genericArgs = listOf(keyType))
-        public val KeySpecByteArray: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.ByteArray")
-        public val KeySpecNumber: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.Number")
-        public val KeySpecString: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.String")
+        public fun keySpec(keyTypes: List<TypeRef>): TypeRef {
+            val keySize = keyTypes.size
+            require(keySize in 1..4) { "KeySpec subtypes must have between 1 and 4 keys, found $keySize" }
+            return TypeRef(MapperPkg.Hl.Items, "KeySpec.Key$keySize", keyTypes)
+        }
+
+        public val KeySpecByteArray: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.byteArray")
+        public fun keySpecNumber(numberTypeRef: TypeRef? = null): TypeRef = TypeRef(
+            MapperPkg.Hl.Items,
+            "KeySpec.number",
+            genericArgs = listOfNotNull(numberTypeRef),
+        )
+        public val KeySpecString: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.string")
+
+        public val KeySpecThenByteArray: TypeRef = TypeRef(MapperPkg.Hl.Items, "thenByteArray")
+        public fun keySpecThenNumber(numberTypeRef: TypeRef): TypeRef = TypeRef(
+            MapperPkg.Hl.Items,
+            "thenNumber",
+            genericArgs = listOfNotNull(numberTypeRef),
+        )
+        public val KeySpecThenString: TypeRef = TypeRef(MapperPkg.Hl.Items, "thenString")
+
+        public fun keyType(keyTypes: List<TypeRef>): TypeRef {
+            val keySize = keyTypes.size
+            require(keySize in 1..4) { "KeyType subtypes must have between 1 and 4 keys, found $keySize" }
+            return TypeRef(MapperPkg.Hl.Items, "KeyType.Key$keySize", keyTypes)
+        }
+
         public val AttributeDescriptor: TypeRef = TypeRef(MapperPkg.Hl.Items, "AttributeDescriptor")
 
         public fun itemConverter(objectType: TypeRef): TypeRef =
@@ -68,16 +107,28 @@ public object MapperTypes {
 
     public object Model {
         public val intersectKeys: TypeRef = TypeRef(MapperPkg.Hl.Model, "intersectKeys")
-        public fun tablePartitionKey(objectType: TypeRef, pkType: TypeRef): TypeRef = TypeRef(
+
+        public fun tablePartitionKey(objectType: TypeRef, pkTypes: List<TypeRef>): TypeRef = TypeRef(
             MapperPkg.Hl.Model,
             "Table.PartitionKey",
-            genericArgs = listOf(objectType, pkType),
+            genericArgs = listOf(objectType, Items.keyType(pkTypes)),
         )
-        public fun tableCompositeKey(objectType: TypeRef, pkType: TypeRef, skType: TypeRef): TypeRef = TypeRef(
-            MapperPkg.Hl.Model,
-            "Table.CompositeKey",
-            genericArgs = listOf(objectType, pkType, skType),
-        )
+
+        public fun tableCompositeKey(
+            objectType: TypeRef,
+            pkTypes: List<TypeRef>,
+            skTypes: List<TypeRef>,
+        ): TypeRef {
+            require(pkTypes.size in 1..4) { "Partition keys must have between 1 and 4 attributes, found ${pkTypes.size}" }
+            require(skTypes.size in 1..4) { "Sort keys must have between 1 and 4 attributes, found ${skTypes.size}" }
+
+            return TypeRef(
+                MapperPkg.Hl.Model,
+                "Table.CompositeKey",
+                genericArgs = listOf(objectType, Items.keyType(pkTypes), Items.keyType(skTypes)),
+            )
+        }
+
         public val toItem: TypeRef = TypeRef(MapperPkg.Hl.Model, "toItem")
     }
 

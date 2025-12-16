@@ -9,6 +9,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Table
+import aws.sdk.kotlin.hll.dynamodbmapper.model.getItem
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
@@ -32,7 +33,7 @@ class GetItemTest : DdbLocalTest() {
             AttributeDescriptor("id", PkItem::id, PkItem::id::set, NumberValueConverters.Int),
             AttributeDescriptor("value", PkItem::value, PkItem::value::set, StringValueConverter),
         )
-        private val pkSchema = ItemSchema(pkConverter, KeySpec.Number("id"))
+        private val pkSchema = ItemSchema(pkConverter, KeySpec.number<Int>("id"))
 
         private data class CkItem(var id: String = "", var version: Int = 0, var value: String = "")
 
@@ -43,7 +44,7 @@ class GetItemTest : DdbLocalTest() {
             AttributeDescriptor("version", CkItem::version, CkItem::version::set, NumberValueConverters.Int),
             AttributeDescriptor("value", CkItem::value, CkItem::value::set, StringValueConverter),
         )
-        private val ckSchema = ItemSchema(ckConverter, KeySpec.String("id"), KeySpec.Number("version"))
+        private val ckSchema = ItemSchema(ckConverter, KeySpec.string("id"), KeySpec.number<Int>("version"))
     }
 
     @BeforeAll

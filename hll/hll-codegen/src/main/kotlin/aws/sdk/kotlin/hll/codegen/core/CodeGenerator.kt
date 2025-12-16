@@ -116,6 +116,13 @@ public interface CodeGenerator {
     public fun docs(template: String, vararg args: Any)
 
     /**
+     * Writes a newline
+     */
+    public fun write() {
+        write("")
+    }
+
+    /**
      * Writes a line of text, including a terminating newline (i.e., `\n`)
      * @param template The string template or literal to append
      * @param args The arguments to substitute into the [template] (if any). See [TemplateEngine] for more details on

@@ -6,10 +6,10 @@ package aws.sdk.kotlin.hll.dynamodbmapper.model.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Index
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Table
 import aws.sdk.kotlin.hll.dynamodbmapper.model.TableSpec
-import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.*
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
@@ -17,7 +17,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
 import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
 
-internal fun <T, PK> tableImpl(
+internal fun <T, PK : KeyType> tableImpl(
     mapper: DynamoDbMapper,
     name: String,
     schema: ItemSchema.PartitionKey<T, PK>,
@@ -29,18 +29,18 @@ internal fun <T, PK> tableImpl(
         TableSpec.PartitionKey<T, PK> by specImpl,
         TableOperations<T> by opsImpl {
 
-        override fun <T, PK> getIndex(
+        override fun <T, PK : KeyType> getIndex(
             name: String,
             schema: ItemSchema.PartitionKey<T, PK>,
         ): Index.PartitionKey<T, PK> = indexImpl(mapper, tableName, name, schema)
 
-        override fun <T, PK, SK> getIndex(
+        override fun <T, PK : KeyType, SK : KeyType> getIndex(
             name: String,
             schema: ItemSchema.CompositeKey<T, PK, SK>,
         ): Index.CompositeKey<T, PK, SK> = indexImpl(mapper, tableName, name, schema)
 
         override suspend fun getItem(partitionKey: PK): T? {
-            val keyItem = itemOf(schema.partitionKey.toField(partitionKey))
+            val keyItem = schema.partitionKey.toFields(partitionKey)
             val interceptor = KeyInsertionInterceptor<T>(keyItem)
             val op = getItemOperation(specImpl).let {
                 it.copy(
@@ -53,7 +53,7 @@ internal fun <T, PK> tableImpl(
     }
 }
 
-internal fun <T, PK, SK> tableImpl(
+internal fun <T, PK : KeyType, SK : KeyType> tableImpl(
     mapper: DynamoDbMapper,
     name: String,
     schema: ItemSchema.CompositeKey<T, PK, SK>,
@@ -65,21 +65,18 @@ internal fun <T, PK, SK> tableImpl(
         TableSpec.CompositeKey<T, PK, SK> by specImpl,
         TableOperations<T> by opsImpl {
 
-        override fun <T, PK> getIndex(
+        override fun <T, PK : KeyType> getIndex(
             name: String,
             schema: ItemSchema.PartitionKey<T, PK>,
         ): Index.PartitionKey<T, PK> = indexImpl(mapper, tableName, name, schema)
 
-        override fun <T, PK, SK> getIndex(
+        override fun <T, PK : KeyType, SK : KeyType> getIndex(
             name: String,
             schema: ItemSchema.CompositeKey<T, PK, SK>,
         ): Index.CompositeKey<T, PK, SK> = indexImpl(mapper, tableName, name, schema)
 
         override suspend fun getItem(partitionKey: PK, sortKey: SK): T? {
-            val keyItem = itemOf(
-                schema.partitionKey.toField(partitionKey),
-                schema.sortKey.toField(sortKey),
-            )
+            val keyItem = schema.partitionKey.toFields(partitionKey) + schema.sortKey.toFields(sortKey)
             val interceptor = KeyInsertionInterceptor<T>(keyItem)
             val op = getItemOperation(specImpl).let {
                 it.copy(

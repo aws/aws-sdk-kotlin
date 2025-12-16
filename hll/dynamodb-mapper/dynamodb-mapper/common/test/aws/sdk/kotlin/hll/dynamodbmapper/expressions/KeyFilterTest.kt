@@ -15,8 +15,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class KeyFilterTest {
-    private val singleKeySchema = ItemSchema(DummyConverter, KeySpec.String("primary"))
-    private val compositeSchema = ItemSchema(DummyConverter, KeySpec.String("primary"), KeySpec.Number("secondary"))
+    private val singleKeySchema = ItemSchema(DummyConverter, KeySpec.string("primary"))
+    private val compositeSchema = ItemSchema(DummyConverter, KeySpec.string("primary"), KeySpec.number<Int>("secondary"))
 
     @Test
     fun testSingleKeySchema() {
@@ -29,7 +29,7 @@ class KeyFilterTest {
 
     @Test
     fun testSingleKeySchemaWithErroneousSortKey() {
-        val kf = KeyFilter("foo") { sortKey eq 2 }
+        val kf = KeyFilter("foo", { sortKey eq 2 })
 
         assertFailsWith<IllegalArgumentException> {
             kf.toExpression(singleKeySchema)
@@ -38,7 +38,7 @@ class KeyFilterTest {
 
     @Test
     fun testCompositeSchema() {
-        val kf = KeyFilter("foo") { sortKey lte 10 }
+        val kf = KeyFilter("foo", { sortKey lte 10 })
         val actual = kf.toExpression(compositeSchema)
         val expected = FilterImpl.run {
             and(

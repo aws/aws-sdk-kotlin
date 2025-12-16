@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.model
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 
 /**
  * Specifies how items can be read from and written to a table
@@ -19,15 +20,19 @@ public interface TableSpec<T> : PersistenceSpec<T> {
     /**
      * Specifies how items can be read from or written to a table whose primary key consists of a single partition key
      */
-    public interface PartitionKey<T, PK> : TableSpec<T> {
+    public interface PartitionKey<T, PK : KeyType> :
+        TableSpec<T>,
+        PersistenceSpec.PartitionKey<T, PK> {
         override val schema: ItemSchema.PartitionKey<T, PK>
     }
 
     /**
-     * Specifies how items can be read from or written to a table  whose primary key consists of a composite of a
+     * Specifies how items can be read from or written to a table whose primary key consists of a composite of a
      * partition key and a sort key
      */
-    public interface CompositeKey<T, PK, SK> : TableSpec<T> {
+    public interface CompositeKey<T, PK : KeyType, SK : KeyType> :
+        TableSpec<T>,
+        PersistenceSpec.CompositeKey<T, PK, SK> {
         override val schema: ItemSchema.CompositeKey<T, PK, SK>
     }
 }

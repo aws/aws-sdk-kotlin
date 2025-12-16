@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.model
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 
 /**
  * Specifies how items can be read from a secondary index
@@ -24,7 +25,9 @@ public interface IndexSpec<T> : PersistenceSpec<T> {
     /**
      * Specifies how items can be read from a secondary index whose primary key consists of a single partition key
      */
-    public interface PartitionKey<T, PK> : IndexSpec<T> {
+    public interface PartitionKey<T, PK : KeyType> :
+        IndexSpec<T>,
+        PersistenceSpec.PartitionKey<T, PK> {
         override val schema: ItemSchema.PartitionKey<T, PK>
     }
 
@@ -32,7 +35,9 @@ public interface IndexSpec<T> : PersistenceSpec<T> {
      * Specifies how items can be read from a secondary index whose primary key consists of a composite of a partition
      * key and a sort key
      */
-    public interface CompositeKey<T, PK, SK> : IndexSpec<T> {
+    public interface CompositeKey<T, PK : KeyType, SK : KeyType> :
+        IndexSpec<T>,
+        PersistenceSpec.CompositeKey<T, PK, SK> {
         override val schema: ItemSchema.CompositeKey<T, PK, SK>
     }
 }

@@ -6,6 +6,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.model.internal.tableImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
@@ -20,10 +21,10 @@ internal data class DynamoDbMapperImpl(
     override val client: DynamoDbClient,
     override val config: DynamoDbMapper.Config,
 ) : DynamoDbMapper {
-    override fun <T, PK> getTable(name: String, schema: ItemSchema.PartitionKey<T, PK>) =
+    override fun <T, PK : KeyType> getTable(name: String, schema: ItemSchema.PartitionKey<T, PK>) =
         tableImpl(this, name, schema)
 
-    override fun <T, PK, SK> getTable(name: String, schema: ItemSchema.CompositeKey<T, PK, SK>) =
+    override fun <T, PK : KeyType, SK : KeyType> getTable(name: String, schema: ItemSchema.CompositeKey<T, PK, SK>) =
         tableImpl(this, name, schema)
 }
 
