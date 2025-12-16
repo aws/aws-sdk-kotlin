@@ -29,7 +29,6 @@ import com.google.devtools.ksp.symbol.*
  */
 @OptIn(KspExperimental::class)
 internal class SchemaRenderer(
-    private val logger: KSPLogger,
     private val classDeclaration: KSClassDeclaration,
     private val ctx: RenderContext,
 ) : RendererBase(ctx, "${classDeclaration.qualifiedName!!.getShortName()}Schema") {
@@ -151,7 +150,7 @@ internal class SchemaRenderer(
     }
 
     private fun renderAttributeDescriptor(prop: KSPropertyDeclaration) {
-        logger.info("Rendering an attribute descriptor for ${prop.simpleName.asString()}")
+        ctx.logger.info("Rendering an attribute descriptor for ${prop.simpleName.asString()}")
         withBlock("#T(", "),", MapperTypes.Items.AttributeDescriptor) {
             write("#S,", prop.ddbName) // key
             write("#L,", "$className::${prop.name}") // getter
