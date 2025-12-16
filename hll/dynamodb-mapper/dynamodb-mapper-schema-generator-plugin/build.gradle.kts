@@ -24,6 +24,7 @@ dependencies {
     implementation(libs.ksp.gradle.plugin)
 
     implementation(project(":hll:hll-codegen")) // for RenderOptions
+    implementation(project(":hll:dynamodb-mapper:dynamodb-mapper")) // for ValueConverter
     implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-schema-codegen")) // for AnnotationsProcessorOptions
     implementation(libs.smithy.kotlin.runtime.core) // for AttributeKey
 

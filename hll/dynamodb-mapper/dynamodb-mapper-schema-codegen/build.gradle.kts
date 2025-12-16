@@ -22,6 +22,7 @@ dependencies {
     implementation(project(":hll:hll-codegen"))
     implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-annotations"))
     implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-codegen"))
+    implementation(project(":hll:dynamodb-mapper:dynamodb-mapper")) // for ValueConverter.kt
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.params)
