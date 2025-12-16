@@ -42,7 +42,7 @@ internal class HighLevelRenderer(
                 attributes,
             )
 
-            val annotation = SchemaRenderer(logger, annotated, renderCtx)
+            val annotation = SchemaRenderer(annotated, renderCtx)
             annotation.render()
         }
     }
