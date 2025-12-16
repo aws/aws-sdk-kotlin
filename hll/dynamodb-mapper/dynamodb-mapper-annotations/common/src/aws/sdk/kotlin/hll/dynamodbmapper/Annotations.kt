@@ -17,6 +17,7 @@ public annotation class DynamoDbAttribute(val name: String)
 /**
  * Specifies the type of [ValueConverter] to be used when processing this attribute.
  */
+@Target(AnnotationTarget.PROPERTY)
 public annotation class DynamoDbAttributeConverter(val converter: KClass<out ValueConverter<*>>)
 
 /**
@@ -25,7 +26,7 @@ public annotation class DynamoDbAttributeConverter(val converter: KClass<out Val
  * @param converterName The fully qualified name of the item converter to be used for converting this class/interface.
  * If not set, one will be automatically generated.
  */
-// FIXME Update to take a KClass<ItemConverter>?
+// FIXME Update to take a KClass<ItemConverter>
 @Target(AnnotationTarget.CLASS)
 public annotation class DynamoDbItem(val converterName: String = "")
 
