@@ -1,0 +1,5 @@
+{
+    "id": "376b0cd3-e023-4db2-bcf6-87092ee07e5e",
+    "type": "feature",
+    "description": "Upgrade to **smithy-kotlin** release [**v1.5.24**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.5.24) to enable [case-insensitive environmental config resolution](https://github.com/smithy-lang/smithy-kotlin/pull/1469)"
+}
