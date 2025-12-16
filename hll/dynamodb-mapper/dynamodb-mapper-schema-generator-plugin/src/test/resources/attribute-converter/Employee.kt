@@ -20,10 +20,10 @@ data class Employee(
     var givenName: String = "Johnny",
     var surname: String = "Appleseed",
 
-    @property:DynamoDbAttributeConverter(OccupationConverter::class)
+    @DynamoDbAttributeConverter(OccupationConverter::class)
     var occupation: Occupation = Occupation("Student", 0),
 
-    @property:DynamoDbAttributeConverter(HealthcareConverter::class)
+    @DynamoDbAttributeConverter(HealthcareConverter::class)
     var healthcare: Healthcare = Healthcare(false),
 )
 
