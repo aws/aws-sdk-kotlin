@@ -35,7 +35,7 @@ private fun pkConditions(spec: KeySpec<*>, value: KeyType): List<BooleanExpr> = 
     val attrs = spec.attrs
     val values = value.values
     require(attrs.size == values.size) {
-        "Provided number of partition keys ${values.size} does not match the number of keys defined in the schema ${attrs.size}"
+        "Provided number of partition keys (${values.size}) does not match the number of keys defined in the schema (${attrs.size})"
     }
 
     attrs.zip(values).map { (attr, value) ->
