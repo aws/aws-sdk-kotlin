@@ -6,7 +6,6 @@
 package aws.sdk.kotlin.codegen.customization.s3
 
 import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.aws.protocols.core.AwsHttpBindingProtocolGenerator
 import software.amazon.smithy.kotlin.codegen.core.*
 import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
 import software.amazon.smithy.kotlin.codegen.integration.SectionWriter
@@ -14,6 +13,7 @@ import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
 import software.amazon.smithy.kotlin.codegen.model.buildSymbol
 import software.amazon.smithy.kotlin.codegen.model.expectShape
 import software.amazon.smithy.kotlin.codegen.rendering.ExceptionBaseClassGenerator
+import software.amazon.smithy.kotlin.codegen.rendering.protocol.HttpBindingProtocolGenerator
 import software.amazon.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.OperationShape
@@ -30,11 +30,11 @@ class S3OperationErrorHandler : KotlinIntegration {
     }
 
     override val sectionWriters: List<SectionWriterBinding>
-        get() = listOf(SectionWriterBinding(AwsHttpBindingProtocolGenerator.Sections.RenderThrowOperationError, overrideThrowOperationErrors))
+        get() = listOf(SectionWriterBinding(HttpBindingProtocolGenerator.Sections.RenderThrowOperationError, overrideThrowOperationErrors))
 
     private val overrideThrowOperationErrors = SectionWriter { writer, _ ->
-        val ctx = writer.getContextValue(AwsHttpBindingProtocolGenerator.Sections.RenderThrowOperationError.Context)
-        val op = writer.getContextValue(AwsHttpBindingProtocolGenerator.Sections.RenderThrowOperationError.Operation)
+        val ctx = writer.getContextValue(HttpBindingProtocolGenerator.Sections.RenderThrowOperationError.Context)
+        val op = writer.getContextValue(HttpBindingProtocolGenerator.Sections.RenderThrowOperationError.Operation)
         renderThrowOperationError(ctx, op, writer)
     }
 
