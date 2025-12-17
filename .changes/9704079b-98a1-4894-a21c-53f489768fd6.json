@@ -1,5 +1,0 @@
-{
-    "id": "9704079b-98a1-4894-a21c-53f489768fd6",
-    "type": "feature",
-    "description": "Support case-insensitive resolution of service-specific endpoint URLs from environment variables (e.g., `AWS_ENDPOINT_URL_DynamoDB` is equivalent to `AWS_ENDPOINT_URL_DYNAMODB`) and system properties (e.g., `aws.endpointUrlDynamoDB` is equivalent to `aws.endpointUrlDYNAMODB`)"
-}

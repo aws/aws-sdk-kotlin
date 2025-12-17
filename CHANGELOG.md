@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.5.105] - 12/17/2025
+
+### Features
+* (**gameliftstreams**) Added new stream group operation parameters for scale-on-demand capacity with automatic prewarming. Added new Gen6 stream classes based on the EC2 G6 instance family. Added new StartStreamSession parameter for exposure of real-time performance stats to clients.
+* (**guardduty**) Add support for dbiResourceId in finding.
+* (**inspectorscan**) Adds an additional OutputFormat
+* (**kafkaconnect**) Support dual-stack network connectivity for connectors via NetworkType field.
+* (**mediaconvert**) Adds support for tile encoding in HEVC and audio for video overlays.
+* (**mediapackagev2**) This release adds support for SPEKE V2 content key encryption in MediaPackage v2 Origin Endpoints.
+* (**paymentcryptography**) Support for AS2805 standard.  Modifications to import-key and export-key to support AS2805 variants.
+* (**paymentcryptographydata**) Support for AS2805 standard.  New API GenerateAs2805KekValidation and changes to translate pin, GenerateMac and VerifyMac to support AS2805 key variants.
+* (**sagemaker**) Adding the newly launched p6-b300.48xlarge ec2  instance support in Sagemaker(Hyperpod,Training and Sceptor)
+* Upgrade to **smithy-kotlin** release [**v1.5.24**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.5.24) to enable [case-insensitive environmental config resolution](https://github.com/smithy-lang/smithy-kotlin/pull/1469)
+* Support case-insensitive resolution of service-specific endpoint URLs from environment variables (e.g., `AWS_ENDPOINT_URL_DynamoDB` is equivalent to `AWS_ENDPOINT_URL_DYNAMODB`) and system properties (e.g., `aws.endpointUrlDynamoDB` is equivalent to `aws.endpointUrlDYNAMODB`)
+
 ## [1.5.104] - 12/16/2025
 
 ### Features
