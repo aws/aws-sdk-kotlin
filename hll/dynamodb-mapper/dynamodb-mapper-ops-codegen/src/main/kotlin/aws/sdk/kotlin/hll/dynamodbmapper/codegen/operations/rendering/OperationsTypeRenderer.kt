@@ -54,7 +54,7 @@ internal class OperationsTypeRenderer(
         .forEach(::renderDslOp)
 
     private fun renderDslOp(op: Operation) {
-        val builderType = BuilderRenderer.builderType(op.request.type)
+        val builderType = BuilderRenderer.builderType(op.request)
         val generics = op.request.genericVars().asParamsList(" ")
 
         if (op.paginationInfo != null) renderManualPaginationAnnotation(op) else blankLine()

@@ -13,6 +13,7 @@ import aws.sdk.kotlin.hll.codegen.rendering.BuilderRenderer
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.RenderOptions
 import aws.sdk.kotlin.hll.codegen.rendering.Visibility
+import aws.sdk.kotlin.hll.codegen.util.generatedAnnotation
 import aws.sdk.kotlin.hll.codegen.util.plus
 
 /**
@@ -66,10 +67,15 @@ internal class DataTypeGenerator(
     private val structure: Structure,
 ) : CodeGenerator by generator {
     fun generate() {
+        generatedAnnotation(structure)
         withBlock("public interface #T {", "}", structure.type) {
+            generatedAnnotation(structure)
             write("public companion object { }") // leave room for future expansion
             blankLine()
-            members { write("public val #L: #T", name, type) }
+            members {
+                generatedAnnotation(this)
+                write("public val #L: #T", name, type)
+            }
         }
         blankLine()
 
@@ -85,10 +91,11 @@ internal class DataTypeGenerator(
         val builderCtx = ctx.copy(
             attributes = ctx.attributes + (RenderOptions.VisibilityAttribute to Visibility.PUBLIC),
         )
-        val builderName = BuilderRenderer.builderName(structure.type)
-        BuilderRenderer(this, structure.type, implType, structure.members, builderCtx).render()
+        val builderName = BuilderRenderer.builderName(structure)
+        BuilderRenderer(this, structure, implType, structure.members, builderCtx).render()
 
         blankLine()
+        generatedAnnotation(structure)
         withBlock(
             "public fun #1L#2T.toBuilder(): #3L#4L = #3L#4L().apply {",
             "}",
@@ -101,6 +108,7 @@ internal class DataTypeGenerator(
         }
 
         blankLine()
+        generatedAnnotation(structure)
         withBlock(
             "public fun #1L#2T.copy(block: #3L#4L.() -> Unit): #2T =",
             "",
@@ -113,6 +121,7 @@ internal class DataTypeGenerator(
         }
 
         blankLine()
+        generatedAnnotation(structure)
         withBlock(
             "public fun #L#L(block: #L#L.() -> Unit): #T =",
             "",

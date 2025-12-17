@@ -89,12 +89,9 @@ internal class PaginatorRenderer(
     private val paginationInfo = requireNotNull(op.paginationInfo) { "Operation ${op.name} is not paginatable" }
     private val name = paginatorName(op)
 
-    private val requestType = op.request.type
-    private val requestBuilderType = BuilderRenderer.builderType(requestType)
-    private val responseType = op.response.type
-
+    private val requestBuilderType = BuilderRenderer.builderType(op.request)
     private val itemFlowType = Types.Kotlinx.Coroutines.Flow.flow(TypeVar("T"))
-    private val pageFlowType = Types.Kotlinx.Coroutines.Flow.flow(responseType)
+    private val pageFlowType = Types.Kotlinx.Coroutines.Flow.flow(op.response.type)
 
     fun render() {
         if (forResponses) {
@@ -147,7 +144,7 @@ internal class PaginatorRenderer(
             "#L(initialRequest: #T): #T = #T {",
             "}",
             name,
-            requestType,
+            op.request.type,
             pageFlowType,
             Types.Kotlinx.Coroutines.Flow.flow,
         ) {

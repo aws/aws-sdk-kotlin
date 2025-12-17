@@ -969,15 +969,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemReques
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequest;
 	public final fun getKey ()Ljava/lang/Object;
-	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
-	public final fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
-	public final fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
-	public final fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
 	public final fun setKey (Ljava/lang/Object;)V
-	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
-	public final fun setReturnItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;)V
-	public final fun setReturnValues (Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;)V
-	public final fun setReturnValuesOnConditionCheckFailure (Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)V
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemResponse {
@@ -994,11 +986,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRespon
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemResponse;
 	public final fun getAttributes ()Ljava/lang/Object;
-	public final fun getConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;
-	public final fun getItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ItemCollectionMetrics;
 	public final fun setAttributes (Ljava/lang/Object;)V
-	public final fun setConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;)V
-	public final fun setItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ItemCollectionMetrics;)V
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemKt {
@@ -1023,12 +1011,8 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemRequest$C
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemRequestBuilder {
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemRequest;
-	public final fun getConsistentRead ()Ljava/lang/Boolean;
 	public final fun getKey ()Ljava/lang/Object;
-	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
-	public final fun setConsistentRead (Ljava/lang/Boolean;)V
 	public final fun setKey (Ljava/lang/Object;)V
-	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemResponse {
@@ -1043,9 +1027,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemResponse$
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemResponseBuilder {
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemResponse;
-	public final fun getConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;
 	public final fun getItem ()Ljava/lang/Object;
-	public final fun setConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;)V
 	public final fun setItem (Ljava/lang/Object;)V
 }
 
@@ -1102,15 +1084,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/PutItemRequestBu
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/PutItemRequest;
 	public final fun getItem ()Ljava/lang/Object;
-	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
-	public final fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
-	public final fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
-	public final fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
 	public final fun setItem (Ljava/lang/Object;)V
-	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
-	public final fun setReturnItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;)V
-	public final fun setReturnValues (Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;)V
-	public final fun setReturnValuesOnConditionCheckFailure (Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)V
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/PutItemResponse {
@@ -1127,11 +1101,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/PutItemResponseB
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/PutItemResponse;
 	public final fun getAttributes ()Ljava/lang/Object;
-	public final fun getConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;
-	public final fun getItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ItemCollectionMetrics;
 	public final fun setAttributes (Ljava/lang/Object;)V
-	public final fun setConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;)V
-	public final fun setItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ItemCollectionMetrics;)V
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/QueryKt {
@@ -1162,22 +1132,12 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/QueryRequestBuil
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/QueryRequest;
 	public final fun filter (Lkotlin/jvm/functions/Function1;)V
-	public final fun getConsistentRead ()Ljava/lang/Boolean;
 	public final fun getExclusiveStartKey ()Ljava/lang/Object;
 	public final fun getFilter ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public final fun getKeyCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/KeyFilter;
-	public final fun getLimit ()Ljava/lang/Integer;
-	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
-	public final fun getScanIndexForward ()Ljava/lang/Boolean;
-	public final fun getSelect ()Laws/sdk/kotlin/services/dynamodb/model/Select;
-	public final fun setConsistentRead (Ljava/lang/Boolean;)V
 	public final fun setExclusiveStartKey (Ljava/lang/Object;)V
 	public final fun setFilter (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;)V
 	public final fun setKeyCondition (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/KeyFilter;)V
-	public final fun setLimit (Ljava/lang/Integer;)V
-	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
-	public final fun setScanIndexForward (Ljava/lang/Boolean;)V
-	public final fun setSelect (Laws/sdk/kotlin/services/dynamodb/model/Select;)V
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/QueryResponse {
@@ -1195,16 +1155,10 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/QueryResponse$Co
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/QueryResponseBuilder {
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/QueryResponse;
-	public final fun getConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;
-	public final fun getCount ()Ljava/lang/Integer;
 	public final fun getItems ()Ljava/util/List;
 	public final fun getLastEvaluatedKey ()Ljava/lang/Object;
-	public final fun getScannedCount ()Ljava/lang/Integer;
-	public final fun setConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;)V
-	public final fun setCount (Ljava/lang/Integer;)V
 	public final fun setItems (Ljava/util/List;)V
 	public final fun setLastEvaluatedKey (Ljava/lang/Object;)V
-	public final fun setScannedCount (Ljava/lang/Integer;)V
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/ScanKt {
@@ -1235,22 +1189,10 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/ScanRequestBuild
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/ScanRequest;
 	public final fun filter (Lkotlin/jvm/functions/Function1;)V
-	public final fun getConsistentRead ()Ljava/lang/Boolean;
 	public final fun getExclusiveStartKey ()Ljava/lang/Object;
 	public final fun getFilter ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
-	public final fun getLimit ()Ljava/lang/Integer;
-	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
-	public final fun getSegment ()Ljava/lang/Integer;
-	public final fun getSelect ()Laws/sdk/kotlin/services/dynamodb/model/Select;
-	public final fun getTotalSegments ()Ljava/lang/Integer;
-	public final fun setConsistentRead (Ljava/lang/Boolean;)V
 	public final fun setExclusiveStartKey (Ljava/lang/Object;)V
 	public final fun setFilter (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;)V
-	public final fun setLimit (Ljava/lang/Integer;)V
-	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
-	public final fun setSegment (Ljava/lang/Integer;)V
-	public final fun setSelect (Laws/sdk/kotlin/services/dynamodb/model/Select;)V
-	public final fun setTotalSegments (Ljava/lang/Integer;)V
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/ScanResponse {
@@ -1268,16 +1210,10 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/ScanResponse$Com
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/ScanResponseBuilder {
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/ScanResponse;
-	public final fun getConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;
-	public final fun getCount ()Ljava/lang/Integer;
 	public final fun getItems ()Ljava/util/List;
 	public final fun getLastEvaluatedKey ()Ljava/lang/Object;
-	public final fun getScannedCount ()Ljava/lang/Integer;
-	public final fun setConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;)V
-	public final fun setCount (Ljava/lang/Integer;)V
 	public final fun setItems (Ljava/util/List;)V
 	public final fun setLastEvaluatedKey (Ljava/lang/Object;)V
-	public final fun setScannedCount (Ljava/lang/Integer;)V
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations : aws/sdk/kotlin/hll/dynamodbmapper/operations/ItemSourceOperations {

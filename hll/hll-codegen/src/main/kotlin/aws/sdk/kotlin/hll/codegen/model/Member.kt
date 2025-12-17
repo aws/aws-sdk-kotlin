@@ -5,9 +5,7 @@
 package aws.sdk.kotlin.hll.codegen.model
 
 import aws.sdk.kotlin.runtime.InternalSdkApi
-import aws.smithy.kotlin.runtime.collections.Attributes
-import aws.smithy.kotlin.runtime.collections.emptyAttributes
-import aws.smithy.kotlin.runtime.collections.get
+import aws.smithy.kotlin.runtime.collections.*
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 
 /**
@@ -22,18 +20,22 @@ public data class Member(
     val name: String,
     val type: Type,
     val mutable: Boolean = false,
-    val attributes: Attributes = emptyAttributes(),
-) {
+    override val attributes: Attributes = emptyAttributes(),
+) : HasAttributes {
     @InternalSdkApi
     public companion object {
         /**
          * Derive a [Member] from a [KSPropertyDeclaration]
          */
-        public fun from(prop: KSPropertyDeclaration): Member {
+        public fun from(
+            prop: KSPropertyDeclaration,
+            additionalAttributes: AttributesBuilder.() -> Unit = { },
+        ): Member {
             val member = Member(
                 name = prop.simpleName.getShortName(),
                 type = Type.from(prop.type),
                 mutable = prop.isMutable,
+                attributes = attributesOf { additionalAttributes() },
             )
 
             return ModelParsingPlugin.transform(member, ModelParsingPlugin::postProcessMember)

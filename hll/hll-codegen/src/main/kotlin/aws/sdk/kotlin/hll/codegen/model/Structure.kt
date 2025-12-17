@@ -5,9 +5,7 @@
 package aws.sdk.kotlin.hll.codegen.model
 
 import aws.sdk.kotlin.runtime.InternalSdkApi
-import aws.smithy.kotlin.runtime.collections.Attributes
-import aws.smithy.kotlin.runtime.collections.emptyAttributes
-import aws.smithy.kotlin.runtime.collections.get
+import aws.smithy.kotlin.runtime.collections.*
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
@@ -22,24 +20,34 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 public data class Structure(
     val type: TypeRef,
     val members: Set<Member>,
-    val attributes: Attributes = emptyAttributes(),
-) {
+    override val attributes: Attributes = emptyAttributes(),
+) : HasAttributes {
     @InternalSdkApi
     public companion object {
         /**
-         * Derives a [Structure] from the given [KSTypeReference]
+         * Derives a [Structure] from the given [KSClassDeclaration]
          */
-        public fun from(ksTypeRef: KSTypeReference): Structure {
+        public fun from(
+            ksClassDeclaration: KSClassDeclaration,
+            additionalAttributes: AttributesBuilder.() -> Unit = { },
+        ): Structure {
             val struct = Structure(
-                type = Type.from(ksTypeRef),
-                members = (ksTypeRef.resolve().declaration as KSClassDeclaration)
+                type = Type.from(ksClassDeclaration),
+                members = ksClassDeclaration
                     .getDeclaredProperties()
                     .map(Member.Companion::from)
                     .toSet(),
+                attributes = attributesOf { additionalAttributes() },
             )
 
             return ModelParsingPlugin.transform(struct, ModelParsingPlugin::postProcessStructure)
         }
+
+        /**
+         * Derives a [Structure] from the given [KSTypeReference]
+         */
+        public fun from(ksTypeRef: KSTypeReference): Structure =
+            from(ksTypeRef.resolve().declaration as KSClassDeclaration)
     }
 }
 

@@ -7,14 +7,14 @@ package aws.sdk.kotlin.hll.codegen.rendering
 
 import aws.sdk.kotlin.hll.codegen.core.CodeGenerator
 import aws.sdk.kotlin.hll.codegen.model.*
+import aws.sdk.kotlin.hll.codegen.util.generatedAnnotation
 import aws.sdk.kotlin.hll.codegen.util.visibility
 import aws.sdk.kotlin.runtime.InternalSdkApi
 
 /**
  * A DSL-style builder renderer.
  * @param generator The generator in which the builder will be written
- * @param builtType The [TypeRef] representing the type for which a builder will be generated. This type can be a class
- * or an interface.
+ * @param builtType The [Structure] for which a builder will be generated
  * @param implementationType The [TypeRef] representing the implementing type whose constructor will be called by the
  * generated `build` method. This type must expose a constructor which accepts each element of [members] as parameters.
  * Note that this type doesn't have to be public (merely accessible to the `build` method) and may be the same as
@@ -25,28 +25,30 @@ import aws.sdk.kotlin.runtime.InternalSdkApi
 @InternalSdkApi
 public class BuilderRenderer(
     private val generator: CodeGenerator,
-    private val builtType: TypeRef,
+    private val builtStructure: Structure,
     private val implementationType: TypeRef,
     private val members: Set<Member>,
     private val ctx: RenderContext,
 ) : CodeGenerator by generator {
     @InternalSdkApi
     public companion object {
-        public fun builderName(builtType: TypeRef): String = "${builtType.shortName}Builder"
-        public fun builderType(builtType: TypeRef): TypeRef = builtType.copy(shortName = builderName(builtType))
+        public fun builderName(builtType: Structure): String = "${builtType.type.shortName}Builder"
+        public fun builderType(builtType: Structure): TypeRef = builtType.type.copy(shortName = builderName(builtType))
     }
 
-    private val builderName = builderName(builtType)
+    private val builtType = builtStructure.type
+    private val builderName = builderName(builtStructure)
 
     public fun render() {
         docs("A DSL-style builder for instances of [#T]", builtType)
 
+        generatedAnnotation(builtStructure, ctx)
         val genericParams = members.flatMap { it.type.genericVars() }.asParamsList()
-
         withBlock("#Lclass #L#L {", "}", ctx.attributes.visibility, builderName, genericParams) {
             members.forEach(::renderProperty)
             blankLine()
 
+            generatedAnnotation(builtStructure, ctx)
             withBlock("#Lfun build(): #T {", "}", ctx.attributes.visibility, builtType, genericParams) {
                 members.forEach {
                     if (it.type.nullable) {
@@ -73,10 +75,12 @@ public class BuilderRenderer(
             blankLine()
         }
 
+        generatedAnnotation(member, ctx)
         write("#Lvar #L: #T = null", ctx.attributes.visibility, member.name, member.type.nullable())
 
         if (dslInfo != null) {
             blankLine()
+            generatedAnnotation(member, ctx)
             withBlock(
                 "#Lfun #L(block: #T.() -> #T) {",
                 "}",
