@@ -2239,6 +2239,12 @@
             "brazilName": "AwsSdkKotlinWellarchitected"
         },
         {
+            "sdkId": "Wickr",
+            "namespace": "aws.sdk.kotlin.services.wickr",
+            "artifactName": "wickr",
+            "brazilName": "AwsSdkKotlinWickr"
+        },
+        {
             "sdkId": "Wisdom",
             "namespace": "aws.sdk.kotlin.services.wisdom",
             "artifactName": "wisdom",

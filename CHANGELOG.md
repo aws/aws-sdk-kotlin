@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.5.107] - 12/19/2025
+
+### Features
+* (**arcregionswitch**) Automatic Plan Execution Reports allow customers to maintain a concise record of their Region switch Plan executions.  This enables customer SREs and leadership to have a clear view of their recovery posture based on the generated reports for their Plan executions.
+* (**connect**) Adding support for Custom Metrics and Pre-Defined Attributes to GetCurrentMetricData API.
+* (**emrserverless**) Added JobLevelCostAllocationConfiguration field to enable cost allocation reporting at the job level, providing more granular visibility into EMR Serverless charges
+* (**iot**) This release adds event-based logging feature that enables granular event logging controls for AWS IoT logs.
+* (**qbusiness**) It is a internal bug fix for region expansion
+* (**wickr**) AWS Wickr now provides a suite of admin APIs to allow you to programmatically manage secure communication for Wickr networks at scale. These APIs enable you to automate administrative workflows including user lifecycle management, network configuration, and security group administration.
+* (**workspacesweb**) Add support for WebAuthn under user settings.
+
 ## [1.5.106] - 12/18/2025
 
 ### Features
