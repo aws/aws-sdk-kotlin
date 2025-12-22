@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.108] - 12/22/2025
+
+### Features
+* (**configservice**) Added supported resourceTypes for Config from July to November 2025
+* (**ec2**) Adds support for linkedGroupId on the CreatePlacementGroup and DescribePlacementGroups APIs. The linkedGroupId parameter is reserved for future use.
+* (**guardduty**) Make accountIds a required field in GetRemainingFreeTrialDays API to reflect service behavior.
+
+### Documentation
+* (**pcs**) Change API Reference Documentation for default Mode in Accounting and SlurmRest
+
 ## [1.5.107] - 12/19/2025
 
 ### Features
