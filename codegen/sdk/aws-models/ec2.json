@@ -21741,6 +21741,12 @@
                         "smithy.api#documentation": "<p>Determines how placement groups spread instances. </p>\n         <ul>\n            <li>\n               <p>Host – You can use <code>host</code> only with Outpost placement\n                    groups.</p>\n            </li>\n            <li>\n               <p>Rack – No usage restrictions.</p>\n            </li>\n         </ul>"
                     }
                 },
+                "LinkedGroupId": {
+                    "target": "com.amazonaws.ec2#PlacementGroupId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Reserved for future use.</p>"
+                    }
+                },
                 "DryRun": {
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
@@ -103240,6 +103246,14 @@
                         "aws.protocols#ec2QueryName": "SpreadLevel",
                         "smithy.api#documentation": "<p>The spread level for the placement group. <i>Only</i> Outpost placement\n            groups can be spread across hosts.</p>",
                         "smithy.api#xmlName": "spreadLevel"
+                    }
+                },
+                "LinkedGroupId": {
+                    "target": "com.amazonaws.ec2#PlacementGroupId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "LinkedGroupId",
+                        "smithy.api#documentation": "<p>Reserved for future use.</p>",
+                        "smithy.api#xmlName": "linkedGroupId"
                     }
                 }
             },
