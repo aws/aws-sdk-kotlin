@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.109] - 12/23/2025
+
+### Features
+* (**geoplaces**) Adds support for InferredSecondaryAddress place type, Designator in SecondaryAddressComponent and Heading in ReverseGeocode.
+* (**pinpointsmsvoicev2**) This release adds support for the Registration Reviewer feature, which provides generative AI feedback on a phone number or sender ID registration to ensure completeness before sending to downstream (carrier) review.
+* (**s3**) Add additional validation to Outpost bucket names.
+
+### Miscellaneous
+* Remove Elastic Transcoder service
+
 ## [1.5.108] - 12/22/2025
 
 ### Features
