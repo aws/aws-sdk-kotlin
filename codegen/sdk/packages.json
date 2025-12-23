@@ -835,12 +835,6 @@
             "brazilName": "AwsSdkKotlinElasticLoadBalancingV2"
         },
         {
-            "sdkId": "Elastic Transcoder",
-            "namespace": "aws.sdk.kotlin.services.elastictranscoder",
-            "artifactName": "elastictranscoder",
-            "brazilName": "AwsSdkKotlinElasticTranscoder"
-        },
-        {
             "sdkId": "Elasticsearch Service",
             "namespace": "aws.sdk.kotlin.services.elasticsearchservice",
             "artifactName": "elasticsearchservice",
