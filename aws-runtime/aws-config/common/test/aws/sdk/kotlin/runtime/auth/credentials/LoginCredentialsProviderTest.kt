@@ -8,6 +8,7 @@ package aws.sdk.kotlin.runtime.auth.credentials
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
+import aws.smithy.kotlin.runtime.IgnoreNative
 import aws.smithy.kotlin.runtime.http.Headers
 import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
@@ -27,7 +28,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.to
 
 class LoginCredentialsProviderTest {
-
+    @IgnoreNative
     @Test
     fun testCacheFilename() {
         val expected = "36db1d138ff460920374e4c3d8e01f53f9f73537e89c88d639f68393df0e2726.json"
@@ -35,6 +36,7 @@ class LoginCredentialsProviderTest {
         assertEquals(expected, actual)
     }
 
+    @IgnoreNative
     @Test
     fun testExpiredToken() = runTest(
         // TODO: Figure out why this test takes so long to run on some developer machines (@aoperez)
@@ -82,6 +84,7 @@ class LoginCredentialsProviderTest {
         }.message.shouldMatch(Regex("Login token for login-session: .* is expired"))
     }
 
+    @IgnoreNative
     @Test
     fun testSuccess() = runTest {
         val expectedExpiration = Instant.fromIso8601("2020-10-16T04:56:00Z")

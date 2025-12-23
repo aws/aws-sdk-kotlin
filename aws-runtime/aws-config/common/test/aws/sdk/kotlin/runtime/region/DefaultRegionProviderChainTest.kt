@@ -6,6 +6,7 @@
 package aws.sdk.kotlin.runtime.region
 
 import aws.sdk.kotlin.runtime.util.TestInstanceMetadataProvider
+import aws.smithy.kotlin.runtime.IgnoreNative
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.*
@@ -21,6 +22,7 @@ class DefaultRegionProviderChainTest {
         val targets: List<String> = emptyList(),
     )
 
+    @IgnoreNative
     @Test
     fun testSuite() = runTest {
         val tests = Json.parseToJsonElement(REGION_PROVIDER_CHAIN_TEST_SUITE).jsonArray

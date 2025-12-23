@@ -10,6 +10,7 @@ import aws.sdk.kotlin.runtime.client.AwsClientOption
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
 import aws.sdk.kotlin.runtime.util.testAttributes
+import aws.smithy.kotlin.runtime.IgnoreNative
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.copy
 import aws.smithy.kotlin.runtime.collections.attributesOf
@@ -106,6 +107,7 @@ class ProfileCredentialsProviderTest {
         assertEquals(expected, actual)
     }
 
+    @IgnoreNative
     @Test
     fun testBasicAssumeRole() = runTest {
         // smoke test for assume role, more involved scenarios are tested through the default chain
@@ -275,6 +277,7 @@ class ProfileCredentialsProviderTest {
         assertEquals(Host.Domain("sts.us-west-2.amazonaws.com"), requests.actual.url.host)
     }
 
+    @IgnoreNative
     @Test
     fun testPlatformRegion() = runTest {
         val testArn = "arn:aws:iam::1234567:role/test-role"
@@ -335,6 +338,7 @@ class ProfileCredentialsProviderTest {
         assertEquals(expected, actual)
     }
 
+    @IgnoreNative
     @Test
     fun assumeRoleWithNamedProviderBusinessMetrics() = runTest {
         val testArn = "arn:aws:iam::1234567:role/test-role"

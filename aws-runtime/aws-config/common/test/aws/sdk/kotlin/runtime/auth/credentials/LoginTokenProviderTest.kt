@@ -6,6 +6,7 @@
 package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.client.AwsClientOption
+import aws.smithy.kotlin.runtime.IgnoreNative
 import aws.smithy.kotlin.runtime.http.Headers
 import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
@@ -95,6 +96,7 @@ class LoginTokenProviderTest {
         data class Error(val message: String) : TestOutcome()
     }
 
+    @IgnoreNative
     @Test
     fun testLoginTokenCacheBehavior() = runTest(timeout = 2.minutes) {
         val testList = Json.parseToJsonElement(LOGIN_TOKEN_PROVIDER_TEST_SUITE).jsonArray
