@@ -558,7 +558,7 @@ private const val TEST_SUITE_JSON = """
     "service_id": "Elastic Beanstalk",
     "services_section_name": "elastic_beanstalk",
     "service_envvar_name": "AWS_ENDPOINT_URL_ELASTIC_BEANSTALK"
-  }
+  },
   {
     "service_id": "Elastic Load Balancing",
     "services_section_name": "elastic_load_balancing",
