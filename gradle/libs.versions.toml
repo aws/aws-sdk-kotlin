@@ -1,9 +1,10 @@
 [versions]
-kotlin-version = "2.2.0"
-ksp-version = "2.2.0-2.0.2" # Keep in sync with kotlin-version
+kotlin-version = "2.3.0"
+ksp-version = "2.3.4"
 
 dokka-version = "2.0.0"
 
+# TODO Upgrade to 0.5.0 before merging
 aws-kotlin-repo-tools-version = "0.4.65"
 
 # libs
@@ -12,27 +13,28 @@ atomicfu-version = "0.29.0"
 binary-compatibility-validator-version = "0.18.0"
 
 # smithy-kotlin codegen and runtime are versioned separately
+# TODO Upgrade to 1.6.0 before merging
 smithy-kotlin-runtime-version = "1.5.24"
+# TODO Upgrade to 0.36.0 before merging
 smithy-kotlin-codegen-version = "0.35.24"
 
 # codegen
-smithy-version = "1.64.0"
+smithy-version = "1.65.0"
 
 # testing
 ddb-local-version = "2.5.2"
-junit-version = "5.13.2"
+junit-version = "5.14.1"
 kotest-version = "5.9.1"
-kotlinx-benchmark-version = "0.4.12"
-kotlinx-serialization-version = "1.7.3"
-mockk-version = "1.13.13"
-slf4j-version = "2.0.16"
-jsoup-version = "1.20.1"
+kotlinx-benchmark-version = "0.4.15"
+kotlinx-serialization-version = "1.9.0"
+mockk-version = "1.14.7"
+slf4j-version = "2.0.17"
+jsoup-version = "1.21.2"
 
 [libraries]
 aws-kotlin-repo-tools-build-support = { module="aws.sdk.kotlin.gradle:build-support", version.ref = "aws-kotlin-repo-tools-version" }
 
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin-version" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-version" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-version" }
 kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin-version" }
@@ -43,11 +45,8 @@ dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", vers
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu-version" }
 kotlinx-atomicfu-plugin = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "atomicfu-version" }
 
-kotlinx-coroutines-debug = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-debug", version.ref = "coroutines-version" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines-version" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-version" }
-kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "coroutines-version" }
-kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "coroutines-version" }
 
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp-version" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp-version" }
@@ -146,10 +145,8 @@ smithy-kotlin-service-client = [
 ]
 
 [plugins]
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version"}
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-version" }
-kotlinx-benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinx-benchmark-version" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator-version" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }

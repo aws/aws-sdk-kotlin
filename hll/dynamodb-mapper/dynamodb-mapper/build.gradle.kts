@@ -6,8 +6,6 @@
 import aws.sdk.kotlin.gradle.kmp.NATIVE_ENABLED
 import com.amazonaws.services.dynamodbv2.local.main.ServerRunner
 import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer
-import com.google.devtools.ksp.gradle.KspTaskJvm
-import com.google.devtools.ksp.gradle.KspTaskMetadata
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.net.ServerSocket
 import java.nio.file.Files
@@ -76,10 +74,8 @@ if (project.NATIVE_ENABLED) {
     dependencies.kspCommonMainMetadata(project(":hll:dynamodb-mapper:dynamodb-mapper-ops-codegen"))
 
     kotlin.sourceSets.commonMain {
-        tasks.withType<KspTaskMetadata> {
-            // Wire up the generated source to the commonMain source set
-            kotlin.srcDir(destinationDirectory)
-        }
+        // Wire up the generated source to the commonMain source set
+        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
     }
 } else {
     // FIXME This is a dirty hack for JVM-only builds which KSP doesn't consider to be "multiplatform". Explanation of
@@ -120,10 +116,7 @@ if (project.NATIVE_ENABLED) {
     }
 
     tasks.withType<KotlinCompilationTask<*>> {
-        if (this !is KspTaskJvm) {
-            // Ensure that any **non-KSP** compile tasks depend on the generated src move
-            dependsOn(moveGenSrc)
-        }
+        dependsOn(moveGenSrc)
     }
 
     // Finally, wire up the generated source to the commonMain source set
@@ -174,7 +167,7 @@ open class DynamoDbLocalInstance : DefaultTask() {
     }
 }
 
-val startDdbLocal = task<DynamoDbLocalInstance>("startDdbLocal") {
+val startDdbLocal = tasks.register<DynamoDbLocalInstance>("startDdbLocal") {
     portFile.set(file("build/ddblocal/port.info")) // Keep in sync with DdbLocalTest.kt
     outputs.upToDateWhen { false } // Always run this task even if a portFile already exists
 }
@@ -182,6 +175,6 @@ val startDdbLocal = task<DynamoDbLocalInstance>("startDdbLocal") {
 tasks.withType<Test> {
     dependsOn(startDdbLocal)
     doLast {
-        startDdbLocal.stop()
+        startDdbLocal.get().stop()
     }
 }
