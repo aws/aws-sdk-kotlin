@@ -558,12 +558,7 @@ private const val TEST_SUITE_JSON = """
     "service_id": "Elastic Beanstalk",
     "services_section_name": "elastic_beanstalk",
     "service_envvar_name": "AWS_ENDPOINT_URL_ELASTIC_BEANSTALK"
-  },
-  {
-    "service_id": "Elastic Transcoder",
-    "services_section_name": "elastic_transcoder",
-    "service_envvar_name": "AWS_ENDPOINT_URL_ELASTIC_TRANSCODER"
-  },
+  }
   {
     "service_id": "Elastic Load Balancing",
     "services_section_name": "elastic_load_balancing",
@@ -1853,7 +1848,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "EventBridge": "EventBridgeClient",
   "FraudDetector": "FraudDetectorClient",
   "QuickSight": "QuickSightClient",
-  "Elastic Transcoder": "ElasticTranscoderClient",
   "WorkMail": "WorkMailClient",
   "Secrets Manager": "SecretsManagerClient",
   "Service Catalog": "ServiceCatalogClient",
