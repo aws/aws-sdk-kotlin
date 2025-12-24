@@ -66,7 +66,7 @@ ksp {
     arg("op-allowlist", allowlist.joinToString(";"))
 }
 // FIXME dynamodb-mapper native compilation never worked?
-//if (project.NATIVE_ENABLED) {
+// if (project.NATIVE_ENABLED) {
 //    // Configure KSP for multiplatform: https://kotlinlang.org/docs/ksp-multiplatform.html
 //    // https://github.com/google/ksp/issues/963#issuecomment-1894144639
 //    // https://github.com/google/ksp/issues/965
@@ -76,7 +76,7 @@ ksp {
 //        // Wire up the generated source to the commonMain source set
 //        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
 //    }
-//}
+// }
 
 // FIXME This is a dirty hack for JVM-only builds which KSP doesn't consider to be "multiplatform".
 //  Explanation of hack follows in narrative, minimally-opinionated comments.
