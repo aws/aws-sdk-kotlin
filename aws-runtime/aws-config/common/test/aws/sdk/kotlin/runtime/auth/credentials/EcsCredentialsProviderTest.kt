@@ -9,7 +9,6 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
-import aws.smithy.kotlin.runtime.IgnoreNative
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderException
 import aws.smithy.kotlin.runtime.http.Headers
@@ -144,7 +143,6 @@ class EcsCredentialsProviderTest {
         engine.assertRequests()
     }
 
-    @IgnoreNative
     @Test
     fun testNonLocalFullUri() = runTest {
         val uri = "http://amazonaws.com/full"
