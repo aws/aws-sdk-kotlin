@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.110] - 12/26/2025
+
+### Features
+* (**medialive**) AWS Elemental MediaLive now supports Pipeline Locking using Video Alignment as well as linked single pipeline channels to enable cross-channel and cross-region Pipeline Locking workflows.
+
 ## [1.5.109] - 12/23/2025
 
 ### Features
