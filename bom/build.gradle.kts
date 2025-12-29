@@ -99,7 +99,6 @@ fun DependencyConstraintHandler.api(constraintNotation: Any) =
 
 createBomConstraintsAndVersionCatalog()
 
-// TODO Use configurePublishing when migrating to Sonatype Publisher API / JReleaser
 configurePublishing("aws-sdk-kotlin")
 
 publishing {
