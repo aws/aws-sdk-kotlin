@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.111] - 12/29/2025
+
+### Features
+* (**connect**) Changes for Contact for Global Search
+* (**quicksight**) This release adds support for quick users to be able to perform role upgrades on their own. Additionally it allows admins to make this feature admin or auto approval along with new self upgrade capability that can be restricted by Admins.
+
 ## [1.5.110] - 12/26/2025
 
 ### Features
