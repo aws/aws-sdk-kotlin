@@ -89,11 +89,9 @@ class ValidateRegionTest {
     @Test
     fun testIsRegionValid() {
         TestData.validRegions.forEach {
-            println("Valid region: $it")
             assertTrue(isRegionValid(it))
         }
         TestData.invalidRegions.forEach {
-            println("Invalid region: $it")
             assertFalse(isRegionValid(it))
         }
     }
