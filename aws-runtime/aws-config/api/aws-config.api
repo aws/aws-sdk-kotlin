@@ -348,7 +348,7 @@ public final class aws/sdk/kotlin/runtime/config/AwsSdkSetting {
 	public final fun getAwsAccessKeyId ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsAccountId ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsAccountIdEndpointMode ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
-	public final fun getAwsAppId ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
+	public final fun getAwsAppId ()Laws/smithy/kotlin/runtime/config/MultipleKeyEnvironmentSetting;
 	public final fun getAwsAuthSchemePreference ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsConfigFile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsContainerAuthorizationToken ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
@@ -375,7 +375,7 @@ public final class aws/sdk/kotlin/runtime/config/AwsSdkSetting {
 	public final fun getAwsSecretAccessKey ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsSessionToken ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsSharedCredentialsFile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
-	public final fun getAwsSigV4aSigningRegionSet ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
+	public final fun getAwsSigV4aSigningRegionSet ()Laws/smithy/kotlin/runtime/config/MultipleKeyEnvironmentSetting;
 	public final fun getAwsUseDualStackEndpoint ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsUseFipsEndpoint ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsWebIdentityTokenFile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
