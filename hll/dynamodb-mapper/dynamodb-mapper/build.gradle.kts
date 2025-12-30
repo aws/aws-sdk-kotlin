@@ -110,15 +110,8 @@ val moveGenSrc by tasks.registering {
 }
 
 // Ensure all source jar tasks depend on the generated source move
-tasks.matching { it.name.endsWith("SourcesJar") || it.name == "sourcesJar" }.configureEach {
+tasks.matching { it.name.endsWith("SourcesJar", ignoreCase = true) || it.name == "jvmProcessResources" }.configureEach {
     dependsOn(moveGenSrc)
-}
-
-// Also ensure specific tasks depend on the move
-listOf("jvmProcessResources", "metadataSourcesJar").forEach { taskName ->
-    tasks.matching { it.name == taskName }.configureEach {
-        dependsOn(moveGenSrc)
-    }
 }
 
 tasks.withType<KotlinCompilationTask<*>> {
