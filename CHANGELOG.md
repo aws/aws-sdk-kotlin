@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.112] - 12/30/2025
+
+### Features
+* (**connect**) Adds support for searching global contacts using the ActiveRegions filter, and pagination support for ListSecurityProfileFlowModules and ListEntitySecurityProfiles.
+* (**kafkaconnect**) This change sets the KafkaConnect GovCloud FIPS and FIPS DualStack endpoints to use kafkaconnect instead of kafkaconnect-fips as the service name. This is done to match the Kafka endpoints.
+
 ## [1.5.111] - 12/29/2025
 
 ### Features
