@@ -467,7 +467,7 @@ class SchemaGeneratorPluginTest {
                         )
                     }
                 }
-            """.trimIndent()
+            """.trimIndent(),
         )
 
         // ssn is annotated with DynamoDbIgnore

@@ -28,7 +28,6 @@ public fun CodeGenerator.generatedAnnotation(vararg subjectAttributes: Attribute
     }
 }
 
-
 /**
  * Writes a `@GeneratedApi` annotation
  */
