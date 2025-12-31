@@ -25,5 +25,6 @@ internal object S3Setting {
     /**
      * Configure whether requests made to S3 Express One Zone should use bucket-level session authentication or the default S3 authentication method.
      */
-    public val DisableS3ExpressSessionAuth: EnvironmentSetting<Boolean> = boolEnvSetting("aws.s3DisableExpressSessionAuth", "AWS_S3_DISABLE_EXPRESS_SESSION_AUTH")
+    public val DisableS3ExpressSessionAuth: MultipleKeyEnvironmentSetting<Boolean> = boolEnvSetting("aws.s3DisableExpressSessionAuth", "AWS_S3_DISABLE_EXPRESS_SESSION_AUTH")
+        .withAdditionalKeys(listOf("aws.disableS3ExpressAuth"))
 }
