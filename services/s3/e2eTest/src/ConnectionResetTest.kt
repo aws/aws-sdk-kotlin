@@ -22,7 +22,6 @@ import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.time.Duration.Companion.seconds
 
-
 /**
  * Reproduces "unexpected end of stream" errors as seen in https://github.com/aws/aws-sdk-kotlin/issues/1214
  * and ensures they are resolved by OkHttp's retryOnConnectionFailure option
