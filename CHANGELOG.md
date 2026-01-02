@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.113] - 01/02/2026
+
+### Features
+* (**cleanrooms**) Added support for publishing detailed metrics to CloudWatch for operational monitoring of collaborations, including query performance and resource utilization.
+* (**identitystore**) This change introduces "Roles" attribute for User entities supported by AWS Identity Store SDK.
+
 ## [1.5.112] - 12/30/2025
 
 ### Features
