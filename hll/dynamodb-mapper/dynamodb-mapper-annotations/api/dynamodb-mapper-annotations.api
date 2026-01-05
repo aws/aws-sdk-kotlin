@@ -10,7 +10,7 @@ public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/Dyn
 }
 
 public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbItem : java/lang/annotation/Annotation {
-	public abstract fun converterName ()Ljava/lang/String;
+	public abstract fun converter ()Ljava/lang/Class;
 }
 
 public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbPartitionKey : java/lang/annotation/Annotation {

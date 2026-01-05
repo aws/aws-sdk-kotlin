@@ -38,16 +38,20 @@ internal class SchemaRenderer(
     private val converterName = "${className}Converter"
     private val schemaName = "${className}Schema"
 
-    private val dynamoDbItemAnnotation = classDeclaration.getAnnotationsByType(DynamoDbItem::class).single()
+    // The fully qualified name of the user-specified ItemConverter, if set
+    private val userItemConverterFqn: String? = (
+        classDeclaration
+            .annotations
+            .single { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbItem::class.qualifiedName }
+            .arguments.single().value as? KSType
+        )?.declaration?.qualifiedName?.asString()
+        ?.takeIf { it != "aws.sdk.kotlin.hll.mapping.core.converters.Converter" } // filter default values
 
-    private val itemConverter: Type = dynamoDbItemAnnotation
-        .converterName
-        .takeIf { it.isNotBlank() }
-        ?.let {
-            val pkg = it.substringBeforeLast(".")
-            val shortName = it.removePrefix("$pkg.")
-            TypeRef(pkg, shortName)
-        } ?: TypeRef(ctx.pkg, converterName)
+    private val itemConverter: Type = userItemConverterFqn?.let {
+        val pkg = it.substringBeforeLast(".")
+        val shortName = it.removePrefix("$pkg.")
+        TypeRef(pkg, shortName)
+    } ?: TypeRef(ctx.pkg, converterName)
 
     private val properties = classDeclaration
         .getAllProperties()
@@ -88,7 +92,7 @@ internal class SchemaRenderer(
             renderBuilder()
         }
 
-        if (dynamoDbItemAnnotation.converterName.isBlank()) {
+        if (customItemConverterFqn == null) {
             renderItemConverter()
         }
 
