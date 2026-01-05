@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.114] - 01/05/2026
+
+### Features
+* (**cleanroomsml**) AWS Clean Rooms ML now supports advanced Spark configurations to optimize SQL performance when creating an MLInputChannel or an audience generation job.
+
 ## [1.5.113] - 01/02/2026
 
 ### Features
