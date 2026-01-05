@@ -92,7 +92,7 @@ internal class SchemaRenderer(
             renderBuilder()
         }
 
-        if (customItemConverterFqn == null) {
+        if (userItemConverterFqn == null) {
             renderItemConverter()
         }
 
