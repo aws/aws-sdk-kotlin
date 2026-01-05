@@ -35,7 +35,6 @@ val optinAnnotations = listOf(
 subprojects {
     group = "aws.sdk.kotlin"
     version = sdkVersion
-    // TODO Use configurePublishing when migrating to Sonatype Publisher API / JReleaser
     configurePublishing("aws-sdk-kotlin")
 }
 
