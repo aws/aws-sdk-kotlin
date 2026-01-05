@@ -4,11 +4,11 @@
  */
 package aws.sdk.kotlin.codegen.customization
 
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.model.expectTrait
+import aws.smithy.kotlin.codegen.test.toSmithyModel
 import software.amazon.smithy.aws.traits.auth.SigV4ATrait
 import software.amazon.smithy.aws.traits.auth.SigV4Trait
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.model.expectTrait
-import software.amazon.smithy.kotlin.codegen.test.toSmithyModel
 import software.amazon.smithy.model.shapes.ShapeId
 import software.amazon.smithy.model.traits.AuthTrait
 import kotlin.test.Test

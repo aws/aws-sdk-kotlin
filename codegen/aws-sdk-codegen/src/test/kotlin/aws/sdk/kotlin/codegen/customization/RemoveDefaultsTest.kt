@@ -5,9 +5,9 @@
 
 package aws.sdk.kotlin.codegen.customization
 
+import aws.smithy.kotlin.codegen.model.hasTrait
+import aws.smithy.kotlin.codegen.test.toSmithyModel
 import org.junit.jupiter.api.Test
-import software.amazon.smithy.kotlin.codegen.model.hasTrait
-import software.amazon.smithy.kotlin.codegen.test.toSmithyModel
 import software.amazon.smithy.model.shapes.ShapeId
 import software.amazon.smithy.model.traits.DefaultTrait
 import kotlin.test.assertFalse
