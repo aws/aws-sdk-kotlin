@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.5.114] - 01/05/2026
+
+### Features
+* (**cleanroomsml**) AWS Clean Rooms ML now supports advanced Spark configurations to optimize SQL performance when creating an MLInputChannel or an audience generation job.
+
+## [1.5.113] - 01/02/2026
+
+### Features
+* (**cleanrooms**) Added support for publishing detailed metrics to CloudWatch for operational monitoring of collaborations, including query performance and resource utilization.
+* (**identitystore**) This change introduces "Roles" attribute for User entities supported by AWS Identity Store SDK.
+
+## [1.5.112] - 12/30/2025
+
+### Features
+* (**connect**) Adds support for searching global contacts using the ActiveRegions filter, and pagination support for ListSecurityProfileFlowModules and ListEntitySecurityProfiles.
+* (**kafkaconnect**) This change sets the KafkaConnect GovCloud FIPS and FIPS DualStack endpoints to use kafkaconnect instead of kafkaconnect-fips as the service name. This is done to match the Kafka endpoints.
+
+## [1.5.111] - 12/29/2025
+
+### Features
+* (**connect**) Changes for Contact for Global Search
+* (**quicksight**) This release adds support for quick users to be able to perform role upgrades on their own. Additionally it allows admins to make this feature admin or auto approval along with new self upgrade capability that can be restricted by Admins.
+
 ## [1.5.110] - 12/26/2025
 
 ### Features
