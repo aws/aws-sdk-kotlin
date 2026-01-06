@@ -23,7 +23,7 @@ public class TTLValueConverter(
     init {
         require(lifetimeSeconds > 0) { "TTL must be positive, got $lifetimeSeconds seconds" }
     }
-    
+
     override val left: MonoConverter<AttributeValue, Long> = MonoConverter {
         it.asN().toLong()
     }
