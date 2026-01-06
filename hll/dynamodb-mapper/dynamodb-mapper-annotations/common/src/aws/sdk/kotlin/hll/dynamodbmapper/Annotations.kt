@@ -52,6 +52,7 @@ public annotation class DynamoDbIgnore
 /**
  * Specifies that this property is used to track the item's time-to-live (TTL).
  * https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html
+ * @param lifetimeSeconds The lifetime of this item, in seconds
  */
 @Target(AnnotationTarget.PROPERTY)
-public annotation class DynamoDbTTL(val seconds: Long)
+public annotation class DynamoDbTTL(val lifetimeSeconds: Long)
