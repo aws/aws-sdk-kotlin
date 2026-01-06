@@ -26,7 +26,6 @@ public annotation class DynamoDbAttributeConverter(val converter: KClass<out Val
  * attributes unless they are explicitly ignored.
  * @param converter The item converter to be used for converting this class/interface. If not set, one will be automatically generated.
  */
-// FIXME Update to take a KClass<ItemConverter>
 @Target(AnnotationTarget.CLASS)
 public annotation class DynamoDbItem(val converter: KClass<out ItemConverter<*>> = ItemConverter::class)
 
