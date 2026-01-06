@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.115] - 01/06/2026
+
+### Features
+* (**costexplorer**) This release updates existing reservation recommendations API to support deployment model.
+* (**emrserverless**) Added support for enabling disk encryption using customer managed AWS KMS keys to CreateApplication, UpdateApplication and StartJobRun APIs.
+
 ## [1.5.114] - 01/05/2026
 
 ### Features
