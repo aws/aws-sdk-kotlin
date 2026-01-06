@@ -93,9 +93,9 @@ smithy-kotlin-telemetry-provider-otel = { module = "aws.smithy.kotlin:telemetry-
 smithy-kotlin-test-suite = { module = "aws.smithy.kotlin:test-suite", version.ref = "smithy-kotlin-runtime-version" }
 smithy-kotlin-testing = { module = "aws.smithy.kotlin:testing", version.ref = "smithy-kotlin-runtime-version" }
 
-smithy-kotlin-codegen = { module = "aws.smithy.kotlin:smithy-kotlin-codegen", version.ref = "smithy-kotlin-codegen-version" }
-smithy-kotlin-codegen-testutils = { module = "aws.smithy.kotlin:smithy-kotlin-codegen-testutils", version.ref = "smithy-kotlin-codegen-version" }
-smithy-aws-kotlin-codegen = { module = "aws.smithy.kotlin:smithy-aws-kotlin-codegen", version.ref = "smithy-kotlin-codegen-version" }
+smithy-kotlin-codegen = { module = "aws.smithy.kotlin:codegen", version.ref = "smithy-kotlin-codegen-version" }
+smithy-kotlin-codegen-testutils = { module = "aws.smithy.kotlin:codegen-testutils", version.ref = "smithy-kotlin-codegen-version" }
+smithy-aws-kotlin-codegen = { module = "aws.smithy.kotlin:aws-codegen", version.ref = "smithy-kotlin-codegen-version" }
 
 smithy-codegen-core = { module = "software.amazon.smithy:smithy-codegen-core", version.ref = "smithy-version" }
 smithy-cli = { module = "software.amazon.smithy:smithy-cli", version.ref = "smithy-version" }
