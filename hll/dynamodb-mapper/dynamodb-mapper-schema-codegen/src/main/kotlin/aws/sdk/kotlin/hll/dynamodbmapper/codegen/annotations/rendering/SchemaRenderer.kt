@@ -163,6 +163,16 @@ internal class SchemaRenderer(
             }
 
             // converter
+
+            // Handle TTL annotation
+            prop.annotations
+                .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbTTL::class.qualifiedName }
+                ?.let {
+                    val lifetimeSeconds = it.arguments.single().value as? Long ?: error("@DynamoDbTTL annotation argument could not be evaluated at compile time. Use a literal value like @DynamoDbTTL(3600) instead of expressions like @DynamoDbTTL(1.hours.inWholeSeconds).")
+                    write("#T(#L),", MapperTypes.Values.TTLValueConverter, lifetimeSeconds)
+                    return@withBlock
+                }
+
             // KSP requires extra work to get a class argument out of an annotation, can't just use getAnnotationsByType
             // https://slack-chats.kotlinlang.org/t/8480301/hello-again-how-do-you-get-a-kclass-out-from-an-annotation-a
             val attributeValueConverterFqn = prop.annotations

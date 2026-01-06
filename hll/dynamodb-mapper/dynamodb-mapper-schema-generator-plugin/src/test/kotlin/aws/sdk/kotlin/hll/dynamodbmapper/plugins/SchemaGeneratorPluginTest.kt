@@ -609,4 +609,60 @@ class SchemaGeneratorPluginTest {
         ),""",
         )
     }
+
+    @Test
+    fun testDynamoDbTTL() {
+        createClassFile("ttl/User")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/ttl/dynamodbmapper/generatedschemas/UserSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        // Converter
+        assertContains(
+            schemaContents,
+            """
+                public object UserConverter : ItemConverter<User> by SimpleItemConverter(
+                    builderFactory = ::UserBuilder,
+                    build = UserBuilder::build,
+                    descriptors = arrayOf(
+                        AttributeDescriptor(
+                            "id",
+                            User::id,
+                            UserBuilder::id::set,
+                            NumberValueConverters.Int,
+                        ),
+                        AttributeDescriptor(
+                            "givenName",
+                            User::givenName,
+                            UserBuilder::givenName::set,
+                            StringValueConverter,
+                        ),
+                        AttributeDescriptor(
+                            "surname",
+                            User::surname,
+                            UserBuilder::surname::set,
+                            StringValueConverter,
+                        ),
+                        AttributeDescriptor(
+                            "age",
+                            User::age,
+                            UserBuilder::age::set,
+                            NumberValueConverters.Int,
+                        ),
+                        AttributeDescriptor(
+                            "expiresAt",
+                            User::expiresAt,
+                            UserBuilder::expiresAt::set,
+                            TTLValueConverter(86400),
+                        ),
+                    ),
+                )
+            """.trimIndent(),
+        )
+    }
 }
