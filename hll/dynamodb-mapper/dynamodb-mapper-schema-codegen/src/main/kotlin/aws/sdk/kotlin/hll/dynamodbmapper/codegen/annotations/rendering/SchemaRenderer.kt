@@ -163,6 +163,20 @@ internal class SchemaRenderer(
             }
 
             // converter
+            val counterAnnotation = prop
+                .annotations
+                .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbCounter::class.qualifiedName }
+
+            counterAnnotation?.let {
+                val propTypeFqn = prop.type.resolve().declaration.qualifiedName?.asString()
+                val converterSymbol = MapperTypes.Values.CounterValueConverter
+                when (propTypeFqn) {
+                    "kotlin.Long" -> write("#T.Long,", converterSymbol)
+                    "kotlin.Int" -> write("#T.Int,", converterSymbol)
+                    else -> error("Expected Int or Long to be annotated with @DynamoDbCounter, got $propTypeFqn")
+                }
+            }
+
             // KSP requires extra work to get a class argument out of an annotation, can't just use getAnnotationsByType
             // https://slack-chats.kotlinlang.org/t/8480301/hello-again-how-do-you-get-a-kclass-out-from-an-annotation-a
             val attributeValueConverterFqn = prop.annotations
