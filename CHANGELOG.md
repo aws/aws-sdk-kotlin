@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.116] - 01/07/2026
+
+### Features
+* (**workspaces**) Add StateMessage and ProgressPercentage fields to DescribeCustomWorkspaceImageImport API response.
+
 ## [1.5.115] - 01/06/2026
 
 ### Features
