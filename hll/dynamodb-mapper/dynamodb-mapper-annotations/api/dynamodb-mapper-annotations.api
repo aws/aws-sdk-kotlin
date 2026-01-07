@@ -19,7 +19,7 @@ public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/Dyn
 public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbSortKey : java/lang/annotation/Annotation {
 }
 
-public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbTTL : java/lang/annotation/Annotation {
-	public abstract fun lifetimeSeconds ()J
+public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbTtlSeconds : java/lang/annotation/Annotation {
+	public abstract fun lifetime ()J
 }
 

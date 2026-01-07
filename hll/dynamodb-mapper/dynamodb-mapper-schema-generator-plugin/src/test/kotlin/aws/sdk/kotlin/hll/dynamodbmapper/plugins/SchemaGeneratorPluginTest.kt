@@ -14,6 +14,7 @@ import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import kotlin.test.assertContains
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -611,7 +612,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testDynamoDbTTL() {
+    fun testDynamoDbTtlSeconds() {
         createClassFile("ttl/User")
 
         val result = runner.build()
@@ -622,47 +623,23 @@ class SchemaGeneratorPluginTest {
 
         val schemaContents = schemaFile.readText()
 
-        // Converter
-        assertContains(
-            schemaContents,
-            """
-                public object UserConverter : ItemConverter<User> by SimpleItemConverter(
-                    builderFactory = ::UserBuilder,
-                    build = UserBuilder::build,
-                    descriptors = arrayOf(
-                        AttributeDescriptor(
-                            "id",
-                            User::id,
-                            UserBuilder::id::set,
-                            NumberValueConverters.Int,
-                        ),
-                        AttributeDescriptor(
-                            "givenName",
-                            User::givenName,
-                            UserBuilder::givenName::set,
-                            StringValueConverter,
-                        ),
-                        AttributeDescriptor(
-                            "surname",
-                            User::surname,
-                            UserBuilder::surname::set,
-                            StringValueConverter,
-                        ),
-                        AttributeDescriptor(
-                            "age",
-                            User::age,
-                            UserBuilder::age::set,
-                            NumberValueConverters.Int,
-                        ),
-                        AttributeDescriptor(
-                            "expiresAt",
-                            User::expiresAt,
-                            UserBuilder::expiresAt::set,
-                            TTLValueConverter(86400),
-                        ),
-                    ),
-                )
-            """.trimIndent(),
-        )
+        // Ensure that TTL field is set
+        assertContains(schemaContents,"""
+            public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
+                override val converter: UserConverter = UserConverter
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.TtlField to Pair("expiresAt", 86400L)
+                }
+            }
+        """.trimIndent())
+    }
+
+    @Test
+    fun testInvalidDynamoDbTtlSeconds() {
+        createClassFile("ttl/InvalidUser")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "@DynamoDbTtlSeconds must be positive, got -5 seconds on property expiresAt")
     }
 }

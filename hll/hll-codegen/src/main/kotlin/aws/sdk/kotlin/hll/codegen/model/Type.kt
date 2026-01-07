@@ -9,6 +9,7 @@ import aws.sdk.kotlin.runtime.InternalSdkApi
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeReference
+import software.amazon.smithy.codegen.core.Symbol
 
 /**
  * Describes a Kotlin data type
@@ -39,6 +40,15 @@ public sealed interface Type {
                 nullable = ksType.isMarkedNullable,
             )
         }
+
+        /**
+         * Derives a [TypeRef] from a Smithy [Symbol]
+         */
+        public fun from(symbol: Symbol, nullable: Boolean = false): TypeRef = TypeRef(
+            pkg = symbol.namespace,
+            shortName = symbol.name,
+            nullable = nullable
+        )
     }
 
     /**

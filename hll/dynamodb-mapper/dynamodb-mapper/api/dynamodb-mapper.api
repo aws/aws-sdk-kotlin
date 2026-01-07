@@ -626,6 +626,24 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyFilter$D
 	public static fun startsWith (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyFilter;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKey;[B)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyExpr;
 }
 
+public final class aws/sdk/kotlin/hll/dynamodbmapper/interceptors/TtlInterceptor : aws/sdk/kotlin/hll/dynamodbmapper/pipeline/Interceptor {
+	public fun <init> ()V
+	public fun <init> (Laws/smithy/kotlin/runtime/time/Clock;)V
+	public synthetic fun <init> (Laws/smithy/kotlin/runtime/time/Clock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun modifyBeforeCompletion (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HResContext;)Ljava/lang/Object;
+	public fun modifyBeforeDeserialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LResContext;)Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/DeserializeInput;
+	public fun modifyBeforeInvocation (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LReqContext;)Ljava/lang/Object;
+	public fun modifyBeforeSerialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HReqContext;)Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/SerializeInput;
+	public fun readAfterDeserialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HResContext;)V
+	public fun readAfterInitialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HReqContext;)V
+	public fun readAfterInvocation (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LResContext;)V
+	public fun readAfterSerialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LReqContext;)V
+	public fun readBeforeCompletion (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HResContext;)V
+	public fun readBeforeDeserialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LResContext;)V
+	public fun readBeforeInvocation (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LReqContext;)V
+	public fun readBeforeSerialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HReqContext;)V
+}
+
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/AttributeDescriptor {
 	public abstract fun getConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public abstract fun getGetter ()Lkotlin/jvm/functions/Function1;
@@ -655,6 +673,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/items/HeterogeneousItemConv
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema {
+	public fun getAttributes ()Laws/smithy/kotlin/runtime/collections/Attributes;
 	public abstract fun getConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public abstract fun getKeyAttributeNames ()Ljava/util/List;
 }
@@ -666,7 +685,12 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSche
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey$DefaultImpls {
+	public static fun getAttributes (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;)Laws/smithy/kotlin/runtime/collections/Attributes;
 	public static fun getKeyAttributeNames (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;)Ljava/util/List;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$DefaultImpls {
+	public static fun getAttributes (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema;)Laws/smithy/kotlin/runtime/collections/Attributes;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema {
@@ -675,6 +699,7 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSche
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey$DefaultImpls {
+	public static fun getAttributes (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;)Laws/smithy/kotlin/runtime/collections/Attributes;
 	public static fun getKeyAttributeNames (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;)Ljava/util/List;
 }
 
@@ -902,6 +927,11 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/Persiste
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/PersistenceSpec$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/model/PersistenceSpec {
 	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/model/SchemaAttributes {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/model/SchemaAttributes;
+	public final fun getTtlField ()Laws/smithy/kotlin/runtime/collections/AttributeKey;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/Table : aws/sdk/kotlin/hll/dynamodbmapper/model/ItemSource, aws/sdk/kotlin/hll/dynamodbmapper/model/TableSpec, aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations {
@@ -1401,16 +1431,6 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/values/NullableValueConvert
 	public static final fun asNullable (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public static synthetic fun asNullable$default (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;ILjava/lang/Object;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public static final fun getNullValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-}
-
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/TTLValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
-	public fun <init> (J)V
-	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Ljava/lang/Long;
-	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertRight (J)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
-	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun getLeft ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
-	public fun getRight ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/ListValueConverterKt {

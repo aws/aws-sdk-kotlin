@@ -10,12 +10,12 @@ import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbPartitionKey
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbTtlSeconds
 
 @DynamoDbItem
-public data class User(
+public data class InvalidUser(
     @DynamoDbPartitionKey var id: Int,
     var givenName: String,
     var surname: String,
     var age: Int,
 
-    @DynamoDbTtlSeconds(86400)
+    @DynamoDbTtlSeconds(-5)
     var expiresAt: Long,
 )

@@ -20,6 +20,7 @@ import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.getConstructors
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.*
+import software.amazon.smithy.kotlin.codegen.core.RuntimeTypes
 
 /**
  * Renders the classes and objects required to make a class usable with the DynamoDbMapper such as schemas, builders, and converters.
@@ -163,16 +164,6 @@ internal class SchemaRenderer(
             }
 
             // converter
-
-            // Handle TTL annotation
-            prop.annotations
-                .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbTTL::class.qualifiedName }
-                ?.let {
-                    val lifetimeSeconds = it.arguments.single().value as? Long ?: error("@DynamoDbTTL annotation argument could not be evaluated at compile time. Use a literal value like @DynamoDbTTL(3600) instead of expressions like @DynamoDbTTL(1.hours.inWholeSeconds).")
-                    write("#T(#L),", MapperTypes.Values.TTLValueConverter, lifetimeSeconds)
-                    return@withBlock
-                }
-
             // KSP requires extra work to get a class argument out of an annotation, can't just use getAnnotationsByType
             // https://slack-chats.kotlinlang.org/t/8480301/hello-again-how-do-you-get-a-kclass-out-from-an-annotation-a
             val attributeValueConverterFqn = prop.annotations
@@ -329,6 +320,33 @@ internal class SchemaRenderer(
                 writeInline("override val sortKey: #T = ", MapperTypes.Items.keySpec(sortKeyTypeRefs))
                 keySpecInstantiation(sortKeyProps)
                 write()
+            }
+
+            // Add TTL attribute if TTL annotation is set
+            val ttlField = properties.firstNotNullOfOrNull { prop ->
+                prop.annotations
+                    .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbTtlSeconds::class.qualifiedName }
+                    ?.let { annotation ->
+                        val lifetime = annotation.arguments.single().value as? Long ?: error("@DynamoDbTtlSeconds annotation argument could not be evaluated at compile time. Use a literal value like @DynamoDbTtlSeconds(3600) instead of expressions like @DynamoDbTtlSeconds(1.hours.inWholeSeconds).")
+                        require(lifetime > 0) { "@DynamoDbTtlSeconds must be positive, got $lifetime seconds on property ${prop.ddbName}" }
+                        prop.simpleName.getShortName() to lifetime
+                    }
+            }
+
+            if (ttlField != null) {
+                val (fieldName, lifetime) = ttlField
+                withBlock("override val attributes: #T = #T {", "}",
+                    Type.from(RuntimeTypes.Core.Collections.Attributes),
+                    Type.from(RuntimeTypes.Core.Collections.attributesOf),
+                ) {
+                    write("#T.#L to #T(#S, #LL)",
+                        MapperTypes.Model.SchemaAttributes,
+                        "TtlField",
+                        TypeRef("kotlin", "Pair"),
+                        fieldName,
+                        lifetime
+                    )
+                }
             }
         }
 
