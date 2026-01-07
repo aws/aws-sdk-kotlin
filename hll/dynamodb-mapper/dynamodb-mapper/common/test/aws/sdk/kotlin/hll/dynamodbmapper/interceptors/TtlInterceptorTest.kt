@@ -40,7 +40,7 @@ class TtlInterceptorTest {
         val result1 = interceptor.modifyBeforeInvocation(context) as PutItemRequest
         assertEquals(AttributeValue.N("3600"), result1.item?.get("expiresAt"))
 
-        // Advance clock by another hour
+        // Advance clock by an hour
         testClock.advance(1.hours)
         val result2 = interceptor.modifyBeforeInvocation(context) as PutItemRequest
         assertEquals(AttributeValue.N("7200"), result2.item?.get("expiresAt"))
