@@ -335,16 +335,19 @@ internal class SchemaRenderer(
 
             if (ttlField != null) {
                 val (fieldName, lifetime) = ttlField
-                withBlock("override val attributes: #T = #T {", "}",
+                withBlock(
+                    "override val attributes: #T = #T {",
+                    "}",
                     Type.from(RuntimeTypes.Core.Collections.Attributes),
                     Type.from(RuntimeTypes.Core.Collections.attributesOf),
                 ) {
-                    write("#T.#L to #T(#S, #LL)",
+                    write(
+                        "#T.#L to #T(#S, #LL)",
                         MapperTypes.Model.SchemaAttributes,
                         "TtlField",
                         TypeRef("kotlin", "Pair"),
                         fieldName,
-                        lifetime
+                        lifetime,
                     )
                 }
             }

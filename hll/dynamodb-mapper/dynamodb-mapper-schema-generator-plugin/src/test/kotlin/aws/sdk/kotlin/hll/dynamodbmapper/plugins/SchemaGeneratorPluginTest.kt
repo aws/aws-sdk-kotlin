@@ -14,7 +14,6 @@ import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import kotlin.test.assertContains
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -624,7 +623,9 @@ class SchemaGeneratorPluginTest {
         val schemaContents = schemaFile.readText()
 
         // Ensure that TTL field is set
-        assertContains(schemaContents,"""
+        assertContains(
+            schemaContents,
+            """
             public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
                 override val converter: UserConverter = UserConverter
                 override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
@@ -632,7 +633,8 @@ class SchemaGeneratorPluginTest {
                     SchemaAttributes.TtlField to Pair("expiresAt", 86400L)
                 }
             }
-        """.trimIndent())
+            """.trimIndent(),
+        )
     }
 
     @Test

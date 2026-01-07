@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.hll.dynamodbmapper.interceptors
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.SchemaAttributes
@@ -11,7 +16,7 @@ import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest as LowLevelPutItemR
  * Interceptor that handles TTL fields defined on schema attributes and sets them to the current time plus the specified lifetime.
  */
 public class TtlInterceptor<T>(
-    private val clock: Clock = Clock.System
+    private val clock: Clock = Clock.System,
 ) : Interceptor<T, Any, Any, Any, Any> {
 
     override fun modifyBeforeInvocation(ctx: LReqContext<T, Any, Any>): Any {
@@ -27,7 +32,7 @@ public class TtlInterceptor<T>(
     private fun handlePutItem(request: LowLevelPutItemRequest, ttlField: Pair<String, Long>): LowLevelPutItemRequest {
         val newItem = request.item?.toMutableMap() ?: return request
         val (fieldName, lifetime) = ttlField
-        
+
         val ttlValue = AttributeValue.N((clock.now().epochSeconds + lifetime).toString())
         newItem[fieldName] = ttlValue
 

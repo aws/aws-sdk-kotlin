@@ -30,16 +30,16 @@ class TtlInterceptorTest {
         val testClock = ManualClock(Instant.fromEpochSeconds(0))
         val interceptor = TtlInterceptor<String>(testClock)
         val ttlField = "expiresAt" to 1.hours.inWholeSeconds
-        
+
         val request = PutItemRequest {
             tableName = "test-table"
             item = mapOf("id" to AttributeValue.S("test-id"))
         }
-        
+
         val context = createTestContext(request, ttlField)
         val result1 = interceptor.modifyBeforeInvocation(context) as PutItemRequest
         assertEquals(AttributeValue.N("3600"), result1.item?.get("expiresAt"))
-        
+
         // Advance clock by another hour
         testClock.advance(1.hours)
         val result2 = interceptor.modifyBeforeInvocation(context) as PutItemRequest
@@ -49,15 +49,15 @@ class TtlInterceptorTest {
     @Test
     fun testPutItemWithoutTtlField() {
         val interceptor = TtlInterceptor<String>()
-        
+
         val request = PutItemRequest {
             tableName = "test-table"
             item = mapOf("id" to AttributeValue.S("test-id"))
         }
-        
+
         val context = createTestContext(request, null)
         val result = interceptor.modifyBeforeInvocation(context)
-        
+
         assertSame(request, result)
     }
 
@@ -66,10 +66,10 @@ class TtlInterceptorTest {
         val interceptor = TtlInterceptor<String>()
         val otherRequest = "not-a-put-request"
         val ttlField = "expiresAt" to 3600L
-        
+
         val context = createTestContext(otherRequest, ttlField)
         val result = interceptor.modifyBeforeInvocation(context)
-        
+
         assertSame(otherRequest, result)
     }
 
@@ -77,15 +77,15 @@ class TtlInterceptorTest {
     fun testPutItemWithEmptyItem() {
         val interceptor = TtlInterceptor<String>()
         val ttlField = "expiresAt" to 3600L
-        
+
         val request = PutItemRequest {
             tableName = "test-table"
             item = null
         }
-        
+
         val context = createTestContext(request, ttlField)
         val result = interceptor.modifyBeforeInvocation(context)
-        
+
         assertSame(request, result)
     }
 
@@ -93,25 +93,25 @@ class TtlInterceptorTest {
         val attributes = attributesOf {
             ttlField?.let { SchemaAttributes.TtlField to it }
         }
-        
+
         val converter = object : ItemConverter<String> {
             override val left = MonoConverter<Item, String> { "" }
             override val right = MonoConverter<String, Item> { buildItem { } }
         }
-        
+
         val schema = ItemSchemaPartitionKeyImpl(
             converter = converter,
             partitionKey = KeySpec.string("id"),
-            attributes = attributes
+            attributes = attributes,
         )
-        
+
         val mapperContext = object : MapperContext<String> {
             override val persistenceSpec: PersistenceSpec<String>
                 get() = error("Not needed for test")
             override val operation: String
                 get() = error("Not needed for test")
         }
-        
+
         return LReqContext("", schema, mapperContext, lowLevelRequest)
     }
 }

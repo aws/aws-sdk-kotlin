@@ -47,7 +47,7 @@ public sealed interface Type {
         public fun from(symbol: Symbol, nullable: Boolean = false): TypeRef = TypeRef(
             pkg = symbol.namespace,
             shortName = symbol.name,
-            nullable = nullable
+            nullable = nullable,
         )
     }
 
