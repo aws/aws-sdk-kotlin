@@ -644,4 +644,12 @@ class SchemaGeneratorPluginTest {
         val result = runner.buildAndFail()
         assertContains(result.output, "@DynamoDbTtlSeconds must be positive, got -5 seconds on property expiresAt")
     }
+
+    @Test
+    fun testInvalidMultipleTtlAnnotations() {
+        createClassFile("ttl/InvalidMultipleTtlAnnotations")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Only one @DynamoDbTtlSeconds annotation is allowed, found 2 on properties: expiresAt, actuallyExpiresAt")
+    }
 }

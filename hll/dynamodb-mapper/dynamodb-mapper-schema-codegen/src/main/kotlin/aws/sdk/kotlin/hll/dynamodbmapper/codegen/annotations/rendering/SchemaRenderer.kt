@@ -322,8 +322,8 @@ internal class SchemaRenderer(
                 write()
             }
 
-            // Add TTL attribute if TTL annotation is set
-            val ttlField = properties.firstNotNullOfOrNull { prop ->
+            // Handle TTL annotation
+            val ttlFields = properties.mapNotNull { prop ->
                 prop.annotations
                     .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbTtlSeconds::class.qualifiedName }
                     ?.let { annotation ->
@@ -332,6 +332,8 @@ internal class SchemaRenderer(
                         prop.simpleName.getShortName() to lifetime
                     }
             }
+            require(ttlFields.size <= 1) { "Only one @DynamoDbTtlSeconds annotation is allowed, found ${ttlFields.size} on properties: ${ttlFields.joinToString { it.first }}" }
+            val ttlField = ttlFields.singleOrNull()
 
             if (ttlField != null) {
                 val (fieldName, lifetime) = ttlField
