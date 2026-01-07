@@ -13,7 +13,7 @@ import aws.smithy.kotlin.runtime.time.Clock
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest as LowLevelPutItemRequest
 
 /**
- * Interceptor that handles TTL fields defined on schema attributes and sets them to the current time plus the specified lifetime.
+ * Interceptor that handles a TTL field defined on schema attributes and sets it to the current time plus the specified lifetime.
  */
 public class TtlInterceptor<T>(
     private val clock: Clock = Clock.System,
