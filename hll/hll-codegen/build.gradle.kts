@@ -31,7 +31,7 @@ dependencies {
     implementation(libs.ksp.api)
     implementation(libs.smithy.kotlin.runtime.core)
     testImplementation(kotlin("test"))
-    api(libs.smithy.codegen.core) // for Symbol
+    implementation(libs.smithy.codegen.core) // for Symbol
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
