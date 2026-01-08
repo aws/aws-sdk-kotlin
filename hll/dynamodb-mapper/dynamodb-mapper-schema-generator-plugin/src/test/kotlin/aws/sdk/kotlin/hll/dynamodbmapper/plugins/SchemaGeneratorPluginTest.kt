@@ -639,7 +639,7 @@ class SchemaGeneratorPluginTest {
 
     @Test
     fun testInvalidDynamoDbTtlSeconds() {
-        createClassFile("ttl/InvalidUser")
+        createClassFile("ttl/InvalidTtlLifetime")
 
         val result = runner.buildAndFail()
         assertContains(result.output, "@DynamoDbTtlSeconds must be positive, got -5 seconds on property expiresAt")
