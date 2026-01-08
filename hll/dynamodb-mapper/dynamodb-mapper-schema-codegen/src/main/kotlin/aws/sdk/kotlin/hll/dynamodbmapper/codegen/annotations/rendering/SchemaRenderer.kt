@@ -21,6 +21,7 @@ import com.google.devtools.ksp.getConstructors
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.*
 import software.amazon.smithy.kotlin.codegen.core.RuntimeTypes
+import software.amazon.smithy.kotlin.codegen.lang.KotlinTypes
 
 /**
  * Renders the classes and objects required to make a class usable with the DynamoDbMapper such as schemas, builders, and converters.
@@ -164,20 +165,6 @@ internal class SchemaRenderer(
             }
 
             // converter
-            val counterAnnotation = prop
-                .annotations
-                .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbCounter::class.qualifiedName }
-
-            counterAnnotation?.let {
-                val propTypeFqn = prop.type.resolve().declaration.qualifiedName?.asString()
-                val converterSymbol = MapperTypes.Values.CounterValueConverter
-                when (propTypeFqn) {
-                    "kotlin.Long" -> write("#T.Long,", converterSymbol)
-                    "kotlin.Int" -> write("#T.Int,", converterSymbol)
-                    else -> error("Expected Int or Long to be annotated with @DynamoDbCounter, got $propTypeFqn")
-                }
-            }
-
             // KSP requires extra work to get a class argument out of an annotation, can't just use getAnnotationsByType
             // https://slack-chats.kotlinlang.org/t/8480301/hello-again-how-do-you-get-a-kclass-out-from-an-annotation-a
             val attributeValueConverterFqn = prop.annotations
@@ -349,22 +336,42 @@ internal class SchemaRenderer(
             require(ttlFields.size <= 1) { "Only one @DynamoDbTtlSeconds annotation is allowed, found ${ttlFields.size} on properties: ${ttlFields.joinToString { it.first }}" }
             val ttlField = ttlFields.singleOrNull()
 
-            if (ttlField != null) {
-                val (fieldName, lifetime) = ttlField
+            // Handle Counter annotation
+            val counterFields = properties.mapNotNull { prop ->
+                prop.annotations
+                    .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbCounter::class.qualifiedName }
+                    ?.let { prop.simpleName.getShortName() }
+            }.toSet()
+
+            val hasAttributes = ttlField != null || counterFields.isNotEmpty()
+
+            if (hasAttributes) {
                 withBlock(
                     "override val attributes: #T = #T {",
                     "}",
                     Type.from(RuntimeTypes.Core.Collections.Attributes),
                     Type.from(RuntimeTypes.Core.Collections.attributesOf),
                 ) {
-                    write(
-                        "#T.#L to #T(#S, #LL)",
-                        MapperTypes.Model.SchemaAttributes,
-                        "TtlField",
-                        TypeRef("kotlin", "Pair"),
-                        fieldName,
-                        lifetime,
-                    )
+                    if (ttlField != null) {
+                        val (fieldName, lifetime) = ttlField
+                        write(
+                            "#T.#L to #T(#S, #LL)",
+                            MapperTypes.Model.SchemaAttributes,
+                            "TtlField",
+                            TypeRef("kotlin", "Pair"),
+                            fieldName,
+                            lifetime,
+                        )
+                    }
+                    if (counterFields.isNotEmpty()) {
+                        write(
+                            "#T.#L to #T(#L)",
+                            MapperTypes.Model.SchemaAttributes,
+                            "CounterFields",
+                            TypeRef("kotlin.collections", "setOf"),
+                            counterFields.joinToString(", ") { "\"$it\"" },
+                        )
+                    }
                 }
             }
         }

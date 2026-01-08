@@ -639,7 +639,7 @@ class SchemaGeneratorPluginTest {
 
     @Test
     fun testInvalidDynamoDbTtlSeconds() {
-        createClassFile("ttl/InvalidUser")
+        createClassFile("ttl/InvalidTtlLifetime")
 
         val result = runner.buildAndFail()
         assertContains(result.output, "@DynamoDbTtlSeconds must be positive, got -5 seconds on property expiresAt")
@@ -651,5 +651,32 @@ class SchemaGeneratorPluginTest {
 
         val result = runner.buildAndFail()
         assertContains(result.output, "Only one @DynamoDbTtlSeconds annotation is allowed, found 2 on properties: expiresAt, actuallyExpiresAt")
+    }
+
+    @Test
+    fun testDynamoDbCounter() {
+        createClassFile("counter/UserWithCounter")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/counter/dynamodbmapper/generatedschemas/UserWithCounterSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        // Ensure that counter fields are set
+        assertContains(
+            schemaContents,
+            """
+            public object UserWithCounterSchema : ItemSchema.PartitionKey<UserWithCounter, KeyType.Key1<Int>> {
+                override val converter: UserWithCounterConverter = UserWithCounterConverter
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.CounterFields to setOf("accessCount", "updateCount")
+                }
+            }
+            """.trimIndent(),
+        )
     }
 }
