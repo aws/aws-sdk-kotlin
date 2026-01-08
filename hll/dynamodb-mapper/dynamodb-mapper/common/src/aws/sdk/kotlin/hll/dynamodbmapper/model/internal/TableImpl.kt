@@ -5,8 +5,8 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.model.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
-import aws.sdk.kotlin.hll.dynamodbmapper.interceptors.TtlInterceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.interceptors.CounterInterceptor
+import aws.sdk.kotlin.hll.dynamodbmapper.interceptors.TtlInterceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Index

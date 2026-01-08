@@ -33,7 +33,7 @@ class CounterInterceptorTest {
                 "id" to AttributeValue.S("test"),
                 "counter1" to AttributeValue.N("5"),
                 "counter2" to AttributeValue.N("10"),
-                "other" to AttributeValue.S("value")
+                "other" to AttributeValue.S("value"),
             )
         }
 
@@ -65,9 +65,9 @@ class CounterInterceptorTest {
     @Test
     fun testCounterInterceptorNoCounterFields() {
         val interceptor = CounterInterceptor<String>()
-        val request = PutItemRequest { 
+        val request = PutItemRequest {
             tableName = "test-table"
-            item = mapOf("id" to AttributeValue.S("test")) 
+            item = mapOf("id" to AttributeValue.S("test"))
         }
         val ctx = createContext(request, null)
 

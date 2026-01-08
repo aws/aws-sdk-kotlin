@@ -15,20 +15,20 @@ public class CounterValueConverter<T : Number>(
     private val baseConverter: ValueConverter<T>,
     private val incrementer: (T) -> T,
 ) : ValueConverter<T> {
-    
+
     override val right: MonoConverter<T, AttributeValue> = MonoConverter { value ->
         baseConverter.convertRight(incrementer(value))
     }
-    
+
     override val left: MonoConverter<AttributeValue, T> = baseConverter.left
 
     public companion object {
         public val Long: CounterValueConverter<Long> = CounterValueConverter(
-            NumberValueConverters.Long
+            NumberValueConverters.Long,
         ) { it + 1 }
 
         public val Int: CounterValueConverter<Int> = CounterValueConverter(
-            NumberValueConverters.Int
+            NumberValueConverters.Int,
         ) { it + 1 }
     }
 }
