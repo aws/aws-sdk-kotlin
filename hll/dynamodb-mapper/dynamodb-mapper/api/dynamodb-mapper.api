@@ -1438,22 +1438,6 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/pipeline/SerializeInputKt {
 	public static final fun SerializeInput (Ljava/lang/Object;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema;)Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/SerializeInput;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/CounterValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
-	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/values/CounterValueConverter$Companion;
-	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Lkotlin/jvm/functions/Function1;)V
-	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Ljava/lang/Number;
-	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertRight (Ljava/lang/Number;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
-	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun getLeft ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
-	public fun getRight ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
-}
-
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/CounterValueConverter$Companion {
-	public final fun getInt ()Laws/sdk/kotlin/hll/dynamodbmapper/values/CounterValueConverter;
-	public final fun getLong ()Laws/sdk/kotlin/hll/dynamodbmapper/values/CounterValueConverter;
-}
-
 public final class aws/sdk/kotlin/hll/dynamodbmapper/values/ItemValueConverterKt {
 	public static final fun getItemValueConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
