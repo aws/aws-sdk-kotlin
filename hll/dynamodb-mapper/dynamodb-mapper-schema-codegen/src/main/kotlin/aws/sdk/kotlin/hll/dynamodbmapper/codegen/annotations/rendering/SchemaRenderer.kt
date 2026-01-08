@@ -20,6 +20,7 @@ import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.getConstructors
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.*
+import software.amazon.smithy.kotlin.codegen.core.RuntimeTypes
 
 /**
  * Renders the classes and objects required to make a class usable with the DynamoDbMapper such as schemas, builders, and converters.
@@ -333,6 +334,38 @@ internal class SchemaRenderer(
                 writeInline("override val sortKey: #T = ", MapperTypes.Items.keySpec(sortKeyTypeRefs))
                 keySpecInstantiation(sortKeyProps)
                 write()
+            }
+
+            // Handle TTL annotation
+            val ttlFields = properties.mapNotNull { prop ->
+                prop.annotations
+                    .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbTtlSeconds::class.qualifiedName }
+                    ?.let { annotation ->
+                        val lifetime = annotation.arguments.single().value as? Long ?: error("@DynamoDbTtlSeconds annotation argument could not be evaluated at compile time. Use a literal value like @DynamoDbTtlSeconds(3600) instead of expressions like @DynamoDbTtlSeconds(1.hours.inWholeSeconds).")
+                        require(lifetime > 0) { "@DynamoDbTtlSeconds must be positive, got $lifetime seconds on property ${prop.ddbName}" }
+                        prop.simpleName.getShortName() to lifetime
+                    }
+            }
+            require(ttlFields.size <= 1) { "Only one @DynamoDbTtlSeconds annotation is allowed, found ${ttlFields.size} on properties: ${ttlFields.joinToString { it.first }}" }
+            val ttlField = ttlFields.singleOrNull()
+
+            if (ttlField != null) {
+                val (fieldName, lifetime) = ttlField
+                withBlock(
+                    "override val attributes: #T = #T {",
+                    "}",
+                    Type.from(RuntimeTypes.Core.Collections.Attributes),
+                    Type.from(RuntimeTypes.Core.Collections.attributesOf),
+                ) {
+                    write(
+                        "#T.#L to #T(#S, #LL)",
+                        MapperTypes.Model.SchemaAttributes,
+                        "TtlField",
+                        TypeRef("kotlin", "Pair"),
+                        fieldName,
+                        lifetime,
+                    )
+                }
             }
         }
 

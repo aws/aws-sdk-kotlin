@@ -609,4 +609,47 @@ class SchemaGeneratorPluginTest {
         ),""",
         )
     }
+
+    @Test
+    fun testDynamoDbTtlSeconds() {
+        createClassFile("ttl/User")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/ttl/dynamodbmapper/generatedschemas/UserSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        // Ensure that TTL field is set
+        assertContains(
+            schemaContents,
+            """
+            public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
+                override val converter: UserConverter = UserConverter
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.TtlField to Pair("expiresAt", 86400L)
+                }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun testInvalidDynamoDbTtlSeconds() {
+        createClassFile("ttl/InvalidUser")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "@DynamoDbTtlSeconds must be positive, got -5 seconds on property expiresAt")
+    }
+
+    @Test
+    fun testInvalidMultipleTtlAnnotations() {
+        createClassFile("ttl/InvalidMultipleTtlAnnotations")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Only one @DynamoDbTtlSeconds annotation is allowed, found 2 on properties: expiresAt, actuallyExpiresAt")
+    }
 }
