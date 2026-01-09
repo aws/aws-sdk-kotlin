@@ -367,7 +367,7 @@ internal class SchemaRenderer(
                             "#T.#L to #T(#L)",
                             MapperTypes.Model.SchemaAttributes,
                             "CounterFields",
-                            TypeRef("kotlin.collections", "setOf"),
+                            Types.Kotlin.Collections.setOf,
                             counterFields.joinToString(", ") { "\"$it\"" },
                         )
                     }

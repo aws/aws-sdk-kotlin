@@ -47,6 +47,7 @@ public object Types {
             public val List: TypeRef = TypeRef(Pkg.Kotlin.Collections, "List")
             public val Map: TypeRef = TypeRef(Pkg.Kotlin.Collections, "Map")
             public val Set: TypeRef = TypeRef(Pkg.Kotlin.Collections, "Set")
+            public val setOf: TypeRef = TypeRef(Pkg.Kotlin.Collections, "setOf")
         }
 
         /**
