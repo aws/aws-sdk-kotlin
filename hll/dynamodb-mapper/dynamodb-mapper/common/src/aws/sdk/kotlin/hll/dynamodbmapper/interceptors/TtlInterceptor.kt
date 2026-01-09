@@ -9,7 +9,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.SchemaAttributes
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.util.attr
-import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.smithy.kotlin.runtime.time.Clock
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest as LowLevelPutItemRequest
 

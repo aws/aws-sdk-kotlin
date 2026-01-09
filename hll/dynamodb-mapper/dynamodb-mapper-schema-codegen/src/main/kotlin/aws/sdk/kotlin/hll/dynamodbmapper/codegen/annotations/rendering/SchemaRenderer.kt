@@ -353,9 +353,10 @@ internal class SchemaRenderer(
                     )
                 }
             } else {
-                write("override val attributes: #T = #T { }",
+                write(
+                    "override val attributes: #T = #T { }",
                     Type.from(RuntimeTypes.Core.Collections.Attributes),
-                    Type.from(RuntimeTypes.Core.Collections.attributesOf)
+                    Type.from(RuntimeTypes.Core.Collections.attributesOf),
                 )
             }
         }
