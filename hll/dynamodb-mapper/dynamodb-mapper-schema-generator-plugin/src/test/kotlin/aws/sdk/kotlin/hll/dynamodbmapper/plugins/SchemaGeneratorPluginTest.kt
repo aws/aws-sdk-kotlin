@@ -142,6 +142,7 @@ class SchemaGeneratorPluginTest {
                 public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
                     override val converter: UserConverter = UserConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                    override val attributes: Attributes = attributesOf { }
                 }
             """.trimIndent(),
         )
@@ -412,6 +413,7 @@ class SchemaGeneratorPluginTest {
                 public object CustomUserSchema : ItemSchema.PartitionKey<CustomUser, KeyType.Key1<Int>> {
                     override val converter: MyCustomUserConverter = MyCustomUserConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                    override val attributes: Attributes = attributesOf { }
                 }
             """.trimIndent(),
         )
@@ -568,6 +570,7 @@ class SchemaGeneratorPluginTest {
                 public object RenamedPartitionKeySchema : ItemSchema.PartitionKey<RenamedPartitionKey, KeyType.Key1<Int>> {
                     override val converter: RenamedPartitionKeyConverter = RenamedPartitionKeyConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("user_id")
+                    override val attributes: Attributes = attributesOf { }
                 }
             """.trimIndent(),
         )
@@ -651,6 +654,14 @@ class SchemaGeneratorPluginTest {
 
         val result = runner.buildAndFail()
         assertContains(result.output, "Only one @DynamoDbTtlSeconds annotation is allowed, found 2 on properties: expiresAt, actuallyExpiresAt")
+    }
+
+    @Test
+    fun testInvalidTtlExpression() {
+        createClassFile("ttl/InvalidTtlExpression")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "@DynamoDbTtlSeconds annotation argument on property expiresAt could not be evaluated at compile time. Use a literal value like @DynamoDbTtlSeconds(3600) instead of expressions like @DynamoDbTtlSeconds(1.hours.inWholeSeconds).")
     }
 
     @Test

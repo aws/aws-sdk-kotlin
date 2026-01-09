@@ -8,7 +8,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaCompositeKeyIm
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaPartitionKeyImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.attrs
 import aws.smithy.kotlin.runtime.collections.Attributes
-import aws.smithy.kotlin.runtime.collections.emptyAttributes
 
 /**
  * Defines a schema for handling objects of type [T], including an [ItemConverter] for converting between objects and
@@ -30,7 +29,6 @@ public sealed interface ItemSchema<T> {
      * Generic attributes for associating metadata with this schema
      */
     public val attributes: Attributes
-        get() = emptyAttributes()
 
     /**
      * Represents a schema with a primary key consisting of a single partition key
