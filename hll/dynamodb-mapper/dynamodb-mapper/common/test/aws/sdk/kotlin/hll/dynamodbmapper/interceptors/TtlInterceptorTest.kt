@@ -52,7 +52,7 @@ class TtlInterceptorTest {
         val interceptor = TtlInterceptor<String>(testClock)
         val ttlFields = setOf(
             "expiresAt" to 1.hours.inWholeSeconds,
-            "actuallyExpiresAt" to 2.hours.inWholeSeconds
+            "actuallyExpiresAt" to 2.hours.inWholeSeconds,
         )
 
         val request = PutItemRequest {
@@ -62,7 +62,7 @@ class TtlInterceptorTest {
 
         val context = createTestContext(request, ttlFields)
         val result = interceptor.modifyBeforeInvocation(context) as PutItemRequest
-        
+
         assertEquals(AttributeValue.N("3600"), result.item?.get("expiresAt"))
         assertEquals(AttributeValue.N("7200"), result.item?.get("actuallyExpiresAt"))
     }
