@@ -6,19 +6,19 @@ package aws.sdk.kotlin.codegen.endpoints
 
 import aws.sdk.kotlin.codegen.AwsRuntimeTypes
 import aws.sdk.kotlin.codegen.ServiceClientCompanionObjectWriter
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.core.CodegenContext
-import software.amazon.smithy.kotlin.codegen.core.KotlinDelegator
-import software.amazon.smithy.kotlin.codegen.core.getContextValue
-import software.amazon.smithy.kotlin.codegen.integration.AppendingSectionWriter
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
-import software.amazon.smithy.kotlin.codegen.model.asNullable
-import software.amazon.smithy.kotlin.codegen.rendering.endpoints.discovery.DefaultEndpointDiscovererGenerator
-import software.amazon.smithy.kotlin.codegen.rendering.endpoints.discovery.EndpointDiscovererInterfaceGenerator
-import software.amazon.smithy.kotlin.codegen.rendering.endpoints.discovery.EndpointDiscoveryIntegration
-import software.amazon.smithy.kotlin.codegen.rendering.util.ConfigProperty
-import software.amazon.smithy.kotlin.codegen.rendering.util.ConfigPropertyType
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.core.CodegenContext
+import aws.smithy.kotlin.codegen.core.KotlinDelegator
+import aws.smithy.kotlin.codegen.core.getContextValue
+import aws.smithy.kotlin.codegen.integration.AppendingSectionWriter
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.integration.SectionWriterBinding
+import aws.smithy.kotlin.codegen.model.asNullable
+import aws.smithy.kotlin.codegen.rendering.endpoints.discovery.DefaultEndpointDiscovererGenerator
+import aws.smithy.kotlin.codegen.rendering.endpoints.discovery.EndpointDiscovererInterfaceGenerator
+import aws.smithy.kotlin.codegen.rendering.endpoints.discovery.EndpointDiscoveryIntegration
+import aws.smithy.kotlin.codegen.rendering.util.ConfigProperty
+import aws.smithy.kotlin.codegen.rendering.util.ConfigPropertyType
 import software.amazon.smithy.model.Model
 
 class AwsEndpointDiscoveryIntegration : KotlinIntegration {

@@ -4,8 +4,8 @@
  */
 package aws.sdk.kotlin.codegen.testutil
 
-import software.amazon.smithy.kotlin.codegen.test.prependNamespaceAndService
-import software.amazon.smithy.kotlin.codegen.test.toSmithyModel
+import aws.smithy.kotlin.codegen.test.prependNamespaceAndService
+import aws.smithy.kotlin.codegen.test.toSmithyModel
 import software.amazon.smithy.model.Model
 
 internal fun model(serviceName: String): Model =

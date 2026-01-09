@@ -5,10 +5,10 @@
 
 package aws.sdk.kotlin.codegen.smoketests
 
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
-import software.amazon.smithy.kotlin.codegen.rendering.smoketests.SmokeTestSectionIds.SmokeTestsFile
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.integration.SectionWriterBinding
+import aws.smithy.kotlin.codegen.rendering.smoketests.SmokeTestSectionIds.SmokeTestsFile
 import software.amazon.smithy.model.Model
 
 /**

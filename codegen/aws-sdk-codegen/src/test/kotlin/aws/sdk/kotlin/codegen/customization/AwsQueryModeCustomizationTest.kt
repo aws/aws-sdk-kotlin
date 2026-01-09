@@ -5,7 +5,7 @@
 package aws.sdk.kotlin.codegen.customization
 
 import aws.sdk.kotlin.codegen.testutil.lines
-import software.amazon.smithy.kotlin.codegen.test.*
+import aws.smithy.kotlin.codegen.test.*
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
