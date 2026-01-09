@@ -327,7 +327,7 @@ internal class SchemaRenderer(
                 prop.annotations
                     .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbTtlSeconds::class.qualifiedName }
                     ?.let { annotation ->
-                        val lifetime = annotation.arguments.single().value as? Long ?: error("@DynamoDbTtlSeconds annotation argument could not be evaluated at compile time. Use a literal value like @DynamoDbTtlSeconds(3600) instead of expressions like @DynamoDbTtlSeconds(1.hours.inWholeSeconds).")
+                        val lifetime = annotation.arguments.single().value as? Long ?: error("@DynamoDbTtlSeconds annotation argument on property ${prop.ddbName} could not be evaluated at compile time. Use a literal value like @DynamoDbTtlSeconds(3600) instead of expressions like @DynamoDbTtlSeconds(1.hours.inWholeSeconds).")
                         require(lifetime > 0) { "@DynamoDbTtlSeconds must be positive, got $lifetime seconds on property ${prop.ddbName}" }
                         prop.simpleName.getShortName() to lifetime
                     }
@@ -347,11 +347,16 @@ internal class SchemaRenderer(
                         "#T.#L to #T(#S, #LL)",
                         MapperTypes.Model.SchemaAttributes,
                         "TtlField",
-                        TypeRef("kotlin", "Pair"),
+                        Types.Kotlin.Pair,
                         fieldName,
                         lifetime,
                     )
                 }
+            } else {
+                write("override val attributes: #T = #T { }",
+                    Type.from(RuntimeTypes.Core.Collections.Attributes),
+                    Type.from(RuntimeTypes.Core.Collections.attributesOf)
+                )
             }
         }
 

@@ -673,7 +673,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/items/HeterogeneousItemConv
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema {
-	public fun getAttributes ()Laws/smithy/kotlin/runtime/collections/Attributes;
+	public abstract fun getAttributes ()Laws/smithy/kotlin/runtime/collections/Attributes;
 	public abstract fun getConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 	public abstract fun getKeyAttributeNames ()Ljava/util/List;
 }
@@ -685,12 +685,7 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSche
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey$DefaultImpls {
-	public static fun getAttributes (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;)Laws/smithy/kotlin/runtime/collections/Attributes;
 	public static fun getKeyAttributeNames (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;)Ljava/util/List;
-}
-
-public final class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$DefaultImpls {
-	public static fun getAttributes (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema;)Laws/smithy/kotlin/runtime/collections/Attributes;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema {
@@ -699,7 +694,6 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSche
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey$DefaultImpls {
-	public static fun getAttributes (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;)Laws/smithy/kotlin/runtime/collections/Attributes;
 	public static fun getKeyAttributeNames (Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;)Ljava/util/List;
 }
 

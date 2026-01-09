@@ -33,6 +33,7 @@ public object Types {
         public val Long: TypeRef = kotlin("Long")
         public val Number: TypeRef = kotlin("Number")
         public val OptIn: TypeRef = kotlin("OptIn")
+        public val Pair: TypeRef = kotlin("Pair")
         public val Short: TypeRef = kotlin("Short")
         public val String: TypeRef = kotlin("String")
         public val StringNullable: TypeRef = String.nullable()

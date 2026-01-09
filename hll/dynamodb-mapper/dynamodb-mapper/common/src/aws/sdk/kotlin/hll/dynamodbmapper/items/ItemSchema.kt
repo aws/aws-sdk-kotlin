@@ -30,7 +30,6 @@ public sealed interface ItemSchema<T> {
      * Generic attributes for associating metadata with this schema
      */
     public val attributes: Attributes
-        get() = emptyAttributes()
 
     /**
      * Represents a schema with a primary key consisting of a single partition key

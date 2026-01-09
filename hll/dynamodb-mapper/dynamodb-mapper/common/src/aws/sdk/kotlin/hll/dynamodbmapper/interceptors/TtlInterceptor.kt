@@ -8,6 +8,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.interceptors
 import aws.sdk.kotlin.hll.dynamodbmapper.model.SchemaAttributes
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
+import aws.sdk.kotlin.hll.dynamodbmapper.util.attr
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.smithy.kotlin.runtime.time.Clock
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest as LowLevelPutItemRequest
@@ -33,7 +34,7 @@ public class TtlInterceptor<T>(
         val newItem = request.item?.toMutableMap() ?: return request
         val (fieldName, lifetime) = ttlField
 
-        val ttlValue = AttributeValue.N((clock.now().epochSeconds + lifetime).toString())
+        val ttlValue = attr(clock.now().epochSeconds + lifetime)
         newItem[fieldName] = ttlValue
 
         return request.copy { item = newItem }
