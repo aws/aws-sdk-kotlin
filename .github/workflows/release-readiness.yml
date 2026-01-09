@@ -54,7 +54,7 @@ jobs:
             git fetch origin
 
             DIFF=$(git diff origin/main -- gradle/libs.versions.toml | grep '^[-+][^-+]'; exit 0)
-            SMITHY_KOTLIN_VERSION_BUMP=$(echo "$DIFF" | grep "smithy-kotlin-runtime-version =\|smithy-kotlin-codegen-version ="; exit 0)
+            SMITHY_KOTLIN_VERSION_BUMP=$(echo "$DIFF" | grep "smithy-kotlin-runtime-version ="; exit 0)
 
             if [ -z "$SMITHY_KOTLIN_VERSION_BUMP" ]; then
               echo "::error::Matching smithy-kotlin and aws-sdk-kotlin branches but no smithy-kotlin version bump"
