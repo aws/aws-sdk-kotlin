@@ -322,7 +322,7 @@ internal class SchemaRenderer(
                 write()
             }
 
-            // Handle TTL annotation
+            // Handle TTL annotations
             val ttlFields = properties.mapNotNull { prop ->
                 prop.annotations
                     .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbTtlSeconds::class.qualifiedName }
@@ -332,25 +332,20 @@ internal class SchemaRenderer(
                         prop.simpleName.getShortName() to lifetime
                     }
             }
-            require(ttlFields.size <= 1) { "Only one @DynamoDbTtlSeconds annotation is allowed, found ${ttlFields.size} on properties: ${ttlFields.joinToString { it.first }}" }
-            val ttlField = ttlFields.singleOrNull()
 
-            if (ttlField != null) {
-                val (fieldName, lifetime) = ttlField
+            if (ttlFields.isNotEmpty()) {
                 withBlock(
                     "override val attributes: #T = #T {",
                     "}",
                     Type.from(RuntimeTypes.Core.Collections.Attributes),
                     Type.from(RuntimeTypes.Core.Collections.attributesOf),
                 ) {
-                    write(
-                        "#T.#L to #T(#S, #LL)",
-                        MapperTypes.Model.SchemaAttributes,
-                        "TtlField",
-                        Types.Kotlin.Pair,
-                        fieldName,
-                        lifetime,
-                    )
+                    writeInline("#T.#L to setOf(", MapperTypes.Model.SchemaAttributes, "TtlFields")
+                    ttlFields.forEachIndexed { index, (fieldName, lifetime) ->
+                        if (index > 0) writeInline(", ")
+                        writeInline("#T(#S, #LL)", Types.Kotlin.Pair, fieldName, lifetime)
+                    }
+                    write(")")
                 }
             } else {
                 write(

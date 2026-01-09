@@ -633,7 +633,7 @@ class SchemaGeneratorPluginTest {
                 override val converter: UserConverter = UserConverter
                 override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
                 override val attributes: Attributes = attributesOf {
-                    SchemaAttributes.TtlField to Pair("expiresAt", 86400L)
+                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 86400L))
                 }
             }
             """.trimIndent(),
@@ -649,11 +649,30 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testInvalidMultipleTtlAnnotations() {
-        createClassFile("ttl/InvalidMultipleTtlAnnotations")
+    fun testMultipleTtlAnnotations() {
+        createClassFile("ttl/MultipleTtlAnnotations")
 
-        val result = runner.buildAndFail()
-        assertContains(result.output, "Only one @DynamoDbTtlSeconds annotation is allowed, found 2 on properties: expiresAt, actuallyExpiresAt")
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/ttl/dynamodbmapper/generatedschemas/MultipleTtlAnnotationsSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        // Ensure that both TTL fields are set
+        assertContains(
+            schemaContents,
+            """
+            public object MultipleTtlAnnotationsSchema : ItemSchema.PartitionKey<MultipleTtlAnnotations, KeyType.Key1<Int>> {
+                override val converter: MultipleTtlAnnotationsConverter = MultipleTtlAnnotationsConverter
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 3600L), Pair("actuallyExpiresAt", 7200L))
+                }
+            }
+            """.trimIndent(),
+        )
     }
 
     @Test

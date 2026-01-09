@@ -143,5 +143,6 @@ private fun <T> List<T>.prepend(element: T): List<T> = buildList(size + 1) {
 
 private val <T> ItemSchema<T>.ttlInterceptor: TtlInterceptor<T>?
     get() = attributes
-        .getOrNull(SchemaAttributes.TtlField)
+        .getOrNull(SchemaAttributes.TtlFields)
+        ?.takeIf { it.isNotEmpty() }
         ?.let { TtlInterceptor() }

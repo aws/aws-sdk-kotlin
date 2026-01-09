@@ -13,28 +13,29 @@ import aws.smithy.kotlin.runtime.time.Clock
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest as LowLevelPutItemRequest
 
 /**
- * Interceptor that handles a TTL field defined on schema attributes and sets it to the current time plus the specified lifetime.
+ * Interceptor that handles TTL fields defined on schema attributes and sets them to the current time plus their specified lifetimes.
  */
 public class TtlInterceptor<T>(
     private val clock: Clock = Clock.System,
 ) : Interceptor<T, Any, Any, Any, Any> {
 
     override fun modifyBeforeInvocation(ctx: LReqContext<T, Any, Any>): Any {
-        val ttlField = ctx.serializeSchema.attributes.getOrNull(SchemaAttributes.TtlField) ?: return ctx.lowLevelRequest
+        val ttlFields = ctx.serializeSchema.attributes.getOrNull(SchemaAttributes.TtlFields) ?: return ctx.lowLevelRequest
 
         return when (val request = ctx.lowLevelRequest) {
-            is LowLevelPutItemRequest -> handlePutItem(request, ttlField)
+            is LowLevelPutItemRequest -> handlePutItem(request, ttlFields)
             // TODO Support UpdateItem
             else -> request
         }
     }
 
-    private fun handlePutItem(request: LowLevelPutItemRequest, ttlField: Pair<String, Long>): LowLevelPutItemRequest {
+    private fun handlePutItem(request: LowLevelPutItemRequest, ttlFields: Set<Pair<String, Long>>): LowLevelPutItemRequest {
         val newItem = request.item?.toMutableMap() ?: return request
-        val (fieldName, lifetime) = ttlField
 
-        val ttlValue = attr(clock.now().epochSeconds + lifetime)
-        newItem[fieldName] = ttlValue
+        ttlFields.forEach { (fieldName, lifetime) ->
+            val ttlValue = attr(clock.now().epochSeconds + lifetime)
+            newItem[fieldName] = ttlValue
+        }
 
         return request.copy { item = newItem }
     }

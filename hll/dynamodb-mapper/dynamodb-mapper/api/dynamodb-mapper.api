@@ -925,7 +925,7 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/Persiste
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/model/SchemaAttributes {
 	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/model/SchemaAttributes;
-	public final fun getTtlField ()Laws/smithy/kotlin/runtime/collections/AttributeKey;
+	public final fun getTtlFields ()Laws/smithy/kotlin/runtime/collections/AttributeKey;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/Table : aws/sdk/kotlin/hll/dynamodbmapper/model/ItemSource, aws/sdk/kotlin/hll/dynamodbmapper/model/TableSpec, aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations {
