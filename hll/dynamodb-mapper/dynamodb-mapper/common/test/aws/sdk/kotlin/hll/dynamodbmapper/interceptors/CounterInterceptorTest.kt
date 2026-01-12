@@ -18,8 +18,8 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
 import aws.smithy.kotlin.runtime.collections.attributesOf
 import kotlin.test.Test
-import kotlin.test.assertFailsWith
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 
 class CounterInterceptorTest {
@@ -100,7 +100,7 @@ class CounterInterceptorTest {
         }
 
         val ctx = createContext(request, counterFields)
-        
+
         assertFailsWith<NumberFormatException> {
             interceptor.modifyBeforeInvocation(ctx)
         }

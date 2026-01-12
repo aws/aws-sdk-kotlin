@@ -337,7 +337,7 @@ internal class SchemaRenderer(
             val counterFields = properties.mapNotNull { prop ->
                 prop.annotations
                     .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbCounter::class.qualifiedName }
-                    ?.let { 
+                    ?.let {
                         // Validate that counter properties are Int or Long
                         require(prop.typeRef == Types.Kotlin.Int || prop.typeRef == Types.Kotlin.Long) {
                             "Property '${prop.name}' annotated with @DynamoDbCounter must be of type Int or Long, but was ${prop.typeRef.shortName}"
