@@ -20,6 +20,7 @@ import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.getConstructors
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.*
+import software.amazon.smithy.kotlin.codegen.core.RuntimeTypes
 
 /**
  * Renders the classes and objects required to make a class usable with the DynamoDbMapper such as schemas, builders, and converters.
@@ -319,6 +320,39 @@ internal class SchemaRenderer(
                 writeInline("override val sortKey: #T = ", MapperTypes.Items.keySpec(sortKeyTypeRefs))
                 keySpecInstantiation(sortKeyProps)
                 write()
+            }
+
+            // Handle TTL annotations
+            val ttlFields = properties.mapNotNull { prop ->
+                prop.annotations
+                    .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbTtlSeconds::class.qualifiedName }
+                    ?.let { annotation ->
+                        val lifetime = annotation.arguments.single().value as? Long ?: error("@DynamoDbTtlSeconds annotation argument on property ${prop.ddbName} could not be evaluated at compile time. Use a literal value like @DynamoDbTtlSeconds(3600) instead of expressions like @DynamoDbTtlSeconds(1.hours.inWholeSeconds).")
+                        require(lifetime > 0) { "@DynamoDbTtlSeconds must be positive, got $lifetime seconds on property ${prop.ddbName}" }
+                        prop.simpleName.getShortName() to lifetime
+                    }
+            }
+
+            if (ttlFields.isNotEmpty()) {
+                withBlock(
+                    "override val attributes: #T = #T {",
+                    "}",
+                    Type.from(RuntimeTypes.Core.Collections.Attributes),
+                    Type.from(RuntimeTypes.Core.Collections.attributesOf),
+                ) {
+                    writeInline("#T.#L to setOf(", MapperTypes.Model.SchemaAttributes, "TtlFields")
+                    ttlFields.forEachIndexed { index, (fieldName, lifetime) ->
+                        if (index > 0) writeInline(", ")
+                        writeInline("#T(#S, #LL)", Types.Kotlin.Pair, fieldName, lifetime)
+                    }
+                    write(")")
+                }
+            } else {
+                write(
+                    "override val attributes: #T = #T()",
+                    Type.from(RuntimeTypes.Core.Collections.Attributes),
+                    Type.from(RuntimeTypes.Core.Collections.emptyAttributes),
+                )
             }
         }
 

@@ -26,7 +26,6 @@ public annotation class DynamoDbAttributeConverter(val converter: KClass<out Val
  * attributes unless they are explicitly ignored.
  * @param converter The item converter to be used for converting this class/interface. If not set, one will be automatically generated.
  */
-// FIXME Update to take a KClass<ItemConverter>
 @Target(AnnotationTarget.CLASS)
 public annotation class DynamoDbItem(val converter: KClass<out ItemConverter<*>> = ItemConverter::class)
 
@@ -49,3 +48,11 @@ public annotation class DynamoDbSortKey
  */
 @Target(AnnotationTarget.PROPERTY)
 public annotation class DynamoDbIgnore
+
+/**
+ * Specifies that this property is used to track the item's time-to-live (TTL).
+ * https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html
+ * @param lifetime The lifetime of this item, in seconds
+ */
+@Target(AnnotationTarget.PROPERTY)
+public annotation class DynamoDbTtlSeconds(val lifetime: Long)

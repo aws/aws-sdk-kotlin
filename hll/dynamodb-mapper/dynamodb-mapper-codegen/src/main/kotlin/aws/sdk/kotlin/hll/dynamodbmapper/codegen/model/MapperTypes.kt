@@ -130,6 +130,7 @@ public object MapperTypes {
         }
 
         public val toItem: TypeRef = TypeRef(MapperPkg.Hl.Model, "toItem")
+        public val SchemaAttributes: TypeRef = TypeRef(MapperPkg.Hl.Model, "SchemaAttributes")
     }
 
     public object Values {

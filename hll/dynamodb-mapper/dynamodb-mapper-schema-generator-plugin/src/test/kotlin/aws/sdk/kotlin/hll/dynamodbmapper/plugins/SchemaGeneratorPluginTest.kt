@@ -142,6 +142,7 @@ class SchemaGeneratorPluginTest {
                 public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
                     override val converter: UserConverter = UserConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                    override val attributes: Attributes = emptyAttributes()
                 }
             """.trimIndent(),
         )
@@ -412,6 +413,7 @@ class SchemaGeneratorPluginTest {
                 public object CustomUserSchema : ItemSchema.PartitionKey<CustomUser, KeyType.Key1<Int>> {
                     override val converter: MyCustomUserConverter = MyCustomUserConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                    override val attributes: Attributes = emptyAttributes()
                 }
             """.trimIndent(),
         )
@@ -568,6 +570,7 @@ class SchemaGeneratorPluginTest {
                 public object RenamedPartitionKeySchema : ItemSchema.PartitionKey<RenamedPartitionKey, KeyType.Key1<Int>> {
                     override val converter: RenamedPartitionKeyConverter = RenamedPartitionKeyConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("user_id")
+                    override val attributes: Attributes = emptyAttributes()
                 }
             """.trimIndent(),
         )
@@ -608,5 +611,75 @@ class SchemaGeneratorPluginTest {
             a.different.pkg.HealthcareConverter(),
         ),""",
         )
+    }
+
+    @Test
+    fun testDynamoDbTtlSeconds() {
+        createClassFile("ttl/User")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/ttl/dynamodbmapper/generatedschemas/UserSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        // Ensure that TTL field is set
+        assertContains(
+            schemaContents,
+            """
+            public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
+                override val converter: UserConverter = UserConverter
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 86400L))
+                }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun testInvalidDynamoDbTtlSeconds() {
+        createClassFile("ttl/InvalidTtlLifetime")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "@DynamoDbTtlSeconds must be positive, got -5 seconds on property expiresAt")
+    }
+
+    @Test
+    fun testMultipleTtlAnnotations() {
+        createClassFile("ttl/MultipleTtlAnnotations")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/ttl/dynamodbmapper/generatedschemas/MultipleTtlAnnotationsSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        // Ensure that both TTL fields are set
+        assertContains(
+            schemaContents,
+            """
+            public object MultipleTtlAnnotationsSchema : ItemSchema.PartitionKey<MultipleTtlAnnotations, KeyType.Key1<Int>> {
+                override val converter: MultipleTtlAnnotationsConverter = MultipleTtlAnnotationsConverter
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 3600L), Pair("actuallyExpiresAt", 7200L))
+                }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun testInvalidTtlExpression() {
+        createClassFile("ttl/InvalidTtlExpression")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "@DynamoDbTtlSeconds annotation argument on property expiresAt could not be evaluated at compile time. Use a literal value like @DynamoDbTtlSeconds(3600) instead of expressions like @DynamoDbTtlSeconds(1.hours.inWholeSeconds).")
     }
 }
