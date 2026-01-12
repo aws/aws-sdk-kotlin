@@ -8,6 +8,7 @@ package org.example.counter
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbCounter
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbItem
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbPartitionKey
+import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbTtlSeconds
 
 @DynamoDbItem
 public data class UserWithCounter(
@@ -19,4 +20,7 @@ public data class UserWithCounter(
 
     @DynamoDbCounter
     var updateCount: Long,
+
+    @DynamoDbTtlSeconds(3600)
+    var expiresAt: String,
 )

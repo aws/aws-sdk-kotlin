@@ -703,6 +703,7 @@ class SchemaGeneratorPluginTest {
                 override val converter: UserWithCounterConverter = UserWithCounterConverter
                 override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
                 override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 3600L))
                     SchemaAttributes.CounterFields to setOf("accessCount", "updateCount")
                 }
             }
