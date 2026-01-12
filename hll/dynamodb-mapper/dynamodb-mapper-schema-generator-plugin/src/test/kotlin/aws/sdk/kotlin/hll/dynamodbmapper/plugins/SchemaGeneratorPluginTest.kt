@@ -710,4 +710,11 @@ class SchemaGeneratorPluginTest {
             """.trimIndent(),
         )
     }
+
+    @Test
+    fun testDynamoDbCounterInvalidType() {
+        createClassFile("counter/UserWithInvalidCounter")
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Property 'accessCount' annotated with @DynamoDbCounter must be of type Int or Long, but was String")
+    }
 }
