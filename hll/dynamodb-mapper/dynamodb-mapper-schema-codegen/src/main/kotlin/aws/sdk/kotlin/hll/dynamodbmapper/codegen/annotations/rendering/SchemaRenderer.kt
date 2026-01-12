@@ -350,7 +350,7 @@ internal class SchemaRenderer(
                     Type.from(RuntimeTypes.Core.Collections.attributesOf),
                 ) {
                     if (ttlFields.isNotEmpty()) {
-                        writeInline("#T.#L to setOf(", MapperTypes.Model.SchemaAttributes, "TtlFields")
+                        writeInline("#T.#L to #T(", MapperTypes.Model.SchemaAttributes, "TtlFields", Types.Kotlin.Collections.setOf)
                         ttlFields.forEachIndexed { index, (fieldName, lifetime) ->
                             if (index > 0) writeInline(", ")
                             writeInline("#T(#S, #LL)", Types.Kotlin.Pair, fieldName, lifetime)
