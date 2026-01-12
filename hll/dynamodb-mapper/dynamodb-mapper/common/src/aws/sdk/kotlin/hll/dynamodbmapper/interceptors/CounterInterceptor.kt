@@ -30,7 +30,7 @@ public class CounterInterceptor<T> : Interceptor<T, Any, Any, Any, Any> {
         val newItem = request.item?.toMutableMap() ?: return request
 
         counterFields.forEach { fieldName ->
-            val currentValue = newItem[fieldName]?.asN()?.toLongOrNull() ?: 0L
+            val currentValue = newItem[fieldName]?.asN()?.toLong() ?: 0L
             newItem[fieldName] = AttributeValue.N((currentValue + 1).toString())
         }
 

@@ -18,6 +18,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
 import aws.smithy.kotlin.runtime.collections.attributesOf
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
@@ -83,6 +84,26 @@ class CounterInterceptorTest {
 
         val result = interceptor.modifyBeforeInvocation(ctx)
         assertSame(otherRequest, result)
+    }
+
+    @Test
+    fun testCounterInterceptorThrowsOnUnparseableData() {
+        val counterFields = setOf("counter1")
+        val interceptor = CounterInterceptor<String>()
+
+        val request = PutItemRequest {
+            tableName = "test-table"
+            item = mapOf(
+                "id" to AttributeValue.S("test"),
+                "counter1" to AttributeValue.N("not-a-number"),
+            )
+        }
+
+        val ctx = createContext(request, counterFields)
+        
+        assertFailsWith<NumberFormatException> {
+            interceptor.modifyBeforeInvocation(ctx)
+        }
     }
 
     private fun createContext(lowLevelRequest: Any, counterFields: Set<String>?): LReqContext<String, Any, Any> {
