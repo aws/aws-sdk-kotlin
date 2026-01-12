@@ -142,7 +142,7 @@ class SchemaGeneratorPluginTest {
                 public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
                     override val converter: UserConverter = UserConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
-                    override val attributes: Attributes = attributesOf { }
+                    override val attributes: Attributes = emptyAttributes()
                 }
             """.trimIndent(),
         )
@@ -413,7 +413,7 @@ class SchemaGeneratorPluginTest {
                 public object CustomUserSchema : ItemSchema.PartitionKey<CustomUser, KeyType.Key1<Int>> {
                     override val converter: MyCustomUserConverter = MyCustomUserConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
-                    override val attributes: Attributes = attributesOf { }
+                    override val attributes: Attributes = emptyAttributes()
                 }
             """.trimIndent(),
         )
@@ -570,7 +570,7 @@ class SchemaGeneratorPluginTest {
                 public object RenamedPartitionKeySchema : ItemSchema.PartitionKey<RenamedPartitionKey, KeyType.Key1<Int>> {
                     override val converter: RenamedPartitionKeyConverter = RenamedPartitionKeyConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("user_id")
-                    override val attributes: Attributes = attributesOf { }
+                    override val attributes: Attributes = emptyAttributes()
                 }
             """.trimIndent(),
         )
