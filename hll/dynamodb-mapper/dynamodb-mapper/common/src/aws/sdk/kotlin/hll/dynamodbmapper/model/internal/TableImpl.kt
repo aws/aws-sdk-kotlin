@@ -115,15 +115,21 @@ internal fun <T, PK : KeyType, SK : KeyType> tableImpl(
 
         override suspend fun putItem(request: PutItemRequest<T>): PutItemResponse<T> {
             val ttlInterceptor = schema.ttlInterceptor
+            val counterInterceptor = schema.counterInterceptor
 
             val op = putItemOperation(specImpl).let {
+                var operation = it
                 if (ttlInterceptor != null) {
                     @Suppress("UNCHECKED_CAST")
                     val typedInterceptor = ttlInterceptor as Interceptor<T, PutItemRequest<T>, aws.sdk.kotlin.services.dynamodb.model.PutItemRequest, aws.sdk.kotlin.services.dynamodb.model.PutItemResponse, PutItemResponse<T>>
-                    it.copy(interceptors = it.interceptors.prepend(typedInterceptor))
-                } else {
-                    it
+                    operation = operation.copy(interceptors = operation.interceptors.prepend(typedInterceptor))
                 }
+                if (counterInterceptor != null) {
+                    @Suppress("UNCHECKED_CAST")
+                    val typedInterceptor = counterInterceptor as Interceptor<T, PutItemRequest<T>, aws.sdk.kotlin.services.dynamodb.model.PutItemRequest, aws.sdk.kotlin.services.dynamodb.model.PutItemResponse, PutItemResponse<T>>
+                    operation = operation.copy(interceptors = operation.interceptors.prepend(typedInterceptor))
+                }
+                operation
             }
 
             return op.execute(request)
