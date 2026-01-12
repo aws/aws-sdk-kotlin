@@ -626,22 +626,6 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyFilter$D
 	public static fun startsWith (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyFilter;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKey;[B)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyExpr;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/interceptors/CounterInterceptor : aws/sdk/kotlin/hll/dynamodbmapper/pipeline/Interceptor {
-	public fun <init> ()V
-	public fun modifyBeforeCompletion (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HResContext;)Ljava/lang/Object;
-	public fun modifyBeforeDeserialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LResContext;)Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/DeserializeInput;
-	public fun modifyBeforeInvocation (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LReqContext;)Ljava/lang/Object;
-	public fun modifyBeforeSerialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HReqContext;)Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/SerializeInput;
-	public fun readAfterDeserialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HResContext;)V
-	public fun readAfterInitialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HReqContext;)V
-	public fun readAfterInvocation (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LResContext;)V
-	public fun readAfterSerialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LReqContext;)V
-	public fun readBeforeCompletion (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HResContext;)V
-	public fun readBeforeDeserialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LResContext;)V
-	public fun readBeforeInvocation (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/LReqContext;)V
-	public fun readBeforeSerialization (Laws/sdk/kotlin/hll/dynamodbmapper/pipeline/HReqContext;)V
-}
-
 public final class aws/sdk/kotlin/hll/dynamodbmapper/interceptors/TtlInterceptor : aws/sdk/kotlin/hll/dynamodbmapper/pipeline/Interceptor {
 	public fun <init> ()V
 	public fun <init> (Laws/smithy/kotlin/runtime/time/Clock;)V
@@ -941,7 +925,6 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/Persiste
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/model/SchemaAttributes {
 	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/model/SchemaAttributes;
-	public final fun getCounterFields ()Laws/smithy/kotlin/runtime/collections/AttributeKey;
 	public final fun getTtlFields ()Laws/smithy/kotlin/runtime/collections/AttributeKey;
 }
 
