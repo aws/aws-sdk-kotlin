@@ -10,7 +10,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbPartitionKey
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbTtlSeconds
 
 @DynamoDbItem
-public data class InvalidMultipleTtlAnnotations(
+public data class MultipleTtlAnnotations(
     @DynamoDbPartitionKey var id: Int,
     var givenName: String,
     var surname: String,

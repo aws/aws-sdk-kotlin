@@ -322,7 +322,7 @@ internal class SchemaRenderer(
                 write()
             }
 
-            // Handle TTL annotation
+            // Handle TTL annotations
             val ttlFields = properties.mapNotNull { prop ->
                 prop.annotations
                     .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbTtlSeconds::class.qualifiedName }
@@ -332,8 +332,6 @@ internal class SchemaRenderer(
                         prop.simpleName.getShortName() to lifetime
                     }
             }
-            require(ttlFields.size <= 1) { "Only one @DynamoDbTtlSeconds annotation is allowed, found ${ttlFields.size} on properties: ${ttlFields.joinToString { it.first }}" }
-            val ttlField = ttlFields.singleOrNull()
 
             // Handle Counter annotation
             val counterFields = properties.mapNotNull { prop ->
@@ -342,7 +340,7 @@ internal class SchemaRenderer(
                     ?.let { prop.simpleName.getShortName() }
             }.toSet()
 
-            val hasAttributes = ttlField != null || counterFields.isNotEmpty()
+            val hasAttributes = ttlFields.isNotEmpty() || counterFields.isNotEmpty()
 
             if (hasAttributes) {
                 withBlock(
@@ -351,16 +349,13 @@ internal class SchemaRenderer(
                     Type.from(RuntimeTypes.Core.Collections.Attributes),
                     Type.from(RuntimeTypes.Core.Collections.attributesOf),
                 ) {
-                    if (ttlField != null) {
-                        val (fieldName, lifetime) = ttlField
-                        write(
-                            "#T.#L to #T(#S, #LL)",
-                            MapperTypes.Model.SchemaAttributes,
-                            "TtlField",
-                            Types.Kotlin.Pair,
-                            fieldName,
-                            lifetime,
-                        )
+                    if (ttlFields.isNotEmpty()) {
+                        writeInline("#T.#L to setOf(", MapperTypes.Model.SchemaAttributes, "TtlFields")
+                        ttlFields.forEachIndexed { index, (fieldName, lifetime) ->
+                            if (index > 0) writeInline(", ")
+                            writeInline("#T(#S, #LL)", Types.Kotlin.Pair, fieldName, lifetime)
+                        }
+                        write(")")
                     }
                     if (counterFields.isNotEmpty()) {
                         write(
@@ -374,9 +369,9 @@ internal class SchemaRenderer(
                 }
             } else {
                 write(
-                    "override val attributes: #T = #T { }",
+                    "override val attributes: #T = #T()",
                     Type.from(RuntimeTypes.Core.Collections.Attributes),
-                    Type.from(RuntimeTypes.Core.Collections.attributesOf),
+                    Type.from(RuntimeTypes.Core.Collections.emptyAttributes),
                 )
             }
         }

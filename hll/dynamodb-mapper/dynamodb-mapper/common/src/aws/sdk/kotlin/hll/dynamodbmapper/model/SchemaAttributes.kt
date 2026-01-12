@@ -11,9 +11,9 @@ import aws.smithy.kotlin.runtime.collections.AttributeKey
  */
 public object SchemaAttributes {
     /**
-     * Pair of TTL field name to lifetime in seconds, used to support the [DynamoDbTtlSeconds] annotation
+     * Set of TTL fields, each containing field name and lifetime in seconds
      */
-    public val TtlField: AttributeKey<Pair<String, Long>> = AttributeKey("aws.sdk.kotlin.hll.dynamodbmapper#TtlField")
+    public val TtlFields: AttributeKey<Set<Pair<String, Long>>> = AttributeKey("aws.sdk.kotlin.hll.dynamodbmapper#TtlFields")
 
     /**
      * Set of field names annotated with [DynamoDbCounter]
