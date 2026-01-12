@@ -58,7 +58,7 @@ public annotation class DynamoDbIgnore
 public annotation class DynamoDbTtlSeconds(val lifetime: Long)
 
 /**
- * Specifies that this property should be used as a counter field, incrementing each time an item is persisted to DynamoDb.
+ * Specifies that this property should be used as a counter field, incrementing each time an item is persisted to DynamoDB.
  */
 @Target(AnnotationTarget.PROPERTY)
 public annotation class DynamoDbCounter
