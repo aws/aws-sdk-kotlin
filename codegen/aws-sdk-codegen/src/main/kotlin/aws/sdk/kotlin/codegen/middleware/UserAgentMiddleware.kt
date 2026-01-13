@@ -6,11 +6,11 @@
 package aws.sdk.kotlin.codegen.middleware
 
 import aws.sdk.kotlin.codegen.AwsKotlinDependency
-import software.amazon.smithy.kotlin.codegen.core.KotlinWriter
-import software.amazon.smithy.kotlin.codegen.model.buildSymbol
-import software.amazon.smithy.kotlin.codegen.model.namespace
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.ProtocolMiddleware
+import aws.smithy.kotlin.codegen.core.KotlinWriter
+import aws.smithy.kotlin.codegen.model.buildSymbol
+import aws.smithy.kotlin.codegen.model.namespace
+import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
+import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolMiddleware
 import software.amazon.smithy.model.shapes.OperationShape
 
 /**

@@ -5,7 +5,7 @@
 
 package aws.sdk.kotlin.codegen
 
-import software.amazon.smithy.kotlin.codegen.core.RuntimeTypePackage
+import aws.smithy.kotlin.codegen.core.RuntimeTypePackage
 
 /**
  * Commonly used AWS runtime types. Provides a single definition of a runtime symbol such that codegen isn't littered

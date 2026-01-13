@@ -5,15 +5,15 @@
 package aws.sdk.kotlin.codegen.customization.s3
 
 import aws.sdk.kotlin.codegen.ServiceClientCompanionObjectWriter
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.core.CodegenContext
-import software.amazon.smithy.kotlin.codegen.integration.AppendingSectionWriter
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
-import software.amazon.smithy.kotlin.codegen.lang.KotlinTypes
-import software.amazon.smithy.kotlin.codegen.model.buildSymbol
-import software.amazon.smithy.kotlin.codegen.model.expectShape
-import software.amazon.smithy.kotlin.codegen.rendering.util.ConfigProperty
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.core.CodegenContext
+import aws.smithy.kotlin.codegen.integration.AppendingSectionWriter
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.integration.SectionWriterBinding
+import aws.smithy.kotlin.codegen.lang.KotlinTypes
+import aws.smithy.kotlin.codegen.model.buildSymbol
+import aws.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.rendering.util.ConfigProperty
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.ServiceShape
 import software.amazon.smithy.model.transform.ModelTransformer
