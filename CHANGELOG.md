@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.119] - 01/13/2026
+
+### Features
+* (**bedrock**) This change will increase TestCase guardContent input size from 1024 to 2028 characters and PolicyBuildDocumentDescription from 2000 to 4000 characters
+* (**datazone**) Adds support for IAM role subscriptions to Glue table listings via CreateSubscriptionRequest API. Also adds owningIamPrincipalArn filter to List APIs and subscriptionGrantCreationMode parameter to subscription target APIs for controlling grant creation behavior.
+
 ## [1.5.118] - 01/12/2026
 
 ### Features
