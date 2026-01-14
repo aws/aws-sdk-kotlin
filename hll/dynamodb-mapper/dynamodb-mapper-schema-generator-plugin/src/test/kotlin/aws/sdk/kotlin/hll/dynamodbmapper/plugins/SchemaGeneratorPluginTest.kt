@@ -682,4 +682,39 @@ class SchemaGeneratorPluginTest {
         val result = runner.buildAndFail()
         assertContains(result.output, "@DynamoDbTtlSeconds annotation argument on property expiresAt could not be evaluated at compile time. Use a literal value like @DynamoDbTtlSeconds(3600) instead of expressions like @DynamoDbTtlSeconds(1.hours.inWholeSeconds).")
     }
+
+    @Test
+    fun testDynamoDbCounter() {
+        createClassFile("counter/UserWithCounter")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/counter/dynamodbmapper/generatedschemas/UserWithCounterSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        // Ensure that counter fields are set
+        assertContains(
+            schemaContents,
+            """
+            public object UserWithCounterSchema : ItemSchema.PartitionKey<UserWithCounter, KeyType.Key1<Int>> {
+                override val converter: UserWithCounterConverter = UserWithCounterConverter
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 3600L))
+                    SchemaAttributes.CounterFields to setOf("accessCount", "updateCount")
+                }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun testDynamoDbCounterInvalidType() {
+        createClassFile("counter/UserWithInvalidCounter")
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Property 'accessCount' annotated with @DynamoDbCounter must be of type Int or Long, but was String")
+    }
 }

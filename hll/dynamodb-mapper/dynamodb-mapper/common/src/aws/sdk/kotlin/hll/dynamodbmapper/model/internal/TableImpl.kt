@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.model.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
+import aws.sdk.kotlin.hll.dynamodbmapper.interceptors.CounterInterceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.interceptors.TtlInterceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
@@ -57,15 +58,21 @@ internal fun <T, PK : KeyType> tableImpl(
 
         override suspend fun putItem(request: PutItemRequest<T>): PutItemResponse<T> {
             val ttlInterceptor = schema.ttlInterceptor
+            val counterInterceptor = schema.counterInterceptor
 
             val op = putItemOperation(specImpl).let {
+                var operation = it
                 if (ttlInterceptor != null) {
                     @Suppress("UNCHECKED_CAST")
                     val typedInterceptor = ttlInterceptor as Interceptor<T, PutItemRequest<T>, LowLevelPutItemRequest, LowLevelPutItemResponse, PutItemResponse<T>>
-                    it.copy(interceptors = it.interceptors.prepend(typedInterceptor))
-                } else {
-                    it
+                    operation = operation.copy(interceptors = operation.interceptors.prepend(typedInterceptor))
                 }
+                if (counterInterceptor != null) {
+                    @Suppress("UNCHECKED_CAST")
+                    val typedInterceptor = counterInterceptor as Interceptor<T, PutItemRequest<T>, LowLevelPutItemRequest, LowLevelPutItemResponse, PutItemResponse<T>>
+                    operation = operation.copy(interceptors = operation.interceptors.prepend(typedInterceptor))
+                }
+                operation
             }
             return op.execute(request)
         }
@@ -108,15 +115,21 @@ internal fun <T, PK : KeyType, SK : KeyType> tableImpl(
 
         override suspend fun putItem(request: PutItemRequest<T>): PutItemResponse<T> {
             val ttlInterceptor = schema.ttlInterceptor
+            val counterInterceptor = schema.counterInterceptor
 
             val op = putItemOperation(specImpl).let {
+                var operation = it
                 if (ttlInterceptor != null) {
                     @Suppress("UNCHECKED_CAST")
                     val typedInterceptor = ttlInterceptor as Interceptor<T, PutItemRequest<T>, aws.sdk.kotlin.services.dynamodb.model.PutItemRequest, aws.sdk.kotlin.services.dynamodb.model.PutItemResponse, PutItemResponse<T>>
-                    it.copy(interceptors = it.interceptors.prepend(typedInterceptor))
-                } else {
-                    it
+                    operation = operation.copy(interceptors = operation.interceptors.prepend(typedInterceptor))
                 }
+                if (counterInterceptor != null) {
+                    @Suppress("UNCHECKED_CAST")
+                    val typedInterceptor = counterInterceptor as Interceptor<T, PutItemRequest<T>, aws.sdk.kotlin.services.dynamodb.model.PutItemRequest, aws.sdk.kotlin.services.dynamodb.model.PutItemResponse, PutItemResponse<T>>
+                    operation = operation.copy(interceptors = operation.interceptors.prepend(typedInterceptor))
+                }
+                operation
             }
 
             return op.execute(request)
@@ -146,3 +159,9 @@ private val <T> ItemSchema<T>.ttlInterceptor: TtlInterceptor<T>?
         .getOrNull(SchemaAttributes.TtlFields)
         ?.takeIf { it.isNotEmpty() }
         ?.let { TtlInterceptor() }
+
+private val <T> ItemSchema<T>.counterInterceptor: CounterInterceptor<T>?
+    get() = attributes
+        .getOrNull(SchemaAttributes.CounterFields)
+        ?.takeIf { it.isNotEmpty() }
+        ?.let { CounterInterceptor() }

@@ -6,6 +6,9 @@ public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/Dyn
 	public abstract fun converter ()Ljava/lang/Class;
 }
 
+public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbCounter : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbIgnore : java/lang/annotation/Annotation {
 }
 

@@ -333,19 +333,45 @@ internal class SchemaRenderer(
                     }
             }
 
-            if (ttlFields.isNotEmpty()) {
+            // Handle Counter annotation
+            val counterFields = properties.mapNotNull { prop ->
+                prop.annotations
+                    .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbCounter::class.qualifiedName }
+                    ?.let {
+                        // Validate that counter properties are Int or Long
+                        require(prop.typeRef == Types.Kotlin.Int || prop.typeRef == Types.Kotlin.Long) {
+                            "Property '${prop.name}' annotated with @DynamoDbCounter must be of type Int or Long, but was ${prop.typeRef.shortName}"
+                        }
+                        prop.simpleName.getShortName()
+                    }
+            }.toSet()
+
+            val hasAttributes = ttlFields.isNotEmpty() || counterFields.isNotEmpty()
+
+            if (hasAttributes) {
                 withBlock(
                     "override val attributes: #T = #T {",
                     "}",
                     Type.from(RuntimeTypes.Core.Collections.Attributes),
                     Type.from(RuntimeTypes.Core.Collections.attributesOf),
                 ) {
-                    writeInline("#T.#L to setOf(", MapperTypes.Model.SchemaAttributes, "TtlFields")
-                    ttlFields.forEachIndexed { index, (fieldName, lifetime) ->
-                        if (index > 0) writeInline(", ")
-                        writeInline("#T(#S, #LL)", Types.Kotlin.Pair, fieldName, lifetime)
+                    if (ttlFields.isNotEmpty()) {
+                        writeInline("#T.#L to #T(", MapperTypes.Model.SchemaAttributes, "TtlFields", Types.Kotlin.Collections.setOf)
+                        ttlFields.forEachIndexed { index, (fieldName, lifetime) ->
+                            if (index > 0) writeInline(", ")
+                            writeInline("#T(#S, #LL)", Types.Kotlin.Pair, fieldName, lifetime)
+                        }
+                        write(")")
                     }
-                    write(")")
+                    if (counterFields.isNotEmpty()) {
+                        write(
+                            "#T.#L to #T(#L)",
+                            MapperTypes.Model.SchemaAttributes,
+                            "CounterFields",
+                            Types.Kotlin.Collections.setOf,
+                            counterFields.joinToString(", ") { "\"$it\"" },
+                        )
+                    }
                 }
             } else {
                 write(
