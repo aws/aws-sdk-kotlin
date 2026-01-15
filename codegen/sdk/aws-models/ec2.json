@@ -63658,7 +63658,7 @@
                     "target": "com.amazonaws.ec2#IpamPolicyOrganizationTargetSet",
                     "traits": {
                         "aws.protocols#ec2QueryName": "OrganizationTargetSet",
-                        "smithy.api#documentation": "<p>The Amazon Web Services Organizations targets for an IPAM policy.</p>",
+                        "smithy.api#documentation": "<p>The IDs of the Amazon Web Services Organizations targets.</p>\n         <p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p>",
                         "smithy.api#xmlName": "organizationTargetSet"
                     }
                 },
@@ -83293,7 +83293,7 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "aws.protocols#ec2QueryName": "OrganizationTargetId",
-                        "smithy.api#documentation": "<p>The ID of a Amazon Web Services Organizations target for an IPAM policy.</p>",
+                        "smithy.api#documentation": "<p>The ID of the Amazon Web Services Organizations target.</p>\n         <p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p>",
                         "smithy.api#xmlName": "organizationTargetId"
                     }
                 }
@@ -97030,7 +97030,7 @@
                 "target": "com.amazonaws.ec2#ModifyVolumeResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>You can modify several parameters of an existing EBS volume, including volume size, volume\n      type, and IOPS capacity. If your EBS volume is attached to a current-generation EC2 instance\n      type, you might be able to apply these changes without stopping the instance or detaching the\n      volume from it. For more information about modifying EBS volumes, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-modify-volume.html\">Amazon EBS Elastic Volumes</a> \n      in the <i>Amazon EBS User Guide</i>.</p>\n         <p>When you complete a resize operation on your volume, you need to extend the volume's\n      file-system size to take advantage of the new storage capacity. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/recognize-expanded-volume-linux.html\">Extend the file system</a>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-modifications.html\">Monitor the progress of volume modifications</a> in the <i>Amazon EBS User Guide</i>.</p>\n         <p>With previous-generation instance types, resizing an EBS volume might require detaching and\n      reattaching the volume or stopping and restarting the instance.</p>\n         <p>After modifying a volume, you must wait at least six hours and ensure that the volume \n      is in the <code>in-use</code> or <code>available</code> state before you can modify the same \n      volume. This is sometimes referred to as a cooldown period.</p>"
+                "smithy.api#documentation": "<p>You can modify several parameters of an existing EBS volume, including volume size, volume\n      type, and IOPS capacity. If your EBS volume is attached to a current-generation EC2 instance\n      type, you might be able to apply these changes without stopping the instance or detaching the\n      volume from it. For more information about modifying EBS volumes, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-modify-volume.html\">Amazon EBS Elastic Volumes</a> \n      in the <i>Amazon EBS User Guide</i>.</p>\n         <p>When you complete a resize operation on your volume, you need to extend the volume's\n      file-system size to take advantage of the new storage capacity. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/recognize-expanded-volume-linux.html\">Extend the file system</a>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-modifications.html\">Monitor the progress of volume modifications</a> in the <i>Amazon EBS User Guide</i>.</p>\n         <p>With previous-generation instance types, resizing an EBS volume might require detaching and\n      reattaching the volume or stopping and restarting the instance.</p>\n         <p>After you initiate a volume modification, you must wait for that modification to reach the \n      <code>completed</code> state before you can initiate another modification for the same volume. \n      You can modify a volume up to four times within a rolling 24-hour period, as long as the volume \n      is in the <code>in-use</code> or <code>available</code> state, and all previous modifications \n      for that volume are <code>completed</code>. If you exceed this limit, you get an error message \n      that indicates when you can perform your next modification.</p>"
             }
         },
         "com.amazonaws.ec2#ModifyVolumeAttribute": {
