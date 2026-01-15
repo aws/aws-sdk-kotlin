@@ -27,7 +27,6 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.to
 
 class LoginCredentialsProviderTest {
-
     @Test
     fun testCacheFilename() {
         val expected = "36db1d138ff460920374e4c3d8e01f53f9f73537e89c88d639f68393df0e2726.json"
