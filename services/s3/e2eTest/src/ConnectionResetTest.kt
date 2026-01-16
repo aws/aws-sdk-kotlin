@@ -19,7 +19,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import java.io.IOException
 import kotlin.test.Test
-import kotlin.test.assertFailsWith
 import kotlin.time.Duration.Companion.seconds
 
 /**
