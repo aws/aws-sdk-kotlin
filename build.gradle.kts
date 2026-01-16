@@ -38,7 +38,7 @@ plugins {
     // ensure the correct version of KGP ends up on our buildscript classpath
     id(libs.plugins.kotlin.multiplatform.get().pluginId) apply false
     id(libs.plugins.kotlin.jvm.get().pluginId) apply false
-    alias(libs.plugins.aws.kotlin.repo.tools.kmp) apply false
+    id(libs.plugins.aws.kotlin.repo.tools.kmp.get().pluginId) apply false
 }
 
 val testJavaVersion = typedProp<String>("test.java.version")?.let {

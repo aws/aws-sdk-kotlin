@@ -17,7 +17,7 @@ extra["moduleName"] = "aws.sdk.kotlin.hll"
 plugins {
     `dokka-convention`
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
-    alias(libs.plugins.aws.kotlin.repo.tools.kmp) apply false
+    id(libs.plugins.aws.kotlin.repo.tools.kmp.get().pluginId) apply false
     jacoco
 }
 

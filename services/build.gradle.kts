@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 plugins {
     `maven-publish`
     `dokka-convention`
-    alias(libs.plugins.aws.kotlin.repo.tools.kmp) apply false
+    id(libs.plugins.aws.kotlin.repo.tools.kmp.get().pluginId) apply false
 }
 
 val sdkVersion: String by project
