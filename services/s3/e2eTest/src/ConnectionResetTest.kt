@@ -56,10 +56,8 @@ class ConnectionResetTest {
         // Wait for S3 to close stale connections
         delay(7.seconds)
 
-        // Try to re-use a connection TODO Update this to assert success after enabling retryOnConnectionFailure by default
-        assertFailsWith<RetryOnConnectionFailureException> {
-            client.putTestObject()
-        }
+        // Try to re-use a connection
+        client.putTestObject()
     }
 
     suspend fun S3Client.putTestObject() {
