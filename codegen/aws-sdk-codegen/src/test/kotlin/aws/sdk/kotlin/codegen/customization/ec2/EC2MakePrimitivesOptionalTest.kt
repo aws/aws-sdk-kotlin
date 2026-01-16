@@ -4,12 +4,12 @@
  */
 package aws.sdk.kotlin.codegen.customization.ec2
 
+import aws.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.model.isNullable
+import aws.smithy.kotlin.codegen.test.newTestContext
+import aws.smithy.kotlin.codegen.test.prependNamespaceAndService
+import aws.smithy.kotlin.codegen.test.toSmithyModel
 import org.junit.jupiter.api.Test
-import software.amazon.smithy.kotlin.codegen.model.expectShape
-import software.amazon.smithy.kotlin.codegen.model.isNullable
-import software.amazon.smithy.kotlin.codegen.test.newTestContext
-import software.amazon.smithy.kotlin.codegen.test.prependNamespaceAndService
-import software.amazon.smithy.kotlin.codegen.test.toSmithyModel
 import software.amazon.smithy.model.shapes.StructureShape
 import kotlin.test.assertTrue
 

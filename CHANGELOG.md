@@ -1,5 +1,76 @@
 # Changelog
 
+## [1.5.121] - 01/15/2026
+
+### Features
+* (**cleanrooms**) This release adds support for parameters in PySpark analysis templates.
+* (**deadline**) AWS Deadline Cloud now supports tagging Budget resources with ABAC for permissions management and selecting up to 16 filter values in the monitor and Search API.
+* (**ecs**) Adds support for configuring FIPS in AWS GovCloud (US) Regions via a new ECS Capacity Provider field fipsEnabled. When enabled, instances launched by the capacity provider will use a FIPS-140 enabled AMI. Instances will use FIPS-140 compliant cryptographic modules and AWS FIPS endpoints.
+* (**evs**) A new GetVersions API has been added to retrieve VCF, ESX versions, and EC2 instances provided by Amazon EVS. The CreateEnvironment API now allows you to select a VCF version and the CreateEnvironmentHost API introduces a optional esxVersion parameter.
+* (**lakeformation**) API Changes for GTCForLocation feature. Includes a new API, GetTemporaryDataLocationCredentials and updates to the APIs RegisterResource and UpdateResource
+* (**opensearchserverless**) Collection groups in Amazon OpenSearch Serverless enables to organize multiple collections and enable compute resource sharing across collections with different KMS keys. This shared compute model reduces costs by eliminating the need for separate OpenSearch Compute Units (OCUs) for each KMS key.
+* (**qconnect**) Fix inference configuration shapes for the CreateAIPrompt and UpdateAIPrompt APIs, Modify Text Length Limit for SendMessage API
+
+### Documentation
+* (**ec2**) This release includes documentation updates to support up to four Elastic Volume modifications per Amazon EBS volume within a rolling 24-hour period.
+
+## [1.5.120] - 01/14/2026
+
+### Features
+* (**connect**) Amazon Connect makes it easier to manage contact center operating hours by enabling automated scheduling for recurring events like holidays and maintenance windows. Set up recurring patterns (weekly, monthly, etc.) or link to another hours of operation to inherit overrides.
+* (**eks**) Added support for BOTTLEROCKET NVIDIA FIPS AMIs to AMI types in US regions.
+* (**rds**) no feature changes. model migrated to Smithy
+* (**redshift**) Adds support for enabling extra compute resources for automatic optimization during create and modify operations in Amazon Redshift clusters.
+* (**redshiftserverless**) Adds support for enabling extra compute resources for automatic optimization during create and update operations in Amazon Redshift Serverless workgroups.
+* (**socialmessaging**) This release clarifies WhatsApp template operations as a resource-authenticated operation via the parent WhatsApp Business Account. It also introduces new parameters for parameter format, CTA URL link tracking, and template body examples, and increases the phone number ID length.
+
+### Documentation
+* (**costexplorer**) Cost Categories added support to BillingView data filter expressions through the new costCategories parameter, enabling users to filter billing views by AWS Cost Categories for more granular cost management and allocation.
+
+## [1.5.119] - 01/13/2026
+
+### Features
+* (**bedrock**) This change will increase TestCase guardContent input size from 1024 to 2028 characters and PolicyBuildDocumentDescription from 2000 to 4000 characters
+* (**datazone**) Adds support for IAM role subscriptions to Glue table listings via CreateSubscriptionRequest API. Also adds owningIamPrincipalArn filter to List APIs and subscriptionGrantCreationMode parameter to subscription target APIs for controlling grant creation behavior.
+
+## [1.5.118] - 01/12/2026
+
+### Features
+* (**billing**) Cost Categories filtering support to BillingView data filter expressions through the new costCategories parameter, enabling users to filter billing views by AWS Cost Categories for more granular cost management and allocation.
+* (**iotmanagedintegrations**) This release introduces WiFi Simple Setup (WSS) enabling device provisioning via barcode scanning with automated network discovery, authentication, and credential provisioning. Additionally, it introduces 2P Device Capability Rediscovery for updating hub-managed device capabilities post-onboarding.
+* (**sagemaker**) Added ultraServerType to the UltraServerInfo structure to support server type identification for SageMaker HyperPod
+
+## [1.5.117] - 01/09/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Adds optional field "view" to GetMemory API input to give customers control over whether CMK encrypted data such as strategy decryption or override prompts is returned or not.
+* (**cloudfront**) Added EntityLimitExceeded exception handling to the following API operations AssociateDistributionWebACL, AssociateDistributionTenantWebACL, UpdateDistributionWithStagingConfig
+* (**glue**) Adding MaterializedViews task run APIs
+* (**medialive**) MediaPackage v2 output groups in MediaLive can now accept one additional destination for single pipeline channels and up to two additional destinations for standard channels. MediaPackage v2 destinations now support sending to cross region MediaPackage channels.
+* (**transcribe**) Adds waiters to Amazon Transcribe.
+
+## [1.5.116] - 01/07/2026
+
+### Features
+* (**workspaces**) Add StateMessage and ProgressPercentage fields to DescribeCustomWorkspaceImageImport API response.
+
+## [1.5.115] - 01/06/2026
+
+### Features
+* (**costexplorer**) This release updates existing reservation recommendations API to support deployment model.
+* (**emrserverless**) Added support for enabling disk encryption using customer managed AWS KMS keys to CreateApplication, UpdateApplication and StartJobRun APIs.
+
+## [1.5.114] - 01/05/2026
+
+### Features
+* (**cleanroomsml**) AWS Clean Rooms ML now supports advanced Spark configurations to optimize SQL performance when creating an MLInputChannel or an audience generation job.
+
+## [1.5.113] - 01/02/2026
+
+### Features
+* (**cleanrooms**) Added support for publishing detailed metrics to CloudWatch for operational monitoring of collaborations, including query performance and resource utilization.
+* (**identitystore**) This change introduces "Roles" attribute for User entities supported by AWS Identity Store SDK.
+
 ## [1.5.112] - 12/30/2025
 
 ### Features

@@ -5,15 +5,15 @@
 package aws.sdk.kotlin.codegen.endpoints
 
 import aws.sdk.kotlin.codegen.AwsRuntimeTypes
+import aws.smithy.kotlin.codegen.core.CodegenContext
+import aws.smithy.kotlin.codegen.core.KotlinDelegator
+import aws.smithy.kotlin.codegen.core.useFileWriter
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.model.buildSymbol
+import aws.smithy.kotlin.codegen.rendering.endpoints.EndpointCustomization
+import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
 import software.amazon.smithy.codegen.core.CodegenException
 import software.amazon.smithy.codegen.core.Symbol
-import software.amazon.smithy.kotlin.codegen.core.CodegenContext
-import software.amazon.smithy.kotlin.codegen.core.KotlinDelegator
-import software.amazon.smithy.kotlin.codegen.core.useFileWriter
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.model.buildSymbol
-import software.amazon.smithy.kotlin.codegen.rendering.endpoints.EndpointCustomization
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
 import software.amazon.smithy.model.node.Node
 import java.io.File
 

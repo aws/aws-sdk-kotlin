@@ -5,7 +5,7 @@
 package aws.sdk.kotlin.codegen
 
 import aws.sdk.kotlin.codegen.testutil.lines
-import software.amazon.smithy.kotlin.codegen.test.*
+import aws.smithy.kotlin.codegen.test.*
 import java.nio.file.Files
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.writeText
