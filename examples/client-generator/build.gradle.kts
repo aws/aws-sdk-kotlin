@@ -10,6 +10,6 @@ plugins {
 val awsSdkKotlinVersion: String by project
 
 dependencies {
-    implementation("software.amazon.smithy.kotlin:aws-codegen:$awsSdkKotlinVersion")
+    implementation("aws.smithy.kotlin:aws-codegen:$awsSdkKotlinVersion")
     // NOTE: More smithy dependencies may be required depending on what's referenced by your API models.
 }
