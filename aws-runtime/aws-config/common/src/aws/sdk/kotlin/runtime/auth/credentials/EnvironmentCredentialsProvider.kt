@@ -25,7 +25,8 @@ private val SESSION_TOKEN = AwsSdkSetting.AwsSessionToken.envVar
 private val ACCOUNT_ID = AwsSdkSetting.AwsAccountId.envVar
 
 /**
- * A [CredentialsProvider] which reads from `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`.
+ * A [CredentialsProvider] which reads from the `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN` environment variables.
+ * Note that the `AWS_SESSION_TOKEN` is only necessary if the credentials are temporary.
  */
 public class EnvironmentCredentialsProvider(
     public val getEnv: (String) -> String? = PlatformProvider.System::getenv,
