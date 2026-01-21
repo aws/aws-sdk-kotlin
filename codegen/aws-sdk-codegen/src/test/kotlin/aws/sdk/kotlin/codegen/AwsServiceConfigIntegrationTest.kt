@@ -5,14 +5,14 @@
 
 package aws.sdk.kotlin.codegen
 
+import aws.smithy.kotlin.codegen.core.KotlinWriter
+import aws.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.rendering.ServiceClientConfigGenerator
+import aws.smithy.kotlin.codegen.test.newTestContext
+import aws.smithy.kotlin.codegen.test.shouldContainOnlyOnceWithDiff
+import aws.smithy.kotlin.codegen.test.toRenderingContext
+import aws.smithy.kotlin.codegen.test.toSmithyModel
 import org.junit.jupiter.api.Test
-import software.amazon.smithy.kotlin.codegen.core.KotlinWriter
-import software.amazon.smithy.kotlin.codegen.model.expectShape
-import software.amazon.smithy.kotlin.codegen.rendering.ServiceClientConfigGenerator
-import software.amazon.smithy.kotlin.codegen.test.newTestContext
-import software.amazon.smithy.kotlin.codegen.test.shouldContainOnlyOnceWithDiff
-import software.amazon.smithy.kotlin.codegen.test.toRenderingContext
-import software.amazon.smithy.kotlin.codegen.test.toSmithyModel
 import software.amazon.smithy.model.shapes.ServiceShape
 
 class AwsServiceConfigIntegrationTest {

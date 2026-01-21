@@ -41,5 +41,4 @@ public interface BetweenExpr :
  * @param max The maximum bound for the comparison
  */
 @ExperimentalApi
-public fun BetweenExpr(value: Expression, min: Expression, max: Expression): BetweenExpr =
-    BetweenExprImpl(value, min, max)
+public fun BetweenExpr(value: Expression, min: Expression, max: Expression): BetweenExpr = BetweenExprImpl(value, min, max)

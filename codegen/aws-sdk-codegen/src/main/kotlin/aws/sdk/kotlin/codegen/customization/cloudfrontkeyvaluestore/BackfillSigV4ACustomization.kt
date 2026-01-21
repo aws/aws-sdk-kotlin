@@ -4,12 +4,12 @@
  */
 package aws.sdk.kotlin.codegen.customization.cloudfrontkeyvaluestore
 
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.model.getTrait
 import software.amazon.smithy.aws.traits.ServiceTrait
 import software.amazon.smithy.aws.traits.auth.SigV4ATrait
 import software.amazon.smithy.aws.traits.auth.SigV4Trait
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.model.getTrait
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.ServiceShape
 import software.amazon.smithy.model.traits.AuthTrait
@@ -22,31 +22,30 @@ import software.amazon.smithy.model.transform.ModelTransformer
 class BackfillSigV4ACustomization : KotlinIntegration {
     override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = settings.sdkId.lowercase() == "cloudfront keyvaluestore"
 
-    override fun preprocessModel(model: Model, settings: KotlinSettings): Model =
-        ModelTransformer.create().mapShapes(model) { shape ->
-            when (shape.isServiceShape) {
-                true -> {
-                    val builder = (shape as ServiceShape).toBuilder()
+    override fun preprocessModel(model: Model, settings: KotlinSettings): Model = ModelTransformer.create().mapShapes(model) { shape ->
+        when (shape.isServiceShape) {
+            true -> {
+                val builder = (shape as ServiceShape).toBuilder()
 
-                    builder.addTrait(
-                        SigV4ATrait.builder()
-                            .name(shape.getTrait<SigV4Trait>()?.name ?: shape.getTrait<ServiceTrait>()?.arnNamespace)
-                            .build(),
-                    )
+                builder.addTrait(
+                    SigV4ATrait.builder()
+                        .name(shape.getTrait<SigV4Trait>()?.name ?: shape.getTrait<ServiceTrait>()?.arnNamespace)
+                        .build(),
+                )
 
-                    val authTraitValueSet = shape.getTrait<AuthTrait>()?.valueSet ?: mutableSetOf()
+                val authTraitValueSet = shape.getTrait<AuthTrait>()?.valueSet ?: mutableSetOf()
 
-                    if (authTraitValueSet.firstOrNull() != SigV4ATrait.ID) {
-                        // remove existing auth trait
-                        builder.removeTrait(AuthTrait.ID)
+                if (authTraitValueSet.firstOrNull() != SigV4ATrait.ID) {
+                    // remove existing auth trait
+                    builder.removeTrait(AuthTrait.ID)
 
-                        // add a new auth trait with SigV4A in front of the existing values
-                        builder.addTrait(AuthTrait(mutableSetOf(SigV4ATrait.ID) + authTraitValueSet))
-                    }
-
-                    builder.build()
+                    // add a new auth trait with SigV4A in front of the existing values
+                    builder.addTrait(AuthTrait(mutableSetOf(SigV4ATrait.ID) + authTraitValueSet))
                 }
-                false -> shape
+
+                builder.build()
             }
+            false -> shape
         }
+    }
 }

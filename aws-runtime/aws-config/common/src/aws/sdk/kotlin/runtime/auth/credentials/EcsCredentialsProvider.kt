@@ -123,9 +123,8 @@ public class EcsCredentialsProvider(
         return token
     }
 
-    private suspend fun loadAuthTokenFromFile(path: String): String =
-        platformProvider.readFileOrNull(path)?.decodeToString()
-            ?: throw CredentialsProviderException("Could not read token file.")
+    private suspend fun loadAuthTokenFromFile(path: String): String = platformProvider.readFileOrNull(path)?.decodeToString()
+        ?: throw CredentialsProviderException("Could not read token file.")
 
     /**
      * Validate that the [relativeUri] can be combined with the static ECS endpoint to form a valid URL

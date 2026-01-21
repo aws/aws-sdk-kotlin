@@ -49,5 +49,4 @@ internal fun KeyFilter.toExpression(schema: ItemSchema<*>) = when (schema) {
     else -> error("Unknown schema type ${schema::class} (expected ItemSchema.CompositeKey or ItemSchema.PartitionKey)")
 }
 
-private fun pkCondition(schema: ItemSchema.PartitionKey<*, *>, partitionKey: Any) =
-    FilterImpl.run { attr(schema.partitionKey.name) eq LiteralExpr(dynamicAttr(partitionKey)) }
+private fun pkCondition(schema: ItemSchema.PartitionKey<*, *>, partitionKey: Any) = FilterImpl.run { attr(schema.partitionKey.name) eq LiteralExpr(dynamicAttr(partitionKey)) }

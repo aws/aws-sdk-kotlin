@@ -44,8 +44,7 @@ internal enum class FileType(
      * Determine the absolute path of the configuration file based on environment and policy
      * @return the absolute path of the configuration file. This does not imply the file exists or is otherwise valid
      */
-    fun path(platform: PlatformProvider): String =
-        setting.resolve(platform)?.trim() ?: pathSegments.joinToString(separator = platform.filePathSeparator)
+    fun path(platform: PlatformProvider): String = setting.resolve(platform)?.trim() ?: pathSegments.joinToString(separator = platform.filePathSeparator)
 
     /**
      * Parse a line into a token. See [FileLine] extensions for the types of config elements a file can contain.
@@ -63,7 +62,6 @@ internal enum class FileType(
      *
      * The consumer of the result should fail parsing immediately if a null token is encountered.
      */
-    fun tokenOf(input: FileLine, currentSection: Token.Section?, lastProperty: Token.Property?): Token =
-        lineParsers.firstNotNullOfOrNull { parseFunction -> parseFunction(input, currentSection, lastProperty) }
-            ?: throw AwsConfigParseException("Encountered unexpected token", input.lineNumber)
+    fun tokenOf(input: FileLine, currentSection: Token.Section?, lastProperty: Token.Property?): Token = lineParsers.firstNotNullOfOrNull { parseFunction -> parseFunction(input, currentSection, lastProperty) }
+        ?: throw AwsConfigParseException("Encountered unexpected token", input.lineNumber)
 }

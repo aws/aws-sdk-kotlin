@@ -24,9 +24,8 @@ import aws.smithy.kotlin.runtime.util.asyncLazy
 public suspend fun resolveUseFips(
     provider: PlatformProvider = PlatformProvider.System,
     profile: LazyAsyncValue<AwsProfile> = asyncLazy { loadAwsSharedConfig(provider).activeProfile },
-): Boolean? =
-    AwsSdkSetting.AwsUseFipsEndpoint.resolve(provider)
-        ?: profile.get().useFips
+): Boolean? = AwsSdkSetting.AwsUseFipsEndpoint.resolve(provider)
+    ?: profile.get().useFips
 
 /**
  * Attempts to resolve the enabled state of dual-stack endpoints from the environment.
@@ -35,9 +34,8 @@ public suspend fun resolveUseFips(
 public suspend fun resolveUseDualStack(
     provider: PlatformProvider = PlatformProvider.System,
     profile: LazyAsyncValue<AwsProfile> = asyncLazy { loadAwsSharedConfig(provider).activeProfile },
-): Boolean? =
-    AwsSdkSetting.AwsUseDualStackEndpoint.resolve(provider)
-        ?: profile.get().useDualStack
+): Boolean? = AwsSdkSetting.AwsUseDualStackEndpoint.resolve(provider)
+    ?: profile.get().useDualStack
 
 /**
  * Attempts to find the configured endpoint URL for a specific service.
@@ -76,10 +74,9 @@ public suspend fun resolveEndpointUrl(
 private suspend fun resolveIgnoreEndpointUrls(
     provider: PlatformProvider,
     sharedConfig: LazyAsyncValue<AwsSharedConfig>,
-): Boolean =
-    AwsSdkSetting.AwsIgnoreEndpointUrls.resolve(provider)
-        ?: sharedConfig.get().activeProfile.ignoreEndpointUrls
-        ?: false
+): Boolean = AwsSdkSetting.AwsIgnoreEndpointUrls.resolve(provider)
+    ?: sharedConfig.get().activeProfile.ignoreEndpointUrls
+    ?: false
 
 /**
  * Resolve the [AccountIdEndpointMode] from the environment.
@@ -88,9 +85,8 @@ private suspend fun resolveIgnoreEndpointUrls(
 public suspend fun resolveAccountIdEndpointMode(
     provider: PlatformProvider = PlatformProvider.System,
     profile: LazyAsyncValue<AwsProfile> = asyncLazy { loadAwsSharedConfig(provider).activeProfile },
-): AccountIdEndpointMode =
-    AwsSdkSetting.AwsAccountIdEndpointMode.resolve(provider)
-        ?: profile.get().accountIdEndpointMode ?: AccountIdEndpointMode.PREFERRED
+): AccountIdEndpointMode = AwsSdkSetting.AwsAccountIdEndpointMode.resolve(provider)
+    ?: profile.get().accountIdEndpointMode ?: AccountIdEndpointMode.PREFERRED
 
 /**
  * Resolve the account ID from the given [attributes] while respecting the given [AccountIdEndpointMode]
@@ -110,7 +106,6 @@ public suspend fun resolveEndpointDiscoveryEnabled(
     provider: PlatformProvider = PlatformProvider.System,
     profile: LazyAsyncValue<AwsProfile> = asyncLazy { loadAwsSharedConfig(provider).activeProfile },
     serviceRequiresEpDiscovery: Boolean,
-): Boolean =
-    AwsSdkSetting.AwsEndpointDiscoveryEnabled.resolve(provider)
-        ?: profile.get().endpointDiscoveryEnabled
-        ?: serviceRequiresEpDiscovery
+): Boolean = AwsSdkSetting.AwsEndpointDiscoveryEnabled.resolve(provider)
+    ?: profile.get().endpointDiscoveryEnabled
+    ?: serviceRequiresEpDiscovery

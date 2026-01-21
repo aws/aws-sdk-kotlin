@@ -236,13 +236,7 @@ public enum class EndpointMode(internal val defaultEndpoint: Endpoint) {
  * @param status The HTTP status code of the response
  * @param message The error message
  */
-public class EC2MetadataError(public val status: HttpStatusCode, message: String) : AwsServiceException(message) {
-    @Deprecated("This constructor passes HTTP status as an Int instead of as HttpStatusCode. This declaration will be removed in version 1.6.x.")
-    public constructor(statusCode: Int, message: String) : this(HttpStatusCode.fromValue(statusCode), message)
-
-    @Deprecated("This property is now deprecated and should be fetched from status.value. This declaration will be removed in version 1.6.x.")
-    public val statusCode: Int = status.value
-}
+public class EC2MetadataError(public val status: HttpStatusCode, message: String) : AwsServiceException(message)
 
 /**
  * Formats an executed [HttpCall] into a form suitable for TRACE logging. Example output:

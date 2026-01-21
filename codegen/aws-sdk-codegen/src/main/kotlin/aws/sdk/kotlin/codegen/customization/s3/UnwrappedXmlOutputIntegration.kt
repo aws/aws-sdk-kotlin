@@ -4,12 +4,12 @@
  */
 package aws.sdk.kotlin.codegen.customization.s3
 
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.model.hasTrait
+import aws.smithy.kotlin.codegen.model.traits.UnwrappedXmlOutput
 import software.amazon.smithy.aws.traits.customizations.S3UnwrappedXmlOutputTrait
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.model.expectShape
-import software.amazon.smithy.kotlin.codegen.model.hasTrait
-import software.amazon.smithy.kotlin.codegen.model.traits.UnwrappedXmlOutput
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.OperationShape
 import software.amazon.smithy.model.shapes.ServiceShape
@@ -21,8 +21,7 @@ import software.amazon.smithy.model.transform.ModelTransformer
  * annotated with `S3UnwrappedXmlOutput` trait to mark when special unwrapped xml output deserialization is required.
  */
 class UnwrappedXmlOutputIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).isS3
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).isS3
 
     override fun preprocessModel(model: Model, settings: KotlinSettings): Model {
         val unwrappedOperations = model

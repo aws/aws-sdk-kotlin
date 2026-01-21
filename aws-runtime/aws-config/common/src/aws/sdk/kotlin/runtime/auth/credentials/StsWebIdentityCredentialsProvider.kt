@@ -187,9 +187,8 @@ public class AssumeRoleWithWebIdentityParameters(
 }
 
 // convenience function to resolve parameters for fromEnvironment()
-private inline fun <reified T> PlatformProvider.resolve(explicit: T?, setting: EnvironmentSetting<T>, name: String): T =
-    explicit
-        ?: setting.resolve(this)
-        ?: throw ProviderConfigurationException(
-            "Required field `$name` could not be automatically inferred for StsWebIdentityCredentialsProvider. Either explicitly pass a value, set the environment variable `${setting.envVar}`, or set the JVM system property `${setting.sysProp}`",
-        )
+private inline fun <reified T> PlatformProvider.resolve(explicit: T?, setting: EnvironmentSetting<T>, name: String): T = explicit
+    ?: setting.resolve(this)
+    ?: throw ProviderConfigurationException(
+        "Required field `$name` could not be automatically inferred for StsWebIdentityCredentialsProvider. Either explicitly pass a value, set the environment variable `${setting.envVar}`, or set the JVM system property `${setting.sysProp}`",
+    )

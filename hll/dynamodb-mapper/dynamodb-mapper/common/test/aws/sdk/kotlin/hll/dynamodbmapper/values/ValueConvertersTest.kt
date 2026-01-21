@@ -147,15 +147,13 @@ abstract class ValueConvertersTest {
          */
         val theSame = TheSame
 
-        private fun T.addTest(lowLevel: AttributeValue): TestCase<T> =
-            TestCase
-                .of(TestExpectation.Success(this), TestExpectation.Success(lowLevel))
-                .also(tests::add)
+        private fun T.addTest(lowLevel: AttributeValue): TestCase<T> = TestCase
+            .of(TestExpectation.Success(this), TestExpectation.Success(lowLevel))
+            .also(tests::add)
 
-        private fun T.addTest(anError: AnError): TestCase<T> =
-            TestCase
-                .of(TestExpectation.Success(this), TestExpectation.Failure)
-                .also(tests::add)
+        private fun T.addTest(anError: AnError): TestCase<T> = TestCase
+            .of(TestExpectation.Success(this), TestExpectation.Failure)
+            .also(tests::add)
 
         infix fun T.inDdbIs(anError: AnError) = addTest(anError)
         infix fun T.inDdbIs(theSame: TheSame) = addTest(dynamicAttr(this))

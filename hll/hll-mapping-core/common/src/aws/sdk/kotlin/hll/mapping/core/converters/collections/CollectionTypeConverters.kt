@@ -18,6 +18,5 @@ public object CollectionTypeConverters {
      * @param T The type of elements in the [Set]/[List]
      */
     @Suppress("ktlint:standard:function-naming")
-    public inline fun <reified T> SetToListConverter(): Converter<Set<T>, List<T>> =
-        Converter(Set<T>::toList, List<T>::toSet)
+    public inline fun <reified T> SetToListConverter(): Converter<Set<T>, List<T>> = Converter(Set<T>::toList, List<T>::toSet)
 }

@@ -19,5 +19,4 @@ private class ManagedTokenProvider(
  * Wraps a [TokenProvider] for internal runtime management by the SDK.
  */
 @InternalApi
-public fun CloseableBearerTokenProvider.manage(): BearerTokenProvider =
-    if (this is ManagedTokenProvider) this else ManagedTokenProvider(this)
+public fun CloseableBearerTokenProvider.manage(): BearerTokenProvider = if (this is ManagedTokenProvider) this else ManagedTokenProvider(this)

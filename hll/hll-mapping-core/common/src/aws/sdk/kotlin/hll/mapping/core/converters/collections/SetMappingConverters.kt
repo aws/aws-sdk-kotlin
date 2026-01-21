@@ -18,8 +18,7 @@ public object SetMappingConverters {
      * @param T The type being converted from
      * @param elementConverter A one-way converter of [T] values to [F] values
      */
-    public fun <F, T> of(elementConverter: ConvertsFrom<F, T>): ConvertsFrom<Set<F>, Set<T>> =
-        ConvertsFrom { to: Set<T> -> to.map(elementConverter::convertFrom).toSet() }
+    public fun <F, T> of(elementConverter: ConvertsFrom<F, T>): ConvertsFrom<Set<F>, Set<T>> = ConvertsFrom { to: Set<T> -> to.map(elementConverter::convertFrom).toSet() }
 
     /**
      * Chains this set converter with an element converter, yielding a new converter which performs a two-stage mapping
@@ -41,8 +40,7 @@ public object SetMappingConverters {
      * @param T The type being converted to
      * @param elementConverter A one-way converter of [F] values to [T] values
      */
-    public fun <F, T> of(elementConverter: ConvertsTo<F, T>): ConvertsTo<Set<F>, Set<T>> =
-        ConvertsTo { from: Set<F> -> from.map(elementConverter::convertTo).toSet() }
+    public fun <F, T> of(elementConverter: ConvertsTo<F, T>): ConvertsTo<Set<F>, Set<T>> = ConvertsTo { from: Set<F> -> from.map(elementConverter::convertTo).toSet() }
 
     /**
      * Chains this set converter with an element converter, yielding a new converter which performs a two-stage mapping
@@ -65,8 +63,7 @@ public object SetMappingConverters {
      * @param T The type being converted to
      * @param elementConverter A [Converter] for transforming between values of type [F] and [T]
      */
-    public fun <F, T> of(elementConverter: Converter<F, T>): Converter<Set<F>, Set<T>> =
-        Converter(of(elementConverter as ConvertsTo<F, T>), of(elementConverter as ConvertsFrom<F, T>))
+    public fun <F, T> of(elementConverter: Converter<F, T>): Converter<Set<F>, Set<T>> = Converter(of(elementConverter as ConvertsTo<F, T>), of(elementConverter as ConvertsFrom<F, T>))
 }
 
 /**
@@ -80,8 +77,7 @@ public object SetMappingConverters {
  * of the given [elementConverter] must be the same as the source element type of this converter.
  */
 @ExperimentalApi
-public fun <F, F2, T> Converter<Set<F>, T>.mapFrom(elementConverter: Converter<F2, F>): Converter<Set<F2>, T> =
-    this.andThenFrom(SetMappingConverters.of(elementConverter))
+public fun <F, F2, T> Converter<Set<F>, T>.mapFrom(elementConverter: Converter<F2, F>): Converter<Set<F2>, T> = this.andThenFrom(SetMappingConverters.of(elementConverter))
 
 /**
  * Chains this set converter with an element converter, yielding a new converter which performs a two-stage mapping
@@ -94,5 +90,4 @@ public fun <F, F2, T> Converter<Set<F>, T>.mapFrom(elementConverter: Converter<F
  * of the given [elementConverter] must be the same as the target element type of this converter.
  */
 @ExperimentalApi
-public fun <F, T, T2> Converter<F, Set<T>>.mapTo(elementConverter: Converter<T, T2>): Converter<F, Set<T2>> =
-    this.andThenTo(SetMappingConverters.of(elementConverter))
+public fun <F, T, T2> Converter<F, Set<T>>.mapTo(elementConverter: Converter<T, T2>): Converter<F, Set<T2>> = this.andThenTo(SetMappingConverters.of(elementConverter))

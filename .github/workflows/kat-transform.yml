@@ -53,8 +53,8 @@ jobs:
           pwd
           ls -lsa
           kat bump-version  # Bump from `vNext-SNAPSHOT` to `vNext`. kat transform only works on non-SNAPSHOT versions 
-          ./gradlew build
-          ./gradlew publishAllPublicationsToTestLocalRepository
+          ./gradlew -Paws.kotlin.native=false build
+          ./gradlew -Paws.kotlin.native=false publishAllPublicationsToTestLocalRepository
 
       - name: Transform
         working-directory: ./aws-sdk-kotlin

@@ -6,12 +6,12 @@ package aws.sdk.kotlin.codegen.customization.s3
 
 import aws.sdk.kotlin.codegen.AwsRuntimeTypes
 import aws.sdk.kotlin.codegen.customization.AwsServiceExceptionBaseClassGenerator
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.core.*
-import software.amazon.smithy.kotlin.codegen.integration.AppendingSectionWriter
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
-import software.amazon.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.core.*
+import aws.smithy.kotlin.codegen.integration.AppendingSectionWriter
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.integration.SectionWriterBinding
+import aws.smithy.kotlin.codegen.model.expectShape
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.ServiceShape
 
@@ -23,8 +23,7 @@ class S3ErrorMetadataIntegration : KotlinIntegration {
     override val sectionWriters: List<SectionWriterBinding>
         get() = listOf(SectionWriterBinding(AwsServiceExceptionBaseClassGenerator.Sections.RenderExtra, addSdkErrorMetadataWriter))
 
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.expectShape<ServiceShape>(settings.service).isS3
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.expectShape<ServiceShape>(settings.service).isS3
 
     override fun writeAdditionalFiles(ctx: CodegenContext, delegator: KotlinDelegator) {
         delegator.useFileWriter("S3ErrorMetadata.kt", "${ctx.settings.pkg.name}.model") { writer ->

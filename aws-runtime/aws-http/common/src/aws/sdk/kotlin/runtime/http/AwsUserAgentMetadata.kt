@@ -214,10 +214,9 @@ public data class FrameworkMetadata(val name: String, val version: String) {
     override fun toString(): String = uaPair("lib", name, version)
 }
 
-private fun detectExecEnv(platform: PlatformEnvironProvider): ExecutionEnvMetadata? =
-    platform.getenv(AWS_EXECUTION_ENV)?.let {
-        ExecutionEnvMetadata(it)
-    }
+private fun detectExecEnv(platform: PlatformEnvironProvider): ExecutionEnvMetadata? = platform.getenv(AWS_EXECUTION_ENV)?.let {
+    ExecutionEnvMetadata(it)
+}
 
 // token_no_hash = 1*tchar_no_hash
 // tchar_no_hash = "!" / "$" / "%" / "&" / "'" / "*" / "+" / "-" / "." /

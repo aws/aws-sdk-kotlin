@@ -24,8 +24,7 @@ public interface Converter<F, T> :
  * @param convertFrom A converter instance for converting one-way from [T] to [F]
  */
 @ExperimentalApi
-public fun <F, T> Converter(convertTo: ConvertsTo<F, T>, convertFrom: ConvertsFrom<F, T>): Converter<F, T> =
-    object : Converter<F, T>, ConvertsTo<F, T> by convertTo, ConvertsFrom<F, T> by convertFrom { }
+public fun <F, T> Converter(convertTo: ConvertsTo<F, T>, convertFrom: ConvertsFrom<F, T>): Converter<F, T> = object : Converter<F, T>, ConvertsTo<F, T> by convertTo, ConvertsFrom<F, T> by convertFrom { }
 
 /**
  * Chains this converter with another converter, yielding a new converter which performs a two-stage conversion. (Note
@@ -38,8 +37,7 @@ public fun <F, T> Converter(convertTo: ConvertsTo<F, T>, convertFrom: ConvertsFr
  * [converter] must be the same as the target type of this converter.
  */
 @ExperimentalApi
-public fun <F, T, T2> Converter<F, T>.andThenTo(converter: Converter<T, T2>): Converter<F, T2> =
-    Converter(this.andThenConvertsTo(converter), converter.andThenConvertsFrom(this))
+public fun <F, T, T2> Converter<F, T>.andThenTo(converter: Converter<T, T2>): Converter<F, T2> = Converter(this.andThenConvertsTo(converter), converter.andThenConvertsFrom(this))
 
 /**
  * Chains this converter with another converter, yielding a new converter which performs a two-stage conversion. (Note
@@ -52,8 +50,7 @@ public fun <F, T, T2> Converter<F, T>.andThenTo(converter: Converter<T, T2>): Co
  * [converter] must be the same as the source type of this converter.
  */
 @ExperimentalApi
-public fun <F, F2, T> Converter<F, T>.andThenFrom(converter: Converter<F2, F>): Converter<F2, T> =
-    Converter(converter.andThenConvertsTo(this), this.andThenConvertsFrom(converter))
+public fun <F, F2, T> Converter<F, T>.andThenFrom(converter: Converter<F2, F>): Converter<F2, T> = Converter(converter.andThenConvertsTo(this), this.andThenConvertsFrom(converter))
 
 /**
  * Adds validation before conversions by running [validate] on [F] values before converting them to type [T]. Validators
@@ -64,8 +61,7 @@ public fun <F, F2, T> Converter<F, T>.andThenFrom(converter: Converter<F2, F>): 
  * met
  */
 @ExperimentalApi
-public fun <F, T> Converter<F, T>.validatingFrom(validate: (F) -> Unit): Converter<F, T> =
-    Converter(this.firstValidatingFrom(validate), this)
+public fun <F, T> Converter<F, T>.validatingFrom(validate: (F) -> Unit): Converter<F, T> = Converter(this.firstValidatingFrom(validate), this)
 
 /**
  * Adds validation before conversions by running [validate] on [T] values before converting them to type [F]. Validators
@@ -76,5 +72,4 @@ public fun <F, T> Converter<F, T>.validatingFrom(validate: (F) -> Unit): Convert
  * met
  */
 @ExperimentalApi
-public fun <F, T> Converter<F, T>.validatingTo(validate: (T) -> Unit): Converter<F, T> =
-    Converter(this, this.firstValidatingTo(validate))
+public fun <F, T> Converter<F, T>.validatingTo(validate: (T) -> Unit): Converter<F, T> = Converter(this, this.firstValidatingTo(validate))

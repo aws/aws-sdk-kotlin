@@ -5,12 +5,12 @@
 package aws.sdk.kotlin.codegen.customization.s3control
 
 import aws.sdk.kotlin.codegen.customization.s3.isS3Control
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.core.CodegenContext
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.lang.KotlinTypes
-import software.amazon.smithy.kotlin.codegen.model.expectShape
-import software.amazon.smithy.kotlin.codegen.rendering.util.ConfigProperty
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.core.CodegenContext
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.lang.KotlinTypes
+import aws.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.rendering.util.ConfigProperty
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.ServiceShape
 import software.amazon.smithy.model.transform.ModelTransformer
@@ -21,8 +21,7 @@ import software.amazon.smithy.rulesengine.traits.ClientContextParamsTrait
  * client context params.
  */
 class ClientConfigIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).isS3Control
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).isS3Control
 
     companion object {
         val UseArnRegionProp: ConfigProperty = ConfigProperty.Boolean(
@@ -55,9 +54,8 @@ class ClientConfigIntegration : KotlinIntegration {
         }
     }
 
-    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> =
-        listOf(
-            UseArnRegionProp,
-            EnableAwsChunked,
-        )
+    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> = listOf(
+        UseArnRegionProp,
+        EnableAwsChunked,
+    )
 }

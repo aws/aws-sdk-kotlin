@@ -4,16 +4,16 @@
  */
 package aws.sdk.kotlin.codegen
 
+import aws.smithy.kotlin.codegen.core.GradleConfiguration
+import aws.smithy.kotlin.codegen.core.KotlinDependency
+import aws.smithy.kotlin.codegen.core.isValidVersion
 import software.amazon.smithy.codegen.core.CodegenException
-import software.amazon.smithy.kotlin.codegen.core.GradleConfiguration
-import software.amazon.smithy.kotlin.codegen.core.KotlinDependency
-import software.amazon.smithy.kotlin.codegen.core.isValidVersion
 
 // root namespace for the AWS client-runtime
 const val AWS_CLIENT_RT_ROOT_NS = "aws.sdk.kotlin.runtime"
 
 private fun getDefaultRuntimeVersion(): String {
-    // generated as part of the build, see smithy-aws-kotlin-codegen/build.gradle.kts
+    // generated as part of the build, see smithy-kotlin/codegen/aws-codegen/build.gradle.kts
     try {
         val version = object {}.javaClass.getResource("sdk-version.txt")?.readText() ?: throw CodegenException("sdk-version.txt does not exist")
         check(isValidVersion(version)) { "Version parsed from sdk-version.txt '$version' is not a valid version string" }
