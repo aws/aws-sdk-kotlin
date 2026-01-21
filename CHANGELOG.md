@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.6.0] - 01/21/2026
+
+### Features
+* (**bedrockagentcore**) Supports custom browser extensions for AgentCore Browser and increased message payloads up to 100KB per message in an Event for AgentCore Memory
+* (**configservice**) AWS Config Conformance Packs now support tag-on-create through PutConformancePack API.
+* (**ec2**) Added support of multiple EBS cards. New EbsCardIndex parameter enables attaching volumes to specific EBS cards on supported instance types for improved storage performance.
+* (**quicksight**) Added documentation and model for sheet layout groups - allows sheet elements to be grouped, Added documentation and the feature enables admins to have granular control over connectors under actions, Updated API documentation for PDF Export in Snapshot Export APIs
+
+### Miscellaneous
+* ⚠️ **IMPORTANT**: Upgrade to Kotlin 2.3.0
+
 ## [1.5.123] - 01/20/2026
 
 ### Features
