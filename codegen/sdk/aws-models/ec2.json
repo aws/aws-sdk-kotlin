@@ -8808,6 +8808,12 @@
                         "smithy.api#required": {}
                     }
                 },
+                "EbsCardIndex": {
+                    "target": "com.amazonaws.ec2#BoxedInteger",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>"
+                    }
+                },
                 "DryRun": {
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
@@ -54609,6 +54615,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Availability Zone where the EBS volume will be created (for example,\n            <code>use1-az1</code>).</p>\n         <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> can be specified,\n            but not both. If neither is specified, Amazon EC2 automatically selects an Availability Zone within\n            the Region.</p>\n         <p>This parameter is not supported when using \n            <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet.html\">CreateFleet</a>, \n            <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>, \n            <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeImages.html\">DescribeImages</a>, \n            <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotFleet.html\">RequestSpotFleet</a>, \n            <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotInstances.html\">RequestSpotInstances</a>, and \n            <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html\">RunInstances</a>.</p>"
                     }
+                },
+                "EbsCardIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>"
+                    }
                 }
             },
             "traits": {
@@ -54687,6 +54699,82 @@
                 "smithy.api#documentation": "<p>Describes a block device for an EBS volume.</p>"
             }
         },
+        "com.amazonaws.ec2#EbsCardIndex": {
+            "type": "integer"
+        },
+        "com.amazonaws.ec2#EbsCardInfo": {
+            "type": "structure",
+            "members": {
+                "EbsCardIndex": {
+                    "target": "com.amazonaws.ec2#EbsCardIndex",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "EbsCardIndex",
+                        "smithy.api#documentation": "<p>The index of the EBS card.</p>",
+                        "smithy.api#xmlName": "ebsCardIndex"
+                    }
+                },
+                "BaselineBandwidthInMbps": {
+                    "target": "com.amazonaws.ec2#BaselineBandwidthInMbps",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "BaselineBandwidthInMbps",
+                        "smithy.api#documentation": "<p>The baseline bandwidth performance for the EBS card, in Mbps.</p>",
+                        "smithy.api#xmlName": "baselineBandwidthInMbps"
+                    }
+                },
+                "BaselineThroughputInMBps": {
+                    "target": "com.amazonaws.ec2#BaselineThroughputInMBps",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "BaselineThroughputInMBps",
+                        "smithy.api#documentation": "<p>The baseline throughput performance for the EBS card, in MBps.</p>",
+                        "smithy.api#xmlName": "baselineThroughputInMBps"
+                    }
+                },
+                "BaselineIops": {
+                    "target": "com.amazonaws.ec2#BaselineIops",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "BaselineIops",
+                        "smithy.api#documentation": "<p>The baseline IOPS performance for the EBS card.</p>",
+                        "smithy.api#xmlName": "baselineIops"
+                    }
+                },
+                "MaximumBandwidthInMbps": {
+                    "target": "com.amazonaws.ec2#MaximumBandwidthInMbps",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MaximumBandwidthInMbps",
+                        "smithy.api#documentation": "<p>The maximum bandwidth performance for the EBS card, in Mbps.</p>",
+                        "smithy.api#xmlName": "maximumBandwidthInMbps"
+                    }
+                },
+                "MaximumThroughputInMBps": {
+                    "target": "com.amazonaws.ec2#MaximumThroughputInMBps",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MaximumThroughputInMBps",
+                        "smithy.api#documentation": "<p>The maximum throughput performance for the EBS card, in MBps.</p>",
+                        "smithy.api#xmlName": "maximumThroughputInMBps"
+                    }
+                },
+                "MaximumIops": {
+                    "target": "com.amazonaws.ec2#MaximumIops",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MaximumIops",
+                        "smithy.api#documentation": "<p>The maximum IOPS performance for the EBS card.</p>",
+                        "smithy.api#xmlName": "maximumIops"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the performance characteristics of an EBS card on the instance type.</p>"
+            }
+        },
+        "com.amazonaws.ec2#EbsCardInfoList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#EbsCardInfo",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
         "com.amazonaws.ec2#EbsEncryptionSupport": {
             "type": "enum",
             "members": {
@@ -54754,6 +54842,22 @@
                         "smithy.api#documentation": "<p>Indicates whether the instance type features a shared or dedicated Amazon EBS \n   volume attachment limit. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/volume_limits.html\">Amazon EBS volume limits for \n    Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>",
                         "smithy.api#xmlName": "attachmentLimitType"
                     }
+                },
+                "MaximumEbsCards": {
+                    "target": "com.amazonaws.ec2#MaximumEbsCards",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MaximumEbsCards",
+                        "smithy.api#documentation": "<p>Indicates the number of EBS cards supported by the instance type.</p>",
+                        "smithy.api#xmlName": "maximumEbsCards"
+                    }
+                },
+                "EbsCards": {
+                    "target": "com.amazonaws.ec2#EbsCardInfoList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "EbsCardSet",
+                        "smithy.api#documentation": "<p>Describes the EBS cards available for the instance type.</p>",
+                        "smithy.api#xmlName": "ebsCardSet"
+                    }
                 }
             },
             "traits": {
@@ -54817,6 +54921,14 @@
                         "aws.protocols#ec2QueryName": "Operator",
                         "smithy.api#documentation": "<p>The service provider that manages the EBS volume.</p>",
                         "smithy.api#xmlName": "operator"
+                    }
+                },
+                "EbsCardIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "EbsCardIndex",
+                        "smithy.api#documentation": "<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>",
+                        "smithy.api#xmlName": "ebsCardIndex"
                     }
                 }
             },
@@ -87237,6 +87349,14 @@
                         "smithy.api#documentation": "<p>The Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate) specified for the volume, in MiB/s. \n            If no volume initialization rate was specified, the value is <code>null</code>.</p>",
                         "smithy.api#xmlName": "volumeInitializationRate"
                     }
+                },
+                "EbsCardIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "EbsCardIndex",
+                        "smithy.api#documentation": "<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>",
+                        "smithy.api#xmlName": "ebsCardIndex"
+                    }
                 }
             },
             "traits": {
@@ -87298,6 +87418,12 @@
                     "target": "com.amazonaws.ec2#Integer",
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download \n            the snapshot blocks from Amazon S3 to the volume. This is also known as <i>volume \n                initialization</i>. Specifying a volume initialization rate ensures that the volume is \n            initialized at a predictable and consistent rate after creation.</p>\n         <p>This parameter is supported only for volumes created from snapshots. Omit this parameter \n            if:</p>\n         <ul>\n            <li>\n               <p>You want to create the volume using fast snapshot restore. You must specify a snapshot \n                    that is enabled for fast snapshot restore. In this case, the volume is fully initialized \n                    at creation.</p>\n               <note>\n                  <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, \n                        the volume will be initialized at the specified rate instead of fast snapshot restore.</p>\n               </note>\n            </li>\n            <li>\n               <p>You want to create a volume that is initialized at the default rate.</p>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\">\n            Initialize Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>Valid range: 100 - 300 MiB/s</p>"
+                    }
+                },
+                "EbsCardIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>"
                     }
                 }
             },
@@ -91125,6 +91251,9 @@
             }
         },
         "com.amazonaws.ec2#MaximumEbsAttachments": {
+            "type": "integer"
+        },
+        "com.amazonaws.ec2#MaximumEbsCards": {
             "type": "integer"
         },
         "com.amazonaws.ec2#MaximumEfaInterfaces": {
@@ -128589,6 +128718,14 @@
                         "aws.protocols#ec2QueryName": "InstanceOwningService",
                         "smithy.api#documentation": "<p>The service principal of the Amazon Web Services service that owns the underlying \n      resource to which the volume is attached.</p>\n         <p>This parameter is returned only for volumes that are attached to \n      Amazon Web Services-managed resources.</p>",
                         "smithy.api#xmlName": "instanceOwningService"
+                    }
+                },
+                "EbsCardIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "EbsCardIndex",
+                        "smithy.api#documentation": "<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>",
+                        "smithy.api#xmlName": "ebsCardIndex"
                     }
                 },
                 "VolumeId": {
