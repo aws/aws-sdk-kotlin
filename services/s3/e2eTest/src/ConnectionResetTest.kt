@@ -19,7 +19,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import java.io.IOException
 import kotlin.test.Test
-import kotlin.test.assertFailsWith
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -56,10 +55,8 @@ class ConnectionResetTest {
         // Wait for S3 to close stale connections
         delay(7.seconds)
 
-        // Try to re-use a connection TODO Update this to assert success after enabling retryOnConnectionFailure by default
-        assertFailsWith<RetryOnConnectionFailureException> {
-            client.putTestObject()
-        }
+        // Try to re-use a connection
+        client.putTestObject()
     }
 
     suspend fun S3Client.putTestObject() {

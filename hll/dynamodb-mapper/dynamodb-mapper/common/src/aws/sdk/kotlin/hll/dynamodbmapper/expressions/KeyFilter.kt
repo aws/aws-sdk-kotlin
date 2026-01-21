@@ -41,5 +41,4 @@ public fun KeyFilter(partitionKey: Any): KeyFilter = KeyFilterImpl(partitionKey,
  * @param sortKey A DSL block that sets the condition for the sort key. See [SortKeyFilter] for more details.
  */
 @ExperimentalApi
-public fun KeyFilter(partitionKey: Any, sortKey: SortKeyFilter.() -> SortKeyExpr): KeyFilter =
-    KeyFilterImpl(partitionKey, SortKeyFilterImpl.run(sortKey))
+public fun KeyFilter(partitionKey: Any, sortKey: SortKeyFilter.() -> SortKeyExpr): KeyFilter = KeyFilterImpl(partitionKey, SortKeyFilterImpl.run(sortKey))

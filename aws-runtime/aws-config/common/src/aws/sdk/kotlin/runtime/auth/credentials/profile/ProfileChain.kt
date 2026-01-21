@@ -94,8 +94,7 @@ internal data class ProfileChain(
     }
 }
 
-private inline fun Map<String, AwsProfile>.getOrThrow(name: String, lazyMessage: () -> String): AwsProfile =
-    get(name) ?: throw ProviderConfigurationException(lazyMessage())
+private inline fun Map<String, AwsProfile>.getOrThrow(name: String, lazyMessage: () -> String): AwsProfile = get(name) ?: throw ProviderConfigurationException(lazyMessage())
 
 /**
  * A profile that specifies a role to assume

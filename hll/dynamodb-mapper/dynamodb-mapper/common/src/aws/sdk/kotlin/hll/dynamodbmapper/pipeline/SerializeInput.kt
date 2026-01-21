@@ -35,5 +35,4 @@ public interface SerializeInput<T, HReq> {
  * @param serializeSchema The [ItemSchema] to use for serializing objects into items
  */
 @ExperimentalApi
-public fun <T, HReq> SerializeInput(highLevelRequest: HReq, serializeSchema: ItemSchema<T>): SerializeInput<T, HReq> =
-    SerializeInputImpl(highLevelRequest, serializeSchema)
+public fun <T, HReq> SerializeInput(highLevelRequest: HReq, serializeSchema: ItemSchema<T>): SerializeInput<T, HReq> = SerializeInputImpl(highLevelRequest, serializeSchema)

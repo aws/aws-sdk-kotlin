@@ -90,14 +90,14 @@ class AbstractAwsSdkClientFactoryTest {
 
         withEnvironment(
             mapOf(
-                AwsSdkSetting.AwsAppId.envVar to "env-app-id",
+                AwsSdkSetting.AwsAppId.envVars.first() to "env-app-id",
             ),
         ) {
             assertEquals("env-app-id", TestClient.fromEnvironment().config.applicationId)
 
             withSystemProperties(
                 mapOf(
-                    AwsSdkSetting.AwsAppId.sysProp to "system-properties-app-id",
+                    AwsSdkSetting.AwsAppId.sysProps.first() to "system-properties-app-id",
                 ),
             ) {
                 assertEquals("system-properties-app-id", TestClient.fromEnvironment().config.applicationId)

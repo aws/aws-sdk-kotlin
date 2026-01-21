@@ -7,9 +7,9 @@ package aws.sdk.kotlin.codegen.customization
 import aws.sdk.kotlin.codegen.middleware.AwsSpanInterceptorMiddleware
 import aws.sdk.kotlin.codegen.middleware.RecursionDetectionMiddleware
 import aws.sdk.kotlin.codegen.middleware.UserAgentMiddleware
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.ProtocolMiddleware
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
+import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolMiddleware
 
 /**
  * Registers default HTTP protocol middleware used by every SDK

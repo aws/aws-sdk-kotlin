@@ -35,8 +35,7 @@ public interface ModelParsingPlugin {
          * plugin
          */
         @InternalSdkApi
-        public fun <S> transform(shape: S, processor: (ModelParsingPlugin, S) -> S): S =
-            instances.fold(shape) { prev, plugin -> processor(plugin, prev) }
+        public fun <S> transform(shape: S, processor: (ModelParsingPlugin, S) -> S): S = instances.fold(shape) { prev, plugin -> processor(plugin, prev) }
     }
 
     /**

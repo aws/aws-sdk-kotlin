@@ -45,14 +45,11 @@ public object MapperTypes {
     }
 
     public object Items {
-        public fun itemSchema(typeVar: String): TypeRef =
-            TypeRef(MapperPkg.Hl.Items, "ItemSchema", genericArgs = listOf(TypeVar(typeVar)))
+        public fun itemSchema(typeVar: String): TypeRef = TypeRef(MapperPkg.Hl.Items, "ItemSchema", genericArgs = listOf(TypeVar(typeVar)))
 
-        public fun itemSchemaPartitionKey(objectType: TypeRef, pkType: TypeRef): TypeRef =
-            TypeRef(MapperPkg.Hl.Items, "ItemSchema.PartitionKey", genericArgs = listOf(objectType, pkType))
+        public fun itemSchemaPartitionKey(objectType: TypeRef, pkType: TypeRef): TypeRef = TypeRef(MapperPkg.Hl.Items, "ItemSchema.PartitionKey", genericArgs = listOf(objectType, pkType))
 
-        public fun itemSchemaCompositeKey(objectType: TypeRef, pkType: TypeRef, skType: TypeRef): TypeRef =
-            TypeRef(MapperPkg.Hl.Items, "ItemSchema.CompositeKey", genericArgs = listOf(objectType, pkType, skType))
+        public fun itemSchemaCompositeKey(objectType: TypeRef, pkType: TypeRef, skType: TypeRef): TypeRef = TypeRef(MapperPkg.Hl.Items, "ItemSchema.CompositeKey", genericArgs = listOf(objectType, pkType, skType))
 
         public fun keySpec(keyType: TypeRef): TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec", genericArgs = listOf(keyType))
         public val KeySpecByteArray: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.ByteArray")
@@ -60,8 +57,7 @@ public object MapperTypes {
         public val KeySpecString: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.String")
         public val AttributeDescriptor: TypeRef = TypeRef(MapperPkg.Hl.Items, "AttributeDescriptor")
 
-        public fun itemConverter(objectType: TypeRef): TypeRef =
-            TypeRef(MapperPkg.Hl.Items, "ItemConverter", genericArgs = listOf(objectType))
+        public fun itemConverter(objectType: TypeRef): TypeRef = TypeRef(MapperPkg.Hl.Items, "ItemConverter", genericArgs = listOf(objectType))
 
         public val SimpleItemConverter: TypeRef = TypeRef(MapperPkg.Hl.Items, "SimpleItemConverter")
     }

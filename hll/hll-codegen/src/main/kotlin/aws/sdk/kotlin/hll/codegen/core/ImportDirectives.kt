@@ -60,5 +60,4 @@ public data class ImportDirective(val fullName: String, val alias: String? = nul
 }
 
 @InternalSdkApi
-public fun ImportDirective(type: TypeRef, alias: String? = null): ImportDirective =
-    ImportDirective(type.fullName, alias)
+public fun ImportDirective(type: TypeRef, alias: String? = null): ImportDirective = ImportDirective(type.fullName, alias)

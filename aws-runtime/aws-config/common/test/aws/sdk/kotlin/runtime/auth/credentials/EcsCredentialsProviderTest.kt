@@ -71,8 +71,7 @@ class EcsCredentialsProviderTest {
         statusCode: HttpStatusCode = HttpStatusCode.BadRequest,
         headers: Headers = Headers.Empty,
         body: String = "",
-    ): HttpResponse =
-        HttpResponse(statusCode, headers, HttpBody.fromBytes(body.encodeToByteArray()))
+    ): HttpResponse = HttpResponse(statusCode, headers, HttpBody.fromBytes(body.encodeToByteArray()))
 
     private fun ecsRequest(url: String, authToken: String? = null): HttpRequest {
         val resolvedUrl = Url.parse(url)
@@ -93,13 +92,12 @@ class EcsCredentialsProviderTest {
      * Mock resolver that always resolves to loopback address
      */
     private object LocalHostResolver : HostResolver {
-        override suspend fun resolve(hostname: String): List<HostAddress> =
-            listOf(
-                HostAddress(
-                    "localhost",
-                    IpAddr.parse("127.0.0.1"),
-                ),
-            )
+        override suspend fun resolve(hostname: String): List<HostAddress> = listOf(
+            HostAddress(
+                "localhost",
+                IpAddr.parse("127.0.0.1"),
+            ),
+        )
         override fun reportFailure(addr: HostAddress) { }
         override fun purgeCache(addr: HostAddress?) { }
     }
