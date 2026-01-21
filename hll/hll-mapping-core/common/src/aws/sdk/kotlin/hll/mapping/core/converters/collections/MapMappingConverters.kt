@@ -20,10 +20,9 @@ public object MapMappingConverters {
      * @param V The type of values
      * @param keyConverter A one-way converter of [TK] keys to [FK] keys
      */
-    public fun <FK, TK, V> ofKeys(keyConverter: ConvertsFrom<FK, TK>): ConvertsFrom<Map<FK, V>, Map<TK, V>> =
-        ConvertsFrom { to: Map<TK, V> ->
-            to.mapKeys { e: Map.Entry<TK, V> -> keyConverter.convertFrom(e.key) }
-        }
+    public fun <FK, TK, V> ofKeys(keyConverter: ConvertsFrom<FK, TK>): ConvertsFrom<Map<FK, V>, Map<TK, V>> = ConvertsFrom { to: Map<TK, V> ->
+        to.mapKeys { e: Map.Entry<TK, V> -> keyConverter.convertFrom(e.key) }
+    }
 
     /**
      * Chains this map converter with a key converter, yielding a new converter which performs a two-stage mapping
@@ -50,10 +49,9 @@ public object MapMappingConverters {
      */
     public fun <K, FV, TV> ofValues(
         valueConverter: ConvertsFrom<FV, TV>,
-    ): ConvertsFrom<Map<K, FV>, Map<K, TV>> =
-        ConvertsFrom { to: Map<K, TV> ->
-            to.mapValues { e: Map.Entry<K, TV> -> valueConverter.convertFrom(e.value) }
-        }
+    ): ConvertsFrom<Map<K, FV>, Map<K, TV>> = ConvertsFrom { to: Map<K, TV> ->
+        to.mapValues { e: Map.Entry<K, TV> -> valueConverter.convertFrom(e.value) }
+    }
 
     /**
      * Chains this map converter with a value converter, yielding a new converter which performs a two-stage mapping
@@ -81,10 +79,9 @@ public object MapMappingConverters {
      */
     public fun <FK, FV, TK, TV> of(
         entryConverter: ConvertsFrom<Pair<FK, FV>, Pair<TK, TV>>,
-    ): ConvertsFrom<Map<FK, FV>, Map<TK, TV>> =
-        ConvertsFrom { to: Map<TK, TV> ->
-            to.entries.associate { e: Map.Entry<TK, TV> -> entryConverter.convertFrom(e.toPair()) }
-        }
+    ): ConvertsFrom<Map<FK, FV>, Map<TK, TV>> = ConvertsFrom { to: Map<TK, TV> ->
+        to.entries.associate { e: Map.Entry<TK, TV> -> entryConverter.convertFrom(e.toPair()) }
+    }
 
     /**
      * Chains this map converter with an entry converter, yielding a new converter which performs a two stage mapping
@@ -111,10 +108,9 @@ public object MapMappingConverters {
      */
     public fun <FK, TK, V> ofKeys(
         keyConverter: ConvertsTo<FK, TK>,
-    ): ConvertsTo<Map<FK, V>, Map<TK, V>> =
-        ConvertsTo { from: Map<FK, V> ->
-            from.mapKeys { e: Map.Entry<FK, V> -> keyConverter.convertTo(e.key) }
-        }
+    ): ConvertsTo<Map<FK, V>, Map<TK, V>> = ConvertsTo { from: Map<FK, V> ->
+        from.mapKeys { e: Map.Entry<FK, V> -> keyConverter.convertTo(e.key) }
+    }
 
     /**
      * Chains this map converter with a key converter, yielding a new converter which performs a two-stage mapping
@@ -141,10 +137,9 @@ public object MapMappingConverters {
      */
     public fun <K, FV, TV> ofValues(
         valueConverter: ConvertsTo<FV, TV>,
-    ): ConvertsTo<Map<K, FV>, Map<K, TV>> =
-        ConvertsTo { from: Map<K, FV> ->
-            from.mapValues { e: Map.Entry<K, FV> -> valueConverter.convertTo(e.value) }
-        }
+    ): ConvertsTo<Map<K, FV>, Map<K, TV>> = ConvertsTo { from: Map<K, FV> ->
+        from.mapValues { e: Map.Entry<K, FV> -> valueConverter.convertTo(e.value) }
+    }
 
     /**
      * Chains this map converter with a value converter, yielding a new converter which performs a two-stage mapping
@@ -172,10 +167,9 @@ public object MapMappingConverters {
      */
     public fun <FK, FV, TK, TV> of(
         entryConverter: ConvertsTo<Pair<FK, FV>, Pair<TK, TV>>,
-    ): ConvertsTo<Map<FK, FV>, Map<TK, TV>> =
-        ConvertsTo { from: Map<FK, FV> ->
-            from.entries.associate { e -> entryConverter.convertTo(e.toPair()) }
-        }
+    ): ConvertsTo<Map<FK, FV>, Map<TK, TV>> = ConvertsTo { from: Map<FK, FV> ->
+        from.entries.associate { e -> entryConverter.convertTo(e.toPair()) }
+    }
 
     /**
      * Chains this map converter with an entry converter, yielding a new converter which performs a two-stage mapping
@@ -203,8 +197,7 @@ public object MapMappingConverters {
      */
     public fun <FK, TK, V> ofKeys(
         keyConverter: Converter<FK, TK>,
-    ): Converter<Map<FK, V>, Map<TK, V>> =
-        Converter(ofKeys(keyConverter as ConvertsTo<FK, TK>), ofKeys(keyConverter as ConvertsFrom<FK, TK>))
+    ): Converter<Map<FK, V>, Map<TK, V>> = Converter(ofKeys(keyConverter as ConvertsTo<FK, TK>), ofKeys(keyConverter as ConvertsFrom<FK, TK>))
 
     /**
      * Creates a two-way converter for transforming between [Map] with values of type [FV] and [Map] with values of type
@@ -216,8 +209,7 @@ public object MapMappingConverters {
      */
     public fun <K, FV, TV> ofValues(
         valueConverter: Converter<FV, TV>,
-    ): Converter<Map<K, FV>, Map<K, TV>> =
-        Converter(ofValues(valueConverter as ConvertsTo<FV, TV>), ofValues(valueConverter as ConvertsFrom<FV, TV>))
+    ): Converter<Map<K, FV>, Map<K, TV>> = Converter(ofValues(valueConverter as ConvertsTo<FV, TV>), ofValues(valueConverter as ConvertsFrom<FV, TV>))
 
     /**
      * Creates a two-way converter for transforming between [Map] with keys of type [FK] and values of type [FV] to
@@ -230,11 +222,10 @@ public object MapMappingConverters {
      */
     public fun <FK, FV, TK, TV> of(
         entryConverter: Converter<Pair<FK, FV>, Pair<TK, TV>>,
-    ): Converter<Map<FK, FV>, Map<TK, TV>> =
-        Converter(
-            of(entryConverter as ConvertsTo<Pair<FK, FV>, Pair<TK, TV>>),
-            of(entryConverter as ConvertsFrom<Pair<FK, FV>, Pair<TK, TV>>),
-        )
+    ): Converter<Map<FK, FV>, Map<TK, TV>> = Converter(
+        of(entryConverter as ConvertsTo<Pair<FK, FV>, Pair<TK, TV>>),
+        of(entryConverter as ConvertsFrom<Pair<FK, FV>, Pair<TK, TV>>),
+    )
 }
 
 /**

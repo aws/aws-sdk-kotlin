@@ -72,8 +72,7 @@ class RemoveDefaults : KotlinIntegration {
 
     override val order: Byte = 0
 
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        settings.service in removeDefaultsFrom
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = settings.service in removeDefaultsFrom
 
     override fun preprocessModel(model: Model, settings: KotlinSettings): Model {
         val serviceId = settings.service
@@ -102,8 +101,7 @@ class RemoveDefaults : KotlinIntegration {
         }
     }
 
-    private fun shouldRemoveRootDefault(shape: Shape, removeDefaultsFrom: Set<ShapeId>): Boolean =
-        shape !is MemberShape && shape.id in removeDefaultsFrom && shape.hasTrait<DefaultTrait>()
+    private fun shouldRemoveRootDefault(shape: Shape, removeDefaultsFrom: Set<ShapeId>): Boolean = shape !is MemberShape && shape.id in removeDefaultsFrom && shape.hasTrait<DefaultTrait>()
 
     private fun shouldRemoveMemberDefault(
         shape: Shape,
@@ -114,8 +112,7 @@ class RemoveDefaults : KotlinIntegration {
         (shape.target in removedRootDefaults || shape.id in removeDefaultsFrom) &&
         shape.hasTrait<DefaultTrait>()
 
-    private fun removeDefault(shape: Shape): Shape =
-        ((shape as ToSmithyBuilder<*>).toBuilder() as AbstractShapeBuilder<*, *>)
-            .removeTrait(DefaultTrait.ID)
-            .build()
+    private fun removeDefault(shape: Shape): Shape = ((shape as ToSmithyBuilder<*>).toBuilder() as AbstractShapeBuilder<*, *>)
+        .removeTrait(DefaultTrait.ID)
+        .build()
 }

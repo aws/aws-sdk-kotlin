@@ -21,11 +21,10 @@ class PartitionsGenerator(
     private val partitionsSpec: ObjectNode,
 ) {
     companion object {
-        fun getSymbol(settings: KotlinSettings): Symbol =
-            buildSymbol {
-                name = "Partitions"
-                namespace = "${settings.pkg.name}.endpoints.internal"
-            }
+        fun getSymbol(settings: KotlinSettings): Symbol = buildSymbol {
+            name = "Partitions"
+            namespace = "${settings.pkg.name}.endpoints.internal"
+        }
     }
 
     fun render() {

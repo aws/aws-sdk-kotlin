@@ -56,15 +56,13 @@ class ContinueIntegration : KotlinIntegration {
         resolved: List<ProtocolMiddleware>,
     ): List<ProtocolMiddleware> = resolved + ContinueMiddleware
 
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).isS3
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).isS3
 }
 
 internal object ContinueMiddleware : ProtocolMiddleware {
     override val name: String = "ContinueHeader"
 
-    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-        op.getTrait<HttpTrait>()?.method == "PUT"
+    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = op.getTrait<HttpTrait>()?.method == "PUT"
 
     override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
         writer.withBlock("config.$CONTINUE_PROP?.let { threshold ->", "}") {

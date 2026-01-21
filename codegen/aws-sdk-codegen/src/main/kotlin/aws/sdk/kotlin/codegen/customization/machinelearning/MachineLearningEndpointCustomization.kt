@@ -27,8 +27,7 @@ class MachineLearningEndpointCustomization : KotlinIntegration {
     private val endpointResolverMiddleware = object : ProtocolMiddleware {
         override val name: String = "ResolvePredictEndpoint"
 
-        override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-            op.id.name == "Predict"
+        override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = op.id.name == "Predict"
 
         override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
             val symbol = machineLearningSymbol("ResolvePredictEndpoint")
@@ -41,6 +40,5 @@ class MachineLearningEndpointCustomization : KotlinIntegration {
         }
     }
 
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).sdkId.equals("Machine Learning", ignoreCase = true)
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).sdkId.equals("Machine Learning", ignoreCase = true)
 }

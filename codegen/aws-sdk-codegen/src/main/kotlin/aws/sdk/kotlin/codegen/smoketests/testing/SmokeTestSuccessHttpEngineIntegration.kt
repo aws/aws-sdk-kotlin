@@ -26,10 +26,9 @@ import software.amazon.smithy.smoketests.traits.SmokeTestsTrait
  * against a service endpoint.
  */
 class SmokeTestSuccessHttpEngineIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.topDownOperations(settings.service).any { it.hasTrait<SmokeTestsTrait>() } &&
-            model.expectShape<ServiceShape>(settings.service).hasTrait(TestSuccessResponseTrait.ID) &&
-            !model.expectShape<ServiceShape>(settings.service).hasTrait(TestFailedResponseTrait.ID)
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.topDownOperations(settings.service).any { it.hasTrait<SmokeTestsTrait>() } &&
+        model.expectShape<ServiceShape>(settings.service).hasTrait(TestSuccessResponseTrait.ID) &&
+        !model.expectShape<ServiceShape>(settings.service).hasTrait(TestFailedResponseTrait.ID)
 
     override val sectionWriters: List<SectionWriterBinding>
         get() = listOf(

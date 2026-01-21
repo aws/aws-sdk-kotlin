@@ -61,8 +61,7 @@ class AccountIdEndpointBuiltinCustomization : KotlinIntegration {
         )
     }
 
-    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> =
-        listOf(AccountIdEndpointModeProp)
+    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> = listOf(AccountIdEndpointModeProp)
 
     override fun customizeMiddleware(
         ctx: ProtocolGenerator.GenerationContext,

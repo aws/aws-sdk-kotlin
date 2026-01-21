@@ -17,8 +17,7 @@ import software.amazon.smithy.model.transform.ModelTransformer
  * Model customization to remove account ID host prefixes, which are now handled by endpoint resolution.
  */
 class HostPrefixFilter : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).isS3Control
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).isS3Control
 
     override fun preprocessModel(model: Model, settings: KotlinSettings): Model {
         val transformer = ModelTransformer.create()

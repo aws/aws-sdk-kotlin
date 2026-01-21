@@ -20,8 +20,7 @@ import software.amazon.smithy.model.shapes.ServiceShape
  */
 class GlacierAddVersionHeader : KotlinIntegration {
 
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.expectShape<ServiceShape>(settings.service).sdkId.equals("Glacier", ignoreCase = true)
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.expectShape<ServiceShape>(settings.service).sdkId.equals("Glacier", ignoreCase = true)
 
     override fun customizeMiddleware(
         ctx: ProtocolGenerator.GenerationContext,

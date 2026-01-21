@@ -22,8 +22,7 @@ import software.amazon.smithy.model.shapes.ServiceShape
  * parameters and setting the request method to `GET` (vs `POST`).
  */
 class PollyPresigner : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.expectShape<ServiceShape>(settings.service).id.toString() == "com.amazonaws.polly#Parrot_v1"
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.expectShape<ServiceShape>(settings.service).id.toString() == "com.amazonaws.polly#Parrot_v1"
 
     override val sectionWriters: List<SectionWriterBinding>
         get() = listOf(

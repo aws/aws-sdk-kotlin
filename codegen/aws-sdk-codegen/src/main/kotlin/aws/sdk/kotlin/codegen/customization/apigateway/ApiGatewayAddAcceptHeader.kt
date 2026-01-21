@@ -20,8 +20,7 @@ import software.amazon.smithy.model.shapes.ServiceShape
  */
 class ApiGatewayAddAcceptHeader : KotlinIntegration {
 
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.expectShape<ServiceShape>(settings.service).sdkId.equals("API Gateway", ignoreCase = true)
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.expectShape<ServiceShape>(settings.service).sdkId.equals("API Gateway", ignoreCase = true)
 
     private val addAcceptHeaderMiddleware = MutateHeadersMiddleware(extraHeaders = mapOf("Accept" to "application/json"))
 

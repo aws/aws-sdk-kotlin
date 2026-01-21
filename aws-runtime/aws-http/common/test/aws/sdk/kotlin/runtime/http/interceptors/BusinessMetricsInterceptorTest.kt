@@ -134,15 +134,14 @@ class BusinessMetricsInterceptorTest {
     }
 }
 
-private fun interceptorContext(executionContext: ExecutionContext): ProtocolRequestInterceptorContext<Any, HttpRequest> =
-    object : ProtocolRequestInterceptorContext<Any, HttpRequest> {
-        override val protocolRequest: HttpRequest = HttpRequest(
-            HttpMethod.GET,
-            Url.parse("https://test.aws.com?foo=bar"),
-            Headers {
-                append(USER_AGENT, "aws-sdk-kotlin/1.2.3 ua/2.1 api/test-service#1.2.3...")
-            },
-        )
-        override val executionContext: ExecutionContext = executionContext
-        override val request: Any = Unit
-    }
+private fun interceptorContext(executionContext: ExecutionContext): ProtocolRequestInterceptorContext<Any, HttpRequest> = object : ProtocolRequestInterceptorContext<Any, HttpRequest> {
+    override val protocolRequest: HttpRequest = HttpRequest(
+        HttpMethod.GET,
+        Url.parse("https://test.aws.com?foo=bar"),
+        Headers {
+            append(USER_AGENT, "aws-sdk-kotlin/1.2.3 ua/2.1 api/test-service#1.2.3...")
+        },
+    )
+    override val executionContext: ExecutionContext = executionContext
+    override val request: Any = Unit
+}

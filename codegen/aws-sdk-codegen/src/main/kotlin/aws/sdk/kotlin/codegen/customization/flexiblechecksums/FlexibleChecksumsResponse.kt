@@ -25,24 +25,21 @@ import software.amazon.smithy.model.shapes.StructureShape
  * Handles flexible checksum responses
  */
 class FlexibleChecksumsResponse : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.isTraitApplied(HttpChecksumTrait::class.java)
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.isTraitApplied(HttpChecksumTrait::class.java)
 
-    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> =
-        listOf(
-            // Allows flexible checksum response configuration
-            ConfigProperty {
-                name = "responseChecksumValidation"
-                symbol = RuntimeTypes.SmithyClient.Config.ResponseHttpChecksumConfig
-                baseClass = RuntimeTypes.SmithyClient.Config.HttpChecksumConfig
-                useNestedBuilderBaseClass()
-                documentation = "Configures response checksum validation"
-                propertyType = ConfigPropertyType.RequiredWithDefault("ResponseHttpChecksumConfig.WHEN_SUPPORTED")
-            },
-        )
+    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> = listOf(
+        // Allows flexible checksum response configuration
+        ConfigProperty {
+            name = "responseChecksumValidation"
+            symbol = RuntimeTypes.SmithyClient.Config.ResponseHttpChecksumConfig
+            baseClass = RuntimeTypes.SmithyClient.Config.HttpChecksumConfig
+            useNestedBuilderBaseClass()
+            documentation = "Configures response checksum validation"
+            propertyType = ConfigPropertyType.RequiredWithDefault("ResponseHttpChecksumConfig.WHEN_SUPPORTED")
+        },
+    )
 
-    override fun customizeMiddleware(ctx: ProtocolGenerator.GenerationContext, resolved: List<ProtocolMiddleware>) =
-        resolved + flexibleChecksumsResponseMiddleware + responseChecksumValidationBusinessMetric
+    override fun customizeMiddleware(ctx: ProtocolGenerator.GenerationContext, resolved: List<ProtocolMiddleware>) = resolved + flexibleChecksumsResponseMiddleware + responseChecksumValidationBusinessMetric
 }
 
 /**

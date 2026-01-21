@@ -22,8 +22,7 @@ import software.amazon.smithy.smoketests.traits.SmokeTestsTrait
  * Generates AWS specific code for smoke test runners
  */
 class AwsSmokeTestsRunnerGeneratorIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.topDownOperations(settings.service).any { it.hasTrait<SmokeTestsTrait>() }
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.topDownOperations(settings.service).any { it.hasTrait<SmokeTestsTrait>() }
 
     override val sectionWriters: List<SectionWriterBinding>
         get() = listOf(

@@ -25,24 +25,21 @@ import software.amazon.smithy.model.shapes.StructureShape
  * Handles flexible checksum requests
  */
 class FlexibleChecksumsRequest : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.isTraitApplied(HttpChecksumTrait::class.java)
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.isTraitApplied(HttpChecksumTrait::class.java)
 
-    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> =
-        listOf(
-            // Allows flexible checksum request configuration
-            ConfigProperty {
-                name = "requestChecksumCalculation"
-                symbol = RuntimeTypes.SmithyClient.Config.RequestHttpChecksumConfig
-                baseClass = RuntimeTypes.SmithyClient.Config.HttpChecksumConfig
-                useNestedBuilderBaseClass()
-                documentation = "Configures request checksum calculation"
-                propertyType = ConfigPropertyType.RequiredWithDefault("RequestHttpChecksumConfig.WHEN_SUPPORTED")
-            },
-        )
+    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> = listOf(
+        // Allows flexible checksum request configuration
+        ConfigProperty {
+            name = "requestChecksumCalculation"
+            symbol = RuntimeTypes.SmithyClient.Config.RequestHttpChecksumConfig
+            baseClass = RuntimeTypes.SmithyClient.Config.HttpChecksumConfig
+            useNestedBuilderBaseClass()
+            documentation = "Configures request checksum calculation"
+            propertyType = ConfigPropertyType.RequiredWithDefault("RequestHttpChecksumConfig.WHEN_SUPPORTED")
+        },
+    )
 
-    override fun customizeMiddleware(ctx: ProtocolGenerator.GenerationContext, resolved: List<ProtocolMiddleware>) =
-        resolved + requestChecksumCalculationBusinessMetric + httpChecksumDefaultAlgorithmMiddleware + flexibleChecksumsRequestMiddleware
+    override fun customizeMiddleware(ctx: ProtocolGenerator.GenerationContext, resolved: List<ProtocolMiddleware>) = resolved + requestChecksumCalculationBusinessMetric + httpChecksumDefaultAlgorithmMiddleware + flexibleChecksumsRequestMiddleware
 }
 
 /**
@@ -51,8 +48,7 @@ class FlexibleChecksumsRequest : KotlinIntegration {
 private val requestChecksumCalculationBusinessMetric = object : ProtocolMiddleware {
     override val name: String = "requestChecksumCalculationBusinessMetric"
 
-    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-        op.hasTrait<HttpChecksumTrait>()
+    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = op.hasTrait<HttpChecksumTrait>()
 
     override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
         writer.withBlock("when(config.requestChecksumCalculation) {", "}") {
@@ -81,8 +77,7 @@ private val httpChecksumDefaultAlgorithmMiddleware = object : ProtocolMiddleware
     override val name: String = "httpChecksumDefaultAlgorithmMiddleware"
     override val order: Byte = -2 // Before S3 Express (possibly) changes the default (-1) and before calculating checksum (0)
 
-    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-        op.hasRequestAlgorithmMember(ctx)
+    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = op.hasRequestAlgorithmMember(ctx)
 
     override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
         writer.write(
@@ -99,8 +94,7 @@ private val httpChecksumDefaultAlgorithmMiddleware = object : ProtocolMiddleware
 private val flexibleChecksumsRequestMiddleware = object : ProtocolMiddleware {
     override val name: String = "flexibleChecksumsRequestMiddleware"
 
-    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-        op.hasRequestAlgorithmMember(ctx)
+    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = op.hasRequestAlgorithmMember(ctx)
 
     override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
         val httpChecksumTrait = op.getTrait<HttpChecksumTrait>()!!

@@ -23,8 +23,7 @@ import kotlin.streams.asSequence
  * An integration used to customize behavior around S3's members named `Expires`.
  */
 class S3ExpiresIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.expectShape<ServiceShape>(settings.service).isS3 && model.shapes<OperationShape>().any { it.hasExpiresMember(model) }
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.expectShape<ServiceShape>(settings.service).isS3 && model.shapes<OperationShape>().any { it.hasExpiresMember(model) }
 
     override fun preprocessModel(model: Model, settings: KotlinSettings): Model {
         val transformer = ModelTransformer.create()
@@ -89,8 +88,7 @@ class S3ExpiresIntegration : KotlinIntegration {
     internal val applyExpiresFieldInterceptor = object : ProtocolMiddleware {
         override val name: String = "ExpiresFieldInterceptor"
 
-        override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-            ctx.model.expectShape<ServiceShape>(ctx.settings.service).isS3 && op.hasExpiresMember(ctx.model)
+        override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = ctx.model.expectShape<ServiceShape>(ctx.settings.service).isS3 && op.hasExpiresMember(ctx.model)
 
         override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
             val interceptorSymbol = buildSymbol {

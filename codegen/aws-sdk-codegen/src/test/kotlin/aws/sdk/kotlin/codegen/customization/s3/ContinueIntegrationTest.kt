@@ -99,6 +99,5 @@ class ContinueIntegrationTest {
 
 object FooMiddleware : ProtocolMiddleware {
     override val name: String = "FooMiddleware"
-    override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) =
-        fail("Unexpected call to `FooMiddleware.render")
+    override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) = fail("Unexpected call to `FooMiddleware.render")
 }

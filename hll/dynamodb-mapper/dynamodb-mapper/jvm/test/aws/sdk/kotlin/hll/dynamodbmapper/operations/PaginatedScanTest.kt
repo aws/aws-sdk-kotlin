@@ -52,8 +52,7 @@ class PaginatedScanTest : DdbLocalTest() {
 
             override fun convertFrom(to: Item): Card = delegate.convertFrom(to)
 
-            override fun convertTo(from: Card, onlyAttributes: Set<String>?): Item =
-                delegate.convertTo(from, null) // Ignore `onlyAttributes` arg to mock badly-behaved converter
+            override fun convertTo(from: Card, onlyAttributes: Set<String>?): Item = delegate.convertTo(from, null) // Ignore `onlyAttributes` arg to mock badly-behaved converter
         }
 
         private val schema = ItemSchema(converter, KeySpec.String("suit"), KeySpec.Number("rank"))

@@ -20,8 +20,7 @@ import software.amazon.smithy.model.transform.ModelTransformer
  */
 class EC2MakePrimitivesOptional : KotlinIntegration {
     override val order: Byte = -127
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        settings.service == ShapeId.from("com.amazonaws.ec2#AmazonEC2")
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = settings.service == ShapeId.from("com.amazonaws.ec2#AmazonEC2")
 
     override fun preprocessModel(model: Model, settings: KotlinSettings): Model {
         val updates = mutableListOf<Shape>()

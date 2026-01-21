@@ -16,11 +16,9 @@ import software.amazon.smithy.model.shapes.OperationShape
 import software.amazon.smithy.model.shapes.ServiceShape
 
 class GetObjectResponseLengthValidationIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.expectShape<ServiceShape>(settings.service).isS3
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.expectShape<ServiceShape>(settings.service).isS3
 
-    override fun customizeMiddleware(ctx: ProtocolGenerator.GenerationContext, resolved: List<ProtocolMiddleware>) =
-        resolved + responseLengthValidationMiddleware
+    override fun customizeMiddleware(ctx: ProtocolGenerator.GenerationContext, resolved: List<ProtocolMiddleware>) = resolved + responseLengthValidationMiddleware
 }
 
 internal val responseLengthValidationMiddleware = object : ProtocolMiddleware {

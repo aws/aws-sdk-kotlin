@@ -60,8 +60,7 @@ class AwsEndpointDiscoveryIntegration : KotlinIntegration {
         )
     }
 
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        EndpointDiscoveryIntegration.isEnabledFor(model, settings)
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = EndpointDiscoveryIntegration.isEnabledFor(model, settings)
 
     private val resolveEndpointDiscoverer = AppendingSectionWriter { writer ->
         val ctx = writer.getContextValue(CodegenContext.Key)

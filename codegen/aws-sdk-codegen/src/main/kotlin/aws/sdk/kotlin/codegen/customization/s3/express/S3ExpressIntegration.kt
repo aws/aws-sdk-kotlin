@@ -64,8 +64,7 @@ class S3ExpressIntegration : KotlinIntegration {
         }
     }
 
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.expectShape<ServiceShape>(settings.service).isS3
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.expectShape<ServiceShape>(settings.service).isS3
 
     /**
      * Add a synthetic SigV4 S3 Express auth trait and shape
@@ -92,12 +91,11 @@ class S3ExpressIntegration : KotlinIntegration {
         return transformer.replaceShapes(model, listOf(sigV4S3ExpressAuthShape, serviceShapeBuilder.build()))
     }
 
-    override fun customizeMiddleware(ctx: ProtocolGenerator.GenerationContext, resolved: List<ProtocolMiddleware>) =
-        resolved + listOf(
-            addClientToExecutionContext,
-            addBucketToExecutionContext,
-            s3ExpressDefaultChecksumAlgorithm,
-        )
+    override fun customizeMiddleware(ctx: ProtocolGenerator.GenerationContext, resolved: List<ProtocolMiddleware>) = resolved + listOf(
+        addClientToExecutionContext,
+        addBucketToExecutionContext,
+        s3ExpressDefaultChecksumAlgorithm,
+    )
 
     private val s3AttributesSymbol = buildSymbol {
         name = "S3Attributes"
@@ -107,8 +105,7 @@ class S3ExpressIntegration : KotlinIntegration {
     private val addClientToExecutionContext = object : ProtocolMiddleware {
         override val name: String = "AddClientToExecutionContext"
 
-        override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-            ctx.model.expectShape<ServiceShape>(ctx.settings.service).isS3
+        override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = ctx.model.expectShape<ServiceShape>(ctx.settings.service).isS3
 
         override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
             writer.write("op.context[#T.ExpressClient] = this", s3AttributesSymbol)
@@ -118,10 +115,9 @@ class S3ExpressIntegration : KotlinIntegration {
     private val addBucketToExecutionContext = object : ProtocolMiddleware {
         override val name: String = "AddBucketToExecutionContext"
 
-        override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-            ctx.model.expectShape<StructureShape>(op.input.get())
-                .members()
-                .any { it.memberName == "Bucket" }
+        override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = ctx.model.expectShape<StructureShape>(op.input.get())
+            .members()
+            .any { it.memberName == "Bucket" }
 
         override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
             writer.write("input.bucket?.let { op.context[#T.Bucket] = it }", s3AttributesSymbol)
@@ -135,8 +131,7 @@ class S3ExpressIntegration : KotlinIntegration {
         override val name: String = "s3ExpressDefaultChecksumAlgorithm"
         override val order: Byte = -1 // After setting the modeled default (-2) and before calculating the checksum (0)
 
-        override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-            op.hasTrait<HttpChecksumTrait>() || op.hasTrait<HttpChecksumRequiredTrait>()
+        override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = op.hasTrait<HttpChecksumTrait>() || op.hasTrait<HttpChecksumRequiredTrait>()
 
         override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
             writer.write(

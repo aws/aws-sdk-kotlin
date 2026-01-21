@@ -21,8 +21,7 @@ import software.amazon.smithy.rulesengine.traits.ClientContextParamsTrait
  * client context params.
  */
 class ClientConfigIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).isS3Control
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).isS3Control
 
     companion object {
         val UseArnRegionProp: ConfigProperty = ConfigProperty.Boolean(
@@ -55,9 +54,8 @@ class ClientConfigIntegration : KotlinIntegration {
         }
     }
 
-    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> =
-        listOf(
-            UseArnRegionProp,
-            EnableAwsChunked,
-        )
+    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> = listOf(
+        UseArnRegionProp,
+        EnableAwsChunked,
+    )
 }

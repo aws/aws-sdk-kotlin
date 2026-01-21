@@ -47,13 +47,11 @@ public class AwsSharedConfig internal constructor(
  * Get the configured endpoint URL for a specific service, falling back to the global default.
  * @param serviceKey The config key for the service, generally this is sdkId in snake_case form.
  */
-public fun AwsSharedConfig.resolveEndpointUrl(serviceKey: String): Url? =
-    resolveServiceEndpointUrl(serviceKey) ?: activeProfile.endpointUrl
+public fun AwsSharedConfig.resolveEndpointUrl(serviceKey: String): Url? = resolveServiceEndpointUrl(serviceKey) ?: activeProfile.endpointUrl
 
-private fun AwsSharedConfig.resolveServiceEndpointUrl(serviceKey: String): Url? =
-    activeProfile.servicesSection?.let { sectionName ->
-        val section = services[sectionName]
-            ?: throw ConfigurationException("shared config points to nonexistent services section '$sectionName'")
+private fun AwsSharedConfig.resolveServiceEndpointUrl(serviceKey: String): Url? = activeProfile.servicesSection?.let { sectionName ->
+    val section = services[sectionName]
+        ?: throw ConfigurationException("shared config points to nonexistent services section '$sectionName'")
 
-        section.getUrlOrNull(serviceKey, "endpoint_url")
-    }
+    section.getUrlOrNull(serviceKey, "endpoint_url")
+}

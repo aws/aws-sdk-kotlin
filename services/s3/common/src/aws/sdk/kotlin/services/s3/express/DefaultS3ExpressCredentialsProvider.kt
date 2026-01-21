@@ -88,15 +88,14 @@ internal class DefaultS3ExpressCredentialsProvider(
     /**
      * Create a new set of session credentials by calling s3:CreateSession and then store them in the cache.
      */
-    internal suspend fun createSessionCredentials(key: S3ExpressCredentialsCacheKey, client: S3Client): ExpiringValue<Credentials> =
-        client.createSession { bucket = key.bucket }.credentials!!.let {
-            ExpiringValue(
-                Credentials(it.accessKeyId, it.secretAccessKey, it.sessionToken, it.expiration),
-                expiresAt = timeSource.markNow() + clock.now().until(it.expiration),
-            )
-        }.also {
-            credentialsCache.put(key, S3ExpressCredentialsCacheValue(it))
-        }
+    internal suspend fun createSessionCredentials(key: S3ExpressCredentialsCacheKey, client: S3Client): ExpiringValue<Credentials> = client.createSession { bucket = key.bucket }.credentials!!.let {
+        ExpiringValue(
+            Credentials(it.accessKeyId, it.secretAccessKey, it.sessionToken, it.expiration),
+            expiresAt = timeSource.markNow() + clock.now().until(it.expiration),
+        )
+    }.also {
+        credentialsCache.put(key, S3ExpressCredentialsCacheValue(it))
+    }
 
     @OptIn(ExperimentalApi::class)
     internal val S3Client.logger get() = config.telemetryProvider.loggerProvider.getLogger<DefaultS3ExpressCredentialsProvider>()

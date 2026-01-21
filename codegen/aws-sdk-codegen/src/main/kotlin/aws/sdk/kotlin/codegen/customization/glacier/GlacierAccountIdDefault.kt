@@ -21,8 +21,7 @@ import software.amazon.smithy.model.shapes.*
  * See: https://github.com/awslabs/aws-sdk-kotlin/issues/246
  */
 class GlacierAccountIdDefault : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).sdkId.equals("Glacier", ignoreCase = true)
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).sdkId.equals("Glacier", ignoreCase = true)
 
     override fun customizeMiddleware(
         ctx: ProtocolGenerator.GenerationContext,

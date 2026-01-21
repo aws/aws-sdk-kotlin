@@ -119,15 +119,14 @@ fun renderBindAwsBuiltins(ctx: ProtocolGenerator.GenerationContext, writer: Kotl
     }
 }
 
-fun bindAwsBuiltinsSymbol(ctx: ProtocolGenerator.GenerationContext, builtinParams: List<Parameter>): Symbol =
-    buildSymbol {
-        name = "bindAwsBuiltins"
-        namespace = "${ctx.settings.pkg.name}.endpoints.internal"
-        definitionFile = EndpointResolverAdapterGenerator.getSymbol(ctx.settings).definitionFile
-        renderBy = { writer ->
-            renderBindAwsBuiltins(ctx, writer, builtinParams)
-        }
+fun bindAwsBuiltinsSymbol(ctx: ProtocolGenerator.GenerationContext, builtinParams: List<Parameter>): Symbol = buildSymbol {
+    name = "bindAwsBuiltins"
+    namespace = "${ctx.settings.pkg.name}.endpoints.internal"
+    definitionFile = EndpointResolverAdapterGenerator.getSymbol(ctx.settings).definitionFile
+    renderBy = { writer ->
+        renderBindAwsBuiltins(ctx, writer, builtinParams)
     }
+}
 
 private fun renderBasicConfigBinding(writer: KotlinWriter, param: Parameter, configMember: String) {
     writer.write("#L = config.#L", param.defaultName(), configMember)

@@ -22,8 +22,7 @@ import software.amazon.smithy.model.shapes.ServiceShape
 import software.amazon.smithy.model.shapes.StructureShape
 
 public class GlacierBodyChecksum : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).sdkId.equals("Glacier", ignoreCase = true)
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).sdkId.equals("Glacier", ignoreCase = true)
 
     override fun customizeMiddleware(
         ctx: ProtocolGenerator.GenerationContext,

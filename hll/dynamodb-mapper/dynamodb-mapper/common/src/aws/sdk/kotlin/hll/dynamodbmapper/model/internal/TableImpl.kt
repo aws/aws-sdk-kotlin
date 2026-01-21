@@ -97,12 +97,11 @@ private typealias GetItemInterceptor<T> =
     Interceptor<T, GetItemRequest<T>, LowLevelGetItemRequest, LowLevelGetItemResponse, GetItemResponse<T>>
 
 private class KeyInsertionInterceptor<T>(private val newKey: Map<String, AttributeValue>) : GetItemInterceptor<T> {
-    override fun modifyBeforeInvocation(ctx: LReqContext<T, GetItemRequest<T>, LowLevelGetItemRequest>) =
-        ctx.lowLevelRequest.copy {
-            if (key == null) {
-                key = newKey
-            }
+    override fun modifyBeforeInvocation(ctx: LReqContext<T, GetItemRequest<T>, LowLevelGetItemRequest>) = ctx.lowLevelRequest.copy {
+        if (key == null) {
+            key = newKey
         }
+    }
 }
 
 private fun <T> List<T>.prepend(element: T): List<T> = buildList(size + 1) {

@@ -25,17 +25,16 @@ private const val PARTITIONS_RESOURCE = "aws/sdk/kotlin/codegen/partitions.json"
  * Adds support for AWS specific endpoint functions
  */
 class AddAwsEndpointFunctions : KotlinIntegration {
-    override fun customizeEndpointResolution(ctx: ProtocolGenerator.GenerationContext): EndpointCustomization =
-        object : EndpointCustomization {
-            override val externalFunctions: Map<String, Symbol> = mapOf(
-                "aws.parseArn" to AwsRuntimeTypes.Endpoint.Functions.parseArn,
-                "aws.isVirtualHostableS3Bucket" to AwsRuntimeTypes.Endpoint.Functions.isVirtualHostableS3Bucket,
-                "aws.partition" to buildSymbol {
-                    name = "partition"
-                    namespace = PartitionsGenerator.getSymbol(ctx.settings).namespace
-                },
-            )
-        }
+    override fun customizeEndpointResolution(ctx: ProtocolGenerator.GenerationContext): EndpointCustomization = object : EndpointCustomization {
+        override val externalFunctions: Map<String, Symbol> = mapOf(
+            "aws.parseArn" to AwsRuntimeTypes.Endpoint.Functions.parseArn,
+            "aws.isVirtualHostableS3Bucket" to AwsRuntimeTypes.Endpoint.Functions.isVirtualHostableS3Bucket,
+            "aws.partition" to buildSymbol {
+                name = "partition"
+                namespace = PartitionsGenerator.getSymbol(ctx.settings).namespace
+            },
+        )
+    }
 
     override fun writeAdditionalFiles(ctx: CodegenContext, delegator: KotlinDelegator) {
         val partitionsData = getPartitionsJson()
@@ -46,9 +45,8 @@ class AddAwsEndpointFunctions : KotlinIntegration {
             PartitionsGenerator(it, partitions).render()
         }
     }
-    private fun getPartitionsJson(): String =
-        System.getProperty(PARTITIONS_JSON_SYS_PROP)?.let { File(it).readText() }
-            ?: System.getenv(PARTITIONS_JSON_ENV_VAR)?.let { File(it).readText() }
-            ?: javaClass.classLoader.getResource(PARTITIONS_RESOURCE)?.readText()
-            ?: throw CodegenException("could not load partitions.json resource")
+    private fun getPartitionsJson(): String = System.getProperty(PARTITIONS_JSON_SYS_PROP)?.let { File(it).readText() }
+        ?: System.getenv(PARTITIONS_JSON_ENV_VAR)?.let { File(it).readText() }
+        ?: javaClass.classLoader.getResource(PARTITIONS_RESOURCE)?.readText()
+        ?: throw CodegenException("could not load partitions.json resource")
 }

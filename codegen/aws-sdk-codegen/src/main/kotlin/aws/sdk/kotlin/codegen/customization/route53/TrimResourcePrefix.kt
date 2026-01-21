@@ -21,14 +21,12 @@ import software.amazon.smithy.model.shapes.StructureShape
 import software.amazon.smithy.model.traits.HttpLabelTrait
 
 class TrimResourcePrefix : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.expectShape<ServiceShape>(settings.service).sdkId.equals("route 53", ignoreCase = true)
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.expectShape<ServiceShape>(settings.service).sdkId.equals("route 53", ignoreCase = true)
 
     override fun customizeMiddleware(
         ctx: ProtocolGenerator.GenerationContext,
         resolved: List<ProtocolMiddleware>,
-    ): List<ProtocolMiddleware> =
-        resolved + TrimResourcePrefixMiddleware()
+    ): List<ProtocolMiddleware> = resolved + TrimResourcePrefixMiddleware()
 }
 
 private class TrimResourcePrefixMiddleware : ProtocolMiddleware {
@@ -64,6 +62,5 @@ private class TrimResourcePrefixMiddleware : ProtocolMiddleware {
     }
 }
 
-private fun MemberShape.shouldTrimResourcePrefix(): Boolean =
-    (target.name == "ResourceId" || target.name == "ChangeId") &&
-        hasTrait<HttpLabelTrait>()
+private fun MemberShape.shouldTrimResourcePrefix(): Boolean = (target.name == "ResourceId" || target.name == "ChangeId") &&
+    hasTrait<HttpLabelTrait>()

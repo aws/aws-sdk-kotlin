@@ -21,8 +21,7 @@ import software.amazon.smithy.model.shapes.ServiceShape
  * see [aws-sdk-kotlin#199](https://github.com/awslabs/aws-sdk-kotlin/issues/199)
  */
 class S3ErrorWith200StatusIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).isS3
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).isS3
 
     override fun customizeMiddleware(
         ctx: ProtocolGenerator.GenerationContext,

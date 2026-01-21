@@ -21,8 +21,7 @@ import software.amazon.smithy.model.transform.ModelTransformer
  * annotated with `S3UnwrappedXmlOutput` trait to mark when special unwrapped xml output deserialization is required.
  */
 class UnwrappedXmlOutputIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).isS3
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).isS3
 
     override fun preprocessModel(model: Model, settings: KotlinSettings): Model {
         val unwrappedOperations = model

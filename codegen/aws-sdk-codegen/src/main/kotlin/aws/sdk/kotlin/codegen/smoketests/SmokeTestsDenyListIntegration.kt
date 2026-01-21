@@ -23,8 +23,7 @@ val smokeTestDenyList = setOf(
  * Some services model smoke tests incorrectly and the code generated file will not compile.
  */
 class SmokeTestsDenyListIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        settings.sdkId in smokeTestDenyList
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = settings.sdkId in smokeTestDenyList
 
     override val sectionWriters: List<SectionWriterBinding>
         get() = listOf(

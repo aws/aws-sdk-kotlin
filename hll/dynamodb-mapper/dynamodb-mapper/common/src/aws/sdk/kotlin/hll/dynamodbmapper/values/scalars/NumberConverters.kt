@@ -27,8 +27,7 @@ public object NumberConverters {
      * Creates a [ValueConverter] which converts between number type [N] and
      * [DynamoDB `N` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.Number)
      */
-    public fun <N> of(numberToStringConverter: Converter<N, String>): ValueConverter<N> =
-        numberToStringConverter.andThenTo(StringToAttributeValueNumberConverter)
+    public fun <N> of(numberToStringConverter: Converter<N, String>): ValueConverter<N> = numberToStringConverter.andThenTo(StringToAttributeValueNumberConverter)
 
     /**
      * Converts between [Number] and [String] values

@@ -24,8 +24,7 @@ import software.amazon.smithy.rulesengine.traits.ClientContextParamsTrait
  * context params.
  */
 class ClientConfigIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).isS3
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).isS3
 
     companion object {
         val EnableAccelerateProp: ConfigProperty = ConfigProperty {
@@ -86,14 +85,13 @@ class ClientConfigIntegration : KotlinIntegration {
         }
     }
 
-    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> =
-        listOf(
-            EnableAccelerateProp,
-            ForcePathStyleProp,
-            UseArnRegionProp,
-            DisableMrapProp,
-            EnableAwsChunked,
-        )
+    override fun additionalServiceConfigProps(ctx: CodegenContext): List<ConfigProperty> = listOf(
+        EnableAccelerateProp,
+        ForcePathStyleProp,
+        UseArnRegionProp,
+        DisableMrapProp,
+        EnableAwsChunked,
+    )
 
     override val sectionWriters: List<SectionWriterBinding>
         get() = listOf(

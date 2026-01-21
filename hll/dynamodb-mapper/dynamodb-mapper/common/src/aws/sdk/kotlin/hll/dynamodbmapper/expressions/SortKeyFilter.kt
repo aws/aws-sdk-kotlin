@@ -382,8 +382,7 @@ public interface SortKeyFilter {
      * @param min The lower bound value
      * @param max The upper bound value (inclusive)
      */
-    public fun SortKey.isBetween(min: ByteArray, max: ByteArray): SortKeyExpr =
-        isBetween(LiteralExpr(min), LiteralExpr(max))
+    public fun SortKey.isBetween(min: ByteArray, max: ByteArray): SortKeyExpr = isBetween(LiteralExpr(min), LiteralExpr(max))
 
     /**
      * Creates a range expression for verifying the sort key is in the given range
@@ -391,8 +390,7 @@ public interface SortKeyFilter {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeNumber")
-    public infix fun <N> SortKey.isIn(range: ClosedRange<N>): SortKeyExpr where N : Number, N : Comparable<N> =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun <N> SortKey.isIn(range: ClosedRange<N>): SortKeyExpr where N : Number, N : Comparable<N> = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a range expression for verifying the sort key is in the given range
@@ -400,8 +398,7 @@ public interface SortKeyFilter {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeString")
-    public infix fun SortKey.isIn(range: ClosedRange<String>): SortKeyExpr =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun SortKey.isIn(range: ClosedRange<String>): SortKeyExpr = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a range expression for verifying the sort key is in the given range
@@ -409,8 +406,7 @@ public interface SortKeyFilter {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeUByte")
-    public infix fun SortKey.isIn(range: ClosedRange<UByte>): SortKeyExpr =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun SortKey.isIn(range: ClosedRange<UByte>): SortKeyExpr = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a range expression for verifying the sort key is in the given range
@@ -418,8 +414,7 @@ public interface SortKeyFilter {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeUInt")
-    public infix fun SortKey.isIn(range: ClosedRange<UInt>): SortKeyExpr =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun SortKey.isIn(range: ClosedRange<UInt>): SortKeyExpr = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a range expression for verifying the sort key is in the given range
@@ -427,8 +422,7 @@ public interface SortKeyFilter {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeULong")
-    public infix fun SortKey.isIn(range: ClosedRange<ULong>): SortKeyExpr =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun SortKey.isIn(range: ClosedRange<ULong>): SortKeyExpr = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a range expression for verifying the sort key is in the given range
@@ -436,8 +430,7 @@ public interface SortKeyFilter {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeUShort")
-    public infix fun SortKey.isIn(range: ClosedRange<UShort>): SortKeyExpr =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun SortKey.isIn(range: ClosedRange<UShort>): SortKeyExpr = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates an expression for verifying the sort key starts with the given expression
