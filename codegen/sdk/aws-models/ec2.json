@@ -66744,6 +66744,30 @@
                         "smithy.api#xmlName": "count"
                     }
                 },
+                "LogicalGpuCount": {
+                    "target": "com.amazonaws.ec2#LogicalGpuCount",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "LogicalGpuCount",
+                        "smithy.api#documentation": "<p>Total number of GPU devices of this type.</p>",
+                        "smithy.api#xmlName": "logicalGpuCount"
+                    }
+                },
+                "GpuPartitionSize": {
+                    "target": "com.amazonaws.ec2#GpuPartitionSize",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "GpuPartitionSize",
+                        "smithy.api#documentation": "<p>The size of each GPU as a fraction of a full GPU, between 0 (excluded) and 1 (included).</p>",
+                        "smithy.api#xmlName": "gpuPartitionSize"
+                    }
+                },
+                "Workloads": {
+                    "target": "com.amazonaws.ec2#WorkloadsList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "WorkloadSet",
+                        "smithy.api#documentation": "<p>A list of workload types this GPU supports.</p>",
+                        "smithy.api#xmlName": "workloadSet"
+                    }
+                },
                 "MemoryInfo": {
                     "target": "com.amazonaws.ec2#GpuDeviceMemoryInfo",
                     "traits": {
@@ -66814,6 +66838,9 @@
             "traits": {
                 "smithy.api#documentation": "<p>Describes the GPU accelerators for the instance type.</p>"
             }
+        },
+        "com.amazonaws.ec2#GpuPartitionSize": {
+            "type": "double"
         },
         "com.amazonaws.ec2#GroupBy": {
             "type": "enum",
@@ -90674,6 +90701,9 @@
                     }
                 }
             }
+        },
+        "com.amazonaws.ec2#LogicalGpuCount": {
+            "type": "integer"
         },
         "com.amazonaws.ec2#Long": {
             "type": "long"
@@ -132528,6 +132558,18 @@
             },
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#Workload": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#WorkloadsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#Workload",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
             }
         },
         "com.amazonaws.ec2#ZoneIdStringList": {
