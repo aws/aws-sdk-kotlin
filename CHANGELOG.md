@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2] - 01/23/2026
+
+### Features
+* (**connect**) Amazon Connect now offers public APIs to programmatically configure and run automated tests for contact center experiences. Integrate testing into CICD pipelines, run multiple tests at scale, and retrieve results via API to automate validation of voice interactions and workflows.
+* (**datazone**) Added api for deleting data export configuration for a domain
+* (**qconnect**) Fixes incorrect types in the UpdateAssistantAIAgent API request, adds MESSAGE to TargetType enum, and other minor changes.
+
 ## [1.6.1] - 01/22/2026
 
 ### Features
