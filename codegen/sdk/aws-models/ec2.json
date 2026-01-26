@@ -1361,6 +1361,9 @@
                 }
             }
         },
+        "com.amazonaws.ec2#AdditionalFlexibleNetworkInterfaces": {
+            "type": "integer"
+        },
         "com.amazonaws.ec2#Address": {
             "type": "structure",
             "members": {
@@ -99812,6 +99815,14 @@
                         "aws.protocols#ec2QueryName": "MaximumNetworkInterfaces",
                         "smithy.api#documentation": "<p>The maximum number of network interfaces for the network card.</p>",
                         "smithy.api#xmlName": "maximumNetworkInterfaces"
+                    }
+                },
+                "AdditionalFlexibleNetworkInterfaces": {
+                    "target": "com.amazonaws.ec2#AdditionalFlexibleNetworkInterfaces",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AdditionalFlexibleNetworkInterfaces",
+                        "smithy.api#documentation": "<p>The number of additional network interfaces that can be attached to an instance when using\n   flexible Elastic Network Adapter (ENA) queues. This number is in addition to the base number\n   specified by <code>maximumNetworkInterfaces</code>.</p>",
+                        "smithy.api#xmlName": "additionalFlexibleNetworkInterfaces"
                     }
                 },
                 "BaselineBandwidthInGbps": {
