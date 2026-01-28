@@ -1,0 +1,5 @@
+{
+    "id": "af36149c-0aed-4299-b352-ffd015ba5f35",
+    "type": "bugfix",
+    "description": "Upgrade to **smithy-kotlin** [**v1.6.1**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.6.1) to pick up codegen fixes"
+}
