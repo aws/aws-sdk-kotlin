@@ -115638,7 +115638,13 @@
                 "target": "com.amazonaws.ec2#SearchTransitGatewayRoutesResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Searches for routes in the specified transit gateway route table.</p>"
+                "smithy.api#documentation": "<p>Searches for routes in the specified transit gateway route table.</p>",
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "Routes",
+                    "pageSize": "MaxResults"
+                }
             }
         },
         "com.amazonaws.ec2#SearchTransitGatewayRoutesRequest": {
@@ -115672,6 +115678,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
                     }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
                 }
             },
             "traits": {
@@ -115695,6 +115707,14 @@
                         "aws.protocols#ec2QueryName": "AdditionalRoutesAvailable",
                         "smithy.api#documentation": "<p>Indicates whether there are additional routes available.</p>",
                         "smithy.api#xmlName": "additionalRoutesAvailable"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
                     }
                 }
             },
