@@ -81643,6 +81643,42 @@
                     "traits": {
                         "smithy.api#enumValue": "mac-m4max.metal"
                     }
+                },
+                "g7e_2xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "g7e.2xlarge"
+                    }
+                },
+                "g7e_4xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "g7e.4xlarge"
+                    }
+                },
+                "g7e_8xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "g7e.8xlarge"
+                    }
+                },
+                "g7e_12xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "g7e.12xlarge"
+                    }
+                },
+                "g7e_24xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "g7e.24xlarge"
+                    }
+                },
+                "g7e_48xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "g7e.48xlarge"
+                    }
                 }
             }
         },
