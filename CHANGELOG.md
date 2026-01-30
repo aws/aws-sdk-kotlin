@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.6.7] - 01/30/2026
+
+### Features
+* (**connect**) This release adds Estimated Wait Time support to the GetContactMetrics API for Amazon Connect.
+* (**quicksight**) Improve SessionTag usage guidelines in the GenerateEmbedURLForAnonymousUser API documentation. Update the GetIdentityContext document with the region support context.
+
 ## [1.6.6] - 01/29/2026
 
 ### Features
