@@ -472,6 +472,12 @@
                 "smithy.api#pattern": "^[0-9a-zA-Z]+$"
             }
         },
+        "com.amazonaws.bedrockagentruntime#AgentTraces": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentruntime#TracePart"
+            }
+        },
         "com.amazonaws.bedrockagentruntime#AgentVersion": {
             "type": "string",
             "traits": {
@@ -546,27 +552,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -1048,17 +1054,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -1069,17 +1064,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -1096,17 +1080,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -1117,17 +1090,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -1436,6 +1398,30 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Contains citations for a part of an agent response.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#AudioSegment": {
+            "type": "structure",
+            "members": {
+                "s3Uri": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The S3 URI where this specific audio segment is stored in the multimodal storage destination.</p>",
+                        "smithy.api#length": {
+                            "min": 1
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "transcription": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The text transcription of the audio segment content.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about an audio segment retrieved from a knowledge base, including its location and transcription.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax\">Retrieve response</a> – in the <code>audio</code> field</p> </li> </ul>"
             }
         },
         "com.amazonaws.bedrockagentruntime#BadGatewayException": {
@@ -2996,6 +2982,23 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentruntime#FlowControlNodeType": {
+            "type": "enum",
+            "members": {
+                "ITERATOR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Iterator"
+                    }
+                },
+                "LOOP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Loop"
+                    }
+                }
+            }
+        },
         "com.amazonaws.bedrockagentruntime#FlowErrorCode": {
             "type": "enum",
             "members": {
@@ -3120,6 +3123,18 @@
                     "target": "com.amazonaws.bedrockagentruntime#FlowFailureEvent",
                     "traits": {
                         "smithy.api#documentation": "<p>Contains information about a failure that occurred at the flow level during execution.</p>"
+                    }
+                },
+                "nodeActionEvent": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeActionEvent",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains information about an action (operation) called by a node during execution.</p>"
+                    }
+                },
+                "nodeDependencyEvent": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeDependencyEvent",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains information about an internal trace of a specific node during execution.</p>"
                     }
                 }
             },
@@ -3556,6 +3571,86 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.bedrockagentruntime#FlowNodeIODataType": {
+            "type": "enum",
+            "members": {
+                "STRING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "String"
+                    }
+                },
+                "NUMBER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Number"
+                    }
+                },
+                "BOOLEAN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Boolean"
+                    }
+                },
+                "OBJECT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Object"
+                    }
+                },
+                "ARRAY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Array"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#FlowNodeInputCategory": {
+            "type": "enum",
+            "members": {
+                "LOOP_CONDITION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LoopCondition"
+                    }
+                },
+                "RETURN_VALUE_TO_LOOP_START": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ReturnValueToLoopStart"
+                    }
+                },
+                "EXIT_LOOP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ExitLoop"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#FlowNodeInputExpression": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#FlowNodeInputName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[a-zA-Z]([_]?[0-9a-zA-Z]){1,50}$"
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#FlowNodeOutputName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[a-zA-Z]([_]?[0-9a-zA-Z]){1,50}$"
+            }
+        },
         "com.amazonaws.bedrockagentruntime#FlowOutputContent": {
             "type": "union",
             "members": {
@@ -3754,7 +3849,13 @@
                 "nodeActionTrace": {
                     "target": "com.amazonaws.bedrockagentruntime#FlowTraceNodeActionEvent",
                     "traits": {
-                        "smithy.api#documentation": "<p>Contains information about an action (operation) called by a node. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html\">Track each step in your prompt flow by viewing its trace in Amazon Bedrock</a>.</p>"
+                        "smithy.api#documentation": "<p>Contains information about an action (operation) called by a node.</p>"
+                    }
+                },
+                "nodeDependencyTrace": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowTraceDependencyEvent",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains information about an internal trace of a node.</p>"
                     }
                 }
             },
@@ -3821,6 +3922,36 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentruntime#FlowTraceDependencyEvent": {
+            "type": "structure",
+            "members": {
+                "nodeName": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the node that generated the dependency trace.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "timestamp": {
+                    "target": "com.amazonaws.bedrockagentruntime#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time that the dependency trace was generated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "traceElements": {
+                    "target": "com.amazonaws.bedrockagentruntime#TraceElements",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The trace elements containing detailed information about the dependency.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about a dependency trace event in the flow.</p>",
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.bedrockagentruntime#FlowTraceEvent": {
             "type": "structure",
             "members": {
@@ -3872,6 +4003,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the operation that the node called.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "operationRequest": {
+                    "target": "smithy.api#Document",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The request payload sent to the downstream service.</p>"
+                    }
+                },
+                "operationResponse": {
+                    "target": "smithy.api#Document",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The response payload received from the downstream service.</p>"
                     }
                 }
             },
@@ -3925,6 +4068,44 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.bedrockagentruntime#FlowTraceNodeInputExecutionChain": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentruntime#FlowTraceNodeInputExecutionChainItem"
+            },
+            "traits": {
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#FlowTraceNodeInputExecutionChainItem": {
+            "type": "structure",
+            "members": {
+                "nodeName": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the node in the execution chain.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "index": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The index position of this item in the execution chain.</p>"
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowControlNodeType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of execution chain item. Supported values are Iterator and Loop.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Represents an item in the execution chain for flow trace node input tracking.</p>",
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.bedrockagentruntime#FlowTraceNodeInputField": {
             "type": "structure",
             "members": {
@@ -3940,6 +4121,30 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The content of the node input.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "source": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowTraceNodeInputSource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The source node that provides input data to this field.</p>"
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeIODataType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The data type of the input field for compatibility validation.</p>"
+                    }
+                },
+                "category": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeInputCategory",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The category of the input field.</p>"
+                    }
+                },
+                "executionChain": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowTraceNodeInputExecutionChain",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The execution path through nested nodes like iterators and loops.</p>"
                     }
                 }
             },
@@ -3958,6 +4163,36 @@
                     "min": 1,
                     "max": 5
                 }
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#FlowTraceNodeInputSource": {
+            "type": "structure",
+            "members": {
+                "nodeName": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the source node that provides the input data.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "outputFieldName": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeOutputName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the output field from the source node.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "expression": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeInputExpression",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The expression used to extract data from the source.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Represents the source of input data for a flow trace node field.</p>",
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.bedrockagentruntime#FlowTraceNodeOutputContent": {
@@ -4020,6 +4255,18 @@
                         "smithy.api#documentation": "<p>The content of the node output.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "next": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowTraceNodeOutputNextList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The next node that receives output data from this field.</p>"
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeIODataType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The data type of the output field for compatibility validation.</p>"
+                    }
                 }
             },
             "traits": {
@@ -4037,6 +4284,35 @@
                     "min": 1,
                     "max": 2
                 }
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#FlowTraceNodeOutputNext": {
+            "type": "structure",
+            "members": {
+                "nodeName": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the next node that receives the output data.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "inputFieldName": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeInputName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the input field in the next node that receives the data.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Represents the next node that receives output data from a flow trace.</p>",
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#FlowTraceNodeOutputNextList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentruntime#FlowTraceNodeOutputNext"
             }
         },
         "com.amazonaws.bedrockagentruntime#Function": {
@@ -6317,6 +6593,61 @@
                 "target": "com.amazonaws.bedrockagentruntime#InputFile"
             }
         },
+        "com.amazonaws.bedrockagentruntime#InputImage": {
+            "type": "structure",
+            "members": {
+                "format": {
+                    "target": "com.amazonaws.bedrockagentruntime#InputImageFormat",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The format of the input image. Supported formats include png, gif, jpeg, and webp.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "inlineContent": {
+                    "target": "com.amazonaws.bedrockagentruntime#ByteContentBlob",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The base64-encoded image data for inline image content. Maximum size is 5MB.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 5242880
+                        },
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the image data for multimodal knowledge base queries, including format and content.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax\">Retrieve request</a> – in the <code>image</code> field</p> </li> </ul>"
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#InputImageFormat": {
+            "type": "enum",
+            "members": {
+                "png": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "png"
+                    }
+                },
+                "jpeg": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "jpeg"
+                    }
+                },
+                "gif": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "gif"
+                    }
+                },
+                "webp": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "webp"
+                    }
+                }
+            }
+        },
         "com.amazonaws.bedrockagentruntime#InputPrompt": {
             "type": "union",
             "members": {
@@ -7353,20 +7684,51 @@
         "com.amazonaws.bedrockagentruntime#KnowledgeBaseQuery": {
             "type": "structure",
             "members": {
+                "type": {
+                    "target": "com.amazonaws.bedrockagentruntime#KnowledgeBaseQueryType",
+                    "traits": {
+                        "smithy.api#default": "TEXT",
+                        "smithy.api#documentation": "<p>The type of query being performed.</p>"
+                    }
+                },
                 "text": {
                     "target": "smithy.api#String",
                     "traits": {
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": "",
                         "smithy.api#documentation": "<p>The text of the query made to the knowledge base.</p>",
                         "smithy.api#length": {
-                            "max": 1000
-                        },
-                        "smithy.api#required": {}
+                            "max": 20000
+                        }
+                    }
+                },
+                "image": {
+                    "target": "com.amazonaws.bedrockagentruntime#InputImage",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An image to include in the knowledge base query for multimodal retrieval.</p>"
                     }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Contains the query made to the knowledge base.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax\">Retrieve request</a> – in the <code>retrievalQuery</code> field</p> </li> </ul>",
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#KnowledgeBaseQueryType": {
+            "type": "enum",
+            "members": {
+                "TEXT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TEXT"
+                    }
+                },
+                "IMAGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IMAGE"
+                    }
+                }
             }
         },
         "com.amazonaws.bedrockagentruntime#KnowledgeBaseRetrievalConfiguration": {
@@ -8462,6 +8824,92 @@
                 "smithy.api#pattern": "^\\S*$"
             }
         },
+        "com.amazonaws.bedrockagentruntime#NodeActionEvent": {
+            "type": "structure",
+            "members": {
+                "nodeName": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the node that called the operation.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "timestamp": {
+                    "target": "com.amazonaws.bedrockagentruntime#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time that the operation was called.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "requestId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the request that the node made to the operation.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "serviceName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the service that the node called.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "operationName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the operation that the node called.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "operationRequest": {
+                    "target": "smithy.api#Document",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The request payload sent to the downstream service.</p>"
+                    }
+                },
+                "operationResponse": {
+                    "target": "smithy.api#Document",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The response payload received from the downstream service.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about an action (operation) called by a node during execution.</p>",
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#NodeDependencyEvent": {
+            "type": "structure",
+            "members": {
+                "nodeName": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the node that generated the dependency trace.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "timestamp": {
+                    "target": "com.amazonaws.bedrockagentruntime#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time that the dependency trace was generated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "traceElements": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeTraceElements",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The trace elements containing detailed information about the node execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about an internal trace of a specific node during execution.</p>",
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.bedrockagentruntime#NodeErrorCode": {
             "type": "enum",
             "members": {
@@ -8573,6 +9021,40 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.bedrockagentruntime#NodeInputExecutionChain": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentruntime#NodeInputExecutionChainItem"
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#NodeInputExecutionChainItem": {
+            "type": "structure",
+            "members": {
+                "nodeName": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the node in the execution chain.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "index": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The index position of this item in the execution chain.</p>"
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowControlNodeType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of execution chain item. Supported values are Iterator and Loop.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Represents an item in the execution chain for node input tracking.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentruntime#NodeInputField": {
             "type": "structure",
             "members": {
@@ -8588,6 +9070,30 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The content of the input field, which can contain text or structured data.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "source": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeInputSource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The source node that provides input data to this field.</p>"
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeIODataType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The data type of the input field for compatibility validation.</p>"
+                    }
+                },
+                "category": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeInputCategory",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The category of the input field.</p>"
+                    }
+                },
+                "executionChain": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeInputExecutionChain",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The execution path through nested nodes like iterators and loops.</p>"
                     }
                 }
             },
@@ -8612,6 +9118,35 @@
             "type": "string",
             "traits": {
                 "smithy.api#pattern": "^[a-zA-Z]([_]?[0-9a-zA-Z]){0,99}$"
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#NodeInputSource": {
+            "type": "structure",
+            "members": {
+                "nodeName": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the source node that provides the input data.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "outputFieldName": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeOutputName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the output field from the source node.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "expression": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeInputExpression",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The expression used to extract data from the source.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Represents the source of input data for a node field.</p>"
             }
         },
         "com.amazonaws.bedrockagentruntime#NodeName": {
@@ -8666,6 +9201,18 @@
                         "smithy.api#documentation": "<p>The content of the output field, which can contain text or structured data.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "next": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeOutputNextList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The next node that receives output data from this field.</p>"
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeIODataType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The data type of the output field for compatibility validation.</p>"
+                    }
                 }
             },
             "traits": {
@@ -8689,6 +9236,50 @@
             "type": "string",
             "traits": {
                 "smithy.api#pattern": "^[a-zA-Z]([_]?[0-9a-zA-Z]){0,99}$"
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#NodeOutputNext": {
+            "type": "structure",
+            "members": {
+                "nodeName": {
+                    "target": "com.amazonaws.bedrockagentruntime#NodeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the next node that receives the output data.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "inputFieldName": {
+                    "target": "com.amazonaws.bedrockagentruntime#FlowNodeInputName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the input field in the next node that receives the data.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Represents the next node that receives output data.</p>",
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#NodeOutputNextList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentruntime#NodeOutputNext"
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#NodeTraceElements": {
+            "type": "union",
+            "members": {
+                "agentTraces": {
+                    "target": "com.amazonaws.bedrockagentruntime#AgentTraces",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Agent trace information for the node execution.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains trace elements for node execution tracking.</p>",
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.bedrockagentruntime#NodeType": {
@@ -9671,7 +10262,7 @@
                 "textPromptTemplate": {
                     "target": "com.amazonaws.bedrockagentruntime#TextPromptTemplate",
                     "traits": {
-                        "smithy.api#documentation": "<p>The template for the prompt that's sent to the model for response generation. You can include prompt placeholders, which become replaced before the prompt is sent to the model to provide instructions and context to the model. In addition, you can include XML tags to delineate meaningful sections of the prompt template.</p> <p>For more information, see the following resources:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html#kb-test-config-sysprompt\">Knowledge base prompt templates</a> </p> </li> <li> <p> <a href=\"https://docs.anthropic.com/claude/docs/use-xml-tags\">Use XML tags with Anthropic Claude models</a> </p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The template for the prompt that's sent to the model for response generation. You can include prompt placeholders, which become replaced before the prompt is sent to the model to provide instructions and context to the model. In addition, you can include XML tags to delineate meaningful sections of the prompt template.</p> <p>For more information, see the following resources:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html#kb-test-config-sysprompt\">Knowledge base prompt templates</a> </p> </li> <li> <p> <a href=\"https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags\">Use XML tags with Anthropic Claude models</a> </p> </li> </ul>"
                     }
                 }
             },
@@ -10282,7 +10873,7 @@
                 "index": {
                     "target": "smithy.api#Integer",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ranking of the document. The lower a number, the higher the document is ranked.</p>",
+                        "smithy.api#documentation": "<p>The original index of the document from the input sources array.</p>",
                         "smithy.api#range": {
                             "min": 0,
                             "max": 1000
@@ -10735,6 +11326,18 @@
                         "smithy.api#documentation": "<p>A data URI with base64-encoded content from the data source. The URI is in the following format: returned in the following format: <code>data:image/jpeg;base64,${base64-encoded string}</code>.</p>"
                     }
                 },
+                "video": {
+                    "target": "com.amazonaws.bedrockagentruntime#VideoSegment",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Video segment information when the retrieval result contains video content.</p>"
+                    }
+                },
+                "audio": {
+                    "target": "com.amazonaws.bedrockagentruntime#AudioSegment",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Audio segment information when the retrieval result contains audio content.</p>"
+                    }
+                },
                 "row": {
                     "target": "com.amazonaws.bedrockagentruntime#RetrievalResultContentRow",
                     "traits": {
@@ -10843,6 +11446,18 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ROW"
+                    }
+                },
+                "AUDIO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AUDIO"
+                    }
+                },
+                "VIDEO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "VIDEO"
                     }
                 }
             }
@@ -11220,7 +11835,7 @@
                 "text": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>The query made to the knowledge base.</p>",
+                        "smithy.api#documentation": "<p>The query made to the knowledge base, in characters.</p>",
                         "smithy.api#length": {
                             "max": 1000
                         },
@@ -12829,6 +13444,21 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.bedrockagentruntime#TraceElements": {
+            "type": "union",
+            "members": {
+                "agentTraces": {
+                    "target": "com.amazonaws.bedrockagentruntime#AgentTraces",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Agent trace information for the flow execution.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains trace elements for flow execution tracking.</p>",
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.bedrockagentruntime#TraceId": {
             "type": "string",
             "traits": {
@@ -13271,6 +13901,30 @@
                     "max": 5
                 },
                 "smithy.api#pattern": "^(DRAFT|[0-9]{0,4}[1-9][0-9]{0,4})$"
+            }
+        },
+        "com.amazonaws.bedrockagentruntime#VideoSegment": {
+            "type": "structure",
+            "members": {
+                "s3Uri": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The S3 URI where this specific video segment is stored in the multimodal storage destination.</p>",
+                        "smithy.api#length": {
+                            "min": 1
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "summary": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A text summary describing the content of the video segment.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about a video segment retrieved from a knowledge base, including its location and summary.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax\">Retrieve response</a> – in the <code>video</code> field</p> </li> </ul>"
             }
         }
     }

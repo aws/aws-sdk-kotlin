@@ -129,6 +129,12 @@
                 "monitoringConfiguration": {
                     "target": "com.amazonaws.emrserverless#MonitoringConfiguration"
                 },
+                "diskEncryptionConfiguration": {
+                    "target": "com.amazonaws.emrserverless#DiskEncryptionConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration object that allows encrypting local disks.</p>"
+                    }
+                },
                 "interactiveConfiguration": {
                     "target": "com.amazonaws.emrserverless#InteractiveConfiguration",
                     "traits": {
@@ -144,7 +150,13 @@
                 "identityCenterConfiguration": {
                     "target": "com.amazonaws.emrserverless#IdentityCenterConfiguration",
                     "traits": {
-                        "smithy.api#documentation": "<p>The IAM Identity Center configuration applied to enable trusted identity propagation. </p>"
+                        "smithy.api#documentation": "<p>The IAM Identity Center configuration applied to enable trusted identity propagation.</p>"
+                    }
+                },
+                "jobLevelCostAllocationConfiguration": {
+                    "target": "com.amazonaws.emrserverless#JobLevelCostAllocationConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration object that enables job level cost allocation.</p>"
                     }
                 }
             },
@@ -482,27 +494,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -1000,17 +1012,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -1021,17 +1022,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -1048,17 +1038,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -1069,17 +1048,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -1339,6 +1307,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The override configurations for monitoring.</p>"
                     }
+                },
+                "diskEncryptionConfiguration": {
+                    "target": "com.amazonaws.emrserverless#DiskEncryptionConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The override configuration to encrypt local disks.</p>"
+                    }
                 }
             },
             "traits": {
@@ -1519,6 +1493,12 @@
                         "smithy.api#documentation": "<p>The configuration setting for monitoring.</p>"
                     }
                 },
+                "diskEncryptionConfiguration": {
+                    "target": "com.amazonaws.emrserverless#DiskEncryptionConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration object that allows encrypting local disks.</p>"
+                    }
+                },
                 "interactiveConfiguration": {
                     "target": "com.amazonaws.emrserverless#InteractiveConfiguration",
                     "traits": {
@@ -1535,6 +1515,12 @@
                     "target": "com.amazonaws.emrserverless#IdentityCenterConfigurationInput",
                     "traits": {
                         "smithy.api#documentation": "<p>The IAM Identity Center Configuration accepts the Identity Center instance parameter required to enable trusted identity propagation. This configuration allows identity propagation between integrated services and the Identity Center instance.</p>"
+                    }
+                },
+                "jobLevelCostAllocationConfiguration": {
+                    "target": "com.amazonaws.emrserverless#JobLevelCostAllocationConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration object that enables job level cost allocation.</p>"
                     }
                 }
             }
@@ -1614,6 +1600,26 @@
             "type": "structure",
             "members": {}
         },
+        "com.amazonaws.emrserverless#DiskEncryptionConfiguration": {
+            "type": "structure",
+            "members": {
+                "encryptionContext": {
+                    "target": "com.amazonaws.emrserverless#EncryptionContext",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the optional encryption context that will be used when encrypting the data. An encryption context is a collection of non-secret key-value pairs that represent additional authenticated data. </p>"
+                    }
+                },
+                "encryptionKeyArn": {
+                    "target": "com.amazonaws.emrserverless#EncryptionKeyArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The KMS key ARN to encrypt local disks.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration object that allows encrypting local disks.</p>"
+            }
+        },
         "com.amazonaws.emrserverless#DiskSize": {
             "type": "string",
             "traits": {
@@ -1637,6 +1643,38 @@
                 "smithy.api#range": {
                     "min": 0,
                     "max": 1000000
+                }
+            }
+        },
+        "com.amazonaws.emrserverless#EncryptionContext": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.emrserverless#EncryptionContextKey"
+            },
+            "value": {
+                "target": "com.amazonaws.emrserverless#EncryptionContextValue"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 8
+                }
+            }
+        },
+        "com.amazonaws.emrserverless#EncryptionContextKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 128
+                }
+            }
+        },
+        "com.amazonaws.emrserverless#EncryptionContextValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 384
                 }
             }
         },
@@ -1963,10 +2001,16 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the EMR Serverless created IAM Identity Center Application that provides trusted-identity propagation.</p>"
                     }
+                },
+                "userBackgroundSessionsEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Enables user background sessions for this application so Livy sessions can continue running after users log out of their interactive notebook or their Identity Center sessions expire.</p>"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The IAM Identity Center Configuration that includes the Identify Center instance and application ARNs that provide trusted-identity propagation.</p>"
+                "smithy.api#documentation": "<p>The IAM Identity Center Configuration accepts the Identity Center instance parameter required to enable trusted identity propagation. This configuration allows identity propagation between integrated services and the Identity Center instance.</p>"
             }
         },
         "com.amazonaws.emrserverless#IdentityCenterConfigurationInput": {
@@ -1977,10 +2021,16 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the IAM Identity Center instance.</p>"
                     }
+                },
+                "userBackgroundSessionsEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Enables user background sessions for this application so Livy sessions can continue running after users log out of their interactive notebook or their Identity Center sessions expire.</p>"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Specifies the IAM Identity Center configuration used to enable or disable trusted identity propagation. When provided, this configuration determines how the application interacts with IAM Identity Center for user authentication and access control.</p>"
+                "smithy.api#documentation": "<p>The IAM Identity Center Configuration accepts the Identity Center instance parameter required to enable trusted identity propagation. This configuration allows identity propagation between integrated services and the Identity Center instance.</p>"
             }
         },
         "com.amazonaws.emrserverless#IdentityCenterInstanceArn": {
@@ -2157,6 +2207,20 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The driver that the job runs on.</p>"
+            }
+        },
+        "com.amazonaws.emrserverless#JobLevelCostAllocationConfiguration": {
+            "type": "structure",
+            "members": {
+                "enabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Enables job level cost allocation for the application.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration object that enables job level cost allocation.</p>"
             }
         },
         "com.amazonaws.emrserverless#JobRun": {
@@ -4092,6 +4156,12 @@
                         "smithy.api#documentation": "<p>The configuration setting for monitoring.</p>"
                     }
                 },
+                "diskEncryptionConfiguration": {
+                    "target": "com.amazonaws.emrserverless#DiskEncryptionConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration object that allows encrypting local disks.</p>"
+                    }
+                },
                 "schedulerConfiguration": {
                     "target": "com.amazonaws.emrserverless#SchedulerConfiguration",
                     "traits": {
@@ -4102,6 +4172,12 @@
                     "target": "com.amazonaws.emrserverless#IdentityCenterConfigurationInput",
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the IAM Identity Center configuration used to enable or disable trusted identity propagation. When provided, this configuration determines how the application interacts with IAM Identity Center for user authentication and access control.</p>"
+                    }
+                },
+                "jobLevelCostAllocationConfiguration": {
+                    "target": "com.amazonaws.emrserverless#JobLevelCostAllocationConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration object that enables job level cost allocation.</p>"
                     }
                 }
             }

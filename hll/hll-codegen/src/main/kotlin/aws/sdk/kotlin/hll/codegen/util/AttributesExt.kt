@@ -21,10 +21,9 @@ public operator fun Attributes.plus(other: Attributes): Attributes = toMutableAt
  * @param other A tuple of [AttributeKey] to a value (which may be `null`)
  */
 @InternalSdkApi
-public operator fun <T : Any> Attributes.plus(other: Pair<AttributeKey<T>, T?>): Attributes =
-    toMutableAttributes().apply {
-        other.second?.let { set(other.first, it) } ?: remove(other.first)
-    }
+public operator fun <T : Any> Attributes.plus(other: Pair<AttributeKey<T>, T?>): Attributes = toMutableAttributes().apply {
+    other.second?.let { set(other.first, it) } ?: remove(other.first)
+}
 
 /**
  * Convert this [Attributes]' [VisibilityAttribute] to a string

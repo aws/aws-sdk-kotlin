@@ -69,8 +69,7 @@ public interface AttributePath : Expression {
  * represents a top-level attribute.
  */
 @ExperimentalApi
-public fun AttributePath(name: String, parent: AttributePath? = null): AttributePath =
-    AttributePathImpl(AttrPathNameImpl(name), parent)
+public fun AttributePath(name: String, parent: AttributePath? = null): AttributePath = AttributePathImpl(AttrPathNameImpl(name), parent)
 
 /**
  * Creates a new [AttributePath] reference with the given index and parent path
@@ -78,5 +77,4 @@ public fun AttributePath(name: String, parent: AttributePath? = null): Attribute
  * @param parent The parent [AttributePath] of this element
  */
 @ExperimentalApi
-public fun AttributePath(index: Int, parent: AttributePath): AttributePath =
-    AttributePathImpl(AttrPathIndexImpl(index), parent)
+public fun AttributePath(index: Int, parent: AttributePath): AttributePath = AttributePathImpl(AttrPathIndexImpl(index), parent)

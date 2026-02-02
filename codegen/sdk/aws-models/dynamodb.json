@@ -475,6 +475,9 @@
                 "smithy.api#documentation": "<p>Represents the settings of a target tracking scaling policy that will be\n            modified.</p>"
             }
         },
+        "com.amazonaws.dynamodb#AvailabilityErrorMessage": {
+            "type": "string"
+        },
         "com.amazonaws.dynamodb#Backfilling": {
             "type": "boolean"
         },
@@ -785,6 +788,9 @@
                 },
                 {
                     "target": "com.amazonaws.dynamodb#RequestLimitExceeded"
+                },
+                {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
                 }
             ],
             "traits": {
@@ -852,6 +858,9 @@
                 },
                 {
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
                 }
             ],
             "traits": {
@@ -1181,6 +1190,9 @@
                 },
                 {
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
                 }
             ],
             "traits": {
@@ -1798,6 +1810,23 @@
                 }
             }
         },
+        "com.amazonaws.dynamodb#ContributorInsightsMode": {
+            "type": "enum",
+            "members": {
+                "ACCESSED_AND_THROTTLED_KEYS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACCESSED_AND_THROTTLED_KEYS"
+                    }
+                },
+                "THROTTLED_KEYS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "THROTTLED_KEYS"
+                    }
+                }
+            }
+        },
         "com.amazonaws.dynamodb#ContributorInsightsRule": {
             "type": "string",
             "traits": {
@@ -1870,6 +1899,12 @@
                     "target": "com.amazonaws.dynamodb#ContributorInsightsStatus",
                     "traits": {
                         "smithy.api#documentation": "<p>Describes the current status for contributor insights for the given table and index,\n            if applicable.</p>"
+                    }
+                },
+                "ContributorInsightsMode": {
+                    "target": "com.amazonaws.dynamodb#ContributorInsightsMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates the current mode of CloudWatch Contributor Insights, specifying whether it\n            tracks all access and throttled events or throttled events only for the DynamoDB\n            table or index.</p>"
                     }
                 }
             },
@@ -2525,6 +2560,9 @@
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
                 },
                 {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
+                },
+                {
                     "target": "com.amazonaws.dynamodb#TransactionConflictException"
                 }
             ],
@@ -3004,7 +3042,34 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns information about contributor insights for a given table or global secondary\n            index.</p>"
+                "smithy.api#documentation": "<p>Returns information about contributor insights for a given table or global secondary\n            index.</p>",
+                "smithy.waiters#waitable": {
+                    "ContributorInsightsEnabled": {
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "ContributorInsightsStatus",
+                                        "expected": "ENABLED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "ContributorInsightsStatus",
+                                        "expected": "FAILED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            }
+                        ],
+                        "minDelay": 20
+                    }
+                }
             }
         },
         "com.amazonaws.dynamodb#DescribeContributorInsightsInput": {
@@ -3069,6 +3134,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Returns information about the last failure that was encountered.</p>\n         <p>The most common exceptions for a FAILED status are:</p>\n         <ul>\n            <li>\n               <p>LimitExceededException - Per-account Amazon CloudWatch Contributor Insights\n                    rule limit reached. Please disable Contributor Insights for other tables/indexes\n                    OR disable Contributor Insights rules before retrying.</p>\n            </li>\n            <li>\n               <p>AccessDeniedException - Amazon CloudWatch Contributor Insights rules cannot be\n                    modified due to insufficient permissions.</p>\n            </li>\n            <li>\n               <p>AccessDeniedException - Failed to create service-linked role for Contributor\n                    Insights due to insufficient permissions.</p>\n            </li>\n            <li>\n               <p>InternalServerError - Failed to create Amazon CloudWatch Contributor Insights\n                    rules. Please retry request.</p>\n            </li>\n         </ul>"
                     }
+                },
+                "ContributorInsightsMode": {
+                    "target": "com.amazonaws.dynamodb#ContributorInsightsMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The mode of CloudWatch Contributor Insights for DynamoDB that determines\n            which events are emitted. Can be set to track all access and throttled events or throttled\n            events only.</p>"
+                    }
                 }
             },
             "traits": {
@@ -3129,7 +3200,34 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Describes an existing table export.</p>"
+                "smithy.api#documentation": "<p>Describes an existing table export.</p>",
+                "smithy.waiters#waitable": {
+                    "ExportCompleted": {
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "ExportDescription.ExportStatus",
+                                        "expected": "COMPLETED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "ExportDescription.ExportStatus",
+                                        "expected": "FAILED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            }
+                        ],
+                        "minDelay": 20
+                    }
+                }
             }
         },
         "com.amazonaws.dynamodb#DescribeExportInput": {
@@ -3300,7 +3398,44 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p> Represents the properties of the import. </p>"
+                "smithy.api#documentation": "<p> Represents the properties of the import. </p>",
+                "smithy.waiters#waitable": {
+                    "ImportCompleted": {
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "ImportTableDescription.ImportStatus",
+                                        "expected": "COMPLETED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "ImportTableDescription.ImportStatus",
+                                        "expected": "FAILED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "ImportTableDescription.ImportStatus",
+                                        "expected": "CANCELLED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            }
+                        ],
+                        "minDelay": 20
+                    }
+                }
             }
         },
         "com.amazonaws.dynamodb#DescribeImportInput": {
@@ -3359,7 +3494,34 @@
                 "aws.api#clientDiscoveredEndpoint": {
                     "required": false
                 },
-                "smithy.api#documentation": "<p>Returns information about the status of Kinesis streaming.</p>"
+                "smithy.api#documentation": "<p>Returns information about the status of Kinesis streaming.</p>",
+                "smithy.waiters#waitable": {
+                    "KinesisStreamingDestinationActive": {
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "KinesisDataStreamDestinations[].DestinationStatus",
+                                        "expected": "ACTIVE",
+                                        "comparator": "anyStringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "length(KinesisDataStreamDestinations) > `0`  && length(KinesisDataStreamDestinations[?DestinationStatus == 'DISABLED' || DestinationStatus == 'ENABLE_FAILED']) ==  length(KinesisDataStreamDestinations)",
+                                        "expected": "true",
+                                        "comparator": "booleanEquals"
+                                    }
+                                }
+                            }
+                        ],
+                        "minDelay": 20
+                    }
+                }
             }
         },
         "com.amazonaws.dynamodb#DescribeKinesisStreamingDestinationInput": {
@@ -3975,44 +4137,44 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         },
                         "AccountId": {
                             "builtIn": "AWS::Auth::AccountId",
                             "required": false,
                             "documentation": "The AWS AccountId used for the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "AccountIdEndpointMode": {
                             "builtIn": "AWS::Auth::AccountIdEndpointMode",
                             "required": false,
                             "documentation": "The AccountId Endpoint Mode.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "ResourceArn": {
                             "required": false,
                             "documentation": "ResourceArn containing arn of resource",
-                            "type": "String"
+                            "type": "string"
                         },
                         "ResourceArnList": {
                             "required": false,
@@ -4021,6 +4183,92 @@
                         }
                     },
                     "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Endpoint"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "aws.partition",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ],
+                                    "assign": "PartitionResult"
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                                    "type": "error"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                                    "type": "error"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "Endpoint"
+                                                },
+                                                "https://dynamodb.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Endpoint override is not supported for dual-stack endpoints. Please enable dual-stack functionality by enabling the configuration. For more details, see: https://docs.aws.amazon.com/sdkref/latest/guide/feature-endpoints.html",
+                                    "type": "error"
+                                },
+                                {
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "{Endpoint}",
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
                         {
                             "conditions": [
                                 {
@@ -4150,9 +4398,9 @@
                                                         "properties": {
                                                             "authSchemes": [
                                                                 {
+                                                                    "name": "sigv4",
                                                                     "signingRegion": "us-east-1",
-                                                                    "signingName": "dynamodb",
-                                                                    "name": "sigv4"
+                                                                    "signingName": "dynamodb"
                                                                 }
                                                             ]
                                                         },
@@ -4452,6 +4700,400 @@
                                                                     ]
                                                                 },
                                                                 {
+                                                                    "fn": "not",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "stringEquals",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "AccountIdEndpointMode"
+                                                                                },
+                                                                                "disabled"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "name"
+                                                                            ]
+                                                                        },
+                                                                        "aws"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "not",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "booleanEquals",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "UseFIPS"
+                                                                                },
+                                                                                true
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "isSet",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "ResourceArn"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "aws.parseArn",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "ResourceArn"
+                                                                        }
+                                                                    ],
+                                                                    "assign": "ParsedArn"
+                                                                },
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "ParsedArn"
+                                                                                },
+                                                                                "service"
+                                                                            ]
+                                                                        },
+                                                                        "dynamodb"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "isValidHostLabel",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "ParsedArn"
+                                                                                },
+                                                                                "region"
+                                                                            ]
+                                                                        },
+                                                                        false
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "ParsedArn"
+                                                                                },
+                                                                                "region"
+                                                                            ]
+                                                                        },
+                                                                        "{Region}"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "isValidHostLabel",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "ParsedArn"
+                                                                                },
+                                                                                "accountId"
+                                                                            ]
+                                                                        },
+                                                                        false
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {
+                                                                    "metricValues": [
+                                                                        "O"
+                                                                    ]
+                                                                },
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "isSet",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "AccountIdEndpointMode"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "not",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "stringEquals",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "AccountIdEndpointMode"
+                                                                                },
+                                                                                "disabled"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "name"
+                                                                            ]
+                                                                        },
+                                                                        "aws"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "not",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "booleanEquals",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "UseFIPS"
+                                                                                },
+                                                                                true
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "isSet",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "ResourceArnList"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "ResourceArnList"
+                                                                        },
+                                                                        "[0]"
+                                                                    ],
+                                                                    "assign": "FirstArn"
+                                                                },
+                                                                {
+                                                                    "fn": "aws.parseArn",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "FirstArn"
+                                                                        }
+                                                                    ],
+                                                                    "assign": "ParsedArn"
+                                                                },
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "ParsedArn"
+                                                                                },
+                                                                                "service"
+                                                                            ]
+                                                                        },
+                                                                        "dynamodb"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "isValidHostLabel",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "ParsedArn"
+                                                                                },
+                                                                                "region"
+                                                                            ]
+                                                                        },
+                                                                        false
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "ParsedArn"
+                                                                                },
+                                                                                "region"
+                                                                            ]
+                                                                        },
+                                                                        "{Region}"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "isValidHostLabel",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "ParsedArn"
+                                                                                },
+                                                                                "accountId"
+                                                                            ]
+                                                                        },
+                                                                        false
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {
+                                                                    "metricValues": [
+                                                                        "O"
+                                                                    ]
+                                                                },
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "isSet",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "AccountIdEndpointMode"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "not",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "stringEquals",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "AccountIdEndpointMode"
+                                                                                },
+                                                                                "disabled"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "name"
+                                                                            ]
+                                                                        },
+                                                                        "aws"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "not",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "booleanEquals",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "UseFIPS"
+                                                                                },
+                                                                                true
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "isSet",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "AccountId"
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [
+                                                                        {
+                                                                            "fn": "isValidHostLabel",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "AccountId"
+                                                                                },
+                                                                                false
+                                                                            ]
+                                                                        }
+                                                                    ],
+                                                                    "rules": [
+                                                                        {
+                                                                            "conditions": [],
+                                                                            "endpoint": {
+                                                                                "url": "https://{AccountId}.ddb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                                "properties": {
+                                                                                    "metricValues": [
+                                                                                        "O"
+                                                                                    ]
+                                                                                },
+                                                                                "headers": {}
+                                                                            },
+                                                                            "type": "endpoint"
+                                                                        }
+                                                                    ],
+                                                                    "type": "tree"
+                                                                },
+                                                                {
+                                                                    "conditions": [],
+                                                                    "error": "Credentials-sourced account ID parameter is invalid",
+                                                                    "type": "error"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "isSet",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "AccountIdEndpointMode"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
                                                                     "fn": "stringEquals",
                                                                     "argv": [
                                                                         {
@@ -4481,8 +5123,35 @@
                                                                     ],
                                                                     "rules": [
                                                                         {
+                                                                            "conditions": [
+                                                                                {
+                                                                                    "fn": "stringEquals",
+                                                                                    "argv": [
+                                                                                        {
+                                                                                            "fn": "getAttr",
+                                                                                            "argv": [
+                                                                                                {
+                                                                                                    "ref": "PartitionResult"
+                                                                                                },
+                                                                                                "name"
+                                                                                            ]
+                                                                                        },
+                                                                                        "aws"
+                                                                                    ]
+                                                                                }
+                                                                            ],
+                                                                            "rules": [
+                                                                                {
+                                                                                    "conditions": [],
+                                                                                    "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded",
+                                                                                    "type": "error"
+                                                                                }
+                                                                            ],
+                                                                            "type": "tree"
+                                                                        },
+                                                                        {
                                                                             "conditions": [],
-                                                                            "error": "Invalid Configuration: AccountIdEndpointMode is required and DualStack is enabled, but DualStack account endpoints are not supported",
+                                                                            "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition",
                                                                             "type": "error"
                                                                         }
                                                                     ],
@@ -4570,20 +5239,6 @@
                                                     ]
                                                 },
                                                 {
-                                                    "fn": "not",
-                                                    "argv": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ]
-                                                },
-                                                {
                                                     "fn": "isSet",
                                                     "argv": [
                                                         {
@@ -4663,7 +5318,11 @@
                                             ],
                                             "endpoint": {
                                                 "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dnsSuffix}",
-                                                "properties": {},
+                                                "properties": {
+                                                    "metricValues": [
+                                                        "O"
+                                                    ]
+                                                },
                                                 "headers": {}
                                             },
                                             "type": "endpoint"
@@ -4715,20 +5374,6 @@
                                                             "argv": [
                                                                 {
                                                                     "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "fn": "not",
-                                                    "argv": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
                                                                 },
                                                                 true
                                                             ]
@@ -4825,7 +5470,11 @@
                                             ],
                                             "endpoint": {
                                                 "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dnsSuffix}",
-                                                "properties": {},
+                                                "properties": {
+                                                    "metricValues": [
+                                                        "O"
+                                                    ]
+                                                },
                                                 "headers": {}
                                             },
                                             "type": "endpoint"
@@ -4884,20 +5533,6 @@
                                                     ]
                                                 },
                                                 {
-                                                    "fn": "not",
-                                                    "argv": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ]
-                                                },
-                                                {
                                                     "fn": "isSet",
                                                     "argv": [
                                                         {
@@ -4924,7 +5559,11 @@
                                                             "conditions": [],
                                                             "endpoint": {
                                                                 "url": "https://{AccountId}.ddb.{Region}.{PartitionResult#dnsSuffix}",
-                                                                "properties": {},
+                                                                "properties": {
+                                                                    "metricValues": [
+                                                                        "O"
+                                                                    ]
+                                                                },
                                                                 "headers": {}
                                                             },
                                                             "type": "endpoint"
@@ -4982,51 +5621,25 @@
                                                         {
                                                             "conditions": [
                                                                 {
-                                                                    "fn": "not",
+                                                                    "fn": "stringEquals",
                                                                     "argv": [
                                                                         {
-                                                                            "fn": "booleanEquals",
+                                                                            "fn": "getAttr",
                                                                             "argv": [
                                                                                 {
-                                                                                    "ref": "UseDualStack"
+                                                                                    "ref": "PartitionResult"
                                                                                 },
-                                                                                true
+                                                                                "name"
                                                                             ]
-                                                                        }
+                                                                        },
+                                                                        "aws"
                                                                     ]
                                                                 }
                                                             ],
                                                             "rules": [
                                                                 {
-                                                                    "conditions": [
-                                                                        {
-                                                                            "fn": "stringEquals",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "fn": "getAttr",
-                                                                                    "argv": [
-                                                                                        {
-                                                                                            "ref": "PartitionResult"
-                                                                                        },
-                                                                                        "name"
-                                                                                    ]
-                                                                                },
-                                                                                "aws"
-                                                                            ]
-                                                                        }
-                                                                    ],
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded",
-                                                                            "type": "error"
-                                                                        }
-                                                                    ],
-                                                                    "type": "tree"
-                                                                },
-                                                                {
                                                                     "conditions": [],
-                                                                    "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition",
+                                                                    "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded",
                                                                     "type": "error"
                                                                 }
                                                             ],
@@ -5034,7 +5647,7 @@
                                                         },
                                                         {
                                                             "conditions": [],
-                                                            "error": "Invalid Configuration: AccountIdEndpointMode is required and DualStack is enabled, but DualStack account endpoints are not supported",
+                                                            "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition",
                                                             "type": "error"
                                                         }
                                                     ],
@@ -5641,17 +6254,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -5662,17 +6264,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -5689,17 +6280,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -5710,17 +6290,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -7867,8 +8436,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -7903,8 +8472,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -7955,8 +8524,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -7983,8 +8552,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8011,8 +8580,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8039,8 +8608,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8067,8 +8636,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8095,8 +8664,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8170,8 +8739,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8208,8 +8777,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8246,8 +8815,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8284,8 +8853,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8353,8 +8922,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8403,8 +8972,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8430,8 +8999,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8492,8 +9061,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8528,8 +9097,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8580,8 +9149,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8608,8 +9177,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8636,8 +9205,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8664,8 +9233,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8692,8 +9261,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8720,8 +9289,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8795,8 +9364,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8833,8 +9402,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8871,8 +9440,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8909,8 +9478,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -8978,8 +9547,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9028,8 +9597,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9055,8 +9624,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9117,8 +9686,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9153,8 +9722,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9205,8 +9774,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9233,8 +9802,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9261,8 +9830,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9289,8 +9858,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9317,8 +9886,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9345,8 +9914,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9420,8 +9989,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9458,8 +10027,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9496,8 +10065,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9534,8 +10103,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9603,8 +10172,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9653,8 +10222,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9680,8 +10249,8 @@
                                         "authSchemes": [
                                             {
                                                 "name": "sigv4",
-                                                "signingRegion": "us-east-1",
-                                                "signingName": "dynamodb"
+                                                "signingName": "dynamodb",
+                                                "signingRegion": "us-east-1"
                                             }
                                         ]
                                     },
@@ -9753,7 +10322,12 @@
                             "documentation": "{UseFIPS=false, UseDualStack=true, AccountId=111111111111, AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://dynamodb.us-east-1.api.aws"
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
+                                    "url": "https://111111111111.ddb.us-east-1.api.aws"
                                 }
                             },
                             "operationInputs": [
@@ -9780,6 +10354,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://111111111111.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -9807,6 +10386,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://333333333333.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -9850,6 +10434,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://222222222222.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -9869,6 +10458,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArn=arn:aws:dynamodb:us-west-2:222222222222:table/table_name, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://333333333333.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -9888,6 +10482,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArn=arn:aws:s3:us-west-2:222222222222:stream/testStream, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://333333333333.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -9907,6 +10506,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArn=arn:aws:dynamodb:us-west-2:222222222222:table/table_name, ResourceArnList=[arn:aws:dynamodb:us-west-2:333333333333:table/table_name], AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://111111111111.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -9926,6 +10530,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArn=arn:aws:s3:us-west-2:222222222222:stream/testStream, ResourceArnList=[arn:aws:s3:us-east-1:333333333333:stream/testStream], AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://111111111111.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10028,7 +10637,12 @@
                             "documentation": "{UseFIPS=false, UseDualStack=true, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://dynamodb.us-east-1.api.aws"
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
+                                    "url": "https://222222222222.ddb.us-east-1.api.aws"
                                 }
                             },
                             "operationInputs": [
@@ -10057,6 +10671,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://222222222222.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10241,7 +10860,12 @@
                             "documentation": "{UseFIPS=false, UseDualStack=true, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://dynamodb.us-east-1.api.aws"
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
+                                    "url": "https://333333333333.ddb.us-east-1.api.aws"
                                 }
                             },
                             "operationInputs": [
@@ -10282,6 +10906,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://333333333333.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10323,6 +10952,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=preferred, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://222222222222.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10404,7 +11038,14 @@
                         {
                             "documentation": "{UseFIPS=false, UseDualStack=true, AccountId=111111111111, AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
-                                "error": "Invalid Configuration: AccountIdEndpointMode is required and DualStack is enabled, but DualStack account endpoints are not supported"
+                                "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
+                                    "url": "https://111111111111.ddb.us-east-1.api.aws"
+                                }
                             },
                             "operationInputs": [
                                 {
@@ -10430,6 +11071,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://111111111111.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10457,6 +11103,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://333333333333.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10500,6 +11151,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://222222222222.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10519,6 +11175,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArn=arn:aws:dynamodb:us-west-2:222222222222:table/table_name, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://333333333333.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10538,6 +11199,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArn=arn:aws:s3:us-west-2:222222222222:stream/testStream, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://333333333333.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10557,6 +11223,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArn=arn:aws:dynamodb:us-west-2:222222222222:table/table_name, ResourceArnList=[arn:aws:dynamodb:us-west-2:333333333333:table/table_name], AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://111111111111.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10576,6 +11247,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, AccountId=111111111111, ResourceArn=arn:aws:s3:us-west-2:222222222222:stream/testStream, ResourceArnList=[arn:aws:s3:us-east-1:333333333333:stream/testStream], AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://111111111111.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10673,7 +11349,14 @@
                         {
                             "documentation": "{UseFIPS=false, UseDualStack=true, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
-                                "error": "Invalid Configuration: AccountIdEndpointMode is required and DualStack is enabled, but DualStack account endpoints are not supported"
+                                "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
+                                    "url": "https://222222222222.ddb.us-east-1.api.aws"
+                                }
                             },
                             "operationInputs": [
                                 {
@@ -10701,6 +11384,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://222222222222.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10874,7 +11562,14 @@
                         {
                             "documentation": "{UseFIPS=false, UseDualStack=true, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
-                                "error": "Invalid Configuration: AccountIdEndpointMode is required and DualStack is enabled, but DualStack account endpoints are not supported"
+                                "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
+                                    "url": "https://333333333333.ddb.us-east-1.api.aws"
+                                }
                             },
                             "operationInputs": [
                                 {
@@ -10914,6 +11609,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://333333333333.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -10955,6 +11655,11 @@
                             "documentation": "{UseFIPS=false, UseDualStack=false, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=required, Region=us-east-1}",
                             "expect": {
                                 "endpoint": {
+                                    "properties": {
+                                        "metricValues": [
+                                            "O"
+                                        ]
+                                    },
                                     "url": "https://222222222222.ddb.us-east-1.amazonaws.com"
                                 }
                             },
@@ -11010,7 +11715,7 @@
                         {
                             "documentation": "{UseFIPS=false, UseDualStack=true, AccountId=111111111111, AccountIdEndpointMode=required, Region=cn-north-1}",
                             "expect": {
-                                "error": "Invalid Configuration: AccountIdEndpointMode is required and DualStack is enabled, but DualStack account endpoints are not supported"
+                                "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition"
                             },
                             "params": {
                                 "UseFIPS": false,
@@ -11225,7 +11930,7 @@
                         {
                             "documentation": "{UseFIPS=false, UseDualStack=true, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, AccountIdEndpointMode=required, Region=cn-north-1}",
                             "expect": {
-                                "error": "Invalid Configuration: AccountIdEndpointMode is required and DualStack is enabled, but DualStack account endpoints are not supported"
+                                "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition"
                             },
                             "params": {
                                 "UseFIPS": false,
@@ -11362,7 +12067,7 @@
                         {
                             "documentation": "{UseFIPS=false, UseDualStack=true, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=required, Region=cn-north-1}",
                             "expect": {
-                                "error": "Invalid Configuration: AccountIdEndpointMode is required and DualStack is enabled, but DualStack account endpoints are not supported"
+                                "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition"
                             },
                             "params": {
                                 "UseFIPS": false,
@@ -12610,7 +13315,9 @@
                         {
                             "documentation": "{UseFIPS=true, UseDualStack=true, AccountId=111111111111, AccountIdEndpointMode=preferred, Region=us-iso-east-1}",
                             "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+                                "endpoint": {
+                                    "url": "https://dynamodb-fips.us-iso-east-1.api.aws.ic.gov"
+                                }
                             },
                             "params": {
                                 "UseFIPS": true,
@@ -12638,7 +13345,9 @@
                         {
                             "documentation": "{UseFIPS=false, UseDualStack=true, AccountId=111111111111, AccountIdEndpointMode=preferred, Region=us-iso-east-1}",
                             "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
+                                "endpoint": {
+                                    "url": "https://dynamodb.us-iso-east-1.api.aws.ic.gov"
+                                }
                             },
                             "params": {
                                 "UseFIPS": false,
@@ -12843,7 +13552,9 @@
                         {
                             "documentation": "{UseFIPS=true, UseDualStack=true, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, AccountIdEndpointMode=preferred, Region=us-iso-east-1}",
                             "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+                                "endpoint": {
+                                    "url": "https://dynamodb-fips.us-iso-east-1.api.aws.ic.gov"
+                                }
                             },
                             "params": {
                                 "UseFIPS": true,
@@ -12871,7 +13582,9 @@
                         {
                             "documentation": "{UseFIPS=false, UseDualStack=true, ResourceArn=arn:aws:dynamodb:us-east-1:222222222222:table/table_name, AccountIdEndpointMode=preferred, Region=us-iso-east-1}",
                             "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
+                                "endpoint": {
+                                    "url": "https://dynamodb.us-iso-east-1.api.aws.ic.gov"
+                                }
                             },
                             "params": {
                                 "UseFIPS": false,
@@ -12986,7 +13699,9 @@
                         {
                             "documentation": "{UseFIPS=true, UseDualStack=true, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=preferred, Region=us-iso-east-1}",
                             "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+                                "endpoint": {
+                                    "url": "https://dynamodb-fips.us-iso-east-1.api.aws.ic.gov"
+                                }
                             },
                             "params": {
                                 "UseFIPS": true,
@@ -13018,7 +13733,9 @@
                         {
                             "documentation": "{UseFIPS=false, UseDualStack=true, ResourceArnList=[arn:aws:dynamodb:us-east-1:333333333333:table/table_name], AccountIdEndpointMode=preferred, Region=us-iso-east-1}",
                             "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
+                                "endpoint": {
+                                    "url": "https://dynamodb.us-iso-east-1.api.aws.ic.gov"
+                                }
                             },
                             "params": {
                                 "UseFIPS": false,
@@ -13610,6 +14327,80 @@
                                 "AccountIdEndpointMode": "preferred",
                                 "Region": "us-gov-east-1"
                             }
+                        },
+                        {
+                            "documentation": "{Endpoint=https://dynamodb.eu-west-1.api.aws, Region=eu-west-1}",
+                            "expect": {
+                                "error": "Endpoint override is not supported for dual-stack endpoints. Please enable dual-stack functionality by enabling the configuration. For more details, see: https://docs.aws.amazon.com/sdkref/latest/guide/feature-endpoints.html"
+                            },
+                            "params": {
+                                "Endpoint": "https://dynamodb.eu-west-1.api.aws",
+                                "Region": "eu-west-1"
+                            }
+                        },
+                        {
+                            "documentation": "{Endpoint=https://dynamodb.us-west-2.api.aws, Region=us-west-2}",
+                            "expect": {
+                                "error": "Endpoint override is not supported for dual-stack endpoints. Please enable dual-stack functionality by enabling the configuration. For more details, see: https://docs.aws.amazon.com/sdkref/latest/guide/feature-endpoints.html"
+                            },
+                            "params": {
+                                "Endpoint": "https://dynamodb.us-west-2.api.aws",
+                                "Region": "us-west-2"
+                            }
+                        },
+                        {
+                            "documentation": "{Endpoint=https://dynamodb.cn-north-1.api.amazonwebservices.com.cn, Region=cn-north-1}",
+                            "expect": {
+                                "error": "Endpoint override is not supported for dual-stack endpoints. Please enable dual-stack functionality by enabling the configuration. For more details, see: https://docs.aws.amazon.com/sdkref/latest/guide/feature-endpoints.html"
+                            },
+                            "params": {
+                                "Endpoint": "https://dynamodb.cn-north-1.api.amazonwebservices.com.cn",
+                                "Region": "cn-north-1"
+                            }
+                        },
+                        {
+                            "documentation": "{Endpoint=https://dynamodb.us-gov-east-1.api.aws, Region=us-gov-east-1}",
+                            "expect": {
+                                "error": "Endpoint override is not supported for dual-stack endpoints. Please enable dual-stack functionality by enabling the configuration. For more details, see: https://docs.aws.amazon.com/sdkref/latest/guide/feature-endpoints.html"
+                            },
+                            "params": {
+                                "Endpoint": "https://dynamodb.us-gov-east-1.api.aws",
+                                "Region": "us-gov-east-1"
+                            }
+                        },
+                        {
+                            "documentation": "{Endpoint=https://dynamodb.us-east-1.api.aws, Region=us-east-1}",
+                            "expect": {
+                                "error": "Endpoint override is not supported for dual-stack endpoints. Please enable dual-stack functionality by enabling the configuration. For more details, see: https://docs.aws.amazon.com/sdkref/latest/guide/feature-endpoints.html"
+                            },
+                            "params": {
+                                "Endpoint": "https://dynamodb.us-east-1.api.aws",
+                                "Region": "us-east-1"
+                            }
+                        },
+                        {
+                            "documentation": "{Endpoint=https://111111111111.ddb.us-east-1.api.aws, Region=us-east-1}",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://111111111111.ddb.us-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Endpoint": "https://111111111111.ddb.us-east-1.api.aws",
+                                "Region": "us-east-1"
+                            }
+                        },
+                        {
+                            "documentation": "{Endpoint=https://vpce-1a2b3c4d-5e6f.dynamodb.us-east-1.vpce.api.aws, Region=us-east-1}",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://vpce-1a2b3c4d-5e6f.dynamodb.us-east-1.vpce.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Endpoint": "https://vpce-1a2b3c4d-5e6f.dynamodb.us-east-1.vpce.api.aws",
+                                "Region": "us-east-1"
+                            }
                         }
                     ],
                     "version": "1.0"
@@ -13740,6 +14531,9 @@
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
                 },
                 {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
+                },
+                {
                     "target": "com.amazonaws.dynamodb#TransactionConflictException"
                 }
             ],
@@ -13847,6 +14641,9 @@
                 },
                 {
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
                 },
                 {
                     "target": "com.amazonaws.dynamodb#TransactionCanceledException"
@@ -14484,6 +15281,9 @@
                 },
                 {
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
                 }
             ],
             "traits": {
@@ -15875,8 +16675,7 @@
             },
             "traits": {
                 "smithy.api#length": {
-                    "min": 1,
-                    "max": 2
+                    "min": 1
                 }
             }
         },
@@ -17229,10 +18028,16 @@
                     "traits": {
                         "smithy.api#documentation": "<p>You exceeded your maximum allowed provisioned throughput.</p>"
                     }
+                },
+                "ThrottlingReasons": {
+                    "target": "com.amazonaws.dynamodb#ThrottlingReasonList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> that\n     provide detailed diagnostic information about why the request was throttled.\n    </p>"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Your request rate is too high. The Amazon Web Services SDKs for DynamoDB\n            automatically retry requests that receive this exception. Your request is eventually\n            successful, unless your retry queue is too large to finish. Reduce the frequency of\n            requests and use exponential backoff. For more information, go to <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html#Programming.Errors.RetryAndBackoff\">Error Retries and Exponential Backoff</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>",
+                "smithy.api#documentation": "<p>The request was denied due to request throttling. For detailed information about\n            why the request was throttled and the ARN of the impacted resource, find the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> field in the returned exception. The Amazon Web Services\n            SDKs for DynamoDB automatically retry requests that receive this exception.\n            Your request is eventually successful, unless your retry queue is too large to finish.\n            Reduce the frequency of requests and use exponential backoff. For more information, go\n            to <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html#Programming.Errors.RetryAndBackoff\">Error Retries and Exponential Backoff</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>",
                 "smithy.api#error": "client"
             }
         },
@@ -17328,6 +18133,9 @@
                 },
                 {
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
                 },
                 {
                     "target": "com.amazonaws.dynamodb#TransactionConflictException"
@@ -17606,6 +18414,9 @@
                 },
                 {
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
                 }
             ],
             "traits": {
@@ -17804,6 +18615,9 @@
                 "smithy.api#documentation": "<p>Represents the output of a <code>Query</code> operation.</p>",
                 "smithy.api#output": {}
             }
+        },
+        "com.amazonaws.dynamodb#Reason": {
+            "type": "string"
         },
         "com.amazonaws.dynamodb#RecoveryPeriodInDays": {
             "type": "integer",
@@ -18501,12 +19315,21 @@
             "members": {
                 "message": {
                     "target": "com.amazonaws.dynamodb#ErrorMessage"
+                },
+                "ThrottlingReasons": {
+                    "target": "com.amazonaws.dynamodb#ThrottlingReasonList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> that\n     provide detailed diagnostic information about why the request was throttled.\n    </p>"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Throughput exceeds the current throughput quota for your account. Please contact\n                <a href=\"https://aws.amazon.com/support\">Amazon Web ServicesSupport</a> to request a\n            quota increase.</p>",
+                "smithy.api#documentation": "<p>Throughput exceeds the current throughput quota for your account. For detailed\n            information about why the request was throttled and the ARN of the impacted resource,\n            find the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> field in the returned exception. Contact <a href=\"https://aws.amazon.com/support\">Amazon Web Services Support</a> to request a quota\n            increase.</p>",
                 "smithy.api#error": "client"
             }
+        },
+        "com.amazonaws.dynamodb#Resource": {
+            "type": "string"
         },
         "com.amazonaws.dynamodb#ResourceArnString": {
             "type": "string",
@@ -19159,6 +19982,9 @@
                 },
                 {
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
                 }
             ],
             "traits": {
@@ -20146,6 +20972,55 @@
                 }
             }
         },
+        "com.amazonaws.dynamodb#ThrottlingException": {
+            "type": "structure",
+            "members": {
+                "message": {
+                    "target": "com.amazonaws.dynamodb#AvailabilityErrorMessage"
+                },
+                "throttlingReasons": {
+                    "target": "com.amazonaws.dynamodb#ThrottlingReasonList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> that\n     provide detailed diagnostic information about why the request was throttled.\n    </p>"
+                    }
+                }
+            },
+            "traits": {
+                "aws.protocols#awsQueryError": {
+                    "code": "Throttling",
+                    "httpResponseCode": 400
+                },
+                "smithy.api#documentation": "<p>The request was denied due to request throttling. For detailed information about why\n            the request was throttled and the ARN of the impacted resource, find the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> field in the returned exception.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 400
+            }
+        },
+        "com.amazonaws.dynamodb#ThrottlingReason": {
+            "type": "structure",
+            "members": {
+                "reason": {
+                    "target": "com.amazonaws.dynamodb#Reason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason for throttling. The throttling reason follows a specific format:\n                <code>ResourceType+OperationType+LimitType</code>:</p>\n         <ul>\n            <li>\n               <p>Resource Type (What is being throttled): Table or Index</p>\n            </li>\n            <li>\n               <p>Operation Type (What kind of operation): Read or Write</p>\n            </li>\n            <li>\n               <p>Limit Type (Why the throttling occurred):</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>ProvisionedThroughputExceeded</code>: The request rate is\n                            exceeding the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html\">provisioned throughput capacity</a> (read or write capacity\n                            units) configured for a table or a global secondary index (GSI) in\n                            provisioned capacity mode.</p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>AccountLimitExceeded</code>: The request rate has caused a table\n                            or global secondary index (GSI) in on-demand mode to exceed the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ServiceQuotas.html#default-limits-throughput\">per-table account-level service quotas</a> for read/write\n                            throughput in the current Amazon Web Services Region. </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>KeyRangeThroughputExceeded</code>: The request rate directed at\n                            a specific partition key value has exceeded the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html\">internal partition-level throughput limits</a>, indicating\n                            uneven access patterns across the table's or GSI's key space.</p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>MaxOnDemandThroughputExceeded</code>: The request rate has\n                            exceeded the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode-max-throughput.html\">configured maximum throughput limits</a> set for a table or\n                            index in on-demand capacity mode.</p>\n                  </li>\n               </ul>\n            </li>\n         </ul>\n         <p>Examples of complete throttling reasons:</p>\n         <ul>\n            <li>\n               <p>TableReadProvisionedThroughputExceeded</p>\n            </li>\n            <li>\n               <p>IndexWriteAccountLimitExceeded</p>\n            </li>\n         </ul>\n         <p>This helps identify exactly what resource is being throttled, what type of operation\n            caused it, and why the throttling occurred.</p>"
+                    }
+                },
+                "resource": {
+                    "target": "com.amazonaws.dynamodb#Resource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the DynamoDB table or index that experienced the\n            throttling event.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Represents the specific reason why a DynamoDB request was throttled and the\n            ARN of the impacted resource. This helps identify exactly what resource is being throttled, \n            what type of operation caused it, and why the throttling occurred.</p>"
+            }
+        },
+        "com.amazonaws.dynamodb#ThrottlingReasonList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.dynamodb#ThrottlingReason"
+            }
+        },
         "com.amazonaws.dynamodb#TimeRangeLowerBound": {
             "type": "timestamp"
         },
@@ -20287,6 +21162,9 @@
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
                 },
                 {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
+                },
+                {
                     "target": "com.amazonaws.dynamodb#TransactionCanceledException"
                 }
             ],
@@ -20413,6 +21291,9 @@
                 },
                 {
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
                 },
                 {
                     "target": "com.amazonaws.dynamodb#TransactionCanceledException"
@@ -20749,6 +21630,12 @@
                         "smithy.api#documentation": "<p>Represents the contributor insights action.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "ContributorInsightsMode": {
+                    "target": "com.amazonaws.dynamodb#ContributorInsightsMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to track all access and throttled events or throttled events only for\n            the DynamoDB table or index.</p>"
+                    }
                 }
             },
             "traits": {
@@ -20774,6 +21661,12 @@
                     "target": "com.amazonaws.dynamodb#ContributorInsightsStatus",
                     "traits": {
                         "smithy.api#documentation": "<p>The status of contributor insights</p>"
+                    }
+                },
+                "ContributorInsightsMode": {
+                    "target": "com.amazonaws.dynamodb#ContributorInsightsMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated mode of CloudWatch Contributor Insights that determines whether to monitor\n            all access and throttled events or to track throttled events exclusively.</p>"
                     }
                 }
             },
@@ -21029,6 +21922,9 @@
                 },
                 {
                     "target": "com.amazonaws.dynamodb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.dynamodb#ThrottlingException"
                 },
                 {
                     "target": "com.amazonaws.dynamodb#TransactionConflictException"

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import aws.sdk.kotlin.gradle.dsl.configureLinting
-import aws.sdk.kotlin.gradle.dsl.configureNexus
-import aws.sdk.kotlin.gradle.kmp.configureIosSimulatorTasks
+import aws.sdk.kotlin.gradle.dsl.configureMinorVersionStrategyRules
+import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalPublishTask
+import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalWaitForPublicationTask
 import aws.sdk.kotlin.gradle.util.typedProp
 
 buildscript {
@@ -15,6 +16,18 @@ buildscript {
         // Add our custom gradle build logic to buildscript classpath
         classpath(libs.aws.kotlin.repo.tools.build.support)
     }
+
+    configurations.classpath {
+        resolutionStrategy {
+            /*
+            Version bumping the SDK to 1.5.x in repo tools broke our buildscript classpath:
+            java.lang.NoSuchMethodError: 'void kotlinx.coroutines.CancellableContinuation.resume(java.lang.Object, kotlin.jvm.functions.Function3)
+
+            FIXME: Figure out what broke our buildscript classpath, this is a temporary fix
+             */
+            force("com.squareup.okhttp3:okhttp-coroutines:5.0.0-alpha.14")
+        }
+    }
 }
 
 plugins {
@@ -22,15 +35,6 @@ plugins {
     // ensure the correct version of KGP ends up on our buildscript classpath
     id(libs.plugins.kotlin.multiplatform.get().pluginId) apply false
     id(libs.plugins.kotlin.jvm.get().pluginId) apply false
-    alias(libs.plugins.aws.kotlin.repo.tools.artifactsizemetrics)
-    alias(libs.plugins.aws.kotlin.repo.tools.kmp)
-}
-
-artifactSizeMetrics {
-    artifactPrefixes = setOf(":services", ":aws-runtime")
-    closurePrefixes = setOf(":services")
-    significantChangeThresholdPercentage = 5.0
-    projectRepositoryName = "aws-sdk-kotlin"
 }
 
 val testJavaVersion = typedProp<String>("test.java.version")?.let {
@@ -59,8 +63,6 @@ allprojects {
 
     // Enables running `./gradlew allDeps` to get a comprehensive list of dependencies for every subproject
     tasks.register<DependencyReportTask>("allDeps") { }
-
-    configureIosSimulatorTasks()
 }
 
 // Configure root module's documentation
@@ -81,12 +83,6 @@ dependencies {
     dokka(project(":hll"))
 }
 
-// Publishing
-configureNexus(
-    nexusUrl = "https://aws.oss.sonatype.org/service/local/",
-    snapshotRepositoryUrl = "https://aws.oss.sonatype.org/content/repositories/snapshots/",
-)
-
 // Code Style
 val lintPaths = listOf(
     "**/*.{kt,kts}",
@@ -98,3 +94,7 @@ val lintPaths = listOf(
 )
 
 configureLinting(lintPaths)
+configureMinorVersionStrategyRules(lintPaths)
+
+tasks.register<SonatypeCentralPortalPublishTask>("publishToCentralPortal") { }
+tasks.register<SonatypeCentralPortalWaitForPublicationTask>("waitForCentralPortalPublication") { }

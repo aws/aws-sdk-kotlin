@@ -111,6 +111,59 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.paymentcryptographydata#As2805KekValidationType": {
+            "type": "union",
+            "members": {
+                "KekValidationRequest": {
+                    "target": "com.amazonaws.paymentcryptographydata#KekValidationRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Parameter information for generating a KEK validation request during node-to-node initialization.</p>"
+                    }
+                },
+                "KekValidationResponse": {
+                    "target": "com.amazonaws.paymentcryptographydata#KekValidationResponse",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Parameter information for generating a KEK validation response during node-to-node initialization.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameter information for generating a random key for KEK validation to perform node-to-node initialization.</p>"
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#As2805PekDerivationAttributes": {
+            "type": "structure",
+            "members": {
+                "SystemTraceAuditNumber": {
+                    "target": "com.amazonaws.paymentcryptographydata#SystemTraceAuditNumberType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The system trace audit number for the transaction.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TransactionAmount": {
+                    "target": "com.amazonaws.paymentcryptographydata#TransactionAmountType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The transaction amount for the transaction.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameter information to use a PEK derived using AS2805.</p>"
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#As2805RandomKeyMaterial": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 32,
+                    "max": 48
+                },
+                "smithy.api#pattern": "^(?:[0-9a-fA-F]{32}|[0-9a-fA-F]{48})$",
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.paymentcryptographydata#AsymmetricEncryptionAttributes": {
             "type": "structure",
             "members": {
@@ -331,8 +384,7 @@
                     "min": 1,
                     "max": 32768
                 },
-                "smithy.api#pattern": "^[^\\[;\\]<>]+$",
-                "smithy.api#sensitive": {}
+                "smithy.api#pattern": "^[^\\[;\\]<>]+$"
             }
         },
         "com.amazonaws.paymentcryptographydata#CipherTextType": {
@@ -581,6 +633,20 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Parameters to derive the payment card specific confidentiality and integrity keys.</p>"
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#DiffieHellmanDerivationData": {
+            "type": "union",
+            "members": {
+                "SharedInformation": {
+                    "target": "com.amazonaws.paymentcryptographydata#SharedInformation",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A string containing information that binds the ECDH derived key to the two parties involved or to the context of the key.</p> <p>It may include details like identities of the two parties deriving the key, context of the operation, session IDs, and optionally a nonce. It must not contain zero bytes. It is not recommended to reuse shared information for multiple ECDH key derivations, as it could result in derived key material being the same across different derivations.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The shared information used when deriving a key using ECDH.</p>"
             }
         },
         "com.amazonaws.paymentcryptographydata#DiscoverDynamicCardVerificationCode": {
@@ -1260,6 +1326,105 @@
                 }
             }
         },
+        "com.amazonaws.paymentcryptographydata#GenerateAs2805KekValidation": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.paymentcryptographydata#GenerateAs2805KekValidationInput"
+            },
+            "output": {
+                "target": "com.amazonaws.paymentcryptographydata#GenerateAs2805KekValidationOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Establishes node-to-node initialization between payment processing nodes such as an acquirer, issuer or payment network using Australian Standard 2805 (AS2805).</p> <p>During node-to-node initialization, both communicating nodes must validate that they possess the correct Key Encrypting Keys (KEKs) before proceeding with session key exchange. In AS2805, the sending KEK (KEKs) of one node corresponds to the receiving KEK (KEKr) of its partner node. Each node uses its KEK to encrypt and decrypt session keys exchanged between the nodes. A KEK can be created or imported into Amazon Web Services Payment Cryptography using either the <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateKey.html\">CreateKey</a> or <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ImportKey.html\">ImportKey</a> operations.</p> <p>The node initiating communication can use <code>GenerateAS2805KekValidation</code> to generate a combined KEK validation request and KEK validation response to send to the partnering node for validation. When invoked, the API internally generates a random sending key encrypted under KEKs and provides a receiving key encrypted under KEKr as response. The initiating node sends the response returned by this API to its partner for validation.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>. </p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/as2805kekvalidation/generate",
+                    "code": 200
+                }
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#GenerateAs2805KekValidationInput": {
+            "type": "structure",
+            "members": {
+                "KeyIdentifier": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyArnOrKeyAliasType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The <code>keyARN</code> of sending KEK that Amazon Web Services Payment Cryptography uses for node-to-node initialization</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "KekValidationType": {
+                    "target": "com.amazonaws.paymentcryptographydata#As2805KekValidationType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Parameter information for generating a random key for KEK validation to perform node-to-node initialization.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "RandomKeySendVariantMask": {
+                    "target": "com.amazonaws.paymentcryptographydata#RandomKeySendVariantMask",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key variant to use for generating a random key for KEK validation during node-to-node initialization.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#GenerateAs2805KekValidationOutput": {
+            "type": "structure",
+            "members": {
+                "KeyArn": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The <code>keyARN</code> of sending KEK that Amazon Web Services Payment Cryptography validates for node-to-node initialization</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "KeyCheckValue": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyCheckValue",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key check value (KCV) of the sending KEK that Amazon Web Services Payment Cryptography validates for node-to-node initialization.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "RandomKeySend": {
+                    "target": "com.amazonaws.paymentcryptographydata#As2805RandomKeyMaterial",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The random key generated for sending KEK validation.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "RandomKeyReceive": {
+                    "target": "com.amazonaws.paymentcryptographydata#As2805RandomKeyMaterial",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The random key generated for receiving KEK validation. The initiating node sends this key to its partner node for validation.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.paymentcryptographydata#GenerateCardValidationData": {
             "type": "operation",
             "input": {
@@ -1384,7 +1549,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Generates a Message Authentication Code (MAC) cryptogram within Amazon Web Services Payment Cryptography. </p> <p>You can use this operation to authenticate card-related data by using known data values to generate MAC for data validation between the sending and receiving parties. This operation uses message data, a secret encryption key and MAC algorithm to generate a unique MAC value for transmission. The receiving party of the MAC must use the same message data, secret encryption key and MAC algorithm to reproduce another MAC value for comparision.</p> <p>You can use this operation to generate a DUPKT, CMAC, HMAC or EMV MAC by setting generation attributes and algorithm to the associated values. The MAC generation encryption key must have valid values for <code>KeyUsage</code> such as <code>TR31_M7_HMAC_KEY</code> for HMAC generation, and they key must have <code>KeyModesOfUse</code> set to <code>Generate</code> and <code>Verify</code>.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>. </p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>VerifyMac</a> </p> </li> </ul>",
+                "smithy.api#documentation": "<p>Generates a Message Authentication Code (MAC) cryptogram within Amazon Web Services Payment Cryptography. </p> <p>You can use this operation to authenticate card-related data by using known data values to generate MAC for data validation between the sending and receiving parties. This operation uses message data, a secret encryption key and MAC algorithm to generate a unique MAC value for transmission. The receiving party of the MAC must use the same message data, secret encryption key and MAC algorithm to reproduce another MAC value for comparision.</p> <p>You can use this operation to generate a DUPKT, CMAC, HMAC or EMV MAC by setting generation attributes and algorithm to the associated values. The MAC generation encryption key must have valid values for <code>KeyUsage</code> such as <code>TR31_M7_HMAC_KEY</code> for HMAC generation, and the key must have <code>KeyModesOfUse</code> set to <code>Generate</code>.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>. </p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>VerifyMac</a> </p> </li> </ul>",
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/mac/generate",
@@ -1684,14 +1849,13 @@
                 "PrimaryAccountNumber": {
                     "target": "com.amazonaws.paymentcryptographydata#PrimaryAccountNumberType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Primary Account Number (PAN), a unique identifier for a payment credit or debit card that associates the card with a specific account holder.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The Primary Account Number (PAN), a unique identifier for a payment credit or debit card that associates the card with a specific account holder.</p>"
                     }
                 },
                 "PinBlockFormat": {
                     "target": "com.amazonaws.paymentcryptographydata#PinBlockFormatForPinData",
                     "traits": {
-                        "smithy.api#documentation": "<p>The PIN encoding format for pin data generation as specified in ISO 9564. Amazon Web Services Payment Cryptography supports <code>ISO_Format_0</code> and <code>ISO_Format_3</code>.</p> <p>The <code>ISO_Format_0</code> PIN block format is equivalent to the ANSI X9.8, VISA-1, and ECI-1 PIN block formats. It is similar to a VISA-4 PIN block format. It supports a PIN from 4 to 12 digits in length.</p> <p>The <code>ISO_Format_3</code> PIN block format is the same as <code>ISO_Format_0</code> except that the fill digits are random values from 10 to 15.</p>",
+                        "smithy.api#documentation": "<p>The PIN encoding format for pin data generation as specified in ISO 9564. Amazon Web Services Payment Cryptography supports <code>ISO_Format_0</code>, <code>ISO_Format_3</code> and <code>ISO_Format_4</code>.</p> <p>The <code>ISO_Format_0</code> PIN block format is equivalent to the ANSI X9.8, VISA-1, and ECI-1 PIN block formats. It is similar to a VISA-4 PIN block format. It supports a PIN from 4 to 12 digits in length.</p> <p>The <code>ISO_Format_3</code> PIN block format is the same as <code>ISO_Format_0</code> except that the fill digits are random values from 10 to 15.</p> <p>The <code>ISO_Format_4</code> PIN block format is the only one supporting AES encryption.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1990,6 +2154,83 @@
                 "smithy.api#documentation": "<p>Parameters that are required to generate or verify Ibm3624 random PIN.</p>"
             }
         },
+        "com.amazonaws.paymentcryptographydata#IncomingDiffieHellmanTr31KeyBlock": {
+            "type": "structure",
+            "members": {
+                "PrivateKeyIdentifier": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyArnOrKeyAliasType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The <code>keyARN</code> of the asymmetric ECC key pair.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "CertificateAuthorityPublicKeyIdentifier": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyArnOrKeyAliasType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The <code>keyArn</code> of the certificate that signed the client's <code>PublicKeyCertificate</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PublicKeyCertificate": {
+                    "target": "com.amazonaws.paymentcryptographydata#CertificateType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The client's public key certificate in PEM format (base64 encoded) to use for ECDH key derivation.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DeriveKeyAlgorithm": {
+                    "target": "com.amazonaws.paymentcryptographydata#SymmetricKeyAlgorithm",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key algorithm of the derived ECDH key.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "KeyDerivationFunction": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyDerivationFunction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key derivation function to use for deriving a key using ECDH.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "KeyDerivationHashAlgorithm": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyDerivationHashAlgorithm",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The hash type to use for deriving a key using ECDH.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DerivationData": {
+                    "target": "com.amazonaws.paymentcryptographydata#DiffieHellmanDerivationData",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "WrappedKeyBlock": {
+                    "target": "com.amazonaws.paymentcryptographydata#Tr31WrappedKeyBlock",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The WrappedKeyBlock containing the transaction key wrapped using an ECDH dervied key. </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameter information of a TR31KeyBlock wrapped using an ECDH derived key.</p>"
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#IncomingKeyMaterial": {
+            "type": "union",
+            "members": {
+                "DiffieHellmanTr31KeyBlock": {
+                    "target": "com.amazonaws.paymentcryptographydata#IncomingDiffieHellmanTr31KeyBlock",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Parameter information of the TR31WrappedKeyBlock containing the transaction key wrapped using an ECDH dervied key.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameter information of the incoming WrappedKeyBlock containing the transaction key.</p>"
+            }
+        },
         "com.amazonaws.paymentcryptographydata#InitializationVectorType": {
             "type": "string",
             "traits": {
@@ -2048,6 +2289,36 @@
                 "smithy.api#documentation": "<p>The request processing has failed because of an unknown error, exception, or failure.</p>",
                 "smithy.api#error": "server",
                 "smithy.api#httpError": 500
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#KekValidationRequest": {
+            "type": "structure",
+            "members": {
+                "DeriveKeyAlgorithm": {
+                    "target": "com.amazonaws.paymentcryptographydata#SymmetricKeyAlgorithm",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key derivation algorithm to use for generating a KEK validation request.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameter information for generating a KEK validation request during node-to-node initialization.</p>"
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#KekValidationResponse": {
+            "type": "structure",
+            "members": {
+                "RandomKeySend": {
+                    "target": "com.amazonaws.paymentcryptographydata#As2805RandomKeyMaterial",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The random key for generating a KEK validation response.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameter information for generating a KEK validation response during node-to-node initialization.</p>"
             }
         },
         "com.amazonaws.paymentcryptographydata#KeyArn": {
@@ -2143,6 +2414,16 @@
                 }
             }
         },
+        "com.amazonaws.paymentcryptographydata#KeyMaterial": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 32,
+                    "max": 16384
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.paymentcryptographydata#MacAlgorithm": {
             "type": "enum",
             "members": {
@@ -2192,6 +2473,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "HMAC_SHA512"
+                    }
+                },
+                "AS2805_4_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AS2805_4_1"
                     }
                 }
             }
@@ -2401,6 +2688,35 @@
                 "smithy.api#pattern": "^[0-9]+$"
             }
         },
+        "com.amazonaws.paymentcryptographydata#OutgoingKeyMaterial": {
+            "type": "union",
+            "members": {
+                "Tr31KeyBlock": {
+                    "target": "com.amazonaws.paymentcryptographydata#OutgoingTr31KeyBlock",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Parameter information of the TR31WrappedKeyBlock containing the transaction key wrapped using a KEK.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameter information of the outgoing TR31WrappedKeyBlock containing the transaction key.</p>"
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#OutgoingTr31KeyBlock": {
+            "type": "structure",
+            "members": {
+                "WrappingKeyIdentifier": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyArnOrKeyAliasType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The <code>keyARN</code> of the KEK used to wrap the transaction key.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameter information of the TR31WrappedKeyBlock containing the transaction key wrapped using a KEK.</p>"
+            }
+        },
         "com.amazonaws.paymentcryptographydata#PaddingType": {
             "type": "enum",
             "members": {
@@ -2441,6 +2757,9 @@
                     "target": "com.amazonaws.paymentcryptographydata#EncryptData"
                 },
                 {
+                    "target": "com.amazonaws.paymentcryptographydata#GenerateAs2805KekValidation"
+                },
+                {
                     "target": "com.amazonaws.paymentcryptographydata#GenerateCardValidationData"
                 },
                 {
@@ -2454,6 +2773,9 @@
                 },
                 {
                     "target": "com.amazonaws.paymentcryptographydata#ReEncryptData"
+                },
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#TranslateKeyMaterial"
                 },
                 {
                     "target": "com.amazonaws.paymentcryptographydata#TranslatePinData"
@@ -2491,27 +2813,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -2993,17 +3315,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -3014,17 +3325,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -3041,17 +3341,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -3062,17 +3351,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -3180,6 +3458,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ISO_FORMAT_0"
+                    }
+                },
+                "ISO_FORMAT_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ISO_FORMAT_1"
                     }
                 },
                 "ISO_FORMAT_3": {
@@ -3400,6 +3684,23 @@
                 },
                 "smithy.api#pattern": "^[0-9a-fA-F]+$",
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#RandomKeySendVariantMask": {
+            "type": "enum",
+            "members": {
+                "VARIANT_MASK_82C0": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "VARIANT_MASK_82C0"
+                    }
+                },
+                "VARIANT_MASK_82": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "VARIANT_MASK_82"
+                    }
+                }
             }
         },
         "com.amazonaws.paymentcryptographydata#ReEncryptData": {
@@ -3903,6 +4204,16 @@
                 }
             }
         },
+        "com.amazonaws.paymentcryptographydata#SystemTraceAuditNumberType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 6,
+                    "max": 6
+                },
+                "smithy.api#pattern": "^[0-9]+$"
+            }
+        },
         "com.amazonaws.paymentcryptographydata#ThrottlingException": {
             "type": "structure",
             "members": {
@@ -3923,7 +4234,7 @@
                     "min": 56,
                     "max": 9984
                 },
-                "smithy.api#pattern": "^[0-9A-Z]+$",
+                "smithy.api#pattern": "^[0-9a-zA-Z]+$",
                 "smithy.api#sensitive": {}
             }
         },
@@ -3938,6 +4249,16 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.paymentcryptographydata#TransactionAmountType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 12,
+                    "max": 12
+                },
+                "smithy.api#pattern": "^[0-9]+$"
+            }
+        },
         "com.amazonaws.paymentcryptographydata#TransactionDataType": {
             "type": "string",
             "traits": {
@@ -3947,6 +4268,83 @@
                 },
                 "smithy.api#pattern": "^[0-9a-fA-F]+$",
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#TranslateKeyMaterial": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.paymentcryptographydata#TranslateKeyMaterialInput"
+            },
+            "output": {
+                "target": "com.amazonaws.paymentcryptographydata#TranslateKeyMaterialOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.paymentcryptographydata#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Translates an cryptographic key between different wrapping keys without importing the key into Amazon Web Services Payment Cryptography.</p> <p>This operation can be used when key material is frequently rotated, such as during every card transaction, and there is a need to avoid importing short-lived keys into Amazon Web Services Payment Cryptography. It translates short-lived transaction keys such as <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/terminology.html#terms.pek\">PEK</a> generated for each transaction and wrapped with an <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/terminology.html#terms.ecdh\">ECDH</a> derived wrapping key to another <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/terminology.html#terms.kek\">KEK</a> wrapping key. </p> <p>Before using this operation, you must first request the public key certificate of the ECC key pair generated within Amazon Web Services Payment Cryptography to establish an ECDH key agreement. In <code>TranslateKeyData</code>, the service uses its own ECC key pair, public certificate of receiving ECC key pair, and the key derivation parameters to generate a derived key. The service uses this derived key to unwrap the incoming transaction key received as a TR31WrappedKeyBlock and re-wrap using a user provided KEK to generate an outgoing Tr31WrappedKeyBlock.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>. </p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateKey.html\">CreateKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_GetPublicKeyCertificate.html\">GetPublicCertificate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ImportKey.html\">ImportKey</a> </p> </li> </ul>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/keymaterial/translate",
+                    "code": 200
+                }
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#TranslateKeyMaterialInput": {
+            "type": "structure",
+            "members": {
+                "IncomingKeyMaterial": {
+                    "target": "com.amazonaws.paymentcryptographydata#IncomingKeyMaterial",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Parameter information of the TR31WrappedKeyBlock containing the transaction key.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "OutgoingKeyMaterial": {
+                    "target": "com.amazonaws.paymentcryptographydata#OutgoingKeyMaterial",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Parameter information of the wrapping key used to wrap the transaction key in the outgoing TR31WrappedKeyBlock.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "KeyCheckValueAlgorithm": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyCheckValueAlgorithm",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key check value (KCV) algorithm used for calculating the KCV of the derived key.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#TranslateKeyMaterialOutput": {
+            "type": "structure",
+            "members": {
+                "WrappedKey": {
+                    "target": "com.amazonaws.paymentcryptographydata#WrappedWorkingKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The outgoing KEK wrapped TR31WrappedKeyBlock.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.paymentcryptographydata#TranslatePinData": {
@@ -3975,7 +4373,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Translates encrypted PIN block from and to ISO 9564 formats 0,1,3,4. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/translate-pin-data.html\">Translate PIN data</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>PIN block translation involves changing a PIN block from one encryption key to another and optionally change its format. PIN block translation occurs entirely within the HSM boundary and PIN data never enters or leaves Amazon Web Services Payment Cryptography in clear text. The encryption key transformation can be from PEK (Pin Encryption Key) to BDK (Base Derivation Key) for DUKPT or from BDK for DUKPT to PEK.</p> <p>Amazon Web Services Payment Cryptography also supports use of dynamic keys and ECDH (Elliptic Curve Diffie-Hellman) based key exchange for this operation.</p> <p>Dynamic keys allow you to pass a PEK as a TR-31 WrappedKeyBlock. They can be used when key material is frequently rotated, such as during every card transaction, and there is need to avoid importing short-lived keys into Amazon Web Services Payment Cryptography. To translate PIN block using dynamic keys, the <code>keyARN</code> is the Key Encryption Key (KEK) of the TR-31 wrapped PEK. The incoming wrapped key shall have a key purpose of P0 with a mode of use of B or D. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/use-cases-acquirers-dynamickeys.html\">Using Dynamic Keys</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>Using ECDH key exchange, you can receive cardholder selectable PINs into Amazon Web Services Payment Cryptography. The ECDH derived key protects the incoming PIN block, which is translated to a PEK encrypted PIN block for use within the service. You can also use ECDH for reveal PIN, wherein the service translates the PIN block from PEK to a ECDH derived encryption key. For more information on establishing ECDH derived keys, see the <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/create-keys.html\">Generating keys</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>The allowed combinations of PIN block format translations are guided by PCI. It is important to note that not all encrypted PIN block formats (example, format 1) require PAN (Primary Account Number) as input. And as such, PIN block format that requires PAN (example, formats 0,3,4) cannot be translated to a format (format 1) that does not require a PAN for generation. </p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <note> <p>Amazon Web Services Payment Cryptography currently supports ISO PIN block 4 translation for PIN block built using legacy PAN length. That is, PAN is the right most 12 digits excluding the check digits.</p> </note> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>GeneratePinData</a> </p> </li> <li> <p> <a>VerifyPinData</a> </p> </li> </ul>",
+                "smithy.api#documentation": "<p>Translates encrypted PIN block from and to ISO 9564 formats 0,1,3,4. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/translate-pin-data.html\">Translate PIN data</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>PIN block translation involves changing a PIN block from one encryption key to another and optionally change its format. PIN block translation occurs entirely within the HSM boundary and PIN data never enters or leaves Amazon Web Services Payment Cryptography in clear text. The encryption key transformation can be from PEK (Pin Encryption Key) to BDK (Base Derivation Key) for DUKPT or from BDK for DUKPT to PEK.</p> <p>Amazon Web Services Payment Cryptography also supports use of dynamic keys and ECDH (Elliptic Curve Diffie-Hellman) based key exchange for this operation.</p> <p>Dynamic keys allow you to pass a PEK as a TR-31 WrappedKeyBlock. They can be used when key material is frequently rotated, such as during every card transaction, and there is need to avoid importing short-lived keys into Amazon Web Services Payment Cryptography. To translate PIN block using dynamic keys, the <code>keyARN</code> is the Key Encryption Key (KEK) of the TR-31 wrapped PEK. The incoming wrapped key shall have a key purpose of P0 with a mode of use of B or D. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/use-cases-acquirers-dynamickeys.html\">Using Dynamic Keys</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>Using ECDH key exchange, you can receive cardholder selectable PINs into Amazon Web Services Payment Cryptography. The ECDH derived key protects the incoming PIN block, which is translated to a PEK encrypted PIN block for use within the service. You can also use ECDH for reveal PIN, wherein the service translates the PIN block from PEK to a ECDH derived encryption key. For more information on establishing ECDH derived keys, see the <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/create-keys.html\">Creating keys</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>The allowed combinations of PIN block format translations are guided by PCI. It is important to note that not all encrypted PIN block formats (example, format 1) require PAN (Primary Account Number) as input. And as such, PIN block format that requires PAN (example, formats 0,3,4) cannot be translated to a format (format 1) that does not require a PAN for generation. </p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <note> <p>Amazon Web Services Payment Cryptography currently supports ISO PIN block 4 translation for PIN block built using legacy PAN length. That is, PAN is the right most 12 digits excluding the check digits.</p> </note> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>GeneratePinData</a> </p> </li> <li> <p> <a>VerifyPinData</a> </p> </li> </ul>",
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/pindata/translate",
@@ -4044,6 +4442,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The WrappedKeyBlock containing the encryption key for encrypting outgoing PIN block data.</p>"
                     }
+                },
+                "IncomingAs2805Attributes": {
+                    "target": "com.amazonaws.paymentcryptographydata#As2805PekDerivationAttributes",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The attributes and values to use for incoming AS2805 encryption key for PIN block translation.</p>"
+                    }
                 }
             },
             "traits": {
@@ -4085,30 +4489,51 @@
                 "IsoFormat0": {
                     "target": "com.amazonaws.paymentcryptographydata#TranslationPinDataIsoFormat034",
                     "traits": {
-                        "smithy.api#documentation": "<p>Parameters that are required for ISO9564 PIN format 0 tranlation.</p>"
+                        "smithy.api#documentation": "<p>Parameters that are required for ISO9564 PIN format 0 translation.</p>"
                     }
                 },
                 "IsoFormat1": {
                     "target": "com.amazonaws.paymentcryptographydata#TranslationPinDataIsoFormat1",
                     "traits": {
-                        "smithy.api#documentation": "<p>Parameters that are required for ISO9564 PIN format 1 tranlation.</p>"
+                        "smithy.api#documentation": "<p>Parameters that are required for ISO9564 PIN format 1 translation.</p>"
                     }
                 },
                 "IsoFormat3": {
                     "target": "com.amazonaws.paymentcryptographydata#TranslationPinDataIsoFormat034",
                     "traits": {
-                        "smithy.api#documentation": "<p>Parameters that are required for ISO9564 PIN format 3 tranlation.</p>"
+                        "smithy.api#documentation": "<p>Parameters that are required for ISO9564 PIN format 3 translation.</p>"
                     }
                 },
                 "IsoFormat4": {
                     "target": "com.amazonaws.paymentcryptographydata#TranslationPinDataIsoFormat034",
                     "traits": {
-                        "smithy.api#documentation": "<p>Parameters that are required for ISO9564 PIN format 4 tranlation.</p>"
+                        "smithy.api#documentation": "<p>Parameters that are required for ISO9564 PIN format 4 translation.</p>"
+                    }
+                },
+                "As2805Format0": {
+                    "target": "com.amazonaws.paymentcryptographydata#TranslationPinDataAs2805Format0",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Parameters that are required for AS2805 PIN format 0 translation.</p>"
                     }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Parameters that are required for translation between ISO9564 PIN block formats 0,1,3,4.</p>"
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#TranslationPinDataAs2805Format0": {
+            "type": "structure",
+            "members": {
+                "PrimaryAccountNumber": {
+                    "target": "com.amazonaws.paymentcryptographydata#PrimaryAccountNumberType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Primary Account Number (PAN) of the cardholder. A PAN is a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameters that are required for translation between AS2805 PIN format 0 translation.</p>"
             }
         },
         "com.amazonaws.paymentcryptographydata#TranslationPinDataIsoFormat034": {
@@ -4123,14 +4548,14 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Parameters that are required for tranlation between ISO9564 PIN format 0,3,4 tranlation.</p>"
+                "smithy.api#documentation": "<p>Parameters that are required for translation between ISO9564 PIN format 0,3,4 translation.</p>"
             }
         },
         "com.amazonaws.paymentcryptographydata#TranslationPinDataIsoFormat1": {
             "type": "structure",
             "members": {},
             "traits": {
-                "smithy.api#documentation": "<p>Parameters that are required for ISO9564 PIN format 1 tranlation.</p>"
+                "smithy.api#documentation": "<p>Parameters that are required for ISO9564 PIN format 1 translation.</p>"
             }
         },
         "com.amazonaws.paymentcryptographydata#ValidationDataType": {
@@ -4631,8 +5056,7 @@
                 "PrimaryAccountNumber": {
                     "target": "com.amazonaws.paymentcryptographydata#PrimaryAccountNumberType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Primary Account Number (PAN), a unique identifier for a payment credit or debit card that associates the card with a specific account holder.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The Primary Account Number (PAN), a unique identifier for a payment credit or debit card that associates the card with a specific account holder.</p>"
                     }
                 },
                 "PinBlockFormat": {
@@ -4879,6 +5303,54 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Parameter information of a WrappedKeyBlock for encryption key exchange.</p>"
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#WrappedKeyMaterialFormat": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "KEY_CRYPTOGRAM",
+                        "name": "KEY_CRYPTOGRAM"
+                    },
+                    {
+                        "value": "TR31_KEY_BLOCK",
+                        "name": "TR31_KEY_BLOCK"
+                    },
+                    {
+                        "value": "TR34_KEY_BLOCK",
+                        "name": "TR34_KEY_BLOCK"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.paymentcryptographydata#WrappedWorkingKey": {
+            "type": "structure",
+            "members": {
+                "WrappedKeyMaterial": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyMaterial",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The wrapped key block of the outgoing transaction key.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "KeyCheckValue": {
+                    "target": "com.amazonaws.paymentcryptographydata#KeyCheckValue",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key check value (KCV) of the key contained within the outgoing TR31WrappedKeyBlock.</p> <p> The KCV is used to check if all parties holding a given key have the same key or to detect that a key has changed. For more information on KCV, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/terminology.html#terms.kcv\">KCV</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "WrappedKeyMaterialFormat": {
+                    "target": "com.amazonaws.paymentcryptographydata#WrappedKeyMaterialFormat",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key block format of the wrapped key.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The parameter information of the outgoing wrapped key block.</p>"
             }
         }
     }

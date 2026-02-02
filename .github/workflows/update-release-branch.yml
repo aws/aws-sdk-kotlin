@@ -40,7 +40,7 @@ jobs:
           role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
           aws-region: us-west-2
       - name: Setup kat
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/setup-kat@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
       - uses: actions/checkout@v4
         with:
           ref: 'main'
@@ -58,7 +58,7 @@ jobs:
           java-version: 17
           cache: 'gradle'
       - name: Configure Gradle
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
       - name: Check merge base
         shell: bash
         run: |
@@ -129,7 +129,7 @@ jobs:
           echo "duration=$duration" >> "$GITHUB_OUTPUT"
       - name: Emit metrics
         if: always() # run this step even if previous steps failed or the job is canceled
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/emit-metrics@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/emit-metrics@main
         with:
           namespace: CI Metrics
           dimensions: |

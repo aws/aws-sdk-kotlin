@@ -32,8 +32,7 @@ public fun interface ConvertsFrom<F, T> {
  * [converter] must be the same as the source type of this converter.
  */
 @ExperimentalApi
-public fun <F, F2, T> ConvertsFrom<F, T>.andThenConvertsFrom(converter: ConvertsFrom<F2, F>): ConvertsFrom<F2, T> =
-    ConvertsFrom { to: T -> converter.convertFrom(this.convertFrom(to)) }
+public fun <F, F2, T> ConvertsFrom<F, T>.andThenConvertsFrom(converter: ConvertsFrom<F2, F>): ConvertsFrom<F2, T> = ConvertsFrom { to: T -> converter.convertFrom(this.convertFrom(to)) }
 
 /**
  * Adds validation before a conversion by running [validate] on [T] values before converting them to type [F].
@@ -43,8 +42,7 @@ public fun <F, F2, T> ConvertsFrom<F, T>.andThenConvertsFrom(converter: Converts
  * @param validate A function which accepts a [T] value and throws an exception if the expected condition is not met
  */
 @ExperimentalApi
-public fun <F, T> ConvertsFrom<F, T>.firstValidatingTo(validate: (T) -> Unit): ConvertsFrom<F, T> =
-    ConvertsFrom { to: T ->
-        validate(to)
-        this.convertFrom(to)
-    }
+public fun <F, T> ConvertsFrom<F, T>.firstValidatingTo(validate: (T) -> Unit): ConvertsFrom<F, T> = ConvertsFrom { to: T ->
+    validate(to)
+    this.convertFrom(to)
+}

@@ -49,8 +49,7 @@ public class SimpleItemConverter<T, B>(
          * descriptor.setter(builder, value) // Type mismatch for value. Required: Nothing, Found: Any?
          * ```
          */
-        fun <A> AttributeDescriptor<A, T, B>.fromAttributeValue(attr: AttributeValue) =
-            builder.setter(converter.convertFrom(attr))
+        fun <A> AttributeDescriptor<A, T, B>.fromAttributeValue(attr: AttributeValue) = builder.setter(converter.convertFrom(attr))
 
         to.forEach { (name, attr) ->
             // TODO make behavior for unknown attributes configurable (ignore, exception, other?)
@@ -71,8 +70,7 @@ public class SimpleItemConverter<T, B>(
          * descriptor.converter.toAttributeValue(value) // Type mismatch for value. Required: Nothing, Found: Any?
          * ```
          */
-        fun <A> AttributeDescriptor<A, T, B>.toAttributeValue() =
-            converter.convertTo(getter(from))
+        fun <A> AttributeDescriptor<A, T, B>.toAttributeValue() = converter.convertTo(getter(from))
 
         val descriptors = if (onlyAttributes == null) {
             this.descriptors.values

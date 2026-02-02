@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.runtime.http.interceptors.businessmetrics
 
 import aws.sdk.kotlin.runtime.http.BUSINESS_METRICS_MAX_LENGTH
@@ -26,7 +31,9 @@ internal fun formatMetrics(metrics: MutableSet<BusinessMetric>, logger: Logger):
             true
         }
     }
-    if (allowedMetrics.isEmpty()) return ""
+    if (allowedMetrics.isEmpty()) {
+        return ""
+    }
     val metricsString = allowedMetrics.joinToString(",", "m/") { it.identifier }
     val metricsByteArray = metricsString.encodeToByteArray()
 
@@ -77,6 +84,8 @@ public enum class AwsBusinessMetric(public override val identifier: String) : Bu
         CREDENTIALS_PROCESS("w"),
         CREDENTIALS_HTTP("z"),
         CREDENTIALS_IMDS("0"),
+        CREDENTIALS_PROFILE_LOGIN("AC"),
+        CREDENTIALS_LOGIN("AD"),
     }
 
     override fun toString(): String = identifier
@@ -87,18 +96,17 @@ public enum class AwsBusinessMetric(public override val identifier: String) : Bu
  * @param metric The [BusinessMetric] to be emitted.
  */
 @InternalApi
-public fun Credentials.withBusinessMetric(metric: BusinessMetric): Credentials =
-    when (val credentialsAttributes = this.attributes) {
-        is MutableAttributes -> {
-            credentialsAttributes.emitBusinessMetric(metric)
-            this
-        }
-        else -> {
-            val newCredentialsAttributes = credentialsAttributes.toMutableAttributes()
-            newCredentialsAttributes.emitBusinessMetric(metric)
-            this.copy(attributes = newCredentialsAttributes)
-        }
+public fun Credentials.withBusinessMetric(metric: BusinessMetric): Credentials = when (val credentialsAttributes = this.attributes) {
+    is MutableAttributes -> {
+        credentialsAttributes.emitBusinessMetric(metric)
+        this
     }
+    else -> {
+        val newCredentialsAttributes = credentialsAttributes.toMutableAttributes()
+        newCredentialsAttributes.emitBusinessMetric(metric)
+        this.copy(attributes = newCredentialsAttributes)
+    }
+}
 
 /**
  * Emits business metrics into [Credentials.attributes]

@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: 💬 General Question
-    url: https://github.com/awslabs/aws-sdk-kotlin/discussions/new/choose
+    url: https://github.com/aws/aws-sdk-kotlin/discussions/new/choose
     about: Please ask and answer questions as a discussion thread

@@ -5,14 +5,14 @@
 
 package aws.sdk.kotlin.codegen.customization.s3
 
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.core.RuntimeTypes
-import software.amazon.smithy.kotlin.codegen.integration.AppendingSectionWriter
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
-import software.amazon.smithy.kotlin.codegen.model.expectShape
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.HttpProtocolClientGenerator
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.putIfAbsent
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.core.RuntimeTypes
+import aws.smithy.kotlin.codegen.integration.AppendingSectionWriter
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.integration.SectionWriterBinding
+import aws.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.rendering.protocol.HttpProtocolClientGenerator
+import aws.smithy.kotlin.codegen.rendering.protocol.putIfAbsent
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.ServiceShape
 

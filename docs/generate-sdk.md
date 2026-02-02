@@ -18,7 +18,7 @@ In this example we'll build the AWS DynamoDB SDK.
 
 ### Clone this repo 
 ```sh
-git clone https://github.com/awslabs/aws-sdk-kotlin.git
+git clone https://github.com/aws/aws-sdk-kotlin.git
 cd aws-sdk-kotlin
 ```
 
@@ -75,5 +75,5 @@ dependencies {
 ## Summary
 
 This page covers building an AWS SDK using the `aws-sdk-kotlin` SDK generator. If you experience problems please [file 
-an issue](https://github.com/awslabs/aws-sdk-kotlin/issues). If you have questions or ideas about how we can improve our 
-SDKs, please join [our discussions](https://github.com/awslabs/aws-sdk-kotlin/discussions).
+an issue](https://github.com/aws/aws-sdk-kotlin/issues). If you have questions or ideas about how we can improve our 
+SDKs, please join [our discussions](https://github.com/aws/aws-sdk-kotlin/discussions).

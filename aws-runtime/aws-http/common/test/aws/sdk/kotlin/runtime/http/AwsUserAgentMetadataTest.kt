@@ -31,7 +31,7 @@ class AwsUserAgentMetadataTest {
         val langMeta = LanguageMetadata("1.4.31", mapOf("jvmVersion" to "1.11"))
         val execEnvMeta = ExecutionEnvMetadata("lambda")
         val frameworkMeta = FrameworkMetadata("amplify", "1.2.3")
-        val appId = "Foo Service"
+        val appId = "Foo Service #1.2.3"
         val custom = CustomUserAgentMetadata(
             extras = mapOf("foo" to "bar", "internal" to "true"),
             typedExtras = listOf(
@@ -53,7 +53,7 @@ class AwsUserAgentMetadataTest {
             "exec-env/lambda",
             "cfg/retry-mode#standard",
             "cfg/http-engine#okhttp",
-            "app/Foo_Service",
+            "app/Foo_Service_#1.2.3",
             "ft/paginator",
             "ft/ddb-hll#4.5.6",
             "lib/amplify#1.2.3",

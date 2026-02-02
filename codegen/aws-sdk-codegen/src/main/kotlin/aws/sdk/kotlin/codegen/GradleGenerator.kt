@@ -6,12 +6,12 @@ package aws.sdk.kotlin.codegen
 
 import aws.sdk.kotlin.codegen.model.traits.testing.TestFailedResponseTrait
 import aws.sdk.kotlin.codegen.model.traits.testing.TestSuccessResponseTrait
-import software.amazon.smithy.kotlin.codegen.core.*
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.model.expectShape
-import software.amazon.smithy.kotlin.codegen.model.hasTrait
-import software.amazon.smithy.kotlin.codegen.rendering.GradleWriter
-import software.amazon.smithy.kotlin.codegen.utils.topDownOperations
+import aws.smithy.kotlin.codegen.core.*
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.model.hasTrait
+import aws.smithy.kotlin.codegen.rendering.GradleWriter
+import aws.smithy.kotlin.codegen.utils.topDownOperations
 import software.amazon.smithy.model.shapes.ServiceShape
 import software.amazon.smithy.smoketests.traits.SmokeTestsTrait
 

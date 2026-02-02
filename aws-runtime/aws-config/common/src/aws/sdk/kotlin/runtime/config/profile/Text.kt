@@ -35,13 +35,10 @@ internal fun String.splitProperty(): Pair<String, String> {
     return kv[0].trim() to kv[1].trim()
 }
 
-internal fun String.splitWhitespace(limit: Int): List<String> =
-    trim().split(" ", "\t", limit = limit).filter(String::isNotBlank).map(String::trim)
+internal fun String.splitWhitespace(limit: Int): List<String> = trim().split(" ", "\t", limit = limit).filter(String::isNotBlank).map(String::trim)
 
-internal fun String.stripComments(): String =
-    stripEnd(Literals.COMMENT_1).stripEnd(Literals.COMMENT_2)
+internal fun String.stripComments(): String = stripEnd(Literals.COMMENT_1).stripEnd(Literals.COMMENT_2)
 
-internal fun String.stripInlineComments(): String =
-    stripEnd(Literals.INLINE_COMMENT_1).stripEnd(Literals.INLINE_COMMENT_2)
+internal fun String.stripInlineComments(): String = stripEnd(Literals.INLINE_COMMENT_1).stripEnd(Literals.INLINE_COMMENT_2)
 
 private fun String.stripEnd(delimiter: String): String = split(delimiter, limit = 2)[0]

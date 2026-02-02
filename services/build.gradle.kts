@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import aws.sdk.kotlin.gradle.dsl.configurePublishing
-import aws.sdk.kotlin.gradle.kmp.kotlin
+import aws.sdk.kotlin.gradle.kmp.*
 import aws.sdk.kotlin.gradle.util.typedProp
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.LocalDateTime
@@ -109,6 +109,13 @@ subprojects {
                         testClassesDirs = output.classesDirs
 
                         useJUnitPlatform()
+                        testLogging {
+                            events("passed", "skipped", "failed")
+                            showStandardStreams = true
+                            showStackTraces = true
+                            showExceptions = true
+                            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+                        }
 
                         // model a random input to enable re-running e2e tests back to back without
                         // up-to-date checks or cache getting in the way
@@ -128,17 +135,8 @@ subprojects {
         }
     }
 
-    tasks.withType<org.gradle.api.tasks.testing.AbstractTestTask>().configureEach {
-        testLogging {
-            events("passed", "skipped", "failed")
-            showStandardStreams = true
-            showStackTraces = true
-            showExceptions = true
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        }
-    }
-
     configurePublishing("aws-sdk-kotlin")
+
     publishing {
         publications.all {
             if (this !is MavenPublication) return@all

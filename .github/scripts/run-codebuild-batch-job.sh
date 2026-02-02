@@ -95,7 +95,7 @@ START_RESULT=$(
     --project-name ${PROJECT_NAME} \
     --source-version $SOURCE_VERSION \
     --environment-variables-override file:///tmp/gh_env_vars.json \
-    --source-location-override "https://github.com/awslabs/$GITHUB_REPOSITORY_NO_ORG.git"
+    --source-location-override "https://github.com/aws/$GITHUB_REPOSITORY_NO_ORG.git"
 )
 
 if [ "$?" != "0" ]; then

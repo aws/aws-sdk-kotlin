@@ -30,6 +30,13 @@ dependencyResolutionManagement {
     repositories {
         mavenLocal()
         mavenCentral()
+        maven {
+            name = "kotlinRepoTools"
+            url = java.net.URI("https://d2gys1nrxnjnyg.cloudfront.net/releases")
+            content {
+                includeGroupByRegex("""aws\.sdk\.kotlin.*""")
+            }
+        }
     }
 }
 
@@ -80,7 +87,6 @@ if ("dynamodb".isBootstrappedService) {
     include(":hll:dynamodb-mapper:dynamodb-mapper-schema-codegen")
     include(":hll:dynamodb-mapper:dynamodb-mapper-annotations")
     include(":hll:dynamodb-mapper:dynamodb-mapper-schema-generator-plugin")
-    include(":hll:dynamodb-mapper:tests:dynamodb-mapper-schema-generator-plugin-test")
 } else {
     logger.warn(":services:dynamodb is not bootstrapped, skipping :hll:dynamodb-mapper and subprojects")
 }

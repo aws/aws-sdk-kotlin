@@ -12,6 +12,7 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.assumeRole
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.PolicyDescriptorType
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.RegionDisabledException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.Tag
+import aws.sdk.kotlin.runtime.config.AwsSdkClientOption
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
@@ -106,6 +107,7 @@ public class StsAssumeRoleCredentialsProvider(
             httpClient = provider.httpClient
             telemetryProvider = telemetry
             logMode = attributes.getOrNull(SdkClientOption.LogMode)
+            applicationId = attributes.getOrNull(AwsSdkClientOption.ApplicationId)
         }
 
         val resp = try {
@@ -198,5 +200,4 @@ public class AssumeRoleParameters(
 }
 
 // role session name must be provided to assume a role, when the user doesn't provide one we choose a name for them
-internal fun defaultSessionName(platformEnvironProvider: PlatformEnvironProvider = PlatformProvider.System): String =
-    AwsSdkSetting.AwsRoleSessionName.resolve(platformEnvironProvider) ?: "aws-sdk-kotlin-${Instant.now().epochMilliseconds}"
+internal fun defaultSessionName(platformEnvironProvider: PlatformEnvironProvider = PlatformProvider.System): String = AwsSdkSetting.AwsRoleSessionName.resolve(platformEnvironProvider) ?: "aws-sdk-kotlin-${Instant.now().epochMilliseconds}"

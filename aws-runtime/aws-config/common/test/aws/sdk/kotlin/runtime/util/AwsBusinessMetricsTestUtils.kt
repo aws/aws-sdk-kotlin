@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.runtime.util
 
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
@@ -32,5 +37,4 @@ internal fun testAttributes(vararg metrics: BusinessMetric): Attributes {
 /**
  * Converts a [String] into an [AwsBusinessMetric.Credentials] if the identifier matches
  */
-internal fun String.toAwsCredentialsBusinessMetric(): BusinessMetric =
-    AwsBusinessMetric.Credentials.entries.find { it.identifier == this } ?: throw Exception("String '$this' is not an AWS business metric")
+internal fun String.toAwsCredentialsBusinessMetric(): BusinessMetric = AwsBusinessMetric.Credentials.entries.find { it.identifier == this } ?: throw Exception("String '$this' is not an AWS business metric")

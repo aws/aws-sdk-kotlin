@@ -1,17 +1,22 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.codegen.smoketests.testing
 
 import aws.sdk.kotlin.codegen.model.traits.testing.TestFailedResponseTrait
 import aws.sdk.kotlin.codegen.model.traits.testing.TestSuccessResponseTrait
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.core.RuntimeTypes
-import software.amazon.smithy.kotlin.codegen.core.withBlock
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriter
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
-import software.amazon.smithy.kotlin.codegen.model.expectShape
-import software.amazon.smithy.kotlin.codegen.model.hasTrait
-import software.amazon.smithy.kotlin.codegen.rendering.smoketests.SmokeTestSectionIds
-import software.amazon.smithy.kotlin.codegen.utils.topDownOperations
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.core.RuntimeTypes
+import aws.smithy.kotlin.codegen.core.withBlock
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.integration.SectionWriter
+import aws.smithy.kotlin.codegen.integration.SectionWriterBinding
+import aws.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.model.hasTrait
+import aws.smithy.kotlin.codegen.rendering.smoketests.SmokeTestSectionIds
+import aws.smithy.kotlin.codegen.utils.topDownOperations
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.ServiceShape
 import software.amazon.smithy.smoketests.traits.SmokeTestsTrait
@@ -22,10 +27,9 @@ import software.amazon.smithy.smoketests.traits.SmokeTestsTrait
  * against a service endpoint.
  */
 class SmokeTestFailHttpEngineIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.topDownOperations(settings.service).any { it.hasTrait<SmokeTestsTrait>() } &&
-            !model.expectShape<ServiceShape>(settings.service).hasTrait(TestSuccessResponseTrait.ID) &&
-            model.expectShape<ServiceShape>(settings.service).hasTrait(TestFailedResponseTrait.ID)
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.topDownOperations(settings.service).any { it.hasTrait<SmokeTestsTrait>() } &&
+        !model.expectShape<ServiceShape>(settings.service).hasTrait(TestSuccessResponseTrait.ID) &&
+        model.expectShape<ServiceShape>(settings.service).hasTrait(TestFailedResponseTrait.ID)
 
     override val sectionWriters: List<SectionWriterBinding>
         get() = listOf(

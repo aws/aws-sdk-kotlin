@@ -58,8 +58,7 @@ public class CustomUserAgentMetadata(
         typedExtras.add(metadata)
     }
 
-    public operator fun plus(other: CustomUserAgentMetadata): CustomUserAgentMetadata =
-        CustomUserAgentMetadata(extras + other.extras, typedExtras + other.typedExtras)
+    public operator fun plus(other: CustomUserAgentMetadata): CustomUserAgentMetadata = CustomUserAgentMetadata(extras + other.extras, typedExtras + other.typedExtras)
 }
 
 /**
