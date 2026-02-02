@@ -23,6 +23,28 @@
                 "smithy.api#httpError": 403
             }
         },
+        "com.amazonaws.connectcampaignsv2#AgentAction": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "Actions that can performed on a contact by an agent",
+                "smithy.api#enum": [
+                    {
+                        "value": "DISCARD",
+                        "name": "DISCARD"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#AgentActions": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.connectcampaignsv2#AgentAction"
+            },
+            "traits": {
+                "smithy.api#documentation": "Actions that can be performed by agent during preview phase.",
+                "smithy.api#uniqueItems": {}
+            }
+        },
         "com.amazonaws.connectcampaignsv2#AgentlessConfig": {
             "type": "structure",
             "members": {},
@@ -184,27 +206,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -686,17 +708,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -707,17 +718,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -734,17 +734,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -755,17 +744,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -949,10 +927,10 @@
                     }
                 },
                 "channelSubtypeConfig": {
-                    "target": "com.amazonaws.connectcampaignsv2#ChannelSubtypeConfig",
-                    "traits": {
-                        "smithy.api#required": {}
-                    }
+                    "target": "com.amazonaws.connectcampaignsv2#ChannelSubtypeConfig"
+                },
+                "type": {
+                    "target": "com.amazonaws.connectcampaignsv2#ExternalCampaignType"
                 },
                 "source": {
                     "target": "com.amazonaws.connectcampaignsv2#Source"
@@ -1019,10 +997,10 @@
             "traits": {
                 "smithy.api#documentation": "Identifier representing a Campaign",
                 "smithy.api#length": {
-                    "min": 0,
+                    "min": 1,
                     "max": 256
                 },
-                "smithy.api#pattern": "^[a-zA-Z0-9\\-:/]*$"
+                "smithy.api#pattern": "^[-:/a-zA-Z0-9]+$"
             }
         },
         "com.amazonaws.connectcampaignsv2#CampaignIdList": {
@@ -1115,6 +1093,9 @@
                         "smithy.api#required": {}
                     }
                 },
+                "type": {
+                    "target": "com.amazonaws.connectcampaignsv2#ExternalCampaignType"
+                },
                 "schedule": {
                     "target": "com.amazonaws.connectcampaignsv2#Schedule"
                 },
@@ -1161,6 +1142,10 @@
                     {
                         "value": "EMAIL",
                         "name": "EMAIL"
+                    },
+                    {
+                        "value": "WHATSAPP",
+                        "name": "WHATSAPP"
                     }
                 ]
             }
@@ -1176,6 +1161,9 @@
                 },
                 "email": {
                     "target": "com.amazonaws.connectcampaignsv2#EmailChannelSubtypeConfig"
+                },
+                "whatsApp": {
+                    "target": "com.amazonaws.connectcampaignsv2#WhatsAppChannelSubtypeConfig"
                 }
             },
             "traits": {
@@ -1203,6 +1191,9 @@
                 },
                 "email": {
                     "target": "com.amazonaws.connectcampaignsv2#EmailChannelSubtypeParameters"
+                },
+                "whatsApp": {
+                    "target": "com.amazonaws.connectcampaignsv2#WhatsAppChannelSubtypeParameters"
                 }
             },
             "traits": {
@@ -1333,6 +1324,9 @@
                 },
                 "email": {
                     "target": "com.amazonaws.connectcampaignsv2#TimeWindow"
+                },
+                "whatsApp": {
+                    "target": "com.amazonaws.connectcampaignsv2#TimeWindow"
                 }
             },
             "traits": {
@@ -1355,6 +1349,10 @@
                     {
                         "value": "EMAIL",
                         "name": "EMAIL"
+                    },
+                    {
+                        "value": "WHATSAPP",
+                        "name": "WHATSAPP"
                     }
                 ]
             }
@@ -1446,10 +1444,10 @@
                     }
                 },
                 "channelSubtypeConfig": {
-                    "target": "com.amazonaws.connectcampaignsv2#ChannelSubtypeConfig",
-                    "traits": {
-                        "smithy.api#required": {}
-                    }
+                    "target": "com.amazonaws.connectcampaignsv2#ChannelSubtypeConfig"
+                },
+                "type": {
+                    "target": "com.amazonaws.connectcampaignsv2#ExternalCampaignType"
                 },
                 "source": {
                     "target": "com.amazonaws.connectcampaignsv2#Source"
@@ -2059,10 +2057,10 @@
             "traits": {
                 "smithy.api#documentation": "Identifier representing a Dial request",
                 "smithy.api#length": {
-                    "min": 0,
+                    "min": 1,
                     "max": 256
                 },
-                "smithy.api#pattern": "^[a-zA-Z0-9_\\-.]*$"
+                "smithy.api#pattern": "^[-_.a-zA-Z0-9]+$"
             }
         },
         "com.amazonaws.connectcampaignsv2#EmailAddress": {
@@ -2251,6 +2249,22 @@
                     {
                         "value": "Campaign-Orchestration",
                         "name": "CAMPAIGN_ORCHESTRATION"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#ExternalCampaignType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "The type of campaign externally exposed in APIs.",
+                "smithy.api#enum": [
+                    {
+                        "value": "MANAGED",
+                        "name": "MANAGED"
+                    },
+                    {
+                        "value": "JOURNEY",
+                        "name": "JOURNEY"
                     }
                 ]
             }
@@ -2732,10 +2746,10 @@
             "traits": {
                 "smithy.api#documentation": "Amazon Connect Instance Id",
                 "smithy.api#length": {
-                    "min": 0,
+                    "min": 1,
                     "max": 256
                 },
-                "smithy.api#pattern": "^[a-zA-Z0-9_\\-.]*$"
+                "smithy.api#pattern": "^[-_.a-zA-Z0-9]+$"
             }
         },
         "com.amazonaws.connectcampaignsv2#InstanceIdFilter": {
@@ -2870,6 +2884,9 @@
                 },
                 "qConnect": {
                     "target": "com.amazonaws.connectcampaignsv2#QConnectIntegrationConfig"
+                },
+                "lambda": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaIntegrationConfig"
                 }
             },
             "traits": {
@@ -2884,6 +2901,9 @@
                 },
                 "qConnect": {
                     "target": "com.amazonaws.connectcampaignsv2#QConnectIntegrationIdentifier"
+                },
+                "lambda": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaIntegrationIdentifier"
                 }
             },
             "traits": {
@@ -2898,6 +2918,9 @@
                 },
                 "qConnect": {
                     "target": "com.amazonaws.connectcampaignsv2#QConnectIntegrationSummary"
+                },
+                "lambda": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaIntegrationSummary"
                 }
             },
             "traits": {
@@ -3009,6 +3032,59 @@
             "traits": {
                 "smithy.api#documentation": "Time in ISO 8601 format, e.g. T23:11",
                 "smithy.api#pattern": "^T\\d{2}:\\d{2}$"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#LambdaArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "Lambda ARN for integration with Connect instances",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 140
+                },
+                "smithy.api#pattern": "^arn:aws[a-zA-Z-]*:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d:\\d{12}:function:([a-zA-Z0-9-_]+)(:([a-zA-Z0-9-_]+))?$"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#LambdaIntegrationConfig": {
+            "type": "structure",
+            "members": {
+                "functionArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaArn",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Lambda integration config"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#LambdaIntegrationIdentifier": {
+            "type": "structure",
+            "members": {
+                "functionArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaArn",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Lambda integration identifier"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#LambdaIntegrationSummary": {
+            "type": "structure",
+            "members": {
+                "functionArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaArn",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Lambda integration summary"
             }
         },
         "com.amazonaws.connectcampaignsv2#ListCampaigns": {
@@ -3420,6 +3496,29 @@
             },
             "traits": {
                 "smithy.api#documentation": "Predictive config"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#PreviewConfig": {
+            "type": "structure",
+            "members": {
+                "bandwidthAllocation": {
+                    "target": "com.amazonaws.connectcampaignsv2#BandwidthAllocation",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "timeoutConfig": {
+                    "target": "com.amazonaws.connectcampaignsv2#TimeoutConfig",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "agentActions": {
+                    "target": "com.amazonaws.connectcampaignsv2#AgentActions"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Preview config"
             }
         },
         "com.amazonaws.connectcampaignsv2#ProfileId": {
@@ -3971,6 +4070,16 @@
             "traits": {
                 "smithy.api#documentation": "The request for ResumeCampaign API.",
                 "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#RingTimeout": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#documentation": "Ring timeout for outbound calls",
+                "smithy.api#range": {
+                    "min": 15,
+                    "max": 60
+                }
             }
         },
         "com.amazonaws.connectcampaignsv2#Schedule": {
@@ -4540,6 +4649,9 @@
                 },
                 "answerMachineDetectionConfig": {
                     "target": "com.amazonaws.connectcampaignsv2#AnswerMachineDetectionConfig"
+                },
+                "ringTimeout": {
+                    "target": "com.amazonaws.connectcampaignsv2#RingTimeout"
                 }
             },
             "traits": {
@@ -4560,6 +4672,9 @@
                 },
                 "answerMachineDetectionConfig": {
                     "target": "com.amazonaws.connectcampaignsv2#AnswerMachineDetectionConfig"
+                },
+                "ringTimeout": {
+                    "target": "com.amazonaws.connectcampaignsv2#RingTimeout"
                 }
             },
             "traits": {
@@ -4577,6 +4692,9 @@
                 },
                 "agentless": {
                     "target": "com.amazonaws.connectcampaignsv2#AgentlessConfig"
+                },
+                "preview": {
+                    "target": "com.amazonaws.connectcampaignsv2#PreviewConfig"
                 }
             },
             "traits": {
@@ -4668,6 +4786,30 @@
                     "max": 50
                 },
                 "smithy.api#pattern": "^[a-zA-Z0-9_\\-/]*$"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#TimeoutConfig": {
+            "type": "structure",
+            "members": {
+                "durationInSeconds": {
+                    "target": "com.amazonaws.connectcampaignsv2#TimeoutDuration",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Timeout Config for preview contacts."
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#TimeoutDuration": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#documentation": "Timeout duration for a preview contact in seconds.",
+                "smithy.api#range": {
+                    "min": 1,
+                    "max": 300
+                }
             }
         },
         "com.amazonaws.connectcampaignsv2#UntagResource": {
@@ -5154,6 +5296,86 @@
                 "smithy.api#documentation": "The input fails to satisfy the constraints specified by an AWS service.",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 400
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#WhatsAppChannelSubtypeConfig": {
+            "type": "structure",
+            "members": {
+                "capacity": {
+                    "target": "com.amazonaws.connectcampaignsv2#Capacity"
+                },
+                "outboundMode": {
+                    "target": "com.amazonaws.connectcampaignsv2#WhatsAppOutboundMode",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "defaultOutboundConfig": {
+                    "target": "com.amazonaws.connectcampaignsv2#WhatsAppOutboundConfig",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "WhatsApp Channel Subtype config"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#WhatsAppChannelSubtypeParameters": {
+            "type": "structure",
+            "members": {
+                "destinationPhoneNumber": {
+                    "target": "com.amazonaws.connectcampaignsv2#DestinationPhoneNumber",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "connectSourcePhoneNumberArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#Arn"
+                },
+                "templateArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#Arn"
+                },
+                "templateParameters": {
+                    "target": "com.amazonaws.connectcampaignsv2#Attributes",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Parameters for the WhatsApp Channel Subtype"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#WhatsAppOutboundConfig": {
+            "type": "structure",
+            "members": {
+                "connectSourcePhoneNumberArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#Arn",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "wisdomTemplateArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#Arn",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Default WhatsApp Outbound config"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#WhatsAppOutboundMode": {
+            "type": "union",
+            "members": {
+                "agentless": {
+                    "target": "com.amazonaws.connectcampaignsv2#AgentlessConfig"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "WhatsApp Outbound Mode"
             }
         },
         "com.amazonaws.connectcampaignsv2#XAmazonErrorType": {

@@ -356,68 +356,68 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         },
                         "AccountId": {
                             "required": false,
                             "documentation": "The Account ID used to send the request. This is an optional parameter that will be set automatically for operations that require it.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "RequiresAccountId": {
                             "required": false,
                             "documentation": "Internal parameter for operations that require account id host prefix.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "OutpostId": {
                             "required": false,
                             "documentation": "The Outpost ID.  Some operations have an optional OutpostId which should be used in endpoint construction.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "Bucket": {
                             "required": false,
                             "documentation": "The S3 bucket used to send the request. This is an optional parameter that will be set automatically for operations that are scoped to an S3 bucket.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "AccessPointName": {
                             "required": false,
                             "documentation": "The S3 AccessPointName used to send the request. This is an optional parameter that will be set automatically for operations that are scoped to an S3 AccessPoint.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseArnRegion": {
                             "builtIn": "AWS::S3Control::UseArnRegion",
                             "required": false,
                             "documentation": "When an Access Point ARN is provided and this flag is enabled, the SDK MUST use the ARN's region when constructing the endpoint instead of the client's configured region.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "ResourceArn": {
                             "required": false,
                             "documentation": "The resource ARN included in the request.  Only set on TagResource, UntagResourceand ListTagsForResource",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseS3ExpressControlEndpoint": {
                             "required": false,
                             "documentation": "Internal parameter to indicate whether S3Express operation should use control plane, (ex. ListDirectoryAccessPoints)",
-                            "type": "Boolean"
+                            "type": "boolean"
                         }
                     },
                     "rules": [
@@ -9429,6 +9429,12 @@
                         "smithy.api#documentation": "<p>A container element for detailed status code metrics. </p>"
                     }
                 },
+                "AdvancedPerformanceMetrics": {
+                    "target": "com.amazonaws.s3control#AdvancedPerformanceMetrics",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A container element for S3 Storage Lens advanced performance metrics.</p>"
+                    }
+                },
                 "StorageLensGroupLevel": {
                     "target": "com.amazonaws.s3control#StorageLensGroupLevel",
                     "traits": {
@@ -9437,7 +9443,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>A container element for the account-level Amazon S3 Storage Lens configuration.</p>\n         <p>For more information about S3 Storage Lens, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html\">Assessing your storage activity and usage with S3 Storage Lens</a> in the <i>Amazon S3 User Guide</i>. For a complete list of S3 Storage Lens metrics, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_metrics_glossary.html\">S3 Storage Lens metrics glossary</a> in the <i>Amazon S3 User Guide</i>.</p>"
+                "smithy.api#documentation": "<p>A container element for the account-level Amazon S3 Storage Lens configuration.</p>\n         <note>\n            <p>You must enable Storage Lens metrics consistently at both the account level and bucket level, or your request will fail.</p>\n         </note>\n         <p>For more information about S3 Storage Lens, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html\">Assessing your storage activity and usage with S3 Storage Lens</a> in the <i>Amazon S3 User Guide</i>. For a complete list of S3 Storage Lens metrics, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_metrics_glossary.html\">S3 Storage Lens metrics glossary</a> in the <i>Amazon S3 User Guide</i>.</p>"
             }
         },
         "com.amazonaws.s3control#ActivityMetrics": {
@@ -9483,6 +9489,21 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The container element for Amazon S3 Storage Lens advanced data-protection metrics. Advanced\n         data-protection metrics provide insights that you can use to perform audits and protect\n         your data, for example replication rule counts within and across Regions.</p>\n         <p>For more information about S3 Storage Lens, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html\">Assessing your storage activity and usage with S3 Storage Lens</a> in the <i>Amazon S3 User Guide</i>. For a complete list of S3 Storage Lens metrics, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_metrics_glossary.html\">S3 Storage Lens metrics glossary</a> in the <i>Amazon S3 User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.s3control#AdvancedPerformanceMetrics": {
+            "type": "structure",
+            "members": {
+                "IsEnabled": {
+                    "target": "com.amazonaws.s3control#IsEnabled",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>A container that indicates whether S3 Storage Lens advanced performance metrics are enabled.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The container element for S3 Storage Lens advanced performance metrics. Advanced\n         performance metrics provide insights into application performance, such as request\n         efficiency and access patterns. These metrics help you optimize your\n         S3 storage for both cost and performance by providing detailed analytics on how your\n         applications interact with S3 resources.</p>\n         <p>For more information about S3 Storage Lens, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html\">Assessing your storage activity and usage with S3 Storage Lens</a> in the <i>Amazon S3 User Guide</i>. For a complete list of S3 Storage Lens metrics, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_metrics_glossary.html\">S3 Storage Lens metrics glossary</a> in the <i>Amazon S3 User Guide</i>.</p>"
             }
         },
         "com.amazonaws.s3control#Alias": {
@@ -9841,6 +9862,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A container for bucket-level detailed status code metrics for S3 Storage Lens.</p>"
                     }
+                },
+                "AdvancedPerformanceMetrics": {
+                    "target": "com.amazonaws.s3control#AdvancedPerformanceMetrics",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A container for bucket-level advanced performance metrics for S3 Storage Lens.</p>"
+                    }
                 }
             },
             "traits": {
@@ -9976,6 +10003,64 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>A container for enabling Amazon CloudWatch publishing for S3 Storage Lens metrics.</p>\n         <p>For more information about publishing S3 Storage Lens metrics to CloudWatch, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_view_metrics_cloudwatch.html\">Monitor\n            S3 Storage Lens metrics in CloudWatch</a> in the <i>Amazon S3 User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.s3control#ComputeObjectChecksumAlgorithm": {
+            "type": "enum",
+            "members": {
+                "CRC32": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CRC32"
+                    }
+                },
+                "CRC32C": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CRC32C"
+                    }
+                },
+                "CRC64NVME": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CRC64NVME"
+                    }
+                },
+                "MD5": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MD5"
+                    }
+                },
+                "SHA1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SHA1"
+                    }
+                },
+                "SHA256": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SHA256"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.s3control#ComputeObjectChecksumType": {
+            "type": "enum",
+            "members": {
+                "FULL_OBJECT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FULL_OBJECT"
+                    }
+                },
+                "COMPOSITE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "COMPOSITE"
+                    }
+                }
             }
         },
         "com.amazonaws.s3control#ConfigId": {
@@ -11047,6 +11132,20 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.s3control#DSSEKMSFilter": {
+            "type": "structure",
+            "members": {
+                "KmsKeyArn": {
+                    "target": "com.amazonaws.s3control#NonEmptyKmsKeyArnString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the customer managed KMS key to use for the filter to return objects that are encrypted by the specified key. For best performance, use keys in the same Region as the S3 Batch Operations job.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A filter that returns objects that are encrypted by dual-layer server-side encryption with Amazon Web Services Key Management Service (KMS) keys (DSSE-KMS). You can further refine your filtering by optionally providing a KMS Key ARN to filter objects encrypted by a specific key.</p>"
+            }
+        },
         "com.amazonaws.s3control#DataSourceId": {
             "type": "string",
             "traits": {
@@ -12030,7 +12129,7 @@
                 "target": "smithy.api#Unit"
             },
             "traits": {
-                "smithy.api#documentation": "<note>\n            <p>This operation is not supported by directory buckets.</p>\n         </note>\n         <p>Removes the <code>PublicAccessBlock</code> configuration for an Amazon Web Services account. For more\n         information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html\"> Using Amazon S3 block\n            public access</a>.</p>\n         <p>Related actions include:</p>\n         <ul>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetPublicAccessBlock.html\">GetPublicAccessBlock</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_PutPublicAccessBlock.html\">PutPublicAccessBlock</a>\n               </p>\n            </li>\n         </ul>",
+                "smithy.api#documentation": "<note>\n            <p>This operation is not supported by directory buckets.</p>\n         </note>\n         <p>Removes the <code>PublicAccessBlock</code> configuration for an Amazon Web Services account. This\n         operation might be restricted when the account is managed by organization-level Block\n         Public Access policies. You’ll get an Access Denied (403) error when the account is managed\n         by organization-level Block Public Access policies. Organization-level policies override\n         account-level settings, preventing direct account-level modifications. For more\n         information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html\"> Using Amazon S3 block\n            public access</a>.</p>\n         <p>Related actions include:</p>\n         <ul>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetPublicAccessBlock.html\">GetPublicAccessBlock</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_PutPublicAccessBlock.html\">PutPublicAccessBlock</a>\n               </p>\n            </li>\n         </ul>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "{AccountId}."
                 },
@@ -14676,7 +14775,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<note>\n            <p>This operation is not supported by directory buckets.</p>\n         </note>\n         <p>Retrieves the <code>PublicAccessBlock</code> configuration for an Amazon Web Services account. For\n         more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html\"> Using Amazon S3 block\n            public access</a>.</p>\n         <p>Related actions include:</p>\n         <ul>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DeletePublicAccessBlock.html\">DeletePublicAccessBlock</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_PutPublicAccessBlock.html\">PutPublicAccessBlock</a>\n               </p>\n            </li>\n         </ul>",
+                "smithy.api#documentation": "<note>\n            <p>This operation is not supported by directory buckets.</p>\n         </note>\n         <p>Retrieves the <code>PublicAccessBlock</code> configuration for an Amazon Web Services account. This\n         operation returns the effective account-level configuration, which may inherit from\n         organization-level policies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html\"> Using Amazon S3 block\n            public access</a>.</p>\n         <p>Related actions include:</p>\n         <ul>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DeletePublicAccessBlock.html\">DeletePublicAccessBlock</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_PutPublicAccessBlock.html\">PutPublicAccessBlock</a>\n               </p>\n            </li>\n         </ul>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "{AccountId}."
                 },
@@ -15499,6 +15598,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>If provided, the generated manifest includes only source bucket objects that are stored\n         with the specified storage class.</p>"
                     }
+                },
+                "MatchAnyObjectEncryption": {
+                    "target": "com.amazonaws.s3control#ObjectEncryptionFilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>If provided, the generated object list includes only source bucket objects with the indicated server-side encryption type (SSE-S3, SSE-KMS, DSSE-KMS, SSE-C, or NOT-SSE).</p>"
+                    }
                 }
             },
             "traits": {
@@ -15622,6 +15727,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Directs the specified job to invoke <code>ReplicateObject</code> on every object in the\n         job's manifest.</p>\n         <note>\n            <p>This functionality is not supported by directory buckets.</p>\n         </note>"
                     }
+                },
+                "S3ComputeObjectChecksum": {
+                    "target": "com.amazonaws.s3control#S3ComputeObjectChecksumOperation",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Directs the specified job to compute checksum values for every object in the manifest.</p>"
+                    }
+                },
+                "S3UpdateObjectEncryption": {
+                    "target": "com.amazonaws.s3control#S3UpdateObjectEncryptionOperation",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Updates the server-side encryption type of an existing encrypted\n object in a general purpose bucket. You can use the <code>UpdateObjectEncryption</code>\n operation to change encrypted objects from server-side encryption with\n Amazon S3 managed keys (SSE-S3) to server-side encryption with Key Management Service (KMS) \n keys (SSE-KMS), or to apply S3 Bucket Keys. You can also use the \n <code>UpdateObjectEncryption</code> operation to change the customer-managed\n KMS key used to encrypt your data so that you can comply with custom \n key-rotation standards.</p>"
+                    }
                 }
             },
             "traits": {
@@ -15706,6 +15823,12 @@
                     "target": "com.amazonaws.s3control#JobReportScope",
                     "traits": {
                         "smithy.api#documentation": "<p>Indicates whether the job-completion report will include details of all tasks or only\n         failed tasks.</p>"
+                    }
+                },
+                "ExpectedBucketOwner": {
+                    "target": "com.amazonaws.s3control#AccountId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Lists the Amazon Web Services account ID that owns the target bucket, where the completion report is received.</p>"
                     }
                 }
             },
@@ -17505,7 +17628,7 @@
                 "target": "com.amazonaws.s3control#ListTagsForResourceResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>This operation allows you to list all of the tags for a specified resource. Each tag is a label consisting of a key and value. Tags can help you organize, track costs for, and control access to resources. </p>\n         <note>\n            <p>This operation is only supported for the following Amazon S3 resources:</p>\n            <ul>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Directory buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups.html\">Storage Lens groups</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-grants-tagging.html\">S3 Access Grants instances, registered locations, and grants</a>.</p>\n               </li>\n            </ul>\n         </note>\n         <dl>\n            <dt>Permissions</dt>\n            <dd>\n               <p>For Storage Lens groups and S3 Access Grants, you must have the <code>s3:ListTagsForResource</code> permission to use this operation. </p>\n               <p>For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p>\n            </dd>\n            <dt>Directory bucket permissions</dt>\n            <dd>\n               <p>For directory buckets, you must have the <code>s3express:ListTagsForResource</code> permission to use this operation. For more information about directory buckets policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-permissions.html\">Identity and Access Management (IAM) for S3 Express One Zone</a> in the <i>Amazon S3 User Guide</i>.</p>\n            </dd>\n            <dt>HTTP Host header syntax</dt>\n            <dd>\n               <p>\n                  <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region</i>.amazonaws.com</code>.</p>\n            </dd>\n         </dl>\n         <p>For information about S3 Tagging errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3TaggingErrorCodeList\">List of Amazon S3 Tagging error codes</a>.</p>",
+                "smithy.api#documentation": "<p>This operation allows you to list all of the tags for a specified resource. Each tag is a label consisting of a key and value. Tags can help you organize, track costs for, and control access to resources. </p>\n         <note>\n            <p>This operation is only supported for the following Amazon S3 resources:</p>\n            <ul>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/buckets-tagging.html\">General purpose buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-db-tagging.html\">Access Points for directory buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-tagging.html\">Access Points for general purpose buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Directory buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups.html\">S3 Storage Lens groups</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-grants-tagging.html\">S3 Access Grants instances, registered locations, and grants</a>.</p>\n               </li>\n            </ul>\n         </note>\n         <dl>\n            <dt>Permissions</dt>\n            <dd>\n               <p>For general purpose buckets, access points for general purpose buckets, Storage Lens groups, and S3 Access Grants, you must have the <code>s3:ListTagsForResource</code> permission to use this operation. </p>\n            </dd>\n            <dt>Directory bucket permissions</dt>\n            <dd>\n               <p>For directory buckets, you must have the <code>s3express:ListTagsForResource</code> permission to use this operation. For more information about directory buckets policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-permissions.html\">Identity and Access Management (IAM) for S3 Express One Zone</a> in the <i>Amazon S3 User Guide</i>.</p>\n            </dd>\n            <dt>HTTP Host header syntax</dt>\n            <dd>\n               <p>\n                  <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region</i>.amazonaws.com</code>.</p>\n            </dd>\n         </dl>\n         <p>For information about S3 Tagging errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3TaggingErrorCodeList\">List of Amazon S3 Tagging error codes</a>.</p>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "{AccountId}."
                 },
@@ -17671,14 +17794,14 @@
                     "target": "com.amazonaws.s3control#ObjectSizeValue",
                     "traits": {
                         "smithy.api#default": 0,
-                        "smithy.api#documentation": "<p>\nSpecifies the minimum object size in Bytes. The value must be a positive number, greater than 0 and less than 5 TB.\n</p>"
+                        "smithy.api#documentation": "<p> Specifies the minimum object size in Bytes. The value must be a positive number, greater than\n         0 and less than 50 TB. </p>"
                     }
                 },
                 "BytesLessThan": {
                     "target": "com.amazonaws.s3control#ObjectSizeValue",
                     "traits": {
                         "smithy.api#default": 0,
-                        "smithy.api#documentation": "<p>\nSpecifies the maximum object size in Bytes. The value must be a positive number, greater than the minimum object size and less than 5 TB.\n</p>"
+                        "smithy.api#documentation": "<p> Specifies the maximum object size in Bytes. The value must be a positive number, greater than\n         the minimum object size and less than 50 TB. </p>"
                     }
                 }
             },
@@ -18012,6 +18135,16 @@
         "com.amazonaws.s3control#NoSuchPublicAccessBlockConfigurationMessage": {
             "type": "string"
         },
+        "com.amazonaws.s3control#NonEmptyKmsKeyArnString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 20,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:aws[a-zA-Z0-9-]*:kms:[a-z0-9-]+:[0-9]{12}:key/[a-zA-Z0-9-]+$"
+            }
+        },
         "com.amazonaws.s3control#NonEmptyMaxLength1024String": {
             "type": "string",
             "traits": {
@@ -18124,6 +18257,13 @@
                 "smithy.api#error": "client"
             }
         },
+        "com.amazonaws.s3control#NotSSEFilter": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>A filter that returns objects that aren't server-side encrypted.</p>"
+            }
+        },
         "com.amazonaws.s3control#ObjectAgeValue": {
             "type": "integer",
             "traits": {
@@ -18132,6 +18272,79 @@
         },
         "com.amazonaws.s3control#ObjectCreationTime": {
             "type": "timestamp"
+        },
+        "com.amazonaws.s3control#ObjectEncryption": {
+            "type": "structure",
+            "members": {
+                "SSEKMS": {
+                    "target": "com.amazonaws.s3control#S3UpdateObjectEncryptionSSEKMS",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies to update the object encryption type to server-side encryption\n with Key Management Service (KMS) keys (SSE-KMS).</p>",
+                        "smithy.api#xmlName": "SSE-KMS"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The updated server-side encryption type for this object. The\n <code>UpdateObjectEncryption</code> operation supports the\n SSE-KMS encryption type.</p>\n         <p>Valid Values: <code>SSEKMS</code>\n         </p>"
+            }
+        },
+        "com.amazonaws.s3control#ObjectEncryptionFilter": {
+            "type": "union",
+            "members": {
+                "SSES3": {
+                    "target": "com.amazonaws.s3control#SSES3Filter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Filters for objects that are encrypted by server-side encryption with Amazon S3 managed keys (SSE-S3).</p>",
+                        "smithy.api#xmlName": "SSE-S3"
+                    }
+                },
+                "SSEKMS": {
+                    "target": "com.amazonaws.s3control#SSEKMSFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Filters for objects that are encrypted by server-side encryption with Amazon Web Services Key Management Service (KMS) keys (SSE-KMS).</p>",
+                        "smithy.api#xmlName": "SSE-KMS"
+                    }
+                },
+                "DSSEKMS": {
+                    "target": "com.amazonaws.s3control#DSSEKMSFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Filters for objects that are encrypted by dual-layer server-side encryption with Amazon Web Services Key Management Service (KMS) keys (DSSE-KMS).</p>",
+                        "smithy.api#xmlName": "DSSE-KMS"
+                    }
+                },
+                "SSEC": {
+                    "target": "com.amazonaws.s3control#SSECFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Filters for objects that are encrypted by server-side encryption with customer-provided keys (SSE-C).</p>",
+                        "smithy.api#xmlName": "SSE-C"
+                    }
+                },
+                "NOTSSE": {
+                    "target": "com.amazonaws.s3control#NotSSEFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Filters for objects that are not encrypted by server-side encryption.</p>",
+                        "smithy.api#xmlName": "NOT-SSE"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An optional filter for the S3JobManifestGenerator that identifies the subset of objects by encryption type.</p>"
+            }
+        },
+        "com.amazonaws.s3control#ObjectEncryptionFilterList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.s3control#ObjectEncryptionFilter",
+                "traits": {
+                    "smithy.api#xmlName": "ObjectEncryption"
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1
+                }
+            }
         },
         "com.amazonaws.s3control#ObjectLambdaAccessPoint": {
             "type": "structure",
@@ -18490,6 +18703,18 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "S3ReplicateObject"
+                    }
+                },
+                "S3ComputeObjectChecksum": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "S3ComputeObjectChecksum"
+                    }
+                },
+                "S3UpdateObjectEncryption": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "S3UpdateObjectEncryption"
                     }
                 }
             }
@@ -19565,7 +19790,7 @@
                 "target": "smithy.api#Unit"
             },
             "traits": {
-                "smithy.api#documentation": "<note>\n            <p>This operation is not supported by directory buckets.</p>\n         </note>\n         <p>Creates or modifies the <code>PublicAccessBlock</code> configuration for an\n         Amazon Web Services account. For this operation, users must have the\n            <code>s3:PutAccountPublicAccessBlock</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html\">\n            Using Amazon S3 block public access</a>.</p>\n         <p>Related actions include:</p>\n         <ul>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetPublicAccessBlock.html\">GetPublicAccessBlock</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DeletePublicAccessBlock.html\">DeletePublicAccessBlock</a>\n               </p>\n            </li>\n         </ul>",
+                "smithy.api#documentation": "<note>\n            <p>This operation is not supported by directory buckets.</p>\n         </note>\n         <p>Creates or modifies the <code>PublicAccessBlock</code> configuration for an\n         Amazon Web Services account. This operation may be restricted when the account is managed by\n         organization-level Block Public Access policies. You might get an Access Denied (403) error\n         when the account is managed by organization-level Block Public Access policies.\n         Organization-level policies override account-level settings, preventing direct\n         account-level modifications. For this operation, users must have the\n            <code>s3:PutAccountPublicAccessBlock</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html\">\n            Using Amazon S3 block public access</a>.</p>\n         <p>Related actions include:</p>\n         <ul>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetPublicAccessBlock.html\">GetPublicAccessBlock</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DeletePublicAccessBlock.html\">DeletePublicAccessBlock</a>\n               </p>\n            </li>\n         </ul>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "{AccountId}."
                 },
@@ -20464,6 +20689,26 @@
                 }
             }
         },
+        "com.amazonaws.s3control#S3ComputeObjectChecksumOperation": {
+            "type": "structure",
+            "members": {
+                "ChecksumAlgorithm": {
+                    "target": "com.amazonaws.s3control#ComputeObjectChecksumAlgorithm",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates the algorithm that you want Amazon S3 to use to create the checksum. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the Amazon S3 User Guide.</p>"
+                    }
+                },
+                "ChecksumType": {
+                    "target": "com.amazonaws.s3control#ComputeObjectChecksumType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates the checksum type that you want Amazon S3 to use to calculate the object's checksum value. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\">Checking object integrity</a> in the Amazon S3 User Guide.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Directs the specified job to invoke the ComputeObjectChecksum operation on every object listed in the job's manifest.</p>"
+            }
+        },
         "com.amazonaws.s3control#S3ContentLength": {
             "type": "long",
             "traits": {
@@ -21285,6 +21530,43 @@
                 "target": "com.amazonaws.s3control#S3Tag"
             }
         },
+        "com.amazonaws.s3control#S3UpdateObjectEncryptionOperation": {
+            "type": "structure",
+            "members": {
+                "ObjectEncryption": {
+                    "target": "com.amazonaws.s3control#ObjectEncryption",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated server-side encryption type for this S3 object. The\n <code>UpdateObjectEncryption</code> operation supports the\n SSE-KMS encryption type.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>With the <code>UpdateObjectEncryption</code> operation, you can atomically\n update the server-side encryption type of an existing object in a general\n purpose bucket without any data movement.</p>"
+            }
+        },
+        "com.amazonaws.s3control#S3UpdateObjectEncryptionSSEKMS": {
+            "type": "structure",
+            "members": {
+                "KMSKeyArn": {
+                    "target": "com.amazonaws.s3control#NonEmptyKmsKeyArnString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the Amazon Web Services KMS key Amazon Resource Name (ARN) to use for the\n updated server-side encryption type. Required if <code>UpdateObjectEncryption</code>\n specifies <code>SSEKMS</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "BucketKeyEnabled": {
+                    "target": "com.amazonaws.s3control#Boolean",
+                    "traits": {
+                        "smithy.api#default": null,
+                        "smithy.api#documentation": "<p>Specifies whether Amazon S3 should use an S3 Bucket Key for object encryption\n with server-side encryption using Key Management Service (KMS) keys (SSE-KMS). If this\n value isn't specified, it defaults to <code>false</code>. Setting this value\n to <code>true</code> causes Amazon S3 to use an S3 Bucket Key for update object\n encryption with SSE-KMS.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>If <code>SSEKMS</code> is specified for <code>UpdateObjectEncryption</code>,\n this data type specifies the Amazon Web Services KMS key Amazon Resource Name (ARN) to use\n and whether to use an S3 Bucket Key for server-side encryption using \n Key Management Service (KMS) keys (SSE-KMS).</p>",
+                "smithy.api#xmlName": "SSE-KMS"
+            }
+        },
         "com.amazonaws.s3control#S3UserMetadata": {
             "type": "map",
             "key": {
@@ -21298,6 +21580,13 @@
                     "min": 0,
                     "max": 8192
                 }
+            }
+        },
+        "com.amazonaws.s3control#SSECFilter": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>A filter that returns objects that are encrypted by server-side encryption with customer-provided keys (SSE-C).</p>"
             }
         },
         "com.amazonaws.s3control#SSEKMS": {
@@ -21332,6 +21621,27 @@
                 "smithy.api#xmlName": "SSE-KMS"
             }
         },
+        "com.amazonaws.s3control#SSEKMSFilter": {
+            "type": "structure",
+            "members": {
+                "KmsKeyArn": {
+                    "target": "com.amazonaws.s3control#NonEmptyKmsKeyArnString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the customer managed KMS key to use for the filter to return objects that are encrypted by the specified key. For best performance, use keys in the same Region as the S3 Batch Operations job.</p>"
+                    }
+                },
+                "BucketKeyEnabled": {
+                    "target": "com.amazonaws.s3control#Boolean",
+                    "traits": {
+                        "smithy.api#default": null,
+                        "smithy.api#documentation": "<p>Specifies whether Amazon S3 should use an S3 Bucket Key for object encryption with server-side encryption using Amazon Web Services Key Management Service (Amazon Web Services KMS) keys (SSE-KMS). If specified, will filter SSE-KMS encrypted objects by S3 Bucket Key status.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A filter that returns objects that are encrypted by server-side encryption with Amazon Web Services KMS (SSE-KMS).</p>"
+            }
+        },
         "com.amazonaws.s3control#SSEKMSKeyId": {
             "type": "string"
         },
@@ -21349,6 +21659,13 @@
             "traits": {
                 "smithy.api#documentation": "<p>Configuration for the use of SSE-S3 to encrypt generated manifest objects.</p>",
                 "smithy.api#xmlName": "SSE-S3"
+            }
+        },
+        "com.amazonaws.s3control#SSES3Filter": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>A filter that returns objects that are encrypted by server-side encryption with Amazon S3 managed keys (SSE-S3).</p>"
             }
         },
         "com.amazonaws.s3control#Scope": {
@@ -21597,6 +21914,12 @@
                         "smithy.api#documentation": "<p>A container to specify the properties of your S3 Storage Lens metrics export including, the\n         destination, schema and format.</p>"
                     }
                 },
+                "ExpandedPrefixesDataExport": {
+                    "target": "com.amazonaws.s3control#StorageLensExpandedPrefixesDataExport",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A container that configures your S3 Storage Lens expanded prefixes metrics report.\n   </p>"
+                    }
+                },
                 "IsEnabled": {
                     "target": "com.amazonaws.s3control#IsEnabled",
                     "traits": {
@@ -21615,6 +21938,12 @@
                     "target": "com.amazonaws.s3control#StorageLensArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the S3 Storage Lens configuration. This property is read-only\n         and follows the following format: <code>\n               arn:aws:s3:<i>us-east-1</i>:<i>example-account-id</i>:storage-lens/<i>your-dashboard-name</i>\n            </code>\n         </p>"
+                    }
+                },
+                "PrefixDelimiter": {
+                    "target": "com.amazonaws.s3control#StorageLensPrefixLevelDelimiter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A container for all prefix delimiters that are used for object keys in this S3 Storage Lens\n         configuration. The prefix delimiters determine how S3 Storage Lens counts prefix depth, by\n         separating the hierarchical levels in object keys.</p>\n         <note>\n            <ul>\n               <li>\n                  <p>If either a prefix delimiter or existing delimiter is undefined, Amazon S3 uses the\n                  delimiter that’s defined.</p>\n               </li>\n               <li>\n                  <p>If both the prefix delimiter and existing delimiter are undefined, S3 uses <code>/</code>\n                  as the default delimiter.</p>\n               </li>\n               <li>\n                  <p>When custom delimiters are used, both the prefix delimiter and existing\n                  delimiter must specify the same special character. Otherwise, your request results\n                  in an error.</p>\n               </li>\n            </ul>\n         </note>"
                     }
                 }
             },
@@ -21645,6 +21974,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A container for enabling Amazon CloudWatch publishing for S3 Storage Lens metrics.</p>"
                     }
+                },
+                "StorageLensTableDestination": {
+                    "target": "com.amazonaws.s3control#StorageLensTableDestination",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A container for configuring S3 Storage Lens data exports to read-only S3 table buckets.</p>"
+                    }
                 }
             },
             "traits": {
@@ -21671,6 +22006,23 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>A container for the encryption of the S3 Storage Lens metrics exports.</p>"
+            }
+        },
+        "com.amazonaws.s3control#StorageLensExpandedPrefixesDataExport": {
+            "type": "structure",
+            "members": {
+                "S3BucketDestination": {
+                    "target": "com.amazonaws.s3control#S3BucketDestination"
+                },
+                "StorageLensTableDestination": {
+                    "target": "com.amazonaws.s3control#StorageLensTableDestination",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A container for the bucket where the S3 Storage Lens metric export files are located. At least one export destination must be specified.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A container for your S3 Storage Lens expanded prefix metrics report configuration. Unlike the\n         default Storage Lens metrics report, the enhanced prefix metrics report includes all\n         S3 Storage Lens storage and activity data related to the full list of prefixes in your Storage\n         Lens configuration.</p>"
             }
         },
         "com.amazonaws.s3control#StorageLensGroup": {
@@ -21926,6 +22278,25 @@
                 }
             }
         },
+        "com.amazonaws.s3control#StorageLensTableDestination": {
+            "type": "structure",
+            "members": {
+                "IsEnabled": {
+                    "target": "com.amazonaws.s3control#IsEnabled",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>A container that indicates whether the export to read-only S3 table buckets is enabled\n         for your S3 Storage Lens configuration. When set to true, Storage Lens reports are automatically\n         exported to tables in addition to other configured destinations.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Encryption": {
+                    "target": "com.amazonaws.s3control#StorageLensDataExportEncryption"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A container for configuring your S3 Storage Lens reports to export to read-only S3 table\n         buckets. This parameter enables you to store your Storage Lens metrics in a structured,\n         queryable table format in Apache Iceberg.</p>\n         <p>For more information about S3 Storage Lens, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html\">Assessing your storage activity and usage with S3 Storage Lens</a> in the <i>Amazon S3 User Guide</i>.</p>"
+            }
+        },
         "com.amazonaws.s3control#StorageLensTag": {
             "type": "structure",
             "members": {
@@ -22118,7 +22489,7 @@
                 "target": "com.amazonaws.s3control#TagResourceResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p> Creates a new user-defined tag or updates an existing tag. Each tag is a label consisting of a key and value that is applied to your resource. Tags can help you organize, track costs for, and control access to your resources. You can add up to 50 Amazon Web Services resource tags for each S3 resource. </p>\n         <note>\n            <p>This operation is only supported for the following Amazon S3 resource:</p>\n            <ul>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Directory buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups.html\">S3 Storage Lens groups</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-grants-tagging.html\">S3 Access Grants instances, registered locations, or grants</a>.</p>\n               </li>\n            </ul>\n         </note>\n         <dl>\n            <dt>Permissions</dt>\n            <dd>\n               <p>For Storage Lens groups and S3 Access Grants, you must have the <code>s3:TagResource</code> permission to use this operation. </p>\n               <p>For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p>\n            </dd>\n            <dt>Directory bucket permissions</dt>\n            <dd>\n               <p>For directory buckets, you must have the <code>s3express:TagResource</code> permission to use this operation. For more information about directory buckets policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-permissions.html\">Identity and Access Management (IAM) for S3 Express One Zone</a> in the <i>Amazon S3 User Guide</i>.</p>\n            </dd>\n            <dt>HTTP Host header syntax</dt>\n            <dd>\n               <p>\n                  <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region</i>.amazonaws.com</code>.</p>\n            </dd>\n         </dl>\n         <p>For information about S3 Tagging errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3TaggingErrorCodeList\">List of Amazon S3 Tagging error codes</a>.</p>",
+                "smithy.api#documentation": "<p> Creates a new user-defined tag or updates an existing tag. Each tag is a label consisting of a key and value that is applied to your resource. Tags can help you organize, track costs for, and control access to your resources. You can add up to 50 Amazon Web Services resource tags for each S3 resource. </p>\n         <note>\n            <p>This operation is only supported for the following Amazon S3 resource:</p>\n            <ul>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/buckets-tagging.html\">General purpose buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-db-tagging.html\">Access Points for directory buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-tagging.html\">Access Points for general purpose buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Directory buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups.html\">S3 Storage Lens groups</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-grants-tagging.html\">S3 Access Grants instances, registered locations, or grants</a>.</p>\n               </li>\n            </ul>\n         </note>\n         <dl>\n            <dt>Permissions</dt>\n            <dd>\n               <p>For general purpose buckets, access points for general purpose buckets, Storage Lens groups, and S3 Access Grants, you must have the <code>s3:TagResource</code> permission to use this operation. </p>\n            </dd>\n            <dt>Directory bucket permissions</dt>\n            <dd>\n               <p>For directory buckets, you must have the <code>s3express:TagResource</code> permission to use this operation. For more information about directory buckets policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-permissions.html\">Identity and Access Management (IAM) for S3 Express One Zone</a> in the <i>Amazon S3 User Guide</i>.</p>\n            </dd>\n            <dt>HTTP Host header syntax</dt>\n            <dd>\n               <p>\n                  <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region</i>.amazonaws.com</code>.</p>\n            </dd>\n         </dl>\n         <p>For information about S3 Tagging errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3TaggingErrorCodeList\">List of Amazon S3 Tagging error codes</a>.</p>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "{AccountId}."
                 },
@@ -22320,7 +22691,7 @@
                 "target": "com.amazonaws.s3control#UntagResourceResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>This operation removes the specified user-defined tags from an S3 resource. You can pass one or more tag keys. </p>\n         <note>\n            <p>This operation is only supported for the following Amazon S3 resources:</p>\n            <ul>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Directory buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups.html\">Storage Lens groups</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-grants-tagging.html\">S3 Access Grants instances, registered locations, and grants</a>.</p>\n               </li>\n            </ul>\n         </note>\n         <dl>\n            <dt>Permissions</dt>\n            <dd>\n               <p>For Storage Lens groups and S3 Access Grants, you must have the <code>s3:UntagResource</code> permission to use this operation. </p>\n               <p>For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p>\n            </dd>\n            <dt>Directory bucket permissions</dt>\n            <dd>\n               <p>For directory buckets, you must have the <code>s3express:UntagResource</code> permission to use this operation. For more information about directory buckets policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-permissions.html\">Identity and Access Management (IAM) for S3 Express One Zone</a> in the <i>Amazon S3 User Guide</i>.</p>\n            </dd>\n            <dt>HTTP Host header syntax</dt>\n            <dd>\n               <p>\n                  <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region</i>.amazonaws.com</code>.</p>\n            </dd>\n         </dl>\n         <p>For information about S3 Tagging errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3TaggingErrorCodeList\">List of Amazon S3\n            Tagging error codes</a>.</p>",
+                "smithy.api#documentation": "<p>This operation removes the specified user-defined tags from an S3 resource. You can pass one or more tag keys. </p>\n         <note>\n            <p>This operation is only supported for the following Amazon S3 resources:</p>\n            <ul>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/buckets-tagging.html\">General purpose buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-db-tagging.html\">Access Points for directory buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-tagging.html\">Access Points for general purpose buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Directory buckets</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups.html\">S3 Storage Lens groups</a>\n                  </p>\n               </li>\n               <li>\n                  <p>\n                     <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-grants-tagging.html\">S3 Access Grants instances, registered locations, and grants</a>.</p>\n               </li>\n            </ul>\n         </note>\n         <dl>\n            <dt>Permissions</dt>\n            <dd>\n               <p>For general purpose buckets, access points for general purpose buckets, Storage Lens groups, and S3 Access Grants, you must have the <code>s3:UntagResource</code> permission to use this operation. </p>\n            </dd>\n            <dt>Directory bucket permissions</dt>\n            <dd>\n               <p>For directory buckets, you must have the <code>s3express:UntagResource</code> permission to use this operation. For more information about directory buckets policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-permissions.html\">Identity and Access Management (IAM) for S3 Express One Zone</a> in the <i>Amazon S3 User Guide</i>.</p>\n            </dd>\n            <dt>HTTP Host header syntax</dt>\n            <dd>\n               <p>\n                  <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region</i>.amazonaws.com</code>.</p>\n            </dd>\n         </dl>\n         <p>For information about S3 Tagging errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3TaggingErrorCodeList\">List of Amazon S3\n            Tagging error codes</a>.</p>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "{AccountId}."
                 },

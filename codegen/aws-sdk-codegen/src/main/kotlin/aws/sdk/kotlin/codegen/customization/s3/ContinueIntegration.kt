@@ -4,18 +4,18 @@
  */
 package aws.sdk.kotlin.codegen.customization.s3
 
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.core.CodegenContext
-import software.amazon.smithy.kotlin.codegen.core.KotlinWriter
-import software.amazon.smithy.kotlin.codegen.core.RuntimeTypes
-import software.amazon.smithy.kotlin.codegen.core.withBlock
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.lang.KotlinTypes
-import software.amazon.smithy.kotlin.codegen.model.*
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.ProtocolMiddleware
-import software.amazon.smithy.kotlin.codegen.rendering.util.ConfigProperty
-import software.amazon.smithy.kotlin.codegen.rendering.util.ConfigPropertyType
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.core.CodegenContext
+import aws.smithy.kotlin.codegen.core.KotlinWriter
+import aws.smithy.kotlin.codegen.core.RuntimeTypes
+import aws.smithy.kotlin.codegen.core.withBlock
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.lang.KotlinTypes
+import aws.smithy.kotlin.codegen.model.*
+import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
+import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolMiddleware
+import aws.smithy.kotlin.codegen.rendering.util.ConfigProperty
+import aws.smithy.kotlin.codegen.rendering.util.ConfigPropertyType
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.OperationShape
 import software.amazon.smithy.model.shapes.ServiceShape
@@ -56,15 +56,13 @@ class ContinueIntegration : KotlinIntegration {
         resolved: List<ProtocolMiddleware>,
     ): List<ProtocolMiddleware> = resolved + ContinueMiddleware
 
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape<ServiceShape>(settings.service).isS3
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape<ServiceShape>(settings.service).isS3
 }
 
 internal object ContinueMiddleware : ProtocolMiddleware {
     override val name: String = "ContinueHeader"
 
-    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-        op.getTrait<HttpTrait>()?.method == "PUT"
+    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = op.getTrait<HttpTrait>()?.method == "PUT"
 
     override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
         writer.withBlock("config.$CONTINUE_PROP?.let { threshold ->", "}") {

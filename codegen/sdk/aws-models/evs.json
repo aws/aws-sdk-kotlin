@@ -1,10 +1,23 @@
 {
     "smithy": "2.0",
     "shapes": {
+        "com.amazonaws.evs#AllocationId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 9,
+                    "max": 26
+                },
+                "smithy.api#pattern": "^eipalloc-[a-zA-Z0-9_-]+$"
+            }
+        },
         "com.amazonaws.evs#AmazonElasticVMwareService": {
             "type": "service",
             "version": "2023-07-27",
             "operations": [
+                {
+                    "target": "com.amazonaws.evs#GetVersions"
+                },
                 {
                     "target": "com.amazonaws.evs#ListTagsForResource"
                 },
@@ -51,7 +64,7 @@
                         "*,authorization,date,x-amz-date,x-amz-security-token,x-amz-target,content-type,x-amz-content-sha256,x-amz-user-agent,x-amzn-platform-id,x-amzn-trace-id,amz-sdk-invocation-id,amz-sdk-request"
                     ]
                 },
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Amazon Elastic VMware Service (Amazon EVS) is a service that you can use to deploy a VMware Cloud Foundation (VCF) software environment directly on EC2 bare metal instances within an Amazon Virtual Private Cloud (VPC).</p> <p>Workloads running on Amazon EVS are fully compatible with workloads running on any standard VMware vSphere environment. This means that you can migrate any VMware-based workload to Amazon EVS without workload modification.</p>",
+                "smithy.api#documentation": "<p>Amazon Elastic VMware Service (Amazon EVS) is a service that you can use to deploy a VMware Cloud Foundation (VCF) software environment directly on EC2 bare metal instances within an Amazon Virtual Private Cloud (VPC).</p> <p>Workloads running on Amazon EVS are fully compatible with workloads running on any standard VMware vSphere environment. This means that you can migrate any VMware-based workload to Amazon EVS without workload modification.</p>",
                 "smithy.api#title": "Amazon Elastic VMware Service",
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
@@ -60,27 +73,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -562,17 +575,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -583,17 +585,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -610,17 +601,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -631,17 +611,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -729,13 +698,98 @@
                 "smithy.api#pattern": "^arn:aws:evs:[a-z]{2}-[a-z]+-[0-9]:[0-9]{12}:environment/[a-zA-Z0-9_-]+$"
             }
         },
+        "com.amazonaws.evs#AssociateEipToVlan": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.evs#AssociateEipToVlanRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.evs#AssociateEipToVlanResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.evs#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.evs#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.evs#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Associates an Elastic IP address with a public HCX VLAN. This operation is only allowed for public HCX VLANs at this time.</p>",
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.evs#AssociateEipToVlanRequest": {
+            "type": "structure",
+            "members": {
+                "clientToken": {
+                    "target": "com.amazonaws.evs#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<note> <p>This parameter is not used in Amazon EVS currently. If you supply input for this parameter, it will have no effect.</p> </note> <p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the environment creation request. If you do not specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "environmentId": {
+                    "target": "com.amazonaws.evs#EnvironmentId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique ID for the environment containing the VLAN that the Elastic IP address associates with.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "vlanName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the VLAN. <code>hcx</code> is the only accepted VLAN name at this time.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 200
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "allocationId": {
+                    "target": "com.amazonaws.evs#AllocationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Elastic IP address allocation ID.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.evs#AssociateEipToVlanResponse": {
+            "type": "structure",
+            "members": {
+                "vlan": {
+                    "target": "com.amazonaws.evs#Vlan"
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.evs#AssociationId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 9,
+                    "max": 26
+                },
+                "smithy.api#pattern": "^eipassoc-[a-zA-Z0-9_-]+$"
+            }
+        },
         "com.amazonaws.evs#Check": {
             "type": "structure",
             "members": {
                 "type": {
                     "target": "com.amazonaws.evs#CheckType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The check type. Amazon EVS performs the following checks.</p> <ul> <li> <p> <code>KEY_REUSE</code>: checks that the VCF license key is not used by another Amazon EVS environment. This check fails if a used license is added to the environment.</p> </li> <li> <p> <code>KEY_COVERAGE</code>: checks that your VCF license key allocates sufficient vCPU cores for all deployed hosts. The check fails when any assigned hosts in the EVS environment are not covered by license keys, or when any unassigned hosts cannot be covered by available vCPU cores in keys.</p> </li> <li> <p> <code>REACHABILITY</code>: checks that the Amazon EVS control plane has a persistent connection to SDDC Manager. If Amazon EVS cannot reach the environment, this check fails.</p> </li> <li> <p> <code>HOST_COUNT</code>: Checks that your environment has a minimum of 4 hosts, which is a requirement for VCF 5.2.1.</p> <p>If this check fails, you will need to add hosts so that your environment meets this minimum requirement. Amazon EVS only supports environments with 4-16 hosts.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The check type. Amazon EVS performs the following checks.</p> <ul> <li> <p> <code>KEY_REUSE</code>: checks that the VCF license key is not used by another Amazon EVS environment. This check fails if a used license is added to the environment.</p> </li> <li> <p> <code>KEY_COVERAGE</code>: checks that your VCF license key allocates sufficient vCPU cores for all deployed hosts. The check fails when any assigned hosts in the EVS environment are not covered by license keys, or when any unassigned hosts cannot be covered by available vCPU cores in keys.</p> </li> <li> <p> <code>REACHABILITY</code>: checks that the Amazon EVS control plane has a persistent connection to SDDC Manager. If Amazon EVS cannot reach the environment, this check fails.</p> </li> <li> <p> <code>HOST_COUNT</code>: Checks that your environment has a minimum of 4 hosts.</p> <p>If this check fails, you will need to add hosts so that your environment meets this minimum requirement. Amazon EVS only supports environments with 4-16 hosts.</p> </li> </ul>"
                     }
                 },
                 "result": {
@@ -752,7 +806,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>A check on the environment to identify environment health and validate VMware VCF licensing compliance.</p>"
+                "smithy.api#documentation": "<p>A check on the environment to identify environment health and validate VMware VCF licensing compliance.</p>"
             }
         },
         "com.amazonaws.evs#CheckResult": {
@@ -841,7 +895,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>The connectivity configuration for the environment. Amazon EVS requires that you specify two route server peer IDs. During environment creation, the route server endpoints peer with the NSX uplink VLAN for connectivity to the NSX overlay network.</p>"
+                "smithy.api#documentation": "<p>The connectivity configuration for the environment. Amazon EVS requires that you specify two route server peer IDs. During environment creation, the route server endpoints peer with the NSX uplink VLAN for connectivity to the NSX overlay network.</p>"
             }
         },
         "com.amazonaws.evs#CreateEnvironment": {
@@ -862,7 +916,7 @@
                     "aws:RequestTag/${TagKey}",
                     "aws:TagKeys"
                 ],
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Creates an Amazon EVS environment that runs VCF software, such as SDDC Manager, NSX Manager, and vCenter Server.</p> <p>During environment creation, Amazon EVS performs validations on DNS settings, provisions VLAN subnets and hosts, and deploys the supplied version of VCF.</p> <p>It can take several hours to create an environment. After the deployment completes, you can configure VCF in the vSphere user interface according to your needs.</p> <note> <p>You cannot use the <code>dedicatedHostId</code> and <code>placementGroupId</code> parameters together in the same <code>CreateEnvironment</code> action. This results in a <code>ValidationException</code> response.</p> </note>",
+                "smithy.api#documentation": "<p>Creates an Amazon EVS environment that runs VCF software, such as SDDC Manager, NSX Manager, and vCenter Server.</p> <p>During environment creation, Amazon EVS performs validations on DNS settings, provisions VLAN subnets and hosts, and deploys the supplied version of VCF.</p> <p>It can take several hours to create an environment. After the deployment completes, you can configure VCF in the vSphere user interface according to your needs.</p> <important> <p>When creating a new environment, the default ESX version for the selected VCF version will be used, you cannot choose a specific ESX version in <code>CreateEnvironment</code> action. When a host has been added with a specific ESX version, it can only be upgraded using vCenter Lifecycle Manager.</p> </important> <note> <p>You cannot use the <code>dedicatedHostId</code> and <code>placementGroupId</code> parameters together in the same <code>CreateEnvironment</code> action. This results in a <code>ValidationException</code> response.</p> </note>",
                 "smithy.api#idempotent": {}
             }
         },
@@ -883,7 +937,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Creates an ESXi host and adds it to an Amazon EVS environment. Amazon EVS supports 4-16 hosts per environment.</p> <p>This action can only be used after the Amazon EVS environment is deployed. All Amazon EVS hosts are created with the latest AMI release version for the respective VCF version of the environment. Amazon EVS hosts are commissioned in the SDDC Manager inventory as unassigned hosts.</p> <p>You can use the <code>dedicatedHostId</code> parameter to specify an Amazon EC2 Dedicated Host for ESXi host creation.</p> <p> You can use the <code>placementGroupId</code> parameter to specify a cluster or partition placement group to launch EC2 instances into.</p> <note> <p>You cannot use the <code>dedicatedHostId</code> and <code>placementGroupId</code> parameters together in the same <code>CreateEnvironmentHost</code> action. This results in a <code>ValidationException</code> response.</p> </note>",
+                "smithy.api#documentation": "<p>Creates an ESX host and adds it to an Amazon EVS environment. Amazon EVS supports 4-16 hosts per environment.</p> <p>This action can only be used after the Amazon EVS environment is deployed.</p> <p>You can use the <code>dedicatedHostId</code> parameter to specify an Amazon EC2 Dedicated Host for ESX host creation.</p> <p> You can use the <code>placementGroupId</code> parameter to specify a cluster or partition placement group to launch EC2 instances into.</p> <note> <p>If you don't specify an ESX version when adding hosts using <code>CreateEnvironmentHost</code> action, Amazon EVS automatically uses the default ESX version associated with your environment's VCF version. To find the default ESX version for a particular VCF version, use the <code>GetVersions</code> action.</p> </note> <note> <p>You cannot use the <code>dedicatedHostId</code> and <code>placementGroupId</code> parameters together in the same <code>CreateEnvironmentHost</code> action. This results in a <code>ValidationException</code> response.</p> </note>",
                 "smithy.api#idempotent": {}
             }
         },
@@ -909,6 +963,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The host that is created and added to the environment.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "esxVersion": {
+                    "target": "com.amazonaws.evs#EsxVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ESX version to use for the host.</p>"
                     }
                 }
             },
@@ -973,7 +1033,7 @@
                 "vpcId": {
                     "target": "com.amazonaws.evs#VpcId",
                     "traits": {
-                        "smithy.api#documentation": "<p>A unique ID for the VPC that the environment is deployed inside.</p> <p>Amazon EVS requires that all VPC subnets exist in a single Availability Zone in a Region where the service is available.</p> <p>The VPC that you specify must have a valid DHCP option set with domain name, at least two DNS servers, and an NTP server. These settings are used to configure your VCF appliances and hosts. The VPC cannot be used with any other deployed Amazon EVS environment. Amazon EVS does not provide multi-VPC support for environments at this time.</p> <p>Amazon EVS does not support the following Amazon Web Services networking options for NSX overlay connectivity: cross-Region VPC peering, Amazon S3 gateway endpoints, or Amazon Web Services Direct Connect virtual private gateway associations.</p> <note> <p>Ensure that you specify a VPC that is adequately sized to accommodate the {evws} subnets.</p> </note>",
+                        "smithy.api#documentation": "<p>A unique ID for the VPC that the environment is deployed inside.</p> <p>Amazon EVS requires that all VPC subnets exist in a single Availability Zone in a Region where the service is available.</p> <p>The VPC that you specify must have a valid DHCP option set with domain name, at least two DNS servers, and an NTP server. These settings are used to configure your VCF appliances and hosts. The VPC cannot be used with any other deployed Amazon EVS environment. Amazon EVS does not provide multi-VPC support for environments at this time.</p> <p>Amazon EVS does not support the following Amazon Web Services networking options for NSX overlay connectivity: cross-Region VPC peering, Amazon S3 gateway endpoints, or Amazon Web Services Direct Connect virtual private gateway associations.</p> <note> <p>Ensure that you specify a VPC that is adequately sized to accommodate the Amazon EVS subnets.</p> </note>",
                         "smithy.api#required": {}
                     }
                 },
@@ -987,7 +1047,7 @@
                 "vcfVersion": {
                     "target": "com.amazonaws.evs#VcfVersion",
                     "traits": {
-                        "smithy.api#documentation": "<p> The VCF version to use for the environment. Amazon EVS only supports VCF version 5.2.1 at this time.</p>",
+                        "smithy.api#documentation": "<p> The VCF version to use for the environment.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1015,7 +1075,7 @@
                 "hosts": {
                     "target": "com.amazonaws.evs#HostInfoForCreateList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ESXi hosts to add to the environment. Amazon EVS requires that you provide details for a minimum of 4 hosts during environment creation.</p> <p>For each host, you must provide the desired hostname, EC2 SSH keypair name, and EC2 instance type. Optionally, you can also provide a partition or cluster placement group to use, or use Amazon EC2 Dedicated Hosts.</p>",
+                        "smithy.api#documentation": "<p>The ESX hosts to add to the environment. Amazon EVS requires that you provide details for a minimum of 4 hosts during environment creation.</p> <p>For each host, you must provide the desired hostname, EC2 SSH keypair name, and EC2 instance type. Optionally, you can also provide a partition or cluster placement group to use, or use Amazon EC2 Dedicated Hosts.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1086,7 +1146,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Deletes an Amazon EVS environment.</p> <p>Amazon EVS environments will only be enabled for deletion once the hosts are deleted. You can delete hosts using the <code>DeleteEnvironmentHost</code> action.</p> <p>Environment deletion also deletes the associated Amazon EVS VLAN subnets. Other associated Amazon Web Services resources are not deleted. These resources may continue to incur costs.</p>",
+                "smithy.api#documentation": "<p>Deletes an Amazon EVS environment.</p> <p>Amazon EVS environments will only be enabled for deletion once the hosts are deleted. You can delete hosts using the <code>DeleteEnvironmentHost</code> action.</p> <p>Environment deletion also deletes the associated Amazon EVS VLAN subnets and Amazon Web Services Secrets Manager secrets that Amazon EVS created. Amazon Web Services resources that you create are not deleted. These resources may continue to incur costs.</p>",
                 "smithy.api#idempotent": {}
             }
         },
@@ -1107,7 +1167,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Deletes a host from an Amazon EVS environment.</p> <note> <p>Before deleting a host, you must unassign and decommission the host from within the SDDC Manager user interface. Not doing so could impact the availability of your virtual machines or result in data loss.</p> </note>",
+                "smithy.api#documentation": "<p>Deletes a host from an Amazon EVS environment.</p> <note> <p>Before deleting a host, you must unassign and decommission the host from within the SDDC Manager user interface. Not doing so could impact the availability of your virtual machines or result in data loss.</p> </note>",
                 "smithy.api#idempotent": {}
             }
         },
@@ -1195,6 +1255,113 @@
             },
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.evs#DisassociateEipFromVlan": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.evs#DisassociateEipFromVlanRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.evs#DisassociateEipFromVlanResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.evs#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.evs#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.evs#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Disassociates an Elastic IP address from a public HCX VLAN. This operation is only allowed for public HCX VLANs at this time.</p>",
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.evs#DisassociateEipFromVlanRequest": {
+            "type": "structure",
+            "members": {
+                "clientToken": {
+                    "target": "com.amazonaws.evs#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<note> <p>This parameter is not used in Amazon EVS currently. If you supply input for this parameter, it will have no effect.</p> </note> <p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the environment creation request. If you do not specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "environmentId": {
+                    "target": "com.amazonaws.evs#EnvironmentId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique ID for the environment containing the VLAN that the Elastic IP address disassociates from.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "vlanName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the VLAN. <code>hcx</code> is the only accepted VLAN name at this time.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 200
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "associationId": {
+                    "target": "com.amazonaws.evs#AssociationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p> A unique ID for the Elastic IP address association.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.evs#DisassociateEipFromVlanResponse": {
+            "type": "structure",
+            "members": {
+                "vlan": {
+                    "target": "com.amazonaws.evs#Vlan"
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.evs#EipAssociation": {
+            "type": "structure",
+            "members": {
+                "associationId": {
+                    "target": "com.amazonaws.evs#AssociationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique ID for the elastic IP address association with the VLAN subnet.</p>"
+                    }
+                },
+                "allocationId": {
+                    "target": "com.amazonaws.evs#AllocationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Elastic IP address allocation ID.</p>"
+                    }
+                },
+                "ipAddress": {
+                    "target": "com.amazonaws.evs#IpAddress",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Elastic IP address.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An Elastic IP address association with the elastic network interface in the VLAN subnet.</p>"
+            }
+        },
+        "com.amazonaws.evs#EipAssociationList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.evs#EipAssociation"
             }
         },
         "com.amazonaws.evs#Environment": {
@@ -1322,7 +1489,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>An object that represents an Amazon EVS environment.</p>"
+                "smithy.api#documentation": "<p>An object that represents an Amazon EVS environment.</p>"
             }
         },
         "com.amazonaws.evs#EnvironmentId": {
@@ -1362,10 +1529,16 @@
             },
             "operations": [
                 {
+                    "target": "com.amazonaws.evs#AssociateEipToVlan"
+                },
+                {
                     "target": "com.amazonaws.evs#CreateEnvironmentHost"
                 },
                 {
                     "target": "com.amazonaws.evs#DeleteEnvironmentHost"
+                },
+                {
+                    "target": "com.amazonaws.evs#DisassociateEipFromVlan"
                 },
                 {
                     "target": "com.amazonaws.evs#ListEnvironmentHosts"
@@ -1480,13 +1653,27 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>A list of environments with summarized environment details.</p>"
+                "smithy.api#documentation": "<p>A list of environments with summarized environment details.</p>"
             }
         },
         "com.amazonaws.evs#EnvironmentSummaryList": {
             "type": "list",
             "member": {
                 "target": "com.amazonaws.evs#EnvironmentSummary"
+            }
+        },
+        "com.amazonaws.evs#EsxVersion": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 128
+                }
+            }
+        },
+        "com.amazonaws.evs#EsxVersionList": {
+            "type": "list",
+            "member": {
+                "target": "smithy.api#String"
             }
         },
         "com.amazonaws.evs#GetEnvironment": {
@@ -1506,7 +1693,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Returns a description of the specified environment.</p>",
+                "smithy.api#documentation": "<p>Returns a description of the specified environment.</p>",
                 "smithy.api#readonly": {},
                 "smithy.test#smokeTests": [
                     {
@@ -1557,6 +1744,56 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.evs#GetVersions": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.evs#GetVersionsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.evs#GetVersionsResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.evs#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.evs#ThrottlingException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Returns information about VCF versions, ESX versions and EC2 instance types provided by Amazon EVS. For each VCF version, the response also includes the default ESX version and provided EC2 instance types.</p>",
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.evs#GetVersionsRequest": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.evs#GetVersionsResponse": {
+            "type": "structure",
+            "members": {
+                "vcfVersions": {
+                    "target": "com.amazonaws.evs#VcfVersionList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of VCF versions with their availability status, default ESX version, and instance types.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "instanceTypeEsxVersions": {
+                    "target": "com.amazonaws.evs#InstanceTypeEsxVersionsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of EC2 instance types and their available ESX versions.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.evs#Host": {
             "type": "structure",
             "members": {
@@ -1581,7 +1818,7 @@
                 "instanceType": {
                     "target": "com.amazonaws.evs#InstanceType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The EC2 instance type of the host.</p> <note> <p>EC2 instances created through Amazon EVS do not support associating an IAM instance profile.</p> </note>"
+                        "smithy.api#documentation": "<p>The EC2 instance type of the host.</p> <note> <p>Currently, Amazon EVS supports only the <code>i4i.metal</code> instance type.</p> </note> <note> <p>EC2 instances created through Amazon EVS do not support associating an IAM instance profile.</p> </note>"
                     }
                 },
                 "placementGroupId": {
@@ -1634,7 +1871,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>An ESXi host that runs on an Amazon EC2 bare metal instance. Four hosts are created in an Amazon EVS environment during environment creation. You can add hosts to an environment using the <code>CreateEnvironmentHost</code> operation. Amazon EVS supports 4-16 hosts per environment.</p>"
+                "smithy.api#documentation": "<p>An ESX host that runs on an Amazon EC2 bare metal instance. Four hosts are created in an Amazon EVS environment during environment creation. You can add hosts to an environment using the <code>CreateEnvironmentHost</code> operation. Amazon EVS supports 4-16 hosts per environment.</p>"
             }
         },
         "com.amazonaws.evs#HostInfoForCreate": {
@@ -1657,7 +1894,7 @@
                 "instanceType": {
                     "target": "com.amazonaws.evs#InstanceType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The EC2 instance type that represents the host.</p>",
+                        "smithy.api#documentation": "<p>The EC2 instance type that represents the host.</p> <note> <p>Currently, Amazon EVS supports only the <code>i4i.metal</code> instance type.</p> </note>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1675,7 +1912,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>An object that represents a host.</p> <note> <p>You cannot use <code>dedicatedHostId</code> and <code>placementGroupId</code> together in the same <code>HostInfoForCreate</code>object. This results in a <code>ValidationException</code> response.</p> </note>"
+                "smithy.api#documentation": "<p>An object that represents a host.</p> <note> <p>You cannot use <code>dedicatedHostId</code> and <code>placementGroupId</code> together in the same <code>HostInfoForCreate</code>object. This results in a <code>ValidationException</code> response.</p> </note>"
             }
         },
         "com.amazonaws.evs#HostInfoForCreateList": {
@@ -1761,7 +1998,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>An object that represents an initial VLAN subnet for the Amazon EVS environment. Amazon EVS creates initial VLAN subnets when you first create the environment. Amazon EVS creates the following 10 VLAN subnets: host management VLAN, vMotion VLAN, vSAN VLAN, VTEP VLAN, Edge VTEP VLAN, Management VM VLAN, HCX uplink VLAN, NSX uplink VLAN, expansion VLAN 1, expansion VLAN 2.</p> <note> <p>For each Amazon EVS VLAN subnet, you must specify a non-overlapping CIDR block. Amazon EVS VLAN subnets have a minimum CIDR block size of /28 and a maximum size of /24.</p> </note>"
+                "smithy.api#documentation": "<p>An object that represents an initial VLAN subnet for the Amazon EVS environment. Amazon EVS creates initial VLAN subnets when you first create the environment. Amazon EVS creates the following 10 VLAN subnets: host management VLAN, vMotion VLAN, vSAN VLAN, VTEP VLAN, Edge VTEP VLAN, Management VM VLAN, HCX uplink VLAN, NSX uplink VLAN, expansion VLAN 1, expansion VLAN 2.</p> <note> <p>For each Amazon EVS VLAN subnet, you must specify a non-overlapping CIDR block. Amazon EVS VLAN subnets have a minimum CIDR block size of /28 and a maximum size of /24.</p> </note>"
             }
         },
         "com.amazonaws.evs#InitialVlans": {
@@ -1770,7 +2007,7 @@
                 "vmkManagement": {
                     "target": "com.amazonaws.evs#InitialVlanInfo",
                     "traits": {
-                        "smithy.api#documentation": "<p> The host VMkernel management VLAN subnet. This VLAN subnet carries traffic for managing ESXi hosts and communicating with VMware vCenter Server.</p>",
+                        "smithy.api#documentation": "<p> The host VMkernel management VLAN subnet. This VLAN subnet carries traffic for managing ESX hosts and communicating with VMware vCenter Server.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1791,7 +2028,7 @@
                 "vSan": {
                     "target": "com.amazonaws.evs#InitialVlanInfo",
                     "traits": {
-                        "smithy.api#documentation": "<p> The vSAN VLAN subnet. This VLAN subnet carries the communication between ESXi hosts to implement a vSAN shared storage pool.</p>",
+                        "smithy.api#documentation": "<p> The vSAN VLAN subnet. This VLAN subnet carries the communication between ESX hosts to implement a vSAN shared storage pool.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1819,7 +2056,7 @@
                 "hcx": {
                     "target": "com.amazonaws.evs#InitialVlanInfo",
                     "traits": {
-                        "smithy.api#documentation": "<p>The HCX VLAN subnet. This VLAN subnet allows the HCX Interconnnect (IX) and HCX Network Extension (NE) to reach their peers and enable HCX Service Mesh creation.</p>",
+                        "smithy.api#documentation": "<p>The HCX VLAN subnet. This VLAN subnet allows the HCX Interconnnect (IX) and HCX Network Extension (NE) to reach their peers and enable HCX Service Mesh creation.</p> <p>If you plan to use a public HCX VLAN subnet, the following requirements must be met:</p> <ul> <li> <p>Must have a /28 netmask and be allocated from the IPAM public pool. Required for HCX internet access configuration.</p> </li> <li> <p>The HCX public VLAN CIDR block must be added to the VPC as a secondary CIDR block.</p> </li> <li> <p>Must have at least two Elastic IP addresses to be allocated from the public IPAM pool for HCX components.</p> </li> </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1836,10 +2073,23 @@
                         "smithy.api#documentation": "<p>An additional VLAN subnet that can be used to extend VCF capabilities once configured. For example, you can configure an expansion VLAN subnet to use NSX Federation for centralized management and synchronization of multiple NSX deployments across different locations.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "isHcxPublic": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Determines if the HCX VLAN that Amazon EVS provisions is public or private.</p>"
+                    }
+                },
+                "hcxNetworkAclId": {
+                    "target": "com.amazonaws.evs#NetworkAclId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique ID for a network access control list that the HCX VLAN uses. Required when <code>isHcxPublic</code> is set to <code>true</code>.</p>"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>The initial VLAN subnets for the environment. Amazon EVS VLAN subnets have a minimum CIDR block size of /28 and a maximum size of /24. Amazon EVS VLAN subnet CIDR blocks must not overlap with other subnets in the VPC.</p>"
+                "smithy.api#documentation": "<p>The initial VLAN subnets for the environment. Amazon EVS VLAN subnets have a minimum CIDR block size of /28 and a maximum size of /24. Amazon EVS VLAN subnet CIDR blocks must not overlap with other subnets in the VPC.</p>"
             }
         },
         "com.amazonaws.evs#InstanceType": {
@@ -1851,6 +2101,58 @@
                         "smithy.api#enumValue": "i4i.metal"
                     }
                 }
+            }
+        },
+        "com.amazonaws.evs#InstanceTypeEsxVersionsInfo": {
+            "type": "structure",
+            "members": {
+                "instanceType": {
+                    "target": "com.amazonaws.evs#InstanceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The EC2 instance type.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "esxVersions": {
+                    "target": "com.amazonaws.evs#EsxVersionList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of ESX versions offered for this instance type.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Information about ESX versions offered for each EC2 instance type.</p>"
+            }
+        },
+        "com.amazonaws.evs#InstanceTypeEsxVersionsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.evs#InstanceTypeEsxVersionsInfo"
+            }
+        },
+        "com.amazonaws.evs#InstanceTypeList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.evs#InstanceType"
+            }
+        },
+        "com.amazonaws.evs#InternalServerException": {
+            "type": "structure",
+            "members": {
+                "message": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Describes the error encountered.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An internal server error occurred. Retry your request.</p>",
+                "smithy.api#error": "server",
+                "smithy.api#httpError": 500,
+                "smithy.api#retryable": {}
             }
         },
         "com.amazonaws.evs#IpAddress": {
@@ -1888,7 +2190,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p> The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key.</p>"
+                "smithy.api#documentation": "<p> The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key.</p>"
             }
         },
         "com.amazonaws.evs#LicenseInfoList": {
@@ -1920,7 +2222,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>List the hosts within an environment.</p>",
+                "smithy.api#documentation": "<p>List the hosts within an environment.</p>",
                 "smithy.api#paginated": {
                     "inputToken": "nextToken",
                     "outputToken": "nextToken",
@@ -2014,7 +2316,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Lists environment VLANs that are associated with the specified environment.</p>",
+                "smithy.api#documentation": "<p>Lists environment VLANs that are associated with the specified environment.</p>",
                 "smithy.api#paginated": {
                     "inputToken": "nextToken",
                     "outputToken": "nextToken",
@@ -2105,7 +2407,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Lists the Amazon EVS environments in your Amazon Web Services account in the specified Amazon Web Services Region.</p>",
+                "smithy.api#documentation": "<p>Lists the Amazon EVS environments in your Amazon Web Services account in the specified Amazon Web Services Region.</p>",
                 "smithy.api#paginated": {
                     "inputToken": "nextToken",
                     "outputToken": "nextToken",
@@ -2178,7 +2480,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Lists the tags for an Amazon EVS resource.</p>",
+                "smithy.api#documentation": "<p>Lists the tags for an Amazon EVS resource.</p>",
                 "smithy.api#readonly": {}
             }
         },
@@ -2228,6 +2530,16 @@
                 }
             }
         },
+        "com.amazonaws.evs#NetworkAclId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 4,
+                    "max": 21
+                },
+                "smithy.api#pattern": "^acl-[a-zA-Z0-9_-]+$"
+            }
+        },
         "com.amazonaws.evs#NetworkInterface": {
             "type": "structure",
             "members": {
@@ -2239,7 +2551,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>An elastic network interface (ENI) that connects hosts to the VLAN subnets. Amazon EVS provisions two identically configured ENIs in the VMkernel management subnet during host creation. One ENI is active, and the other is in standby mode for automatic switchover during a failure scenario.</p>"
+                "smithy.api#documentation": "<p>An elastic network interface (ENI) that connects hosts to the VLAN subnets. Amazon EVS provisions two identically configured ENIs in the VMkernel management subnet during host creation. One ENI is active, and the other is in standby mode for automatic switchover during a failure scenario.</p>"
             }
         },
         "com.amazonaws.evs#NetworkInterfaceId": {
@@ -2362,7 +2674,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>A managed secret that contains the credentials for installing vCenter Server, NSX, and SDDC Manager. During environment creation, the Amazon EVS control plane uses Amazon Web Services Secrets Manager to create, encrypt, validate, and store secrets. If you choose to delete your environment, Amazon EVS also deletes the secrets that are associated with your environment. Amazon EVS does not provide managed rotation of secrets. We recommend that you rotate secrets regularly to ensure that secrets are not long-lived.</p>"
+                "smithy.api#documentation": "<p>A managed secret that contains the credentials for installing vCenter Server, NSX, and SDDC Manager. During environment creation, the Amazon EVS control plane uses Amazon Web Services Secrets Manager to create, encrypt, validate, and store secrets. If you choose to delete your environment, Amazon EVS also deletes the secrets that are associated with your environment. Amazon EVS does not provide managed rotation of secrets. We recommend that you rotate secrets regularly to ensure that secrets are not long-lived.</p>"
             }
         },
         "com.amazonaws.evs#SecretList": {
@@ -2403,7 +2715,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>The security groups that allow traffic between the Amazon EVS control plane and your VPC for Amazon EVS service access. If a security group is not specified, Amazon EVS uses the default security group in your account for service access.</p>"
+                "smithy.api#documentation": "<p>The security groups that allow traffic between the Amazon EVS control plane and your VPC for Amazon EVS service access. If a security group is not specified, Amazon EVS uses the default security group in your account for service access.</p>"
             }
         },
         "com.amazonaws.evs#ServiceQuotaExceededException": {
@@ -2509,7 +2821,7 @@
                     "aws:RequestTag/${TagKey}",
                     "aws:TagKeys"
                 ],
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Associates the specified tags to an Amazon EVS resource with the specified <code>resourceArn</code>. If existing tags on a resource are not specified in the request parameters, they aren't changed. When a resource is deleted, the tags associated with that resource are also deleted. Tags that you create for Amazon EVS resources don't propagate to any other resources associated with the environment. For example, if you tag an environment with this operation, that tag doesn't automatically propagate to the VLAN subnets and hosts associated with the environment.</p>",
+                "smithy.api#documentation": "<p>Associates the specified tags to an Amazon EVS resource with the specified <code>resourceArn</code>. If existing tags on a resource are not specified in the request parameters, they aren't changed. When a resource is deleted, the tags associated with that resource are also deleted. Tags that you create for Amazon EVS resources don't propagate to any other resources associated with the environment. For example, if you tag an environment with this operation, that tag doesn't automatically propagate to the VLAN subnets and hosts associated with the environment.</p>",
                 "smithy.api#idempotent": {}
             }
         },
@@ -2579,7 +2891,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The <code>CreateEnvironmentHost</code> operation couldn't be performed because the service is throttling requests. This exception is thrown when the <code>CreateEnvironmentHost</code> request exceeds concurrency of 1 transaction per second (TPS).</p>",
+                "smithy.api#documentation": "<p>The operation could not be performed because the service is throttling requests. This exception is thrown when the service endpoint receives too many concurrent requests.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 429,
                 "smithy.api#retryable": {}
@@ -2623,7 +2935,7 @@
                     "aws:ResourceTag/${TagKey}",
                     "aws:TagKeys"
                 ],
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Deletes specified tags from an Amazon EVS resource.</p>",
+                "smithy.api#documentation": "<p>Deletes specified tags from an Amazon EVS resource.</p>",
                 "smithy.api#idempotent": {}
             }
         },
@@ -2720,7 +3032,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Stores information about a field passed inside a request that resulted in an exception.</p>"
+                "smithy.api#documentation": "<p>Stores information about a field passed inside a request that resulted in an exception.</p>"
             }
         },
         "com.amazonaws.evs#ValidationExceptionFieldList": {
@@ -2826,7 +3138,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>The DNS hostnames that Amazon EVS uses to install VMware vCenter Server, NSX, SDDC Manager, and Cloud Builder. Each hostname must be unique, and resolve to a domain name that you've registered in your DNS service of choice. Hostnames cannot be changed.</p> <p>VMware VCF requires the deployment of two NSX Edge nodes, and three NSX Manager virtual machines.</p>"
+                "smithy.api#documentation": "<p>The DNS hostnames that Amazon EVS uses to install VMware vCenter Server, NSX, SDDC Manager, and Cloud Builder. Each hostname must be unique, and resolve to a domain name that you've registered in your DNS service of choice. Hostnames cannot be changed.</p> <p>VMware VCF requires the deployment of two NSX Edge nodes, and three NSX Manager virtual machines.</p>"
             }
         },
         "com.amazonaws.evs#VcfVersion": {
@@ -2837,7 +3149,55 @@
                     "traits": {
                         "smithy.api#enumValue": "VCF-5.2.1"
                     }
+                },
+                "VCF_5_2_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "VCF-5.2.2"
+                    }
                 }
+            }
+        },
+        "com.amazonaws.evs#VcfVersionInfo": {
+            "type": "structure",
+            "members": {
+                "vcfVersion": {
+                    "target": "com.amazonaws.evs#VcfVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The VCF version number.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status for this VCF version. Valid values are:</p> <ul> <li> <p> <code>AVAILABLE</code> - This VCF version is available to you.</p> </li> <li> <p> <code>RESTRICTED</code> - This VCF version has limited availability.</p> </li> </ul> <note> <p> If the version you need shows RESTRICTED, and you require, check out <a href=\"https://docs.aws.amazon.com/evs/latest/userguide/versions-provided.html\">VCF versions and EC2 instance types provided by Amazon EVS</a> for more information. </p> </note>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "defaultEsxVersion": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The default ESX version for this VCF version. It is based on Broadcom's Bill Of Materials (BOM).</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "instanceTypes": {
+                    "target": "com.amazonaws.evs#InstanceTypeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>EC2 instance types provided by Amazon EVS for this VCF version for creating environments.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Information about a VCF versions provided by Amazon EVS, including its status, default ESX version, and EC2 instance types.</p>"
+            }
+        },
+        "com.amazonaws.evs#VcfVersionList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.evs#VcfVersionInfo"
             }
         },
         "com.amazonaws.evs#Vlan": {
@@ -2896,10 +3256,28 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The state details of the VLAN.</p>"
                     }
+                },
+                "eipAssociations": {
+                    "target": "com.amazonaws.evs#EipAssociationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An array of Elastic IP address associations.</p>"
+                    }
+                },
+                "isPublic": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Determines if the VLAN that Amazon EVS provisions is public or private.</p>"
+                    }
+                },
+                "networkAclId": {
+                    "target": "com.amazonaws.evs#NetworkAclId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique ID for a network access control list.</p>"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>The VLANs that Amazon EVS creates during environment creation.</p>"
+                "smithy.api#documentation": "<p>The VLANs that Amazon EVS creates during environment creation.</p>"
             }
         },
         "com.amazonaws.evs#VlanId": {

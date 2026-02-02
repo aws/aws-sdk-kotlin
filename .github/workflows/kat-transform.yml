@@ -39,12 +39,12 @@ jobs:
           aws-region: us-west-2
 
       - name: Configure Gradle
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
           working-directory: ./aws-sdk-kotlin
 
       - name: Setup kat
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/setup-kat@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
 
       - name: Build
         working-directory: ./aws-sdk-kotlin
@@ -52,8 +52,7 @@ jobs:
         run: |
           pwd
           ls -lsa
-          kat bump-version  # Bump from `vNext-SNAPSHOT` to `vNext`. kat transform only works on non-SNAPSHOT versions
-
+          kat bump-version  # Bump from `vNext-SNAPSHOT` to `vNext`. kat transform only works on non-SNAPSHOT versions 
           ./gradlew -Paws.kotlin.native=false build
           ./gradlew -Paws.kotlin.native=false publishAllPublicationsToTestLocalRepository
 

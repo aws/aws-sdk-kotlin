@@ -29,6 +29,5 @@ class BootstrapConfig(
 
     val serviceMembership: Membership by lazy { parseMembership(services) }
     val protocolMembership: Membership by lazy { parseMembership(protocols) }
-    override fun toString(): String =
-        "BootstrapConfig(serviceMembership=$serviceMembership, protocolMembership=$protocolMembership)"
+    override fun toString(): String = "BootstrapConfig(serviceMembership=$serviceMembership, protocolMembership=$protocolMembership)"
 }

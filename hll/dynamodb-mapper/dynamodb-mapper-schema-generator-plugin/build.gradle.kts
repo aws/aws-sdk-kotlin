@@ -33,8 +33,8 @@ dependencies {
 }
 
 gradlePlugin {
-    website = "https://github.com/awslabs/aws-sdk-kotlin"
-    vcsUrl = "https://github.com/awslabs/aws-sdk-kotlin.git"
+    website = "https://github.com/aws/aws-sdk-kotlin"
+    vcsUrl = "https://github.com/aws/aws-sdk-kotlin.git"
     plugins {
         create("dynamodb-mapper-schema-generator") {
             id = "aws.sdk.kotlin.hll.dynamodbmapper.schema.generator"
@@ -54,7 +54,7 @@ publishing {
     }
 }
 
-/**
+/*
  * The `java-gradle-plugin` plugin creates a javadoc jar by default, conflicting with the empty javadoc jar (emptyJar)
  * created in aws-kotlin-repo-tools. Configure dependencies and disable the emptyJar task to avoid conflicts.
  */
@@ -159,7 +159,7 @@ tasks.withType<Test> {
     dependsOn(generateSmithyKotlinVersionFile)
 }
 
-/**
+/*
  * Set up Maven Local dependencies to be used in the Gradle TestKit
  */
 tasks.register("publishSmithyKotlinToMavenLocal") {

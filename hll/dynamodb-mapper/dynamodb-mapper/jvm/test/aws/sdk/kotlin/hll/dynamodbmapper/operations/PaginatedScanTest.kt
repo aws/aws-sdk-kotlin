@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.hll.dynamodbmapper.operations
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.*
@@ -47,8 +52,7 @@ class PaginatedScanTest : DdbLocalTest() {
 
             override fun convertFrom(to: Item): Card = delegate.convertFrom(to)
 
-            override fun convertTo(from: Card, onlyAttributes: Set<String>?): Item =
-                delegate.convertTo(from, null) // Ignore `onlyAttributes` arg to mock badly-behaved converter
+            override fun convertTo(from: Card, onlyAttributes: Set<String>?): Item = delegate.convertTo(from, null) // Ignore `onlyAttributes` arg to mock badly-behaved converter
         }
 
         private val schema = ItemSchema(converter, KeySpec.String("suit"), KeySpec.Number("rank"))

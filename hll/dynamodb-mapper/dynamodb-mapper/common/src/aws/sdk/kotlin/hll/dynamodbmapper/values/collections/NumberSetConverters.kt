@@ -37,8 +37,7 @@ public object NumberSetConverters {
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      * @param N The type of high-level values which will be converted
      */
-    public fun <N> of(numberToStringConverter: Converter<N, String>): ValueConverter<Set<N>> =
-        StringSetToAttributeValueNumberSetConverter.mapFrom(numberToStringConverter)
+    public fun <N> of(numberToStringConverter: Converter<N, String>): ValueConverter<Set<N>> = StringSetToAttributeValueNumberSetConverter.mapFrom(numberToStringConverter)
 }
 
 /**

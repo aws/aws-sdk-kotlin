@@ -185,8 +185,10 @@ public final class aws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsB
 	public static final field CREDENTIALS_HTTP Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
 	public static final field CREDENTIALS_IMDS Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
 	public static final field CREDENTIALS_JVM_SYSTEM_PROPERTIES Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
+	public static final field CREDENTIALS_LOGIN Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
 	public static final field CREDENTIALS_PROCESS Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
 	public static final field CREDENTIALS_PROFILE Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
+	public static final field CREDENTIALS_PROFILE_LOGIN Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
 	public static final field CREDENTIALS_PROFILE_NAMED_PROVIDER Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
 	public static final field CREDENTIALS_PROFILE_PROCESS Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
 	public static final field CREDENTIALS_PROFILE_SOURCE_PROFILE Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;

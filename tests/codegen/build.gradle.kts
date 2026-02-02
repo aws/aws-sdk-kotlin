@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import aws.sdk.kotlin.gradle.codegen.dsl.generateSmithyProjections
 
 plugins {
@@ -38,8 +43,8 @@ subprojects {
     tasks.generateSmithyProjections {
         doFirst {
             // Ensure the generated tests use the same version of the runtime as the aws aws-runtime
-            val smithyKotlinRuntimeVersion = libraries.versions.smithy.kotlin.runtime.version.get()
-            System.setProperty("smithy.kotlin.codegen.clientRuntimeVersion", smithyKotlinRuntimeVersion)
+            val smithyKotlinVersion = libraries.versions.smithy.kotlin.version.get()
+            System.setProperty("smithy.kotlin.codegen.clientRuntimeVersion", smithyKotlinVersion)
         }
     }
 

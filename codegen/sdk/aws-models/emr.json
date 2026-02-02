@@ -873,6 +873,46 @@
                 "smithy.api#documentation": "<p>The definition of a CloudWatch metric alarm, which determines when an automatic scaling\n         activity is triggered. When the defined alarm conditions are satisfied, scaling activity\n         begins.</p>"
             }
         },
+        "com.amazonaws.emr#CloudWatchLogConfiguration": {
+            "type": "structure",
+            "members": {
+                "Enabled": {
+                    "target": "com.amazonaws.emr#Boolean",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>Specifies if CloudWatch logging is enabled.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "LogGroupName": {
+                    "target": "com.amazonaws.emr#XmlString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the CloudWatch log group where logs are published.</p>"
+                    }
+                },
+                "LogStreamNamePrefix": {
+                    "target": "com.amazonaws.emr#XmlString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The prefix of the log stream name.</p>"
+                    }
+                },
+                "EncryptionKeyArn": {
+                    "target": "com.amazonaws.emr#XmlString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the encryption key used to encrypt the logs.</p>"
+                    }
+                },
+                "LogTypes": {
+                    "target": "com.amazonaws.emr#LogTypesMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of log types to file names for publishing logs to the standard output or standard error streams for CloudWatch. Valid log types include STEP_LOGS, SPARK_DRIVER, and SPARK_EXECUTOR. Valid file names for each type include STDOUT and STDERR.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Holds CloudWatch log configuration settings and metadata that specify settings like log files to monitor and where to send them.</p>"
+            }
+        },
         "com.amazonaws.emr#Cluster": {
             "type": "structure",
             "members": {
@@ -1084,6 +1124,12 @@
                     "target": "com.amazonaws.emr#BooleanObject",
                     "traits": {
                         "smithy.api#documentation": "<p>Reserved.</p>"
+                    }
+                },
+                "MonitoringConfiguration": {
+                    "target": "com.amazonaws.emr#MonitoringConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains Cloudwatch log configuration metadata and settings.</p>"
                     }
                 }
             },
@@ -3030,27 +3076,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -3911,17 +3957,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -3932,17 +3967,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -3959,17 +3983,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -3980,17 +3993,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -5088,6 +5090,12 @@
                         "smithy.api#enumValue": "RESIZING"
                     }
                 },
+                "RECONFIGURING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RECONFIGURING"
+                    }
+                },
                 "SUSPENDED": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -5262,7 +5270,7 @@
                 "BidPrice": {
                     "target": "com.amazonaws.emr#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>If specified, indicates that the instance group uses Spot Instances. This is the maximum\n         price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set\n         the amount equal to the On-Demand price, or specify an amount in USD.</p>"
+                        "smithy.api#documentation": "<p>The bid price for each Amazon EC2 Spot Instance type as defined by\n         <code>InstanceType</code>. Expressed in USD. If neither <code>BidPrice</code> nor\n         <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided,\n         <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%.</p>"
                     }
                 },
                 "InstanceType": {
@@ -5374,7 +5382,7 @@
                 "BidPrice": {
                     "target": "com.amazonaws.emr#XmlStringMaxLen256",
                     "traits": {
-                        "smithy.api#documentation": "<p>If specified, indicates that the instance group uses Spot Instances. This is the maximum\n         price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set\n         the amount equal to the On-Demand price, or specify an amount in USD.</p>"
+                        "smithy.api#documentation": "<p>The bid price for each Amazon EC2 Spot Instance type as defined by\n         <code>InstanceType</code>. Expressed in USD. If neither <code>BidPrice</code> nor\n         <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided,\n         <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%.</p>"
                     }
                 },
                 "InstanceType": {
@@ -5462,7 +5470,7 @@
                 "BidPrice": {
                     "target": "com.amazonaws.emr#XmlStringMaxLen256",
                     "traits": {
-                        "smithy.api#documentation": "<p>If specified, indicates that the instance group uses Spot Instances. This is the maximum\n         price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set\n         the amount equal to the On-Demand price, or specify an amount in USD.</p>"
+                        "smithy.api#documentation": "<p>The bid price for each Amazon EC2 Spot Instance type as defined by\n         <code>InstanceType</code>. Expressed in USD. If neither <code>BidPrice</code> nor\n         <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided,\n         <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%.</p>"
                     }
                 },
                 "InstanceType": {
@@ -6112,7 +6120,7 @@
                 "BidPrice": {
                     "target": "com.amazonaws.emr#XmlStringMaxLen256",
                     "traits": {
-                        "smithy.api#documentation": "<p>The bid price for each Amazon EC2 Spot Instance type as defined by\n            <code>InstanceType</code>. Expressed in USD.</p>"
+                        "smithy.api#documentation": "<p>The bid price for each Amazon EC2 Spot Instance type as defined by\n         <code>InstanceType</code>. Expressed in USD. If neither <code>BidPrice</code> nor\n         <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided,\n         <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%.</p>"
                     }
                 },
                 "BidPriceAsPercentageOfOnDemandPrice": {
@@ -7610,6 +7618,15 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.emr#LogTypesMap": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.emr#XmlString"
+            },
+            "value": {
+                "target": "com.amazonaws.emr#XmlStringList"
+            }
+        },
         "com.amazonaws.emr#Long": {
             "type": "long"
         },
@@ -7842,6 +7859,20 @@
             "traits": {
                 "smithy.api#documentation": "<p>Change the size of some instance groups.</p>",
                 "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.emr#MonitoringConfiguration": {
+            "type": "structure",
+            "members": {
+                "CloudWatchLogConfiguration": {
+                    "target": "com.amazonaws.emr#CloudWatchLogConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>CloudWatch log configuration settings and metadata that specify settings like log files to monitor and where to send them.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains CloudWatch log configuration metadata and settings.</p>"
             }
         },
         "com.amazonaws.emr#NewSupportedProductsList": {
@@ -9232,6 +9263,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Reserved.</p>"
                     }
+                },
+                "MonitoringConfiguration": {
+                    "target": "com.amazonaws.emr#MonitoringConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains CloudWatch log configuration metadata and settings.</p>"
+                    }
                 }
             },
             "traits": {
@@ -9258,6 +9295,26 @@
             "traits": {
                 "smithy.api#documentation": "<p> The result of the <a>RunJobFlow</a> operation. </p>",
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.emr#S3MonitoringConfiguration": {
+            "type": "structure",
+            "members": {
+                "LogUri": {
+                    "target": "com.amazonaws.emr#XmlString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 destination URI for log publishing.</p>"
+                    }
+                },
+                "EncryptionKeyArn": {
+                    "target": "com.amazonaws.emr#XmlString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 destination.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Amazon S3 configuration for monitoring log publishing. You can configure your step to send log information \n         to Amazon S3. When it's specified, it takes precedence over the cluster's logging configuration. If you don't specify this \n         configuration entirely, or omit individual fields, EMR falls back to cluster-level \n         logging behavior.</p>"
             }
         },
         "com.amazonaws.emr#ScaleDownBehavior": {
@@ -10093,6 +10150,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the runtime role for a step on the cluster. The\n         runtime role can be a cross-account IAM role. The runtime role ARN is a\n         combination of account ID, role name, and role type using the following format:\n            <code>arn:partition:service:region:account:resource</code>. </p>\n         <p>For example, <code>arn:aws:IAM::1234567890:role/ReadOnly</code> is a correctly formatted\n         runtime role ARN.</p>"
                     }
+                },
+                "LogUri": {
+                    "target": "com.amazonaws.emr#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 destination URI for log publishing.</p>"
+                    }
+                },
+                "EncryptionKeyArn": {
+                    "target": "com.amazonaws.emr#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 \n         destination.</p>"
+                    }
                 }
             },
             "traits": {
@@ -10139,6 +10208,12 @@
                         "smithy.api#clientOptional": {},
                         "smithy.api#documentation": "<p>The JAR file used for the step.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "StepMonitoringConfiguration": {
+                    "target": "com.amazonaws.emr#StepMonitoringConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Object that holds configuration properties for logging.</p>"
                     }
                 }
             },
@@ -10278,6 +10353,20 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.emr#XmlStringMaxLen256"
+            }
+        },
+        "com.amazonaws.emr#StepMonitoringConfiguration": {
+            "type": "structure",
+            "members": {
+                "S3MonitoringConfiguration": {
+                    "target": "com.amazonaws.emr#S3MonitoringConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 configuration for monitoring log publishing. You can configure your step to send log information \n         to Amazon S3. When it's specified, it takes precedence over the cluster's logging configuration. If you don't specify this \n         configuration entirely, or omit individual fields, EMR falls back to cluster-level logging behavior.\n      </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Object that holds configuration properties for logging.</p>"
             }
         },
         "com.amazonaws.emr#StepState": {
@@ -10427,6 +10516,18 @@
                     "target": "com.amazonaws.emr#StepStatus",
                     "traits": {
                         "smithy.api#documentation": "<p>The current execution status details of the cluster step.</p>"
+                    }
+                },
+                "LogUri": {
+                    "target": "com.amazonaws.emr#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 destination URI for log publishing.</p>"
+                    }
+                },
+                "EncryptionKeyArn": {
+                    "target": "com.amazonaws.emr#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 \n         destination.</p>"
                     }
                 }
             },

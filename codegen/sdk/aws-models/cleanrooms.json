@@ -90,27 +90,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -592,17 +592,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -613,17 +602,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -640,17 +618,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -661,17 +628,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -747,6 +703,183 @@
                     ],
                     "version": "1.0"
                 }
+            }
+        },
+        "com.amazonaws.cleanrooms#AccessBudget": {
+            "type": "structure",
+            "members": {
+                "resourceArn": {
+                    "target": "com.amazonaws.cleanrooms#BudgetedResourceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the access budget resource.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "details": {
+                    "target": "com.amazonaws.cleanrooms#AccessBudgetDetailsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Detailed budget information including time bounds, remaining budget, and refresh settings.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "aggregateRemainingBudget": {
+                    "target": "com.amazonaws.cleanrooms#RemainingBudget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The total remaining budget across all budget parameters, showing the lower value between the per-period budget and lifetime budget for this access budget. For individual parameter budgets, see <code>remainingBudget</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Controls and tracks usage limits for associated configured tables within a collaboration across queries and job. Supports both period-based budgets that can renew (daily, weekly, or monthly) and fixed lifetime budgets. Contains the resource ARN, remaining budget information, and up to two budget configurations (period-based and lifetime). By default, table usage is unlimited unless a budget is configured.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#AccessBudgetDetails": {
+            "type": "structure",
+            "members": {
+                "startTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The start time for the access budget period.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "endTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The end time for the access budget period.</p>"
+                    }
+                },
+                "remainingBudget": {
+                    "target": "com.amazonaws.cleanrooms#RemainingBudget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The remaining budget amount available for use within this access budget.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "budget": {
+                    "target": "com.amazonaws.cleanrooms#Budget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The total budget allocation amount for this access budget.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "budgetType": {
+                    "target": "com.amazonaws.cleanrooms#AccessBudgetType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the time period for limiting table usage in queries and jobs. For calendar-based periods, the budget can renew if auto refresh is enabled. For lifetime budgets, the limit applies to the total usage throughout the collaboration. Valid values are:</p> <p> <code>CALENDAR_DAY</code> - Limit table usage per day.</p> <p> <code>CALENDAR_WEEK</code> - Limit table usage per week.</p> <p> <code>CALENDAR_MONTH</code> - Limit table usage per month.</p> <p> <code>LIFETIME</code> - Limit total table usage for the collaboration duration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "autoRefresh": {
+                    "target": "com.amazonaws.cleanrooms#AutoRefreshMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether the budget automatically refreshes for each time period specified in <code>budgetType</code>. Valid values are:</p> <p> <code>ENABLED</code> - The budget refreshes automatically at the start of each period.</p> <p> <code>DISABLED</code> - The budget must be refreshed manually.</p> <p> <code>NULL</code> - The value is null when <code>budgetType</code> is set to <code>LIFETIME</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Detailed information about an access budget including time bounds, budget allocation, and configuration settings.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#AccessBudgetDetailsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanrooms#AccessBudgetDetails"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#AccessBudgetType": {
+            "type": "enum",
+            "members": {
+                "CALENDAR_DAY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CALENDAR_DAY"
+                    }
+                },
+                "CALENDAR_MONTH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CALENDAR_MONTH"
+                    }
+                },
+                "CALENDAR_WEEK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CALENDAR_WEEK"
+                    }
+                },
+                "LIFETIME": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LIFETIME"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#AccessBudgetsPrivacyTemplateParametersInput": {
+            "type": "structure",
+            "members": {
+                "budgetParameters": {
+                    "target": "com.amazonaws.cleanrooms#BudgetParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An array of budget parameters that define the access budget configuration for the privacy template.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "resourceArn": {
+                    "target": "com.amazonaws.cleanrooms#BudgetedResourceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the resource associated with this privacy budget template.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Input parameters for privacy budget templates that support access budgets functionality, enabling enhanced budget management capabilities.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#AccessBudgetsPrivacyTemplateParametersOutput": {
+            "type": "structure",
+            "members": {
+                "budgetParameters": {
+                    "target": "com.amazonaws.cleanrooms#BudgetParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An array of budget parameters returned from the access budget configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "resourceArn": {
+                    "target": "com.amazonaws.cleanrooms#BudgetedResourceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the resource associated with this privacy budget template.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Output parameters for privacy budget templates with access budgets support, containing the configured budget information.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#AccessBudgetsPrivacyTemplateUpdateParameters": {
+            "type": "structure",
+            "members": {
+                "budgetParameters": {
+                    "target": "com.amazonaws.cleanrooms#BudgetParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Updated array of budget parameters for the access budget configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Update parameters for privacy budget templates with access budgets functionality, allowing modification of existing budget configurations.</p>"
             }
         },
         "com.amazonaws.cleanrooms#AccessDeniedException": {
@@ -975,6 +1108,15 @@
                 "target": "com.amazonaws.cleanrooms#AccountId"
             }
         },
+        "com.amazonaws.cleanrooms#AllowedResultRegions": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanrooms#SupportedS3Region"
+            },
+            "traits": {
+                "smithy.api#uniqueItems": {}
+            }
+        },
         "com.amazonaws.cleanrooms#AnalysisFormat": {
             "type": "enum",
             "members": {
@@ -1021,7 +1163,7 @@
                 "name": {
                     "target": "com.amazonaws.cleanrooms#ParameterName",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the parameter. The name must use only alphanumeric, underscore (_), or hyphen (-) characters but cannot start or end with a hyphen.</p>",
+                        "smithy.api#documentation": "<p>The name of the parameter. The name must use only alphanumeric or underscore (_) characters.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1052,7 +1194,7 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 0,
-                    "max": 10
+                    "max": 50
                 }
             }
         },
@@ -1555,6 +1697,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Information about the validations performed on the analysis template.</p>"
                     }
+                },
+                "errorMessageConfiguration": {
+                    "target": "com.amazonaws.cleanrooms#ErrorMessageConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration that specifies the level of detail in error messages returned by analyses using this template. When set to <code>DETAILED</code>, error messages include more information to help troubleshoot issues with PySpark jobs. Detailed error messages may expose underlying data, including sensitive information. Recommended for faster troubleshooting in development and testing environments.</p>"
+                    }
+                },
+                "syntheticDataParameters": {
+                    "target": "com.amazonaws.cleanrooms#SyntheticDataParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The parameters used to generate synthetic data for this analysis template.</p>"
+                    }
                 }
             },
             "traits": {
@@ -1784,6 +1938,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The description of the analysis template.</p>"
                     }
+                },
+                "isSyntheticData": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates if this analysis template summary generated synthetic data.</p>"
+                    }
                 }
             },
             "traits": {
@@ -1801,7 +1961,7 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 0,
-                    "max": 90000
+                    "max": 500000
                 },
                 "smithy.api#sensitive": {}
             }
@@ -1929,6 +2089,59 @@
                 }
             }
         },
+        "com.amazonaws.cleanrooms#ApprovalStatus": {
+            "type": "enum",
+            "members": {
+                "APPROVED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "APPROVED"
+                    }
+                },
+                "DENIED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DENIED"
+                    }
+                },
+                "PENDING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PENDING"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#ApprovalStatusDetails": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.cleanrooms#ApprovalStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The approval status of a member's vote on the change request. Valid values are PENDING (if they haven't voted), APPROVED, or DENIED.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains detailed information about the approval state of a given member in the collaboration for a given collaboration change request.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#ApprovalStatuses": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.cleanrooms#AccountId"
+            },
+            "value": {
+                "target": "com.amazonaws.cleanrooms#ApprovalStatusDetails"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 50
+                }
+            }
+        },
         "com.amazonaws.cleanrooms#AthenaDatabaseName": {
             "type": "string",
             "traits": {
@@ -1960,6 +2173,12 @@
         "com.amazonaws.cleanrooms#AthenaTableReference": {
             "type": "structure",
             "members": {
+                "region": {
+                    "target": "com.amazonaws.cleanrooms#CommercialRegion",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region where the Athena table is located. This parameter is required to uniquely identify and access tables across different Regions.</p>"
+                    }
+                },
                 "workGroup": {
                     "target": "com.amazonaws.cleanrooms#AthenaWorkGroup",
                     "traits": {
@@ -2000,6 +2219,55 @@
                     "max": 128
                 },
                 "smithy.api#pattern": "^([a-zA-Z0-9._-])*$"
+            }
+        },
+        "com.amazonaws.cleanrooms#AutoApprovedChangeType": {
+            "type": "enum",
+            "members": {
+                "ADD_MEMBER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ADD_MEMBER"
+                    }
+                },
+                "GRANT_RECEIVE_RESULTS_ABILITY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GRANT_RECEIVE_RESULTS_ABILITY"
+                    }
+                },
+                "REVOKE_RECEIVE_RESULTS_ABILITY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REVOKE_RECEIVE_RESULTS_ABILITY"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#AutoApprovedChangeTypeList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanrooms#AutoApprovedChangeType"
+            },
+            "traits": {
+                "smithy.api#uniqueItems": {}
+            }
+        },
+        "com.amazonaws.cleanrooms#AutoRefreshMode": {
+            "type": "enum",
+            "members": {
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ENABLED"
+                    }
+                },
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DISABLED"
+                    }
+                }
             }
         },
         "com.amazonaws.cleanrooms#BatchGetCollaborationAnalysisTemplate": {
@@ -2393,6 +2661,283 @@
                 "smithy.api#documentation": "<p> Information related to the utilization of resources that have been billed or charged for in a given context, such as a protected query.</p>"
             }
         },
+        "com.amazonaws.cleanrooms#Budget": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 0,
+                    "max": 1000000
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#BudgetParameter": {
+            "type": "structure",
+            "members": {
+                "type": {
+                    "target": "com.amazonaws.cleanrooms#AccessBudgetType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of budget parameter being configured.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "budget": {
+                    "target": "com.amazonaws.cleanrooms#Budget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The budget allocation amount for this specific parameter.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "autoRefresh": {
+                    "target": "com.amazonaws.cleanrooms#AutoRefreshMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Whether this individual budget parameter automatically refreshes when the budget period resets.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Individual budget parameter configuration that defines specific budget allocation settings for access budgets.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#BudgetParameters": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanrooms#BudgetParameter"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#BudgetedResourceArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 200
+                },
+                "smithy.api#pattern": "^arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/configuredtableassociation/[\\d\\w-]+$"
+            }
+        },
+        "com.amazonaws.cleanrooms#Change": {
+            "type": "structure",
+            "members": {
+                "specificationType": {
+                    "target": "com.amazonaws.cleanrooms#ChangeSpecificationType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of specification for this change.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "specification": {
+                    "target": "com.amazonaws.cleanrooms#ChangeSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The specification details for this change.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "types": {
+                    "target": "com.amazonaws.cleanrooms#ChangeTypeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of change types that were applied.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Represents a single change within a collaboration change request, containing the change identifier and specification.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#ChangeInput": {
+            "type": "structure",
+            "members": {
+                "specificationType": {
+                    "target": "com.amazonaws.cleanrooms#ChangeSpecificationType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of specification for the change. Currently supports <code>MEMBER</code> for member-related changes.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "specification": {
+                    "target": "com.amazonaws.cleanrooms#ChangeSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The specification details for the change. The structure depends on the specification type.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Specifies a change to apply to a collaboration.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#ChangeInputList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanrooms#ChangeInput"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                },
+                "smithy.api#uniqueItems": {}
+            }
+        },
+        "com.amazonaws.cleanrooms#ChangeList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanrooms#Change"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                },
+                "smithy.api#uniqueItems": {}
+            }
+        },
+        "com.amazonaws.cleanrooms#ChangeRequestAction": {
+            "type": "enum",
+            "members": {
+                "APPROVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "APPROVE"
+                    }
+                },
+                "DENY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DENY"
+                    }
+                },
+                "CANCEL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CANCEL"
+                    }
+                },
+                "COMMIT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "COMMIT"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#ChangeRequestStatus": {
+            "type": "enum",
+            "members": {
+                "PENDING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PENDING"
+                    }
+                },
+                "APPROVED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "APPROVED"
+                    }
+                },
+                "CANCELLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CANCELLED"
+                    }
+                },
+                "DENIED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DENIED"
+                    }
+                },
+                "COMMITTED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "COMMITTED"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#ChangeSpecification": {
+            "type": "union",
+            "members": {
+                "member": {
+                    "target": "com.amazonaws.cleanrooms#MemberChangeSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The member change specification when the change type is <code>MEMBER</code>.</p>"
+                    }
+                },
+                "collaboration": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationChangeSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The collaboration configuration changes being requested. Currently, this only supports modifying which change types are auto-approved for the collaboration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A union that contains the specification details for different types of changes.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#ChangeSpecificationType": {
+            "type": "enum",
+            "members": {
+                "MEMBER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MEMBER"
+                    }
+                },
+                "COLLABORATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "COLLABORATION"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#ChangeType": {
+            "type": "enum",
+            "members": {
+                "ADD_MEMBER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ADD_MEMBER"
+                    }
+                },
+                "GRANT_RECEIVE_RESULTS_ABILITY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GRANT_RECEIVE_RESULTS_ABILITY"
+                    }
+                },
+                "REVOKE_RECEIVE_RESULTS_ABILITY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REVOKE_RECEIVE_RESULTS_ABILITY"
+                    }
+                },
+                "EDIT_AUTO_APPROVED_CHANGE_TYPES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "EDIT_AUTO_APPROVED_CHANGE_TYPES"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#ChangeTypeList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanrooms#ChangeType"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1
+                },
+                "smithy.api#uniqueItems": {}
+            }
+        },
         "com.amazonaws.cleanrooms#CleanroomsArn": {
             "type": "string",
             "traits": {
@@ -2504,6 +3049,24 @@
                     "traits": {
                         "smithy.api#documentation": "<p> The analytics engine for the collaboration.</p> <note> <p>After July 16, 2025, the <code>CLEAN_ROOMS_SQL</code> parameter will no longer be available. </p> </note>"
                     }
+                },
+                "autoApprovedChangeTypes": {
+                    "target": "com.amazonaws.cleanrooms#AutoApprovedChangeTypeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The types of change requests that are automatically approved for this collaboration.</p>"
+                    }
+                },
+                "allowedResultRegions": {
+                    "target": "com.amazonaws.cleanrooms#AllowedResultRegions",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Regions where collaboration query results can be stored. Returns the list of Region identifiers that were specified when the collaboration was created. This list is used to enforce regional storage policies and compliance requirements.</p>"
+                    }
+                },
+                "isMetricsEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An indicator as to whether metrics are enabled for the collaboration.</p> <p>When <code>true</code>, collaboration members can opt in to Amazon CloudWatch metrics for their membership queries.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2613,6 +3176,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The validations that were performed.</p>"
                     }
+                },
+                "errorMessageConfiguration": {
+                    "target": "com.amazonaws.cleanrooms#ErrorMessageConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration that specifies the level of detail in error messages returned by analyses using this template. When set to <code>DETAILED</code>, error messages include more information to help troubleshoot issues with PySpark jobs. Detailed error messages may expose underlying data, including sensitive information. Recommended for faster troubleshooting in development and testing environments.</p>"
+                    }
+                },
+                "syntheticDataParameters": {
+                    "target": "com.amazonaws.cleanrooms#SyntheticDataParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The synthetic data generation parameters configured for this collaboration analysis template.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2694,6 +3269,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The description of the analysis template.</p>"
                     }
+                },
+                "isSyntheticData": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates if this collaboration analysis template uses synthetic data generation.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2713,6 +3294,164 @@
                     "max": 100
                 },
                 "smithy.api#pattern": "^arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:collaboration/[\\d\\w-]+$"
+            }
+        },
+        "com.amazonaws.cleanrooms#CollaborationChangeRequest": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.cleanrooms#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the change request.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "collaborationId": {
+                    "target": "com.amazonaws.cleanrooms#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the collaboration being modified.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "CollaborationId"
+                    }
+                },
+                "createTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the change request was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "updateTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the change request was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.cleanrooms#ChangeRequestStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the change request. Valid values are <code>PENDING</code>, <code>APPROVED</code>, <code>DENIED</code>, <code>COMMITTED</code>, and <code>CANCELLED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "isAutoApproved": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Whether the change request was automatically approved based on the collaboration's auto-approval settings.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "changes": {
+                    "target": "com.amazonaws.cleanrooms#ChangeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of changes specified in this change request.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "approvals": {
+                    "target": "com.amazonaws.cleanrooms#ApprovalStatuses",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of approval details from collaboration members, including approval status and multi-party approval workflow information.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Represents a request to modify a collaboration. Change requests enable structured modifications to collaborations after they have been created.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#CollaborationChangeRequestIdentifier": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 36,
+                    "max": 36
+                },
+                "smithy.api#pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            }
+        },
+        "com.amazonaws.cleanrooms#CollaborationChangeRequestSummary": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.cleanrooms#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the change request.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "collaborationId": {
+                    "target": "com.amazonaws.cleanrooms#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the collaboration.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "CollaborationId"
+                    }
+                },
+                "createTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the change request was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "updateTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time when the change request was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.cleanrooms#ChangeRequestStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the change request.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "isAutoApproved": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Whether the change request was automatically approved.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "changes": {
+                    "target": "com.amazonaws.cleanrooms#ChangeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Summary of the changes in this change request.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "approvals": {
+                    "target": "com.amazonaws.cleanrooms#ApprovalStatuses",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Summary of approval statuses from all collaboration members for this change request.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Summary information about a collaboration change request.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#CollaborationChangeRequestSummaryList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanrooms#CollaborationChangeRequestSummary"
+            }
+        },
+        "com.amazonaws.cleanrooms#CollaborationChangeSpecification": {
+            "type": "structure",
+            "members": {
+                "autoApprovedChangeTypes": {
+                    "target": "com.amazonaws.cleanrooms#AutoApprovedChangeTypeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Defines requested updates to properties of the collaboration. Currently, this only supports modifying which change types are auto-approved for the collaboration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Defines the specific changes being requested for a collaboration, including configuration modifications and approval requirements.</p>"
             }
         },
         "com.amazonaws.cleanrooms#CollaborationConfiguredAudienceModelAssociation": {
@@ -3376,10 +4115,16 @@
                     "target": "com.amazonaws.cleanrooms#BatchGetSchemaAnalysisRule"
                 },
                 {
+                    "target": "com.amazonaws.cleanrooms#CreateCollaborationChangeRequest"
+                },
+                {
                     "target": "com.amazonaws.cleanrooms#DeleteMember"
                 },
                 {
                     "target": "com.amazonaws.cleanrooms#GetCollaborationAnalysisTemplate"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#GetCollaborationChangeRequest"
                 },
                 {
                     "target": "com.amazonaws.cleanrooms#GetCollaborationConfiguredAudienceModelAssociation"
@@ -3400,6 +4145,9 @@
                     "target": "com.amazonaws.cleanrooms#ListCollaborationAnalysisTemplates"
                 },
                 {
+                    "target": "com.amazonaws.cleanrooms#ListCollaborationChangeRequests"
+                },
+                {
                     "target": "com.amazonaws.cleanrooms#ListCollaborationConfiguredAudienceModelAssociations"
                 },
                 {
@@ -3416,6 +4164,9 @@
                 },
                 {
                     "target": "com.amazonaws.cleanrooms#ListSchemas"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#UpdateCollaborationChangeRequest"
                 }
             ],
             "traits": {
@@ -3540,10 +4291,37 @@
                 "smithy.api#documentation": "<p>A column within a schema relation, derived from the underlying table.</p>"
             }
         },
+        "com.amazonaws.cleanrooms#ColumnClassificationDetails": {
+            "type": "structure",
+            "members": {
+                "columnMapping": {
+                    "target": "com.amazonaws.cleanrooms#ColumnMappingList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A mapping that defines the classification of data columns for synthetic data generation and specifies how each column should be handled during the privacy-preserving data synthesis process.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains classification information for data columns, including mappings that specify how columns should be handled during synthetic data generation and privacy analysis.</p>"
+            }
+        },
         "com.amazonaws.cleanrooms#ColumnList": {
             "type": "list",
             "member": {
                 "target": "com.amazonaws.cleanrooms#Column"
+            }
+        },
+        "com.amazonaws.cleanrooms#ColumnMappingList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanrooms#SyntheticDataColumnProperties"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 5,
+                    "max": 1000
+                }
             }
         },
         "com.amazonaws.cleanrooms#ColumnName": {
@@ -3562,6 +4340,209 @@
                     "max": 255
                 },
                 "smithy.api#pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*$"
+            }
+        },
+        "com.amazonaws.cleanrooms#CommercialRegion": {
+            "type": "enum",
+            "members": {
+                "US_WEST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "us-west-1"
+                    }
+                },
+                "US_WEST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "us-west-2"
+                    }
+                },
+                "US_EAST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "us-east-1"
+                    }
+                },
+                "US_EAST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "us-east-2"
+                    }
+                },
+                "AF_SOUTH_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "af-south-1"
+                    }
+                },
+                "AP_EAST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-east-1"
+                    }
+                },
+                "AP_SOUTH_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-south-2"
+                    }
+                },
+                "AP_SOUTHEAST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-1"
+                    }
+                },
+                "AP_SOUTHEAST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-2"
+                    }
+                },
+                "AP_SOUTHEAST_3": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-3"
+                    }
+                },
+                "AP_SOUTHEAST_5": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-5"
+                    }
+                },
+                "AP_SOUTHEAST_4": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-4"
+                    }
+                },
+                "AP_SOUTHEAST_7": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-7"
+                    }
+                },
+                "AP_SOUTH_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-south-1"
+                    }
+                },
+                "AP_NORTHEAST_3": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-northeast-3"
+                    }
+                },
+                "AP_NORTHEAST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-northeast-1"
+                    }
+                },
+                "AP_NORTHEAST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-northeast-2"
+                    }
+                },
+                "CA_CENTRAL_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ca-central-1"
+                    }
+                },
+                "CA_WEST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ca-west-1"
+                    }
+                },
+                "EU_SOUTH_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-south-1"
+                    }
+                },
+                "EU_WEST_3": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-west-3"
+                    }
+                },
+                "EU_SOUTH_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-south-2"
+                    }
+                },
+                "EU_CENTRAL_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-central-2"
+                    }
+                },
+                "EU_CENTRAL_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-central-1"
+                    }
+                },
+                "EU_NORTH_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-north-1"
+                    }
+                },
+                "EU_WEST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-west-1"
+                    }
+                },
+                "EU_WEST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-west-2"
+                    }
+                },
+                "ME_SOUTH_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "me-south-1"
+                    }
+                },
+                "ME_CENTRAL_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "me-central-1"
+                    }
+                },
+                "IL_CENTRAL_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "il-central-1"
+                    }
+                },
+                "SA_EAST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sa-east-1"
+                    }
+                },
+                "MX_CENTRAL_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "mx-central-1"
+                    }
+                },
+                "AP_EAST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-east-2"
+                    }
+                }
             }
         },
         "com.amazonaws.cleanrooms#ComputeConfiguration": {
@@ -3921,7 +4902,7 @@
                 "allowedColumns": {
                     "target": "com.amazonaws.cleanrooms#AllowedColumnList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The columns within the underlying Glue table that can be utilized within collaborations.</p>",
+                        "smithy.api#documentation": "<p>The columns within the underlying Glue table that can be used within collaborations.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -4982,6 +5963,18 @@
                 },
                 "schema": {
                     "target": "com.amazonaws.cleanrooms#AnalysisSchema"
+                },
+                "errorMessageConfiguration": {
+                    "target": "com.amazonaws.cleanrooms#ErrorMessageConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration that specifies the level of detail in error messages returned by analyses using this template. When set to <code>DETAILED</code>, error messages include more information to help troubleshoot issues with PySpark jobs. Detailed error messages may expose underlying data, including sensitive information. Recommended for faster troubleshooting in development and testing environments.</p>"
+                    }
+                },
+                "syntheticDataParameters": {
+                    "target": "com.amazonaws.cleanrooms#SyntheticDataParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The parameters for generating synthetic data when running the analysis template.</p>"
+                    }
                 }
             }
         },
@@ -5030,6 +6023,84 @@
                     "method": "POST",
                     "uri": "/collaborations"
                 }
+            }
+        },
+        "com.amazonaws.cleanrooms#CreateCollaborationChangeRequest": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.cleanrooms#CreateCollaborationChangeRequestInput"
+            },
+            "output": {
+                "target": "com.amazonaws.cleanrooms#CreateCollaborationChangeRequestOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.cleanrooms#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Creates a new change request to modify an existing collaboration. This enables post-creation modifications to collaborations through a structured API-driven approach.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "POST",
+                    "uri": "/collaborations/{collaborationIdentifier}/changeRequests"
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#CreateCollaborationChangeRequestInput": {
+            "type": "structure",
+            "members": {
+                "collaborationIdentifier": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the collaboration that the change request is made against.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "CollaborationId"
+                    }
+                },
+                "changes": {
+                    "target": "com.amazonaws.cleanrooms#ChangeInputList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of changes to apply to the collaboration. Each change specifies the type of modification and the details of what should be changed.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.cleanrooms#CreateCollaborationChangeRequestOutput": {
+            "type": "structure",
+            "members": {
+                "collaborationChangeRequest": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationChangeRequest",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.cleanrooms#CreateCollaborationInput": {
@@ -5111,6 +6182,24 @@
                     "target": "com.amazonaws.cleanrooms#AnalyticsEngine",
                     "traits": {
                         "smithy.api#documentation": "<p> The analytics engine.</p> <note> <p>After July 16, 2025, the <code>CLEAN_ROOMS_SQL</code> parameter will no longer be available. </p> </note>"
+                    }
+                },
+                "autoApprovedChangeRequestTypes": {
+                    "target": "com.amazonaws.cleanrooms#AutoApprovedChangeTypeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The types of change requests that are automatically approved for this collaboration.</p>"
+                    }
+                },
+                "allowedResultRegions": {
+                    "target": "com.amazonaws.cleanrooms#AllowedResultRegions",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Regions where collaboration query results can be stored. When specified, results can only be written to these Regions. This parameter enables you to meet your compliance and data governance requirements, and implement regional data governance policies.</p>"
+                    }
+                },
+                "isMetricsEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An indicator as to whether metrics have been enabled or disabled for the collaboration.</p> <p>When <code>true</code>, collaboration members can opt in to Amazon CloudWatch metrics for their membership queries. The default value is <code>false</code>.</p>"
                     }
                 }
             }
@@ -5916,6 +7005,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The payment responsibilities accepted by the collaboration member.</p> <p>Not required if the collaboration member has the member ability to run queries. </p> <p>Required if the collaboration member doesn't have the member ability to run queries but is configured as a payer by the collaboration creator. </p>"
                     }
+                },
+                "isMetricsEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An indicator as to whether Amazon CloudWatch metrics have been enabled or disabled for the membership.</p> <p>Amazon CloudWatch metrics are only available when the collaboration has metrics enabled. This option can be set by collaboration members who have the ability to run queries (analysis runners) or by members who are configured as payers.</p> <p>When <code>true</code>, metrics about query execution are collected in Amazon CloudWatch. The default value is <code>false</code>.</p>"
+                    }
                 }
             }
         },
@@ -5953,6 +7048,9 @@
                     "target": "com.amazonaws.cleanrooms#ResourceNotFoundException"
                 },
                 {
+                    "target": "com.amazonaws.cleanrooms#ServiceQuotaExceededException"
+                },
+                {
                     "target": "com.amazonaws.cleanrooms#ThrottlingException"
                 },
                 {
@@ -5984,8 +7082,7 @@
                 "autoRefresh": {
                     "target": "com.amazonaws.cleanrooms#PrivacyBudgetTemplateAutoRefresh",
                     "traits": {
-                        "smithy.api#documentation": "<p>How often the privacy budget refreshes.</p> <important> <p>If you plan to regularly bring new data into the collaboration, you can use <code>CALENDAR_MONTH</code> to automatically get a new privacy budget for the collaboration every calendar month. Choosing this option allows arbitrary amounts of information to be revealed about rows of the data when repeatedly queries across refreshes. Avoid choosing this if the same rows will be repeatedly queried between privacy budget refreshes.</p> </important>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>How often the privacy budget refreshes.</p> <important> <p>If you plan to regularly bring new data into the collaboration, you can use <code>CALENDAR_MONTH</code> to automatically get a new privacy budget for the collaboration every calendar month. Choosing this option allows arbitrary amounts of information to be revealed about rows of the data when repeatedly queries across refreshes. Avoid choosing this if the same rows will be repeatedly queried between privacy budget refreshes.</p> </important>"
                     }
                 },
                 "privacyBudgetType": {
@@ -6928,7 +8025,7 @@
             "type": "structure",
             "members": {
                 "name": {
-                    "target": "smithy.api#String",
+                    "target": "com.amazonaws.cleanrooms#ColumnName",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the column, such as user_id, that contains the unique identifier of your users, whose privacy you want to protect. If you want to turn on differential privacy for two or more tables in a collaboration, you must configure the same column as the user identifier column in both analysis rules.</p>",
                         "smithy.api#required": {}
@@ -7259,6 +8356,32 @@
                 }
             }
         },
+        "com.amazonaws.cleanrooms#ErrorMessageConfiguration": {
+            "type": "structure",
+            "members": {
+                "type": {
+                    "target": "com.amazonaws.cleanrooms#ErrorMessageType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The level of detail for error messages returned by the PySpark job. When set to DETAILED, error messages include more information to help troubleshoot issues with your PySpark job.</p> <p>Because this setting may expose sensitive data, it is recommended for development and testing environments.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A structure that defines the level of detail included in error messages returned by PySpark jobs. This configuration allows you to control the verbosity of error messages to help with troubleshooting PySpark jobs while maintaining appropriate security controls.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#ErrorMessageType": {
+            "type": "enum",
+            "members": {
+                "DETAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DETAILED"
+                    }
+                }
+            }
+        },
         "com.amazonaws.cleanrooms#FilterableMemberStatus": {
             "type": "string",
             "traits": {
@@ -7457,6 +8580,81 @@
                         "smithy.api#required": {}
                     }
                 }
+            }
+        },
+        "com.amazonaws.cleanrooms#GetCollaborationChangeRequest": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.cleanrooms#GetCollaborationChangeRequestInput"
+            },
+            "output": {
+                "target": "com.amazonaws.cleanrooms#GetCollaborationChangeRequestOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.cleanrooms#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves detailed information about a specific collaboration change request.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "GET",
+                    "uri": "/collaborations/{collaborationIdentifier}/changeRequests/{changeRequestIdentifier}"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.cleanrooms#GetCollaborationChangeRequestInput": {
+            "type": "structure",
+            "members": {
+                "collaborationIdentifier": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the collaboration that the change request is made against.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "CollaborationId"
+                    }
+                },
+                "changeRequestIdentifier": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationChangeRequestIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique identifier for the change request to retrieve.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.cleanrooms#GetCollaborationChangeRequestOutput": {
+            "type": "structure",
+            "members": {
+                "collaborationChangeRequest": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationChangeRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The collaboration change request that was requested.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.cleanrooms#GetCollaborationConfiguredAudienceModelAssociation": {
@@ -8693,6 +9891,12 @@
         "com.amazonaws.cleanrooms#GlueTableReference": {
             "type": "structure",
             "members": {
+                "region": {
+                    "target": "com.amazonaws.cleanrooms#CommercialRegion",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region where the Glue table is located. This parameter is required to uniquely identify and access tables across different Regions.</p>"
+                    }
+                },
                 "tableName": {
                     "target": "com.amazonaws.cleanrooms#GlueTableName",
                     "traits": {
@@ -9457,6 +10661,60 @@
                 "smithy.api#documentation": "<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator for query and job compute costs.</p>"
             }
         },
+        "com.amazonaws.cleanrooms#JobParameterMap": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.cleanrooms#JobParameterName"
+            },
+            "value": {
+                "target": "com.amazonaws.cleanrooms#JobParameterValue"
+            },
+            "traits": {
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.cleanrooms#JobParameterName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 100
+                },
+                "smithy.api#pattern": "^[0-9a-zA-Z_]+$"
+            }
+        },
+        "com.amazonaws.cleanrooms#JobParameterValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#JobType": {
+            "type": "enum",
+            "members": {
+                "BATCH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BATCH"
+                    }
+                },
+                "INCREMENTAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INCREMENTAL"
+                    }
+                },
+                "DELETE_ONLY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETE_ONLY"
+                    }
+                }
+            }
+        },
         "com.amazonaws.cleanrooms#JoinOperator": {
             "type": "string",
             "traits": {
@@ -9681,6 +10939,106 @@
                         "smithy.api#required": {}
                     }
                 }
+            }
+        },
+        "com.amazonaws.cleanrooms#ListCollaborationChangeRequests": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.cleanrooms#ListCollaborationChangeRequestsInput"
+            },
+            "output": {
+                "target": "com.amazonaws.cleanrooms#ListCollaborationChangeRequestsOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.cleanrooms#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Lists all change requests for a collaboration with pagination support. Returns change requests sorted by creation time.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "GET",
+                    "uri": "/collaborations/{collaborationIdentifier}/changeRequests"
+                },
+                "smithy.api#paginated": {
+                    "items": "collaborationChangeRequestSummaries",
+                    "inputToken": "nextToken",
+                    "outputToken": "nextToken",
+                    "pageSize": "maxResults"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.cleanrooms#ListCollaborationChangeRequestsInput": {
+            "type": "structure",
+            "members": {
+                "collaborationIdentifier": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the collaboration that the change request is made against.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "CollaborationId"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.cleanrooms#ChangeRequestStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter to only return change requests with the specified status.</p>",
+                        "smithy.api#httpQuery": "status"
+                    }
+                },
+                "nextToken": {
+                    "target": "com.amazonaws.cleanrooms#PaginationToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The pagination token that's used to fetch the next set of results.</p>",
+                        "smithy.api#httpQuery": "nextToken"
+                    }
+                },
+                "maxResults": {
+                    "target": "com.amazonaws.cleanrooms#MaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results that are returned for an API request call.</p>",
+                        "smithy.api#httpQuery": "maxResults"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.cleanrooms#ListCollaborationChangeRequestsOutput": {
+            "type": "structure",
+            "members": {
+                "collaborationChangeRequestSummaries": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationChangeRequestSummaryList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of collaboration change request summaries.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "nextToken": {
+                    "target": "com.amazonaws.cleanrooms#PaginationToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The pagination token that's used to fetch the next set of results.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.cleanrooms#ListCollaborationConfiguredAudienceModelAssociations": {
@@ -10039,6 +11397,13 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The pagination token that's used to fetch the next set of results.</p>",
                         "smithy.api#httpQuery": "nextToken"
+                    }
+                },
+                "accessBudgetResourceArn": {
+                    "target": "com.amazonaws.cleanrooms#BudgetedResourceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Configured Table Association (ConfiguredTableAssociation) used to filter privacy budgets.</p>",
+                        "smithy.api#httpQuery": "accessBudgetResourceArn"
                     }
                 }
             },
@@ -10916,6 +12281,13 @@
                         "smithy.api#documentation": "<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
                         "smithy.api#httpQuery": "maxResults"
                     }
+                },
+                "accessBudgetResourceArn": {
+                    "target": "com.amazonaws.cleanrooms#BudgetedResourceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the access budget resource to filter privacy budgets by.</p>",
+                        "smithy.api#httpQuery": "accessBudgetResourceArn"
+                    }
                 }
             },
             "traits": {
@@ -11317,10 +12689,58 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The payment responsibilities accepted by the member for model inference.</p>"
                     }
+                },
+                "syntheticDataGeneration": {
+                    "target": "com.amazonaws.cleanrooms#SyntheticDataGenerationPaymentConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The payment configuration for machine learning synthetic data generation.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>An object representing the collaboration member's machine learning payment responsibilities set by the collaboration creator.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#MLSyntheticDataParameters": {
+            "type": "structure",
+            "members": {
+                "epsilon": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The epsilon value for differential privacy when generating synthetic data. Lower values provide stronger privacy guarantees but may reduce data utility.</p>",
+                        "smithy.api#range": {
+                            "min": 1.0E-4,
+                            "max": 10
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "maxMembershipInferenceAttackScore": {
+                    "target": "com.amazonaws.cleanrooms#MaxMembershipInferenceAttackScore",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum acceptable score for membership inference attack vulnerability. Synthetic data generation fails if the score for the resulting data exceeds this threshold.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "columnClassification": {
+                    "target": "com.amazonaws.cleanrooms#ColumnClassificationDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Classification details for data columns that specify how each column should be treated during synthetic data generation.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameters that control the generation of synthetic data for machine learning, including privacy settings and column classification details.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#MaxMembershipInferenceAttackScore": {
+            "type": "double",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 0.5,
+                    "max": 1
+                }
             }
         },
         "com.amazonaws.cleanrooms#MaxResults": {
@@ -11364,6 +12784,34 @@
                 }
             }
         },
+        "com.amazonaws.cleanrooms#MemberChangeSpecification": {
+            "type": "structure",
+            "members": {
+                "accountId": {
+                    "target": "com.amazonaws.cleanrooms#AccountId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services account ID of the member to add to the collaboration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "memberAbilities": {
+                    "target": "com.amazonaws.cleanrooms#MemberAbilities",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The abilities granted to the collaboration member. These determine what actions the member can perform within the collaboration.</p> <note> <p>The following values are currently not supported: <code>CAN_QUERY</code>, <code>CAN_RECEIVE_RESULTS,</code> and <code>CAN_RUN_JOB</code>. </p> <p>Set the value of <code>memberAbilities</code> to <code>[]</code> to allow a member to contribute data.</p> </note>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "displayName": {
+                    "target": "com.amazonaws.cleanrooms#DisplayName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the display name that will be shown for this member in the collaboration. While this field is required when inviting new members, it becomes optional when modifying abilities of existing collaboration members. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Specifies changes to collaboration membership, including adding new members with their abilities and display names.</p>"
+            }
+        },
         "com.amazonaws.cleanrooms#MemberList": {
             "type": "list",
             "member": {
@@ -11371,8 +12819,7 @@
             },
             "traits": {
                 "smithy.api#length": {
-                    "min": 0,
-                    "max": 9
+                    "min": 0
                 }
             }
         },
@@ -11640,6 +13087,12 @@
                         "smithy.api#documentation": "<p>The payment responsibilities accepted by the collaboration member.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "isMetricsEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An indicator as to whether Amazon CloudWatch metrics are enabled for the membership.</p> <p>When <code>true</code>, metrics about query execution are collected in Amazon CloudWatch.</p>"
+                    }
                 }
             },
             "traits": {
@@ -11710,6 +13163,12 @@
                     "target": "com.amazonaws.cleanrooms#MembershipModelInferencePaymentConfig",
                     "traits": {
                         "smithy.api#documentation": "<p>The payment responsibilities accepted by the member for model inference.</p>"
+                    }
+                },
+                "syntheticDataGeneration": {
+                    "target": "com.amazonaws.cleanrooms#MembershipSyntheticDataGenerationPaymentConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The payment configuration for synthetic data generation for this machine learning membership.</p>"
                     }
                 }
             },
@@ -12063,6 +13522,21 @@
                 "target": "com.amazonaws.cleanrooms#MembershipSummary"
             }
         },
+        "com.amazonaws.cleanrooms#MembershipSyntheticDataGenerationPaymentConfig": {
+            "type": "structure",
+            "members": {
+                "isResponsible": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates if this membership is responsible for paying for synthetic data generation.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for payment for synthetic data generation in a membership.</p>"
+            }
+        },
         "com.amazonaws.cleanrooms#ModelInferencePaymentConfig": {
             "type": "structure",
             "members": {
@@ -12298,7 +13772,7 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 0,
-                    "max": 250
+                    "max": 1000
                 }
             }
         },
@@ -12389,6 +13863,12 @@
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {},
                         "smithy.api#resourceIdentifier": "MembershipId"
+                    }
+                },
+                "jobType": {
+                    "target": "com.amazonaws.cleanrooms#JobType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The job type of the rule-based ID mapping job. Valid values include:</p> <p> <code>INCREMENTAL</code>: Processes only new or changed data since the last job run. This is the default job type if the ID mapping workflow was created in Entity Resolution with <code>incrementalRunConfig</code> specified.</p> <p> <code>BATCH</code>: Processes all data from the input source, regardless of previous job runs. This is the default job type if the ID mapping workflow was created in Entity Resolution but <code>incrementalRunConfig</code> wasn't specified.</p> <p> <code>DELETE_ONLY</code>: Processes only deletion requests from <code>BatchDeleteUniqueId</code>, which is set in Entity Resolution.</p> <p>For more information about <code>incrementalRunConfig</code> and <code>BatchDeleteUniqueId</code>, see the <a href=\"https://docs.aws.amazon.com/entityresolution/latest/apireference/Welcome.html\">Entity Resolution API Reference</a>.</p>"
                     }
                 }
             },
@@ -12506,6 +13986,12 @@
                     "target": "com.amazonaws.cleanrooms#DifferentialPrivacyPrivacyBudget",
                     "traits": {
                         "smithy.api#documentation": "<p>An object that specifies the epsilon parameter and the utility in terms of total aggregations, as well as the remaining aggregations available.</p>"
+                    }
+                },
+                "accessBudget": {
+                    "target": "com.amazonaws.cleanrooms#AccessBudget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Access budget information associated with this privacy budget.</p>"
                     }
                 }
             },
@@ -12733,6 +14219,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An object that specifies the epsilon and noise parameters.</p>"
                     }
+                },
+                "accessBudget": {
+                    "target": "com.amazonaws.cleanrooms#AccessBudgetsPrivacyTemplateParametersInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Access budget configuration for the privacy budget template input, enabling integration with access budget functionality.</p>"
+                    }
                 }
             },
             "traits": {
@@ -12746,6 +14238,12 @@
                     "target": "com.amazonaws.cleanrooms#DifferentialPrivacyTemplateParametersOutput",
                     "traits": {
                         "smithy.api#documentation": "<p>The epsilon and noise parameters.</p>"
+                    }
+                },
+                "accessBudget": {
+                    "target": "com.amazonaws.cleanrooms#AccessBudgetsPrivacyTemplateParametersOutput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Access budget configuration returned from the privacy budget template, containing the configured access budget settings.</p>"
                     }
                 }
             },
@@ -12874,6 +14372,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An object that specifies the new values for the epsilon and noise parameters.</p>"
                     }
+                },
+                "accessBudget": {
+                    "target": "com.amazonaws.cleanrooms#AccessBudgetsPrivacyTemplateUpdateParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The new access budget configuration that completely replaces the existing access budget settings in the privacy budget template.</p>"
+                    }
                 }
             },
             "traits": {
@@ -12887,6 +14391,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "DIFFERENTIAL_PRIVACY"
+                    }
+                },
+                "ACCESS_BUDGET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACCESS_BUDGET"
                     }
                 }
             }
@@ -12973,6 +14483,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p> The error from the protected job.</p>"
                     }
+                },
+                "computeConfiguration": {
+                    "target": "com.amazonaws.cleanrooms#ProtectedJobComputeConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The compute configuration for the protected job.</p>"
+                    }
                 }
             },
             "traits": {
@@ -12988,6 +14504,20 @@
                         "smithy.api#enumValue": "DIRECT_ANALYSIS"
                     }
                 }
+            }
+        },
+        "com.amazonaws.cleanrooms#ProtectedJobComputeConfiguration": {
+            "type": "union",
+            "members": {
+                "worker": {
+                    "target": "com.amazonaws.cleanrooms#ProtectedJobWorkerComputeConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The worker configuration for the compute environment.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration of the compute resources for a PySpark job.</p>"
             }
         },
         "com.amazonaws.cleanrooms#ProtectedJobConfigurationDetails": {
@@ -13146,7 +14676,14 @@
                 "analysisTemplateArn": {
                     "target": "com.amazonaws.cleanrooms#AnalysisTemplateArn",
                     "traits": {
-                        "smithy.api#documentation": "<p> The ARN of the analysis template.</p>"
+                        "smithy.api#documentation": "<p> The ARN of the analysis template.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "parameters": {
+                    "target": "com.amazonaws.cleanrooms#JobParameterMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Runtime configuration values passed to the PySpark analysis script. Parameter names and types must match those defined in the analysis template.</p>"
                     }
                 }
             },
@@ -13440,6 +14977,49 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "PYSPARK"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#ProtectedJobWorkerComputeConfiguration": {
+            "type": "structure",
+            "members": {
+                "type": {
+                    "target": "com.amazonaws.cleanrooms#ProtectedJobWorkerComputeType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The worker compute configuration type.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "number": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of workers for a PySpark job.</p>",
+                        "smithy.api#range": {
+                            "min": 4,
+                            "max": 128
+                        },
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration of the compute resources for a PySpark job.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#ProtectedJobWorkerComputeType": {
+            "type": "enum",
+            "members": {
+                "CR1X": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CR.1X"
+                    }
+                },
+                "CR4X": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CR.4X"
                     }
                 }
             }
@@ -14036,6 +15616,14 @@
                 "target": "com.amazonaws.cleanrooms#ReceiverConfiguration"
             }
         },
+        "com.amazonaws.cleanrooms#RemainingBudget": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 0
+                }
+            }
+        },
         "com.amazonaws.cleanrooms#ResourceAlias": {
             "type": "string",
             "traits": {
@@ -14151,6 +15739,10 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p> The object key.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 1024
+                        },
                         "smithy.api#pattern": "^[a-zA-Z0-9!_.*'()-/]+$",
                         "smithy.api#required": {}
                     }
@@ -14369,6 +15961,12 @@
                         "smithy.api#required": {}
                     }
                 },
+                "resourceArn": {
+                    "target": "com.amazonaws.cleanrooms#SchemaResourceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the schema resource.</p>"
+                    }
+                },
                 "schemaTypeProperties": {
                     "target": "com.amazonaws.cleanrooms#SchemaTypeProperties",
                     "traits": {
@@ -14451,6 +16049,15 @@
                 "smithy.api#length": {
                     "max": 25
                 }
+            }
+        },
+        "com.amazonaws.cleanrooms#SchemaResourceArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 200
+                },
+                "smithy.api#pattern": "^arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership\\/[\\d\\w-]+\\/(configuredtableassociation|idmappingtable)\\/[\\d\\w-]+$"
             }
         },
         "com.amazonaws.cleanrooms#SchemaStatus": {
@@ -14680,6 +16287,12 @@
                     "target": "com.amazonaws.cleanrooms#AnalysisMethod",
                     "traits": {
                         "smithy.api#documentation": "<p>The analysis method for the associated schema.</p> <p> <code>DIRECT_QUERY</code> allows SQL queries to be run directly on this table.</p> <p> <code>DIRECT_JOB</code> allows PySpark jobs to be run directly on this table.</p> <p> <code>MULTIPLE</code> allows both SQL queries and PySpark jobs to be run directly on this table.</p>"
+                    }
+                },
+                "resourceArn": {
+                    "target": "com.amazonaws.cleanrooms#SchemaResourceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the schema summary resource.</p>"
                     }
                 },
                 "selectedAnalysisMethods": {
@@ -14930,6 +16543,39 @@
                 "smithy.api#documentation": "<p> The Snowflake table schema.</p>"
             }
         },
+        "com.amazonaws.cleanrooms#SparkProperties": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.cleanrooms#SparkPropertyKey"
+            },
+            "value": {
+                "target": "com.amazonaws.cleanrooms#SparkPropertyValue"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 50
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#SparkPropertyKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 200
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#SparkPropertyValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 500
+                }
+            }
+        },
         "com.amazonaws.cleanrooms#StartProtectedJob": {
             "type": "operation",
             "input": {
@@ -15000,6 +16646,12 @@
                     "target": "com.amazonaws.cleanrooms#ProtectedJobResultConfigurationInput",
                     "traits": {
                         "smithy.api#documentation": "<p>The details needed to write the job results.</p>"
+                    }
+                },
+                "computeConfiguration": {
+                    "target": "com.amazonaws.cleanrooms#ProtectedJobComputeConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The compute configuration for the protected job.</p>"
                     }
                 }
             },
@@ -15110,6 +16762,293 @@
                         "smithy.api#required": {}
                     }
                 }
+            }
+        },
+        "com.amazonaws.cleanrooms#SupportedS3Region": {
+            "type": "enum",
+            "members": {
+                "US_WEST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "us-west-1"
+                    }
+                },
+                "US_WEST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "us-west-2"
+                    }
+                },
+                "US_EAST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "us-east-1"
+                    }
+                },
+                "US_EAST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "us-east-2"
+                    }
+                },
+                "AF_SOUTH_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "af-south-1"
+                    }
+                },
+                "AP_EAST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-east-1"
+                    }
+                },
+                "AP_EAST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-east-2"
+                    }
+                },
+                "AP_SOUTH_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-south-2"
+                    }
+                },
+                "AP_SOUTHEAST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-1"
+                    }
+                },
+                "AP_SOUTHEAST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-2"
+                    }
+                },
+                "AP_SOUTHEAST_3": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-3"
+                    }
+                },
+                "AP_SOUTHEAST_5": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-5"
+                    }
+                },
+                "AP_SOUTHEAST_4": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-4"
+                    }
+                },
+                "AP_SOUTHEAST_7": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-7"
+                    }
+                },
+                "AP_SOUTH_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-south-1"
+                    }
+                },
+                "AP_NORTHEAST_3": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-northeast-3"
+                    }
+                },
+                "AP_NORTHEAST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-northeast-1"
+                    }
+                },
+                "AP_NORTHEAST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-northeast-2"
+                    }
+                },
+                "CA_CENTRAL_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ca-central-1"
+                    }
+                },
+                "CA_WEST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ca-west-1"
+                    }
+                },
+                "EU_SOUTH_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-south-1"
+                    }
+                },
+                "EU_WEST_3": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-west-3"
+                    }
+                },
+                "EU_SOUTH_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-south-2"
+                    }
+                },
+                "EU_CENTRAL_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-central-2"
+                    }
+                },
+                "EU_CENTRAL_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-central-1"
+                    }
+                },
+                "EU_NORTH_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-north-1"
+                    }
+                },
+                "EU_WEST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-west-1"
+                    }
+                },
+                "EU_WEST_2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-west-2"
+                    }
+                },
+                "ME_SOUTH_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "me-south-1"
+                    }
+                },
+                "ME_CENTRAL_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "me-central-1"
+                    }
+                },
+                "IL_CENTRAL_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "il-central-1"
+                    }
+                },
+                "SA_EAST_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sa-east-1"
+                    }
+                },
+                "MX_CENTRAL_1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "mx-central-1"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#SyntheticDataColumnName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 128
+                },
+                "smithy.api#pattern": "^[a-z0-9_](([a-z0-9_]+-)*([a-z0-9_]+))?$"
+            }
+        },
+        "com.amazonaws.cleanrooms#SyntheticDataColumnProperties": {
+            "type": "structure",
+            "members": {
+                "columnName": {
+                    "target": "com.amazonaws.cleanrooms#SyntheticDataColumnName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the data column as it appears in the dataset.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "columnType": {
+                    "target": "com.amazonaws.cleanrooms#SyntheticDataColumnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The data type of the column, which determines how the synthetic data generation algorithm processes and synthesizes values for this column.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "isPredictiveValue": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates if this column contains predictive values that should be treated as target variables in machine learning models. This affects how the synthetic data generation preserves statistical relationships.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Properties that define how a specific data column should be handled during synthetic data generation, including its name, type, and role in predictive modeling.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#SyntheticDataColumnType": {
+            "type": "enum",
+            "members": {
+                "CATEGORICAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CATEGORICAL"
+                    }
+                },
+                "NUMERICAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NUMERICAL"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#SyntheticDataGenerationPaymentConfig": {
+            "type": "structure",
+            "members": {
+                "isResponsible": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates who is responsible for paying for synthetic data generation.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Payment configuration for synthetic data generation.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#SyntheticDataParameters": {
+            "type": "union",
+            "members": {
+                "mlSyntheticDataParameters": {
+                    "target": "com.amazonaws.cleanrooms#MLSyntheticDataParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The machine learning-specific parameters for synthetic data generation.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The parameters that control how synthetic data is generated, including privacy settings, column classifications, and other configuration options that affect the data synthesis process.</p>"
             }
         },
         "com.amazonaws.cleanrooms#TableAlias": {
@@ -15477,6 +17416,90 @@
                     "method": "PATCH",
                     "uri": "/collaborations/{collaborationIdentifier}"
                 }
+            }
+        },
+        "com.amazonaws.cleanrooms#UpdateCollaborationChangeRequest": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.cleanrooms#UpdateCollaborationChangeRequestInput"
+            },
+            "output": {
+                "target": "com.amazonaws.cleanrooms#UpdateCollaborationChangeRequestOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.cleanrooms#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.cleanrooms#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Updates an existing collaboration change request. This operation allows approval actions for pending change requests in collaborations (APPROVE, DENY, CANCEL, COMMIT).</p> <p>For change requests without automatic approval, a member in the collaboration can manually APPROVE or DENY a change request. The collaboration owner can manually CANCEL or COMMIT a change request.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "PATCH",
+                    "uri": "/collaborations/{collaborationIdentifier}/changeRequests/{changeRequestIdentifier}"
+                }
+            }
+        },
+        "com.amazonaws.cleanrooms#UpdateCollaborationChangeRequestInput": {
+            "type": "structure",
+            "members": {
+                "collaborationIdentifier": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the collaboration that contains the change request to be updated.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "CollaborationId"
+                    }
+                },
+                "changeRequestIdentifier": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationChangeRequestIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the specific change request to be updated within the collaboration.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "ChangeRequestId"
+                    }
+                },
+                "action": {
+                    "target": "com.amazonaws.cleanrooms#ChangeRequestAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The action to perform on the change request. Valid values include APPROVE (approve the change), DENY (reject the change), CANCEL (cancel the request), and COMMIT (commit after the request is approved).</p> <p>For change requests without automatic approval, a member in the collaboration can manually APPROVE or DENY a change request. The collaboration owner can manually CANCEL or COMMIT a change request.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.cleanrooms#UpdateCollaborationChangeRequestOutput": {
+            "type": "structure",
+            "members": {
+                "collaborationChangeRequest": {
+                    "target": "com.amazonaws.cleanrooms#CollaborationChangeRequest",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.cleanrooms#UpdateCollaborationInput": {
@@ -16600,16 +18623,36 @@
                 "number": {
                     "target": "smithy.api#Integer",
                     "traits": {
-                        "smithy.api#documentation": "<p> The number of workers.</p>",
+                        "smithy.api#documentation": "<p> The number of workers.</p> <p>SQL queries support a minimum value of 2 and a maximum value of 400. </p> <p>PySpark jobs support a minimum value of 4 and a maximum value of 128.</p>",
                         "smithy.api#range": {
                             "min": 2,
                             "max": 400
                         }
                     }
+                },
+                "properties": {
+                    "target": "com.amazonaws.cleanrooms#WorkerComputeConfigurationProperties",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration properties for the worker compute environment. These properties allow you to customize the compute settings for your Clean Rooms workloads.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p> The configuration of the compute resources for workers running an analysis with the Clean Rooms SQL analytics engine.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#WorkerComputeConfigurationProperties": {
+            "type": "union",
+            "members": {
+                "spark": {
+                    "target": "com.amazonaws.cleanrooms#SparkProperties",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Spark configuration properties for SQL workloads. This map contains key-value pairs that configure Apache Spark settings to optimize performance for your data processing jobs. You can specify up to 50 Spark properties, with each key being 1-200 characters and each value being 0-500 characters. These properties allow you to adjust compute capacity for large datasets and complex workloads.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration properties that define the compute environment settings for workers in Clean Rooms. These properties enable customization of the underlying compute environment to optimize performance for your specific workloads.</p>"
             }
         },
         "com.amazonaws.cleanrooms#WorkerComputeType": {

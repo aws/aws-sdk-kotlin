@@ -9,9 +9,41 @@ import aws.smithy.kotlin.runtime.ServiceErrorMetadata
 import aws.smithy.kotlin.runtime.ServiceException
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.retries.policy.RetryDirective
-import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.*
+import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.Throttling
+import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.Transient
 import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
 
+/**
+ * The standard policy for AWS service clients that defines which error conditions are retryable and how. This policy
+ * will evaluate the following exceptions as retryable:
+ *
+ * * Any [ServiceException] with an `sdkErrorMetadata.errorCode` of:
+ *   * `BandwidthLimitExceeded`
+ *   * `EC2ThrottledException`
+ *   * `IDPCommunicationError`
+ *   * `LimitExceededException`
+ *   * `PriorRequestNotComplete`
+ *   * `ProvisionedThroughputExceededException`
+ *   * `RequestLimitExceeded`
+ *   * `RequestThrottled`
+ *   * `RequestThrottledException`
+ *   * `RequestTimeout`
+ *   * `RequestTimeoutException`
+ *   * `SlowDown`
+ *   * `ThrottledException`
+ *   * `Throttling`
+ *   * `ThrottlingException`
+ *   * `TooManyRequestsException`
+ *   * `TransactionInProgressException`
+ * * Any [ServiceException] with an `sdkErrorMetadata.statusCode` of:
+ *   * 500 (Internal Service Error)
+ *   * 502 (Bad Gateway)
+ *   * 503 (Service Unavailable)
+ *   * 504 (Gateway Timeout)
+ *
+ * If none of those conditions match, this policy delegates to [StandardRetryPolicy]. See that class's documentation for
+ * more information about how it evaluates exceptions.
+ */
 public open class AwsRetryPolicy : StandardRetryPolicy() {
     public companion object {
         /**

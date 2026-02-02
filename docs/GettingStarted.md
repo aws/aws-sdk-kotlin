@@ -54,7 +54,7 @@ Consult the [stability guide](../VERSIONING.md#stability-of-the-aws-sdk-for-kotl
 
 ## Additional Resources
 
-* [Additional examples](https://github.com/awslabs/aws-sdk-kotlin/tree/main/examples)
-* [Getting started](https://github.com/awslabs/aws-sdk-kotlin#getting-started)
+* [Additional examples](https://github.com/aws/aws-sdk-kotlin/tree/main/examples)
+* [Getting started](https://github.com/aws/aws-sdk-kotlin#getting-started)
 * [Debugging](debugging.md)
 * [Android support](targets.md#android)

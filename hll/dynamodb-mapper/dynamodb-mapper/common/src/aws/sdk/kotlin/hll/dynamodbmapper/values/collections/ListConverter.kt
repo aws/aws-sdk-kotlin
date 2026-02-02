@@ -34,5 +34,4 @@ public val ListConverter: ValueConverter<List<AttributeValue>> = Converter(Attri
  */
 @ExperimentalApi
 @Suppress("ktlint:standard:function-naming")
-public fun <F> ListConverter(elementConverter: Converter<F, AttributeValue>): ValueConverter<List<F>> =
-    ListConverter.mapFrom(elementConverter)
+public fun <F> ListConverter(elementConverter: Converter<F, AttributeValue>): ValueConverter<List<F>> = ListConverter.mapFrom(elementConverter)

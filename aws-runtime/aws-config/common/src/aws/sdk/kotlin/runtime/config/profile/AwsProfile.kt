@@ -189,62 +189,56 @@ public val AwsProfile.authSchemePreference: String?
  * Parse a config value as a boolean, ignoring case.
  */
 @InternalSdkApi
-public fun AwsProfile.getBooleanOrNull(key: String, subKey: String? = null): Boolean? =
-    getOrNull(key, subKey)?.let {
-        it.lowercase().toBooleanStrictOrNull() ?: throw ConfigurationException(
-            "Failed to parse config property ${buildKeyString(key, subKey)} as a boolean",
-        )
-    }
+public fun AwsProfile.getBooleanOrNull(key: String, subKey: String? = null): Boolean? = getOrNull(key, subKey)?.let {
+    it.lowercase().toBooleanStrictOrNull() ?: throw ConfigurationException(
+        "Failed to parse config property ${buildKeyString(key, subKey)} as a boolean",
+    )
+}
 
 /**
  * Parse a config value as an int.
  */
 @InternalSdkApi
-public fun AwsProfile.getIntOrNull(key: String, subKey: String? = null): Int? =
-    getOrNull(key, subKey)?.let {
-        it.toIntOrNull() ?: throw ConfigurationException(
-            "Failed to parse config property ${buildKeyString(key, subKey)} as an integer",
-        )
-    }
+public fun AwsProfile.getIntOrNull(key: String, subKey: String? = null): Int? = getOrNull(key, subKey)?.let {
+    it.toIntOrNull() ?: throw ConfigurationException(
+        "Failed to parse config property ${buildKeyString(key, subKey)} as an integer",
+    )
+}
 
 /**
  * Parse a config value as a long.
  */
 @InternalSdkApi
-public fun AwsProfile.getLongOrNull(key: String, subKey: String? = null): Long? =
-    getOrNull(key, subKey)?.let {
-        it.toLongOrNull() ?: throw ConfigurationException(
-            "Failed to parse config property ${buildKeyString(key, subKey)} as a long",
-        )
-    }
+public fun AwsProfile.getLongOrNull(key: String, subKey: String? = null): Long? = getOrNull(key, subKey)?.let {
+    it.toLongOrNull() ?: throw ConfigurationException(
+        "Failed to parse config property ${buildKeyString(key, subKey)} as a long",
+    )
+}
 
 /**
  * Parse a config value as an enum.
  */
 @InternalSdkApi
-public inline fun <reified T : Enum<T>> AwsProfile.getEnumOrNull(key: String, subKey: String? = null): T? =
-    getOrNull(key, subKey)?.let { value ->
-        enumValues<T>().firstOrNull {
-            it.name.equals(value, ignoreCase = true)
-        } ?: throw ConfigurationException(
-            buildString {
-                append(key)
-                append(" '")
-                append(value)
-                append("' is not supported, should be one of: ")
-                enumValues<T>().joinTo(this) { it.name.lowercase() }
-            },
-        )
-    }
+public inline fun <reified T : Enum<T>> AwsProfile.getEnumOrNull(key: String, subKey: String? = null): T? = getOrNull(key, subKey)?.let { value ->
+    enumValues<T>().firstOrNull {
+        it.name.equals(value, ignoreCase = true)
+    } ?: throw ConfigurationException(
+        buildString {
+            append(key)
+            append(" '")
+            append(value)
+            append("' is not supported, should be one of: ")
+            enumValues<T>().joinTo(this) { it.name.lowercase() }
+        },
+    )
+}
 
-internal fun AwsProfile.getUrlOrNull(key: String, subKey: String? = null): Url? =
-    getOrNull(key, subKey)?.let {
-        try {
-            Url.parse(it)
-        } catch (e: Exception) {
-            throw ConfigurationException("Failed to parse config property ${buildKeyString(key, subKey)} as a URL", e)
-        }
+internal fun AwsProfile.getUrlOrNull(key: String, subKey: String? = null): Url? = getOrNull(key, subKey)?.let {
+    try {
+        Url.parse(it)
+    } catch (e: Exception) {
+        throw ConfigurationException("Failed to parse config property ${buildKeyString(key, subKey)} as a URL", e)
     }
+}
 
-private fun buildKeyString(key: String, subKey: String? = null): String =
-    listOfNotNull(key, subKey).joinToString(".")
+private fun buildKeyString(key: String, subKey: String? = null): String = listOfNotNull(key, subKey).joinToString(".")

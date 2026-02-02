@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.hll.codegen.rendering
 
 import aws.sdk.kotlin.hll.codegen.core.CodeGenerator
@@ -65,7 +70,9 @@ public class BuilderRenderer(
     private fun renderProperty(member: Member) {
         val dslInfo = member.dslInfo
 
-        if (dslInfo != null) blankLine()
+        if (dslInfo != null) {
+            blankLine()
+        }
 
         write("#Lvar #L: #T = null", ctx.attributes.visibility, member.name, member.type.nullable())
 

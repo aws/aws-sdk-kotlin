@@ -133,6 +133,9 @@
                     "target": "com.amazonaws.glue#CreateDevEndpoint"
                 },
                 {
+                    "target": "com.amazonaws.glue#CreateGlueIdentityCenterConfiguration"
+                },
+                {
                     "target": "com.amazonaws.glue#CreateIntegration"
                 },
                 {
@@ -223,7 +226,13 @@
                     "target": "com.amazonaws.glue#DeleteDevEndpoint"
                 },
                 {
+                    "target": "com.amazonaws.glue#DeleteGlueIdentityCenterConfiguration"
+                },
+                {
                     "target": "com.amazonaws.glue#DeleteIntegration"
+                },
+                {
+                    "target": "com.amazonaws.glue#DeleteIntegrationResourceProperty"
                 },
                 {
                     "target": "com.amazonaws.glue#DeleteIntegrationTableProperties"
@@ -388,6 +397,9 @@
                     "target": "com.amazonaws.glue#GetEntityRecords"
                 },
                 {
+                    "target": "com.amazonaws.glue#GetGlueIdentityCenterConfiguration"
+                },
+                {
                     "target": "com.amazonaws.glue#GetIntegrationResourceProperty"
                 },
                 {
@@ -410,6 +422,9 @@
                 },
                 {
                     "target": "com.amazonaws.glue#GetMapping"
+                },
+                {
+                    "target": "com.amazonaws.glue#GetMaterializedViewRefreshTaskRun"
                 },
                 {
                     "target": "com.amazonaws.glue#GetMLTaskRun"
@@ -568,7 +583,13 @@
                     "target": "com.amazonaws.glue#ListEntities"
                 },
                 {
+                    "target": "com.amazonaws.glue#ListIntegrationResourceProperties"
+                },
+                {
                     "target": "com.amazonaws.glue#ListJobs"
+                },
+                {
+                    "target": "com.amazonaws.glue#ListMaterializedViewRefreshTaskRuns"
                 },
                 {
                     "target": "com.amazonaws.glue#ListMLTransforms"
@@ -670,6 +691,9 @@
                     "target": "com.amazonaws.glue#StartJobRun"
                 },
                 {
+                    "target": "com.amazonaws.glue#StartMaterializedViewRefreshTaskRun"
+                },
+                {
                     "target": "com.amazonaws.glue#StartMLEvaluationTaskRun"
                 },
                 {
@@ -692,6 +716,9 @@
                 },
                 {
                     "target": "com.amazonaws.glue#StopCrawlerSchedule"
+                },
+                {
+                    "target": "com.amazonaws.glue#StopMaterializedViewRefreshTaskRun"
                 },
                 {
                     "target": "com.amazonaws.glue#StopSession"
@@ -746,6 +773,9 @@
                 },
                 {
                     "target": "com.amazonaws.glue#UpdateDevEndpoint"
+                },
+                {
+                    "target": "com.amazonaws.glue#UpdateGlueIdentityCenterConfiguration"
                 },
                 {
                     "target": "com.amazonaws.glue#UpdateIntegrationResourceProperty"
@@ -814,27 +844,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -1618,17 +1648,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -1639,17 +1658,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -1666,17 +1674,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -1687,17 +1684,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -2453,6 +2439,15 @@
                 "smithy.api#pattern": "^[a-zA-Z0-9.-]*$"
             }
         },
+        "com.amazonaws.glue#ApplicationArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 10,
+                    "max": 1224
+                }
+            }
+        },
         "com.amazonaws.glue#ApplyMapping": {
             "type": "structure",
             "members": {
@@ -2655,6 +2650,12 @@
                     "target": "com.amazonaws.glue#SecretArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The secret manager ARN to store credentials.</p>"
+                    }
+                },
+                "KmsKeyArn": {
+                    "target": "com.amazonaws.glue#KmsKeyArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt sensitive authentication information. This key is used to protect credentials \n      and other sensitive data stored within the authentication configuration.</p>"
                     }
                 },
                 "OAuth2Properties": {
@@ -4108,7 +4109,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Annotate datapoints over time for a specific data quality statistic.</p>"
+                "smithy.api#documentation": "<p>Annotate datapoints over time for a specific data quality statistic.\n        The API requires both profileID and statisticID as part of the InclusionAnnotation input.\n        The API only works for a single statisticId across multiple profiles.</p>"
             }
         },
         "com.amazonaws.glue#BatchPutDataQualityStatisticAnnotationRequest": {
@@ -4117,7 +4118,7 @@
                 "InclusionAnnotations": {
                     "target": "com.amazonaws.glue#InclusionAnnotationList",
                     "traits": {
-                        "smithy.api#documentation": "<p>A list of <code>DatapointInclusionAnnotation</code>'s.</p>",
+                        "smithy.api#documentation": "<p>A list of <code>DatapointInclusionAnnotation</code>'s. The InclusionAnnotations must contain a profileId and statisticId.\n        If there are multiple InclusionAnnotations, the list must refer to a single statisticId across multiple profileIds.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -4855,6 +4856,14 @@
         },
         "com.amazonaws.glue#BoxedPositiveInt": {
             "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 0
+                }
+            }
+        },
+        "com.amazonaws.glue#ByteCount": {
+            "type": "long",
             "traits": {
                 "smithy.api#range": {
                     "min": 0
@@ -5622,6 +5631,12 @@
                         "smithy.api#documentation": "<p>A <code>DataLakeAccessProperties</code> object that specifies properties to configure data lake access for your catalog resource in the Glue Data Catalog.</p>"
                     }
                 },
+                "IcebergOptimizationProperties": {
+                    "target": "com.amazonaws.glue#IcebergOptimizationProperties",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A structure that specifies Iceberg table optimization properties for the catalog. This includes configuration for compaction, retention, and \n      orphan file deletion operations that can be applied to Iceberg tables in this catalog.</p>"
+                    }
+                },
                 "CustomProperties": {
                     "target": "com.amazonaws.glue#ParametersMap",
                     "traits": {
@@ -5640,6 +5655,12 @@
                     "target": "com.amazonaws.glue#DataLakeAccessPropertiesOutput",
                     "traits": {
                         "smithy.api#documentation": "<p>A <code>DataLakeAccessProperties</code> object with input properties to configure data lake access for your catalog resource in the Glue Data Catalog.</p>"
+                    }
+                },
+                "IcebergOptimizationProperties": {
+                    "target": "com.amazonaws.glue#IcebergOptimizationPropertiesOutput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An <code>IcebergOptimizationPropertiesOutput</code> object that specifies Iceberg table optimization settings for the catalog, including \n      configurations for compaction, retention, and orphan file deletion operations.</p>"
                     }
                 },
                 "CustomProperties": {
@@ -7673,6 +7694,23 @@
                 "smithy.api#documentation": "<p>Specifies the values that an admin sets for each job or session parameter configured in a Glue usage profile.</p>"
             }
         },
+        "com.amazonaws.glue#ConfigurationSource": {
+            "type": "enum",
+            "members": {
+                "CATALOG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "catalog"
+                    }
+                },
+                "TABLE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "table"
+                    }
+                }
+            }
+        },
         "com.amazonaws.glue#ConflictException": {
             "type": "structure",
             "members": {
@@ -7750,7 +7788,7 @@
                 "ConnectionProperties": {
                     "target": "com.amazonaws.glue#ConnectionProperties",
                     "traits": {
-                        "smithy.api#documentation": "<p>These key-value pairs define parameters for the connection when using the version 1 Connection schema:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>HOST</code> - The host URI: either the\n        fully qualified domain name (FQDN) or the IPv4 address of\n        the database host.</p>\n            </li>\n            <li>\n               <p>\n                  <code>PORT</code> - The port number, between\n        1024 and 65535, of the port on which the database host is\n        listening for database connections.</p>\n            </li>\n            <li>\n               <p>\n                  <code>USER_NAME</code> -  The name under which\n        to log in to the database. The value string for <code>USER_NAME</code> is \"<code>USERNAME</code>\".</p>\n            </li>\n            <li>\n               <p>\n                  <code>PASSWORD</code> - A password,\n        if one is used, for the user name.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ENCRYPTED_PASSWORD</code> - When you enable connection password protection by setting <code>ConnectionPasswordEncryption</code> in the Data Catalog encryption settings, this field stores the encrypted password.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_DRIVER_JAR_URI</code> - The Amazon Simple Storage Service (Amazon S3) path of the\n          JAR file that contains the JDBC driver to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_DRIVER_CLASS_NAME</code> - The class name of the JDBC driver to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_ENGINE</code> - The name of the JDBC engine to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_ENGINE_VERSION</code> - The version of the JDBC engine to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONFIG_FILES</code> - (Reserved for future use.)</p>\n            </li>\n            <li>\n               <p>\n                  <code>INSTANCE_ID</code> - The instance ID to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_CONNECTION_URL</code> - The URL for connecting to a JDBC data source.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_ENFORCE_SSL</code> - A Boolean string (true, false) specifying whether Secure\n          Sockets Layer (SSL) with hostname matching is enforced for the JDBC connection on the\n          client. The default is false.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CUSTOM_JDBC_CERT</code> - An Amazon S3 location specifying the customer's root certificate. Glue uses this root certificate to validate the customer’s certificate when connecting to the customer database. Glue only handles X.509 certificates. The certificate provided must be DER-encoded and supplied in Base64 encoding PEM format.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SKIP_CUSTOM_JDBC_CERT_VALIDATION</code> - By default, this is <code>false</code>. Glue validates the Signature algorithm and Subject Public Key Algorithm for the customer certificate. The only permitted algorithms for the Signature algorithm are SHA256withRSA, SHA384withRSA or SHA512withRSA. For the Subject Public Key Algorithm, the key length must be at least 2048. You can set the value of this property to <code>true</code> to skip Glue’s validation of the customer certificate.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CUSTOM_JDBC_CERT_STRING</code> - A custom JDBC certificate string which is used for domain match or distinguished name match to prevent a man-in-the-middle attack. In Oracle database, this is used as the <code>SSL_SERVER_CERT_DN</code>; in Microsoft SQL Server, this is used as the <code>hostNameInCertificate</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONNECTION_URL</code> - The URL for connecting to a general (non-JDBC) data source.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SECRET_ID</code> - The secret ID used for the secret manager of credentials.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONNECTOR_URL</code> - The connector URL for a MARKETPLACE or CUSTOM connection.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONNECTOR_TYPE</code> - The connector type for a MARKETPLACE or CUSTOM connection.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONNECTOR_CLASS_NAME</code> - The connector class name for a MARKETPLACE or CUSTOM connection.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_BOOTSTRAP_SERVERS</code> - A comma-separated list of host and port pairs that are the addresses of the Apache Kafka brokers in a Kafka cluster to which a Kafka client will connect to and bootstrap itself.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SSL_ENABLED</code> - Whether to enable or disable SSL on an Apache Kafka connection. Default value is \"true\".</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_CUSTOM_CERT</code> - The Amazon S3 URL for the private CA cert file (.pem format). The default is an empty string.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SKIP_CUSTOM_CERT_VALIDATION</code> - Whether to skip the validation of the CA cert file or not. Glue validates for three algorithms: SHA256withRSA, SHA384withRSA and SHA512withRSA. Default value is \"false\".</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_CLIENT_KEYSTORE</code> - The Amazon S3 location of the client keystore file for Kafka client side authentication (Optional).</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_CLIENT_KEYSTORE_PASSWORD</code> - The password to access the provided keystore (Optional).</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_CLIENT_KEY_PASSWORD</code> - A keystore can consist of multiple keys, so this is the password to access the client key to be used with the Kafka server side key (Optional).</p>\n            </li>\n            <li>\n               <p>\n                  <code>ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD</code> - The encrypted version of the Kafka client keystore password (if the user has the Glue encrypt passwords setting selected).</p>\n            </li>\n            <li>\n               <p>\n                  <code>ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD</code> - The encrypted version of the Kafka client key password (if the user has the Glue encrypt passwords setting selected).</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_MECHANISM</code> - <code>\"SCRAM-SHA-512\"</code>, <code>\"GSSAPI\"</code>, <code>\"AWS_MSK_IAM\"</code>, or <code>\"PLAIN\"</code>. These are the supported <a href=\"https://www.iana.org/assignments/sasl-mechanisms/sasl-mechanisms.xhtml\">SASL Mechanisms</a>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_PLAIN_USERNAME</code> - A plaintext username used to authenticate with the \"PLAIN\" mechanism.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_PLAIN_PASSWORD</code> - A plaintext password used to authenticate with the \"PLAIN\" mechanism.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD</code> - The encrypted version of the Kafka SASL PLAIN password (if the user has the Glue encrypt passwords setting selected).</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_SCRAM_USERNAME</code> - A plaintext username used to authenticate with the \"SCRAM-SHA-512\" mechanism.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_SCRAM_PASSWORD</code> - A plaintext password used to authenticate with the \"SCRAM-SHA-512\" mechanism.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD</code> - The encrypted version of the Kafka SASL SCRAM password (if the user has the Glue encrypt passwords setting selected).</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_SCRAM_SECRETS_ARN</code> - The Amazon Resource Name of a secret in Amazon Web Services Secrets Manager.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_GSSAPI_KEYTAB</code> - The S3 location of a Kerberos <code>keytab</code> file. A keytab stores long-term keys for one or more principals. For more information, see <a href=\"https://web.mit.edu/kerberos/krb5-latest/doc/basic/keytab_def.html\">MIT Kerberos Documentation: Keytab</a>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_GSSAPI_KRB5_CONF</code> - The S3 location of a Kerberos <code>krb5.conf</code> file. A krb5.conf stores Kerberos configuration information, such as the location of the KDC server. For more information, see <a href=\"https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/krb5_conf.html\">MIT Kerberos Documentation: krb5.conf</a>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_GSSAPI_SERVICE</code> - The Kerberos service name, as set with <code>sasl.kerberos.service.name</code> in your <a href=\"https://kafka.apache.org/documentation/#brokerconfigs_sasl.kerberos.service.name\">Kafka Configuration</a>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_GSSAPI_PRINCIPAL</code> - The name of the Kerberos princial used by Glue. For more information, see <a href=\"https://kafka.apache.org/documentation/#security_sasl_kerberos_clientconfig\">Kafka Documentation: Configuring Kafka Brokers</a>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ROLE_ARN</code> - The role to be used for running queries.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REGION</code> - The Amazon Web Services Region where queries will be run.</p>\n            </li>\n            <li>\n               <p>\n                  <code>WORKGROUP_NAME</code> - The name of an Amazon Redshift serverless workgroup or Amazon Athena workgroup in which queries will run.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CLUSTER_IDENTIFIER</code> - The cluster identifier of an Amazon Redshift cluster in which queries will run.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DATABASE</code> - The Amazon Redshift database that you are connecting to.</p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>These key-value pairs define parameters for the connection when using the version 1 Connection schema:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>HOST</code> - The host URI: either the\n        fully qualified domain name (FQDN) or the IPv4 address of\n        the database host.</p>\n            </li>\n            <li>\n               <p>\n                  <code>PORT</code> - The port number, between\n        1024 and 65535, of the port on which the database host is\n        listening for database connections.</p>\n            </li>\n            <li>\n               <p>\n                  <code>USER_NAME</code> -  The name under which\n        to log in to the database. The value string for <code>USER_NAME</code> is \"<code>USERNAME</code>\".</p>\n            </li>\n            <li>\n               <p>\n                  <code>PASSWORD</code> - A password,\n        if one is used, for the user name.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ENCRYPTED_PASSWORD</code> - When you enable connection password protection by setting <code>ConnectionPasswordEncryption</code> in the Data Catalog encryption settings, this field stores the encrypted password.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_DRIVER_JAR_URI</code> - The Amazon Simple Storage Service (Amazon S3) path of the\n          JAR file that contains the JDBC driver to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_DRIVER_CLASS_NAME</code> - The class name of the JDBC driver to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_ENGINE</code> - The name of the JDBC engine to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_ENGINE_VERSION</code> - The version of the JDBC engine to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONFIG_FILES</code> - (Reserved for future use.)</p>\n            </li>\n            <li>\n               <p>\n                  <code>INSTANCE_ID</code> - The instance ID to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_CONNECTION_URL</code> - The URL for connecting to a JDBC data source.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JDBC_ENFORCE_SSL</code> - A case-insensitive Boolean string (true, false) specifying whether Secure\n          Sockets Layer (SSL) with hostname matching is enforced for the JDBC connection on the\n          client. The default is false.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CUSTOM_JDBC_CERT</code> - An Amazon S3 location specifying the customer's root certificate. Glue uses this root certificate to validate the customer’s certificate when connecting to the customer database. Glue only handles X.509 certificates. The certificate provided must be DER-encoded and supplied in Base64 encoding PEM format.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SKIP_CUSTOM_JDBC_CERT_VALIDATION</code> - By default, this is <code>false</code>. Glue validates the Signature algorithm and Subject Public Key Algorithm for the customer certificate. The only permitted algorithms for the Signature algorithm are SHA256withRSA, SHA384withRSA or SHA512withRSA. For the Subject Public Key Algorithm, the key length must be at least 2048. You can set the value of this property to <code>true</code> to skip Glue’s validation of the customer certificate.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CUSTOM_JDBC_CERT_STRING</code> - A custom JDBC certificate string which is used for domain match or distinguished name match to prevent a man-in-the-middle attack. In Oracle database, this is used as the <code>SSL_SERVER_CERT_DN</code>; in Microsoft SQL Server, this is used as the <code>hostNameInCertificate</code>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONNECTION_URL</code> - The URL for connecting to a general (non-JDBC) data source.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SECRET_ID</code> - The secret ID used for the secret manager of credentials.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONNECTOR_URL</code> - The connector URL for a MARKETPLACE or CUSTOM connection.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONNECTOR_TYPE</code> - The connector type for a MARKETPLACE or CUSTOM connection.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONNECTOR_CLASS_NAME</code> - The connector class name for a MARKETPLACE or CUSTOM connection.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_BOOTSTRAP_SERVERS</code> - A comma-separated list of host and port pairs that are the addresses of the Apache Kafka brokers in a Kafka cluster to which a Kafka client will connect to and bootstrap itself.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SSL_ENABLED</code> - Whether to enable or disable SSL on an Apache Kafka connection. Default value is \"true\".</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_CUSTOM_CERT</code> - The Amazon S3 URL for the private CA cert file (.pem format). The default is an empty string.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SKIP_CUSTOM_CERT_VALIDATION</code> - Whether to skip the validation of the CA cert file or not. Glue validates for three algorithms: SHA256withRSA, SHA384withRSA and SHA512withRSA. Default value is \"false\".</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_CLIENT_KEYSTORE</code> - The Amazon S3 location of the client keystore file for Kafka client side authentication (Optional).</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_CLIENT_KEYSTORE_PASSWORD</code> - The password to access the provided keystore (Optional).</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_CLIENT_KEY_PASSWORD</code> - A keystore can consist of multiple keys, so this is the password to access the client key to be used with the Kafka server side key (Optional).</p>\n            </li>\n            <li>\n               <p>\n                  <code>ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD</code> - The encrypted version of the Kafka client keystore password (if the user has the Glue encrypt passwords setting selected).</p>\n            </li>\n            <li>\n               <p>\n                  <code>ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD</code> - The encrypted version of the Kafka client key password (if the user has the Glue encrypt passwords setting selected).</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_MECHANISM</code> - <code>\"SCRAM-SHA-512\"</code>, <code>\"GSSAPI\"</code>, <code>\"AWS_MSK_IAM\"</code>, or <code>\"PLAIN\"</code>. These are the supported <a href=\"https://www.iana.org/assignments/sasl-mechanisms/sasl-mechanisms.xhtml\">SASL Mechanisms</a>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_PLAIN_USERNAME</code> - A plaintext username used to authenticate with the \"PLAIN\" mechanism.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_PLAIN_PASSWORD</code> - A plaintext password used to authenticate with the \"PLAIN\" mechanism.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD</code> - The encrypted version of the Kafka SASL PLAIN password (if the user has the Glue encrypt passwords setting selected).</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_SCRAM_USERNAME</code> - A plaintext username used to authenticate with the \"SCRAM-SHA-512\" mechanism.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_SCRAM_PASSWORD</code> - A plaintext password used to authenticate with the \"SCRAM-SHA-512\" mechanism.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD</code> - The encrypted version of the Kafka SASL SCRAM password (if the user has the Glue encrypt passwords setting selected).</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_SCRAM_SECRETS_ARN</code> - The Amazon Resource Name of a secret in Amazon Web Services Secrets Manager.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_GSSAPI_KEYTAB</code> - The S3 location of a Kerberos <code>keytab</code> file. A keytab stores long-term keys for one or more principals. For more information, see <a href=\"https://web.mit.edu/kerberos/krb5-latest/doc/basic/keytab_def.html\">MIT Kerberos Documentation: Keytab</a>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_GSSAPI_KRB5_CONF</code> - The S3 location of a Kerberos <code>krb5.conf</code> file. A krb5.conf stores Kerberos configuration information, such as the location of the KDC server. For more information, see <a href=\"https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/krb5_conf.html\">MIT Kerberos Documentation: krb5.conf</a>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_GSSAPI_SERVICE</code> - The Kerberos service name, as set with <code>sasl.kerberos.service.name</code> in your <a href=\"https://kafka.apache.org/documentation/#brokerconfigs_sasl.kerberos.service.name\">Kafka Configuration</a>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA_SASL_GSSAPI_PRINCIPAL</code> - The name of the Kerberos princial used by Glue. For more information, see <a href=\"https://kafka.apache.org/documentation/#security_sasl_kerberos_clientconfig\">Kafka Documentation: Configuring Kafka Brokers</a>.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ROLE_ARN</code> - The role to be used for running queries.</p>\n            </li>\n            <li>\n               <p>\n                  <code>REGION</code> - The Amazon Web Services Region where queries will be run.</p>\n            </li>\n            <li>\n               <p>\n                  <code>WORKGROUP_NAME</code> - The name of an Amazon Redshift serverless workgroup or Amazon Athena workgroup in which queries will run.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CLUSTER_IDENTIFIER</code> - The cluster identifier of an Amazon Redshift cluster in which queries will run.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DATABASE</code> - The Amazon Redshift database that you are connecting to.</p>\n            </li>\n         </ul>"
                     }
                 },
                 "SparkProperties": {
@@ -7855,7 +7893,7 @@
                 "ConnectionType": {
                     "target": "com.amazonaws.glue#ConnectionType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of the connection. Currently, these types are supported:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>JDBC</code> - Designates a connection to a database through Java Database Connectivity (JDBC).</p>\n               <p>\n                  <code>JDBC</code> Connections use the following ConnectionParameters.</p>\n               <ul>\n                  <li>\n                     <p>Required: All of (<code>HOST</code>, <code>PORT</code>, <code>JDBC_ENGINE</code>) or <code>JDBC_CONNECTION_URL</code>.</p>\n                  </li>\n                  <li>\n                     <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>JDBC_ENFORCE_SSL</code>, <code>CUSTOM_JDBC_CERT</code>, <code>CUSTOM_JDBC_CERT_STRING</code>, <code>SKIP_CUSTOM_JDBC_CERT_VALIDATION</code>.  These parameters are used to configure SSL with JDBC.</p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA</code> - Designates a connection to an Apache Kafka streaming platform.</p>\n               <p>\n                  <code>KAFKA</code> Connections use the following ConnectionParameters.</p>\n               <ul>\n                  <li>\n                     <p>Required: <code>KAFKA_BOOTSTRAP_SERVERS</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>KAFKA_SSL_ENABLED</code>, <code>KAFKA_CUSTOM_CERT</code>, <code>KAFKA_SKIP_CUSTOM_CERT_VALIDATION</code>. These parameters are used to configure SSL with <code>KAFKA</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>KAFKA_CLIENT_KEYSTORE</code>, <code>KAFKA_CLIENT_KEYSTORE_PASSWORD</code>, <code>KAFKA_CLIENT_KEY_PASSWORD</code>, <code>ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD</code>, <code>ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD</code>. These parameters are used to configure TLS client configuration with SSL in <code>KAFKA</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>KAFKA_SASL_MECHANISM</code>. Can be specified as <code>SCRAM-SHA-512</code>, <code>GSSAPI</code>, or <code>AWS_MSK_IAM</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>KAFKA_SASL_SCRAM_USERNAME</code>, <code>KAFKA_SASL_SCRAM_PASSWORD</code>, <code>ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD</code>. These parameters are used to configure SASL/SCRAM-SHA-512 authentication with <code>KAFKA</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>KAFKA_SASL_GSSAPI_KEYTAB</code>, <code>KAFKA_SASL_GSSAPI_KRB5_CONF</code>, <code>KAFKA_SASL_GSSAPI_SERVICE</code>, <code>KAFKA_SASL_GSSAPI_PRINCIPAL</code>. These parameters are used to configure SASL/GSSAPI authentication with <code>KAFKA</code>.</p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>MONGODB</code> - Designates a connection to a MongoDB document database.</p>\n               <p>\n                  <code>MONGODB</code> Connections use the following ConnectionParameters.</p>\n               <ul>\n                  <li>\n                     <p>Required: <code>CONNECTION_URL</code>.</p>\n                  </li>\n                  <li>\n                     <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>VIEW_VALIDATION_REDSHIFT</code> - Designates a connection used for view validation by Amazon Redshift.</p>\n            </li>\n            <li>\n               <p>\n                  <code>VIEW_VALIDATION_ATHENA</code> - Designates a connection used for view validation by Amazon Athena.</p>\n            </li>\n            <li>\n               <p>\n                  <code>NETWORK</code> - Designates a network connection to a data source within an Amazon Virtual Private Cloud environment (Amazon VPC).</p>\n               <p>\n                  <code>NETWORK</code> Connections do not require ConnectionParameters. Instead, provide a PhysicalConnectionRequirements.</p>\n            </li>\n            <li>\n               <p>\n                  <code>MARKETPLACE</code> - Uses configuration settings contained in a connector purchased from Amazon Web Services Marketplace to read from and write to data stores that are not natively supported by Glue.</p>\n               <p>\n                  <code>MARKETPLACE</code> Connections use the following ConnectionParameters.</p>\n               <ul>\n                  <li>\n                     <p>Required: <code>CONNECTOR_TYPE</code>, <code>CONNECTOR_URL</code>, <code>CONNECTOR_CLASS_NAME</code>, <code>CONNECTION_URL</code>.</p>\n                  </li>\n                  <li>\n                     <p>Required for <code>JDBC</code>\n                        <code>CONNECTOR_TYPE</code> connections: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>CUSTOM</code> - Uses configuration settings contained in a custom connector to read from and write to data stores that are not natively supported by Glue.</p>\n            </li>\n         </ul>\n         <p>Additionally, a <code>ConnectionType</code> for the following SaaS connectors is supported:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>FACEBOOKADS</code> - Designates a connection to Facebook Ads.</p>\n            </li>\n            <li>\n               <p>\n                  <code>GOOGLEADS</code> - Designates a connection to Google Ads.</p>\n            </li>\n            <li>\n               <p>\n                  <code>GOOGLESHEETS</code> - Designates a connection to Google Sheets.</p>\n            </li>\n            <li>\n               <p>\n                  <code>GOOGLEANALYTICS4</code> - Designates a connection to Google Analytics 4.</p>\n            </li>\n            <li>\n               <p>\n                  <code>HUBSPOT</code> - Designates a connection to HubSpot.</p>\n            </li>\n            <li>\n               <p>\n                  <code>INSTAGRAMADS</code> - Designates a connection to Instagram Ads.</p>\n            </li>\n            <li>\n               <p>\n                  <code>INTERCOM</code> - Designates a connection to Intercom.</p>\n            </li>\n            <li>\n               <p>\n                  <code>JIRACLOUD</code> - Designates a connection to Jira Cloud.</p>\n            </li>\n            <li>\n               <p>\n                  <code>MARKETO</code> - Designates a connection to Adobe Marketo Engage.</p>\n            </li>\n            <li>\n               <p>\n                  <code>NETSUITEERP</code> - Designates a connection to Oracle NetSuite.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SALESFORCE</code> - Designates a connection to Salesforce using OAuth authentication.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SALESFORCEMARKETINGCLOUD</code> - Designates a connection to Salesforce Marketing Cloud.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SALESFORCEPARDOT</code> - Designates a connection to Salesforce Marketing Cloud Account Engagement (MCAE).</p>\n            </li>\n            <li>\n               <p>\n                  <code>SAPODATA</code> - Designates a connection to SAP OData.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SERVICENOW</code> - Designates a connection to ServiceNow.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SLACK</code> - Designates a connection to Slack.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SNAPCHATADS</code> - Designates a connection to Snapchat Ads.</p>\n            </li>\n            <li>\n               <p>\n                  <code>STRIPE</code> - Designates a connection to Stripe.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ZENDESK</code> - Designates a connection to Zendesk.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ZOHOCRM</code> - Designates a connection to Zoho CRM.</p>\n            </li>\n         </ul>\n         <p>For more information on the connection parameters needed for a particular connector, see the documentation for the connector in <a href=\"https://docs.aws.amazon.com/glue/latest/dg/console-connections.html\">Adding an Glue connection</a>in the Glue User Guide.</p>\n         <p>\n            <code>SFTP</code> is not supported.</p>\n         <p>For more information about how optional ConnectionProperties are used to configure features in Glue, consult <a href=\"https://docs.aws.amazon.com/glue/latest/dg/connection-defining.html\">Glue connection properties</a>.</p>\n         <p>For more information about how optional ConnectionProperties are used to configure features in Glue Studio, consult <a href=\"https://docs.aws.amazon.com/glue/latest/ug/connectors-chapter.html\">Using connectors and connections</a>.</p>",
+                        "smithy.api#documentation": "<p>The type of the connection. Currently, these types are supported:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>JDBC</code> - Designates a connection to a database through Java Database Connectivity (JDBC).</p>\n               <p>\n                  <code>JDBC</code> Connections use the following ConnectionParameters.</p>\n               <ul>\n                  <li>\n                     <p>Required: All of (<code>HOST</code>, <code>PORT</code>, <code>JDBC_ENGINE</code>) or <code>JDBC_CONNECTION_URL</code>.</p>\n                  </li>\n                  <li>\n                     <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>JDBC_ENFORCE_SSL</code>, <code>CUSTOM_JDBC_CERT</code>, <code>CUSTOM_JDBC_CERT_STRING</code>, <code>SKIP_CUSTOM_JDBC_CERT_VALIDATION</code>.  These parameters are used to configure SSL with JDBC.</p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>KAFKA</code> - Designates a connection to an Apache Kafka streaming platform.</p>\n               <p>\n                  <code>KAFKA</code> Connections use the following ConnectionParameters.</p>\n               <ul>\n                  <li>\n                     <p>Required: <code>KAFKA_BOOTSTRAP_SERVERS</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>KAFKA_SSL_ENABLED</code>, <code>KAFKA_CUSTOM_CERT</code>, <code>KAFKA_SKIP_CUSTOM_CERT_VALIDATION</code>. These parameters are used to configure SSL with <code>KAFKA</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>KAFKA_CLIENT_KEYSTORE</code>, <code>KAFKA_CLIENT_KEYSTORE_PASSWORD</code>, <code>KAFKA_CLIENT_KEY_PASSWORD</code>, <code>ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD</code>, <code>ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD</code>. These parameters are used to configure TLS client configuration with SSL in <code>KAFKA</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>KAFKA_SASL_MECHANISM</code>. Can be specified as <code>SCRAM-SHA-512</code>, <code>GSSAPI</code>, or <code>AWS_MSK_IAM</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>KAFKA_SASL_SCRAM_USERNAME</code>, <code>KAFKA_SASL_SCRAM_PASSWORD</code>, <code>ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD</code>. These parameters are used to configure SASL/SCRAM-SHA-512 authentication with <code>KAFKA</code>.</p>\n                  </li>\n                  <li>\n                     <p>Optional: <code>KAFKA_SASL_GSSAPI_KEYTAB</code>, <code>KAFKA_SASL_GSSAPI_KRB5_CONF</code>, <code>KAFKA_SASL_GSSAPI_SERVICE</code>, <code>KAFKA_SASL_GSSAPI_PRINCIPAL</code>. These parameters are used to configure SASL/GSSAPI authentication with <code>KAFKA</code>.</p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>MONGODB</code> - Designates a connection to a MongoDB document database.</p>\n               <p>\n                  <code>MONGODB</code> Connections use the following ConnectionParameters.</p>\n               <ul>\n                  <li>\n                     <p>Required: <code>CONNECTION_URL</code>.</p>\n                  </li>\n                  <li>\n                     <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>VIEW_VALIDATION_REDSHIFT</code> - Designates a connection used for view validation by Amazon Redshift.</p>\n            </li>\n            <li>\n               <p>\n                  <code>VIEW_VALIDATION_ATHENA</code> - Designates a connection used for view validation by Amazon Athena.</p>\n            </li>\n            <li>\n               <p>\n                  <code>NETWORK</code> - Designates a network connection to a data source within an Amazon Virtual Private Cloud environment (Amazon VPC).</p>\n               <p>\n                  <code>NETWORK</code> Connections do not require ConnectionParameters. Instead, provide a PhysicalConnectionRequirements.</p>\n            </li>\n            <li>\n               <p>\n                  <code>MARKETPLACE</code> - Uses configuration settings contained in a connector purchased from Amazon Web Services Marketplace to read from and write to data stores that are not natively supported by Glue.</p>\n               <p>\n                  <code>MARKETPLACE</code> Connections use the following ConnectionParameters.</p>\n               <ul>\n                  <li>\n                     <p>Required: <code>CONNECTOR_TYPE</code>, <code>CONNECTOR_URL</code>, <code>CONNECTOR_CLASS_NAME</code>, <code>CONNECTION_URL</code>.</p>\n                  </li>\n                  <li>\n                     <p>Required for <code>JDBC</code>\n                        <code>CONNECTOR_TYPE</code> connections: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>CUSTOM</code> - Uses configuration settings contained in a custom connector to read from and write to data stores that are not natively supported by Glue.</p>\n            </li>\n         </ul>\n         <p>For more information on the connection parameters needed for a particular connector, see the documentation for the connector in <a href=\"https://docs.aws.amazon.com/glue/latest/dg/console-connections.html\">Adding an Glue connection</a>in the Glue User Guide.</p>\n         <p>\n            <code>SFTP</code> is not supported.</p>\n         <p>For more information about how optional ConnectionProperties are used to configure features in Glue, consult <a href=\"https://docs.aws.amazon.com/glue/latest/dg/connection-defining.html\">Glue connection properties</a>.</p>\n         <p>For more information about how optional ConnectionProperties are used to configure features in Glue Studio, consult <a href=\"https://docs.aws.amazon.com/glue/latest/ug/connectors-chapter.html\">Using connectors and connections</a>.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -8486,16 +8524,58 @@
                         "smithy.api#enumValue": "SALESFORCEMARKETINGCLOUD"
                     }
                 },
+                "ADOBEANALYTICS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ADOBEANALYTICS"
+                    }
+                },
                 "SLACK": {
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "SLACK"
                     }
                 },
+                "LINKEDIN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LINKEDIN"
+                    }
+                },
+                "MIXPANEL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MIXPANEL"
+                    }
+                },
+                "ASANA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ASANA"
+                    }
+                },
                 "STRIPE": {
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "STRIPE"
+                    }
+                },
+                "SMARTSHEET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SMARTSHEET"
+                    }
+                },
+                "DATADOG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DATADOG"
+                    }
+                },
+                "WOOCOMMERCE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "WOOCOMMERCE"
                     }
                 },
                 "INTERCOM": {
@@ -8508,6 +8588,342 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "SNAPCHATADS"
+                    }
+                },
+                "PAYPAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PAYPAL"
+                    }
+                },
+                "QUICKBOOKS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "QUICKBOOKS"
+                    }
+                },
+                "FACEBOOKPAGEINSIGHTS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FACEBOOKPAGEINSIGHTS"
+                    }
+                },
+                "FRESHDESK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FRESHDESK"
+                    }
+                },
+                "TWILIO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TWILIO"
+                    }
+                },
+                "DOCUSIGNMONITOR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DOCUSIGNMONITOR"
+                    }
+                },
+                "FRESHSALES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FRESHSALES"
+                    }
+                },
+                "ZOOM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ZOOM"
+                    }
+                },
+                "GOOGLESEARCHCONSOLE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GOOGLESEARCHCONSOLE"
+                    }
+                },
+                "SALESFORCECOMMERCECLOUD": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SALESFORCECOMMERCECLOUD"
+                    }
+                },
+                "SAPCONCUR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SAPCONCUR"
+                    }
+                },
+                "DYNATRACE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DYNATRACE"
+                    }
+                },
+                "MICROSOFTDYNAMIC365FINANCEANDOPS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MICROSOFTDYNAMIC365FINANCEANDOPS"
+                    }
+                },
+                "MICROSOFTTEAMS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MICROSOFTTEAMS"
+                    }
+                },
+                "BLACKBAUDRAISEREDGENXT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BLACKBAUDRAISEREDGENXT"
+                    }
+                },
+                "MAILCHIMP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MAILCHIMP"
+                    }
+                },
+                "GITLAB": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GITLAB"
+                    }
+                },
+                "PENDO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PENDO"
+                    }
+                },
+                "PRODUCTBOARD": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PRODUCTBOARD"
+                    }
+                },
+                "CIRCLECI": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CIRCLECI"
+                    }
+                },
+                "PIPEDIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PIPEDIVE"
+                    }
+                },
+                "SENDGRID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SENDGRID"
+                    }
+                },
+                "AZURECOSMOS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AZURECOSMOS"
+                    }
+                },
+                "AZURESQL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AZURESQL"
+                    }
+                },
+                "BIGQUERY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BIGQUERY"
+                    }
+                },
+                "BLACKBAUD": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BLACKBAUD"
+                    }
+                },
+                "CLOUDERAHIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CLOUDERAHIVE"
+                    }
+                },
+                "CLOUDERAIMPALA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CLOUDERAIMPALA"
+                    }
+                },
+                "CLOUDWATCH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CLOUDWATCH"
+                    }
+                },
+                "CLOUDWATCHMETRICS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CLOUDWATCHMETRICS"
+                    }
+                },
+                "CMDB": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CMDB"
+                    }
+                },
+                "DATALAKEGEN2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DATALAKEGEN2"
+                    }
+                },
+                "DB2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DB2"
+                    }
+                },
+                "DB2AS400": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DB2AS400"
+                    }
+                },
+                "DOCUMENTDB": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DOCUMENTDB"
+                    }
+                },
+                "DOMO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DOMO"
+                    }
+                },
+                "DYNAMODB": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DYNAMODB"
+                    }
+                },
+                "GOOGLECLOUDSTORAGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GOOGLECLOUDSTORAGE"
+                    }
+                },
+                "HBASE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "HBASE"
+                    }
+                },
+                "KUSTOMER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "KUSTOMER"
+                    }
+                },
+                "MICROSOFTDYNAMICS365CRM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MICROSOFTDYNAMICS365CRM"
+                    }
+                },
+                "MONDAY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MONDAY"
+                    }
+                },
+                "MYSQL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MYSQL"
+                    }
+                },
+                "OKTA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "OKTA"
+                    }
+                },
+                "OPENSEARCH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "OPENSEARCH"
+                    }
+                },
+                "ORACLE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ORACLE"
+                    }
+                },
+                "PIPEDRIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PIPEDRIVE"
+                    }
+                },
+                "POSTGRESQL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "POSTGRESQL"
+                    }
+                },
+                "SAPHANA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SAPHANA"
+                    }
+                },
+                "SQLSERVER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SQLSERVER"
+                    }
+                },
+                "SYNAPSE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SYNAPSE"
+                    }
+                },
+                "TERADATA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TERADATA"
+                    }
+                },
+                "TERADATANOS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TERADATANOS"
+                    }
+                },
+                "TIMESTREAM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TIMESTREAM"
+                    }
+                },
+                "TPCDS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TPCDS"
+                    }
+                },
+                "VERTICA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "VERTICA"
                     }
                 }
             }
@@ -8734,6 +9150,9 @@
                     "max": 20
                 }
             }
+        },
+        "com.amazonaws.glue#ContinuousSync": {
+            "type": "boolean"
         },
         "com.amazonaws.glue#Crawl": {
             "type": "structure",
@@ -10472,6 +10891,81 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.glue#CreateGlueIdentityCenterConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#CreateGlueIdentityCenterConfigurationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#CreateGlueIdentityCenterConfigurationResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#AlreadyExistsException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ConcurrentModificationException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationTimeoutException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Creates a new Glue Identity Center configuration to enable integration between Glue and Amazon Web Services IAM \n      Identity Center for authentication and authorization.</p>"
+            }
+        },
+        "com.amazonaws.glue#CreateGlueIdentityCenterConfigurationRequest": {
+            "type": "structure",
+            "members": {
+                "InstanceArn": {
+                    "target": "com.amazonaws.glue#IdentityCenterInstanceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Identity Center instance to be associated with the Glue configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Scopes": {
+                    "target": "com.amazonaws.glue#IdentityCenterScopesList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of Identity Center scopes that define the permissions and access levels for the Glue configuration.</p>"
+                    }
+                },
+                "UserBackgroundSessionsEnabled": {
+                    "target": "com.amazonaws.glue#NullableBoolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether users can run background sessions when using Identity Center authentication with Glue services.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Request to create a new Glue Identity Center configuration.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#CreateGlueIdentityCenterConfigurationResponse": {
+            "type": "structure",
+            "members": {
+                "ApplicationArn": {
+                    "target": "com.amazonaws.glue#ApplicationArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Identity Center application that was created for the Glue configuration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Response from creating a new Glue Identity Center configuration.</p>",
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.glue#CreateGrokClassifierRequest": {
             "type": "structure",
             "members": {
@@ -10608,14 +11102,14 @@
                     }
                 },
                 "SourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the source resource for the integration.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "TargetArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the target resource for the integration.</p>",
                         "smithy.api#required": {}
@@ -10704,7 +11198,7 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>",
                         "smithy.api#required": {}
@@ -10721,6 +11215,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The resource properties associated with the integration target.</p>"
                     }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.glue#IntegrationTagsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Metadata assigned to the resource consisting of a list of key-value pairs.</p>"
+                    }
                 }
             },
             "traits": {
@@ -10731,10 +11231,16 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "ResourcePropertyArn": {
+                    "target": "com.amazonaws.glue#String512",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource ARN created through this create API. The format is something like arn:aws:glue:<region>:<account_id>:integrationresourceproperty/*</p>"
                     }
                 },
                 "SourceProcessingProperties": {
@@ -10758,14 +11264,14 @@
             "type": "structure",
             "members": {
                 "SourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the source resource for the integration.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "TargetArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the target resource for the integration.</p>",
                         "smithy.api#required": {}
@@ -10885,7 +11391,7 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the target table for which to create integration table properties. Currently, this API only supports creating \n      integration table properties for target tables, and the provided ARN should be the ARN of the target table in the Glue Data Catalog. Support for \n      creating integration table properties for source connections (using the connection ARN) is not yet implemented and will be added in a future release.\n    </p>",
                         "smithy.api#required": {}
@@ -13442,6 +13948,52 @@
                 "smithy.api#documentation": "<p>Additional run options you can specify for an evaluation run.</p>"
             }
         },
+        "com.amazonaws.glue#DataQualityGlueTable": {
+            "type": "structure",
+            "members": {
+                "DatabaseName": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A database name in the Glue Data Catalog.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TableName": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A table name in the Glue Data Catalog.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique identifier for the Glue Data Catalog.</p>"
+                    }
+                },
+                "ConnectionName": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the connection to the Glue Data Catalog.</p>"
+                    }
+                },
+                "AdditionalOptions": {
+                    "target": "com.amazonaws.glue#GlueTableAdditionalOptions",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Additional options for the table. Currently there are two keys supported:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>pushDownPredicate</code>: to filter on partitions without having to list and read all the files in your dataset.</p>\n            </li>\n            <li>\n               <p>\n                  <code>catalogPartitionPredicate</code>: to use server-side partition pruning using partition indexes in the Glue Data Catalog.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "PreProcessingQuery": {
+                    "target": "com.amazonaws.glue#PreProcessingQueryString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>SQL Query of SparkSQL format that can be used to pre-process the data for the table in Glue Data Catalog,\n            before running the Data Quality Operation.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The database and table in the Glue Data Catalog that is used for input or output data\n            for Data Quality Operations.</p>"
+            }
+        },
         "com.amazonaws.glue#DataQualityMetricValues": {
             "type": "structure",
             "members": {
@@ -13859,6 +14411,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A map containing metrics associated with the evaluation of the rule based on row-level results. </p>"
                     }
+                },
+                "Labels": {
+                    "target": "com.amazonaws.glue#Labels",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map containing labels assigned to the data quality rule. </p>"
+                    }
                 }
             },
             "traits": {
@@ -14125,8 +14683,13 @@
                 "GlueTable": {
                     "target": "com.amazonaws.glue#GlueTable",
                     "traits": {
-                        "smithy.api#documentation": "<p>An Glue table.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>An Glue table.</p>"
+                    }
+                },
+                "DataQualityGlueTable": {
+                    "target": "com.amazonaws.glue#DataQualityGlueTable",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An Glue table for Data Quality Operations.</p>"
                     }
                 }
             },
@@ -14213,6 +14776,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "NAME"
+                    }
+                },
+                "TARGET_DATABASE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TARGET_DATABASE"
                     }
                 }
             }
@@ -15191,6 +15760,54 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.glue#DeleteGlueIdentityCenterConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#DeleteGlueIdentityCenterConfigurationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#DeleteGlueIdentityCenterConfigurationResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ConcurrentModificationException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationTimeoutException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes the existing Glue Identity Center configuration, removing the integration between Glue and \n      Amazon Web Services IAM Identity Center.</p>"
+            }
+        },
+        "com.amazonaws.glue#DeleteGlueIdentityCenterConfigurationRequest": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>Request to delete the existing Glue Identity Center configuration.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#DeleteGlueIdentityCenterConfigurationResponse": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>Response from deleting the Glue Identity Center configuration.</p>",
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.glue#DeleteIntegration": {
             "type": "operation",
             "input": {
@@ -15253,18 +15870,75 @@
                 "smithy.api#input": {}
             }
         },
+        "com.amazonaws.glue#DeleteIntegrationResourceProperty": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#DeleteIntegrationResourcePropertyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#DeleteIntegrationResourcePropertyResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>This API is used for deleting the <code>ResourceProperty</code> of the Glue connection (for the source) or Glue database ARN (for the target).</p>"
+            }
+        },
+        "com.amazonaws.glue#DeleteIntegrationResourcePropertyRequest": {
+            "type": "structure",
+            "members": {
+                "ResourceArn": {
+                    "target": "com.amazonaws.glue#String512",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#DeleteIntegrationResourcePropertyResponse": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.glue#DeleteIntegrationResponse": {
             "type": "structure",
             "members": {
                 "SourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the source for the integration.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "TargetArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the target for the integration.</p>",
                         "smithy.api#required": {}
@@ -15378,7 +16052,7 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>",
                         "smithy.api#required": {}
@@ -16790,7 +17464,7 @@
                     }
                 },
                 "TargetArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the target resource in the integration.</p>"
                     }
@@ -17689,6 +18363,16 @@
                 "smithy.api#pattern": "^([\\u0009\\u000B\\u000C\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF])*$"
             }
         },
+        "com.amazonaws.glue#EncryptedKeyMetadataString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 2056
+                },
+                "smithy.api#pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*$"
+            }
+        },
         "com.amazonaws.glue#EncryptionAtRest": {
             "type": "structure",
             "members": {
@@ -17746,6 +18430,16 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Specifies an encryption configuration.</p>"
+            }
+        },
+        "com.amazonaws.glue#EncryptionKeyIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 2056
+                },
+                "smithy.api#pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*$"
             }
         },
         "com.amazonaws.glue#Entity": {
@@ -19114,6 +19808,29 @@
                     "max": 128
                 },
                 "smithy.api#pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*$"
+            }
+        },
+        "com.amazonaws.glue#FunctionType": {
+            "type": "enum",
+            "members": {
+                "REGULAR_FUNCTION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REGULAR_FUNCTION"
+                    }
+                },
+                "AGGREGATE_FUNCTION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AGGREGATE_FUNCTION"
+                    }
+                },
+                "STORED_PROCEDURE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STORED_PROCEDURE"
+                    }
+                }
             }
         },
         "com.amazonaws.glue#Generic512CharString": {
@@ -21694,6 +22411,79 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.glue#GetGlueIdentityCenterConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#GetGlueIdentityCenterConfigurationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#GetGlueIdentityCenterConfigurationResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ConcurrentModificationException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationTimeoutException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves the current Glue Identity Center configuration details, including the associated Identity Center instance and \n      application information.</p>"
+            }
+        },
+        "com.amazonaws.glue#GetGlueIdentityCenterConfigurationRequest": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>Request to retrieve the Glue Identity Center configuration.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#GetGlueIdentityCenterConfigurationResponse": {
+            "type": "structure",
+            "members": {
+                "ApplicationArn": {
+                    "target": "com.amazonaws.glue#ApplicationArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Identity Center application associated with the Glue configuration.</p>"
+                    }
+                },
+                "InstanceArn": {
+                    "target": "com.amazonaws.glue#IdentityCenterInstanceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Identity Center instance associated with the Glue configuration.</p>"
+                    }
+                },
+                "Scopes": {
+                    "target": "com.amazonaws.glue#OrchestrationStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of Identity Center scopes that define the permissions and access levels for the Glue configuration.</p>"
+                    }
+                },
+                "UserBackgroundSessionsEnabled": {
+                    "target": "com.amazonaws.glue#NullableBoolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether users can run background sessions when using Identity Center authentication with Glue services.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Response containing the Glue Identity Center configuration details.</p>",
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.glue#GetIntegrationResourceProperty": {
             "type": "operation",
             "input": {
@@ -21733,7 +22523,7 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>",
                         "smithy.api#required": {}
@@ -21748,9 +22538,15 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>"
+                    }
+                },
+                "ResourcePropertyArn": {
+                    "target": "com.amazonaws.glue#String512",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource ARN created through this create API. The format is something like arn:aws:glue:<region>:<account_id>:integrationresourceproperty/*</p>"
                     }
                 },
                 "SourceProcessingProperties": {
@@ -21809,7 +22605,7 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the target table for which to retrieve integration table properties. Currently, this API only supports retrieving \n      properties for target tables, and the provided ARN should be the ARN of the target table in the Glue Data Catalog. Support for retrieving integration \n      table properties for source connections (using the connection ARN) is not yet implemented and will be added in a future release.\n    </p>",
                         "smithy.api#required": {}
@@ -21831,7 +22627,7 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the target table for which to retrieve integration table properties. Currently, this API only supports retrieving \n      properties for target tables, and the provided ARN should be the ARN of the target table in the Glue Data Catalog. Support for retrieving integration \n      table properties for source connections (using the connection ARN) is not yet implemented and will be added in a future release.\n    </p>"
                     }
@@ -22714,6 +23510,68 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A list of mappings to the specified targets.</p>",
                         "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.glue#GetMaterializedViewRefreshTaskRun": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#GetMaterializedViewRefreshTaskRunRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#GetMaterializedViewRefreshTaskRunResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationTimeoutException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Get the associated metadata/information for a task run, given a task run ID.</p>"
+            }
+        },
+        "com.amazonaws.glue#GetMaterializedViewRefreshTaskRunRequest": {
+            "type": "structure",
+            "members": {
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MaterializedViewRefreshTaskRunId": {
+                    "target": "com.amazonaws.glue#UUIDv4",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier for the particular materialized view refresh task run.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#GetMaterializedViewRefreshTaskRunResponse": {
+            "type": "structure",
+            "members": {
+                "MaterializedViewRefreshTaskRun": {
+                    "target": "com.amazonaws.glue#MaterializedViewRefreshTaskRun",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A MaterializedViewRefreshTaskRun object representing the details of the task run.</p>"
                     }
                 }
             },
@@ -24180,6 +25038,12 @@
                         "smithy.api#documentation": "<p>The time as of when to read the table contents. If not set, the most recent transaction commit time will be used. Cannot be specified along with <code>TransactionId</code>.</p>"
                     }
                 },
+                "AuditContext": {
+                    "target": "com.amazonaws.glue#AuditContext",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A structure containing the Lake Formation <a href=\"https://docs.aws.amazon.com/glue/latest/webapi/API_AuditContext.html\">audit context</a>.</p>"
+                    }
+                },
                 "IncludeStatusDetails": {
                     "target": "com.amazonaws.glue#BooleanNullable",
                     "traits": {
@@ -24466,6 +25330,12 @@
                     "target": "com.amazonaws.glue#Timestamp",
                     "traits": {
                         "smithy.api#documentation": "<p>The time as of when to read the table contents. If not set, the most recent transaction commit time will be used. Cannot be specified along with <code>TransactionId</code>.</p>"
+                    }
+                },
+                "AuditContext": {
+                    "target": "com.amazonaws.glue#AuditContext",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A structure containing the Lake Formation <a href=\"https://docs.aws.amazon.com/glue/latest/webapi/API_AuditContext.html\">audit context</a>.</p>"
                     }
                 },
                 "IncludeStatusDetails": {
@@ -25117,6 +25987,13 @@
                         "smithy.api#documentation": "<p>Specifies whether the view supports the SQL dialects of one or more different query engines and can therefore be read by those engines.</p>"
                     }
                 },
+                "IsMaterializedView": {
+                    "target": "com.amazonaws.glue#Boolean",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Indicates if a table is a materialized view.</p>"
+                    }
+                },
                 "ResourceArn": {
                     "target": "com.amazonaws.glue#ArnString",
                     "traits": {
@@ -25354,6 +26231,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An optional function-name pattern string that filters the function\n      definitions returned.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "FunctionType": {
+                    "target": "com.amazonaws.glue#FunctionType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An optional function-type pattern string that filters the function\n      definitions returned from Amazon Redshift Federated Permissions Catalog.</p>\n         <p>Specify a value of <code>REGULAR_FUNCTION</code> or <code>STORED_PROCEDURE</code>.\n      The <code>STORED_PROCEDURE</code> function type is only compatible with\n      Amazon Redshift Federated Permissions Catalog.\n    </p>"
                     }
                 },
                 "NextToken": {
@@ -26227,6 +27110,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The strategy to use for compaction. Valid values are:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>binpack</code>: Combines small files into larger files, typically targeting sizes over 100MB, while applying any pending deletes. \n          This is the recommended compaction strategy for most use cases.\n        </p>\n            </li>\n            <li>\n               <p>\n                  <code>sort</code>: Organizes data based on specified columns which are sorted hierarchically during compaction, improving query \n        performance for filtered operations. This strategy is recommended when your queries frequently filter on specific columns. To use this strategy, \n        you must first define a sort order in your Iceberg table properties using the <code>sort_order</code> table property.</p>\n            </li>\n            <li>\n               <p>\n                  <code>z-order</code>: Optimizes data organization by blending multiple attributes into a single scalar value that can be used for sorting, \n          allowing efficient querying across multiple dimensions. This strategy is recommended when you need to query data across multiple dimensions \n          simultaneously. To use this strategy, you must first define a sort order in your Iceberg table properties using the \n          <code>sort_order</code> table property.\n        </p>\n            </li>\n         </ul>\n         <p>If an input is not provided, the default value 'binpack' will be used.</p>"
                     }
+                },
+                "minInputFiles": {
+                    "target": "com.amazonaws.glue#NullableInteger",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The minimum number of data files that must be present in a partition before compaction will actually compact files. This parameter helps control when compaction is triggered, preventing unnecessary compaction operations on partitions with few files. If an input is not provided, the default value 100 will be used.</p>"
+                    }
+                },
+                "deleteFileThreshold": {
+                    "target": "com.amazonaws.glue#NullableInteger",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The minimum number of deletes that must be present in a data file to make it eligible for compaction. This parameter helps optimize compaction by focusing on files that contain a significant number of delete operations, which can improve query performance by removing deleted records. If an input is not provided, the default value 1 will be used.</p>"
+                    }
                 }
             },
             "traits": {
@@ -26279,6 +27174,40 @@
         "com.amazonaws.glue#IcebergDocument": {
             "type": "document"
         },
+        "com.amazonaws.glue#IcebergEncryptedKey": {
+            "type": "structure",
+            "members": {
+                "KeyId": {
+                    "target": "com.amazonaws.glue#EncryptionKeyIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Unique identifier of the encryption key used for Iceberg table encryption. This ID is used to reference the key in table metadata and track which key was used to encrypt specific data.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "EncryptedKeyMetadata": {
+                    "target": "com.amazonaws.glue#EncryptedKeyMetadataString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Encrypted key and metadata, base64 encoded. The format of encrypted key metadata is determined by the table's encryption scheme and can be a wrapped format specific to the table's KMS provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "EncryptedById": {
+                    "target": "com.amazonaws.glue#EncryptionKeyIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Optional ID of the key used to encrypt or wrap the key metadata in Iceberg table encryption. This field references another encryption key that was used to encrypt the current key's metadata.</p>"
+                    }
+                },
+                "Properties": {
+                    "target": "com.amazonaws.glue#StringToStringMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A string to string map of additional metadata used by the table's encryption scheme. These properties provide additional context and configuration for the encryption key implementation.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Encryption key structure used for Iceberg table encryption. Contains the key ID, encrypted key metadata, optional reference to the encrypting key, and additional properties for the table's encryption scheme.</p>"
+            }
+        },
         "com.amazonaws.glue#IcebergInput": {
             "type": "structure",
             "members": {
@@ -26323,6 +27252,76 @@
                 }
             }
         },
+        "com.amazonaws.glue#IcebergOptimizationProperties": {
+            "type": "structure",
+            "members": {
+                "RoleArn": {
+                    "target": "com.amazonaws.glue#IAMRoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that will be assumed to perform Iceberg table optimization operations.</p>"
+                    }
+                },
+                "Compaction": {
+                    "target": "com.amazonaws.glue#ParametersMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of key-value pairs that specify configuration parameters for Iceberg table compaction operations, which optimize the layout of data files to improve query performance.</p>"
+                    }
+                },
+                "Retention": {
+                    "target": "com.amazonaws.glue#ParametersMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of key-value pairs that specify configuration parameters for Iceberg table retention operations, which manage the lifecycle of table snapshots to control storage costs.</p>"
+                    }
+                },
+                "OrphanFileDeletion": {
+                    "target": "com.amazonaws.glue#ParametersMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of key-value pairs that specify configuration parameters for Iceberg orphan file deletion operations, which identify and remove files that are no longer referenced by the table metadata.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A structure that specifies Iceberg table optimization properties for the catalog, including configurations for compaction, retention, and orphan file deletion operations.</p>"
+            }
+        },
+        "com.amazonaws.glue#IcebergOptimizationPropertiesOutput": {
+            "type": "structure",
+            "members": {
+                "RoleArn": {
+                    "target": "com.amazonaws.glue#IAMRoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that is used to perform Iceberg table optimization operations.</p>"
+                    }
+                },
+                "Compaction": {
+                    "target": "com.amazonaws.glue#ParametersMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of key-value pairs that specify configuration parameters for Iceberg table compaction operations, which optimize the layout of data files to improve query performance.</p>"
+                    }
+                },
+                "Retention": {
+                    "target": "com.amazonaws.glue#ParametersMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of key-value pairs that specify configuration parameters for Iceberg table retention operations, which manage the lifecycle of table snapshots to control storage costs.</p>"
+                    }
+                },
+                "OrphanFileDeletion": {
+                    "target": "com.amazonaws.glue#ParametersMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of key-value pairs that specify configuration parameters for Iceberg orphan file deletion operations, which identify and remove files that are no longer referenced by the table metadata.</p>"
+                    }
+                },
+                "LastUpdatedTime": {
+                    "target": "com.amazonaws.glue#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the Iceberg optimization properties were last updated.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A structure that contains the output properties of Iceberg table optimization configuration for your catalog resource in the Glue \n      Data Catalog.</p>"
+            }
+        },
         "com.amazonaws.glue#IcebergOrphanFileDeletionConfiguration": {
             "type": "structure",
             "members": {
@@ -26336,6 +27335,12 @@
                     "target": "com.amazonaws.glue#MessageString",
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies a directory in which to look for files (defaults to the table's location). You may choose a sub-directory rather than the top-level table location.</p>"
+                    }
+                },
+                "runRateInHours": {
+                    "target": "com.amazonaws.glue#NullableInteger",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The interval in hours between orphan file deletion job runs. This parameter controls how frequently the orphan file deletion optimizer will run to clean up orphan files. The value must be between 3 and 168 hours (7 days). If an input is not provided, the default value 24 will be used.</p>"
                     }
                 }
             },
@@ -26463,6 +27468,12 @@
                     "target": "com.amazonaws.glue#NullableBoolean",
                     "traits": {
                         "smithy.api#documentation": "<p>If set to false, snapshots are only deleted from table metadata, and the underlying data and metadata files are not deleted.</p>"
+                    }
+                },
+                "runRateInHours": {
+                    "target": "com.amazonaws.glue#NullableInteger",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The interval in hours between retention job runs. This parameter controls how frequently the retention optimizer will run to clean up expired snapshots. The value must be between 3 and 168 hours (7 days). If an input is not provided, the default value 24 will be used.</p>"
                     }
                 }
             },
@@ -26675,6 +27686,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Optional documentation or description text that provides additional context about the purpose and usage of this field.</p>"
                     }
+                },
+                "InitialDefault": {
+                    "target": "com.amazonaws.glue#IcebergDocument",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Default value used to populate the field's value for all records that were written before the field was added to the schema. This enables backward compatibility when adding new fields to existing Iceberg tables.</p>"
+                    }
+                },
+                "WriteDefault": {
+                    "target": "com.amazonaws.glue#IcebergDocument",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Default value used to populate the field's value for any records written after the field was added to the schema, if the writer does not supply the field's value. This can be changed through schema evolution.</p>"
+                    }
                 }
             },
             "traits": {
@@ -26731,6 +27754,24 @@
                     "target": "com.amazonaws.glue#StringToStringMap",
                     "traits": {
                         "smithy.api#documentation": "<p>Updated key-value pairs of table properties and configuration settings for the Iceberg table.</p>"
+                    }
+                },
+                "Action": {
+                    "target": "com.amazonaws.glue#IcebergUpdateAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of update action to be performed on the Iceberg table. Defines the specific operation such as adding schema, setting current schema, adding partition spec, or managing encryption keys.</p>"
+                    }
+                },
+                "EncryptionKey": {
+                    "target": "com.amazonaws.glue#IcebergEncryptedKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Encryption key information associated with an Iceberg table update operation. Used when adding or removing encryption keys from the table metadata during table evolution.</p>"
+                    }
+                },
+                "KeyId": {
+                    "target": "com.amazonaws.glue#EncryptionKeyIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Identifier of the encryption key involved in an Iceberg table update operation. References the specific key being added to or removed from the table's encryption configuration.</p>"
                     }
                 }
             },
@@ -26814,6 +27855,77 @@
         "com.amazonaws.glue#IcebergTransformString": {
             "type": "string"
         },
+        "com.amazonaws.glue#IcebergUpdateAction": {
+            "type": "enum",
+            "members": {
+                "ADD_SCHEMA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "add-schema"
+                    }
+                },
+                "SET_CURRENT_SCHEMA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "set-current-schema"
+                    }
+                },
+                "ADD_SPEC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "add-spec"
+                    }
+                },
+                "SET_DEFAULT_SPEC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "set-default-spec"
+                    }
+                },
+                "ADD_SORT_ORDER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "add-sort-order"
+                    }
+                },
+                "SET_DEFAULT_SORT_ORDER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "set-default-sort-order"
+                    }
+                },
+                "SET_LOCATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "set-location"
+                    }
+                },
+                "SET_PROPERTIES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "set-properties"
+                    }
+                },
+                "REMOVE_PROPERTIES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "remove-properties"
+                    }
+                },
+                "ADD_ENCRYPTION_KEY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "add-encryption-key"
+                    }
+                },
+                "REMOVE_ENCRYPTION_KEY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "remove-encryption-key"
+                    }
+                }
+            }
+        },
         "com.amazonaws.glue#IdString": {
             "type": "string",
             "traits": {
@@ -26837,6 +27949,36 @@
             "traits": {
                 "smithy.api#documentation": "<p>The same unique identifier was associated with two different records.</p>",
                 "smithy.api#error": "client"
+            }
+        },
+        "com.amazonaws.glue#IdentityCenterInstanceArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 10,
+                    "max": 1224
+                }
+            }
+        },
+        "com.amazonaws.glue#IdentityCenterScope": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 50
+                }
+            }
+        },
+        "com.amazonaws.glue#IdentityCenterScopesList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.glue#IdentityCenterScope"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 50
+                }
             }
         },
         "com.amazonaws.glue#IdleTimeout": {
@@ -26953,14 +28095,14 @@
             "type": "structure",
             "members": {
                 "SourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the source resource for the integration.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "TargetArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the target resource for the integration.</p>",
                         "smithy.api#required": {}
@@ -27065,14 +28207,14 @@
             "type": "structure",
             "members": {
                 "SourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN for the source of the integration.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "TargetArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN for the target of the integration.</p>",
                         "smithy.api#required": {}
@@ -27168,13 +28310,19 @@
                 "RefreshInterval": {
                     "target": "com.amazonaws.glue#String128",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specifies the frequency at which CDC (Change Data Capture) pulls or incremental loads should occur. This parameter provides flexibility to align \n      the refresh rate with your specific data update patterns, system load considerations, and performance optimization goals. Time increment can be set from  \n    15 minutes to 8640 minutes (six days). Currently supports creation of <code>RefreshInterval</code> only.</p>"
+                        "smithy.api#documentation": "<p>Specifies the frequency at which CDC (Change Data Capture) pulls or incremental loads should occur. This parameter provides flexibility to align \n      the refresh rate with your specific data update patterns, system load considerations, and performance optimization goals. Time increment can be set from  \n    15 minutes to 8640 minutes (six days).</p>"
                     }
                 },
                 "SourceProperties": {
                     "target": "com.amazonaws.glue#IntegrationSourcePropertiesMap",
                     "traits": {
                         "smithy.api#documentation": "<p>\n      A collection of key-value pairs that specify additional properties for the integration source. These properties provide configuration options that \n      can be used to customize the behavior of the ODB source during data integration operations.\n    </p>"
+                    }
+                },
+                "ContinuousSync": {
+                    "target": "com.amazonaws.glue#ContinuousSync",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Enables continuous synchronization for on-demand data extractions from SaaS applications to Amazon Web Services data services like Amazon Redshift \n      and Amazon S3.</p>"
                     }
                 }
             },
@@ -27300,7 +28448,7 @@
                 "FunctionSpec": {
                     "target": "com.amazonaws.glue#String128",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specifies the function used to partition data on the target. The only accepted value for this parameter is `'identity'` (string). \n      The `'identity'` function ensures that the data partitioning on the target follows the same scheme as the source. In other words, the partitioning \n      structure of the source data is preserved in the target destination.</p>"
+                        "smithy.api#documentation": "<p>Specifies the function used to partition data on the target. The accepted values for this parameter are:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>identity</code> - Uses source values directly without transformation</p>\n            </li>\n            <li>\n               <p>\n                  <code>year</code> - Extracts the year from timestamp values (e.g., 2023)</p>\n            </li>\n            <li>\n               <p>\n                  <code>month</code> - Extracts the month from timestamp values (e.g., 2023-01)</p>\n            </li>\n            <li>\n               <p>\n                  <code>day</code> - Extracts the day from timestamp values (e.g., 2023-01-15)</p>\n            </li>\n            <li>\n               <p>\n                  <code>hour</code> - Extracts the hour from timestamp values (e.g., 2023-01-15-14)</p>\n            </li>\n         </ul>"
                     }
                 },
                 "ConversionSpec": {
@@ -27334,6 +28482,77 @@
                 "smithy.api#documentation": "<p>The data processed through your integration exceeded your quota.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 402
+            }
+        },
+        "com.amazonaws.glue#IntegrationResourceProperty": {
+            "type": "structure",
+            "members": {
+                "ResourceArn": {
+                    "target": "com.amazonaws.glue#String512",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ResourcePropertyArn": {
+                    "target": "com.amazonaws.glue#String512",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource ARN created through this create API. The format is something like arn:aws:glue:<region>:<account_id>:integrationresourceproperty/*</p>"
+                    }
+                },
+                "SourceProcessingProperties": {
+                    "target": "com.amazonaws.glue#SourceProcessingProperties",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource properties associated with the integration source.</p>"
+                    }
+                },
+                "TargetProcessingProperties": {
+                    "target": "com.amazonaws.glue#TargetProcessingProperties",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource properties associated with the integration target.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A structure representing an integration resource property.</p>"
+            }
+        },
+        "com.amazonaws.glue#IntegrationResourcePropertyFilter": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.glue#String128",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the filter. Supported filter keys are <code>SourceArn</code> and <code>TargetArn</code>.</p>"
+                    }
+                },
+                "Values": {
+                    "target": "com.amazonaws.glue#IntegrationResourcePropertyFilterValues",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of filter values.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A filter for integration resource properties.</p>"
+            }
+        },
+        "com.amazonaws.glue#IntegrationResourcePropertyFilterList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.glue#IntegrationResourcePropertyFilter"
+            }
+        },
+        "com.amazonaws.glue#IntegrationResourcePropertyFilterValues": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.glue#String128"
+            }
+        },
+        "com.amazonaws.glue#IntegrationResourcePropertyList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.glue#IntegrationResourceProperty"
             }
         },
         "com.amazonaws.glue#IntegrationSourcePropertiesMap": {
@@ -29293,7 +30512,7 @@
         "com.amazonaws.glue#KmsKeyArn": {
             "type": "string",
             "traits": {
-                "smithy.api#pattern": "^arn:aws:kms:"
+                "smithy.api#pattern": "^$|arn:aws[a-z0-9-]*:kms:"
             }
         },
         "com.amazonaws.glue#LabelCount": {
@@ -29314,6 +30533,15 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Specifies configuration properties for a labeling set generation task run.</p>"
+            }
+        },
+        "com.amazonaws.glue#Labels": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.glue#NameString"
+            },
+            "value": {
+                "target": "com.amazonaws.glue#NameString"
             }
         },
         "com.amazonaws.glue#LakeFormationConfiguration": {
@@ -29454,6 +30682,23 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "FAILED"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.glue#LastRefreshType": {
+            "type": "enum",
+            "members": {
+                "FULL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FULL"
+                    }
+                },
+                "INCREMENTAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INCREMENTAL"
                     }
                 }
             }
@@ -30560,6 +31805,87 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.glue#ListIntegrationResourceProperties": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#ListIntegrationResourcePropertiesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#ListIntegrationResourcePropertiesResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>List integration resource properties for a single customer. It supports the filters, maxRecords and markers.</p>"
+            }
+        },
+        "com.amazonaws.glue#ListIntegrationResourcePropertiesRequest": {
+            "type": "structure",
+            "members": {
+                "Marker": {
+                    "target": "com.amazonaws.glue#String1024",
+                    "traits": {
+                        "smithy.api#documentation": "<p>This is the pagination token for next page, initial value is <code>null</code>.</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.glue#IntegrationResourcePropertyFilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of filters, supported filter Key is <code>SourceArn</code> and <code>TargetArn</code>.</p>"
+                    }
+                },
+                "MaxRecords": {
+                    "target": "com.amazonaws.glue#IntegrationInteger",
+                    "traits": {
+                        "smithy.api#documentation": "<p>This is total number of items to be evaluated.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#ListIntegrationResourcePropertiesResponse": {
+            "type": "structure",
+            "members": {
+                "IntegrationResourcePropertyList": {
+                    "target": "com.amazonaws.glue#IntegrationResourcePropertyList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of integration resource property meeting the filter criteria.</p>"
+                    }
+                },
+                "Marker": {
+                    "target": "com.amazonaws.glue#String1024",
+                    "traits": {
+                        "smithy.api#documentation": "<p>This is the pagination token for the next page.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.glue#ListJobs": {
             "type": "operation",
             "input": {
@@ -30721,6 +32047,94 @@
                     "target": "com.amazonaws.glue#PaginationToken",
                     "traits": {
                         "smithy.api#documentation": "<p>A continuation token, if the returned list does not contain the\n      last metric available.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.glue#ListMaterializedViewRefreshTaskRuns": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#ListMaterializedViewRefreshTaskRunsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#ListMaterializedViewRefreshTaskRunsResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationTimeoutException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>List all task runs for a particular account.</p>",
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "MaterializedViewRefreshTaskRuns",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.glue#ListMaterializedViewRefreshTaskRunsRequest": {
+            "type": "structure",
+            "members": {
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DatabaseName": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The database where the table resides.</p>"
+                    }
+                },
+                "TableName": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the table for which statistics is generated.</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.glue#PageSize",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum size of the response.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.glue#Token",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A continuation token, if this is a continuation call.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#ListMaterializedViewRefreshTaskRunsResponse": {
+            "type": "structure",
+            "members": {
+                "MaterializedViewRefreshTaskRuns": {
+                    "target": "com.amazonaws.glue#MaterializedViewRefreshTaskRunsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The results of the ListMaterializedViewRefreshTaskRuns action. </p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.glue#Token",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A continuation token, if not all task run IDs have yet been returned.</p>"
                     }
                 }
             },
@@ -31969,6 +33383,199 @@
                 }
             }
         },
+        "com.amazonaws.glue#MaterializedViewRefreshState": {
+            "type": "enum",
+            "members": {
+                "STARTING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STARTING"
+                    }
+                },
+                "RUNNING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RUNNING"
+                    }
+                },
+                "SUCCEEDED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SUCCEEDED"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FAILED"
+                    }
+                },
+                "STOPPED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STOPPED"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.glue#MaterializedViewRefreshTaskNotRunningException": {
+            "type": "structure",
+            "members": {
+                "Message": {
+                    "target": "com.amazonaws.glue#MessageString"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Exception thrown when stopping a task that is not in running state.</p>",
+                "smithy.api#error": "client"
+            }
+        },
+        "com.amazonaws.glue#MaterializedViewRefreshTaskRun": {
+            "type": "structure",
+            "members": {
+                "CustomerId": {
+                    "target": "com.amazonaws.glue#AccountId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services account ID.</p>"
+                    }
+                },
+                "MaterializedViewRefreshTaskRunId": {
+                    "target": "com.amazonaws.glue#UUIDv4",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the materialized view refresh task run.</p>"
+                    }
+                },
+                "DatabaseName": {
+                    "target": "com.amazonaws.glue#DatabaseName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The database where the table resides.</p>"
+                    }
+                },
+                "TableName": {
+                    "target": "com.amazonaws.glue#TableName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the table for which statistics is generated.</p>"
+                    }
+                },
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>"
+                    }
+                },
+                "Role": {
+                    "target": "com.amazonaws.glue#Role",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IAM role that the service assumes to generate statistics.</p>"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.glue#MaterializedViewRefreshState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the task run.</p>"
+                    }
+                },
+                "CreationTime": {
+                    "target": "com.amazonaws.glue#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time that this task was created.</p>"
+                    }
+                },
+                "LastUpdated": {
+                    "target": "com.amazonaws.glue#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The last point in time when this task was modified.</p>"
+                    }
+                },
+                "StartTime": {
+                    "target": "com.amazonaws.glue#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The start time of the task.</p>"
+                    }
+                },
+                "EndTime": {
+                    "target": "com.amazonaws.glue#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The end time of the task.</p>"
+                    }
+                },
+                "ErrorMessage": {
+                    "target": "com.amazonaws.glue#DescriptionString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message for the job.</p>"
+                    }
+                },
+                "DPUSeconds": {
+                    "target": "com.amazonaws.glue#NonNegativeDouble",
+                    "traits": {
+                        "smithy.api#default": 0,
+                        "smithy.api#documentation": "<p>The calculated DPU usage in seconds for all autoscaled workers.</p>"
+                    }
+                },
+                "RefreshType": {
+                    "target": "com.amazonaws.glue#MaterializedViewRefreshType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the refresh task run. Either FULL or INCREMENTAL.</p>"
+                    }
+                },
+                "ProcessedBytes": {
+                    "target": "com.amazonaws.glue#ByteCount",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of bytes the refresh task run has scanned to refresh the materialized view.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The object that shows the details of the materialized view refresh task run.</p>"
+            }
+        },
+        "com.amazonaws.glue#MaterializedViewRefreshTaskRunningException": {
+            "type": "structure",
+            "members": {
+                "Message": {
+                    "target": "com.amazonaws.glue#MessageString"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Exception thrown when a task is already in running state.</p>",
+                "smithy.api#error": "client"
+            }
+        },
+        "com.amazonaws.glue#MaterializedViewRefreshTaskRunsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.glue#MaterializedViewRefreshTaskRun"
+            }
+        },
+        "com.amazonaws.glue#MaterializedViewRefreshTaskStoppingException": {
+            "type": "structure",
+            "members": {
+                "Message": {
+                    "target": "com.amazonaws.glue#MessageString"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Exception thrown when a task is already in stopping state.</p>",
+                "smithy.api#error": "client"
+            }
+        },
+        "com.amazonaws.glue#MaterializedViewRefreshType": {
+            "type": "enum",
+            "members": {
+                "FULL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FULL"
+                    }
+                },
+                "INCREMENTAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INCREMENTAL"
+                    }
+                }
+            }
+        },
         "com.amazonaws.glue#MaxConcurrentRuns": {
             "type": "integer",
             "traits": {
@@ -32318,6 +33925,12 @@
                         "smithy.api#documentation": "<p>Selects source tables for the integration using Maxwell filter syntax.</p>"
                     }
                 },
+                "IntegrationConfig": {
+                    "target": "com.amazonaws.glue#IntegrationConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration settings for the integration. Currently, only the RefreshInterval can be modified. </p>"
+                    }
+                },
                 "IntegrationName": {
                     "target": "com.amazonaws.glue#String128",
                     "traits": {
@@ -32333,14 +33946,14 @@
             "type": "structure",
             "members": {
                 "SourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the source for the integration.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "TargetArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the target for the integration.</p>",
                         "smithy.api#required": {}
@@ -32408,6 +34021,12 @@
                     "target": "com.amazonaws.glue#String2048",
                     "traits": {
                         "smithy.api#documentation": "<p>Selects source tables for the integration using Maxwell filter syntax.</p>"
+                    }
+                },
+                "IntegrationConfig": {
+                    "target": "com.amazonaws.glue#IntegrationConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated configuration settings for the integration.</p>"
                     }
                 }
             },
@@ -34154,6 +35773,17 @@
                 "smithy.api#documentation": "<p>Specifies a target that uses Postgres SQL.</p>"
             }
         },
+        "com.amazonaws.glue#PreProcessingQueryString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>SQL Query of SparkSQL format that can be used to pre-process data before running Data Quality Operations.</p>",
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 51200
+                },
+                "smithy.api#pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*$"
+            }
+        },
         "com.amazonaws.glue#Predecessor": {
             "type": "structure",
             "members": {
@@ -35323,6 +36953,9 @@
             "member": {
                 "target": "com.amazonaws.glue#NameString"
             }
+        },
+        "com.amazonaws.glue#RefreshSeconds": {
+            "type": "long"
         },
         "com.amazonaws.glue#RefreshToken": {
             "type": "string",
@@ -40322,6 +41955,87 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.glue#StartMaterializedViewRefreshTaskRun": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#StartMaterializedViewRefreshTaskRunRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#StartMaterializedViewRefreshTaskRunResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#MaterializedViewRefreshTaskRunningException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationTimeoutException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ResourceNumberLimitExceededException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Starts a materialized view refresh task run, for a specified table and columns.</p>"
+            }
+        },
+        "com.amazonaws.glue#StartMaterializedViewRefreshTaskRunRequest": {
+            "type": "structure",
+            "members": {
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DatabaseName": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the database where the table resides.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TableName": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the table to generate run the materialized view refresh task.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "FullRefresh": {
+                    "target": "com.amazonaws.glue#NullableBoolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether this is a full refresh of the task run.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#StartMaterializedViewRefreshTaskRunResponse": {
+            "type": "structure",
+            "members": {
+                "MaterializedViewRefreshTaskRunId": {
+                    "target": "com.amazonaws.glue#UUIDv4",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier for the materialized view refresh task run.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.glue#StartTrigger": {
             "type": "operation",
             "input": {
@@ -41093,6 +42807,71 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.glue#StopMaterializedViewRefreshTaskRun": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#StopMaterializedViewRefreshTaskRunRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#StopMaterializedViewRefreshTaskRunResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#MaterializedViewRefreshTaskNotRunningException"
+                },
+                {
+                    "target": "com.amazonaws.glue#MaterializedViewRefreshTaskStoppingException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationTimeoutException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Stops a materialized view refresh task run, for a specified table and columns.</p>"
+            }
+        },
+        "com.amazonaws.glue#StopMaterializedViewRefreshTaskRunRequest": {
+            "type": "structure",
+            "members": {
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "DatabaseName": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the database where the table resides.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TableName": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the table to generate statistics.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#StopMaterializedViewRefreshTaskRunResponse": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.glue#StopSession": {
             "type": "operation",
             "input": {
@@ -41391,6 +43170,15 @@
                 "smithy.api#documentation": "<p>Specifies options related to data preview for viewing a sample of your data.</p>"
             }
         },
+        "com.amazonaws.glue#String1024": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1024
+                }
+            }
+        },
         "com.amazonaws.glue#String128": {
             "type": "string",
             "traits": {
@@ -41406,6 +43194,15 @@
                 "smithy.api#length": {
                     "min": 1,
                     "max": 2048
+                }
+            }
+        },
+        "com.amazonaws.glue#String512": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 512
                 }
             }
         },
@@ -41628,8 +43425,17 @@
                         "smithy.api#documentation": "<p>Specifies whether the view supports the SQL dialects of one or more different query engines and can therefore be read by those engines.</p>"
                     }
                 },
+                "IsMaterializedView": {
+                    "target": "com.amazonaws.glue#NullableBoolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates a table is a <code>MaterializedView</code>.</p>"
+                    }
+                },
                 "Status": {
-                    "target": "com.amazonaws.glue#TableStatus"
+                    "target": "com.amazonaws.glue#TableStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates the the state of an asynchronous change to a table.</p>"
+                    }
                 }
             },
             "traits": {
@@ -41839,6 +43645,12 @@
                     "target": "com.amazonaws.glue#TableOptimizerRun",
                     "traits": {
                         "smithy.api#documentation": "<p>A <code>TableOptimizerRun</code> object representing the last run of the table optimizer.</p>"
+                    }
+                },
+                "configurationSource": {
+                    "target": "com.amazonaws.glue#ConfigurationSource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n      Specifies the source of the optimizer configuration. This indicates how the table optimizer was configured and which entity or service \n      initiated the configuration. \n    </p>"
                     }
                 }
             },
@@ -42154,6 +43966,15 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.glue#TableVersionError"
+            }
+        },
+        "com.amazonaws.glue#TableVersionId": {
+            "type": "long",
+            "traits": {
+                "smithy.api#default": 0,
+                "smithy.api#range": {
+                    "min": -1
+                }
             }
         },
         "com.amazonaws.glue#Tag": {
@@ -43478,6 +45299,12 @@
                 "smithy.api#pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*$"
             }
         },
+        "com.amazonaws.glue#UUIDv4": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+        },
         "com.amazonaws.glue#UnfilteredPartition": {
             "type": "structure",
             "members": {
@@ -44719,6 +46546,67 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.glue#UpdateGlueIdentityCenterConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#UpdateGlueIdentityCenterConfigurationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#UpdateGlueIdentityCenterConfigurationResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ConcurrentModificationException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationTimeoutException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Updates the existing Glue Identity Center configuration, allowing modification of scopes and permissions for the integration.</p>"
+            }
+        },
+        "com.amazonaws.glue#UpdateGlueIdentityCenterConfigurationRequest": {
+            "type": "structure",
+            "members": {
+                "Scopes": {
+                    "target": "com.amazonaws.glue#IdentityCenterScopesList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of Identity Center scopes that define the updated permissions and access levels for the Glue configuration.</p>"
+                    }
+                },
+                "UserBackgroundSessionsEnabled": {
+                    "target": "com.amazonaws.glue#NullableBoolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether users can run background sessions when using Identity Center authentication with Glue services.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Request to update an existing Glue Identity Center configuration.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#UpdateGlueIdentityCenterConfigurationResponse": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>Response from updating an existing Glue Identity Center configuration.</p>",
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.glue#UpdateGrokClassifierRequest": {
             "type": "structure",
             "members": {
@@ -44779,7 +46667,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Contains the update operations to be applied to an existing Iceberg table in AWS Glue Data Catalog, defining the new state of the table metadata.\n    </p>"
+                "smithy.api#documentation": "<p>Contains the update operations to be applied to an existing Iceberg table inGlue Data Catalog, defining the new state of the table metadata.\n    </p>"
             }
         },
         "com.amazonaws.glue#UpdateIntegrationResourceProperty": {
@@ -44821,7 +46709,7 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>",
                         "smithy.api#required": {}
@@ -44848,9 +46736,15 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>"
+                    }
+                },
+                "ResourcePropertyArn": {
+                    "target": "com.amazonaws.glue#String512",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource ARN created through this create API. The format is something like arn:aws:glue:<region>:<account_id>:integrationresourceproperty/*</p>"
                     }
                 },
                 "SourceProcessingProperties": {
@@ -44909,7 +46803,7 @@
             "type": "structure",
             "members": {
                 "ResourceArn": {
-                    "target": "com.amazonaws.glue#String128",
+                    "target": "com.amazonaws.glue#String512",
                     "traits": {
                         "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>",
                         "smithy.api#required": {}
@@ -45815,7 +47709,10 @@
                     }
                 },
                 "UpdateOpenTableFormatInput": {
-                    "target": "com.amazonaws.glue#UpdateOpenTableFormatInput"
+                    "target": "com.amazonaws.glue#UpdateOpenTableFormatInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Input parameters for updating open table format tables in GlueData Catalog, serving as a wrapper for format-specific update operations such as Apache Iceberg.</p>"
+                    }
                 }
             },
             "traits": {
@@ -46242,6 +48139,12 @@
                         "smithy.api#documentation": "<p>The owner of the function.</p>"
                     }
                 },
+                "FunctionType": {
+                    "target": "com.amazonaws.glue#FunctionType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the function.</p>"
+                    }
+                },
                 "OwnerType": {
                     "target": "com.amazonaws.glue#PrincipalType",
                     "traits": {
@@ -46290,6 +48193,12 @@
                     "target": "com.amazonaws.glue#NameString",
                     "traits": {
                         "smithy.api#documentation": "<p>The owner of the function.</p>"
+                    }
+                },
+                "FunctionType": {
+                    "target": "com.amazonaws.glue#FunctionType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the function.</p>"
                     }
                 },
                 "OwnerType": {
@@ -46450,10 +48359,41 @@
                         "smithy.api#documentation": "<p>The definer of a view in SQL.</p>"
                     }
                 },
+                "ViewVersionId": {
+                    "target": "com.amazonaws.glue#TableVersionId",
+                    "traits": {
+                        "smithy.api#default": 0,
+                        "smithy.api#documentation": "<p>The ID value that identifies this view's version. For materialized views, the version ID is the Apache Iceberg table's snapshot ID. </p>"
+                    }
+                },
+                "ViewVersionToken": {
+                    "target": "com.amazonaws.glue#HashString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The version ID of the Apache Iceberg table.</p>"
+                    }
+                },
+                "RefreshSeconds": {
+                    "target": "com.amazonaws.glue#RefreshSeconds",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Auto refresh interval in seconds for the materialized view. If not specified, the view will \n      not automatically refresh.</p>"
+                    }
+                },
+                "LastRefreshType": {
+                    "target": "com.amazonaws.glue#LastRefreshType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Sets the method used for the most recent refresh.</p>"
+                    }
+                },
                 "SubObjects": {
                     "target": "com.amazonaws.glue#ViewSubObjectsList",
                     "traits": {
                         "smithy.api#documentation": "<p>A list of table Amazon Resource Names (ARNs).</p>"
+                    }
+                },
+                "SubObjectVersionIds": {
+                    "target": "com.amazonaws.glue#ViewSubObjectVersionIdsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>List of the Apache Iceberg table versions referenced by the materialized view.</p>"
                     }
                 },
                 "Representations": {
@@ -46488,10 +48428,41 @@
                         "smithy.api#documentation": "<p>A list of structures that contains the dialect of the view, and the query that defines the view.</p>"
                     }
                 },
+                "ViewVersionId": {
+                    "target": "com.amazonaws.glue#TableVersionId",
+                    "traits": {
+                        "smithy.api#default": 0,
+                        "smithy.api#documentation": "<p>The ID value that identifies this view's version. For materialized views, the version ID is the Apache Iceberg table's snapshot ID. </p>"
+                    }
+                },
+                "ViewVersionToken": {
+                    "target": "com.amazonaws.glue#VersionString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The version ID of the Apache Iceberg table.</p>"
+                    }
+                },
+                "RefreshSeconds": {
+                    "target": "com.amazonaws.glue#RefreshSeconds",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Auto refresh interval in seconds for the materialized view. If not specified, the view will \n      not automatically refresh.</p>"
+                    }
+                },
+                "LastRefreshType": {
+                    "target": "com.amazonaws.glue#LastRefreshType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the materialized view's last refresh. Valid values: <code>Full</code>, \n      <code>Incremental</code>.</p>"
+                    }
+                },
                 "SubObjects": {
                     "target": "com.amazonaws.glue#ViewSubObjectsList",
                     "traits": {
                         "smithy.api#documentation": "<p>A list of base table ARNs that make up the view.</p>"
+                    }
+                },
+                "SubObjectVersionIds": {
+                    "target": "com.amazonaws.glue#ViewSubObjectVersionIdsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>List of the Apache Iceberg table versions referenced by the materialized view.</p>"
                     }
                 }
             },
@@ -46634,6 +48605,18 @@
                 "smithy.api#length": {
                     "min": 1,
                     "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.glue#ViewSubObjectVersionIdsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.glue#TableVersionId"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 250
                 }
             }
         },

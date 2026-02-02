@@ -73,63 +73,38 @@ dependencies {
     codegen(libs.smithy.aws.protocol.tests)
 }
 
-abstract class ProtocolTestTask @Inject constructor(private val project: Project) : DefaultTask() {
-    /**
-     * The projection
-     */
-    @get:Input
-    abstract val projectionName: Property<String>
+smithyBuild.projections.forEach {
+    val protocolName = it.name
 
-    /**
-     * The projection root directory
-     */
-    @get:Input
-    abstract val projectionRootDirectory: Property<String>
+    val dirProvider = smithyBuild
+        .smithyKotlinProjectionPath(protocolName)
+        .map { file(it.toString()) }
 
-    @TaskAction
-    fun runTests() {
-        val projectionRootDir = project.file(projectionRootDirectory.get())
-        println("[$projectionName] buildDir: $projectionRootDir")
-        if (!projectionRootDir.exists()) {
-            throw GradleException("$projectionRootDir does not exist")
-        }
-        val wrapper = if (System.getProperty("os.name").lowercase().contains("windows")) "gradlew.bat" else "gradlew"
-        val gradlew = project.rootProject.file(wrapper).absolutePath
+    val copyStaticFiles = tasks.register<Copy>("copyStaticFiles-$protocolName") {
+        group = "codegen"
+        from(rootProject.projectDir.resolve("services/$protocolName/common/src"))
+        into(smithyBuild.smithyKotlinProjectionSrcDir(protocolName))
+    }
 
-        // NOTE - this still requires us to publish to maven local.
-        project.exec {
-            workingDir = projectionRootDir
+    tasks.register<Exec>("testProtocol-$protocolName") {
+        group = "Verification"
+        dependsOn(tasks.generateSmithyProjections, copyStaticFiles)
+
+        doFirst {
+            val dir = dirProvider.get()
+            require(dir.exists()) { "$dir does not exist" }
+
+            val wrapper = if (System.getProperty("os.name").lowercase().contains("windows")) "gradlew.bat" else "gradlew"
+            val gradlew = rootProject.layout.projectDirectory.file(wrapper).asFile.absolutePath
+
+            workingDir = dir
             executable = gradlew
             args = listOf("test")
         }
     }
 }
 
-smithyBuild.projections.forEach {
-    val protocolName = it.name
-
-    tasks.register<ProtocolTestTask>("testProtocol-$protocolName") {
-        dependsOn(tasks.generateSmithyProjections)
-        group = "Verification"
-        projectionName.set(it.name)
-        projectionRootDirectory.set(smithyBuild.smithyKotlinProjectionPath(it.name).map { it.toString() })
-    }
-
-    // FIXME This is a hack to work around how protocol tests aren't in the actual service model and thus codegen
-    // separately from service customizations.
-    val copyStaticFiles = tasks.register<Copy>("copyStaticFiles-$protocolName") {
-        group = "codegen"
-        from(rootProject.projectDir.resolve("services/$protocolName/common/src"))
-        into(smithyBuild.smithyKotlinProjectionSrcDir(it.name))
-    }
-
-    tasks.generateSmithyProjections.configure {
-        finalizedBy(copyStaticFiles)
-    }
-}
-
 tasks.register("testAllProtocols") {
     group = "Verification"
-    val allTests = tasks.withType<ProtocolTestTask>()
-    dependsOn(allTests)
+    dependsOn(tasks.matching { it.name.startsWith("testProtocol-") })
 }

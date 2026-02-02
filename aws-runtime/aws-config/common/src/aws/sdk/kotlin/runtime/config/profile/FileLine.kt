@@ -66,8 +66,7 @@ internal fun FileLine.isContinuation() = content.first().isWhitespace() && conte
  */
 internal fun FileLine.isSubProperty(): Boolean = content.first().isWhitespace() && content.trimStart().isProperty()
 
-private fun String.isProperty() =
-    contains(Literals.PROPERTY_SPLITTER) &&
-        split(Literals.PROPERTY_SPLITTER, limit = 2).let {
-            it.size == 2 && it[0].trim().isNotEmpty()
-        }
+private fun String.isProperty() = contains(Literals.PROPERTY_SPLITTER) &&
+    split(Literals.PROPERTY_SPLITTER, limit = 2).let {
+        it.size == 2 && it[0].trim().isNotEmpty()
+    }

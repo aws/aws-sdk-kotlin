@@ -31,8 +31,7 @@ public class SystemPropertyCredentialsProvider(
     public val getProperty: (String) -> String? = PlatformProvider.System::getProperty,
 ) : CredentialsProvider {
 
-    private fun requireProperty(variable: String): String =
-        getProperty(variable)?.takeIf(String::isNotBlank) ?: throw ProviderConfigurationException("Missing value for system property `$variable`")
+    private fun requireProperty(variable: String): String = getProperty(variable)?.takeIf(String::isNotBlank) ?: throw ProviderConfigurationException("Missing value for system property `$variable`")
 
     override suspend fun resolve(attributes: Attributes): Credentials {
         coroutineContext.trace<SystemPropertyCredentialsProvider> {

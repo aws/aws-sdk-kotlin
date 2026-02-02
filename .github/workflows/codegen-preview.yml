@@ -48,7 +48,7 @@ jobs:
           path: 'aws-sdk-kotlin'
       - uses: actions/checkout@v4
         with:
-          repository: 'awslabs/aws-kotlin-repo-tools'
+          repository: 'aws/aws-kotlin-repo-tools'
           path: 'aws-kotlin-repo-tools'
       - uses: actions/checkout@v4
         with:
