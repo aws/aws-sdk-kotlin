@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.8] - 02/02/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Adds tagging support for AgentCore Evaluations (evaluator and online evaluation config)
+* (**cloudfront**) Add OriginMTLS support to CloudFront Distribution APIs
+* (**mpa**) Updates to multi-party approval (MPA) service to add support for multi-factor authentication (MFA) for voting operations.
+
 ## [1.6.7] - 01/30/2026
 
 ### Features
