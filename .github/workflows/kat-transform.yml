@@ -30,7 +30,7 @@ jobs:
           path: 'aws-sdk-kotlin'
 
       - name: Setup Build
-        uses: .github/actions/setup-build
+        uses: ./aws-sdk-kotlin/.github/actions/setup-build
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
