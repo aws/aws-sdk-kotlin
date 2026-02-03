@@ -94,8 +94,8 @@ public class ImdsCredentialsProvider(
                 nextRefresh = if (resp.expiration != null && resp.expiration < clock.now()) {
                     coroutineContext.warn<ImdsCredentialsProvider> {
                         "Attempting credential expiration extension due to a credential service availability issue. " +
-                                "A refresh of these credentials will be attempted again in " +
-                                "${ DEFAULT_CREDENTIALS_REFRESH_SECONDS / 60 } minutes."
+                            "A refresh of these credentials will be attempted again in " +
+                            "${ DEFAULT_CREDENTIALS_REFRESH_SECONDS / 60 } minutes."
                     }
                     clock.now() + DEFAULT_CREDENTIALS_REFRESH_SECONDS.seconds
                 } else {
@@ -135,7 +135,7 @@ public class ImdsCredentialsProvider(
         if (ex.status == HttpStatusCode.NotFound) {
             coroutineContext.info<ImdsCredentialsProvider> {
                 "Received 404 from IMDS when loading profile information. Hint: This instance may not have an " +
-                        "IAM role associated."
+                    "IAM role associated."
             }
         }
         throw ex
