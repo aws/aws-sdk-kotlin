@@ -41,7 +41,7 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
  * @param region the region to make credentials requests to.
  * @return the newly-constructed credentials provider
  */
-public class DefaultChainCredentialsProvider(
+public class DefaultChainCredentialsProvider constructor(
     public val profileName: String? = null,
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     httpClient: HttpClientEngine? = null,
@@ -51,11 +51,6 @@ public class DefaultChainCredentialsProvider(
     private val manageEngine = httpClient == null
     private val engine = httpClient ?: DefaultHttpEngine()
 
-    private val imdsClient = ImdsClient {
-        platformProvider = this@DefaultChainCredentialsProvider.platformProvider
-        engine = this@DefaultChainCredentialsProvider.engine
-    }
-
     private val chain = CredentialsProviderChain(
         SystemPropertyCredentialsProvider(platformProvider::getProperty),
         EnvironmentCredentialsProvider(platformProvider::getenv),
@@ -64,7 +59,12 @@ public class DefaultChainCredentialsProvider(
         ProfileCredentialsProvider(profileName = profileName, platformProvider = platformProvider, httpClient = engine, region = region),
         EcsCredentialsProvider(platformProvider, engine),
         ImdsCredentialsProvider(
-            client = imdsClient,
+            client = lazy {
+                ImdsClient {
+                    platformProvider = this@DefaultChainCredentialsProvider.platformProvider
+                    engine = this@DefaultChainCredentialsProvider.engine
+                }
+            },
             platformProvider = platformProvider,
         ),
     )
@@ -75,7 +75,6 @@ public class DefaultChainCredentialsProvider(
 
     override fun close() {
         provider.close()
-        imdsClient.close()
         if (manageEngine) {
             engine.closeIfCloseable()
         }
