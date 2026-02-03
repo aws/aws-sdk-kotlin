@@ -53,7 +53,6 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.smithy.kotlin.http.test)
                 implementation(libs.kotlinx.serialization.json)
-                implementation(libs.kotest.framework.datatest)
             }
         }
         jvmTest {

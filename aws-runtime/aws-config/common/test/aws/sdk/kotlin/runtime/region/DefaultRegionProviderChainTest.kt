@@ -124,7 +124,7 @@ private data class RegionProviderChainTest(
     val targets: List<String> = emptyList(),
 )
 
-/**
+/*
  * Construct a [TestPlatformProvider] from a JSON node like:
  *
  * ```json
@@ -141,6 +141,7 @@ private data class RegionProviderChainTest(
  * }
  * ```
  */
+
 /**
  * Construct a [TestPlatformProvider] from a JSON node like:
  *
@@ -165,9 +166,6 @@ private fun TestPlatformProvider.Companion.fromJsonNode(obj: JsonObject): TestPl
     return TestPlatformProvider(env, props, fs)
 }
 
-/**
- * Construct a [TestInstanceMetadataProvider] from a JSON object containing metadata as key-value pairs.
- */
 /**
  * Construct a [TestInstanceMetadataProvider] from a JSON object containing metadata as key-value pairs.
  */

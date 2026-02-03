@@ -56,8 +56,7 @@ class ImdsCredentialsProviderTest :
 
         val testCases = json.decodeFromString<List<TestCase>>(imdsCredentialsTestSpec)
 
-        fun imds(expectations: List<Expectation>) =
-            VerifyingInstanceMetadataProvider(expectations.map { it.get to it.response.asStringProvider() })
+        fun imds(expectations: List<Expectation>) = VerifyingInstanceMetadataProvider(expectations.map { it.get to it.response.asStringProvider() })
 
         fun Response.asStringProvider(): () -> String = {
             if (status == 200) requireNotNull(body) else throw EC2MetadataError(HttpStatusCode.fromValue(status), "err")
