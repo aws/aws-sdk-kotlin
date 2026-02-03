@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.9] - 02/03/2026
+
+### Features
+* (**batch**) AWS Batch Array Job Visibility feature support. Includes new statusSummaryLastUpdatedAt for array job parent DescribeJobs responses for the last time the statusSummary was updated. Includes both statusSummary and statusSummaryLastUpdatedAt in ListJobs responses for array job parents.
+* (**dynamodb**) This change supports the creation of multi-account global tables. It adds two new arguments to CreateTable, GlobalTableSourceArn and GlobalTableSettingsReplicationMode. DescribeTable is also updated to include information about GlobalTableSettingsReplicationMode.
+* (**geomaps**) Added support for optional style parameters in maps, including 3D terrain and 3D Buildings
+* (**kinesis**) Adds StreamId parameter to AWS Kinesis Data Streams APIs that is reserved for future use.
+* (**marketplacecatalog**) Adds support for Catalog API us-east-1 dualstack endpoint catalog-marketplace.us-east-1.api.aws
+* (**ssoadmin**) Added new Region management APIs to support multi-Region replication in IAM Identity Center.
+
+### Documentation
+* (**organizations**) Updated the CloseAccount description.
+
 ## [1.6.8] - 02/02/2026
 
 ### Features
