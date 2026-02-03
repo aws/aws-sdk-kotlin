@@ -158,8 +158,8 @@ class EcsCredentialsProviderTest {
         }
         assertNotNull(ex.message)
         assertTrue(
-            ex.message!!.contains("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) do not resolve to the loopback device.")
-            || ex.message!!.contains("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) could not be resolved.")
+            ex.message!!.contains("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) do not resolve to the loopback device.") ||
+                ex.message!!.contains("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) could not be resolved."),
         )
     }
 
