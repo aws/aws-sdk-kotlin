@@ -5,13 +5,20 @@ description: >
 runs:
   using: composite
   steps:
+    - name: Checkout tools
+      uses: actions/checkout@v4
+      with:
+        path: 'aws-kotlin-repo-tools'
+        repository: 'aws/aws-kotlin-repo-tools'
+        ref: '0.4.2'
+        sparse-checkout: |
+          .github
     - name: Checkout smithy-kotlin
-      uses: aws/aws-kotlin-repo-tools/.github/actions/checkout-head
+      uses: ./aws-kotlin-repo-tools/.github/actions/checkout-head
       with:
         # checkout smithy-kotlin as a sibling which will automatically make it an included build
         path: 'smithy-kotlin'
         repository: 'smithy-lang/smithy-kotlin'
-
     - name: Configure JDK
       uses: actions/setup-java@v3
       with:
