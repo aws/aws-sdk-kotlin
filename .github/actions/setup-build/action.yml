@@ -6,7 +6,7 @@ runs:
   using: composite
   steps:
     - name: Checkout smithy-kotlin
-      uses: ./aws-kotlin-repo-tools/.github/actions/checkout-head
+      uses: aws/aws-kotlin-repo-tools/.github/actions/checkout-head
       with:
         # checkout smithy-kotlin as a sibling which will automatically make it an included build
         path: 'smithy-kotlin'
