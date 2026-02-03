@@ -1267,12 +1267,6 @@
             "brazilName": "AwsSdkKotlinMpa"
         },
         {
-            "sdkId": "MPA",
-            "namespace": "aws.sdk.kotlin.services.mpa",
-            "artifactName": "mpa",
-            "brazilName": "AwsSdkKotlinMpa"
-        },
-        {
             "sdkId": "MTurk",
             "namespace": "aws.sdk.kotlin.services.mturk",
             "artifactName": "mturk",
