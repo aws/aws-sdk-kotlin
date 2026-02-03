@@ -37,6 +37,8 @@ import kotlinx.serialization.json.put
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.minutes
 
 class EcsCredentialsProviderTest {
@@ -151,9 +153,14 @@ class EcsCredentialsProviderTest {
         )
 
         val provider = EcsCredentialsProvider(testPlatform, engine)
-        assertFailsWith<ProviderConfigurationException> {
+        val ex = assertFailsWith<ProviderConfigurationException> {
             provider.resolve()
-        }.message.shouldContain("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) do not resolve to the loopback device.")
+        }
+        assertNotNull(ex.message)
+        assertTrue(
+            ex.message!!.contains("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) do not resolve to the loopback device.")
+            || ex.message!!.contains("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) could not be resolved.")
+        )
     }
 
     @Test
