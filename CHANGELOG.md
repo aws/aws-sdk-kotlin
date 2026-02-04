@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.10] - 02/04/2026
+
+### Features
+* (**bedrockruntime**) Added support for structured outputs to Converse and ConverseStream APIs.
+* (**connectcases**) Amazon Connect Cases now supports larger, multi-line text fields with up to 4,100 characters. Administrators can use the Admin UI to select the appropriate configuration (single-line or multi-line) on a per-field basis, improving case documentation capabilities.
+* (**medialive**) AWS Elemental MediaLive now supports SRT listener mode for inputs and outputs, in addition to the existing SRT caller mode.
+* (**workspacesweb**) Support for configuring and managing custom domain names for WorkSpaces Secure Browser portals.
+
+### Documentation
+* (**eks**) Update delete cluster description
+* (**redshift**) We have increased the maximum duration for a deferred maintenance window from 45 days to 60 days for Amazon Redshift provisioned clusters. This enhancement provides customers with greater flexibility in scheduling patching and maintenance activities while also maintaining security compliance.
+
 ## [1.6.9] - 02/03/2026
 
 ### Features
