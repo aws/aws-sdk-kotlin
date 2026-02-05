@@ -46,8 +46,7 @@ public interface SplittingConverter<F, F2, T2, T> :
 @ExperimentalApi
 public fun <F, F2 : F, T, T2 : T> SplittingConverter<F, F2, T2, T>.mergeBy(
     converter: Converter<F2, T2>,
-): Converter<F, T> =
-    Converter(
-        convertTo = { from: F -> this@mergeBy.convertTo(from).map(converter::convertTo).merge() },
-        convertFrom = { to: T -> this@mergeBy.convertFrom(to).map(converter::convertFrom).merge() },
-    )
+): Converter<F, T> = Converter(
+    convertTo = { from: F -> this@mergeBy.convertTo(from).map(converter::convertTo).merge() },
+    convertFrom = { to: T -> this@mergeBy.convertFrom(to).map(converter::convertFrom).merge() },
+)

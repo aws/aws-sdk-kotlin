@@ -5,7 +5,7 @@
 
 package aws.sdk.kotlin.codegen
 
-import software.amazon.smithy.kotlin.codegen.core.RuntimeTypePackage
+import aws.smithy.kotlin.codegen.core.RuntimeTypePackage
 
 /**
  * Commonly used AWS runtime types. Provides a single definition of a runtime symbol such that codegen isn't littered
@@ -38,6 +38,7 @@ object AwsRuntimeTypes {
         val AbstractAwsSdkClientFactory = symbol("AbstractAwsSdkClientFactory", "config")
 
         val AwsSdkClientConfig = symbol("AwsSdkClientConfig", "config")
+        val AwsSdkClientOption = symbol("AwsSdkClientOption", "config")
 
         object Endpoints : RuntimeTypePackage(AwsKotlinDependency.AWS_CONFIG, "config.endpoints") {
             val AccountIdEndpointMode = symbol("AccountIdEndpointMode")
@@ -63,6 +64,7 @@ object AwsRuntimeTypes {
         object Region : RuntimeTypePackage(AwsKotlinDependency.AWS_CONFIG, "region") {
             val DefaultRegionProviderChain = symbol("DefaultRegionProviderChain")
             val resolveRegion = symbol("resolveRegion")
+            val validateRegion = symbol("validateRegion")
         }
     }
 

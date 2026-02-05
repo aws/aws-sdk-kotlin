@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.services.route53
 
 import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
@@ -155,14 +160,13 @@ class Route53UriTest {
             assertEquals(parsedExpectedUrl, parsedActualUrl)
         }
 
-        private fun removeModelVersion(url: String) =
-            try {
-                url.replaceFirst(
-                    Regex("^/\\d{4}-\\d{2}-\\d{2}/"),
-                    "//",
-                )
-            } catch (e: Exception) {
-                fail("The URL '$url' is not in the expected format", e)
-            }
+        private fun removeModelVersion(url: String) = try {
+            url.replaceFirst(
+                Regex("^/\\d{4}-\\d{2}-\\d{2}/"),
+                "//",
+            )
+        } catch (e: Exception) {
+            fail("The URL '$url' is not in the expected format", e)
+        }
     }
 }

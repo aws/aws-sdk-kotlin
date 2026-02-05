@@ -24,8 +24,7 @@ public interface DynamoDbMapper {
          * Instantiate a new [Config] object
          * @param config A DSL block for setting properties of the config
          */
-        public fun Config(config: Config.Builder.() -> Unit = { }): Config =
-            Config.Builder().apply(config).build()
+        public fun Config(config: Config.Builder.() -> Unit = { }): Config = Config.Builder().apply(config).build()
     }
 
     /**

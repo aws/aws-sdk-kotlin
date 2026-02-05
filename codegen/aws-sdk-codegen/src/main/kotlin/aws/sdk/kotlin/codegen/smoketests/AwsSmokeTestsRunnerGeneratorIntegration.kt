@@ -1,15 +1,20 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.codegen.smoketests
 
 import aws.sdk.kotlin.codegen.AwsRuntimeTypes
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.core.RuntimeTypes
-import software.amazon.smithy.kotlin.codegen.core.getContextValue
-import software.amazon.smithy.kotlin.codegen.core.withBlock
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
-import software.amazon.smithy.kotlin.codegen.model.hasTrait
-import software.amazon.smithy.kotlin.codegen.rendering.smoketests.*
-import software.amazon.smithy.kotlin.codegen.utils.topDownOperations
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.core.RuntimeTypes
+import aws.smithy.kotlin.codegen.core.getContextValue
+import aws.smithy.kotlin.codegen.core.withBlock
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.integration.SectionWriterBinding
+import aws.smithy.kotlin.codegen.model.hasTrait
+import aws.smithy.kotlin.codegen.rendering.smoketests.*
+import aws.smithy.kotlin.codegen.utils.topDownOperations
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.smoketests.traits.SmokeTestsTrait
 
@@ -17,8 +22,7 @@ import software.amazon.smithy.smoketests.traits.SmokeTestsTrait
  * Generates AWS specific code for smoke test runners
  */
 class AwsSmokeTestsRunnerGeneratorIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.topDownOperations(settings.service).any { it.hasTrait<SmokeTestsTrait>() }
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.topDownOperations(settings.service).any { it.hasTrait<SmokeTestsTrait>() }
 
     override val sectionWriters: List<SectionWriterBinding>
         get() = listOf(

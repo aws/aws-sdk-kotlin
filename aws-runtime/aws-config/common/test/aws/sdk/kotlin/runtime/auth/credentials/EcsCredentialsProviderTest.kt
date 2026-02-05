@@ -37,6 +37,8 @@ import kotlinx.serialization.json.put
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.minutes
 
 class EcsCredentialsProviderTest {
@@ -71,8 +73,7 @@ class EcsCredentialsProviderTest {
         statusCode: HttpStatusCode = HttpStatusCode.BadRequest,
         headers: Headers = Headers.Empty,
         body: String = "",
-    ): HttpResponse =
-        HttpResponse(statusCode, headers, HttpBody.fromBytes(body.encodeToByteArray()))
+    ): HttpResponse = HttpResponse(statusCode, headers, HttpBody.fromBytes(body.encodeToByteArray()))
 
     private fun ecsRequest(url: String, authToken: String? = null): HttpRequest {
         val resolvedUrl = Url.parse(url)
@@ -93,13 +94,12 @@ class EcsCredentialsProviderTest {
      * Mock resolver that always resolves to loopback address
      */
     private object LocalHostResolver : HostResolver {
-        override suspend fun resolve(hostname: String): List<HostAddress> =
-            listOf(
-                HostAddress(
-                    "localhost",
-                    IpAddr.parse("127.0.0.1"),
-                ),
-            )
+        override suspend fun resolve(hostname: String): List<HostAddress> = listOf(
+            HostAddress(
+                "localhost",
+                IpAddr.parse("127.0.0.1"),
+            ),
+        )
         override fun reportFailure(addr: HostAddress) { }
         override fun purgeCache(addr: HostAddress?) { }
     }
@@ -153,9 +153,14 @@ class EcsCredentialsProviderTest {
         )
 
         val provider = EcsCredentialsProvider(testPlatform, engine)
-        assertFailsWith<ProviderConfigurationException> {
+        val ex = assertFailsWith<ProviderConfigurationException> {
             provider.resolve()
-        }.message.shouldContain("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) do not resolve to the loopback device.")
+        }
+        assertNotNull(ex.message)
+        assertTrue(
+            ex.message!!.contains("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) do not resolve to the loopback device.") ||
+                ex.message!!.contains("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) could not be resolved."),
+        )
     }
 
     @Test

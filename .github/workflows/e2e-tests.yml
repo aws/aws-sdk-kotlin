@@ -1,0 +1,41 @@
+name: E2E tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Tests
+        id: e2e-tests
+        uses: aws-actions/aws-codebuild-run-build@v1
+        with:
+          project-name: gh-aws-sdk-kotlin-e2e-tests
+          source-version-override: ${{ github.ref }}
+
+      - name: Cancel
+        if: ${{ cancelled() }}
+        env:
+          BUILD_ID: ${{ steps.e2e-tests.outputs.aws-build-id }}
+        run: |
+          if [ ! -z "$BUILD_ID"]; then
+            echo "Cancelling in-progress build: $BUILD_ID"
+            aws codebuild stop-build --id $BUILD_ID
+          fi
+
+concurrency:
+  group: e2e-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+

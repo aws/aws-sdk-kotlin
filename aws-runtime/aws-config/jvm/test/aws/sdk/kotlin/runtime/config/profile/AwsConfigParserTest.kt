@@ -102,7 +102,7 @@ class AwsProfileParserTest {
                         else -> error("Unexpected branch from $json")
                     }
                 } else {
-                    MatchErrorCase(name, configIn, credentialIn, errorContaining!!)
+                    MatchErrorCase(name, configIn, credentialIn, errorContaining)
                 }
             }
         }
@@ -127,11 +127,10 @@ class AwsProfileParserTest {
      * @param credentialsFn a function that will retrieve a configuration file as a UTF-8 string.
      * @return A map containing all specified profiles defined in configuration and credential files.
      */
-    private fun loadConfiguration(configurationFn: () -> String?, credentialsFn: () -> String?): TypedSectionMap =
-        mergeFiles(
-            parse(Logger.None, FileType.CONFIGURATION, configurationFn()),
-            parse(Logger.None, FileType.CREDENTIAL, credentialsFn()),
-        )
+    private fun loadConfiguration(configurationFn: () -> String?, credentialsFn: () -> String?): TypedSectionMap = mergeFiles(
+        parse(Logger.None, FileType.CONFIGURATION, configurationFn()),
+        parse(Logger.None, FileType.CREDENTIAL, credentialsFn()),
+    )
 }
 
 // See https://youtrack.jetbrains.com/issue/KTOR-3063

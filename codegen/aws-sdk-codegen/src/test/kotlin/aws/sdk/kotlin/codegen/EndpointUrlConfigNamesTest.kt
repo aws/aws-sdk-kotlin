@@ -5,7 +5,8 @@
 package aws.sdk.kotlin.codegen
 
 import kotlinx.serialization.json.*
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class EndpointUrlConfigNamesTest {
     // these don't appear to exist anymore - we don't have models (and therefore no generated clients) for them
@@ -559,11 +560,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_ELASTIC_BEANSTALK"
   },
   {
-    "service_id": "Elastic Transcoder",
-    "services_section_name": "elastic_transcoder",
-    "service_envvar_name": "AWS_ENDPOINT_URL_ELASTIC_TRANSCODER"
-  },
-  {
     "service_id": "Elastic Load Balancing",
     "services_section_name": "elastic_load_balancing",
     "service_envvar_name": "AWS_ENDPOINT_URL_ELASTIC_LOAD_BALANCING"
@@ -774,11 +770,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_IOT_EVENTS_DATA"
   },
   {
-    "service_id": "IoTFleetHub",
-    "services_section_name": "iotfleethub",
-    "service_envvar_name": "AWS_ENDPOINT_URL_IOTFLEETHUB"
-  },
-  {
     "service_id": "IoTFleetWise",
     "services_section_name": "iotfleetwise",
     "service_envvar_name": "AWS_ENDPOINT_URL_IOTFLEETWISE"
@@ -939,16 +930,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_LOOKOUTEQUIPMENT"
   },
   {
-    "service_id": "LookoutMetrics",
-    "services_section_name": "lookoutmetrics",
-    "service_envvar_name": "AWS_ENDPOINT_URL_LOOKOUTMETRICS"
-  },
-  {
-    "service_id": "LookoutVision",
-    "services_section_name": "lookoutvision",
-    "service_envvar_name": "AWS_ENDPOINT_URL_LOOKOUTVISION"
-  },
-  {
     "service_id": "m2",
     "services_section_name": "m2",
     "service_envvar_name": "AWS_ENDPOINT_URL_M2"
@@ -1104,16 +1085,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_OPENSEARCH"
   },
   {
-    "service_id": "OpsWorks",
-    "services_section_name": "opsworks",
-    "service_envvar_name": "AWS_ENDPOINT_URL_OPSWORKS"
-  },
-  {
-    "service_id": "OpsWorksCM",
-    "services_section_name": "opsworkscm",
-    "service_envvar_name": "AWS_ENDPOINT_URL_OPSWORKSCM"
-  },
-  {
     "service_id": "Organizations",
     "services_section_name": "organizations",
     "service_envvar_name": "AWS_ENDPOINT_URL_ORGANIZATIONS"
@@ -1184,16 +1155,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_PROTON"
   },
   {
-    "service_id": "QLDB",
-    "services_section_name": "qldb",
-    "service_envvar_name": "AWS_ENDPOINT_URL_QLDB"
-  },
-  {
-    "service_id": "QLDB Session",
-    "services_section_name": "qldb_session",
-    "service_envvar_name": "AWS_ENDPOINT_URL_QLDB_SESSION"
-  },
-  {
     "service_id": "QuickSight",
     "services_section_name": "quicksight",
     "service_envvar_name": "AWS_ENDPOINT_URL_QUICKSIGHT"
@@ -1252,11 +1213,6 @@ private const val TEST_SUITE_JSON = """
     "service_id": "Resource Groups Tagging API",
     "services_section_name": "resource_groups_tagging_api",
     "service_envvar_name": "AWS_ENDPOINT_URL_RESOURCE_GROUPS_TAGGING_API"
-  },
-  {
-    "service_id": "RoboMaker",
-    "services_section_name": "robomaker",
-    "service_envvar_name": "AWS_ENDPOINT_URL_ROBOMAKER"
   },
   {
     "service_id": "RolesAnywhere",
@@ -1407,11 +1363,6 @@ private const val TEST_SUITE_JSON = """
     "service_id": "signer",
     "services_section_name": "signer",
     "service_envvar_name": "AWS_ENDPOINT_URL_SIGNER"
-  },
-  {
-    "service_id": "SMS",
-    "services_section_name": "sms",
-    "service_envvar_name": "AWS_ENDPOINT_URL_SMS"
   },
   {
     "service_id": "Pinpoint SMS Voice",
@@ -1599,7 +1550,6 @@ private const val TEST_SUITE_JSON = """
 // language=JSON
 private const val JAVA_CLIENT_NAMES_JSON = """
 {
-  "LookoutMetrics": "LookoutMetricsClient",
   "AppRunner": "AppRunnerClient",
   "EC2": "Ec2Client",
   "Lex Models V2": "LexModelsV2Client",
@@ -1663,7 +1613,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "Lex Model Building Service": "LexModelBuildingClient",
   "Medical Imaging": "MedicalImagingClient",
   "Auto Scaling": "AutoScalingClient",
-  "RoboMaker": "RoboMakerClient",
   "SES": "SesClient",
   "Firehose": "FirehoseClient",
   "ivschat": "IvschatClient",
@@ -1672,7 +1621,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "Customer Profiles": "CustomerProfilesClient",
   "DocDB": "DocDbClient",
   "DAX": "DaxClient",
-  "OpsWorksCM": "OpsWorksCmClient",
   "ACM PCA": "AcmPcaClient",
   "GuardDuty": "GuardDutyClient",
   "CleanRooms": "CleanRoomsClient",
@@ -1725,7 +1673,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "ConnectCampaigns": "ConnectCampaignsClient",
   "Textract": "TextractClient",
   "Support": "SupportClient",
-  "OpsWorks": "OpsWorksClient",
   "identitystore": "IdentitystoreClient",
   "Kinesis Analytics": "KinesisAnalyticsClient",
   "Snowball": "SnowballClient",
@@ -1789,7 +1736,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "CloudWatch Logs": "CloudWatchLogsClient",
   "Elastic Load Balancing v2": "ElasticLoadBalancingV2Client",
   "Kinesis Video Signaling": "KinesisVideoSignalingClient",
-  "LookoutVision": "LookoutVisionClient",
   "CloudSearch": "CloudSearchClient",
   "Route53Resolver": "Route53ResolverClient",
   "Connect Contact Lens": "ConnectContactLensClient",
@@ -1811,10 +1757,8 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "DynamoDB Streams": "DynamoDbStreamsClient",
   "ECR": "EcrClient",
   "Chime SDK Meetings": "ChimeSdkMeetingsClient",
-  "QLDB Session": "QldbSessionClient",
   "Resource Groups": "ResourceGroupsClient",
   "Route 53 Domains": "Route53DomainsClient",
-  "QLDB": "QldbClient",
   "Macie2": "Macie2Client",
   "Scheduler": "SchedulerClient",
   "Support App": "SupportAppClient",
@@ -1860,7 +1804,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "MemoryDB": "MemoryDbClient",
   "Payment Cryptography": "PaymentCryptographyClient",
   "Cognito Identity": "CognitoIdentityClient",
-  "SMS": "SmsClient",
   "OSIS": "OsisClient",
   "Proton": "ProtonClient",
   "ECR PUBLIC": "EcrPublicClient",
@@ -1887,7 +1830,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "WorkDocs": "WorkDocsClient",
   "NetworkManager": "NetworkManagerClient",
   "Omics": "OmicsClient",
-  "IoTFleetHub": "IotFleetHubClient",
   "Cognito Sync": "CognitoSyncClient",
   "Outposts": "OutpostsClient",
   "Personalize": "PersonalizeClient",
@@ -1906,7 +1848,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "EventBridge": "EventBridgeClient",
   "FraudDetector": "FraudDetectorClient",
   "QuickSight": "QuickSightClient",
-  "Elastic Transcoder": "ElasticTranscoderClient",
   "WorkMail": "WorkMailClient",
   "Secrets Manager": "SecretsManagerClient",
   "Service Catalog": "ServiceCatalogClient",

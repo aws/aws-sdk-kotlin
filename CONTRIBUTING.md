@@ -8,7 +8,7 @@ information to effectively respond to your bug report or contribution.
 
 ## The AWS SDK for Kotlin is built from multiple GitHub repositories
 
-1. This repository ([awslabs/aws-sdk-kotlin](https://github.com/awslabs/aws-sdk-kotlin))
+1. This repository ([aws/aws-sdk-kotlin](https://github.com/aws/aws-sdk-kotlin))
    
 This repository contains code generation for AWS specific services, and a corresponding runtime to support the generated code.
 
@@ -98,7 +98,7 @@ of your request may disagree and ask that you add one anyway.
   "type": "feature",
   "description": "Add multiplatform support for URL parsing",
   "issues": [
-    "awslabs/aws-sdk-kotlin#12345"
+    "aws/aws-sdk-kotlin#12345"
   ]
 }
 ```
@@ -235,7 +235,7 @@ opensource-codeofconduct@amazon.com with any additional questions or comments.
 
 If you discover a potential security issue in this project we ask that you **do not** create a public GitHub issue.
 
-Please refer to our [security policy](https://github.com/awslabs/aws-sdk-kotlin/security/policy) for how to notify us.
+Please refer to our [security policy](https://github.com/aws/aws-sdk-kotlin/security/policy) for how to notify us.
 
 ## Licensing
 

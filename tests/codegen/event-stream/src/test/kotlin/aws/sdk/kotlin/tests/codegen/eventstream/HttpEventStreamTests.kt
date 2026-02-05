@@ -188,6 +188,8 @@ class HttpEventStreamTests {
                 long = 9_000_000_000L
                 string = "a tay is a hammer"
                 timestamp = Instant.fromEpochSeconds(5)
+                enum = aws.sdk.kotlin.test.restjson1.model.Enum.fromValue("DIAMOND")
+                intEnum = IntEnum.fromValue(1)
             },
         )
 
@@ -204,6 +206,8 @@ class HttpEventStreamTests {
         assertEquals(9_000_000_000L, headers["long"]?.expectInt64())
         assertEquals("a tay is a hammer", headers["string"]?.expectString())
         assertEquals(Instant.fromEpochSeconds(5), headers["timestamp"]?.expectTimestamp())
+        assertEquals(aws.sdk.kotlin.test.restjson1.model.Enum.fromValue("DIAMOND").value, headers["enum"]?.expectString())
+        assertEquals(IntEnum.fromValue(1).value, headers["intEnum"]?.expectInt32())
 
         val deserialized = deserializedEvent(message)
         assertIs<TestStream.MessageWithHeaders>(deserialized)

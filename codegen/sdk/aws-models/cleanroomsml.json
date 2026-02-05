@@ -97,7 +97,7 @@
                     ],
                     "maxAge": 86400
                 },
-                "smithy.api#documentation": "<p>Welcome to the <i>Amazon Web Services Clean Rooms ML API Reference</i>.</p> <p>Amazon Web Services Clean Rooms ML provides a privacy-enhancing method for two parties to identify similar users in their data without the need to share their data with each other. The first party brings the training data to Clean Rooms so that they can create and configure an audience model (lookalike model) and associate it with a collaboration. The second party then brings their seed data to Clean Rooms and generates an audience (lookalike segment) that resembles the training data.</p> <p>To learn more about Amazon Web Services Clean Rooms ML concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/machine-learning.html\">Clean Rooms User Guide</a>.</p> <p>To learn more about SQL commands, functions, and conditions supported in Clean Rooms, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/sql-reference/sql-reference.html\">Clean Rooms SQL Reference</a>.</p>",
+                "smithy.api#documentation": "<p>Welcome to the <i>Amazon Web Services Clean Rooms ML API Reference</i>.</p> <p>Amazon Web Services Clean Rooms ML provides a privacy-enhancing method for two parties to identify similar users in their data without the need to share their data with each other. The first party brings the training data to Clean Rooms so that they can create and configure an audience model (lookalike model) and associate it with a collaboration. The second party then brings their seed data to Clean Rooms and generates an audience (lookalike segment) that resembles the training data.</p> <p>To learn more about Amazon Web Services Clean Rooms ML concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/machine-learning.html\">Clean Rooms User Guide</a>.</p> <p>To learn more about SQL commands, functions, and conditions supported in Clean Rooms, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/sql-reference/sql-reference.html\">Clean Rooms SQL Reference</a>.</p> <p/>",
                 "smithy.api#title": "AWS Clean Rooms ML",
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
@@ -106,27 +106,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -608,17 +608,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -629,17 +618,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -656,17 +634,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -677,17 +644,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -762,6 +718,138 @@
                         }
                     ],
                     "version": "1.0"
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#AccessBudget": {
+            "type": "structure",
+            "members": {
+                "resourceArn": {
+                    "target": "com.amazonaws.cleanroomsml#BudgetedResourceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the resource that this access budget applies to.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "details": {
+                    "target": "com.amazonaws.cleanroomsml#AccessBudgetDetailsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of budget details for this resource. Contains active budget periods that apply to the resource.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "aggregateRemainingBudget": {
+                    "target": "com.amazonaws.cleanroomsml#Budget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The total remaining budget across all active budget periods for this resource.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An access budget that defines consumption limits for a specific resource within defined time periods.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#AccessBudgetDetails": {
+            "type": "structure",
+            "members": {
+                "startTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The start time of this budget period.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "endTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The end time of this budget period. If not specified, the budget period continues indefinitely.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "remainingBudget": {
+                    "target": "com.amazonaws.cleanroomsml#Budget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The amount of budget remaining in this period.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "budget": {
+                    "target": "com.amazonaws.cleanroomsml#Budget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The total budget amount allocated for this period.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "budgetType": {
+                    "target": "com.amazonaws.cleanroomsml#AccessBudgetType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of budget period. Calendar-based types reset automatically at regular intervals, while LIFETIME budgets never reset.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "autoRefresh": {
+                    "target": "com.amazonaws.cleanroomsml#AutoRefreshMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether this budget automatically refreshes when the current period ends.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The detailed information for a specific budget period, including time boundaries and budget amounts.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#AccessBudgetDetailsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanroomsml#AccessBudgetDetails"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#AccessBudgetType": {
+            "type": "enum",
+            "members": {
+                "CALENDAR_DAY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CALENDAR_DAY"
+                    }
+                },
+                "CALENDAR_MONTH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CALENDAR_MONTH"
+                    }
+                },
+                "CALENDAR_WEEK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CALENDAR_WEEK"
+                    }
+                },
+                "LIFETIME": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LIFETIME"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#AccessBudgets": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanroomsml#AccessBudget"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 100
                 }
             }
         },
@@ -1425,6 +1513,40 @@
                 }
             }
         },
+        "com.amazonaws.cleanroomsml#AutoRefreshMode": {
+            "type": "enum",
+            "members": {
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ENABLED"
+                    }
+                },
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DISABLED"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#Budget": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 0
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#BudgetedResourceArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 200
+                },
+                "smithy.api#pattern": "^arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/configuredtableassociation/[\\d\\w-]+$"
+            }
+        },
         "com.amazonaws.cleanroomsml#CancelTrainedModel": {
             "type": "operation",
             "input": {
@@ -2033,6 +2155,32 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Provides summary information about a trained model in a collaboration.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#ColumnClassificationDetails": {
+            "type": "structure",
+            "members": {
+                "columnMapping": {
+                    "target": "com.amazonaws.cleanroomsml#ColumnMappingList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A mapping that defines the classification of data columns for synthetic data generation and specifies how each column should be handled during the privacy-preserving data synthesis process.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains classification information for data columns, including mappings that specify how columns should be handled during synthetic data generation and privacy analysis.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#ColumnMappingList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanroomsml#SyntheticDataColumnProperties"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 5
+                }
             }
         },
         "com.amazonaws.cleanroomsml#ColumnName": {
@@ -3390,6 +3538,59 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.cleanroomsml#CustomDataIdentifier": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 200
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9\\_\\#\\=\\@/\\;\\,\\-\\ \\^\\$\\?\\[\\]\\{\\}\\|\\\\\\*\\+\\.\\(\\)]+$"
+            }
+        },
+        "com.amazonaws.cleanroomsml#CustomDataIdentifierList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanroomsml#CustomDataIdentifier"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                },
+                "smithy.api#uniqueItems": {}
+            }
+        },
+        "com.amazonaws.cleanroomsml#CustomEntityConfig": {
+            "type": "structure",
+            "members": {
+                "customDataIdentifiers": {
+                    "target": "com.amazonaws.cleanroomsml#CustomDataIdentifierList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Defines data identifiers for the custom entity configuration. Provide this only if CUSTOM redaction is configured. </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for defining custom patterns to be redacted from logs and error messages. This is for the CUSTOM config under entitiesToRedact. Both CustomEntityConfig and entitiesToRedact need to be present or not present.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#DataPrivacyScores": {
+            "type": "structure",
+            "members": {
+                "membershipInferenceAttackScores": {
+                    "target": "com.amazonaws.cleanroomsml#MembershipInferenceAttackScoreList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Scores that evaluate the vulnerability of the synthetic data to membership inference attacks, which attempt to determine whether a specific individual was a member of the original dataset.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Privacy evaluation scores that measure the privacy characteristics of the generated synthetic data, including assessments of potential privacy risks such as membership inference attacks.</p>"
+            }
+        },
         "com.amazonaws.cleanroomsml#DataSource": {
             "type": "structure",
             "members": {
@@ -4006,6 +4207,41 @@
                 "smithy.api#documentation": "<p>The Amazon S3 location where the exported model artifacts are stored.</p>"
             }
         },
+        "com.amazonaws.cleanroomsml#EntityType": {
+            "type": "enum",
+            "members": {
+                "ALL_PERSONALLY_IDENTIFIABLE_INFORMATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALL_PERSONALLY_IDENTIFIABLE_INFORMATION"
+                    }
+                },
+                "NUMBERS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NUMBERS"
+                    }
+                },
+                "CUSTOM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CUSTOM"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#EntityTypeList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanroomsml#EntityType"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1
+                },
+                "smithy.api#uniqueItems": {}
+            }
+        },
         "com.amazonaws.cleanroomsml#Environment": {
             "type": "map",
             "key": {
@@ -4511,29 +4747,6 @@
         "com.amazonaws.cleanroomsml#GetCollaborationMLInputChannelResponse": {
             "type": "structure",
             "members": {
-                "createTime": {
-                    "target": "smithy.api#Timestamp",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The time at which the ML input channel was created.</p>",
-                        "smithy.api#required": {},
-                        "smithy.api#timestampFormat": "date-time"
-                    }
-                },
-                "updateTime": {
-                    "target": "smithy.api#Timestamp",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The most recent time at which the ML input channel was updated.</p>",
-                        "smithy.api#required": {},
-                        "smithy.api#timestampFormat": "date-time"
-                    }
-                },
-                "creatorAccountId": {
-                    "target": "com.amazonaws.cleanroomsml#AccountId",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The account ID of the member who created the ML input channel.</p>",
-                        "smithy.api#required": {}
-                    }
-                },
                 "membershipIdentifier": {
                     "target": "com.amazonaws.cleanroomsml#UUID",
                     "traits": {
@@ -4604,10 +4817,45 @@
                         }
                     }
                 },
+                "privacyBudgets": {
+                    "target": "com.amazonaws.cleanroomsml#PrivacyBudgets",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Returns the privacy budgets that control access to this Clean Rooms ML input channel. Use these budgets to monitor and limit resource consumption over specified time periods.</p>"
+                    }
+                },
                 "description": {
                     "target": "com.amazonaws.cleanroomsml#ResourceDescription",
                     "traits": {
                         "smithy.api#documentation": "<p>The description of the ML input channel.</p>"
+                    }
+                },
+                "syntheticDataConfiguration": {
+                    "target": "com.amazonaws.cleanroomsml#SyntheticDataConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The synthetic data configuration for this ML input channel, including parameters for generating privacy-preserving synthetic data and evaluation scores for measuring the privacy of the generated data.</p>"
+                    }
+                },
+                "createTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time at which the ML input channel was created.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "updateTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The most recent time at which the ML input channel was updated.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "creatorAccountId": {
+                    "target": "com.amazonaws.cleanroomsml#AccountId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The account ID of the member who created the ML input channel.</p>",
+                        "smithy.api#required": {}
                     }
                 }
             },
@@ -5433,22 +5681,6 @@
         "com.amazonaws.cleanroomsml#GetMLInputChannelResponse": {
             "type": "structure",
             "members": {
-                "createTime": {
-                    "target": "smithy.api#Timestamp",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The time at which the ML input channel was created.</p>",
-                        "smithy.api#required": {},
-                        "smithy.api#timestampFormat": "date-time"
-                    }
-                },
-                "updateTime": {
-                    "target": "smithy.api#Timestamp",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The most recent time at which the ML input channel was updated.</p>",
-                        "smithy.api#required": {},
-                        "smithy.api#timestampFormat": "date-time"
-                    }
-                },
                 "membershipIdentifier": {
                     "target": "com.amazonaws.cleanroomsml#UUID",
                     "traits": {
@@ -5461,19 +5693,6 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The collaboration ID of the collaboration that contains the ML input channel.</p>",
                         "smithy.api#required": {}
-                    }
-                },
-                "inputChannel": {
-                    "target": "com.amazonaws.cleanroomsml#InputChannel",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The input channel that was used to create the ML input channel.</p>",
-                        "smithy.api#required": {}
-                    }
-                },
-                "protectedQueryIdentifier": {
-                    "target": "com.amazonaws.cleanroomsml#UUID",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The ID of the protected query that was used to create the ML input channel.</p>"
                     }
                 },
                 "mlInputChannelArn": {
@@ -5532,6 +5751,53 @@
                         }
                     }
                 },
+                "privacyBudgets": {
+                    "target": "com.amazonaws.cleanroomsml#PrivacyBudgets",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Returns the privacy budgets that control access to this Clean Rooms ML input channel. Use these budgets to monitor and limit resource consumption over specified time periods.</p>"
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.cleanroomsml#ResourceDescription",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the ML input channel.</p>"
+                    }
+                },
+                "syntheticDataConfiguration": {
+                    "target": "com.amazonaws.cleanroomsml#SyntheticDataConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The synthetic data configuration for this ML input channel, including parameters for generating privacy-preserving synthetic data and evaluation scores for measuring the privacy of the generated data.</p>"
+                    }
+                },
+                "createTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time at which the ML input channel was created.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "updateTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The most recent time at which the ML input channel was updated.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "inputChannel": {
+                    "target": "com.amazonaws.cleanroomsml#InputChannel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The input channel that was used to create the ML input channel.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "protectedQueryIdentifier": {
+                    "target": "com.amazonaws.cleanroomsml#UUID",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the protected query that was used to create the ML input channel.</p>"
+                    }
+                },
                 "numberOfFiles": {
                     "target": "smithy.api#Double",
                     "traits": {
@@ -5550,12 +5816,6 @@
                             "min": 0,
                             "max": 1000000
                         }
-                    }
-                },
-                "description": {
-                    "target": "com.amazonaws.cleanroomsml#ResourceDescription",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The description of the ML input channel.</p>"
                     }
                 },
                 "kmsKeyArn": {
@@ -6484,12 +6744,6 @@
                         "smithy.api#enumValue": "ml.m5.large"
                     }
                 },
-                "ML_P3_16XLARGE": {
-                    "target": "smithy.api#Unit",
-                    "traits": {
-                        "smithy.api#enumValue": "ml.p3.16xlarge"
-                    }
-                },
                 "ML_M7I_48XLARGE": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -6772,12 +7026,6 @@
                         "smithy.api#enumValue": "ml.m7i.4xlarge"
                     }
                 },
-                "ML_P3_2XLARGE": {
-                    "target": "smithy.api#Unit",
-                    "traits": {
-                        "smithy.api#enumValue": "ml.p3.2xlarge"
-                    }
-                },
                 "ML_R6I_32XLARGE": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -6928,16 +7176,40 @@
                         "smithy.api#enumValue": "ml.m6i.32xlarge"
                     }
                 },
-                "ML_P3_8XLARGE": {
-                    "target": "smithy.api#Unit",
-                    "traits": {
-                        "smithy.api#enumValue": "ml.p3.8xlarge"
-                    }
-                },
                 "ML_M4_4XLARGE": {
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ml.m4.4xlarge"
+                    }
+                },
+                "ML_P3_16XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "P3 instance types are deprecated. Use P4 or newer instance types for better performance and cost efficiency.",
+                            "since": "2025-09-02"
+                        },
+                        "smithy.api#enumValue": "ml.p3.16xlarge"
+                    }
+                },
+                "ML_P3_2XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "P3 instance types are deprecated. Use P4 or newer instance types for better performance and cost efficiency.",
+                            "since": "2025-09-02"
+                        },
+                        "smithy.api#enumValue": "ml.p3.2xlarge"
+                    }
+                },
+                "ML_P3_8XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "P3 instance types are deprecated. Use P4 or newer instance types for better performance and cost efficiency.",
+                            "since": "2025-09-02"
+                        },
+                        "smithy.api#enumValue": "ml.p3.8xlarge"
                     }
                 }
             }
@@ -7199,30 +7471,6 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ml.p2.16xlarge"
-                    }
-                },
-                "ML_P3_2XLARGE": {
-                    "target": "smithy.api#Unit",
-                    "traits": {
-                        "smithy.api#enumValue": "ml.p3.2xlarge"
-                    }
-                },
-                "ML_P3_8XLARGE": {
-                    "target": "smithy.api#Unit",
-                    "traits": {
-                        "smithy.api#enumValue": "ml.p3.8xlarge"
-                    }
-                },
-                "ML_P3_16XLARGE": {
-                    "target": "smithy.api#Unit",
-                    "traits": {
-                        "smithy.api#enumValue": "ml.p3.16xlarge"
-                    }
-                },
-                "ML_P3DN_24XLARGE": {
-                    "target": "smithy.api#Unit",
-                    "traits": {
-                        "smithy.api#enumValue": "ml.p3dn.24xlarge"
                     }
                 },
                 "ML_P4D_24XLARGE": {
@@ -7589,6 +7837,310 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ml.r5.24xlarge"
+                    }
+                },
+                "ML_C7I_LARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.c7i.large"
+                    }
+                },
+                "ML_C7I_XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.c7i.xlarge"
+                    }
+                },
+                "ML_C7I_2XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.c7i.2xlarge"
+                    }
+                },
+                "ML_C7I_4XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.c7i.4xlarge"
+                    }
+                },
+                "ML_C7I_8XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.c7i.8xlarge"
+                    }
+                },
+                "ML_C7I_12XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.c7i.12xlarge"
+                    }
+                },
+                "ML_C7I_16XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.c7i.16xlarge"
+                    }
+                },
+                "ML_C7I_24XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.c7i.24xlarge"
+                    }
+                },
+                "ML_C7I_48XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.c7i.48xlarge"
+                    }
+                },
+                "ML_M7I_LARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.m7i.large"
+                    }
+                },
+                "ML_M7I_XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.m7i.xlarge"
+                    }
+                },
+                "ML_M7I_2XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.m7i.2xlarge"
+                    }
+                },
+                "ML_M7I_4XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.m7i.4xlarge"
+                    }
+                },
+                "ML_M7I_8XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.m7i.8xlarge"
+                    }
+                },
+                "ML_M7I_12XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.m7i.12xlarge"
+                    }
+                },
+                "ML_M7I_16XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.m7i.16xlarge"
+                    }
+                },
+                "ML_M7I_24XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.m7i.24xlarge"
+                    }
+                },
+                "ML_M7I_48XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.m7i.48xlarge"
+                    }
+                },
+                "ML_R7I_LARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.r7i.large"
+                    }
+                },
+                "ML_R7I_XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.r7i.xlarge"
+                    }
+                },
+                "ML_R7I_2XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.r7i.2xlarge"
+                    }
+                },
+                "ML_R7I_4XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.r7i.4xlarge"
+                    }
+                },
+                "ML_R7I_8XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.r7i.8xlarge"
+                    }
+                },
+                "ML_R7I_12XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.r7i.12xlarge"
+                    }
+                },
+                "ML_R7I_16XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.r7i.16xlarge"
+                    }
+                },
+                "ML_R7I_24XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.r7i.24xlarge"
+                    }
+                },
+                "ML_R7I_48XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.r7i.48xlarge"
+                    }
+                },
+                "ML_G6_XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6.xlarge"
+                    }
+                },
+                "ML_G6_2XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6.2xlarge"
+                    }
+                },
+                "ML_G6_4XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6.4xlarge"
+                    }
+                },
+                "ML_G6_8XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6.8xlarge"
+                    }
+                },
+                "ML_G6_12XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6.12xlarge"
+                    }
+                },
+                "ML_G6_16XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6.16xlarge"
+                    }
+                },
+                "ML_G6_24XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6.24xlarge"
+                    }
+                },
+                "ML_G6_48XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6.48xlarge"
+                    }
+                },
+                "ML_G6E_XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6e.xlarge"
+                    }
+                },
+                "ML_G6E_2XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6e.2xlarge"
+                    }
+                },
+                "ML_G6E_4XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6e.4xlarge"
+                    }
+                },
+                "ML_G6E_8XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6e.8xlarge"
+                    }
+                },
+                "ML_G6E_12XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6e.12xlarge"
+                    }
+                },
+                "ML_G6E_16XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6e.16xlarge"
+                    }
+                },
+                "ML_G6E_24XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6e.24xlarge"
+                    }
+                },
+                "ML_G6E_48XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g6e.48xlarge"
+                    }
+                },
+                "ML_P5EN_48XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.p5en.48xlarge"
+                    }
+                },
+                "ML_P3_2XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "P3 instance types are deprecated. Use P4 or newer instance types for better performance and cost efficiency.",
+                            "since": "2025-09-02"
+                        },
+                        "smithy.api#enumValue": "ml.p3.2xlarge"
+                    }
+                },
+                "ML_P3_8XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "P3 instance types are deprecated. Use P4 or newer instance types for better performance and cost efficiency.",
+                            "since": "2025-09-02"
+                        },
+                        "smithy.api#enumValue": "ml.p3.8xlarge"
+                    }
+                },
+                "ML_P3_16XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "P3 instance types are deprecated. Use P4 or newer instance types for better performance and cost efficiency.",
+                            "since": "2025-09-02"
+                        },
+                        "smithy.api#enumValue": "ml.p3.16xlarge"
+                    }
+                },
+                "ML_P3DN_24XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "P3 instance types are deprecated. Use P4 or newer instance types for better performance and cost efficiency.",
+                            "since": "2025-09-02"
+                        },
+                        "smithy.api#enumValue": "ml.p3dn.24xlarge"
                     }
                 }
             }
@@ -9073,6 +9625,44 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.cleanroomsml#LogRedactionConfiguration": {
+            "type": "structure",
+            "members": {
+                "entitiesToRedact": {
+                    "target": "com.amazonaws.cleanroomsml#EntityTypeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the entities to be redacted from logs. Entities to redact are \"ALL_PERSONALLY_IDENTIFIABLE_INFORMATION\", \"NUMBERS\",\"CUSTOM\". If CUSTOM is supplied or configured, custom patterns (customDataIdentifiers) should be provided, and the patterns will be redacted in logs or error messages.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "customEntityConfig": {
+                    "target": "com.amazonaws.cleanroomsml#CustomEntityConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the configuration for custom entities in the context of log redaction.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for log redaction.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#LogType": {
+            "type": "enum",
+            "members": {
+                "ALL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALL"
+                    }
+                },
+                "ERROR_SUMMARY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ERROR_SUMMARY"
+                    }
+                }
+            }
+        },
         "com.amazonaws.cleanroomsml#LogsConfigurationPolicy": {
             "type": "structure",
             "members": {
@@ -9091,6 +9681,19 @@
                             "min": 0,
                             "max": 1024
                         }
+                    }
+                },
+                "logType": {
+                    "target": "com.amazonaws.cleanroomsml#LogType",
+                    "traits": {
+                        "smithy.api#default": "ALL",
+                        "smithy.api#documentation": "<p>Specifies the type of log this policy applies to. The currently supported policies are ALL or ERROR_SUMMARY.</p>"
+                    }
+                },
+                "logRedactionConfiguration": {
+                    "target": "com.amazonaws.cleanroomsml#LogRedactionConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the log redaction configuration for this policy.</p>"
                     }
                 }
             },
@@ -9357,12 +9960,97 @@
                 "smithy.api#documentation": "<p>Configuration information about how the exported model artifacts are stored.</p>"
             }
         },
+        "com.amazonaws.cleanroomsml#MLSyntheticDataParameters": {
+            "type": "structure",
+            "members": {
+                "epsilon": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The epsilon value for differential privacy, which controls the privacy-utility tradeoff in synthetic data generation. Lower values provide stronger privacy guarantees but may reduce data utility.</p>",
+                        "smithy.api#range": {
+                            "min": 1.0E-4,
+                            "max": 10
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "maxMembershipInferenceAttackScore": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum acceptable score for membership inference attack vulnerability. Synthetic data generation fails if the score for the resulting data exceeds this threshold.</p>",
+                        "smithy.api#range": {
+                            "min": 0.5,
+                            "max": 1
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "columnClassification": {
+                    "target": "com.amazonaws.cleanroomsml#ColumnClassificationDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Classification details for data columns that specify how each column should be treated during synthetic data generation.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Parameters that control the generation of synthetic data for custom model training, including privacy settings and column classification details.</p>"
+            }
+        },
         "com.amazonaws.cleanroomsml#MaxResults": {
             "type": "integer",
             "traits": {
                 "smithy.api#range": {
                     "min": 1,
                     "max": 100
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#MembershipInferenceAttackScore": {
+            "type": "structure",
+            "members": {
+                "attackVersion": {
+                    "target": "com.amazonaws.cleanroomsml#MembershipInferenceAttackVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The version of the membership inference attack, which consists of the attack type and its version number, used to generate this privacy score.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "score": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The numerical score representing the vulnerability to membership inference attacks.</p>",
+                        "smithy.api#range": {
+                            "min": 0.0,
+                            "max": 1.0
+                        },
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A score that measures the vulnerability of synthetic data to membership inference attacks and provides both the numerical score and the version of the attack methodology used for evaluation.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#MembershipInferenceAttackScoreList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cleanroomsml#MembershipInferenceAttackScore"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#MembershipInferenceAttackVersion": {
+            "type": "enum",
+            "members": {
+                "DISTANCE_TO_CLOSEST_RECORD_V1": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DISTANCE_TO_CLOSEST_RECORD_V1"
+                    }
                 }
             }
         },
@@ -9588,7 +10276,16 @@
                 }
             }
         },
-        "com.amazonaws.cleanroomsml#ParameterKey": {
+        "com.amazonaws.cleanroomsml#ParameterMap": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.cleanroomsml#ParameterName"
+            },
+            "value": {
+                "target": "com.amazonaws.cleanroomsml#ParameterValue"
+            }
+        },
+        "com.amazonaws.cleanroomsml#ParameterName": {
             "type": "string",
             "traits": {
                 "smithy.api#length": {
@@ -9596,15 +10293,6 @@
                     "max": 100
                 },
                 "smithy.api#pattern": "^[0-9a-zA-Z_]+$"
-            }
-        },
-        "com.amazonaws.cleanroomsml#ParameterMap": {
-            "type": "map",
-            "key": {
-                "target": "com.amazonaws.cleanroomsml#ParameterKey"
-            },
-            "value": {
-                "target": "com.amazonaws.cleanroomsml#ParameterValue"
             }
         },
         "com.amazonaws.cleanroomsml#ParameterValue": {
@@ -9631,6 +10319,20 @@
                         "smithy.api#enumValue": "POLICY_MUST_NOT_EXIST"
                     }
                 }
+            }
+        },
+        "com.amazonaws.cleanroomsml#PrivacyBudgets": {
+            "type": "union",
+            "members": {
+                "accessBudgets": {
+                    "target": "com.amazonaws.cleanroomsml#AccessBudgets",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of access budgets that apply to resources associated with this Clean Rooms ML input channel.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The privacy budget information that controls access to Clean Rooms ML input channels.</p>"
             }
         },
         "com.amazonaws.cleanroomsml#PrivacyConfiguration": {
@@ -9923,7 +10625,7 @@
                 "volumeSizeInGB": {
                     "target": "smithy.api#Integer",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum size of the instance that is used to train the model.</p>",
+                        "smithy.api#documentation": "<p>The volume size of the instance that is used to train the model. Please see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-store-volumes.html\">EC2 volume limit</a> for volume size limitations on different instance types.</p>",
                         "smithy.api#range": {
                             "min": 1,
                             "max": 8192
@@ -10078,6 +10780,39 @@
                     "traits": {
                         "smithy.api#enumValue": "NONE"
                     }
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#SparkProperties": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.cleanroomsml#SparkPropertyKey"
+            },
+            "value": {
+                "target": "com.amazonaws.cleanroomsml#SparkPropertyValue"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 50
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#SparkPropertyKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 200
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#SparkPropertyValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 500
                 }
             }
         },
@@ -10525,6 +11260,97 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The criteria used to stop model training.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#SyntheticDataColumnName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 128
+                },
+                "smithy.api#pattern": "^[a-z0-9_](([a-z0-9_]+-)*([a-z0-9_]+))?$"
+            }
+        },
+        "com.amazonaws.cleanroomsml#SyntheticDataColumnProperties": {
+            "type": "structure",
+            "members": {
+                "columnName": {
+                    "target": "com.amazonaws.cleanroomsml#SyntheticDataColumnName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the data column as it appears in the dataset.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "columnType": {
+                    "target": "com.amazonaws.cleanroomsml#SyntheticDataColumnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The data type of the column, which determines how the synthetic data generation algorithm processes and synthesizes values for this column.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "isPredictiveValue": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates if this column contains predictive values that should be treated as target variables in machine learning models. This affects how the synthetic data generation preserves statistical relationships.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Properties that define how a specific data column should be handled during synthetic data generation, including its name, type, and role in predictive modeling.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#SyntheticDataColumnType": {
+            "type": "enum",
+            "members": {
+                "CATEGORICAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CATEGORICAL"
+                    }
+                },
+                "NUMERICAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NUMERICAL"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cleanroomsml#SyntheticDataConfiguration": {
+            "type": "structure",
+            "members": {
+                "syntheticDataParameters": {
+                    "target": "com.amazonaws.cleanroomsml#MLSyntheticDataParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The parameters that control how synthetic data is generated, including privacy settings, column classifications, and other configuration options that affect the data synthesis process.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "syntheticDataEvaluationScores": {
+                    "target": "com.amazonaws.cleanroomsml#SyntheticDataEvaluationScores",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Evaluation scores that assess the quality and privacy characteristics of the generated synthetic data, providing metrics on data utility and privacy preservation.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration settings for synthetic data generation, including the parameters that control data synthesis and the evaluation scores that measure the quality and privacy characteristics of the generated synthetic data.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#SyntheticDataEvaluationScores": {
+            "type": "structure",
+            "members": {
+                "dataPrivacyScores": {
+                    "target": "com.amazonaws.cleanroomsml#DataPrivacyScores",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Privacy-specific evaluation scores that measure how well the synthetic data protects individual privacy, including assessments of potential privacy risks such as membership inference attacks.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Comprehensive evaluation metrics for synthetic data that assess both the utility of the generated data for machine learning tasks and its privacy preservation characteristics.</p>"
             }
         },
         "com.amazonaws.cleanroomsml#TagKey": {
@@ -11764,10 +12590,27 @@
                             "max": 400
                         }
                     }
+                },
+                "properties": {
+                    "target": "com.amazonaws.cleanroomsml#WorkerComputeConfigurationProperties"
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Configuration information about the compute workers that perform the transform job.</p>"
+            }
+        },
+        "com.amazonaws.cleanroomsml#WorkerComputeConfigurationProperties": {
+            "type": "union",
+            "members": {
+                "spark": {
+                    "target": "com.amazonaws.cleanroomsml#SparkProperties",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Spark configuration properties for SQL workloads. This map contains key-value pairs that configure Apache Spark settings to optimize performance for your data processing jobs. You can specify up to 50 Spark properties, with each key being 1-200 characters and each value being 0-500 characters. These properties allow you to adjust compute capacity for large datasets and complex workloads.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration properties for the worker compute environment. These properties allow you to customize the compute settings for your Clean Rooms workloads.</p>"
             }
         },
         "com.amazonaws.cleanroomsml#WorkerComputeType": {

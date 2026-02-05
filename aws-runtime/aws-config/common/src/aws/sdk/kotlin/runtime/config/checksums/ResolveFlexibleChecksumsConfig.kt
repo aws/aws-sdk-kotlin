@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.runtime.config.checksums
 
 import aws.sdk.kotlin.runtime.InternalSdkApi
@@ -19,8 +24,7 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
 public suspend fun resolveRequestChecksumCalculation(
     platform: PlatformProvider = PlatformProvider.System,
     profile: LazyAsyncValue<AwsProfile>,
-): RequestHttpChecksumConfig =
-    AwsSdkSetting.AwsRequestChecksumCalculation.resolve(platform) ?: profile.get().requestChecksumCalculation ?: RequestHttpChecksumConfig.WHEN_SUPPORTED
+): RequestHttpChecksumConfig = AwsSdkSetting.AwsRequestChecksumCalculation.resolve(platform) ?: profile.get().requestChecksumCalculation ?: RequestHttpChecksumConfig.WHEN_SUPPORTED
 
 /**
  * Attempts to resolve responseChecksumValidation from the specified sources.
@@ -30,5 +34,4 @@ public suspend fun resolveRequestChecksumCalculation(
 public suspend fun resolveResponseChecksumValidation(
     platform: PlatformProvider = PlatformProvider.System,
     profile: LazyAsyncValue<AwsProfile>,
-): ResponseHttpChecksumConfig =
-    AwsSdkSetting.AwsResponseChecksumValidation.resolve(platform) ?: profile.get().responseChecksumValidation ?: ResponseHttpChecksumConfig.WHEN_SUPPORTED
+): ResponseHttpChecksumConfig = AwsSdkSetting.AwsResponseChecksumValidation.resolve(platform) ?: profile.get().responseChecksumValidation ?: ResponseHttpChecksumConfig.WHEN_SUPPORTED

@@ -1,9 +1,14 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.codegen
 
+import aws.smithy.kotlin.codegen.test.newTestContext
+import aws.smithy.kotlin.codegen.test.toCodegenContext
+import aws.smithy.kotlin.codegen.test.toSmithyModel
 import software.amazon.smithy.build.MockManifest
-import software.amazon.smithy.kotlin.codegen.test.newTestContext
-import software.amazon.smithy.kotlin.codegen.test.toCodegenContext
-import software.amazon.smithy.kotlin.codegen.test.toSmithyModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

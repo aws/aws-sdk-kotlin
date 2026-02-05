@@ -21,4 +21,4 @@ jobs:
           aws-region: us-west-2
 
       - name: Verify changelog
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/changelog-verification@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/changelog-verification@main

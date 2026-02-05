@@ -198,7 +198,7 @@ class DefaultChainCredentialsProviderTest {
                 // In particular a test case only looks to verify a specific behavior and even though it
                 // may fail at the correct spot, later providers may still be tried and also fail.
                 val needle = expected.message
-                val haystack = ex.causesAndSuppressions().mapNotNull { it.message }
+                val haystack = listOf(ex.message!!) + ex.suppressed.map { it.message!! } + ex.suppressed.mapNotNull { it.cause?.message }
                 val expectedErrorFound = haystack.any { it.contains(needle) }
                 assertTrue(expectedErrorFound, "`$needle` not found in any of the chain exception messages: $haystack")
             }
@@ -279,10 +279,4 @@ class DefaultChainCredentialsProviderTest {
 
     @Test
     fun testStsRetryOnError() = executeTest("retry_on_error")
-}
-
-private fun Throwable.causesAndSuppressions(): List<Throwable> = buildList {
-    add(this@causesAndSuppressions)
-    addAll(cause?.causesAndSuppressions().orEmpty())
-    addAll(suppressedExceptions.flatMap { it.causesAndSuppressions() })
 }

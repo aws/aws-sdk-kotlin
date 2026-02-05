@@ -10,6 +10,7 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.StsClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.assumeRoleWithWebIdentity
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.PolicyDescriptorType
+import aws.sdk.kotlin.runtime.config.AwsSdkClientOption
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
@@ -122,6 +123,7 @@ public class StsWebIdentityCredentialsProvider(
             // NOTE: credentials provider not needed for this operation
             telemetryProvider = telemetry
             logMode = attributes.getOrNull(SdkClientOption.LogMode)
+            applicationId = attributes.getOrNull(AwsSdkClientOption.ApplicationId)
         }
 
         val resp = try {
@@ -185,9 +187,8 @@ public class AssumeRoleWithWebIdentityParameters(
 }
 
 // convenience function to resolve parameters for fromEnvironment()
-private inline fun <reified T> PlatformProvider.resolve(explicit: T?, setting: EnvironmentSetting<T>, name: String): T =
-    explicit
-        ?: setting.resolve(this)
-        ?: throw ProviderConfigurationException(
-            "Required field `$name` could not be automatically inferred for StsWebIdentityCredentialsProvider. Either explicitly pass a value, set the environment variable `${setting.envVar}`, or set the JVM system property `${setting.sysProp}`",
-        )
+private inline fun <reified T> PlatformProvider.resolve(explicit: T?, setting: EnvironmentSetting<T>, name: String): T = explicit
+    ?: setting.resolve(this)
+    ?: throw ProviderConfigurationException(
+        "Required field `$name` could not be automatically inferred for StsWebIdentityCredentialsProvider. Either explicitly pass a value, set the environment variable `${setting.envVar}`, or set the JVM system property `${setting.sysProp}`",
+    )

@@ -58,7 +58,8 @@ public object AwsSdkSetting {
     /**
      * Configure the user agent app ID
      */
-    public val AwsAppId: EnvironmentSetting<String> = strEnvSetting(AWS_APP_ID_PROP, AWS_APP_ID_ENV)
+    public val AwsAppId: MultipleKeyEnvironmentSetting<String> = strEnvSetting(AWS_APP_ID_PROP, AWS_APP_ID_ENV)
+        .withAdditionalKeys(listOf("sdk.ua.appId"))
 
     /**
      * Configure the default path to the shared config file.
@@ -104,14 +105,6 @@ public object AwsSdkSetting {
      */
     public val AwsEc2MetadataServiceEndpointMode: EnvironmentSetting<String> =
         strEnvSetting("aws.ec2MetadataServiceEndpointMode", "AWS_EC2_METADATA_SERVICE_ENDPOINT_MODE")
-
-    /**
-     * The name of the EC2
-     * [instance profile](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html)
-     * to use for resolving credentials on an EC2 instance. Specifying this name disables profile name discovery.
-     */
-    public val AwsEc2InstanceProfileName: EnvironmentSetting<String> =
-        strEnvSetting("aws.ec2InstanceProfileName", "AWS_EC2_INSTANCE_PROFILE_NAME")
 
     // TODO Currently env/system properties around role ARN, role session name, etc are restricted to the STS web
     //  identity provider. They should be applied more broadly but this needs fleshed out across AWS SDKs before we can
@@ -216,8 +209,8 @@ public object AwsSdkSetting {
     /**
      * The set of regions to use when signing a request with sigV4a.
      */
-    public val AwsSigV4aSigningRegionSet: EnvironmentSetting<String> =
-        strEnvSetting("aws.sigV4aSigningRegionSet", "AWS_SIGV4A_SIGNING_REGION_SET")
+    public val AwsSigV4aSigningRegionSet: MultipleKeyEnvironmentSetting<String> = strEnvSetting("aws.sigV4aSigningRegionSet", "AWS_SIGV4A_SIGNING_REGION_SET")
+        .withAdditionalKeys(listOf("aws.sigv4a.signing.region.set"))
 
     /**
      * A flag indicating whether endpoint discovery is enabled for AWS services that support it. The implicit default
@@ -255,6 +248,7 @@ public fun AwsSdkSetting.resolveEndpointUrl(
     sysPropSuffix: String,
     envSuffix: String,
 ): Url? {
-    val serviceSetting = EnvironmentSetting(Url::parse)("aws.endpointUrl$sysPropSuffix", "AWS_ENDPOINT_URL_$envSuffix")
+    val serviceSetting = EnvironmentSetting(Url::parse)("aws.endpointUrl", "AWS_ENDPOINT_URL_")
+        .withCaseInsensitiveSuffixes(sysPropSuffix, envSuffix)
     return serviceSetting.resolve(provider) ?: AwsEndpointUrl.resolve(provider)
 }

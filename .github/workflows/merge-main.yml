@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Merge main
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/merge-main@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/merge-main@main
         with:
           ci-user-pat: ${{ secrets.CI_USER_PAT }}
           exempt-branches: # Add any if required

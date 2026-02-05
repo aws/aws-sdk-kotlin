@@ -4,8 +4,8 @@
  */
 package aws.sdk.kotlin.hll.codegen.util
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class StringsTest {
     @Test

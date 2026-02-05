@@ -24,10 +24,9 @@ public class EnumConverter<E : Enum<E>>(
  * @param E The [Enum] type for which to create a [ValueConverter]
  */
 @ExperimentalApi
-public inline fun <reified E : Enum<E>> EnumConverter(): EnumConverter<E> =
-    EnumConverter(
-        enumToStringConverter = Converter(
-            convertTo = { from: E -> from.name },
-            convertFrom = { to: String -> enumValueOf(to) },
-        ),
-    )
+public inline fun <reified E : Enum<E>> EnumConverter(): EnumConverter<E> = EnumConverter(
+    enumToStringConverter = Converter(
+        convertTo = { from: E -> from.name },
+        convertFrom = { to: String -> enumValueOf(to) },
+    ),
+)

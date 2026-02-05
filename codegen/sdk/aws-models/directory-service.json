@@ -198,7 +198,7 @@
                     "target": "com.amazonaws.directoryservice#UpdateSecurityGroupForDirectoryControllers",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>If set to true, updates the inbound and outbound rules of the security group that has\n         the description: \"Amazon Web Services created security group for <i>directory ID</i>\n         directory controllers.\" Following are the new rules: </p>\n         <p>Inbound:</p>\n         <ul>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 88, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 123, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 138, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 389, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 464, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 445, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 88, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 135, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 445, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 464, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 636, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 1024-65535, Source:\n               Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 3268-33269, Source:\n               Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: DNS (UDP), Protocol: UDP, Range: 53, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: DNS (TCP), Protocol: TCP, Range: 53, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: LDAP, Protocol: TCP, Range: 389, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: All ICMP, Protocol: All, Range: N/A, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n         </ul>\n         <p></p>\n         <p>Outbound:</p>\n         <ul>\n            <li>\n               <p>Type: All traffic, Protocol: All, Range: All, Destination: 0.0.0.0/0</p>\n            </li>\n         </ul>\n         <p>These security rules impact an internal network interface that is not exposed\n         publicly.</p>"
+                        "smithy.api#documentation": "<p>If set to true, updates the inbound and outbound rules of the security group that has\n         the description: \"Amazon Web Services created security group for <i>directory ID</i>\n         directory controllers.\" Following are the new rules: </p>\n         <p>Inbound:</p>\n         <ul>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 88, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 123, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 138, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 389, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 464, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom UDP Rule, Protocol: UDP, Range: 445, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 88, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 135, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 445, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 464, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 636, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 1024-65535, Source: Managed Microsoft AD VPC\n               IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: Custom TCP Rule, Protocol: TCP, Range: 3268-33269, Source: Managed Microsoft AD VPC\n               IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: DNS (UDP), Protocol: UDP, Range: 53, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: DNS (TCP), Protocol: TCP, Range: 53, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n            <li>\n               <p>Type: LDAP, Protocol: TCP, Range: 389, Source: Managed Microsoft AD VPC IPv4 CIDR</p>\n            </li>\n            <li>\n               <p>Type: All ICMP, Protocol: All, Range: N/A, Source: Managed Microsoft AD VPC IPv4\n               CIDR</p>\n            </li>\n         </ul>\n         <p></p>\n         <p>Outbound:</p>\n         <ul>\n            <li>\n               <p>Type: All traffic, Protocol: All, Range: All, Destination: 0.0.0.0/0</p>\n            </li>\n         </ul>\n         <p>These security rules impact an internal network interface that is not exposed\n         publicly.</p>"
                     }
                 }
             },
@@ -804,6 +804,50 @@
                 "target": "com.amazonaws.directoryservice#AvailabilityZone"
             }
         },
+        "com.amazonaws.directoryservice#CaEnrollmentPolicyStatus": {
+            "type": "enum",
+            "members": {
+                "IN_PROGRESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "InProgress"
+                    }
+                },
+                "SUCCESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Success"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Failed"
+                    }
+                },
+                "DISABLING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Disabling"
+                    }
+                },
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Disabled"
+                    }
+                },
+                "IMPAIRED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Impaired"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.directoryservice#CaEnrollmentPolicyStatusReason": {
+            "type": "string"
+        },
         "com.amazonaws.directoryservice#CancelSchemaExtension": {
             "type": "operation",
             "input": {
@@ -1124,6 +1168,18 @@
                 "target": "com.amazonaws.directoryservice#CidrIp"
             }
         },
+        "com.amazonaws.directoryservice#CidrIpv6": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^((([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,7}:)|(([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2})|(([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3})|(([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4})|(([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5})|([0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6}))|(:((:[0-9a-fA-F]{1,4}){1,7}|:)))\\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$"
+            }
+        },
+        "com.amazonaws.directoryservice#CidrIpv6s": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.directoryservice#CidrIpv6"
+            }
+        },
         "com.amazonaws.directoryservice#ClientAuthenticationSettingInfo": {
             "type": "structure",
             "members": {
@@ -1286,6 +1342,12 @@
                         "smithy.api#documentation": "<p>The IP addresses of the remote DNS server associated with RemoteDomainName. This is the\n      IP address of the DNS server that your conditional forwarder points to.</p>"
                     }
                 },
+                "DnsIpv6Addrs": {
+                    "target": "com.amazonaws.directoryservice#DnsIpv6Addrs",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IPv6 addresses of the remote DNS server associated with RemoteDomainName. This is the\n      IPv6 address of the DNS server that your conditional forwarder points to.</p>"
+                    }
+                },
                 "ReplicationScope": {
                     "target": "com.amazonaws.directoryservice#ReplicationScope",
                     "traits": {
@@ -1403,6 +1465,12 @@
                     "target": "com.amazonaws.directoryservice#Tags",
                     "traits": {
                         "smithy.api#documentation": "<p>The tags to be assigned to AD Connector.</p>"
+                    }
+                },
+                "NetworkType": {
+                    "target": "com.amazonaws.directoryservice#NetworkType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The network type for your directory. The default value is <code>IPv4</code> or\n        <code>IPv6</code> based on the provided subnet capabilities.</p>"
                     }
                 }
             },
@@ -1727,8 +1795,15 @@
                 "DnsIpAddrs": {
                     "target": "com.amazonaws.directoryservice#DnsIpAddrs",
                     "traits": {
-                        "smithy.api#documentation": "<p>The IP addresses of the remote DNS server associated with RemoteDomainName.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": [],
+                        "smithy.api#documentation": "<p>The IP addresses of the remote DNS server associated with RemoteDomainName.</p>"
+                    }
+                },
+                "DnsIpv6Addrs": {
+                    "target": "com.amazonaws.directoryservice#DnsIpv6Addrs",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IPv6 addresses of the remote DNS server associated with RemoteDomainName.</p>"
                     }
                 }
             },
@@ -1840,6 +1915,12 @@
                     "target": "com.amazonaws.directoryservice#Tags",
                     "traits": {
                         "smithy.api#documentation": "<p>The tags to be assigned to the Simple AD directory.</p>"
+                    }
+                },
+                "NetworkType": {
+                    "target": "com.amazonaws.directoryservice#NetworkType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The network type for your directory. Simple AD supports IPv4 and Dual-stack only.</p>"
                     }
                 }
             },
@@ -2099,6 +2180,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The tags to be assigned to the Managed Microsoft AD directory.</p>"
                     }
+                },
+                "NetworkType": {
+                    "target": "com.amazonaws.directoryservice#NetworkType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n      The network type for your domain. The default value is <code>IPv4</code> or <code>IPv6</code>\n      based on the provided subnet capabilities.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2304,6 +2391,12 @@
                     "target": "com.amazonaws.directoryservice#DnsIpAddrs",
                     "traits": {
                         "smithy.api#documentation": "<p>The IP addresses of the remote DNS server associated with RemoteDomainName.</p>"
+                    }
+                },
+                "ConditionalForwarderIpv6Addrs": {
+                    "target": "com.amazonaws.directoryservice#DnsIpv6Addrs",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IPv6 addresses of the remote DNS server associated with RemoteDomainName.</p>"
                     }
                 },
                 "SelectiveAuth": {
@@ -2999,6 +3092,87 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.directoryservice#DescribeCAEnrollmentPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.directoryservice#DescribeCAEnrollmentPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.directoryservice#DescribeCAEnrollmentPolicyResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.directoryservice#ClientException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#DirectoryDoesNotExistException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#ServiceException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#UnsupportedOperationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves detailed information about the certificate authority (CA) enrollment policy for\n      the specified directory. This policy determines how client certificates are automatically enrolled and\n      managed through Amazon Web Services Private Certificate Authority. </p>"
+            }
+        },
+        "com.amazonaws.directoryservice#DescribeCAEnrollmentPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "DirectoryId": {
+                    "target": "com.amazonaws.directoryservice#DirectoryId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the directory for which to retrieve the CA enrollment policy\n      information.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the inputs for the <a>DescribeCAEnrollmentPolicy</a> operation.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.directoryservice#DescribeCAEnrollmentPolicyResult": {
+            "type": "structure",
+            "members": {
+                "DirectoryId": {
+                    "target": "com.amazonaws.directoryservice#DirectoryId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the directory associated with this CA enrollment policy.</p>"
+                    }
+                },
+                "PcaConnectorArn": {
+                    "target": "com.amazonaws.directoryservice#PcaConnectorArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Amazon Web Services Private Certificate Authority (PCA) connector\n      that is configured for automatic certificate enrollment in this directory.</p>"
+                    }
+                },
+                "CaEnrollmentPolicyStatus": {
+                    "target": "com.amazonaws.directoryservice#CaEnrollmentPolicyStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the CA enrollment policy. This indicates if automatic certificate\n      enrollment is currently active, inactive, or in a transitional state.</p>\n         <p>Valid values:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IN_PROGRESS</code> - The policy is being activated T</p>\n            </li>\n            <li>\n               <p>\n                  <code>SUCCESS</code> - The policy is active and automatic certificate enrollment is\n          operational</p>\n            </li>\n            <li>\n               <p>\n                  <code>FAILED</code> - The policy activation or deactivation failed</p>\n            </li>\n            <li>\n               <p>\n                  <code>DISABLING</code> - The policy is being deactivated</p>\n            </li>\n            <li>\n               <p>\n                  <code>DISABLED</code> - The policy is inactive and automatic certificate enrollment is\n          not available</p>\n            </li>\n            <li>\n               <p>\n                  <code>IMPAIRED</code> - Network connectivity is impaired.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "LastUpdatedDateTime": {
+                    "target": "com.amazonaws.directoryservice#LastUpdatedDateTime",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time when the CA enrollment policy was last modified or updated.</p>"
+                    }
+                },
+                "CaEnrollmentPolicyStatusReason": {
+                    "target": "com.amazonaws.directoryservice#CaEnrollmentPolicyStatusReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Additional information explaining the current status of the CA enrollment policy,\n      particularly useful when the policy is in an error or transitional state.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the results of the <a>DescribeCAEnrollmentPolicy</a> operation.</p>",
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.directoryservice#DescribeCertificate": {
             "type": "operation",
             "input": {
@@ -3366,7 +3540,7 @@
                 "DirectoryDescriptions": {
                     "target": "com.amazonaws.directoryservice#DirectoryDescriptions",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of available <a>DirectoryDescription</a> objects that were retrieved.</p>\n         <p>It is possible that this list contains less than the number of items specified in the\n        <code>Limit</code> member of the request. This occurs if there are less than the requested\n      number of items left to retrieve, or if the limitations of the operation have been\n      exceeded.</p>"
+                        "smithy.api#documentation": "<p>The list of available <a>DirectoryDescription</a> objects that were\n      retrieved.</p>\n         <p>It is possible that this list contains less than the number of items specified in the\n        <code>Limit</code> member of the request. This occurs if there are less than the requested\n      number of items left to retrieve, or if the limitations of the operation have been\n      exceeded.</p>"
                     }
                 },
                 "NextToken": {
@@ -4548,8 +4722,15 @@
                 "CustomerDnsIps": {
                     "target": "com.amazonaws.directoryservice#DnsIpAddrs",
                     "traits": {
-                        "smithy.api#documentation": "<p>A list of one or more IP addresses of DNS servers or domain controllers in your\n      self-managed directory.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": [],
+                        "smithy.api#documentation": "<p>The IP addresses of DNS servers or domain controllers in your\n      self-managed directory.</p>"
+                    }
+                },
+                "CustomerDnsIpsV6": {
+                    "target": "com.amazonaws.directoryservice#DnsIpv6Addrs",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IPv6 addresses of DNS servers or domain controllers in your\n      self-managed directory.</p>"
                     }
                 },
                 "CustomerUserName": {
@@ -4561,7 +4742,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Contains information for the <a>ConnectDirectory</a> operation when an AD\n      Connector directory is being created.</p>"
+                "smithy.api#documentation": "<p>Contains connection settings for creating an AD\n      Connector with the <a>ConnectDirectory</a> action.</p>"
             }
         },
         "com.amazonaws.directoryservice#DirectoryConnectSettingsDescription": {
@@ -4594,13 +4775,19 @@
                 "AvailabilityZones": {
                     "target": "com.amazonaws.directoryservice#AvailabilityZones",
                     "traits": {
-                        "smithy.api#documentation": "<p>A list of the Availability Zones that the directory is in.</p>"
+                        "smithy.api#documentation": "<p>The Availability Zones that the directory is in.</p>"
                     }
                 },
                 "ConnectIps": {
                     "target": "com.amazonaws.directoryservice#IpAddrs",
                     "traits": {
                         "smithy.api#documentation": "<p>The IP addresses of the AD Connector servers.</p>"
+                    }
+                },
+                "ConnectIpsV6": {
+                    "target": "com.amazonaws.directoryservice#IpV6Addrs",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IPv6 addresses of the AD Connector servers.</p>"
                     }
                 }
             },
@@ -4644,13 +4831,13 @@
                 "Alias": {
                     "target": "com.amazonaws.directoryservice#AliasName",
                     "traits": {
-                        "smithy.api#documentation": "<p>The alias for the directory. If no alias has been created for the directory, the alias is\n      the directory identifier, such as <code>d-XXXXXXXXXX</code>.</p>"
+                        "smithy.api#documentation": "<p>The alias for the directory. If no alias exists, the alias is the directory identifier,\n      such as <code>d-XXXXXXXXXX</code>.</p>"
                     }
                 },
                 "AccessUrl": {
                     "target": "com.amazonaws.directoryservice#AccessUrl",
                     "traits": {
-                        "smithy.api#documentation": "<p>The access URL for the directory, such as\n        <code>http://<alias>.awsapps.com</code>. If no alias has been created for the\n      directory, <code><alias></code> is the directory identifier, such as\n        <code>d-XXXXXXXXXX</code>.</p>"
+                        "smithy.api#documentation": "<p>The access URL for the directory, such as\n        <code>http://<alias>.awsapps.com</code>. If no alias exists,\n        <code><alias></code> is the directory identifier, such as\n        <code>d-XXXXXXXXXX</code>.</p>"
                     }
                 },
                 "Description": {
@@ -4662,7 +4849,13 @@
                 "DnsIpAddrs": {
                     "target": "com.amazonaws.directoryservice#DnsIpAddrs",
                     "traits": {
-                        "smithy.api#documentation": "<p>The IP addresses of the DNS servers for the directory. For a Simple AD or Microsoft AD\n      directory, these are the IP addresses of the Simple AD or Microsoft AD directory servers.\n      For an AD Connector directory, these are the IP addresses of the DNS servers or domain\n      controllers in your self-managed directory to which the AD Connector is connected.</p>"
+                        "smithy.api#documentation": "<p>The IP addresses of the DNS servers for the directory. For a Simple AD or Microsoft AD\n      directory, these are the IP addresses of the Simple AD or Microsoft AD directory servers.\n      For an AD Connector directory, these are the IP addresses of self-managed directory to which\n      the AD Connector is connected.</p>"
+                    }
+                },
+                "DnsIpv6Addrs": {
+                    "target": "com.amazonaws.directoryservice#DnsIpv6Addrs",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IPv6 addresses of the DNS servers for the directory. For a Simple AD or Microsoft AD\n      directory, these are the IPv6 addresses of the Simple AD or Microsoft AD directory servers.\n      For an AD Connector directory, these are the IPv6 addresses of the DNS servers or domain\n      controllers in your self-managed directory to which the AD Connector is connected.</p>"
                     }
                 },
                 "Stage": {
@@ -4692,13 +4885,13 @@
                 "LaunchTime": {
                     "target": "com.amazonaws.directoryservice#LaunchTime",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specifies when the directory was created.</p>"
+                        "smithy.api#documentation": "<p>The date and time when the directory was created.</p>"
                     }
                 },
                 "StageLastUpdatedDateTime": {
                     "target": "com.amazonaws.directoryservice#LastUpdatedDateTime",
                     "traits": {
-                        "smithy.api#documentation": "<p>The date and time that the stage was last updated.</p>"
+                        "smithy.api#documentation": "<p>The date and time when the stage was last updated.</p>"
                     }
                 },
                 "Type": {
@@ -4710,19 +4903,19 @@
                 "VpcSettings": {
                     "target": "com.amazonaws.directoryservice#DirectoryVpcSettingsDescription",
                     "traits": {
-                        "smithy.api#documentation": "<p>A <a>DirectoryVpcSettingsDescription</a> object that contains additional\n      information about a directory. This member is only present if the directory is a Simple AD\n      or Managed Microsoft AD directory.</p>"
+                        "smithy.api#documentation": "<p>A <a>DirectoryVpcSettingsDescription</a> object that contains additional\n      information about a directory. Present only for Simple AD and Managed Microsoft AD\n      directories.</p>"
                     }
                 },
                 "ConnectSettings": {
                     "target": "com.amazonaws.directoryservice#DirectoryConnectSettingsDescription",
                     "traits": {
-                        "smithy.api#documentation": "<p>A <a>DirectoryConnectSettingsDescription</a> object that contains additional\n      information about an AD Connector directory. This member is only present if the directory is\n      an AD Connector directory.</p>"
+                        "smithy.api#documentation": "<p>\n            <a>DirectoryConnectSettingsDescription</a> object that contains additional\n      information about an AD Connector directory. Present only for AD Connector\n      directories.</p>"
                     }
                 },
                 "RadiusSettings": {
                     "target": "com.amazonaws.directoryservice#RadiusSettings",
                     "traits": {
-                        "smithy.api#documentation": "<p>A <a>RadiusSettings</a> object that contains information about the RADIUS\n      server configured for this directory.</p>"
+                        "smithy.api#documentation": "<p>Information about the <a>RadiusSettings</a> object configured for this\n      directory.</p>"
                     }
                 },
                 "RadiusStatus": {
@@ -4741,7 +4934,7 @@
                     "target": "com.amazonaws.directoryservice#SsoEnabled",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Indicates if single sign-on is enabled for the directory. For more information, see <a>EnableSso</a> and <a>DisableSso</a>.</p>"
+                        "smithy.api#documentation": "<p>Indicates whether single sign-on is enabled for the directory. For more information, see\n        <a>EnableSso</a> and <a>DisableSso</a>.</p>"
                     }
                 },
                 "DesiredNumberOfDomainControllers": {
@@ -4772,6 +4965,12 @@
                     "target": "com.amazonaws.directoryservice#HybridSettingsDescription",
                     "traits": {
                         "smithy.api#documentation": "<p>Contains information about the hybrid directory configuration for the directory,\n            including Amazon Web Services System Manager managed node identifiers and DNS IPs.</p>"
+                    }
+                },
+                "NetworkType": {
+                    "target": "com.amazonaws.directoryservice#NetworkType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The network type of the directory.</p>"
                     }
                 }
             },
@@ -4816,6 +5015,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "Standard"
+                    }
+                },
+                "HYBRID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Hybrid"
                     }
                 }
             }
@@ -5028,6 +5233,9 @@
                     "target": "com.amazonaws.directoryservice#DescribeADAssessment"
                 },
                 {
+                    "target": "com.amazonaws.directoryservice#DescribeCAEnrollmentPolicy"
+                },
+                {
                     "target": "com.amazonaws.directoryservice#DescribeCertificate"
                 },
                 {
@@ -5073,6 +5281,9 @@
                     "target": "com.amazonaws.directoryservice#DescribeUpdateDirectory"
                 },
                 {
+                    "target": "com.amazonaws.directoryservice#DisableCAEnrollmentPolicy"
+                },
+                {
                     "target": "com.amazonaws.directoryservice#DisableClientAuthentication"
                 },
                 {
@@ -5086,6 +5297,9 @@
                 },
                 {
                     "target": "com.amazonaws.directoryservice#DisableSso"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#EnableCAEnrollmentPolicy"
                 },
                 {
                     "target": "com.amazonaws.directoryservice#EnableClientAuthentication"
@@ -5212,27 +5426,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -6042,17 +6256,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -6063,17 +6266,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -6090,17 +6282,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -6111,17 +6292,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -6207,6 +6377,20 @@
                         "smithy.api#enumValue": "Large"
                     }
                 }
+            }
+        },
+        "com.amazonaws.directoryservice#DirectorySizeUpdateSettings": {
+            "type": "structure",
+            "members": {
+                "DirectorySize": {
+                    "target": "com.amazonaws.directoryservice#DirectorySize",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The target directory size for the update operation.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the directory size configuration for update operations.</p>"
             }
         },
         "com.amazonaws.directoryservice#DirectoryStage": {
@@ -6384,6 +6568,83 @@
                 "smithy.api#documentation": "<p>Contains information about the directory.</p>"
             }
         },
+        "com.amazonaws.directoryservice#DisableAlreadyInProgressException": {
+            "type": "structure",
+            "members": {
+                "Message": {
+                    "target": "com.amazonaws.directoryservice#ExceptionMessage"
+                },
+                "RequestId": {
+                    "target": "com.amazonaws.directoryservice#RequestId"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A disable operation for CA enrollment policy is already in progress for this directory.</p>",
+                "smithy.api#error": "client"
+            }
+        },
+        "com.amazonaws.directoryservice#DisableCAEnrollmentPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.directoryservice#DisableCAEnrollmentPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.directoryservice#DisableCAEnrollmentPolicyResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.directoryservice#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#ClientException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#DirectoryDoesNotExistException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#DirectoryUnavailableException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#DisableAlreadyInProgressException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#EntityDoesNotExistException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#InvalidParameterException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#ServiceException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Disables the certificate authority (CA) enrollment policy for the specified directory. This stops\n      automatic certificate enrollment and management for domain-joined clients, but does not affect\n      existing certificates.</p>\n         <important>\n            <p>Disabling the CA enrollment policy prevents new certificates from being automatically\n        enrolled, but existing certificates remain valid and functional until they expire.</p>\n         </important>"
+            }
+        },
+        "com.amazonaws.directoryservice#DisableCAEnrollmentPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "DirectoryId": {
+                    "target": "com.amazonaws.directoryservice#DirectoryId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the directory for which to disable the CA enrollment policy.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the inputs for the <a>DisableCAEnrollmentPolicy</a> operation.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.directoryservice#DisableCAEnrollmentPolicyResult": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the results of the <a>DisableCAEnrollmentPolicy</a> operation.</p>",
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.directoryservice#DisableClientAuthentication": {
             "type": "operation",
             "input": {
@@ -6477,7 +6738,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Deactivates access to directory data via the Directory Service Data API for the specified\n      directory. For\n      more information, see <a href=\"https://docs.aws.amazon.com/directoryservicedata/latest/DirectoryServiceDataAPIReference/Welcome.html\">Directory Service Data API Reference</a>.</p>"
+                "smithy.api#documentation": "<p>Deactivates access to directory data via the Directory Service Data API for the specified directory. For\n      more information, see <a href=\"https://docs.aws.amazon.com/directoryservicedata/latest/DirectoryServiceDataAPIReference/Welcome.html\">Directory Service Data API Reference</a>.</p>"
             }
         },
         "com.amazonaws.directoryservice#DisableDirectoryDataAccessRequest": {
@@ -6586,7 +6847,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Disables multi-factor authentication (MFA) with the Remote Authentication Dial In\n         User Service (RADIUS) server for an AD Connector or Microsoft AD directory.</p>",
+                "smithy.api#documentation": "<p>Disables multi-factor authentication (MFA) with the Remote Authentication Dial In User\n         Service (RADIUS) server for an AD Connector or Microsoft AD directory.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To disable radius",
@@ -6706,6 +6967,12 @@
                 "target": "com.amazonaws.directoryservice#IpAddr"
             }
         },
+        "com.amazonaws.directoryservice#DnsIpv6Addrs": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.directoryservice#Ipv6Addr"
+            }
+        },
         "com.amazonaws.directoryservice#DomainController": {
             "type": "structure",
             "members": {
@@ -6725,6 +6992,12 @@
                     "target": "com.amazonaws.directoryservice#IpAddr",
                     "traits": {
                         "smithy.api#documentation": "<p>The IP address of the domain controller.</p>"
+                    }
+                },
+                "DnsIpv6Addr": {
+                    "target": "com.amazonaws.directoryservice#Ipv6Addr",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IPv6 address of the domain controller.</p>"
                     }
                 },
                 "VpcId": {
@@ -6861,6 +7134,93 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.directoryservice#DomainController"
+            }
+        },
+        "com.amazonaws.directoryservice#EnableAlreadyInProgressException": {
+            "type": "structure",
+            "members": {
+                "Message": {
+                    "target": "com.amazonaws.directoryservice#ExceptionMessage"
+                },
+                "RequestId": {
+                    "target": "com.amazonaws.directoryservice#RequestId"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An enable operation for CA enrollment policy is already in progress for this directory.</p>",
+                "smithy.api#error": "client"
+            }
+        },
+        "com.amazonaws.directoryservice#EnableCAEnrollmentPolicy": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.directoryservice#EnableCAEnrollmentPolicyRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.directoryservice#EnableCAEnrollmentPolicyResult"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.directoryservice#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#ClientException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#DirectoryDoesNotExistException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#DirectoryUnavailableException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#EnableAlreadyInProgressException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#EntityAlreadyExistsException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#EntityDoesNotExistException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#InvalidParameterException"
+                },
+                {
+                    "target": "com.amazonaws.directoryservice#ServiceException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Enables certificate authority (CA) enrollment policy for the specified directory. This allows\n      domain-joined clients to automatically request and receive certificates from the specified\n      Amazon Web Services Private Certificate Authority.</p>\n         <note>\n            <p>Before enabling CA enrollment, ensure that the PCA connector is properly configured and\n        accessible from the directory. The connector must be in an active state and have the\n        necessary permissions.</p>\n         </note>"
+            }
+        },
+        "com.amazonaws.directoryservice#EnableCAEnrollmentPolicyRequest": {
+            "type": "structure",
+            "members": {
+                "DirectoryId": {
+                    "target": "com.amazonaws.directoryservice#DirectoryId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the directory for which to enable the CA enrollment policy.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PcaConnectorArn": {
+                    "target": "com.amazonaws.directoryservice#PcaConnectorArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Private Certificate Authority (PCA) connector to use\n      for automatic certificate enrollment. This connector must be properly configured and\n      accessible from the directory.</p>\n         <p>The ARN format is:\n      <code>arn:aws:pca-connector-ad:<i>region</i>:<i>account-id</i>:connector/<i>connector-id</i>\n            </code>\n         </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the inputs for the <a>EnableCAEnrollmentPolicy</a> operation.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.directoryservice#EnableCAEnrollmentPolicyResult": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the results of the <a>EnableCAEnrollmentPolicy</a> operation.</p>",
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.directoryservice#EnableClientAuthentication": {
@@ -7760,7 +8120,13 @@
                 "CidrIp": {
                     "target": "com.amazonaws.directoryservice#CidrIp",
                     "traits": {
-                        "smithy.api#documentation": "<p>IP address block using CIDR format, for example 10.0.0.0/24. This is often the\n         address block of the DNS server used for your self-managed domain. For a single IP address\n         use a CIDR address block with /32. For example 10.0.0.0/32.</p>"
+                        "smithy.api#documentation": "<p>IP address block in CIDR format, such as 10.0.0.0/24. This is often the address block of\n         the DNS server used for your self-managed domain. For a single IP address, use a CIDR\n         address block with /32. For example, 10.0.0.0/32.</p>"
+                    }
+                },
+                "CidrIpv6": {
+                    "target": "com.amazonaws.directoryservice#CidrIpv6",
+                    "traits": {
+                        "smithy.api#documentation": "<p>IPv6 address block in CIDR format, such as 2001:db8::/32. This is often the address\n         block of the DNS server used for your self-managed domain. For a single IPv6 address, use a\n         CIDR address block with /128. For example, 2001:db8::1/128.</p>"
                     }
                 },
                 "Description": {
@@ -7771,7 +8137,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>IP address block. This is often the address block of the DNS server used for your\n         self-managed domain. </p>"
+                "smithy.api#documentation": "<p>Contains the IP address block. This is often the address block of the DNS server used\n         for your self-managed domain. </p>"
             }
         },
         "com.amazonaws.directoryservice#IpRouteInfo": {
@@ -7787,6 +8153,12 @@
                     "target": "com.amazonaws.directoryservice#CidrIp",
                     "traits": {
                         "smithy.api#documentation": "<p>IP address block in the <a>IpRoute</a>.</p>"
+                    }
+                },
+                "CidrIpv6": {
+                    "target": "com.amazonaws.directoryservice#CidrIpv6",
+                    "traits": {
+                        "smithy.api#documentation": "<p>IPv6 address block in the <a>IpRoute</a>.</p>"
                     }
                 },
                 "IpRouteStatusMsg": {
@@ -7887,6 +8259,18 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.directoryservice#IpRouteInfo"
+            }
+        },
+        "com.amazonaws.directoryservice#IpV6Addrs": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.directoryservice#Ipv6Addr"
+            }
+        },
+        "com.amazonaws.directoryservice#Ipv6Addr": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$"
             }
         },
         "com.amazonaws.directoryservice#LDAPSSettingInfo": {
@@ -8218,7 +8602,7 @@
                 "DirectoryId": {
                     "target": "com.amazonaws.directoryservice#DirectoryId",
                     "traits": {
-                        "smithy.api#documentation": "<p>Identifier (ID) of the directory for which you want to retrieve the IP\n         addresses.</p>",
+                        "smithy.api#documentation": "<p>Identifier (ID) of the directory for which you want to retrieve the IP addresses.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -8231,7 +8615,7 @@
                 "Limit": {
                     "target": "com.amazonaws.directoryservice#Limit",
                     "traits": {
-                        "smithy.api#documentation": "<p>Maximum number of items to return. If this value is zero, the maximum number of items\n         is specified by the limitations of the operation.</p>"
+                        "smithy.api#documentation": "<p>Maximum number of items to return. If this value is zero, the maximum number of items is\n         specified by the limitations of the operation.</p>"
                     }
                 }
             },
@@ -8587,6 +8971,49 @@
                 "smithy.api#default": false
             }
         },
+        "com.amazonaws.directoryservice#NetworkType": {
+            "type": "enum",
+            "members": {
+                "DUAL_STACK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Dual-stack"
+                    }
+                },
+                "IPV4_ONLY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IPv4"
+                    }
+                },
+                "IPV6_ONLY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IPv6"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.directoryservice#NetworkUpdateSettings": {
+            "type": "structure",
+            "members": {
+                "NetworkType": {
+                    "target": "com.amazonaws.directoryservice#NetworkType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The target network type for the directory update.</p>"
+                    }
+                },
+                "CustomerDnsIpsV6": {
+                    "target": "com.amazonaws.directoryservice#DnsIpv6Addrs",
+                    "traits": {
+                        "smithy.api#documentation": "<p>IPv6 addresses of DNS servers or domain controllers in the self-managed directory.\n      Required only when updating an AD Connector directory.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the network configuration for directory update operations.</p>"
+            }
+        },
         "com.amazonaws.directoryservice#NextToken": {
             "type": "string"
         },
@@ -8631,12 +9058,12 @@
                 "OSVersion": {
                     "target": "com.amazonaws.directoryservice#OSVersion",
                     "traits": {
-                        "smithy.api#documentation": "<p> OS version that the directory needs to be updated to. </p>"
+                        "smithy.api#documentation": "<p>OS version that the directory needs to be updated to.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p> OS version that the directory needs to be updated to. </p>"
+                "smithy.api#documentation": "<p>OS version that the directory needs to be updated to.</p>"
             }
         },
         "com.amazonaws.directoryservice#OSVersion": {
@@ -8701,6 +9128,12 @@
                         "smithy.api#documentation": "<p>IP address of the directory’s domain controllers.</p>"
                     }
                 },
+                "DnsIpv6Addrs": {
+                    "target": "com.amazonaws.directoryservice#DnsIpv6Addrs",
+                    "traits": {
+                        "smithy.api#documentation": "<p>IPv6 addresses of the directory’s domain controllers.</p>"
+                    }
+                },
                 "VpcSettings": {
                     "target": "com.amazonaws.directoryservice#DirectoryVpcSettingsDescription",
                     "traits": {
@@ -8710,18 +9143,24 @@
                 "RadiusSettings": {
                     "target": "com.amazonaws.directoryservice#RadiusSettings",
                     "traits": {
-                        "smithy.api#documentation": "<p>A <a>RadiusSettings</a> object that contains information about the RADIUS\n      server.</p>"
+                        "smithy.api#documentation": "<p>Information about the <a>RadiusSettings</a> object server configuration.</p>"
                     }
                 },
                 "RadiusStatus": {
                     "target": "com.amazonaws.directoryservice#RadiusStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>Information about the status of the RADIUS server.</p>"
+                        "smithy.api#documentation": "<p>The status of the RADIUS server.</p>"
+                    }
+                },
+                "NetworkType": {
+                    "target": "com.amazonaws.directoryservice#NetworkType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Network type of the directory in the directory owner account.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Describes the directory owner account details that have been shared to the directory\n      consumer account.</p>"
+                "smithy.api#documentation": "<p>Contains the directory owner account details shared with the directory consumer\n      account.</p>"
             }
         },
         "com.amazonaws.directoryservice#PageLimit": {
@@ -8738,6 +9177,12 @@
             "traits": {
                 "smithy.api#pattern": "^(?=^.{8,64}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9\\s])(?=.*[a-z])|(?=.*[^A-Za-z0-9\\s])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9\\s]))^",
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.directoryservice#PcaConnectorArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^arn:[\\w-]+:pca-connector-ad:[\\w-]+:[0-9]+:connector\\/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
             }
         },
         "com.amazonaws.directoryservice#PortNumber": {
@@ -8803,13 +9248,19 @@
                 "RadiusServers": {
                     "target": "com.amazonaws.directoryservice#Servers",
                     "traits": {
-                        "smithy.api#documentation": "<p>An array of strings that contains the fully qualified domain name (FQDN) or IP\n         addresses of the RADIUS server endpoints, or the FQDN or IP addresses of your RADIUS server\n         load balancer.</p>"
+                        "smithy.api#documentation": "<p>The fully qualified domain name (FQDN) or IP addresses of the RADIUS server endpoints,\n         or the FQDN or IP addresses of your RADIUS server load balancer.</p>"
+                    }
+                },
+                "RadiusServersIpv6": {
+                    "target": "com.amazonaws.directoryservice#Servers",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IPv6 addresses of the RADIUS server endpoints or RADIUS server\n         load balancer.</p>"
                     }
                 },
                 "RadiusPort": {
                     "target": "com.amazonaws.directoryservice#PortNumber",
                     "traits": {
-                        "smithy.api#documentation": "<p>The port that your RADIUS server is using for communications. Your self-managed\n         network must allow inbound traffic over this port from the Directory Service servers.</p>"
+                        "smithy.api#documentation": "<p>The port that your RADIUS server is using for communications. Your self-managed network\n         must allow inbound traffic over this port from the Directory Service servers.</p>"
                     }
                 },
                 "RadiusTimeout": {
@@ -8822,7 +9273,7 @@
                     "target": "com.amazonaws.directoryservice#RadiusRetries",
                     "traits": {
                         "smithy.api#default": 0,
-                        "smithy.api#documentation": "<p>The maximum number of times that communication with the RADIUS server is retried after the initial attempt.</p>"
+                        "smithy.api#documentation": "<p>The maximum number of times that communication with the RADIUS server is retried after\n         the initial attempt.</p>"
                     }
                 },
                 "SharedSecret": {
@@ -9303,15 +9754,22 @@
                 "DirectoryId": {
                     "target": "com.amazonaws.directoryservice#DirectoryId",
                     "traits": {
-                        "smithy.api#documentation": "<p>Identifier (ID) of the directory from which you want to remove the IP\n         addresses.</p>",
+                        "smithy.api#documentation": "<p>Identifier (ID) of the directory from which you want to remove the IP addresses.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "CidrIps": {
                     "target": "com.amazonaws.directoryservice#CidrIps",
                     "traits": {
-                        "smithy.api#documentation": "<p>IP address blocks that you want to remove.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": [],
+                        "smithy.api#documentation": "<p>IP address blocks that you want to remove.</p>"
+                    }
+                },
+                "CidrIpv6s": {
+                    "target": "com.amazonaws.directoryservice#CidrIpv6s",
+                    "traits": {
+                        "smithy.api#documentation": "<p>IPv6 address blocks that you want to remove.</p>"
                     }
                 }
             },
@@ -11090,8 +11548,15 @@
                 "DnsIpAddrs": {
                     "target": "com.amazonaws.directoryservice#DnsIpAddrs",
                     "traits": {
-                        "smithy.api#documentation": "<p>The updated IP addresses of the remote DNS server associated with the conditional\n      forwarder.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": [],
+                        "smithy.api#documentation": "<p>The updated IP addresses of the remote DNS server associated with the conditional\n      forwarder.</p>"
+                    }
+                },
+                "DnsIpv6Addrs": {
+                    "target": "com.amazonaws.directoryservice#DnsIpv6Addrs",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated IPv6 addresses of the remote DNS server associated with the conditional\n      forwarder.</p>"
                     }
                 }
             },
@@ -11146,7 +11611,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p> Updates the directory for a particular update type. </p>"
+                "smithy.api#documentation": "<p>Updates directory configuration for the specified update type.</p>"
             }
         },
         "com.amazonaws.directoryservice#UpdateDirectorySetupRequest": {
@@ -11155,28 +11620,40 @@
                 "DirectoryId": {
                     "target": "com.amazonaws.directoryservice#DirectoryId",
                     "traits": {
-                        "smithy.api#documentation": "<p> The identifier of the directory on which you want to perform the update. </p>",
+                        "smithy.api#documentation": "<p>The identifier of the directory to update.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "UpdateType": {
                     "target": "com.amazonaws.directoryservice#UpdateType",
                     "traits": {
-                        "smithy.api#documentation": "<p> The type of update that needs to be performed on the directory. For example, OS. </p>",
+                        "smithy.api#documentation": "<p>The type of update to perform on the directory.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "OSUpdateSettings": {
                     "target": "com.amazonaws.directoryservice#OSUpdateSettings",
                     "traits": {
-                        "smithy.api#documentation": "<p> The settings for the OS update that needs to be performed on the directory. </p>"
+                        "smithy.api#documentation": "<p>Operating system configuration to apply during the directory update operation.</p>"
+                    }
+                },
+                "DirectorySizeUpdateSettings": {
+                    "target": "com.amazonaws.directoryservice#DirectorySizeUpdateSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Directory size configuration to apply during the update operation.</p>"
+                    }
+                },
+                "NetworkUpdateSettings": {
+                    "target": "com.amazonaws.directoryservice#NetworkUpdateSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Network configuration to apply during the directory update operation.</p>"
                     }
                 },
                 "CreateSnapshotBeforeUpdate": {
                     "target": "com.amazonaws.directoryservice#CreateSnapshotBeforeUpdate",
                     "traits": {
                         "smithy.api#default": null,
-                        "smithy.api#documentation": "<p> The boolean that specifies if a snapshot for the directory needs to be taken before\n      updating the directory. </p>"
+                        "smithy.api#documentation": "<p>Specifies whether to create a directory snapshot before performing the update.</p>"
                     }
                 }
             },
@@ -11323,7 +11800,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p> An entry of update information related to a requested update type. </p>"
+                "smithy.api#documentation": "<p>An entry of update information related to a requested update type.</p>"
             }
         },
         "com.amazonaws.directoryservice#UpdateNumberOfDomainControllers": {
@@ -11413,7 +11890,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Updates the Remote Authentication Dial In User Service (RADIUS) server information\n         for an AD Connector or Microsoft AD directory.</p>",
+                "smithy.api#documentation": "<p>Updates the Remote Authentication Dial In User Service (RADIUS) server information for\n         an AD Connector or Microsoft AD directory.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To update Radius",
@@ -11646,6 +12123,18 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "OS"
+                    }
+                },
+                "NETWORK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NETWORK"
+                    }
+                },
+                "SIZE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SIZE"
                     }
                 }
             }

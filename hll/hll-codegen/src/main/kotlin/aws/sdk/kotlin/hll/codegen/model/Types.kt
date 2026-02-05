@@ -1,3 +1,8 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package aws.sdk.kotlin.hll.codegen.model
 
 import aws.sdk.kotlin.runtime.InternalSdkApi
@@ -85,8 +90,7 @@ public object Types {
                  * Creates a [TypeRef] for a generic `Flow`
                  * @param element The type of elements in the flow
                  */
-                public fun flow(element: Type): TypeRef =
-                    TypeRef(Pkg.Kotlinx.Coroutines.Flow, "Flow", listOf(element))
+                public fun flow(element: Type): TypeRef = TypeRef(Pkg.Kotlinx.Coroutines.Flow, "Flow", listOf(element))
 
                 public val transform: TypeRef = TypeRef(Pkg.Kotlinx.Coroutines.Flow, "transform")
             }

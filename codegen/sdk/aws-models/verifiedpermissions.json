@@ -22,7 +22,7 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 1,
-                    "max": 200
+                    "max": 512
                 },
                 "smithy.api#pattern": "^.*$",
                 "smithy.api#sensitive": {}
@@ -83,37 +83,37 @@
                 "boolean": {
                     "target": "com.amazonaws.verifiedpermissions#BooleanAttribute",
                     "traits": {
-                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#boolean\">Boolean</a> type.</p> <p>Example: <code>{\"boolean\": true}</code> </p>"
+                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-bool\">Boolean</a> type.</p> <p>Example: <code>{\"boolean\": true}</code> </p>"
                     }
                 },
                 "entityIdentifier": {
                     "target": "com.amazonaws.verifiedpermissions#EntityIdentifier",
                     "traits": {
-                        "smithy.api#documentation": "<p>An attribute value of type <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_EntityIdentifier.html\">EntityIdentifier</a>.</p> <p>Example: <code>\"entityIdentifier\": { \"entityId\": \"&lt;id&gt;\", \"entityType\": \"&lt;entity type&gt;\"}</code> </p>"
+                        "smithy.api#documentation": "<p>An attribute value of type <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_EntityIdentifier.html\">EntityIdentifier</a>.</p> <p>Example: <code>{\"entityIdentifier\": { \"entityId\": \"alice\", \"entityType\": \"User\"} }</code> </p>"
                     }
                 },
                 "long": {
                     "target": "com.amazonaws.verifiedpermissions#LongAttribute",
                     "traits": {
-                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#long\">Long</a> type.</p> <p>Example: <code>{\"long\": 0}</code> </p>"
+                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-long\">Long</a> type.</p> <p>Example: <code>{\"long\": 0}</code> </p>"
                     }
                 },
                 "string": {
                     "target": "com.amazonaws.verifiedpermissions#StringAttribute",
                     "traits": {
-                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#string\">String</a> type.</p> <p>Example: <code>{\"string\": \"abc\"}</code> </p>"
+                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-string\">String</a> type.</p> <p>Example: <code>{\"string\": \"abc\"}</code> </p>"
                     }
                 },
                 "set": {
                     "target": "com.amazonaws.verifiedpermissions#SetAttribute",
                     "traits": {
-                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#set\">Set</a> type.</p> <p>Example: <code>{\"set\": [ {} ] }</code> </p>"
+                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-set\">Set</a> type.</p> <p>Example: <code>{\"set\": [ {} ] }</code> </p>"
                     }
                 },
                 "record": {
                     "target": "com.amazonaws.verifiedpermissions#RecordAttribute",
                     "traits": {
-                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#record\">Record</a> type.</p> <p>Example: <code>{\"record\": { \"keyName\": {} } }</code> </p>"
+                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-record\">Record</a> type.</p> <p>Example: <code>{\"record\": { \"keyName\": {} } }</code> </p>"
                     }
                 },
                 "ipaddr": {
@@ -127,10 +127,22 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-decimal\">decimal</a> type.</p> <p>Example: <code>{\"decimal\": \"1.1\"}</code> </p>"
                     }
+                },
+                "datetime": {
+                    "target": "com.amazonaws.verifiedpermissions#DatetimeAttribute",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-datetime\">datetime</a> type.</p> <p>Example: <code>{\"datetime\": \"2024-10-15T11:35:00Z\"}</code> </p>"
+                    }
+                },
+                "duration": {
+                    "target": "com.amazonaws.verifiedpermissions#Duration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-duration\">duration</a> type.</p> <p>Example: <code>{\"duration\": \"1h30m\"}</code> </p>"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The value of an attribute.</p> <p>Contains information about the runtime context for a request for which an authorization decision is made. </p> <p>This data type is used as a member of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ContextDefinition.html\">ContextDefinition</a> structure which is uses as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>"
+                "smithy.api#documentation": "<p>The value of an attribute.</p> <p>Contains information about the runtime context for a request for which an authorization decision is made. </p> <p>This data type is used as a member of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ContextDefinition.html\">ContextDefinition</a> structure which is used as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>"
             }
         },
         "com.amazonaws.verifiedpermissions#Audience": {
@@ -164,7 +176,14 @@
             },
             "traits": {
                 "aws.iam#iamAction": {
-                    "name": "GetPolicy"
+                    "name": "GetPolicy",
+                    "documentation": "Grants permission to retrieve information about the specified policy",
+                    "relativeDocumentation": "API_GetPolicy.html",
+                    "resources": {
+                        "required": {
+                            "policy-store": {}
+                        }
+                    }
                 },
                 "smithy.api#documentation": "<p>Retrieves information about a group (batch) of policies.</p> <note> <p>The <code>BatchGetPolicy</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>verifiedpermissions:GetPolicy</code> in their IAM policies.</p> </note>",
                 "smithy.api#examples": [
@@ -445,8 +464,14 @@
             ],
             "traits": {
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to make a batch authorization decision about a service request described in the parameters",
-                    "name": "IsAuthorized"
+                    "documentation": "Grants permission to make authorization decisions about the service requests described in the parameters",
+                    "name": "IsAuthorized",
+                    "relativeDocumentation": "API_IsAuthorized.html",
+                    "resources": {
+                        "required": {
+                            "policy-store": {}
+                        }
+                    }
                 },
                 "smithy.api#documentation": "<p>Makes a series of decisions about multiple authorization requests for one principal or resource. Each request contains the equivalent content of an <code>IsAuthorized</code> request: principal, action, resource, and context. Either the <code>principal</code> or the <code>resource</code> parameter must be identical across all requests. For example, Verified Permissions won't evaluate a pair of requests where <code>bob</code> views <code>photo1</code> and <code>alice</code> views <code>photo2</code>. Authorization of <code>bob</code> to view <code>photo1</code> and <code>photo2</code>, or <code>bob</code> and <code>alice</code> to view <code>photo1</code>, are valid batches. </p> <p>The request is evaluated against all policies in the specified policy store that match the entities that you declare. The result of the decisions is a series of <code>Allow</code> or <code>Deny</code> responses, along with the IDs of the policies that produced each decision.</p> <p>The <code>entities</code> of a <code>BatchIsAuthorized</code> API request can contain up to 100 principals and up to 100 resources. The <code>requests</code> of a <code>BatchIsAuthorized</code> API request can contain up to 30 requests.</p> <note> <p>The <code>BatchIsAuthorized</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>verifiedpermissions:IsAuthorized</code> in their IAM policies.</p> </note>",
                 "smithy.api#examples": [
@@ -752,8 +777,14 @@
             ],
             "traits": {
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to make a batch authorization decision about a service request described in the parameters. The principal in this request comes from an external identity source",
-                    "name": "IsAuthorizedWithToken"
+                    "documentation": "Grants permission to make authorization decisions about the service requests described in the parameters. The principal in this request comes from an external identity source",
+                    "name": "IsAuthorizedWithToken",
+                    "relativeDocumentation": "API_IsAuthorizedWithToken.html",
+                    "resources": {
+                        "required": {
+                            "policy-store": {}
+                        }
+                    }
                 },
                 "smithy.api#documentation": "<p>Makes a series of decisions about multiple authorization requests for one token. The principal in this request comes from an external identity source in the form of an identity or access token, formatted as a <a href=\"https://wikipedia.org/wiki/JSON_Web_Token\">JSON web token (JWT)</a>. The information in the parameters can also define additional context that Verified Permissions can include in the evaluations.</p> <p>The request is evaluated against all policies in the specified policy store that match the entities that you provide in the entities declaration and in the token. The result of the decisions is a series of <code>Allow</code> or <code>Deny</code> responses, along with the IDs of the policies that produced each decision.</p> <p>The <code>entities</code> of a <code>BatchIsAuthorizedWithToken</code> API request can contain up to 100 resources and up to 99 user groups. The <code>requests</code> of a <code>BatchIsAuthorizedWithToken</code> API request can contain up to 30 requests.</p> <note> <p>The <code>BatchIsAuthorizedWithToken</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>verifiedpermissions:IsAuthorizedWithToken</code> in their IAM policies.</p> </note>",
                 "smithy.api#examples": [
@@ -1040,6 +1071,89 @@
             "type": "string",
             "traits": {
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.verifiedpermissions#CedarTagRecordAttribute": {
+            "type": "map",
+            "key": {
+                "target": "smithy.api#String"
+            },
+            "value": {
+                "target": "com.amazonaws.verifiedpermissions#CedarTagValue"
+            }
+        },
+        "com.amazonaws.verifiedpermissions#CedarTagSetAttribute": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.verifiedpermissions#CedarTagValue"
+            }
+        },
+        "com.amazonaws.verifiedpermissions#CedarTagValue": {
+            "type": "union",
+            "members": {
+                "boolean": {
+                    "target": "com.amazonaws.verifiedpermissions#BooleanAttribute",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Cedar tag value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-bool\">Boolean</a> type.</p> <p>Example: <code>{\"boolean\": false}</code> </p>"
+                    }
+                },
+                "entityIdentifier": {
+                    "target": "com.amazonaws.verifiedpermissions#EntityIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Cedar tag value of type <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_EntityIdentifier.html\">EntityIdentifier</a>.</p> <p>Example: <code>{\"entityIdentifier\": { \"entityId\": \"alice\", \"entityType\": \"User\"} }</code> </p>"
+                    }
+                },
+                "long": {
+                    "target": "com.amazonaws.verifiedpermissions#LongAttribute",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Cedar tag value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-long\">Long</a> type.</p> <p>Example: <code>{\"long\": 0}</code> </p>"
+                    }
+                },
+                "string": {
+                    "target": "com.amazonaws.verifiedpermissions#StringAttribute",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Cedar tag value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-string\">String</a> type.</p> <p>Example: <code>{\"string\": \"abc\"}</code> </p>"
+                    }
+                },
+                "set": {
+                    "target": "com.amazonaws.verifiedpermissions#CedarTagSetAttribute",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Cedar tag value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-set\">Set</a> type.</p> <p>Example: <code>{\"set\": [ { \"string\": \"abc\" } ] }</code> </p>"
+                    }
+                },
+                "record": {
+                    "target": "com.amazonaws.verifiedpermissions#CedarTagRecordAttribute",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Cedar tag value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-record\">Record</a> type.</p> <p>Example: <code>{\"record\": { \"keyName\": {} } }</code> </p>"
+                    }
+                },
+                "ipaddr": {
+                    "target": "com.amazonaws.verifiedpermissions#IpAddr",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Cedar tag value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-ipaddr\">ipaddr</a> type.</p> <p>Example: <code>{\"ip\": \"10.50.0.0/24\"}</code> </p>"
+                    }
+                },
+                "decimal": {
+                    "target": "com.amazonaws.verifiedpermissions#Decimal",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Cedar tag value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-decimal\">decimal</a> type.</p> <p>Example: <code>{\"decimal\": \"-2.0\"}</code> </p>"
+                    }
+                },
+                "datetime": {
+                    "target": "com.amazonaws.verifiedpermissions#DatetimeAttribute",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Cedar tag value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-datetime\">datetime</a> type.</p> <p>Example: <code>{\"datetime\": \"2025-11-04T11:35:00.000+0100\"}</code> </p>"
+                    }
+                },
+                "duration": {
+                    "target": "com.amazonaws.verifiedpermissions#Duration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Cedar tag value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-duration\">duration</a> type.</p> <p>Example: <code>{\"duration\": \"-1d12h\"}</code> </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The value of an entity's Cedar tag.</p> <p>This data type is used as a member of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_EntityItem.html\">EntityItem</a> structure that forms the body of the <code>Entities</code> request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorizedWithToken.html\">BatchIsAuthorizedWithToken</a> operations.</p>"
             }
         },
         "com.amazonaws.verifiedpermissions#CedarVersion": {
@@ -1490,7 +1604,13 @@
             ],
             "traits": {
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to create a Cedar policy and save it in the specified policy store"
+                    "documentation": "Grants permission to create a Cedar policy and save it in the specified policy store",
+                    "relativeDocumentation": "API_CreatePolicy.html",
+                    "resources": {
+                        "required": {
+                            "policy-store": {}
+                        }
+                    }
                 },
                 "smithy.api#documentation": "<p>Creates a Cedar policy and saves it in the specified policy store. You can create either a static policy or a policy linked to a policy template.</p> <ul> <li> <p>To create a static policy, provide the Cedar policy text in the <code>StaticPolicy</code> section of the <code>PolicyDefinition</code>.</p> </li> <li> <p>To create a policy that is dynamically linked to a policy template, specify the policy template ID and the principal and resource to associate with this policy in the <code>templateLinked</code> section of the <code>PolicyDefinition</code>. If the policy template is ever updated, any policies linked to the policy template automatically use the updated template.</p> </li> </ul> <note> <p>Creating a policy causes it to be validated against the schema in the policy store. If the policy doesn't pass validation, the operation fails and the policy isn't stored.</p> </note> <note> <p>Verified Permissions is <i> <a href=\"https://wikipedia.org/wiki/Eventual_consistency\">eventually consistent</a> </i>. It can take a few seconds for a new or changed element to propagate through the service and be visible in the results of other Verified Permissions operations.</p> </note>",
                 "smithy.api#examples": [
@@ -1721,6 +1841,30 @@
                             "createdDate": "2024-08-12T18:20:50.99Z",
                             "lastUpdatedDate": "2024-08-12T18:20:50.99Z"
                         }
+                    },
+                    {
+                        "title": "To create an encrypted policy store",
+                        "documentation": "The following example creates a new policy store with encryption settings based on a provided KMS key.",
+                        "input": {
+                            "validationSettings": {
+                                "mode": "STRICT"
+                            },
+                            "encryptionSettings": {
+                                "kmsEncryptionSettings": {
+                                    "key": "arn:aws:kms:us-east-1:123456789012:key/abcdefgh-ijkl-mnop-qrst-uvwxyz123456",
+                                    "encryptionContext": {
+                                        "policy_store_owner": "Tim"
+                                    }
+                                }
+                            },
+                            "clientToken": "a1b2c3d4-e5f6-a1b2-c3d4-TOKEN1111111"
+                        },
+                        "output": {
+                            "policyStoreId": "C7v5xMplfFH3i3e4Jrzb1a",
+                            "arn": "arn:aws:verifiedpermissions::123456789012:policy-store/C7v5xMplfFH3i3e4Jrzb1a",
+                            "createdDate": "2024-08-12T18:20:50.99Z",
+                            "lastUpdatedDate": "2024-08-12T18:20:50.99Z"
+                        }
                     }
                 ],
                 "smithy.api#idempotent": {}
@@ -1753,6 +1897,12 @@
                     "target": "com.amazonaws.verifiedpermissions#DeletionProtection",
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies whether the policy store can be deleted. If enabled, the policy store can't be deleted.</p> <p>The default state is <code>DISABLED</code>.</p>"
+                    }
+                },
+                "encryptionSettings": {
+                    "target": "com.amazonaws.verifiedpermissions#EncryptionSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the encryption settings used to encrypt the policy store and their child resources. Allows for the ability to use a customer owned KMS key for encryption of data.</p> <p>This is an optional field to be used when providing a customer-managed KMS key for encryption.</p>"
                     }
                 },
                 "tags": {
@@ -1916,6 +2066,17 @@
             },
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.verifiedpermissions#DatetimeAttribute": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 10,
+                    "max": 28
+                },
+                "smithy.api#pattern": "^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{3})?(Z|[+-]\\d{4}))?$",
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.verifiedpermissions#Decimal": {
@@ -2242,6 +2403,88 @@
                 "smithy.api#pattern": "^https://.*$"
             }
         },
+        "com.amazonaws.verifiedpermissions#Duration": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 2,
+                    "max": 100
+                },
+                "smithy.api#pattern": "^-?(\\d+d)?(\\d+h)?(\\d+m)?(\\d+s)?(\\d+ms)?$",
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.verifiedpermissions#EncryptionContext": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.verifiedpermissions#EncryptionContextKey"
+            },
+            "value": {
+                "target": "com.amazonaws.verifiedpermissions#EncryptionContextValue"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 8192,
+                    "unit": "bytes"
+                }
+            }
+        },
+        "com.amazonaws.verifiedpermissions#EncryptionContextKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1
+                }
+            }
+        },
+        "com.amazonaws.verifiedpermissions#EncryptionContextValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1
+                }
+            }
+        },
+        "com.amazonaws.verifiedpermissions#EncryptionSettings": {
+            "type": "union",
+            "members": {
+                "kmsEncryptionSettings": {
+                    "target": "com.amazonaws.verifiedpermissions#KmsEncryptionSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The KMS encryption settings for this policy store to encrypt data with. It will contain the customer-managed KMS key, and a user-defined encryption context. </p>"
+                    }
+                },
+                "default": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>This is the default encryption setting. The policy store uses an Amazon Web Services owned key for encrypting data.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A structure that contains the encryption configuration for the policy store and child resources. </p> <p>This data type is used as a request parameter in the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicyStore.html\">CreatePolicyStore</a> operation.</p>"
+            }
+        },
+        "com.amazonaws.verifiedpermissions#EncryptionState": {
+            "type": "union",
+            "members": {
+                "kmsEncryptionState": {
+                    "target": "com.amazonaws.verifiedpermissions#KmsEncryptionState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The KMS encryption settings currently configured for this policy store to encrypt data with. It contains the customer-managed KMS key, and a user-defined encryption context. </p>"
+                    }
+                },
+                "default": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>This is the default encryption state. The policy store is encrypted using an Amazon Web Services owned key.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A structure that contains the encryption configuration for the policy store and child resources.</p> <p>This data type is used as a response parameter field for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetPolicyStore.html\">GetPolicyStore</a> operation.</p>"
+            }
+        },
         "com.amazonaws.verifiedpermissions#EntitiesDefinition": {
             "type": "union",
             "members": {
@@ -2271,12 +2514,21 @@
                 "target": "com.amazonaws.verifiedpermissions#AttributeValue"
             }
         },
+        "com.amazonaws.verifiedpermissions#EntityCedarTags": {
+            "type": "map",
+            "key": {
+                "target": "smithy.api#String"
+            },
+            "value": {
+                "target": "com.amazonaws.verifiedpermissions#CedarTagValue"
+            }
+        },
         "com.amazonaws.verifiedpermissions#EntityId": {
             "type": "string",
             "traits": {
                 "smithy.api#length": {
                     "min": 1,
-                    "max": 200
+                    "max": 612
                 },
                 "smithy.api#pattern": "^.*$",
                 "smithy.api#sensitive": {}
@@ -2334,6 +2586,12 @@
                     "target": "com.amazonaws.verifiedpermissions#ParentList",
                     "traits": {
                         "smithy.api#documentation": "<p>The parent entities in the hierarchy that contains the entity. A principal or resource entity can be defined with at most 99 <i>transitive parents</i> per authorization request. </p> <p>A transitive parent is an entity in the hierarchy of entities including all direct parents, and parents of parents. For example, a user can be a member of 91 groups if one of those groups is a member of eight groups, for a total of 100: one entity, 91 entity parents, and eight parents of parents. </p>"
+                    }
+                },
+                "tags": {
+                    "target": "com.amazonaws.verifiedpermissions#EntityCedarTags",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of cedar tags for the entity.</p>"
                     }
                 }
             },
@@ -2547,7 +2805,14 @@
             ],
             "traits": {
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to retrieve information about the specified policy"
+                    "name": "GetPolicy",
+                    "documentation": "Grants permission to retrieve information about the specified policy",
+                    "relativeDocumentation": "API_GetPolicy.html",
+                    "resources": {
+                        "required": {
+                            "policy-store": {}
+                        }
+                    }
                 },
                 "smithy.api#documentation": "<p>Retrieves information about the specified policy.</p>",
                 "smithy.api#examples": [
@@ -2715,7 +2980,34 @@
                                 "mode": "STRICT"
                             },
                             "createdDate": "2024-08-12T18:20:50.99Z",
-                            "lastUpdatedDate": "2024-08-12T18:20:50.99Z"
+                            "lastUpdatedDate": "2024-08-12T18:20:50.99Z",
+                            "encryptionState": {
+                                "default": {}
+                            }
+                        }
+                    },
+                    {
+                        "title": "GetPolicyStore that is encrypted",
+                        "documentation": "The following example retrieves details about the specified encrypted policy store.",
+                        "input": {
+                            "policyStoreId": "C7v5xMplfFH3i3e4Jrzb1a"
+                        },
+                        "output": {
+                            "policyStoreId": "C7v5xMplfFH3i3e4Jrzb1a",
+                            "arn": "arn:aws:verifiedpermissions::123456789012:policy-store/C7v5xMplfFH3i3e4Jrzb1a",
+                            "validationSettings": {
+                                "mode": "STRICT"
+                            },
+                            "createdDate": "2024-08-12T18:20:50.99Z",
+                            "lastUpdatedDate": "2024-08-12T18:20:50.99Z",
+                            "encryptionState": {
+                                "kmsEncryptionState": {
+                                    "key": "arn:aws:kms:us-east-1:123456789012:key/abcdefgh-ijkl-mnop-qrst-uvwxyz123456",
+                                    "encryptionContext": {
+                                        "policy_store_owner": "Tim"
+                                    }
+                                }
+                            }
                         }
                     }
                 ],
@@ -2794,6 +3086,12 @@
                     "target": "com.amazonaws.verifiedpermissions#DeletionProtection",
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies whether the policy store can be deleted. If enabled, the policy store can't be deleted.</p> <p>The default state is <code>DISABLED</code>.</p>"
+                    }
+                },
+                "encryptionState": {
+                    "target": "com.amazonaws.verifiedpermissions#EncryptionState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A structure that contains the encryption configuration for the policy store.</p>"
                     }
                 },
                 "cedarVersion": {
@@ -3323,7 +3621,7 @@
             ],
             "traits": {
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to make an authorization decision about a service request described in the parameters"
+                    "documentation": "Grants permission to make authorization decisions about the service requests described in the parameters"
                 },
                 "smithy.api#documentation": "<p>Makes an authorization decision about a service request described in the parameters. The information in the parameters can also define additional context that Verified Permissions can include in the evaluation. The request is evaluated against all matching policies in the specified policy store. The result of the decision is either <code>Allow</code> or <code>Deny</code>, along with a list of the policies that resulted in the decision.</p>",
                 "smithy.api#examples": [
@@ -3472,7 +3770,7 @@
             ],
             "traits": {
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to make an authorization decision about a service request described in the parameters. The principal in this request comes from an external identity source"
+                    "documentation": "Grants permission to make authorization decisions about the service requests described in the parameters. The principal in this request comes from an external identity source"
                 },
                 "smithy.api#documentation": "<p>Makes an authorization decision about a service request described in the parameters. The principal in this request comes from an external identity source in the form of an identity token formatted as a <a href=\"https://wikipedia.org/wiki/JSON_Web_Token\">JSON web token (JWT)</a>. The information in the parameters can also define additional context that Verified Permissions can include in the evaluation. The request is evaluated against all matching policies in the specified policy store. The result of the decision is either <code>Allow</code> or <code>Deny</code>, along with a list of the policies that resulted in the decision.</p> <p>Verified Permissions validates each token that is specified in a request by checking its expiration date and its signature.</p> <important> <p>Tokens from an identity source user continue to be usable until they expire. Token revocation and resource deletion have no effect on the validity of a token in your policy store</p> </important>",
                 "smithy.api#examples": [
@@ -3599,6 +3897,55 @@
                     "max": 2048
                 },
                 "smithy.api#pattern": "^https://.*$"
+            }
+        },
+        "com.amazonaws.verifiedpermissions#KmsEncryptionSettings": {
+            "type": "structure",
+            "members": {
+                "key": {
+                    "target": "com.amazonaws.verifiedpermissions#KmsKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer-managed KMS key <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a>, alias or ID to be used for encryption processes. </p> <p>Users can provide the full KMS key ARN, a KMS key alias, or a KMS key ID, but it will be mapped to the full KMS key ARN after policy store creation, and referenced when encrypting child resources. </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "encryptionContext": {
+                    "target": "com.amazonaws.verifiedpermissions#EncryptionContext",
+                    "traits": {
+                        "smithy.api#documentation": "<p>User-defined, additional context to be added to encryption processes. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A structure that contains the KMS encryption configuration for the policy store. The encryption settings determine what customer-managed KMS key will be used to encrypt all resources within the policy store, and any user-defined context key-value pairs to append during encryption processes.</p> <p>This data type is used as a field that is part of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_EncryptionSettings.html\">EncryptionSettings</a> type.</p>"
+            }
+        },
+        "com.amazonaws.verifiedpermissions#KmsEncryptionState": {
+            "type": "structure",
+            "members": {
+                "key": {
+                    "target": "com.amazonaws.verifiedpermissions#KmsKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer-managed KMS key <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> being used for encryption processes. </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "encryptionContext": {
+                    "target": "com.amazonaws.verifiedpermissions#EncryptionContext",
+                    "traits": {
+                        "smithy.api#documentation": "<p>User-defined, additional context added to encryption processes. </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A structure that contains the KMS encryption configuration for the policy store. The encryption state shows what customer-managed KMS key is being used to encrypt all resources within the policy store, and any user-defined context key-value pairs added during encryption processes.</p> <p>This data type is used as a field that is part of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_EncryptionState.html\">EncryptionState</a> type.</p>"
+            }
+        },
+        "com.amazonaws.verifiedpermissions#KmsKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[a-zA-Z0-9:/_-]+$"
             }
         },
         "com.amazonaws.verifiedpermissions#ListIdentitySources": {
@@ -4774,7 +5121,7 @@
                     "min": 1,
                     "max": 200
                 },
-                "smithy.api#pattern": "^[a-zA-Z0-9-]*$"
+                "smithy.api#pattern": "^[a-zA-Z0-9-/_]*$"
             }
         },
         "com.amazonaws.verifiedpermissions#PolicyItem": {
@@ -5700,7 +6047,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Contains information about a policy created by instantiating a policy template. </p> <p>This </p>"
+                "smithy.api#documentation": "<p>Contains information about a policy created by instantiating a policy template. </p>"
             }
         },
         "com.amazonaws.verifiedpermissions#ThrottlingException": {
@@ -6237,8 +6584,7 @@
                     "target": "com.amazonaws.verifiedpermissions#UpdatePolicyDefinition",
                     "traits": {
                         "aws.cloudformation#cfnExcludeProperty": {},
-                        "smithy.api#documentation": "<p>Specifies the updated policy content that you want to replace on the specified policy. The content must be valid Cedar policy language text.</p> <p>You can change only the following elements from the policy definition:</p> <ul> <li> <p>The <code>action</code> referenced by the policy.</p> </li> <li> <p>Any conditional clauses, such as <code>when</code> or <code>unless</code> clauses.</p> </li> </ul> <p>You <b>can't</b> change the following elements:</p> <ul> <li> <p>Changing from <code>static</code> to <code>templateLinked</code>.</p> </li> <li> <p>Changing the effect of the policy from <code>permit</code> or <code>forbid</code>.</p> </li> <li> <p>The <code>principal</code> referenced by the policy.</p> </li> <li> <p>The <code>resource</code> referenced by the policy.</p> </li> </ul>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>Specifies the updated policy content that you want to replace on the specified policy. The content must be valid Cedar policy language text.</p> <p>You can change only the following elements from the policy definition:</p> <ul> <li> <p>The <code>action</code> referenced by the policy.</p> </li> <li> <p>Any conditional clauses, such as <code>when</code> or <code>unless</code> clauses.</p> </li> </ul> <p>You <b>can't</b> change the following elements:</p> <ul> <li> <p>Changing from <code>static</code> to <code>templateLinked</code>.</p> </li> <li> <p>Changing the effect of the policy from <code>permit</code> or <code>forbid</code>.</p> </li> <li> <p>The <code>principal</code> referenced by the policy.</p> </li> <li> <p>The <code>resource</code> referenced by the policy.</p> </li> </ul>"
                     }
                 }
             },
@@ -6725,27 +7071,27 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -7227,17 +7573,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -7248,17 +7583,6 @@
                                 "Region": "us-iso-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
@@ -7275,17 +7599,6 @@
                             }
                         },
                         {
-                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -7296,17 +7609,6 @@
                                 "Region": "us-isob-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
                             }
                         },
                         {
