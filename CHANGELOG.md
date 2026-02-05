@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.6.11] - 02/05/2026
+
+### Features
+* (**arcregionswitch**) Updates documentation for ARC Region switch and provides stronger validation for Amazon Aurora Global Database execution block parameters.
+* (**athena**) Reduces the minimum TargetDpus to create or update capacity reservations from 24 to 4.
+* (**bedrockagentcore**) Support Browser profile persistence (cookies and local storage) across sessions for AgentCore Browser.
+* (**bedrockagentcorecontrol**) Support Browser profile persistence (cookies and local storage) across sessions for AgentCore Browser.
+* (**glue**) This release adds the capability to easily create custom AWS Glue connections to data sources with REST APIs.
+* (**medialive**) Outputs using the AV1 codec in CMAF Ingest output groups in MediaLive now have the ability to specify a target bit depth of 8 or 10.
+* (**ram**) Added ListSourceAssociations API. Allows RAM resource share owners to list source associations that determine which sources can access resources through service principal associations. Supports filtering by resource share ARN, source ID, source type, or status, with pagination.
+* (**transfer**) Adds support for the customer to send custom HTTP headers and configure an AS2 Connector to receive Asynchronous MDNs from their trading partner
+* (**workspaces**) Added support for 12 new graphics-optimized compute types - Graphics.g6 (xlarge, 2xlarge, 4xlarge, 8xlarge, 16xlarge), Graphics.gr6 (4xlarge, 8xlarge), Graphics.g6f (large, xlarge, 2xlarge, 4xlarge), and Graphics.gr6f (4xlarge).
+
+### Documentation
+* (**neptunegraph**) Minor neptune-graph documentation changes
+
 ## [1.6.10] - 02/04/2026
 
 ### Features
