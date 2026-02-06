@@ -16,7 +16,7 @@ import kotlin.test.assertFailsWith
 
 class KeyFilterTest {
     private val singleKeySchema = ItemSchema(DummyConverter, KeySpec.string("primary"))
-    private val compositeSchema = ItemSchema(DummyConverter, KeySpec.string("primary"), KeySpec.number<Int>("secondary"))
+    private val compositeSchema = ItemSchema(DummyConverter, KeySpec.string("primary"), KeySpec.int("secondary"))
 
     @Test
     fun testSingleKeySchema() {

@@ -6,7 +6,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model
 
 import aws.sdk.kotlin.hll.codegen.model.Operation
 import aws.sdk.kotlin.hll.codegen.model.TypeRef
-import aws.sdk.kotlin.hll.codegen.model.TypeVar
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperPkg
 
 /**
@@ -36,15 +35,13 @@ internal enum class ItemSourceKind(
      * Indicates the `Table<T>` interface
      */
     Table(listOf("tableName"), ItemSource),
-
-    ;
-
-    /**
-     * Get the [TypeRef] for the `*Spec` type for this item source kind
-     * @param typeVar The type variable name to use for the generic type
-     */
-    fun getSpecType(typeVar: String): TypeRef = TypeRef(MapperPkg.Hl.Model, "${name}Spec", listOf(TypeVar(typeVar)))
 }
+
+internal fun ItemSourceKind.opsType(keyType: StructureKeyType): TypeRef =
+    TypeRef(MapperPkg.Hl.Ops, "${name}Operations${keyType.nameSuffix}", keyType.typeArgs)
+
+internal fun ItemSourceKind.specType(keyType: StructureKeyType): TypeRef =
+    TypeRef(MapperPkg.Hl.Model, "${name}Spec${keyType.nameSuffix}", keyType.typeArgs)
 
 /**
  * Identifies the types of `ItemSource` on which an operation can be invoked (e.g., `Scan` can be invoked on a table,

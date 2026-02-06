@@ -4,8 +4,6 @@
  */
 package aws.sdk.kotlin.hll.codegen.core
 
-import aws.sdk.kotlin.hll.codegen.model.Type
-import aws.sdk.kotlin.hll.codegen.model.TypeRef
 import aws.sdk.kotlin.hll.codegen.util.quote
 import aws.sdk.kotlin.runtime.InternalSdkApi
 
@@ -43,18 +41,6 @@ public data class TemplateProcessor(val key: Char, val handler: (Any) -> String)
          * quoted/escaped form of a string argument. See [quote] for more details.
          */
         public val QuotedString: TemplateProcessor = typed<String>('S') { it.quote() }
-
-        /**
-         * Creates a template processor for [Type] values. This processor substitutes parameters in the form of `#T`
-         * with the name or an alias of the type. It also appends `import` directives if necessary.
-         * @param pkg The Kotlin package into which code is being generated. An `import` directive will not be added if
-         * a passed argument has the same package as this processor.
-         * @param imports An [ImportDirectives] collection to which new imports will be appended
-         */
-        public fun forType(pkg: String, imports: ImportDirectives): TemplateProcessor {
-            val processor = ImportingTypeProcessor(pkg, imports)
-            return typed<Type>('T', processor::format)
-        }
     }
 
     init {
@@ -62,9 +48,12 @@ public data class TemplateProcessor(val key: Char, val handler: (Any) -> String)
     }
 }
 
-private open class TypeProcessor {
-    open fun format(type: Type): String = buildString {
-        append(type.shortName)
+/*
+private open class TypeProcessor(private val includeConstraints: Boolean) {
+    open fun getTypeName(type: Type): String = type.shortName
+
+    fun format(type: Type): String = buildString {
+        append(getTypeName(type))
 
         if (type is TypeRef && type.genericArgs.isNotEmpty()) {
             type.genericArgs.joinToString(", ", "<", ">", transform = ::format).let(::append)
@@ -74,19 +63,44 @@ private open class TypeProcessor {
     }
 }
 
-private class ImportingTypeProcessor(private val pkg: String, private val imports: ImportDirectives) : TypeProcessor() {
-    override fun format(type: Type): String = buildString {
-        if (type is TypeRef && type.pkg != pkg && type.pkg != "kotlin") {
-            val existingImport = imports[type.baseName]
+private class ImportingTypeProcessor(private val pkg: String, private val imports: ImportDirectives) : TypeProcessor(false) {
+    override fun getTypeName(type: Type): String {
+        if (type !is TypeRef) return super.getTypeName(type)
 
-            if (existingImport == null) {
-                imports += ImportDirective("${type.pkg}.${type.baseName}")
-            } else if (existingImport.fullName != "${type.pkg}.${type.baseName}") {
-                append(type.pkg)
+        val matchingImport = imports.getByFullName(type.fullBaseName)
+        if (matchingImport != null) return buildString {
+            append(matchingImport.shortName)
+            if (type.shortName.contains('.')) {
                 append('.')
+                append(type.shortName.substringAfter('.'))
             }
         }
 
-        append(super.format(type))
+        val conflictingImport = imports.getByShortName(type.shortBaseName)
+        if (conflictingImport != null) return type.fullName
+
+        if (type.pkg != pkg && type.pkg != "kotlin") imports += ImportDirective(type)
+        return type.shortName
     }
 }
+
+private class GenericsListProcessor(private val importProcessor: TemplateProcessor) {
+    fun format(types: Collection<TypeVar>): String = buildString {
+        if (types.isNotEmpty()) {
+            append('<')
+
+            types.forEachIndexed { idx, type ->
+                if (idx > 0)  append(", ")
+
+                append(type.shortName)
+                if (type.constraintType != null) {
+                    append(" : ")
+                    append(importProcessor.handler(type.constraintType))
+                }
+            }
+
+            append("> ")
+        }
+    }
+}
+*/

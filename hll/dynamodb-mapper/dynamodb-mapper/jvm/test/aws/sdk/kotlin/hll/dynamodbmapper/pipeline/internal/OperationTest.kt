@@ -14,7 +14,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.PersistenceSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.HReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
-import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
 import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
@@ -38,7 +37,7 @@ class OperationTest {
     }
 
     private fun interceptor(name: String) =
-        spyk(object : Interceptor<Foo, HFooRequest, LFooRequest, LFooResponse, HFooResponse> {}, name)
+        spyk(object : Interceptor<Foo, ItemSchema<Foo>, HFooRequest, LFooRequest, LFooResponse, HFooResponse> {}, name)
 
     private val interceptorA = interceptor("A")
     private val interceptorB = interceptor("B")
@@ -46,17 +45,17 @@ class OperationTest {
 
     private fun initialize(hReq: HFooRequest) = HReqContextImpl(hReq, fooSchema, MapperContextImpl(fooTable, "FooOp"))
 
-    private fun op(
-        initialize: (HFooRequest) -> HReqContextImpl<Foo, HFooRequest> = ::initialize,
-        serialize: (HFooRequest, ItemSchema<Foo>) -> LFooRequest = { hReq, schema -> hReq.convert(TABLE_NAME, schema) },
-        lowLevelInvoke: suspend (LFooRequest) -> LFooResponse = ::dummyInvoke,
-        deserialize: (LFooResponse, ItemSchema<Foo>) -> HFooResponse = { lRes, schema -> lRes.convert(schema) },
-        interceptors: Collection<InterceptorAny> = this.interceptors,
-    ) = Operation(initialize, serialize, lowLevelInvoke, deserialize, interceptors)
+    private val op = Operation(
+        ::initialize,
+        { hReq, schema -> hReq.convert(TABLE_NAME, schema) },
+        ::dummyInvoke,
+        { lRes, schema -> lRes.convert(schema) },
+        interceptors,
+    )
 
     @Test
     fun testFullInvocationOrder() = runTest {
-        val res = op().execute(HFooRequest(Foo("the foo")))
+        val res = op.execute(HFooRequest(Foo("the foo")))
         assertEquals("the foo", res.foo.value) // Sanity check
 
         verifyOrder {
@@ -103,11 +102,11 @@ class OperationTest {
     @Test
     fun testModifyHook() = runTest {
         every { interceptorA.modifyBeforeSerialization(any()) } answers {
-            val ctx = assertIs<HReqContext<Foo, HFooRequest>>(it.invocation.args[0])
+            val ctx = assertIs<HReqContext<Foo, ItemSchema<Foo>, HFooRequest>>(it.invocation.args[0])
             SerializeInputImpl(HFooRequest(Foo(ctx.highLevelRequest.foo.value.reversed())), ctx.serializeSchema)
         }
 
-        val res = op().execute(HFooRequest(Foo("the foo")))
+        val res = op.execute(HFooRequest(Foo("the foo")))
         assertEquals("oof eht", res.foo.value) // Should be reversed
     }
 
@@ -116,13 +115,13 @@ class OperationTest {
         every { interceptorA.readAfterSerialization(any()) } throws RuntimeException("Cannot foo!")
 
         every { interceptorB.readAfterSerialization(any()) } answers {
-            val ctx = assertIs<LReqContext<Foo, HFooRequest, LFooRequest?>>(it.invocation.args[0])
+            val ctx = assertIs<LReqContext<Foo, ItemSchema<Foo>, HFooRequest, LFooRequest?>>(it.invocation.args[0])
             val ex = assertIs<RuntimeException>(ctx.error)
             assertEquals("Cannot foo!", ex.message)
         }
 
         assertFailsWith<RuntimeException>("Cannot foo!") {
-            op().execute(HFooRequest(Foo("the foo")))
+            op.execute(HFooRequest(Foo("the foo")))
         }
 
         verifyOrder {
@@ -143,14 +142,14 @@ class OperationTest {
 
         interceptors.forEach { interceptor ->
             every { interceptor.readBeforeSerialization(any()) } answers {
-                val ctx = assertIs<HReqContext<Foo, HFooRequest>>(it.invocation.args[0])
+                val ctx = assertIs<HReqContext<Foo, ItemSchema<Foo>, HFooRequest>>(it.invocation.args[0])
                 val ex = assertIs<RuntimeException>(ctx.error)
                 assertEquals("Cannot foo!", ex.message)
             }
         }
 
         assertFailsWith<RuntimeException>("Cannot foo!") {
-            op().execute(HFooRequest(Foo("the foo")))
+            op.execute(HFooRequest(Foo("the foo")))
         }
 
         verifyOrder {

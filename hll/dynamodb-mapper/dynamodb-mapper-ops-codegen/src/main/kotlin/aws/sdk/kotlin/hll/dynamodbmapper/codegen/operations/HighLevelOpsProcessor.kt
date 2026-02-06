@@ -14,7 +14,8 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.rendering.HighLevelR
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.getDeclaredFunctions
-import com.google.devtools.ksp.processing.*
+import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 
@@ -29,14 +30,17 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
     private val opAllowlist = environment.options["op-allowlist"]?.split(";")
     private val pkg = environment.options["pkg"] ?: MapperPkg.Hl.Ops
 
+    private val ctx by lazy {
+        val codegenFactory = CodeGeneratorFactory(codeGenerator, logger) // FIXME Pass dependencies
+        RenderContext(logger, codegenFactory, pkg, "dynamodb-mapper-ops-codegen")
+    }
+
     override fun processImpl(resolver: Resolver): List<KSAnnotated> {
         logger.info("Scanning low-level DDB client for operations and types")
         val operations = getOperations(resolver)
-        val codegenFactory = CodeGeneratorFactory(codeGenerator, logger) // FIXME Pass dependencies
-        val ctx = RenderContext(logger, codegenFactory, pkg, "dynamodb-mapper-ops-codegen")
 
+        logger.info("Rendering high-level operations and types for ${operations.map { it.name }}")
         HighLevelRenderer(ctx, operations).render()
-
         return listOf()
     }
 
@@ -58,6 +62,6 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
         .getDeclaredFunctions()
         .filter(::allow)
         .map(Operation::from)
-        .map { it.toHighLevel(pkg) }
+        .map { it.toHighLevel(pkg, ctx) }
         .toList()
 }

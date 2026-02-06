@@ -42,11 +42,12 @@ public interface CodeGenerator {
 
     /**
      * Close a manually-opened block of code by dedenting and appending some finalizing text
-     * @param template The string template or literal to append after dedenting (e.g., `}`)
+     * @param template The string template or literal to append after dedenting (e.g., `}`). If this value is null, no
+     * string will be appended after dedenting (i.e., the next write will occur immediately following the block).
      * @param args The arguments to substitute into the [template] (if any). See [TemplateEngine] for more details on
      * string templates and argument substitution.
      */
-    public fun closeBlock(template: String, vararg args: Any)
+    public fun closeBlock(template: String?, vararg args: Any)
 
     /**
      * Close a manually-opened block and open a new one by dedenting, appending some intermediate text, and then
@@ -63,6 +64,8 @@ public interface CodeGenerator {
      * @param levels The number of levels to decrement. Defaults to `1` if unspecified.
      */
     public fun dedent(levels: Int = 1)
+
+    public fun format(template: String, vararg args: Any): String
 
     /**
      * Increases the active indentation level
@@ -88,14 +91,15 @@ public interface CodeGenerator {
      * may add text inside the block, dedenting, and writing some finalizing text
      * @param preTemplate The string template or literal to append before indenting (e.g., `if (foo) {`)
      * @param postText The string literal to append after dedenting (e.g., `}`). No templating or argument substitution
-     * will be performed on this string.
+     * will be performed on this string. If this value is null, no string will be appended after dedenting (i.e., the
+     * next write will occur immediately following the block).
      * @param args The arguments to substitute into the [preTemplate] (if any). See [TemplateEngine] for more details on
      * string templates and argument substitution.
      * @param block A function to execute in between appending the [preTemplate] and before appending the [postText].
      * This function typically writes more code, which will inherit the active indentation level which will have been
      * incremented by `1` by this method.
      */
-    public fun withBlock(preTemplate: String, postText: String, vararg args: Any, block: () -> Unit)
+    public fun withBlock(preTemplate: String, postText: String?, vararg args: Any, block: () -> Unit)
 
     /**
      * Writes a block of documentation by automatically prepending KDoc-style comment tokens as prefixes. This method
@@ -177,11 +181,11 @@ internal class CodeGeneratorImpl(
         if (!builder.endsWith("\n\n")) builder.append('\n')
     }
 
-    override fun closeBlock(template: String, vararg args: Any) {
+    override fun closeBlock(template: String?, vararg args: Any) {
         if (builder.endsWith("\n\n")) builder.deleteAt(builder.length - 1)
 
         dedent()
-        write(template, *args)
+        if (template != null) write(template, *args)
     }
 
     override fun closeAndOpenBlock(template: String, vararg args: Any) {
@@ -195,6 +199,8 @@ internal class CodeGeneratorImpl(
             indent = indent.removeSuffix(INDENT)
         }
     }
+
+    override fun format(template: String, vararg args: Any) = engine.process(template, args.toList())
 
     override fun indent(levels: Int) {
         indent += INDENT.repeat(levels)
@@ -217,7 +223,7 @@ internal class CodeGeneratorImpl(
         persistCallback(content)
     }
 
-    override fun withBlock(preTemplate: String, postText: String, vararg args: Any, block: () -> Unit) {
+    override fun withBlock(preTemplate: String, postText: String?, vararg args: Any, block: () -> Unit) {
         openBlock(preTemplate, *args)
         block()
         closeBlock(postText)
@@ -239,7 +245,7 @@ internal class CodeGeneratorImpl(
     }
 
     override fun writeInline(template: String, vararg args: Any) {
-        val text = engine.process(template, args.toList())
+        val text = format(template, *args)
         if (builder.endsWith('\n')) builder.append(indent)
         builder.append(text)
     }

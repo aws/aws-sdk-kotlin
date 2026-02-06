@@ -4,16 +4,30 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model
 
-import aws.sdk.kotlin.hll.codegen.model.Operation
+import aws.sdk.kotlin.hll.codegen.model.Member
+import aws.sdk.kotlin.hll.codegen.model.Structure
 import aws.smithy.kotlin.runtime.collections.AttributeKey
 
 /**
  * Defines [AttributeKey] instances that relate to the data model of low-level to high-level codegen
  */
 internal object MapperAttributes {
+    val CodegenBehavior: AttributeKey<MemberCodegenBehavior> = AttributeKey("aws.sdk.kotlin.ddbmapper#CodegenBehavior")
+
+    val DataType: AttributeKey<DataType> = AttributeKey("aws.sdk.kotlin#ddbmapper#DataType")
+
+    val IsInherited: AttributeKey<Boolean> = AttributeKey("aws.sdk.kotlin#InInherited")
+
     /**
-     * For a given [Operation], this attribute key contains relevant pagination members (if applicable) in the request
-     * and response
+     * Indicates whether this [Member] represents a reified key field derived from a low-level member with
+     * [MemberCodegenBehavior.MapToKeys].
      */
-    val PaginationInfo: AttributeKey<PaginationMembers> = AttributeKey("aws.sdk.kotlin.ddbmapper#PaginationInfo")
+    val MemberKeyType: AttributeKey<MemberKeyType> = AttributeKey("aws.sdk.kotlin.ddbmapper#MemberKeyType")
+
+    val Variants: AttributeKey<List<Structure>> = AttributeKey("aws.sdk.kotlin.ddbmapper#Variants")
+
+    val StructureKeyType: AttributeKey<StructureKeyType> = AttributeKey("aws.sdk.kotlin.ddbmapper#StructureKeyType")
 }
+
+internal val Member.isInherited: Boolean
+    get() = attributes.getOrNull(MapperAttributes.IsInherited) ?: false

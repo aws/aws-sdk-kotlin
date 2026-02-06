@@ -20,7 +20,7 @@ public fun <T, C : Iterable<T>> C.requireAllDistinct(): C {
     }
 
     val duplicates = itemCounts.filter { (_, count) -> count > 1 }.keys
-    require(duplicates.isEmpty()) { "Found duplicated items: $duplicates" }
+    require(duplicates.isEmpty()) { "Found duplicated items $duplicates in collection $this" }
 
     return collection
 }

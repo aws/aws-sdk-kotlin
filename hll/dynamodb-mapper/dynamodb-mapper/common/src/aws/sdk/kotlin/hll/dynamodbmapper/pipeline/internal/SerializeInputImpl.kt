@@ -8,10 +8,10 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.MapperContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.SerializeInput
 
-internal data class SerializeInputImpl<T, HReq>(
+internal data class SerializeInputImpl<T, S : ItemSchema<T>, HReq>(
     override val highLevelRequest: HReq,
-    override val serializeSchema: ItemSchema<T>,
-) : SerializeInput<T, HReq>
+    override val serializeSchema: S,
+) : SerializeInput<T, S, HReq>
 
-internal operator fun <T, HReq> SerializeInput<T, HReq>.plus(mapperContext: MapperContext<T>) =
+internal operator fun <T, S : ItemSchema<T>, HReq> SerializeInput<T, S, HReq>.plus(mapperContext: MapperContext<T>) =
     HReqContextImpl(highLevelRequest, serializeSchema, mapperContext, null)

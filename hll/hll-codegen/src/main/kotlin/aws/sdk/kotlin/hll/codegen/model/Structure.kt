@@ -30,27 +30,21 @@ public data class Structure(
          * Derives a [Structure] from the given [KSTypeReference]
          */
         public fun from(ksTypeRef: KSTypeReference): Structure {
-            val struct = Structure(
-                type = Type.from(ksTypeRef),
-                members = (ksTypeRef.resolve().declaration as KSClassDeclaration)
-                    .getDeclaredProperties()
-                    .map(Member.Companion::from)
-                    .toSet(),
-            )
+            val initialTypeRef = Type.from(ksTypeRef)
 
-            return ModelParsingPlugin.transform(struct, ModelParsingPlugin::postProcessStructure)
+            val members = (ksTypeRef.resolve().declaration as KSClassDeclaration)
+                .getDeclaredProperties()
+                .map(Member.Companion::from)
+                .toSet()
+
+            val typeArgs = (members.genericVars() + initialTypeRef.genericVars()).distinct()
+
+            return Structure(
+                type = initialTypeRef.copy(genericArgs = typeArgs),
+                members = members,
+            )
         }
     }
-}
-
-/**
- * Gets a collection of all generic variables referenced by/in a [Structure], including in the structure's [TypeRef] and
- * in the [TypeRef]s of every member
- */
-@InternalSdkApi
-public fun Structure.genericVars(): List<TypeVar> = buildList {
-    addAll(type.genericVars())
-    members.flatMap { it.type.genericVars() }.let(::addAll)
 }
 
 /**

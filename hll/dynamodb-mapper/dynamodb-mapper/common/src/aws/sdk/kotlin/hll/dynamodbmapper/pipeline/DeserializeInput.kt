@@ -13,7 +13,7 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItem
  * @param T The type of objects being converted to/from DynamoDB items
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
  */
-public interface DeserializeInput<T, LRes> {
+public interface DeserializeInput<T, S : ItemSchema<T>, LRes> {
     /**
      * The low-level response which is to be deserialized into a high-level response object
      */
@@ -22,7 +22,7 @@ public interface DeserializeInput<T, LRes> {
     /**
      * The [ItemSchema] to use for deserializing items into objects
      */
-    public val deserializeSchema: ItemSchema<T>
+    public val deserializeSchema: S
 }
 
 /**
@@ -32,7 +32,7 @@ public interface DeserializeInput<T, LRes> {
  * @param lowLevelResponse The low-level response which is to be deserialized into a high-level response object
  * @param deserializeSchema The [ItemSchema] to use for deserializing items into objects
  */
-public fun <T, LRes> DeserializeInput(
+public fun <T, S : ItemSchema<T>, LRes> DeserializeInput(
     lowLevelResponse: LRes,
-    deserializeSchema: ItemSchema<T>,
-): DeserializeInput<T, LRes> = DeserializeInputImpl(lowLevelResponse, deserializeSchema)
+    deserializeSchema: S,
+): DeserializeInput<T, S, LRes> = DeserializeInputImpl(lowLevelResponse, deserializeSchema)

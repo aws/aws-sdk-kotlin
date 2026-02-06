@@ -8,18 +8,18 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
 
-internal data class Operation<T, HReq, LReq, LRes, HRes>(
-    val initialize: (HReq) -> HReqContextImpl<T, HReq>,
-    val serialize: (HReq, ItemSchema<T>) -> LReq,
+internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
+    val initialize: (HReq) -> HReqContextImpl<T, S, HReq>,
+    val serialize: (HReq, S) -> LReq,
     val lowLevelInvoke: suspend (LReq) -> LRes,
-    val deserialize: (LRes, ItemSchema<T>) -> HRes,
-    val interceptors: List<Interceptor<T, HReq, LReq, LRes, HRes>>,
+    val deserialize: (LRes, S) -> HRes,
+    val interceptors: List<Interceptor<T, S, HReq, LReq, LRes, HRes>>,
 ) {
     constructor(
-        initialize: (HReq) -> HReqContextImpl<T, HReq>,
-        serialize: (HReq, ItemSchema<T>) -> LReq,
+        initialize: (HReq) -> HReqContextImpl<T, S, HReq>,
+        serialize: (HReq, S) -> LReq,
         lowLevelInvoke: suspend (LReq) -> LRes,
-        deserialize: (LRes, ItemSchema<T>) -> HRes,
+        deserialize: (LRes, S) -> HRes,
         interceptors: Collection<InterceptorAny>,
     ) : this(
         initialize,
@@ -29,7 +29,7 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
         interceptors.map {
             // Will cause runtime ClassCastExceptions during interceptor invocation if the types don't match. Is that ok?
             @Suppress("UNCHECKED_CAST")
-            it as Interceptor<T, HReq, LReq, LRes, HRes>
+            it as Interceptor<T, S, HReq, LReq, LRes, HRes>
         },
     )
 
@@ -44,7 +44,7 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
     private fun <I : ErrorCombinable<I>> readOnlyHook(
         input: I,
         reverse: Boolean = false,
-        hook: Interceptor<T, HReq, LReq, LRes, HRes>.(I) -> Unit,
+        hook: Interceptor<T, S, HReq, LReq, LRes, HRes>.(I) -> Unit,
     ) = interceptors.fold(input, reverse) { ctx, interceptor ->
         runCatching {
             interceptor.hook(ctx)
@@ -57,7 +57,7 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
     private fun <I, V> modifyHook(
         input: I,
         reverse: Boolean = false,
-        hook: Interceptor<T, HReq, LReq, LRes, HRes>.(I) -> V,
+        hook: Interceptor<T, S, HReq, LReq, LRes, HRes>.(I) -> V,
     ): I where I : Combinable<I, V>, I : ErrorCombinable<I> {
         var latestCtx = input
         return runCatching {
@@ -72,12 +72,12 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
         )
     }
 
-    private fun doInitialize(input: HReq): HReqContextImpl<T, HReq> {
+    private fun doInitialize(input: HReq): HReqContextImpl<T, S, HReq> {
         val ctx = initialize(input)
         return readOnlyHook(ctx) { readAfterInitialization(it) }
     }
 
-    private fun doSerialize(inputCtx: HReqContextImpl<T, HReq>): LReqContextImpl<T, HReq, LReq> {
+    private fun doSerialize(inputCtx: HReqContextImpl<T, S, HReq>): LReqContextImpl<T, S, HReq, LReq> {
         val rbsCtx = modifyHook(inputCtx) { modifyBeforeSerialization(it) }
         val serCtx = readOnlyHook(rbsCtx) { readBeforeSerialization(it) }
 
@@ -89,8 +89,8 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
     }
 
     private suspend fun doLowLevelInvoke(
-        inputCtx: LReqContextImpl<T, HReq, LReq>,
-    ): LResContextImpl<T, HReq, LReq, LRes> {
+        inputCtx: LReqContextImpl<T, S, HReq, LReq>,
+    ): LResContextImpl<T, S, HReq, LReq, LRes> {
         val rbiCtx = modifyHook(inputCtx) { modifyBeforeInvocation(it) }
         val invCtx = readOnlyHook(rbiCtx) { readBeforeInvocation(it) }
 
@@ -102,8 +102,8 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
     }
 
     private fun doDeserialize(
-        inputCtx: LResContextImpl<T, HReq, LReq, LRes>,
-    ): HResContextImpl<T, HReq, LReq, LRes, HRes> {
+        inputCtx: LResContextImpl<T, S, HReq, LReq, LRes>,
+    ): HResContextImpl<T, S, HReq, LReq, LRes, HRes> {
         val rbdCtx = modifyHook(inputCtx, reverse = true) { modifyBeforeDeserialization(it) }
         val desCtx = readOnlyHook(rbdCtx, reverse = true) { readBeforeDeserialization(it) }
 
@@ -114,7 +114,7 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
         return readOnlyHook(radCtx, reverse = true) { readAfterDeserialization(it) }.solidify()
     }
 
-    private fun finalize(inputCtx: HResContextImpl<T, HReq, LReq, LRes, HRes>): HRes {
+    private fun finalize(inputCtx: HResContextImpl<T, S, HReq, LReq, LRes, HRes>): HRes {
         val raeCtx = modifyHook(inputCtx, reverse = true) { modifyBeforeCompletion(it) }
         val finalCtx = readOnlyHook(raeCtx, reverse = true) { readBeforeCompletion(it) }
         return finalCtx.highLevelResponse!!

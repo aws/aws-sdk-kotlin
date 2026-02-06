@@ -390,16 +390,12 @@ internal class SchemaRenderer(
         val rest = keyProps.drop(1)
 
         val firstTypeRef = when (first.typeRef) {
+            Types.Kotlin.Byte -> MapperTypes.Items.KeySpecByte
             Types.Kotlin.ByteArray -> MapperTypes.Items.KeySpecByteArray
-
-            Types.Kotlin.Byte,
-            Types.Kotlin.Int,
-            Types.Kotlin.Long,
-            Types.Kotlin.Short,
-            -> MapperTypes.Items.keySpecNumber(first.typeRef)
-
+            Types.Kotlin.Int -> MapperTypes.Items.KeySpecInt
+            Types.Kotlin.Long -> MapperTypes.Items.KeySpecLong
+            Types.Kotlin.Short -> MapperTypes.Items.KeySpecShort
             Types.Kotlin.String -> MapperTypes.Items.KeySpecString
-
             else -> error("Unsupported key attribute type ${first.typeRef}")
         }
 
@@ -407,16 +403,12 @@ internal class SchemaRenderer(
 
         rest.forEach { prop ->
             val typeRef = when (prop.typeRef) {
+                Types.Kotlin.Byte -> MapperTypes.Items.KeySpecThenByte
                 Types.Kotlin.ByteArray -> MapperTypes.Items.KeySpecThenByteArray
-
-                Types.Kotlin.Byte,
-                Types.Kotlin.Int,
-                Types.Kotlin.Long,
-                Types.Kotlin.Short,
-                -> MapperTypes.Items.keySpecThenNumber(prop.typeRef)
-
+                Types.Kotlin.Int -> MapperTypes.Items.KeySpecThenInt
+                Types.Kotlin.Long -> MapperTypes.Items.KeySpecThenLong
+                Types.Kotlin.Short -> MapperTypes.Items.KeySpecThenShort
                 Types.Kotlin.String -> MapperTypes.Items.KeySpecThenString
-
                 else -> error("Unsupported key attribute type ${prop.typeRef}")
             }
 

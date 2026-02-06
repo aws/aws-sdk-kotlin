@@ -29,25 +29,24 @@ public class BuilderRenderer(
     private val implementationType: TypeRef,
     private val members: Set<Member>,
     private val ctx: RenderContext,
+    builderNameOverride: String? = null,
 ) : CodeGenerator by generator {
     @InternalSdkApi
     public companion object {
-        public fun builderName(builtType: TypeRef): String = "${builtType.shortName}Builder"
-        public fun builderType(builtType: TypeRef): TypeRef = builtType.copy(shortName = builderName(builtType))
+        public fun defaultBuilderName(builtType: TypeRef): String = "${builtType.shortName.replace(".", "")}Builder"
     }
 
-    private val builderName = builderName(builtType)
+    private val builderName = builderNameOverride ?: defaultBuilderName(builtType)
 
     public fun render() {
         docs("A DSL-style builder for instances of [#T]", builtType)
 
-        val genericParams = members.flatMap { it.type.genericVars() }.asParamsList()
-
-        withBlock("#Lclass #L#L {", "}", ctx.attributes.visibility, builderName, genericParams) {
+        val generics = members.genericVars()
+        withBlock("#Lclass #L#G {", "}", ctx.attributes.visibility, builderName, generics) {
             members.forEach(::renderProperty)
             blankLine()
 
-            withBlock("#Lfun build(): #T {", "}", ctx.attributes.visibility, builtType, genericParams) {
+            withBlock("#Lfun build(): #T {", "}", ctx.attributes.visibility, builtType) {
                 members.forEach {
                     if (it.type.nullable) {
                         write("val #1L = #1L", it.name)

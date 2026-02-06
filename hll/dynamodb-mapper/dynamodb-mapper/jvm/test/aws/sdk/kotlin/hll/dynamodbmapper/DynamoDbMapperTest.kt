@@ -39,7 +39,7 @@ class DynamoDbMapperTest : DdbLocalTest() {
             AttributeDescriptor("bar", DummyData::bar, DummyData::bar::set, NumberValueConverters.Int),
         )
 
-        private val dummySchema = ItemSchema(dummyConverter, KeySpec.string("foo"), KeySpec.number<Int>("bar"))
+        private val dummySchema = ItemSchema(dummyConverter, KeySpec.string("foo"), KeySpec.int("bar"))
     }
 
     @BeforeAll

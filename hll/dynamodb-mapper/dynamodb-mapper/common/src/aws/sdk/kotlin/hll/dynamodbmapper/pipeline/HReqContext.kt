@@ -13,7 +13,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.HReqContextImpl
  * @param T The type of objects being converted to/from DynamoDB items
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  */
-public interface HReqContext<T, HReq> : SerializeInput<T, HReq> {
+public interface HReqContext<T, S : ItemSchema<T>, HReq> : SerializeInput<T, S, HReq> {
 
     /**
      * Additional, generalized context which may be useful to interceptors
@@ -37,9 +37,9 @@ public interface HReqContext<T, HReq> : SerializeInput<T, HReq> {
  * @param mapperContext Additional, generalized context which may be useful to interceptors
  * @param error The most recent error which occurred, if any. Defaults to null.
  */
-public fun <T, HReq> HReqContext(
+public fun <T, S : ItemSchema<T>, HReq> HReqContext(
     highLevelRequest: HReq,
-    serializeSchema: ItemSchema<T>,
+    serializeSchema: S,
     mapperContext: MapperContext<T>,
     error: Throwable? = null,
-): HReqContext<T, HReq> = HReqContextImpl(highLevelRequest, serializeSchema, mapperContext, error)
+): HReqContext<T, S, HReq> = HReqContextImpl(highLevelRequest, serializeSchema, mapperContext, error)

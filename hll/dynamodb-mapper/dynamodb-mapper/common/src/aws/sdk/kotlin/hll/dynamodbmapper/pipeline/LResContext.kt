@@ -18,9 +18,9 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItem
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
  */
-public interface LResContext<T, HReq, LReq, LRes> :
-    LReqContext<T, HReq, LReq>,
-    DeserializeInput<T, LRes>
+public interface LResContext<T, S : ItemSchema<T>, HReq, LReq, LRes> :
+    LReqContext<T, S, HReq, LReq>,
+    DeserializeInput<T, S, LRes>
 
 /**
  * Creates a new [LResContext]
@@ -36,15 +36,15 @@ public interface LResContext<T, HReq, LReq, LRes> :
  * @param deserializeSchema The [ItemSchema] to use for deserializing items into objects
  * @param error The most recent error which occurred, if any. Defaults to null.
  */
-public fun <T, HReq, LReq, LRes> LResContext(
+public fun <T, S : ItemSchema<T>, HReq, LReq, LRes> LResContext(
     highLevelRequest: HReq,
-    serializeSchema: ItemSchema<T>,
+    serializeSchema: S,
     mapperContext: MapperContext<T>,
     lowLevelRequest: LReq,
     lowLevelResponse: LRes,
-    deserializeSchema: ItemSchema<T>,
+    deserializeSchema: S,
     error: Throwable? = null,
-): LResContext<T, HReq, LReq, LRes> = LResContextImpl(
+): LResContext<T, S, HReq, LReq, LRes> = LResContextImpl(
     highLevelRequest,
     serializeSchema,
     mapperContext,

@@ -8,6 +8,7 @@ import aws.sdk.kotlin.hll.codegen.model.Operation
 import aws.sdk.kotlin.hll.codegen.model.Type
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ItemSourceKind
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.dataType
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.itemSourceKinds
 
 /**
@@ -26,11 +27,13 @@ internal class HighLevelRenderer(private val ctx: RenderContext, private val ope
 
             val renderer = OperationsTypeRenderer(ctx, kind, parentType, operations)
             renderer.render()
-            kindTypes += kind to renderer.interfaceType
+            kindTypes += kind to renderer.unkeyedType
         }
     }
 
     private fun render(operation: Operation) {
-        OperationRenderer(ctx, operation).render()
+        RequestRenderer(ctx, operation.request.dataType).render()
+        ResponseRenderer(ctx, operation.response.dataType).render()
+        FactoryRenderer(ctx, operation).render()
     }
 }

@@ -27,24 +27,24 @@ internal sealed interface MemberCodegenBehavior {
 
     /**
      * Indicates that a member is an attribute map which may contain _all_ attributes for a data type (as opposed to
-     * only _key_ attributes) and should be replaced with a generic type (i.e., a `Map<String, AttributeValue>` member
-     * in a low-level structure should be replaced with a generic `T` member in a high-level structure)
+     * only _key_ attributes) and should be replaced with a generic object type (i.e., a `Map<String, AttributeValue>`
+     * member in a low-level structure should be replaced with a generic `T` member in a high-level structure)
      */
-    data object MapAll : MemberCodegenBehavior
+    data object MapToObject : MemberCodegenBehavior
 
     /**
      * Indicates that a member is an attribute map which contains _key_ attributes for a data type (as opposed to _all_
-     * attributes) and should be replaced with a generic type (i.e., a `Map<String, AttributeValue>` member in a
-     * low-level structure should be replaced with a generic `T` member in a high-level structure)
+     * attributes) and should be replaced with either a `KeyType` derivation (for entities without a sort key) or a
+     * [Pair] of `KeyType` derivations (for entities with a sort key).
      */
-    data object MapKeys : MemberCodegenBehavior
+    data object MapToKeys : MemberCodegenBehavior
 
     /**
      * Indicates that a member is a list of attribute maps which may contain attributes for a data type and should be
-     * replaced with a generic list type (i.e., a `List<Map<String, AttributeValue>>` member in a low-level structure
-     * should be replaced with a generic `List<T>` member in a high-level structure)
+     * replaced with a generic list of objects (i.e., a `List<Map<String, AttributeValue>>` member in a low-level
+     * structure should be replaced with a generic `List<T>` member in a high-level structure)
      */
-    data object ListMapAll : MemberCodegenBehavior
+    data object ListMapToObject : MemberCodegenBehavior
 
     /**
      * Indicates that a member is unsupported and should not be replicated from a low-level structure to the high-level
@@ -94,10 +94,18 @@ internal enum class ExpressionArgumentsType {
 }
 
 /**
+ * Indicates whether this behavior represents one of the expression types (e.g., literal or arguments)
+ */
+internal val MemberCodegenBehavior.isExpression: Boolean
+    get() = this is ExpressionLiteral || this is ExpressionArguments
+
+/**
  * Identifies a [MemberCodegenBehavior] for this [Member] by way of various heuristics
  */
 internal val Member.codegenBehavior: MemberCodegenBehavior
-    get() = rules.firstNotNullOfOrNull { it.matchedBehaviorOrNull(this) } ?: PassThrough
+    get() = attributes.getOrNull(MapperAttributes.CodegenBehavior)
+        ?: rules.firstNotNullOfOrNull { it.matchedBehaviorOrNull(this) }
+        ?: PassThrough
 
 private fun llType(name: String) = TypeRef(MapperPkg.Ll.Model, name)
 
@@ -161,7 +169,7 @@ private val rules = listOf(
     Rule("expressionAttributeValues", MapperTypes.AttributeMap, ExpressionArguments(AttributeValues)),
 
     // Mappable members
-    Rule(".*".toRegex(), Types.Kotlin.list(MapperTypes.AttributeMap), ListMapAll),
-    Rule("key|lastEvaluatedKey|exclusiveStartKey".toRegex(), MapperTypes.AttributeMap, MapKeys),
-    Rule(".*".toRegex(), MapperTypes.AttributeMap, MapAll),
+    Rule(".*".toRegex(), Types.Kotlin.list(MapperTypes.AttributeMap), ListMapToObject),
+    Rule("key|lastEvaluatedKey|exclusiveStartKey".toRegex(), MapperTypes.AttributeMap, MapToKeys),
+    Rule(".*".toRegex(), MapperTypes.AttributeMap, MapToObject),
 )
