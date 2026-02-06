@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.12] - 02/06/2026
+
+### Features
+* (**bedrockdataautomationruntime**) Add OutputConfiguration to InvokeDataAutomation input and output to support S3 output
+* (**deadline**) Adds support for tagging jobs during job creation
+* (**iotmanagedintegrations**) Adding support for Custom(General) Authorization in managed integrations for AWS IoT Device Management cloud connectors.
+* (**partnercentralselling**) Releasing AWS Opportunity Snapshots for SDK release.
+* (**sagemaker**) Adding g7e instance support in Sagemaker Training
+
 ## [1.6.11] - 02/05/2026
 
 ### Features
