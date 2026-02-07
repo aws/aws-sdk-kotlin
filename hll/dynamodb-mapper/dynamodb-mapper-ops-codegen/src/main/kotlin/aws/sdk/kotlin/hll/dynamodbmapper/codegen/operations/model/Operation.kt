@@ -21,4 +21,5 @@ internal fun Operation.toHighLevel(pkg: String, ctx: RenderContext): Operation {
     return Operation(llOperation.methodName, hlRequest, hlResponse, hlAttributes)
 }
 
-internal fun Operation.isKeyed() = request.isKeyed() || response.isKeyed()
+internal val Operation.isKeyed: Boolean
+    get() = request.typeFamily.isKeyed || response.typeFamily.isKeyed

@@ -33,7 +33,7 @@ internal class OperationsTypeRenderer(
     private val unkeyedOperations: List<Operation>
 
     init {
-        val (keyedOperations, unkeyedOperations) = operations.partition { it.isKeyed() }
+        val (keyedOperations, unkeyedOperations) = operations.partition { it.isKeyed }
         this.keyedOperations = keyedOperations
         this.unkeyedOperations = unkeyedOperations
     }
@@ -208,13 +208,13 @@ internal class OperationsTypeRenderer(
 
     private fun renderResponsePaginators() = operations
         .forEach { op ->
-            op.keyTypes.forEach { variant ->
-                val requestTypeFamily = op.request.typeFamily.leafTypeOrDefault(variant)
-                val responseTypeFamily = op.response.typeFamily.leafTypeOrDefault(variant)
+            op.keyTypes.forEach { keyType ->
+                val requestTypeFamily = op.request.typeFamily.leafTypeOrDefault(keyType)
+                val responseTypeFamily = op.response.typeFamily.leafTypeOrDefault(keyType)
 
                 val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
                 paginationInfo?.let {
-                    PaginatorRenderer(ctx, this, variant.interfaceType, op, it, forResponses = true).render()
+                    PaginatorRenderer(ctx, this, keyType.interfaceType, op, it, forResponses = true).render()
                 }
             }
         }

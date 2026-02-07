@@ -21,7 +21,7 @@ internal val Structure.keyType: StructureKeyType
 
 internal val Operation.keyTypes: List<StructureKeyType>
     get() = when {
-        isKeyed() -> listOf(StructureKeyType.PARTITION_KEY, StructureKeyType.COMPOSITE_KEY)
+        isKeyed -> listOf(StructureKeyType.PARTITION_KEY, StructureKeyType.COMPOSITE_KEY)
         else -> listOf(StructureKeyType.NONE)
     }
 

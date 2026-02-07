@@ -70,7 +70,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
  * val table = ... // some table which uses the vehicleConverter from above in its schema
  *
  * vehicles.forEach { vehicle ->
- *     table.putItem { item = vehicle }
+ *     table.putItem(vehicle)
  * }
  * ```
  *

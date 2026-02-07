@@ -30,16 +30,16 @@ internal abstract class IoRenderer(
         val llType = typeFamily.interfaceStruct.lowLevel.type
         imports += ImportDirective(llType, "LowLevel${llType.shortName}")
 
-        val isKeyed = fromType.interfaceStruct.isKeyed() || toType.interfaceStruct.isKeyed()
+        val isKeyed = fromType.isKeyed || toType.isKeyed
         val keyTypes = when {
             isKeyed -> listOf(StructureKeyType.PARTITION_KEY, StructureKeyType.COMPOSITE_KEY)
             else -> listOf(StructureKeyType.NONE)
         }
 
         keyTypes.forEach { keyType ->
-            val fromVariant = fromType.leafTypeOrDefault(keyType)
-            val toVariant = toType.leafTypeOrDefault(keyType)
-            renderConversion(keyType, fromVariant.interfaceStruct, toVariant.interfaceStruct)
+            val fromKeyType = fromType.leafTypeOrDefault(keyType)
+            val toKeyType = toType.leafTypeOrDefault(keyType)
+            renderConversion(keyType, fromKeyType.interfaceStruct, toKeyType.interfaceStruct)
         }
     }
 

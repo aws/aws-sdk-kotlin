@@ -5,7 +5,6 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model
 
 import aws.sdk.kotlin.hll.codegen.model.Member
-import aws.sdk.kotlin.hll.codegen.model.Structure
 import aws.smithy.kotlin.runtime.collections.AttributeKey
 
 /**
@@ -23,8 +22,6 @@ internal object MapperAttributes {
      * [MemberCodegenBehavior.MapToKeys].
      */
     val MemberKeyType: AttributeKey<MemberKeyType> = AttributeKey("aws.sdk.kotlin.ddbmapper#MemberKeyType")
-
-    val Variants: AttributeKey<List<Structure>> = AttributeKey("aws.sdk.kotlin.ddbmapper#Variants")
 
     val StructureKeyType: AttributeKey<StructureKeyType> = AttributeKey("aws.sdk.kotlin.ddbmapper#StructureKeyType")
 }
