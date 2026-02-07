@@ -79,6 +79,14 @@ public data class TypeRef(
     val genericArgs: List<Type> = listOf(),
     override val nullable: Boolean = false,
 ) : Type {
+    @InternalSdkApi
+    public constructor(
+        pkg: String,
+        shortName: String,
+        genericArgs: GenericsSet,
+        nullable: Boolean = false,
+    ) : this(pkg, shortName, genericArgs.toList(), nullable)
+
     /**
      * The full name of this type, including the Kotlin package
      */
@@ -158,8 +166,10 @@ public fun TypeVar.nullable(value: Boolean = true): TypeVar = when {
  * Gets a collection of all generic variables referenced by this [Type]
  */
 @InternalSdkApi
-public fun Type.genericVars(): List<TypeVar> = buildList {
-    when (val type = this@genericVars) {
+public fun Type.genericVars(): GenericsSet = GenericsSet(genericVarsList())
+
+private fun Type.genericVarsList(): List<TypeVar> = buildList {
+    when (val type = this@genericVarsList) {
         is TypeVar -> add(type.nullable(false))
         is TypeRef -> addAll(type.genericArgs.flatMap { it.genericVars() })
     }
@@ -169,7 +179,7 @@ public fun Type.genericVars(): List<TypeVar> = buildList {
  * Assembles the list of generic variables referenced by all member types in this collection
  */
 @InternalSdkApi
-public fun Collection<Member>.genericVars(): List<TypeVar> = flatMap { it.type.genericVars() }.distinct()
+public fun Collection<Member>.genericVars(): GenericsSet = GenericsSet(flatMap { it.type.genericVars().toList() })
 
 /**
  * Returns whether this [TypeRef] is generic for an [other]

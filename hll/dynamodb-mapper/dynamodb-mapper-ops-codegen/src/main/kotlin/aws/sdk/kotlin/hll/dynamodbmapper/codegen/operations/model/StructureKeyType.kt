@@ -4,6 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model
 
+import aws.sdk.kotlin.hll.codegen.model.GenericsSet
 import aws.sdk.kotlin.hll.codegen.model.Operation
 import aws.sdk.kotlin.hll.codegen.model.Structure
 import aws.sdk.kotlin.hll.codegen.model.TypeVar
@@ -24,15 +25,15 @@ internal val Operation.keyTypes: List<StructureKeyType>
         else -> listOf(StructureKeyType.NONE)
     }
 
-private val unkeyedTypeArgs = listOf(TypeVar.T)
-private val pkTypeArgs = unkeyedTypeArgs + MapperTypes.Items.KeyTypeAsPK
-private val ckTypeArgs = pkTypeArgs + MapperTypes.Items.KeyTypeAsSK
+private val unkeyedTypeVars = GenericsSet(TypeVar.T)
+private val pkTypeVars = unkeyedTypeVars + MapperTypes.Items.KeyTypeAsPK
+private val ckTypeVars = pkTypeVars + MapperTypes.Items.KeyTypeAsSK
 
-internal val StructureKeyType.typeArgs: List<TypeVar>
+internal val StructureKeyType.typeVars: GenericsSet
     get() = when (this) {
-        StructureKeyType.NONE -> unkeyedTypeArgs
-        StructureKeyType.PARTITION_KEY -> pkTypeArgs
-        StructureKeyType.COMPOSITE_KEY -> ckTypeArgs
+        StructureKeyType.NONE -> unkeyedTypeVars
+        StructureKeyType.PARTITION_KEY -> pkTypeVars
+        StructureKeyType.COMPOSITE_KEY -> ckTypeVars
     }
 
 internal val StructureKeyType.nameSuffix: String

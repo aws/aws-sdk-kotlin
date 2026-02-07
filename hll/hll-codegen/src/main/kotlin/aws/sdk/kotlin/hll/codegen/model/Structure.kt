@@ -13,7 +13,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 
 /**
- * Describes a structure (i.e., class, struct, etc.) which contains zero or more [Member] instances
+ * Describes a structure (i.e., class, interface, etc.) which contains zero or more [Member] instances
  * @param type The [TypeRef] for this structure, which includes its name and Kotlin package
  * @param members The [Member] instances which are part of this structure
  * @param attributes An [Attributes] collection for associating typed attributes with this structure
@@ -37,10 +37,10 @@ public data class Structure(
                 .map(Member.Companion::from)
                 .toSet()
 
-            val typeArgs = (members.genericVars() + initialTypeRef.genericVars()).distinct()
+            val typeArgs = members.genericVars() + initialTypeRef.genericVars()
 
             return Structure(
-                type = initialTypeRef.copy(genericArgs = typeArgs),
+                type = initialTypeRef.copy(genericArgs = typeArgs.toList()),
                 members = members,
             )
         }

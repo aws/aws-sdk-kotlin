@@ -24,27 +24,27 @@ internal data class PaginationInfo(
     val items: Member,
 ) {
     internal companion object {
-        private fun DataType.findMemberByLowLevelName(name: String): Member? =
+        private fun TypeFamily.findMemberByLowLevelName(name: String): Member? =
             interfaceStruct.members.find { it.lowLevel.name == name }
 
-        private fun DataType.findMembersByLowLevelName(name: String): List<Member>? =
+        private fun TypeFamily.findMembersByLowLevelName(name: String): List<Member>? =
             interfaceStruct.members.filter { it.lowLevel.name == name }
 
-        fun forRequestResponse(requestDataType: DataType, responseDataType: DataType): PaginationInfo? {
-            val inputTokens = requestDataType.findMembersByLowLevelName("exclusiveStartKey") ?: return null
-            val outputTokens = responseDataType.findMembersByLowLevelName("lastEvaluatedKey") ?: return null
+        fun forRequestResponse(requestTypeFamily: TypeFamily, responseTypeFamily: TypeFamily): PaginationInfo? {
+            val inputTokens = requestTypeFamily.findMembersByLowLevelName("exclusiveStartKey") ?: return null
+            val outputTokens = responseTypeFamily.findMembersByLowLevelName("lastEvaluatedKey") ?: return null
             require(inputTokens.size == outputTokens.size) {
                 "Mismatched pagination: found ${inputTokens.size} input tokens but ${outputTokens.size} output tokens"
             }
             val tokens = (inputTokens zip outputTokens).map { (i, o) -> PaginationToken(i, o) }
 
-            val limit = requestDataType.findMemberByLowLevelName("limit") ?: return null
-            val items = responseDataType.findMemberByLowLevelName("items") ?: return null
+            val limit = requestTypeFamily.findMemberByLowLevelName("limit") ?: return null
+            val items = responseTypeFamily.findMemberByLowLevelName("items") ?: return null
 
             return PaginationInfo(
-                requestDataType.interfaceStruct,
-                (requestDataType as? DataType.Concrete)?.builderStruct,
-                responseDataType.interfaceStruct,
+                requestTypeFamily.interfaceStruct,
+                (requestTypeFamily as? TypeFamily.Concrete)?.builderStruct,
+                responseTypeFamily.interfaceStruct,
                 tokens,
                 limit,
                 items,

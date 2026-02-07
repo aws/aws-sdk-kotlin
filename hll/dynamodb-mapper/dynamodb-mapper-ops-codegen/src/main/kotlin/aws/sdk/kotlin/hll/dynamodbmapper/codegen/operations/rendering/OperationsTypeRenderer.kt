@@ -70,15 +70,14 @@ internal class OperationsTypeRenderer(
     }
 
     private fun renderDslOp(op: Operation, keyType: StructureKeyType) {
-        val requestDataType = op.request.dataType.leafTypeOrDefault(keyType)
-        val responseDataType = op.response.dataType.leafTypeOrDefault(keyType)
+        val requestTypeFamily = op.request.typeFamily.leafTypeOrDefault(keyType)
+        val responseTypeFamily = op.response.typeFamily.leafTypeOrDefault(keyType)
 
-        val request = requestDataType.interfaceStruct.type
-        val response = responseDataType.interfaceStruct.type
+        val request = requestTypeFamily.interfaceStruct.type
+        val response = responseTypeFamily.interfaceStruct.type
+        val generics = request.genericVars() + response.genericVars()
 
-        val generics = (request.genericVars() + response.genericVars()).distinct()
-
-        val paginationInfo = PaginationInfo.forRequestResponse(requestDataType, responseDataType)
+        val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
         if (paginationInfo != null) renderManualPaginationAnnotation(op) else blankLine()
         withBlock(
             "public suspend inline fun #G#T.#L(crossinline block: #T.() -> Unit): #T =",
@@ -86,10 +85,10 @@ internal class OperationsTypeRenderer(
             generics,
             keyType.interfaceType,
             op.methodName,
-            requestDataType.builderStruct.type,
+            requestTypeFamily.builderStruct.type,
             response,
         ) {
-            write("#L(#T().apply(block).build())", op.methodName, requestDataType.builderStruct.type)
+            write("#L(#T().apply(block).build())", op.methodName, requestTypeFamily.builderStruct.type)
         }
     }
 
@@ -113,16 +112,16 @@ internal class OperationsTypeRenderer(
                 interfaceType,
             ) {
                 operations.forEach { op ->
-                    val requestDataType = op.request.dataType.leafTypeOrDefault(keyType)
-                    val responseDataType = op.response.dataType.leafTypeOrDefault(keyType)
+                    val requestTypeFamily = op.request.typeFamily.leafTypeOrDefault(keyType)
+                    val responseTypeFamily = op.response.typeFamily.leafTypeOrDefault(keyType)
 
-                    val paginationInfo = PaginationInfo.forRequestResponse(requestDataType, responseDataType)
+                    val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
                     if (paginationInfo != null) renderManualPaginationAnnotation(op)
 
                     write(
                         "override suspend fun #L(request: #T) = #L(spec).execute(request)",
                         op.methodName,
-                        requestDataType.interfaceStruct.type,
+                        requestTypeFamily.interfaceStruct.type,
                         FactoryRenderer.factoryFunctionName(op),
                     )
 
@@ -180,17 +179,17 @@ internal class OperationsTypeRenderer(
     private fun renderOp(op: Operation, keyType: StructureKeyType) {
         if (op.appliesToAncestorKind()) return
 
-        val requestDataType = op.request.dataType.leafTypeOrDefault(keyType)
-        val responseDataType = op.response.dataType.leafTypeOrDefault(keyType)
+        val requestTypeFamily = op.request.typeFamily.leafTypeOrDefault(keyType)
+        val responseTypeFamily = op.response.typeFamily.leafTypeOrDefault(keyType)
 
-        val paginationInfo = PaginationInfo.forRequestResponse(requestDataType, responseDataType)
+        val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
         if (paginationInfo != null) renderManualPaginationAnnotation(op)
 
         write(
             "public suspend fun #L(request: #T): #T",
             op.methodName,
-            requestDataType.interfaceStruct.type,
-            responseDataType.interfaceStruct.type,
+            requestTypeFamily.interfaceStruct.type,
+            responseTypeFamily.interfaceStruct.type,
         )
 
         if (paginationInfo != null) blankLine()
@@ -198,22 +197,22 @@ internal class OperationsTypeRenderer(
 
     private fun renderItemsPaginators() = operations
         .forEach { op ->
-            val requestDataType = op.request.dataType // abstract/unkeyed type
-            val responseDataType = op.response.dataType // abstract/unkeyed type
+            val requestTypeFamily = op.request.typeFamily // abstract/unkeyed type
+            val responseTypeFamily = op.response.typeFamily // abstract/unkeyed type
 
-            val paginationInfo = PaginationInfo.forRequestResponse(requestDataType, responseDataType)
+            val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
             paginationInfo?.let {
-                PaginatorRenderer(ctx, this, requestDataType.interfaceStruct.type, op, it, forItems = true).render()
+                PaginatorRenderer(ctx, this, requestTypeFamily.interfaceStruct.type, op, it, forItems = true).render()
             }
         }
 
     private fun renderResponsePaginators() = operations
         .forEach { op ->
             op.keyTypes.forEach { variant ->
-                val requestDataType = op.request.dataType.leafTypeOrDefault(variant)
-                val responseDataType = op.response.dataType.leafTypeOrDefault(variant)
+                val requestTypeFamily = op.request.typeFamily.leafTypeOrDefault(variant)
+                val responseTypeFamily = op.response.typeFamily.leafTypeOrDefault(variant)
 
-                val paginationInfo = PaginationInfo.forRequestResponse(requestDataType, responseDataType)
+                val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
                 paginationInfo?.let {
                     PaginatorRenderer(ctx, this, variant.interfaceType, op, it, forResponses = true).render()
                 }

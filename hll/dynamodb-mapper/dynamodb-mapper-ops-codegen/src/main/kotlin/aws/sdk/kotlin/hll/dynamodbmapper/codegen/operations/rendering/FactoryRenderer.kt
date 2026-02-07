@@ -32,12 +32,11 @@ internal class FactoryRenderer(
 
         operation.itemSourceKinds.filterNot { it.isAbstract }.forEach { itemSourceKind ->
             operation.keyTypes.forEach { keyType ->
-                val request = operation.request.dataType.leafTypeOrDefault(keyType).interfaceStruct
-                val response = operation.response.dataType.leafTypeOrDefault(keyType).interfaceStruct
+                val request = operation.request.typeFamily.leafTypeOrDefault(keyType).interfaceStruct
+                val response = operation.response.typeFamily.leafTypeOrDefault(keyType).interfaceStruct
+                val generics = request.type.genericVars() + response.type.genericVars()
 
                 blankLine()
-                val generics = (request.type.genericVars() + response.type.genericVars()).distinct()
-
                 withBlock(
                     "internal fun #G#L(spec: #T) = #T(",
                     ")",

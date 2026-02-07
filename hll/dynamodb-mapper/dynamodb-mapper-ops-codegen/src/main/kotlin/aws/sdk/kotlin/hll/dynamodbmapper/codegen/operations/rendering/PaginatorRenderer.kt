@@ -87,7 +87,7 @@ internal class PaginatorRenderer(
 
     private val request = paginationInfo.request.type
     private val response = paginationInfo.response.type
-    private val generics = (request.genericVars() + response.genericVars()).distinct()
+    private val generics = request.genericVars() + response.genericVars()
 
     private val itemFlowType = Types.Kotlinx.Coroutines.Flow.flow(TypeVar.T)
     private val pageFlowType = Types.Kotlinx.Coroutines.Flow.flow(paginationInfo.response.type)

@@ -38,10 +38,10 @@ internal enum class ItemSourceKind(
 }
 
 internal fun ItemSourceKind.opsType(keyType: StructureKeyType): TypeRef =
-    TypeRef(MapperPkg.Hl.Ops, "${name}Operations${keyType.nameSuffix}", keyType.typeArgs)
+    TypeRef(MapperPkg.Hl.Ops, "${name}Operations${keyType.nameSuffix}", keyType.typeVars)
 
 internal fun ItemSourceKind.specType(keyType: StructureKeyType): TypeRef =
-    TypeRef(MapperPkg.Hl.Model, "${name}Spec${keyType.nameSuffix}", keyType.typeArgs)
+    TypeRef(MapperPkg.Hl.Model, "${name}Spec${keyType.nameSuffix}", keyType.typeVars)
 
 /**
  * Identifies the types of `ItemSource` on which an operation can be invoked (e.g., `Scan` can be invoked on a table,

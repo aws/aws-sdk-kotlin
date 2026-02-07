@@ -5,16 +5,16 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.rendering
 
 import aws.sdk.kotlin.hll.codegen.core.CodeGenerator
+import aws.sdk.kotlin.hll.codegen.model.GenericsSet
 import aws.sdk.kotlin.hll.codegen.model.Member
 import aws.sdk.kotlin.hll.codegen.model.Structure
-import aws.sdk.kotlin.hll.codegen.model.TypeVar
 import aws.sdk.kotlin.hll.codegen.model.genericVars
 import aws.sdk.kotlin.hll.codegen.rendering.BuilderRenderer
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.RenderOptions
 import aws.sdk.kotlin.hll.codegen.rendering.Visibility
 import aws.sdk.kotlin.hll.codegen.util.plus
-import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.DataType
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.TypeFamily
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.isInherited
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.members
 
@@ -152,22 +152,22 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.members
  * @param generator The underlying generator for the context into which the data type should be written
  * @param structure The [Structure] which describes the data type for which to generate code
  */
-internal class DataTypeGenerator(
+internal class TypeFamilyGenerator(
     private val ctx: RenderContext,
     generator: CodeGenerator,
-    private val dataType: DataType,
+    private val typeFamily: TypeFamily,
 ) : CodeGenerator by generator {
     fun generate() {
-        dataType.renderInterface()
+        typeFamily.renderInterface()
         blankLine()
-        dataType.renderImpl()
+        typeFamily.renderImpl()
     }
 
-    private val DataType.interfaceRefWithGenerics: String
+    private val TypeFamily.interfaceRefWithGenerics: String
         get() = format("#L#G", interfaceStruct.type.leafName, interfaceStruct.type.genericVars())
 
-    private fun DataType.renderInterface(scopedParentRef: String? = null) {
-        val interfaceModifier = if (this is DataType.Concrete) "" else "sealed "
+    private fun TypeFamily.renderInterface(scopedParentRef: String? = null) {
+        val interfaceModifier = if (this is TypeFamily.Concrete) "" else "sealed "
         val interfaceRef = this.interfaceRefWithGenerics
 
         writeInline("public #Linterface #L ", interfaceModifier, interfaceRef)
@@ -179,7 +179,7 @@ internal class DataTypeGenerator(
                 if (!isInherited) write("public val #L: #T", name, type)
             }
 
-            if (this is DataType.Abstract) {
+            if (this is TypeFamily.Abstract) {
                 variants.forEach { variant ->
                     blankLine()
                     variant.renderInterface(interfaceRef)
@@ -188,8 +188,8 @@ internal class DataTypeGenerator(
         }
     }
 
-    private fun DataType.renderImpl(scopedParentRef: String? = null) {
-        if (this is DataType.Concrete) {
+    private fun TypeFamily.renderImpl(scopedParentRef: String? = null) {
+        if (this is TypeFamily.Concrete) {
             val generics = implStruct.type.genericVars()
 
             renderDataClass(generics)
@@ -223,12 +223,12 @@ internal class DataTypeGenerator(
             ) {
                 write("#T().apply(block).build()", builderStruct.type)
             }
-        } else if (this is DataType.Abstract) {
+        } else if (this is TypeFamily.Abstract) {
             variants.forEach { it.renderImpl("${interfaceStruct.type.leafName}.Companion") }
         }
     }
 
-    private fun DataType.Concrete.renderToBuilder(generics: List<TypeVar>) {
+    private fun TypeFamily.Concrete.renderToBuilder(generics: GenericsSet) {
         withBlock(
             "public fun #1G#2T.toBuilder(): #3T = #3T().apply {",
             "}",
@@ -240,12 +240,12 @@ internal class DataTypeGenerator(
         }
     }
 
-    private fun DataType.Concrete.renderBuilder() {
+    private fun TypeFamily.Concrete.renderBuilder() {
         val builderCtx = ctx.copy(
             attributes = ctx.attributes + (RenderOptions.VisibilityAttribute to Visibility.PUBLIC),
         )
         BuilderRenderer(
-            generator = this@DataTypeGenerator,
+            generator = this@TypeFamilyGenerator,
             builtType = interfaceStruct.type,
             implementationType = implStruct.type,
             members = builderStruct.members,
@@ -254,7 +254,7 @@ internal class DataTypeGenerator(
         ).render()
     }
 
-    private fun DataType.Concrete.renderDataClass(generics: List<TypeVar>) {
+    private fun TypeFamily.Concrete.renderDataClass(generics: GenericsSet) {
         openBlock("private data class #L#G(", implStruct.type.shortName, generics)
         implStruct.members { write("override val #L: #T,", name, type) }
         closeBlock("): #T", interfaceStruct.type)

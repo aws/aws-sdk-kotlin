@@ -13,10 +13,10 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.*
 
 internal abstract class IoRenderer(
     protected val ctx: RenderContext,
-    private val dataType: DataType,
-) : RendererBase(ctx, dataType.interfaceStruct.type.shortName) {
-    protected abstract val fromType: DataType
-    protected abstract val toType: DataType
+    private val typeFamily: TypeFamily,
+) : RendererBase(ctx, typeFamily.interfaceStruct.type.shortName) {
+    protected abstract val fromType: TypeFamily
+    protected abstract val toType: TypeFamily
     protected abstract fun Member.fromMember(fromStruct: Structure): Member
     protected abstract fun Member.fromMembers(fromStruct: Structure): List<Member>
 
@@ -24,10 +24,10 @@ internal abstract class IoRenderer(
     protected abstract fun renderSingleItemConversion()
 
     final override fun generate() {
-        DataTypeGenerator(ctx, this, dataType).generate()
+        TypeFamilyGenerator(ctx, this, typeFamily).generate()
 
         // Manually import the low-level type with a specific alias
-        val llType = dataType.interfaceStruct.lowLevel.type
+        val llType = typeFamily.interfaceStruct.lowLevel.type
         imports += ImportDirective(llType, "LowLevel${llType.shortName}")
 
         val isKeyed = fromType.interfaceStruct.isKeyed() || toType.interfaceStruct.isKeyed()
@@ -50,7 +50,7 @@ internal abstract class IoRenderer(
             StructureKeyType.COMPOSITE_KEY -> MapperTypes.Items.ItemSchemaCompositeKey
         }
 
-        val generics = (listOf(TypeVar.T) + fromStruct.type.genericVars() + toStruct.type.genericVars()).distinct()
+        val generics = fromStruct.type.genericVars() + toStruct.type.genericVars() + TypeVar.T
 
         blankLine()
         withBlock("internal fun #G#T.convert(", "}", generics, fromStruct.type) {
@@ -111,9 +111,9 @@ internal abstract class IoRenderer(
     }
 }
 
-internal class RequestRenderer(ctx: RenderContext, request: DataType) : IoRenderer(ctx, request) {
+internal class RequestRenderer(ctx: RenderContext, request: TypeFamily) : IoRenderer(ctx, request) {
     override val fromType = request
-    override val toType = DataType.fromInterface(request.interfaceStruct.lowLevel)
+    override val toType = TypeFamily.fromInterface(request.interfaceStruct.lowLevel)
 
     override fun renderKeyConversion(fromStruct: Structure, toStruct: Structure) {
         toStruct.members(MemberCodegenBehavior.MapToKeys) {
@@ -128,8 +128,8 @@ internal class RequestRenderer(ctx: RenderContext, request: DataType) : IoRender
     override fun Member.fromMembers(fromStruct: Structure) = fromStruct.members.filter { it.lowLevel == this }
 }
 
-internal class ResponseRenderer(ctx: RenderContext, response: DataType) : IoRenderer(ctx, response) {
-    override val fromType = DataType.fromInterface(response.interfaceStruct.lowLevel)
+internal class ResponseRenderer(ctx: RenderContext, response: TypeFamily) : IoRenderer(ctx, response) {
+    override val fromType = TypeFamily.fromInterface(response.interfaceStruct.lowLevel)
     override val toType = response
 
     override fun renderKeyConversion(fromStruct: Structure, toStruct: Structure) {

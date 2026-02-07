@@ -4,12 +4,13 @@
  */
 package aws.sdk.kotlin.hll.codegen.core
 
+import aws.sdk.kotlin.hll.codegen.model.GenericsSet
 import aws.sdk.kotlin.hll.codegen.model.Type
 import aws.sdk.kotlin.hll.codegen.model.TypeRef
 import aws.sdk.kotlin.hll.codegen.model.TypeVar
 
 internal class TypeProcessor(private val pkg: String, private val imports: ImportDirectives) {
-    val genericsListProcessor = TemplateProcessor.typed<Collection<TypeVar>>('G') {
+    val genericsListProcessor = TemplateProcessor.typed<GenericsSet>('G') {
         val generics = formatGenerics(it, true)
         if (generics.isEmpty()) "" else "$generics "
     }

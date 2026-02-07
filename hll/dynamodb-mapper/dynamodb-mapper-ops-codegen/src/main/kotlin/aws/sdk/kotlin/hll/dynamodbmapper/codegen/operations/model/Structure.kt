@@ -80,7 +80,7 @@ internal fun Structure.toHighLevel(pkg: String, ctx: RenderContext): Structure {
     val hlAttributes = llStructure.attributes + (ModelAttributes.LowLevelStructure to llStructure)
     return Structure(hlType, hlMembers, hlAttributes)
         .addHighLevelVariants(ctx)
-        .addDataType()
+        .addTypeFamily()
 }
 
 private fun Structure.addHighLevelVariants(ctx: RenderContext): Structure {
@@ -111,7 +111,7 @@ private fun Structure.addHighLevelVariants(ctx: RenderContext): Structure {
         val pkMembers = keyFields.projectedAs(MemberKeyType.PARTITION)
         val pkGenerics = inheritedMembers.genericVars() + pkMembers.genericVars()
         val pkVariant = copy(
-            type = type.copy(shortName = "${type.shortName}.PartitionKey", genericArgs = pkGenerics),
+            type = type.copy(shortName = "${type.shortName}.PartitionKey", genericArgs = pkGenerics.toList()),
             members = inheritedMembers + pkMembers,
             attributes = attributes + (MapperAttributes.StructureKeyType to StructureKeyType.PARTITION_KEY),
         )
@@ -119,7 +119,7 @@ private fun Structure.addHighLevelVariants(ctx: RenderContext): Structure {
         val skMembers = keyFields.projectedAs(MemberKeyType.SORT)
         val ckGenerics = pkGenerics + skMembers.genericVars()
         val ckVariant = copy(
-            type = type.copy(shortName = "${type.shortName}.CompositeKey", genericArgs = ckGenerics),
+            type = type.copy(shortName = "${type.shortName}.CompositeKey", genericArgs = ckGenerics.toList()),
             members = inheritedMembers + pkMembers + skMembers,
             attributes = attributes + (MapperAttributes.StructureKeyType to StructureKeyType.COMPOSITE_KEY),
         )
@@ -133,8 +133,8 @@ private fun Structure.addHighLevelVariants(ctx: RenderContext): Structure {
     return copy(attributes = newAttributes)
 }
 
-private fun Structure.addDataType(): Structure =
-    copy(attributes = attributes + (MapperAttributes.DataType to DataType.fromInterface(this)))
+private fun Structure.addTypeFamily(): Structure =
+    copy(attributes = attributes + (MapperAttributes.TypeFamily to TypeFamily.fromInterface(this)))
 
 private fun keyMemberName(llMemberName: String, keyType: MemberKeyType): String {
     val specialization = keyType.name.lowercase()
