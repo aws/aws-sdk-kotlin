@@ -78,11 +78,11 @@ internal fun Structure.toHighLevel(pkg: String, ctx: RenderContext): Structure {
     val genericArgs = hlMembers.genericVars()
     val hlType = TypeRef(pkg, llStructure.type.shortName, genericArgs)
     val hlAttributes = llStructure.attributes + (ModelAttributes.LowLevelStructure to llStructure)
-    return Structure(hlType, hlMembers, hlAttributes).addTypeFamily()
+    return Structure(hlType, hlMembers, hlAttributes).addKeyProjections()
 }
 
-private fun Structure.addTypeFamily(): Structure =
-    copy(attributes = attributes + (MapperAttributes.TypeFamily to TypeFamily.fromInterface(this)))
+private fun Structure.addKeyProjections(): Structure =
+    copy(attributes = attributes + (MapperAttributes.KeyProjections to KeyProjections.fromInterface(this)))
 
 internal inline fun Structure.members(
     memberCodegenBehavior: MemberCodegenBehavior? = null,

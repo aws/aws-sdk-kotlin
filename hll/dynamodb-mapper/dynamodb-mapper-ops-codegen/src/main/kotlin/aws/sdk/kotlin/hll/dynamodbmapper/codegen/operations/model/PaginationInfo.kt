@@ -24,27 +24,27 @@ internal data class PaginationInfo(
     val items: Member,
 ) {
     internal companion object {
-        private fun TypeFamily.findMemberByLowLevelName(name: String): Member? =
+        private fun KeyProjection.findMemberByLowLevelName(name: String): Member? =
             interfaceStruct.members.find { it.lowLevel.name == name }
 
-        private fun TypeFamily.findMembersByLowLevelName(name: String): List<Member>? =
+        private fun KeyProjection.findMembersByLowLevelName(name: String): List<Member>? =
             interfaceStruct.members.filter { it.lowLevel.name == name }
 
-        fun forRequestResponse(requestTypeFamily: TypeFamily, responseTypeFamily: TypeFamily): PaginationInfo? {
-            val inputTokens = requestTypeFamily.findMembersByLowLevelName("exclusiveStartKey") ?: return null
-            val outputTokens = responseTypeFamily.findMembersByLowLevelName("lastEvaluatedKey") ?: return null
+        fun forRequestResponse(requestProjection: KeyProjection, responseProjection: KeyProjection): PaginationInfo? {
+            val inputTokens = requestProjection.findMembersByLowLevelName("exclusiveStartKey") ?: return null
+            val outputTokens = responseProjection.findMembersByLowLevelName("lastEvaluatedKey") ?: return null
             require(inputTokens.size == outputTokens.size) {
                 "Mismatched pagination: found ${inputTokens.size} input tokens but ${outputTokens.size} output tokens"
             }
             val tokens = (inputTokens zip outputTokens).map { (i, o) -> PaginationToken(i, o) }
 
-            val limit = requestTypeFamily.findMemberByLowLevelName("limit") ?: return null
-            val items = responseTypeFamily.findMemberByLowLevelName("items") ?: return null
+            val limit = requestProjection.findMemberByLowLevelName("limit") ?: return null
+            val items = responseProjection.findMemberByLowLevelName("items") ?: return null
 
             return PaginationInfo(
-                requestTypeFamily.interfaceStruct,
-                (requestTypeFamily as? TypeFamily.Concrete)?.builderStruct,
-                responseTypeFamily.interfaceStruct,
+                requestProjection.interfaceStruct,
+                requestProjection.builderStruct,
+                responseProjection.interfaceStruct,
                 tokens,
                 limit,
                 items,

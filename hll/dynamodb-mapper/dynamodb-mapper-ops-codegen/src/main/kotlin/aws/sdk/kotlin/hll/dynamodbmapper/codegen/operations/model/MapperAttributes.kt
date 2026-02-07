@@ -13,7 +13,7 @@ import aws.smithy.kotlin.runtime.collections.AttributeKey
 internal object MapperAttributes {
     val CodegenBehavior: AttributeKey<MemberCodegenBehavior> = AttributeKey("aws.sdk.kotlin.ddbmapper#CodegenBehavior")
 
-    val TypeFamily: AttributeKey<TypeFamily> = AttributeKey("aws.sdk.kotlin#ddbmapper#TypeFamily")
+    val KeyProjections: AttributeKey<KeyProjections> = AttributeKey("aws.sdk.kotlin.ddbmapper#KeyProjections")
 
     val IsInherited: AttributeKey<Boolean> = AttributeKey("aws.sdk.kotlin#InInherited")
 

@@ -23,8 +23,9 @@ internal class TypeProcessor(private val pkg: String, private val imports: Impor
         else -> generics.joinToString(", ", "<", ">") { formatType(it, forDeclaration) }
     }
 
-    private fun formatTypeName(type: Type): String {
+    private fun formatTypeName(type: Type, forDeclaration: Boolean): String {
         if (type !is TypeRef) return type.shortName
+        if (forDeclaration) return type.leafName
 
         val matchingImport = imports.getByFullName(type.fullBaseName)
         if (matchingImport != null) return buildString { // Already imported
@@ -43,12 +44,12 @@ internal class TypeProcessor(private val pkg: String, private val imports: Impor
     }
 
     private fun formatType(type: Type, forDeclaration: Boolean): String = buildString {
-        append(formatTypeName(type))
+        append(formatTypeName(type, forDeclaration))
         when (type) {
             is TypeRef -> append(formatGenerics(type.genericArgs, forDeclaration))
             is TypeVar if type.constraintType != null && forDeclaration -> {
                 append(" : ")
-                append(formatType(type.constraintType, true))
+                append(formatType(type.constraintType, false))
             }
             else -> {}
         }

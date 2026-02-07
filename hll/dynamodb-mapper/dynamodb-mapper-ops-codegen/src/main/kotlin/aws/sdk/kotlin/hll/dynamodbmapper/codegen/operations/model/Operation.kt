@@ -20,6 +20,3 @@ internal fun Operation.toHighLevel(pkg: String, ctx: RenderContext): Operation {
     val hlAttributes = llOperation.attributes + (ModelAttributes.LowLevelOperation to llOperation)
     return Operation(llOperation.methodName, hlRequest, hlResponse, hlAttributes)
 }
-
-internal val Operation.isKeyed: Boolean
-    get() = request.typeFamily.isKeyed || response.typeFamily.isKeyed

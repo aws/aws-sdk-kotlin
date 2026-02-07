@@ -13,10 +13,10 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.*
 
 internal abstract class IoRenderer(
     protected val ctx: RenderContext,
-    private val typeFamily: TypeFamily,
-) : RendererBase(ctx, typeFamily.interfaceStruct.type.shortName) {
-    protected abstract val fromType: TypeFamily
-    protected abstract val toType: TypeFamily
+    private val keyProjections: KeyProjections,
+) : RendererBase(ctx, keyProjections.unkeyedProjection.interfaceStruct.type.shortName) {
+    protected abstract val fromProjections: KeyProjections
+    protected abstract val toProjections: KeyProjections
     protected abstract fun Member.fromMember(fromStruct: Structure): Member
     protected abstract fun Member.fromMembers(fromStruct: Structure): List<Member>
 
@@ -24,21 +24,21 @@ internal abstract class IoRenderer(
     protected abstract fun renderSingleItemConversion()
 
     final override fun generate() {
-        TypeFamilyGenerator(ctx, this, typeFamily).generate()
+        KeyProjectedTypeRenderer(ctx, this, keyProjections).generate()
 
         // Manually import the low-level type with a specific alias
-        val llType = typeFamily.interfaceStruct.lowLevel.type
+        val llType = keyProjections.unkeyedProjection.interfaceStruct.lowLevel.type
         imports += ImportDirective(llType, "LowLevel${llType.shortName}")
 
-        val isKeyed = fromType.isKeyed || toType.isKeyed
+        val isKeyed = fromProjections.isKeyed || toProjections.isKeyed
         val keyTypes = when {
             isKeyed -> listOf(StructureKeyType.PARTITION_KEY, StructureKeyType.COMPOSITE_KEY)
             else -> listOf(StructureKeyType.NONE)
         }
 
         keyTypes.forEach { keyType ->
-            val fromKeyType = fromType.leafTypeOrDefault(keyType)
-            val toKeyType = toType.leafTypeOrDefault(keyType)
+            val fromKeyType = fromProjections[keyType]
+            val toKeyType = toProjections[keyType]
             renderConversion(keyType, fromKeyType.interfaceStruct, toKeyType.interfaceStruct)
         }
     }
@@ -111,9 +111,9 @@ internal abstract class IoRenderer(
     }
 }
 
-internal class RequestRenderer(ctx: RenderContext, request: TypeFamily) : IoRenderer(ctx, request) {
-    override val fromType = request
-    override val toType = TypeFamily.fromInterface(request.interfaceStruct.lowLevel)
+internal class RequestRenderer(ctx: RenderContext, request: KeyProjections) : IoRenderer(ctx, request) {
+    override val fromProjections = request
+    override val toProjections = KeyProjections.fromInterface(request.unkeyedProjection.interfaceStruct.lowLevel)
 
     override fun renderKeyConversion(fromStruct: Structure, toStruct: Structure) {
         toStruct.members(MemberCodegenBehavior.MapToKeys) {
@@ -128,9 +128,9 @@ internal class RequestRenderer(ctx: RenderContext, request: TypeFamily) : IoRend
     override fun Member.fromMembers(fromStruct: Structure) = fromStruct.members.filter { it.lowLevel == this }
 }
 
-internal class ResponseRenderer(ctx: RenderContext, response: TypeFamily) : IoRenderer(ctx, response) {
-    override val fromType = TypeFamily.fromInterface(response.interfaceStruct.lowLevel)
-    override val toType = response
+internal class ResponseRenderer(ctx: RenderContext, response: KeyProjections) : IoRenderer(ctx, response) {
+    override val fromProjections = KeyProjections.fromInterface(response.unkeyedProjection.interfaceStruct.lowLevel)
+    override val toProjections = response
 
     override fun renderKeyConversion(fromStruct: Structure, toStruct: Structure) {
         toStruct.members(MemberCodegenBehavior.MapToKeys) {

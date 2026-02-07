@@ -70,14 +70,14 @@ internal class OperationsTypeRenderer(
     }
 
     private fun renderDslOp(op: Operation, keyType: StructureKeyType) {
-        val requestTypeFamily = op.request.typeFamily.leafTypeOrDefault(keyType)
-        val responseTypeFamily = op.response.typeFamily.leafTypeOrDefault(keyType)
+        val requestProjection = op.request.keyProjections[keyType]
+        val responseProjection = op.response.keyProjections[keyType]
 
-        val request = requestTypeFamily.interfaceStruct.type
-        val response = responseTypeFamily.interfaceStruct.type
+        val request = requestProjection.interfaceStruct.type
+        val response = responseProjection.interfaceStruct.type
         val generics = request.genericVars() + response.genericVars()
 
-        val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
+        val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
         if (paginationInfo != null) renderManualPaginationAnnotation(op) else blankLine()
         withBlock(
             "public suspend inline fun #G#T.#L(crossinline block: #T.() -> Unit): #T =",
@@ -85,10 +85,10 @@ internal class OperationsTypeRenderer(
             generics,
             keyType.interfaceType,
             op.methodName,
-            requestTypeFamily.builderStruct.type,
+            requestProjection.builderStruct.type,
             response,
         ) {
-            write("#L(#T().apply(block).build())", op.methodName, requestTypeFamily.builderStruct.type)
+            write("#L(#T().apply(block).build())", op.methodName, requestProjection.builderStruct.type)
         }
     }
 
@@ -112,16 +112,16 @@ internal class OperationsTypeRenderer(
                 interfaceType,
             ) {
                 operations.forEach { op ->
-                    val requestTypeFamily = op.request.typeFamily.leafTypeOrDefault(keyType)
-                    val responseTypeFamily = op.response.typeFamily.leafTypeOrDefault(keyType)
+                    val requestProjection = op.request.keyProjections[keyType]
+                    val responseProjection = op.response.keyProjections[keyType]
 
-                    val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
+                    val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
                     if (paginationInfo != null) renderManualPaginationAnnotation(op)
 
                     write(
                         "override suspend fun #L(request: #T) = #L(spec).execute(request)",
                         op.methodName,
-                        requestTypeFamily.interfaceStruct.type,
+                        requestProjection.interfaceStruct.type,
                         FactoryRenderer.factoryFunctionName(op),
                     )
 
@@ -179,17 +179,17 @@ internal class OperationsTypeRenderer(
     private fun renderOp(op: Operation, keyType: StructureKeyType) {
         if (op.appliesToAncestorKind()) return
 
-        val requestTypeFamily = op.request.typeFamily.leafTypeOrDefault(keyType)
-        val responseTypeFamily = op.response.typeFamily.leafTypeOrDefault(keyType)
+        val requestProjection = op.request.keyProjections[keyType]
+        val responseProjection = op.response.keyProjections[keyType]
 
-        val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
+        val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
         if (paginationInfo != null) renderManualPaginationAnnotation(op)
 
         write(
             "public suspend fun #L(request: #T): #T",
             op.methodName,
-            requestTypeFamily.interfaceStruct.type,
-            responseTypeFamily.interfaceStruct.type,
+            requestProjection.interfaceStruct.type,
+            responseProjection.interfaceStruct.type,
         )
 
         if (paginationInfo != null) blankLine()
@@ -197,22 +197,22 @@ internal class OperationsTypeRenderer(
 
     private fun renderItemsPaginators() = operations
         .forEach { op ->
-            val requestTypeFamily = op.request.typeFamily // abstract/unkeyed type
-            val responseTypeFamily = op.response.typeFamily // abstract/unkeyed type
+            val requestProjection = op.request.keyProjections.unkeyedProjection
+            val responseProjection = op.response.keyProjections.unkeyedProjection
 
-            val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
+            val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
             paginationInfo?.let {
-                PaginatorRenderer(ctx, this, requestTypeFamily.interfaceStruct.type, op, it, forItems = true).render()
+                PaginatorRenderer(ctx, this, requestProjection.interfaceStruct.type, op, it, forItems = true).render()
             }
         }
 
     private fun renderResponsePaginators() = operations
         .forEach { op ->
             op.keyTypes.forEach { keyType ->
-                val requestTypeFamily = op.request.typeFamily.leafTypeOrDefault(keyType)
-                val responseTypeFamily = op.response.typeFamily.leafTypeOrDefault(keyType)
+                val requestProjection = op.request.keyProjections[keyType]
+                val responseProjection = op.response.keyProjections[keyType]
 
-                val paginationInfo = PaginationInfo.forRequestResponse(requestTypeFamily, responseTypeFamily)
+                val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
                 paginationInfo?.let {
                     PaginatorRenderer(ctx, this, keyType.interfaceType, op, it, forResponses = true).render()
                 }
