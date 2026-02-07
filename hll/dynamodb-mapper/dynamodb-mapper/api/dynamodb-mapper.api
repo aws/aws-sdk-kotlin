@@ -674,12 +674,6 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/items/AttributeDescriptorKt
 	public static final fun AttributeDescriptor (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/dynamodbmapper/items/AttributeDescriptor;
 }
 
-public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/CompositeKeySpec {
-	public abstract fun getPartitionKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;
-	public abstract fun getSortKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeySpec;
-	public abstract fun toFields (Laws/sdk/kotlin/hll/dynamodbmapper/items/CompositeKeyType;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
-}
-
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/CompositeKeyType {
 	public abstract fun getPartitionKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
 	public abstract fun getSortKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;

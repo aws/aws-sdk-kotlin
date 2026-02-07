@@ -55,7 +55,7 @@ internal data class KeySpec2Impl<K1, K2>(
                 attr1.fromFieldInItem(item),
                 attr2.fromFieldInItem(item),
             )
-        }
+        },
     )
 }
 

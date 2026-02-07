@@ -16,7 +16,7 @@ public class GenericsSet internal constructor(internal val byName: Map<String, T
                     put(newVar.shortName, newVar)
                 }
             }
-        }
+        },
     )
 
     public constructor(vararg elements: TypeVar) : this(elements.toList())
@@ -29,7 +29,6 @@ public class GenericsSet internal constructor(internal val byName: Map<String, T
     override fun containsAll(elements: Collection<TypeVar>): Boolean =
         byName.keys.containsAll(elements.map { it.shortName })
 
-
     public operator fun plus(other: GenericsSet): GenericsSet =
         GenericsSet(
             buildMap {
@@ -40,7 +39,7 @@ public class GenericsSet internal constructor(internal val byName: Map<String, T
                         put(newVar.shortName, newVar)
                     }
                 }
-            }
+            },
         )
 
     public operator fun plus(other: TypeVar): GenericsSet {

@@ -69,10 +69,12 @@ internal fun Structure.toHighLevel(pkg: String, ctx: RenderContext): Structure {
             else -> null
         }
 
-        hlMember?.copy(attributes = hlMember.attributes + attributesOf {
-            ModelAttributes.LowLevelMember to llMember
-            MapperAttributes.CodegenBehavior to behavior
-        })
+        hlMember?.copy(
+            attributes = hlMember.attributes + attributesOf {
+                ModelAttributes.LowLevelMember to llMember
+                MapperAttributes.CodegenBehavior to behavior
+            },
+        )
     }.toSet()
 
     val genericArgs = hlMembers.genericVars()

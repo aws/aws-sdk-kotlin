@@ -29,7 +29,7 @@ import aws.sdk.kotlin.services.dynamodb.model.ScalarAttributeType
  * To create a key specification for a single attribute:
  *
  * ```kotlin
- * val spec = KeySpec.number<Int>("companyId") // returns KeySpec.Key1<Int>
+ * val spec = KeySpec.int("companyId") // returns KeySpec.Key1<Int>
  * ```
  *
  * To create a key specification for multiple attributes:
@@ -243,28 +243,4 @@ public interface KeyAttrSpec<K> {
         public fun string(name: String): KeyAttrSpec<String> =
             KeyAttrSpecImpl(name, ScalarAttributeType.S, AttributeValue::S, AttributeValue::asS)
     }
-}
-/**
- * Defines the specification for a composite key consisting of both a partition and sort key, including the names and
- * types of all attributes
- * @param PK The [KeyType] of the partition key
- * @param SK The [KeyType] of the sort key
- */
-public interface CompositeKeySpec<PK : KeyType, SK : KeyType> {
-    /**
-     * The value of the partition key
-     */
-
-    public val partitionKey: KeySpec<PK>
-
-    /**
-     * The value of the sort key
-     */
-    public val sortKey: KeySpec<SK>
-
-    /**
-     * Given a value for this key, convert into an [Item] map of keys and values
-     * @param value The value to use for the composite key attributes
-     */
-    public fun toFields(value: CompositeKeyType<PK, SK>): Item
 }

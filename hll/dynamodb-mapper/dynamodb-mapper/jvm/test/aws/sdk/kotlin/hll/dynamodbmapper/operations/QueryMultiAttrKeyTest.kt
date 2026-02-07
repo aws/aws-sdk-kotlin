@@ -84,7 +84,6 @@ class QueryMultiAttrKeyTest : DdbLocalTest() {
     fun testQueryIndexAllKeys() = runTest {
         val index = mapper().getTable(TABLE_NAME, tableSchema).getIndex(INDEX_NAME, indexSchema)
 
-
         val descriptions = index.queryPaginated {
             keyCondition = KeyFilter(
                 Key(128)("Billing"),

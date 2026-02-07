@@ -24,35 +24,37 @@ internal class TypeProcessor(private val pkg: String, private val imports: Impor
     }
 
     private fun formatTypeName(type: Type, forDeclaration: Boolean): String {
-        if (type !is TypeRef) return type.shortName
-        if (forDeclaration) return type.leafName
+        if (type !is TypeRef) return type.shortName // TypeVars don't need to be imported
+        if (forDeclaration) return type.leafName // Declarations don't need to be imported
 
         val matchingImport = imports.getByFullName(type.fullBaseName)
-        if (matchingImport != null) return buildString { // Already imported
-            append(matchingImport.shortName)
-            if (type.shortName.contains('.')) {
-                append('.')
-                append(type.shortName.substringAfter('.'))
+        if (matchingImport != null) { // Already imported
+            return buildString {
+                append(matchingImport.shortName)
+                if (type.shortName.contains('.')) {
+                    append('.')
+                    append(type.shortName.substringAfter('.'))
+                }
             }
         }
 
         val conflictingImport = imports.getByShortName(type.shortBaseName)
-        if (conflictingImport != null) return type.fullName
+        if (conflictingImport != null) return type.fullName // Cannot import because of conflict; use full name
 
-        if (type.pkg != pkg && type.pkg != "kotlin") imports += ImportDirective(type)
+        if (type.pkg != pkg && type.pkg != "kotlin") imports += ImportDirective(type) // No conflicts; import it
         return type.shortName
     }
 
     private fun formatType(type: Type, forDeclaration: Boolean): String = buildString {
         append(formatTypeName(type, forDeclaration))
-        when (type) {
-            is TypeRef -> append(formatGenerics(type.genericArgs, forDeclaration))
-            is TypeVar if type.constraintType != null && forDeclaration -> {
-                append(" : ")
-                append(formatType(type.constraintType, false))
-            }
-            else -> {}
+
+        if (type is TypeRef) {
+            append(formatGenerics(type.genericArgs, forDeclaration))
+        } else if (type is TypeVar && type.constraintType != null && forDeclaration) {
+            append(" : ")
+            append(formatType(type.constraintType, false))
         }
+
         if (type.nullable) append('?')
     }
 }
