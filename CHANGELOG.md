@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.13] - 02/09/2026
+
+### Features
+* (**connectcampaignsv2**) Add the missing event type for WhatsApp
+* (**ec2**) Amazon Secondary Networks is a networking feature that provides high-performance, low-latency connectivity for specialized workloads.
+* (**eks**) Amazon EKS adds a new DescribeUpdate update type, VendedLogsUpdate, to support an integration between EKS Auto Mode and Amazon CloudWatch Vended Logs.
+* (**imagebuilder**) EC2 Image Builder now supports wildcard patterns in lifecycle policies with recipes and enhances the experience of tag-scoped policies.
+* (**neptunedata**) Added edgeOnlyLoad boolean parameter to Neptune bulk load request. When TRUE, files are loaded in order without scanning. When FALSE (default), the loader scans files first, then loads vertex files before edge files automatically.
+* (**pcs**) Introduces RESUMING state for clusters, compute node groups, and queues.
+
+### Documentation
+* (**lakeformation**) Allow cross account v5 in put data lake settings
+* (**transfer**) This release adds a documentation update for MdnResponse of type "ASYNC"
+
 ## [1.6.12] - 02/06/2026
 
 ### Features
