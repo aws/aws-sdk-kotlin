@@ -5,21 +5,17 @@
 
 package aws.sdk.kotlin.testing
 
-import aws.smithy.kotlin.runtime.http.engine.DefaultHttpEngine
+import aws.smithy.kotlin.runtime.InternalApi
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
 import aws.smithy.kotlin.runtime.http.engine.crt.CrtHttpEngine
+import aws.smithy.kotlin.runtime.http.engine.okhttp.OkHttpEngine
+import aws.smithy.kotlin.runtime.http.engine.okhttp4.OkHttp4Engine
 
-/**
- * Printable ASCII characters
- */
-val PRINTABLE_CHARS = (32 until 127).map(Int::toChar).joinToString("")
-
-/**
- * Run the [block] with each supported engine
- */
-suspend fun withAllEngines(block: suspend (HttpClientEngine) -> Unit) {
+@OptIn(InternalApi::class)
+actual suspend fun withAllEngines(block: suspend (HttpClientEngine) -> Unit) {
     val engines = listOf(
-        DefaultHttpEngine(),
+        OkHttpEngine(),
+        OkHttp4Engine(),
         CrtHttpEngine(),
     )
 
