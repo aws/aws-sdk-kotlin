@@ -7,23 +7,23 @@ package aws.sdk.kotlin.services.dynamodb
 import aws.sdk.kotlin.services.dynamodb.model.*
 import aws.sdk.kotlin.services.dynamodb.paginators.scanPaginated
 import aws.sdk.kotlin.services.dynamodb.waiters.waitUntilTableExists
+import aws.smithy.kotlin.runtime.util.Uuid
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
-import kotlin.random.Random
+import kotlinx.coroutines.withTimeout
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PaginatorTest {
-    private val client = DynamoDbClient { region = "us-west-2" }
-    private val table = "testTable${Random.nextInt()}"
+    private lateinit var client: DynamoDbClient
+    private val table = "testTable-${Uuid.random()}"
 
-    @BeforeAll
-    private fun setUp(): Unit = runBlocking {
+    @BeforeTest
+    fun setUp() = runBlocking {
+        client = DynamoDbClient { region = "us-west-2" }
+        
         if (!client.tableExists(table)) {
             client.createTable {
                 tableName = table
@@ -60,8 +60,8 @@ class PaginatorTest {
         }
     }
 
-    @AfterAll
-    private fun cleanUp(): Unit = runBlocking {
+    @AfterTest
+    fun cleanUp() = runBlocking {
         if (client.tableExists(table)) {
             client.deleteTable {
                 tableName = table
@@ -71,10 +71,9 @@ class PaginatorTest {
     }
 
     @Test
-    fun scanPaginatedRespectsExclusiveStartKey() = runTest(
-        timeout = 20.seconds,
-    ) {
-        client.putItem {
+    fun scanPaginatedRespectsExclusiveStartKey() = runBlocking {
+        withTimeout(20.seconds) {
+            client.putItem {
             tableName = table
             item = mapOf(
                 "Artist" to AttributeValue.S("Foo"),
@@ -117,5 +116,11 @@ class PaginatorTest {
         // NOTE: Items are returned in alphabetical order
         assertEquals((AttributeValue.S("Baz")), results[0]?.get("SongTitle"))
         assertEquals((AttributeValue.S("Qux")), results[1]?.get("SongTitle"))
+        }
     }
 }
+
+/**
+ * Checks if a Dynamo DB table exists based on its name
+ */
+private suspend fun DynamoDbClient.tableExists(name: String): Boolean = this.listTables {}.tableNames?.contains(name) ?: false

@@ -7,15 +7,11 @@ package aws.sdk.kotlin.services.kinesis
 import aws.sdk.kotlin.services.kinesis.model.*
 import aws.sdk.kotlin.services.kinesis.waiters.waitUntilStreamExists
 import aws.sdk.kotlin.testing.withAllEngines
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.retries.getOrThrow
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
-import java.util.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
 private val WAIT_TIMEOUT = 30.seconds
@@ -29,26 +25,19 @@ private val TEST_DATA = "Bees, bees, bees, bees!"
 /**
  * Tests for Kinesis SubscribeToShard (an RPC-bound protocol)
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KinesisSubscribeToShardTest {
     private val client = KinesisClient { region = "us-east-1" }
 
     private lateinit var dataStreamArn: String
     private lateinit var dataStreamConsumerArn: String
 
-    /**
-     * Create infrastructure required for the test, if it doesn't exist already.
-     */
-    @BeforeAll
+    @BeforeTest
     fun setup(): Unit = runBlocking {
         dataStreamArn = client.getOrCreateStream()
         dataStreamConsumerArn = client.getOrRegisterStreamConsumer()
     }
 
-    /**
-     * Delete infrastructure used for the test.
-     */
-    @AfterAll
+    @AfterTest
     fun cleanUp(): Unit = runBlocking {
         client.deregisterStreamConsumer {
             streamArn = dataStreamArn
@@ -106,7 +95,7 @@ class KinesisSubscribeToShardTest {
         ?.find { it.streamName?.startsWith(STREAM_NAME_PREFIX) ?: false }
         ?.streamArn ?: run {
         // Create a new data stream, then wait for it to be active
-        val randomStreamName = STREAM_NAME_PREFIX + UUID.randomUUID()
+        val randomStreamName = STREAM_NAME_PREFIX + (0..Int.MAX_VALUE).random()
         createStream {
             streamName = randomStreamName
             shardCount = 1
@@ -155,7 +144,7 @@ class KinesisSubscribeToShardTest {
         ?.consumerArn ?: run {
         // Register a new consumer and wait for it to be active
 
-        val randomConsumerName = STREAM_CONSUMER_NAME_PREFIX + UUID.randomUUID()
+        val randomConsumerName = STREAM_CONSUMER_NAME_PREFIX + (0..Int.MAX_VALUE).random()
         registerStreamConsumer {
             consumerName = randomConsumerName
             streamArn = dataStreamArn
