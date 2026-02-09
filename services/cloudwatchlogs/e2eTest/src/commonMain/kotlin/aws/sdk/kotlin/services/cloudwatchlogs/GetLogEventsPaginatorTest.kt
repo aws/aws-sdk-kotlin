@@ -13,6 +13,7 @@ import aws.smithy.kotlin.runtime.time.epochMilliseconds
 import aws.smithy.kotlin.runtime.util.Uuid
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
@@ -30,8 +31,9 @@ private const val MAX_SEQUENTIAL_EMPTY_PAGES = 5
 
 class GetLogEventsPaginatorTest {
     @Test
-    fun testGetLogEventsPagination() = runBlocking {
-        CloudWatchLogsClient.fromEnvironment().use { cwl ->
+    fun testGetLogEventsPagination() = runTest {
+        val cwl = CloudWatchLogsClient.fromEnvironment()
+        try {
             val (group, stream) = cwl.createLogGroupStream()
 
             try {
@@ -48,6 +50,8 @@ class GetLogEventsPaginatorTest {
             } finally {
                 cwl.deleteLogGroupStream(group, stream)
             }
+        } finally {
+            cwl.close()
         }
     }
 }
@@ -111,15 +115,7 @@ private fun createMessageBatches(anchorTime: Instant) = (0 until BATCHES).map { 
         val timestampDelta = TIMESTAMP_DELTA_PER_MESSAGE * (TOTAL_MESSAGES - overallMessageIndex)
 
         InputLogEvent {
-            message = String.format(
-                "Message %d/%d (%d/%d in batch %d/%d)",
-                overallMessageIndex + 1,
-                TOTAL_MESSAGES,
-                batchMessageIndex + 1,
-                MESSAGES_PER_BATCH,
-                batchIndex + 1,
-                BATCHES,
-            )
+            message = "Message ${overallMessageIndex + 1}/$TOTAL_MESSAGES (${batchMessageIndex + 1}/$MESSAGES_PER_BATCH in batch ${batchIndex + 1}/$BATCHES)"
 
             timestamp = (anchorTime + timestampDelta).epochMilliseconds
         }
