@@ -9,8 +9,8 @@ import aws.sdk.kotlin.services.sts.presigners.presignGetCallerIdentity
 import aws.sdk.kotlin.testing.withAllEngines
 import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.TestInstance
+import aws.smithy.kotlin.runtime.io.use
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
@@ -18,10 +18,9 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Tests for presigner
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StsPresignerTest {
     @Test
-    fun testGetCallerIdentityPresigner() = runBlocking {
+    fun testGetCallerIdentityPresigner() = runTest {
         val req = GetCallerIdentityRequest { }
 
         val presignedRequest = StsClient { region = "us-west-2" }.use { sts ->
