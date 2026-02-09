@@ -11,7 +11,8 @@ import aws.smithy.kotlin.runtime.http.HttpException
 import aws.smithy.kotlin.runtime.http.auth.SigV4AsymmetricAuthScheme
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
-import kotlinx.coroutines.runBlocking
+import aws.smithy.kotlin.runtime.io.use
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -20,7 +21,7 @@ import kotlin.test.assertNotNull
 
 class Sigv4aTest {
     @Test
-    fun testSigv4a() = runBlocking {
+    fun testSigv4a() = runTest {
         val interceptor = RequestCapturingInterceptor()
 
         SesV2Client.fromEnvironment {

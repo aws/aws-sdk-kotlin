@@ -5,7 +5,7 @@
 package aws.sdk.kotlin.services.route53
 
 import aws.sdk.kotlin.services.route53.model.*
-import aws.smithy.kotlin.runtime.util.Uuid
+import aws.smithy.kotlin.runtime.io.use
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -19,7 +19,7 @@ class InvalidChangeBatchTest {
             region = "us-east-1"
         }.use { client ->
             val createHostedZoneResp = client.createHostedZone {
-                this.callerReference = Uuid.random().toString()
+                this.callerReference = (0..Int.MAX_VALUE).random().toString()
                 this.name = "this-is-a-test-hosted-zone-for-aws-sdk-kotlin.com"
             }
 
