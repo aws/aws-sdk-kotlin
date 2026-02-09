@@ -11,6 +11,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.HReqContextImpl
 /**
  * Contextual data for stages in the pipeline dealing with high-level requests (i.e., before serialization)
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  */
 public interface HReqContext<T, S : ItemSchema<T>, HReq> : SerializeInput<T, S, HReq> {
@@ -31,6 +32,7 @@ public interface HReqContext<T, S : ItemSchema<T>, HReq> : SerializeInput<T, S, 
 /**
  * Creates a new [HReqContext]
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param highLevelRequest The high-level request object which is to be serialized into a low-level request object
  * @param serializeSchema The [ItemSchema] to use for serializing objects into items

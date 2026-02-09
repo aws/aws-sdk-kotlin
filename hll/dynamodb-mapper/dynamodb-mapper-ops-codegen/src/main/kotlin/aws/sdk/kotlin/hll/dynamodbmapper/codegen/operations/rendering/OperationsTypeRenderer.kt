@@ -14,8 +14,8 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.*
 
 /**
- * Renders an `*Operations` interface and `*OperationsImpl` class which contain a method for each code-generated
- * operation which dispatches to the factory function rendered in [FactoryRenderer]
+ * Renders an `*Operations` interface and `*OperationsImpl` class which contain methods for each code-generated
+ * operation projection, which dispatches to the factory function rendered in [FactoryRenderer]
  * @param ctx The active [RenderContext]
  * @param itemSourceKind The type of `ItemSource` for which to render operations
  * @param parentType The [Type] of the direct parent interface of the to-be-generated `*Operations` interface (e.g., if
@@ -38,9 +38,9 @@ internal class OperationsTypeRenderer(
         this.unkeyedOperations = unkeyedOperations
     }
 
-    val unkeyedType = itemSourceKind.opsType(StructureKeyType.NONE)
-    val pkType = itemSourceKind.opsType(StructureKeyType.PARTITION_KEY)
-    val ckType = itemSourceKind.opsType(StructureKeyType.COMPOSITE_KEY)
+    val unkeyedType = itemSourceKind.opsType(KeyProjectionType.NONE)
+    private val pkType = itemSourceKind.opsType(KeyProjectionType.PARTITION_KEY)
+    private val ckType = itemSourceKind.opsType(KeyProjectionType.COMPOSITE_KEY)
 
     override fun generate() {
         renderInterface()
@@ -59,17 +59,17 @@ internal class OperationsTypeRenderer(
     private fun renderDslOps() {
         unkeyedOperations
             .filterNot { it.appliesToAncestorKind() }
-            .forEach { renderDslOp(it, StructureKeyType.NONE) }
+            .forEach { renderDslOp(it, KeyProjectionType.NONE) }
 
         keyedOperations
             .filterNot { it.appliesToAncestorKind() }
             .forEach {
-                renderDslOp(it, StructureKeyType.PARTITION_KEY)
-                renderDslOp(it, StructureKeyType.COMPOSITE_KEY)
+                renderDslOp(it, KeyProjectionType.PARTITION_KEY)
+                renderDslOp(it, KeyProjectionType.COMPOSITE_KEY)
             }
     }
 
-    private fun renderDslOp(op: Operation, keyType: StructureKeyType) {
+    private fun renderDslOp(op: Operation, keyType: KeyProjectionType) {
         val requestProjection = op.request.keyProjections[keyType]
         val responseProjection = op.response.keyProjections[keyType]
 
@@ -94,8 +94,8 @@ internal class OperationsTypeRenderer(
 
     private fun renderImpl() {
         val keyTypes = when {
-            keyedOperations.isEmpty() -> listOf(StructureKeyType.NONE)
-            else -> listOf(StructureKeyType.PARTITION_KEY, StructureKeyType.COMPOSITE_KEY)
+            keyedOperations.isEmpty() -> listOf(KeyProjectionType.NONE)
+            else -> listOf(KeyProjectionType.PARTITION_KEY, KeyProjectionType.COMPOSITE_KEY)
         }
 
         keyTypes.forEach { keyType ->
@@ -139,29 +139,29 @@ internal class OperationsTypeRenderer(
         writeInline("public interface #T ", unkeyedType)
         parentType?.let { writeInline(": #T ", parentType) }
         withBlock("{", "}") {
-            unkeyedOperations.forEach { renderOp(it, StructureKeyType.NONE) }
+            unkeyedOperations.forEach { renderOp(it, KeyProjectionType.NONE) }
 
             if (keyedOperations.isNotEmpty()) {
                 docs("Provides access to operations a particular [#L.PartitionKey]", itemSourceKind.name, unkeyedType)
                 writeInline("public interface PartitionKey#G : #T", pkType.genericVars(), unkeyedType)
 
                 itemSourceKind.parent?.let { parentType ->
-                    writeInline(", #T", parentType.opsType(StructureKeyType.PARTITION_KEY))
+                    writeInline(", #T", parentType.opsType(KeyProjectionType.PARTITION_KEY))
                 }
 
                 withBlock(" {", "}") {
-                    keyedOperations.forEach { renderOp(it, StructureKeyType.PARTITION_KEY) }
+                    keyedOperations.forEach { renderOp(it, KeyProjectionType.PARTITION_KEY) }
                 }
 
                 docs("Provides access to operations on a particular [#L.CompositeKey]", itemSourceKind.name, unkeyedType)
                 writeInline("public interface CompositeKey#G : #T", ckType.genericVars(), unkeyedType)
 
                 itemSourceKind.parent?.let { parentType ->
-                    writeInline(", #T", parentType.opsType(StructureKeyType.COMPOSITE_KEY))
+                    writeInline(", #T", parentType.opsType(KeyProjectionType.COMPOSITE_KEY))
                 }
 
                 withBlock(" {", "}") {
-                    keyedOperations.forEach { renderOp(it, StructureKeyType.COMPOSITE_KEY) }
+                    keyedOperations.forEach { renderOp(it, KeyProjectionType.COMPOSITE_KEY) }
                 }
             }
         }
@@ -176,7 +176,7 @@ internal class OperationsTypeRenderer(
         )
     }
 
-    private fun renderOp(op: Operation, keyType: StructureKeyType) {
+    private fun renderOp(op: Operation, keyType: KeyProjectionType) {
         if (op.appliesToAncestorKind()) return
 
         val requestProjection = op.request.keyProjections[keyType]
@@ -220,11 +220,11 @@ internal class OperationsTypeRenderer(
         }
     private fun Operation.appliesToAncestorKind() = itemSourceKind.parent?.let { appliesToKindOrAncestor(it) } ?: false
 
-    private val StructureKeyType.interfaceType: TypeRef
+    private val KeyProjectionType.interfaceType: TypeRef
         get() = when (this) {
-            StructureKeyType.NONE -> unkeyedType
-            StructureKeyType.PARTITION_KEY -> pkType
-            StructureKeyType.COMPOSITE_KEY -> ckType
+            KeyProjectionType.NONE -> unkeyedType
+            KeyProjectionType.PARTITION_KEY -> pkType
+            KeyProjectionType.COMPOSITE_KEY -> ckType
         }
 }
 

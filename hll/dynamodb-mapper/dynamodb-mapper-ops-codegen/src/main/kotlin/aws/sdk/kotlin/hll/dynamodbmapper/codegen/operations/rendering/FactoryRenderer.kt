@@ -14,8 +14,52 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.*
 
 /**
- * Renders a file for a high-level operation factory method, which creates instances of the DDB Mapper runtime
- * operation.
+ * Renders a file for high-level operation factory method(s), which create instances of the given DDB Mapper runtime
+ * operation. Factory methods are produced for every concrete projection—that is, a single method for unkeyed operations
+ * (e.g., `PutItem`) and two methods for keyed operations (e.g., `Query`).
+ *
+ * ## Example output
+ *
+ * The following is example output for the `GetItem` operation:
+ *
+ * ```kotlin
+ * fun <PK : KeyType, T> getItemOperation(spec: TableSpec.PartitionKey<T, PK>) = Operation(
+ *     interceptors = spec.mapper.config.interceptors,
+ *
+ *     initialize = { highLevelReq: GetItemRequest.PartitionKey<PK> ->
+ *         HReqContextImpl(highLevelReq, spec.schema, MapperContextImpl(spec, "GetItem"))
+ *     },
+ *
+ *     serialize = { highLevelReq, schema -> highLevelReq.convert(spec.tableName, schema) },
+ *
+ *     lowLevelInvoke = { lowLevelReq ->
+ *         spec.mapper.client.withWrappedClient { client ->
+ *             client.getItem(lowLevelReq)
+ *         }
+ *     },
+ *
+ *     deserialize = { lowLevelRes, schema -> lowLevelRes.convert(schema) },
+ * )
+ *
+ * fun <PK : KeyType, SK : KeyType, T> getItemOperation(spec: TableSpec.CompositeKey<T, PK, SK>) = Operation(
+ *     interceptors = spec.mapper.config.interceptors,
+ *
+ *     initialize = { highLevelReq: GetItemRequest.CompositeKey<PK, SK> ->
+ *         HReqContextImpl(highLevelReq, spec.schema, MapperContextImpl(spec, "GetItem"))
+ *     },
+ *
+ *     serialize = { highLevelReq, schema -> highLevelReq.convert(spec.tableName, schema) },
+ *
+ *     lowLevelInvoke = { lowLevelReq ->
+ *         spec.mapper.client.withWrappedClient { client ->
+ *             client.getItem(lowLevelReq)
+ *         }
+ *     },
+ *
+ *     deserialize = { lowLevelRes, schema -> lowLevelRes.convert(schema) },
+ * )
+ * ```
+ *
  * @param ctx The active [RenderContext]
  * @param operation The [Operation] to codegen
  */

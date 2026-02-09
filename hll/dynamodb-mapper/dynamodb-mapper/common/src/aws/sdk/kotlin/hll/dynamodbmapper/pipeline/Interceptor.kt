@@ -69,6 +69,7 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItem
  * * For phases _after_ the **Low-level invocation** step, hooks will be executed _in reverse order_
  *
  * @param T The type of item being serialized
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])

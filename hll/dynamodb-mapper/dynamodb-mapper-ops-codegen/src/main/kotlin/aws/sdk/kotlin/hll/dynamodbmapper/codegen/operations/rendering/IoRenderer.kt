@@ -11,16 +11,127 @@ import aws.sdk.kotlin.hll.codegen.rendering.RendererBase
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.*
 
+/**
+ * Renders an input or output high-level type and conversion method(s) from/to the corresponding low-level type. This
+ * renderer models the notion of a "from" type and a "to" type which are based on the request pipeline. Specifically,
+ * "from" types are high-level requests and low-level responses whereas "to" types are low-level requests and high-level
+ * responses. These distinctions are important for generating the conversion method.
+ *
+ * ## Example output for unkeyed projection
+ *
+ * In the simplest case of an unkeyed projection, this renderer will produce code such as:
+ *
+ * ```kotlin
+ * import aws.sdk.kotlin.services.dynamodb.model.DeleteItemResponse as LowLevelDeleteItemResponse
+ *
+ * // Interface, impl, builder, etc. are produced by `KeyProjectedTypeRenderer` and thus omitted in this example
+ *
+ * fun <T> LowLevelDeleteItemResponse.convert(schema: ItemSchema<T>) = DeleteItemResponse<T> {
+ *     consumedCapacity = this@convert.consumedCapacity
+ *     itemCollectionMetrics = this@convert.itemCollectionMetrics
+ *     attributes = this@convert.attributes?.let {
+ *         schema.converter.convertLeft(it.toItem())
+ *     }
+ * }
+ * ```
+ *
+ * ## Example output for keyed projections
+ *
+ * For keyed projections, multiple converters will be generated:
+ *
+ * ```kotlin
+ * import aws.sdk.kotlin.services.dynamodb.model.ScanRequest as LowLevelScanRequest
+ *
+ * // Interfaces, impls, builders, etc. are produced by `KeyProjectedTypeRenderer` and thus omitted in this example
+ *
+ * fun <PK : KeyType, T> ScanRequest.PartitionKey<PK>.convert(
+ *     indexName: String?,
+ *     tableName: String?,
+ *     schema: ItemSchema.PartitionKey<T, PK>,
+ * ) = LowLevelScanRequest {
+ *     consistentRead = this@convert.consistentRead
+ *     limit = this@convert.limit
+ *     returnConsumedCapacity = this@convert.returnConsumedCapacity
+ *     segment = this@convert.segment
+ *     select = this@convert.select
+ *     totalSegments = this@convert.totalSegments
+ *     exclusiveStartKey = keysToItem(schema, this@convert.exclusiveStartPartitionKey)
+ *     this.indexName = indexName
+ *     this.tableName = tableName
+ *
+ *     val expressionVisitor = ParameterizingExpressionVisitor()
+ *     filterExpression = this@convert.filter?.accept(expressionVisitor)
+ *     expressionAttributeNames = expressionVisitor.expressionAttributeNames()
+ *     expressionAttributeValues = expressionVisitor.expressionAttributeValues()
+ * }
+ *
+ * internal fun <PK : KeyType, SK : KeyType, T> ScanRequest.CompositeKey<PK, SK>.convert(
+ *     indexName: String?,
+ *     tableName: String?,
+ *     schema: ItemSchema.CompositeKey<T, PK, SK>,
+ * ) = LowLevelScanRequest {
+ *     consistentRead = this@convert.consistentRead
+ *     limit = this@convert.limit
+ *     returnConsumedCapacity = this@convert.returnConsumedCapacity
+ *     segment = this@convert.segment
+ *     select = this@convert.select
+ *     totalSegments = this@convert.totalSegments
+ *     exclusiveStartKey = keysToItem(
+ *         schema,
+ *         this@convert.exclusiveStartPartitionKey,
+ *         this@convert.exclusiveStartSortKey,
+ *     )
+ *     this.indexName = indexName
+ *     this.tableName = tableName
+ *
+ *     val expressionVisitor = ParameterizingExpressionVisitor()
+ *     filterExpression = this@convert.filter?.accept(expressionVisitor)
+ *     expressionAttributeNames = expressionVisitor.expressionAttributeNames()
+ *     expressionAttributeValues = expressionVisitor.expressionAttributeValues()
+ * }
+ * ```
+ *
+ * @param ctx The active [RenderContext]
+ * @param keyProjections The family of key projections for the high-level type
+ */
 internal abstract class IoRenderer(
     protected val ctx: RenderContext,
     private val keyProjections: KeyProjections,
 ) : RendererBase(ctx, keyProjections.unkeyedProjection.interfaceStruct.type.shortName) {
+    /**
+     * The key projections for the "from" type
+     */
     protected abstract val fromProjections: KeyProjections
+
+    /**
+     * The key projections for the "to" type
+     */
     protected abstract val toProjections: KeyProjections
+
+    /**
+     * Derives the equivalent "from" [Member] for this "to" [Member]. This method should only be used for members with a
+     * codegen behavior _other than_ [MemberCodegenBehavior.MapToKeys].
+     * @param fromStruct The "from" structure
+     */
     protected abstract fun Member.fromMember(fromStruct: Structure): Member
+
+    /**
+     * Derives the list of "from" [Member] instances for this "to" [Member]. This method should only be used for members
+     * with a codegen behavior of [MemberCodegenBehavior.MapToKeys].
+     * @param fromStruct The "from" structure
+     */
     protected abstract fun Member.fromMembers(fromStruct: Structure): List<Member>
 
+    /**
+     * Renders the key conversion lines for the overall conversion method
+     * @param fromStruct The "from" structure
+     * @param toStruct The "to" structure
+     */
     protected abstract fun renderKeyConversion(fromStruct: Structure, toStruct: Structure)
+
+    /**
+     * Renders a single item conversion inline
+     */
     protected abstract fun renderSingleItemConversion()
 
     final override fun generate() {
@@ -32,8 +143,8 @@ internal abstract class IoRenderer(
 
         val isKeyed = fromProjections.isKeyed || toProjections.isKeyed
         val keyTypes = when {
-            isKeyed -> listOf(StructureKeyType.PARTITION_KEY, StructureKeyType.COMPOSITE_KEY)
-            else -> listOf(StructureKeyType.NONE)
+            isKeyed -> listOf(KeyProjectionType.PARTITION_KEY, KeyProjectionType.COMPOSITE_KEY)
+            else -> listOf(KeyProjectionType.NONE)
         }
 
         keyTypes.forEach { keyType ->
@@ -43,11 +154,11 @@ internal abstract class IoRenderer(
         }
     }
 
-    private fun renderConversion(keyType: StructureKeyType, fromStruct: Structure, toStruct: Structure) {
+    private fun renderConversion(keyType: KeyProjectionType, fromStruct: Structure, toStruct: Structure) {
         val schemaType = when (keyType) {
-            StructureKeyType.NONE -> MapperTypes.Items.ItemSchema
-            StructureKeyType.PARTITION_KEY -> MapperTypes.Items.ItemSchemaPartitionKey
-            StructureKeyType.COMPOSITE_KEY -> MapperTypes.Items.ItemSchemaCompositeKey
+            KeyProjectionType.NONE -> MapperTypes.Items.ItemSchema
+            KeyProjectionType.PARTITION_KEY -> MapperTypes.Items.ItemSchemaPartitionKey
+            KeyProjectionType.COMPOSITE_KEY -> MapperTypes.Items.ItemSchemaCompositeKey
         }
 
         val generics = fromStruct.type.genericVars() + toStruct.type.genericVars() + TypeVar.T
@@ -111,6 +222,11 @@ internal abstract class IoRenderer(
     }
 }
 
+/**
+ * Renders a request high-level type and conversion method(s) to the corresponding low-level type
+ * @param ctx The active [RenderContext]
+ * @param keyProjections The family of key projections for the high-level request type
+ */
 internal class RequestRenderer(ctx: RenderContext, request: KeyProjections) : IoRenderer(ctx, request) {
     override val fromProjections = request
     override val toProjections = KeyProjections.fromInterface(request.unkeyedProjection.interfaceStruct.lowLevel)
@@ -128,6 +244,11 @@ internal class RequestRenderer(ctx: RenderContext, request: KeyProjections) : Io
     override fun Member.fromMembers(fromStruct: Structure) = fromStruct.members.filter { it.lowLevel == this }
 }
 
+/**
+ * Renders a response high-level type and conversion method(s) from the corresponding low-level type
+ * @param ctx The active [RenderContext]
+ * @param keyProjections The family of key projections for the high-level response type
+ */
 internal class ResponseRenderer(ctx: RenderContext, response: KeyProjections) : IoRenderer(ctx, response) {
     override val fromProjections = KeyProjections.fromInterface(response.unkeyedProjection.interfaceStruct.lowLevel)
     override val toProjections = response

@@ -62,6 +62,6 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
         .getDeclaredFunctions()
         .filter(::allow)
         .map(Operation::from)
-        .map { it.toHighLevel(pkg, ctx) }
+        .map { it.toHighLevel(ctx) }
         .toList()
 }

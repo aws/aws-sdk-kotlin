@@ -10,6 +10,14 @@ import aws.sdk.kotlin.hll.codegen.util.uppercaseFirstChar
 import aws.smithy.kotlin.runtime.collections.attributesOf
 import aws.smithy.kotlin.runtime.collections.get
 
+/**
+ * Represents the projection of a [KeyProjectionType] onto a low-level DynamoDB type, which results in a new set of
+ * related structures used by high-level codegen
+ * @param parentInterfaceStruct The parent (i.e., container) type for this projection's [interfaceStruct]
+ * @param interfaceStruct A structure which defines the public immutable type for this projection
+ * @param implStruct A structure which defines the private implementation type for this projection
+ * @param builderStruct A structure which defines the public builder type for this projection
+ */
 internal data class KeyProjection(
     val parentInterfaceStruct: Structure?,
     val interfaceStruct: Structure,
@@ -17,19 +25,45 @@ internal data class KeyProjection(
     val builderStruct: Structure,
 )
 
-internal val KeyProjection.keyType: StructureKeyType
+/**
+ * The type of this key projection
+ */
+internal val KeyProjection.keyType: KeyProjectionType
     get() = interfaceStruct.keyType
 
-internal class KeyProjections(private val projections: Map<StructureKeyType, KeyProjection>) {
+/**
+ * A family of [KeyProjection] instances for a low-level DynamoDB type. Depending on the low-level type, this set will
+ * contain:
+ * * A single projection ([KeyProjectionType.NONE]) for _unkeyed structures_ (e.g., the low-level type
+ *   [aws.sdk.kotlin.services.dynamodb.model.GetItemResponse] is unkeyed because it contains no field that represents an
+ *   item key)
+ * * All projections ([KeyProjectionType.NONE], [KeyProjectionType.PARTITION_KEY], and
+ *   [KeyProjectionType.COMPOSITE_KEY]) for _keyed structures_ (e.g., the low-level type
+ *   [aws.sdk.kotlin.services.dynamodb.model.GetItemRequest] is keyed because it contains the field `key` which is used
+ *   for fetching an item)
+ */
+internal class KeyProjections(private val projections: Map<KeyProjectionType, KeyProjection>) {
     companion object {
         internal fun fromInterface(interfaceStruct: Structure): KeyProjections =
             KeyProjectionsBuilder(interfaceStruct).build()
     }
 
-    val isKeyed = projections.keys.any { it != StructureKeyType.NONE }
-    val unkeyedProjection = projections.getValue(StructureKeyType.NONE)
+    /**
+     * Identifies whether this family of projections contains keyed projections (`true`) or only contains the unkeyed
+     * projection (`false`)
+     */
+    val isKeyed = projections.keys.any { it != KeyProjectionType.NONE }
 
-    operator fun get(keyType: StructureKeyType) = projections[keyType] ?: unkeyedProjection
+    /**
+     * Gets the unkeyed projection from this projection family
+     */
+    val unkeyedProjection = projections.getValue(KeyProjectionType.NONE)
+
+    /**
+     * Gets a projection based on the _desired_ projection type. If no projection of that type exists, returns the
+     * unkeyed projection.
+     */
+    operator fun get(keyType: KeyProjectionType) = projections[keyType] ?: unkeyedProjection
 }
 
 private class KeyProjectionsBuilder(val baseStruct: Structure) {
@@ -55,7 +89,7 @@ private class KeyProjectionsBuilder(val baseStruct: Structure) {
 
     private fun projections(): List<KeyProjection> {
         val keyFields = baseStruct
-            .takeIf { it.keyType == StructureKeyType.NONE && ModelAttributes.LowLevelStructure in it.attributes }
+            .takeIf { it.keyType == KeyProjectionType.NONE && ModelAttributes.LowLevelStructure in it.attributes }
             ?.lowLevel
             ?.members
             ?.filter { it.codegenBehavior == MemberCodegenBehavior.MapToKeys }
@@ -73,7 +107,7 @@ private class KeyProjectionsBuilder(val baseStruct: Structure) {
             val pkInterface = baseStruct.copy(
                 type = baseStruct.type.copy(shortName = "${baseStruct.type.shortName}.PartitionKey", genericArgs = pkGenerics.toList()),
                 members = inheritedMembers + pkMembers,
-                attributes = baseStruct.attributes + (MapperAttributes.StructureKeyType to StructureKeyType.PARTITION_KEY),
+                attributes = baseStruct.attributes + (MapperAttributes.KeyProjectionType to KeyProjectionType.PARTITION_KEY),
             )
 
             val skMembers = keyFields.projectedAs(MemberKeyType.SORT)
@@ -81,7 +115,7 @@ private class KeyProjectionsBuilder(val baseStruct: Structure) {
             val ckInterface = baseStruct.copy(
                 type = baseStruct.type.copy(shortName = "${baseStruct.type.shortName}.CompositeKey", genericArgs = ckGenerics.toList()),
                 members = inheritedMembers + pkMembers + skMembers,
-                attributes = baseStruct.attributes + (MapperAttributes.StructureKeyType to StructureKeyType.COMPOSITE_KEY),
+                attributes = baseStruct.attributes + (MapperAttributes.KeyProjectionType to KeyProjectionType.COMPOSITE_KEY),
             )
 
             listOf(
@@ -118,11 +152,27 @@ private fun keyMemberName(llMemberName: String, keyType: MemberKeyType): String 
     }
 }
 
+/**
+ * Gets the family of associated key type projections for this structure. Throws an error if this structure has not been
+ * associated with any key projections.
+ */
 internal val Structure.keyProjections: KeyProjections
     get() = attributes[MapperAttributes.KeyProjections]
 
+/**
+ * Determines if this is a keyed structure. For example, the low-level type
+ * [aws.sdk.kotlin.services.dynamodb.model.GetItemResponse] is unkeyed because it contains no field that represents an
+ * item key. By contrast, the low-level type [aws.sdk.kotlin.services.dynamodb.model.GetItemRequest] is keyed because it
+ * contains the field `key` which is used for fetching the item.
+ */
 internal val Structure.isKeyed: Boolean
     get() = keyProjections.isKeyed
 
+/**
+ * Determines if this is a keyed operation. A keyed operation has a request and/or a response structure which itself is
+ * keyed (i.e., [Structure.isKeyed]). For example, the `PutItem` operation is unkeyed because neither its request type
+ * nor response type contain fields which represent an item key. By contrast, the `DeleteItem` operation is keyed
+ * because its request type contains the field `key` which is used for deleting the item.
+ */
 internal val Operation.isKeyed: Boolean
     get() = request.isKeyed || response.isKeyed

@@ -5,9 +5,34 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemResponse
+import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.HReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
+import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
+import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
 
+/**
+ * Models a high-level operation as a series of lambda functions which implement the various stages such as
+ * serialization or low-level invocation.
+ *
+ * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
+ * @param HReq The type of high-level request object (e.g., [GetItemRequest])
+ * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
+ * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
+ * @param HRes The type of high-level response object (e.g., [GetItemResponse])
+ * @param initialize The initialization logic, which takes a high-level request ([HReq]) input and produces a request
+ * context ([HReqContext]) output
+ * @param serialize The serialization logic, which takes high-level request ([HReq]) and item schema ([S]) inputs and
+ * produces a low-level request ([LReq]) output
+ * @param lowLevelInvoke The low-level invocation logic, which takes a low-level request ([LReq]) input and produces a
+ * low-level response ([LRes]) output
+ * @param deserialize The deserialization logic, which takes low-level response ([LRes]) and item schema ([S]) inputs
+ * and produces a high-level response ([HRes]) output
+ * @param interceptors Any attached interceptors to be executed at the appropriate stages
+ */
 internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
     val initialize: (HReq) -> HReqContextImpl<T, S, HReq>,
     val serialize: (HReq, S) -> LReq,
@@ -15,6 +40,18 @@ internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
     val deserialize: (LRes, S) -> HRes,
     val interceptors: List<Interceptor<T, S, HReq, LReq, LRes, HRes>>,
 ) {
+    /**
+     * Initializes a new high-level operation
+     * @param initialize The initialization logic, which takes a high-level request ([HReq]) input and produces a
+     * request context ([HReqContext]) output
+     * @param serialize The serialization logic, which takes high-level request ([HReq]) and item schema ([S]) inputs
+     * and produces a low-level request ([LReq]) output
+     * @param lowLevelInvoke The low-level invocation logic, which takes a low-level request ([LReq]) input and produces
+     * a low-level response ([LRes]) output
+     * @param deserialize The deserialization logic, which takes low-level response ([LRes]) and item schema ([S])
+     * inputs and produces a high-level response ([HRes]) output
+     * @param interceptors Any attached interceptors to be executed at the appropriate stages
+     */
     constructor(
         initialize: (HReq) -> HReqContextImpl<T, S, HReq>,
         serialize: (HReq, S) -> LReq,

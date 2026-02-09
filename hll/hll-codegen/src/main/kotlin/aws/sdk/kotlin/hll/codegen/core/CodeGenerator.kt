@@ -65,6 +65,10 @@ public interface CodeGenerator {
      */
     public fun dedent(levels: Int = 1)
 
+    /**
+     * Formats the given template and arguments similar to [write] but returns the output as a string instead of writing
+     * it to the buffer
+     */
     public fun format(template: String, vararg args: Any): String
 
     /**

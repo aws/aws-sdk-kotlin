@@ -214,20 +214,3 @@ public fun Key(value1: Short): KeyType.Key1<Short> = KeyType1Impl(value1)
  */
 @Suppress("FunctionName")
 public fun Key(value1: String): KeyType.Key1<String> = KeyType1Impl(value1)
-
-/**
- * A composite key value for an item in a table or index, consisting of partition key value(s) and sort key value(s)
- * @param PK The [KeyType] of the partition key
- * @param SK The [KeyType] of the sort key
- */
-public interface CompositeKeyType<PK : KeyType, SK : KeyType> {
-    /**
-     * The value of the partition key
-     */
-    public val partitionKey: PK
-
-    /**
-     * The value of the sort key
-     */
-    public val sortKey: SK
-}

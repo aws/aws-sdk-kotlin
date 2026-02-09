@@ -37,10 +37,20 @@ internal enum class ItemSourceKind(
     Table(listOf("tableName"), ItemSource),
 }
 
-internal fun ItemSourceKind.opsType(keyType: StructureKeyType): TypeRef =
+/**
+ * Forms the [TypeRef] for this [ItemSourceKind]'s operations type (e.g., `ItemSourceOperations<T>` or
+ * `TableOperations.PartitionKey<T, PK>`)
+ * @param keyType The type of keys to include in the [TypeRef]
+ */
+internal fun ItemSourceKind.opsType(keyType: KeyProjectionType): TypeRef =
     TypeRef(MapperPkg.Hl.Ops, "${name}Operations${keyType.nameSuffix}", keyType.typeVars)
 
-internal fun ItemSourceKind.specType(keyType: StructureKeyType): TypeRef =
+/**
+ * Forms the [TypeRef] for this [ItemSourceKind]'s specification type (e.g., `ItemSourceSpec<T>` or
+ * `TableSpec.PartitionKey<T, PK>`)
+ * @param keyType The type of keys to include in the [TypeRef]
+ */
+internal fun ItemSourceKind.specType(keyType: KeyProjectionType): TypeRef =
     TypeRef(MapperPkg.Hl.Model, "${name}Spec${keyType.nameSuffix}", keyType.typeVars)
 
 /**

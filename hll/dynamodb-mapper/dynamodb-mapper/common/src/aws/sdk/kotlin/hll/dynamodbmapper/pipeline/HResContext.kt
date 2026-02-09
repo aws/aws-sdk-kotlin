@@ -14,6 +14,7 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItem
 /**
  * Contextual data for stages in the pipeline dealing with high-level responses (i.e., after deserialization)
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
@@ -29,6 +30,7 @@ public interface HResContext<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes> : LRe
 /**
  * Creates a new [HResContext]
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])

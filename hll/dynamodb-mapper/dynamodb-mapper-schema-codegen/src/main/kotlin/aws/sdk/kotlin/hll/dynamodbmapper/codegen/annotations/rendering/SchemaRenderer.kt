@@ -110,7 +110,7 @@ internal class SchemaRenderer(
 
     private fun renderBuilder() {
         val members = properties.map(Member.Companion::from).toSet()
-        BuilderRenderer(this, classType, classType, members, ctx).render()
+        BuilderRenderer(ctx, this, classType, classType, members).render()
     }
 
     private fun renderItemConverter() {

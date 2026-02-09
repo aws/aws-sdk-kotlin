@@ -11,12 +11,12 @@ import aws.sdk.kotlin.hll.codegen.util.plus
 
 /**
  * Derives a high-level [Operation] equivalent for this low-level operation
- * @param pkg The Kotlin package to use for the high-level operation's request and response structures
+ * @param ctx The active [RenderContext]
  */
-internal fun Operation.toHighLevel(pkg: String, ctx: RenderContext): Operation {
+internal fun Operation.toHighLevel(ctx: RenderContext): Operation {
     val llOperation = this@toHighLevel
-    val hlRequest = llOperation.request.toHighLevel(pkg, ctx)
-    val hlResponse = llOperation.response.toHighLevel(pkg, ctx)
+    val hlRequest = llOperation.request.toHighLevel(ctx)
+    val hlResponse = llOperation.response.toHighLevel(ctx)
     val hlAttributes = llOperation.attributes + (ModelAttributes.LowLevelOperation to llOperation)
     return Operation(llOperation.methodName, hlRequest, hlResponse, hlAttributes)
 }
