@@ -9,6 +9,9 @@ import aws.sdk.kotlin.e2etest.S3TestUtils.getAccountId
 import aws.sdk.kotlin.e2etest.S3TestUtils.getBucketWithPrefix
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.deleteObject
+import aws.sdk.kotlin.services.s3.model.ExpirationStatus
+import aws.sdk.kotlin.services.s3.model.LifecycleRule
+import aws.sdk.kotlin.services.s3.putBucketLifecycleConfiguration
 import aws.sdk.kotlin.services.s3.putObject
 import aws.sdk.kotlin.services.s3.withConfig
 import aws.sdk.kotlin.services.s3control.S3ControlClient
@@ -24,13 +27,9 @@ import aws.smithy.kotlin.runtime.http.auth.SigV4AsymmetricAuthScheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
-import java.util.stream.Stream
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -39,7 +38,6 @@ private const val MRAP_BUCKET_PREFIX = "s3-mrap-test-bucket-"
 private const val MULTI_REGION_ACCESS_POINT_NAME = "aws-sdk-for-kotlin-test-multi-region-access-point"
 private const val TEST_OBJECT_KEY = "test.txt"
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MutliRegionAccessPointTest {
     private lateinit var s3West: S3Client
     private lateinit var s3East: S3Client
@@ -47,11 +45,12 @@ class MutliRegionAccessPointTest {
 
     private lateinit var accountId: String
     private lateinit var multiRegionAccessPointArn: String
+    private lateinit var multiRegionAccessPointName: String
     private lateinit var usWestBucket: String
     private lateinit var usEastBucket: String
 
-    @BeforeAll
-    fun setup(): Unit = runBlocking {
+    @BeforeTest
+    fun setup() = runBlocking {
         s3West = S3Client { region = "us-west-2" }
         s3East = S3Client { region = "us-east-2" }
         s3Control = S3ControlClient { region = "us-west-2" }
@@ -67,21 +66,23 @@ class MutliRegionAccessPointTest {
         )
     }
 
-    @AfterAll
-    fun cleanup(): Unit = runBlocking {
-        s3Control.deleteMultiRegionAccessPoint(MULTI_REGION_ACCESS_POINT_NAME, accountId)
-
-        deleteBucketAndAllContents(s3West, usWestBucket)
-        deleteBucketAndAllContents(s3East, usEastBucket)
+    @AfterTest
+    fun cleanup() = runBlocking {
+        s3Control.deleteMultiRegionAccessPoint(multiRegionAccessPointName, accountId)
 
         s3West.close()
         s3East.close()
         s3Control.close()
     }
 
-    @ParameterizedTest
-    @MethodSource("signerProvider")
-    fun testMultiRegionAccessPointOperation(signer: AwsSigner): Unit = runBlocking {
+    @Test
+    fun testMultiRegionAccessPointOperation() = runBlocking {
+        listOf(DefaultAwsSigner, CrtAwsSigner).distinct().forEach { signer ->
+            testMultiRegionAccessPointOperation(signer)
+        }
+    }
+
+    private suspend fun testMultiRegionAccessPointOperation(signer: AwsSigner) {
         println("Testing multi-region access point operations with $signer")
 
         val s3SigV4a = s3West.withConfig {
@@ -98,17 +99,8 @@ class MutliRegionAccessPointTest {
             key = TEST_OBJECT_KEY
         }
     }
-
-    fun signerProvider(): Stream<Arguments> = Stream.of(
-        Arguments.of(DefaultAwsSigner),
-        Arguments.of(CrtAwsSigner),
-    )
 }
 
-/**
- * Create a multi-region access point named [name] in account [accountId] with [buckets] buckets.
- * @return the ARN of the multi-region access point that was created
- */
 private suspend fun S3ControlClient.createMultiRegionAccessPoint(
     name: String,
     accountId: String,
@@ -128,18 +120,13 @@ private suspend fun S3ControlClient.createMultiRegionAccessPoint(
 
     waitUntilOperationCompletes("createMultiRegionAccessPoint", accountId, requestTokenArn, 10.minutes)
 
-    return getMultiRegionAccessPointArn(name, accountId)
+    return getMultiRegionAccessPoint {
+        this.name = name
+        this.accountId = accountId
+    }.accessPoint?.alias?.let {
+        "arn:aws:s3::$accountId:accesspoint/$it"
+    } ?: throw IllegalStateException("Failed to get ARN for multi-region access point $name")
 }
-
-private suspend fun S3ControlClient.getMultiRegionAccessPointArn(
-    name: String,
-    accountId: String,
-): String = getMultiRegionAccessPoint {
-    this.name = name
-    this.accountId = accountId
-}.accessPoint?.alias?.let {
-    "arn:aws:s3::$accountId:accesspoint/$it"
-} ?: throw IllegalStateException("Failed to get ARN for multi-region access point $name")
 
 private suspend fun S3ControlClient.deleteMultiRegionAccessPoint(
     name: String,
@@ -159,9 +146,6 @@ private suspend fun S3ControlClient.deleteMultiRegionAccessPoint(
     waitUntilOperationCompletes("deleteMultiRegionAccessPoint", accountId, requestTokenArn, 5.minutes)
 }
 
-/**
- * Continuously poll the status of [requestTokenArn] until its status is "SUCCEEDED" or [timeout] duration has passed.
- */
 private suspend fun S3ControlClient.waitUntilOperationCompletes(
     operation: String,
     accountId: String,
@@ -190,6 +174,6 @@ private suspend fun S3ControlClient.waitUntilOperationCompletes(
             }
         }
 
-        delay(10.seconds) // Avoid constant status checks
+        delay(10.seconds)
     }
 }
