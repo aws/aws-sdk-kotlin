@@ -22,7 +22,6 @@ import kotlin.test.Ignore
  * Reproduces "unexpected end of stream" errors as seen in https://github.com/aws/aws-sdk-kotlin/issues/1214
  * and ensures they are resolved by OkHttp's retryOnConnectionFailure option
  */
-@Ignore
 class ConnectionResetTest {
     private val client = S3Client {
         region = S3TestUtils.DEFAULT_REGION
