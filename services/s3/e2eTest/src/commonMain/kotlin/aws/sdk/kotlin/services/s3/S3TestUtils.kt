@@ -13,18 +13,21 @@ import aws.sdk.kotlin.services.s3.model.LifecycleRule
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import aws.sdk.kotlin.services.s3.waiters.waitUntilBucketExists
 import aws.sdk.kotlin.services.s3.waiters.waitUntilBucketNotExists
-import aws.sdk.kotlin.services.s3control.*
-import aws.sdk.kotlin.services.s3control.model.*
 import aws.sdk.kotlin.services.sts.StsClient
+import aws.smithy.kotlin.runtime.http.HttpBody
+import aws.smithy.kotlin.runtime.http.HttpMethod
+import aws.smithy.kotlin.runtime.http.SdkHttpClient
+import aws.smithy.kotlin.runtime.http.complete
+import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.text.ensurePrefix
+import aws.smithy.kotlin.runtime.util.Uuid
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
-import java.io.OutputStreamWriter
-import java.net.URL
-import java.util.*
-import javax.net.ssl.HttpsURLConnection
 import kotlin.time.Duration.Companion.seconds
 
 object S3TestUtils {
@@ -33,6 +36,20 @@ object S3TestUtils {
 
     // The E2E test account only has permission to operate on buckets with the prefix "s3-test-bucket-"
     private const val TEST_BUCKET_PREFIX = "s3-test-bucket-"
+
+    private var sharedBucket: String? = null
+    private val bucketMutex = Mutex()
+
+    suspend fun getOrCreateSharedBucket(client: S3Client, region: String = DEFAULT_REGION): String =
+        sharedBucket ?: bucketMutex.withLock {
+            sharedBucket ?: getTestBucket(client, region).also { sharedBucket = it }
+        }
+
+    suspend fun cleanupSharedBucket(client: S3Client) {
+        sharedBucket?.let { bucket ->
+            deleteBucketContents(client, bucket)
+        }
+    }
 
     private const val S3_MAX_BUCKET_NAME_LENGTH = 63 // https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
     private const val S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX = "--x-s3"
@@ -64,7 +81,7 @@ object S3TestUtils {
         }
 
         if (testBucket == null) {
-            testBucket = prefix + UUID.randomUUID()
+            testBucket = prefix + Uuid.random().toString()
             println("Creating S3 bucket: $testBucket")
 
             client.createBucket {
@@ -105,7 +122,7 @@ object S3TestUtils {
         if (testBucket == null) {
             // Adding S3 Express suffix surpasses the bucket name length limit... trim the UUID if needed
             testBucket = TEST_BUCKET_PREFIX +
-                UUID.randomUUID().toString().subSequence(0 until (S3_MAX_BUCKET_NAME_LENGTH - TEST_BUCKET_PREFIX.length - suffix.ensurePrefix("--").length)) +
+                Uuid.random().toString().subSequence(0 until (S3_MAX_BUCKET_NAME_LENGTH - TEST_BUCKET_PREFIX.length - suffix.ensurePrefix("--").length)) +
                 suffix.ensurePrefix("--")
 
             println("Creating S3 Express directory bucket: $testBucket")
@@ -135,6 +152,7 @@ object S3TestUtils {
         deleteBucketContents(client, bucketName)
 
         try {
+            println("Deleting S3 bucket: $bucketName")
             client.deleteBucket { bucket = bucketName }
 
             client.waitUntilBucketNotExists {
@@ -146,11 +164,11 @@ object S3TestUtils {
         }
     }
 
-    suspend fun deleteBucketContents(client: S3Client, bucketName: String): Unit = coroutineScope {
+    suspend fun deleteBucketContents(client: S3Client, bucketName: String) = coroutineScope {
         val scope = this
 
         try {
-            println("Deleting S3 buckets contents: $bucketName")
+            println("Deleting contents of S3 buckets: $bucketName")
             val dispatcher = Dispatchers.Default.limitedParallelism(64)
             val jobs = mutableListOf<Job>()
 
@@ -175,29 +193,21 @@ object S3TestUtils {
         }
     }
 
-    fun responseCodeFromPut(presignedRequest: HttpRequest, content: String): Int {
-        val url = URL(presignedRequest.url.toString())
-        val connection: HttpsURLConnection = url.openConnection() as HttpsURLConnection
-        presignedRequest.headers.forEach { key, values ->
-            connection.setRequestProperty(key, values.first())
-        }
+    suspend fun responseCodeFromPut(engine: HttpClientEngine, presignedRequest: HttpRequest, content: String): Int {
+        val request = HttpRequest(
+            method = HttpMethod.PUT,
+            url = presignedRequest.url,
+            headers = presignedRequest.headers,
+            body = HttpBody.fromBytes(content.encodeToByteArray())
+        )
 
-        connection.doOutput = true
-        connection.requestMethod = "PUT"
-        val out = OutputStreamWriter(connection.outputStream)
-        out.write(content)
-        out.close()
-
-        if (connection.errorStream != null) {
-            error("request failed: ${connection.errorStream?.bufferedReader()?.readText()}")
-        }
-
-        return connection.responseCode
+        val call = SdkHttpClient(engine).call(request)
+        val statusCode = call.response.status.value
+        call.complete()
+        return statusCode
     }
 
     internal suspend fun getAccountId(): String {
-        println("Getting account ID")
-
         val accountId = StsClient {
             region = "us-west-2"
         }.use {
@@ -219,3 +229,5 @@ object S3TestUtils {
         }
     }
 }
+
+

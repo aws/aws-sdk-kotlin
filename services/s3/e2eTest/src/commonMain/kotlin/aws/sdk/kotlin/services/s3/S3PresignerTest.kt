@@ -4,6 +4,7 @@
  */
 package aws.sdk.kotlin.e2etest
 
+import aws.sdk.kotlin.e2etest.S3TestUtils.responseCodeFromPut
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.DeleteObjectRequest
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
