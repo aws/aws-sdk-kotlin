@@ -17,32 +17,32 @@ import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
 import aws.smithy.kotlin.runtime.http.toByteStream
-import kotlinx.coroutines.*
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
+import aws.smithy.kotlin.runtime.io.use
+import kotlinx.coroutines.runBlocking
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class S3PresignerTest {
-    private val client = S3Client {
-        region = S3TestUtils.DEFAULT_REGION
-    }
-
+    private lateinit var client: S3Client
     private lateinit var testBucket: String
 
-    @BeforeAll
-    fun createResources(): Unit = runBlocking {
-        testBucket = S3TestUtils.getTestBucket(client)
+    @BeforeTest
+    fun createResources() = runBlocking {
+        client = S3Client {
+            region = S3TestUtils.DEFAULT_REGION
+        }
+        testBucket = S3TestUtils.getOrCreateSharedBucket(client)
     }
 
-    @AfterAll
-    fun cleanup(): Unit = runBlocking {
-        S3TestUtils.deleteBucketAndAllContents(client, testBucket)
+    @AfterTest
+    fun cleanup() = runBlocking {
+        S3TestUtils.cleanupSharedBucket(client)
         client.close()
+        kotlinx.coroutines.delay(100)
     }
 
     private suspend fun testPresign(client: S3Client) {
@@ -59,7 +59,7 @@ class S3PresignerTest {
             }
             val presignedPutRequest = client.presignPutObject(unsignedPutRequest, 60.seconds)
 
-            S3TestUtils.responseCodeFromPut(presignedPutRequest, contents)
+            responseCodeFromPut(engine, presignedPutRequest, contents)
 
             // GET
             val unsignedGetRequest = GetObjectRequest {
@@ -88,7 +88,7 @@ class S3PresignerTest {
     }
 
     @Test
-    fun testPresignNormal() = runTest {
+    fun testPresignNormal() = runBlocking {
         S3Client {
             region = S3TestUtils.DEFAULT_REGION
         }.use { testPresign(it) }
