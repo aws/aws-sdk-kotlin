@@ -73,9 +73,6 @@ class S3BucketOpsIntegrationTest {
         assertEquals(contents, roundTrippedContents)
     }
 
-    // TODO: This test crashes on Native with exit code 134 (SIGABRT). The issue appears to be with
-    //  flow { emit(arr) }.toByteStream(this@runBlocking, arr.size.toLong()) on Native.
-    @Ignore
     @Test
     fun testPutObjectWithToByteStreamAndContentLength() = runBlocking<Unit> {
         // See https://github.com/awslabs/aws-sdk-kotlin/issues/1249
@@ -126,6 +123,7 @@ class S3BucketOpsIntegrationTest {
         }
     }
 
+    @Test
     fun testPathEncoding() = runBlocking {
         // this is mostly a stress test of signing w.r.t path encoding (since key is bound
         // via @httpLabel) and the ability of an HTTP engine to keep the same encoding going
