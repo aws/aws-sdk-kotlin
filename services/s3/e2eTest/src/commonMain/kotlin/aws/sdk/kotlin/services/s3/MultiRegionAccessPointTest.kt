@@ -25,6 +25,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -72,6 +73,7 @@ class MutliRegionAccessPointTest {
 
     @Test
     fun testMultiRegionAccessPointOperation() = runBlocking {
+        // use .distinct() to deduplicate DefaultAwsSigner and CrtAwsSigner, which are the same on Native
         listOf(DefaultAwsSigner, CrtAwsSigner).distinct().forEach { signer ->
             testMultiRegionAccessPointOperation(signer)
         }
