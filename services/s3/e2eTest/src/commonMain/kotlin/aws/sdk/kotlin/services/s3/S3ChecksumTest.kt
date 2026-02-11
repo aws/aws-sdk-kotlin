@@ -72,7 +72,6 @@ class S3ChecksumTest {
         }
     }
 
-    // TODO This test is not actually aws-chunked encoded?
     @Test
     fun testPutObjectAwsChunkedEncoded() = runBlocking {
         val testKey = testKey()
