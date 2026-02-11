@@ -4,14 +4,10 @@
  */
 package aws.sdk.kotlin.e2etest
 
-import aws.sdk.kotlin.e2etest.S3TestUtils.deleteBucketAndAllContents
 import aws.sdk.kotlin.e2etest.S3TestUtils.getAccountId
 import aws.sdk.kotlin.e2etest.S3TestUtils.getBucketWithPrefix
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.deleteObject
-import aws.sdk.kotlin.services.s3.model.ExpirationStatus
-import aws.sdk.kotlin.services.s3.model.LifecycleRule
-import aws.sdk.kotlin.services.s3.putBucketLifecycleConfiguration
 import aws.sdk.kotlin.services.s3.putObject
 import aws.sdk.kotlin.services.s3.withConfig
 import aws.sdk.kotlin.services.s3control.S3ControlClient
@@ -45,7 +41,6 @@ class MutliRegionAccessPointTest {
 
     private lateinit var accountId: String
     private lateinit var multiRegionAccessPointArn: String
-    private lateinit var multiRegionAccessPointName: String
     private lateinit var usWestBucket: String
     private lateinit var usEastBucket: String
 
@@ -68,7 +63,7 @@ class MutliRegionAccessPointTest {
 
     @AfterTest
     fun cleanup() = runBlocking {
-        s3Control.deleteMultiRegionAccessPoint(multiRegionAccessPointName, accountId)
+        s3Control.deleteMultiRegionAccessPoint(MULTI_REGION_ACCESS_POINT_NAME, accountId)
 
         s3West.close()
         s3East.close()
