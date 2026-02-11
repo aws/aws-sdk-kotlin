@@ -40,6 +40,9 @@ object S3TestUtils {
     private var sharedBucket: String? = null
     private val bucketMutex = Mutex()
 
+    private val sharedDirectoryBuckets: MutableMap<String, String> = mutableMapOf()
+    private val directoryBucketMutex = Mutex()
+
     suspend fun getOrCreateSharedBucket(client: S3Client, region: String = DEFAULT_REGION): String =
         sharedBucket ?: bucketMutex.withLock {
             sharedBucket ?: getTestBucket(client, region).also { sharedBucket = it }
@@ -48,6 +51,25 @@ object S3TestUtils {
     suspend fun cleanupSharedBucket(client: S3Client) {
         sharedBucket?.let { bucket ->
             deleteBucketContents(client, bucket)
+        }
+    }
+
+    suspend fun getOrCreateSharedDirectoryBuckets(client: S3Client, suffix: String): List<String> =
+        directoryBucketMutex.withLock {
+            (0 until 3).map { index ->
+                val key = "$suffix:$index"
+                sharedDirectoryBuckets[key] ?: getTestDirectoryBucket(client, suffix).also {
+                    sharedDirectoryBuckets[key] = it
+                }
+            }
+        }
+
+    suspend fun cleanupSharedDirectoryBuckets(client: S3Client, suffix: String) {
+        (0 until 3).forEach { index ->
+            val key = "$suffix:$index"
+            sharedDirectoryBuckets[key]?.let { bucket ->
+                deleteBucketContents(client, bucket)
+            }
         }
     }
 
@@ -144,7 +166,24 @@ object S3TestUtils {
                     }
                 }
             }
+        } else {
+            println("Using existing S3 Express directory bucket: $testBucket")
         }
+
+        client.putBucketLifecycleConfiguration {
+            bucket = testBucket
+            lifecycleConfiguration {
+                rules = listOf(
+                    LifecycleRule {
+                        expiration { days = 1 }
+                        filter { this.prefix = "" }
+                        status = ExpirationStatus.Enabled
+                        id = "delete-old"
+                    },
+                )
+            }
+        }
+
         testBucket
     }
 
