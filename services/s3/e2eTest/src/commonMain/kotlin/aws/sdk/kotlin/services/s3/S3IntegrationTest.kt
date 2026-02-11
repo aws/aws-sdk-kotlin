@@ -38,12 +38,8 @@ class S3BucketOpsIntegrationTest {
 
     @AfterTest
     fun cleanup() = runBlocking {
-        try {
-            S3TestUtils.cleanupSharedBucket(client)
-            client.close()
-        } catch (e: Exception) {
-            throw e
-        }
+        S3TestUtils.cleanupSharedBucket(client)
+        client.close()
     }
 
     @Test

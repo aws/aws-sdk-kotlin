@@ -255,18 +255,6 @@ object S3TestUtils {
 
         return checkNotNull(accountId) { "Unable to get AWS account ID" }
     }
-
-    internal suspend fun deleteMultiPartUploads(client: S3Client, bucketName: String) {
-        client.listMultipartUploads {
-            bucket = bucketName
-        }.uploads?.forEach { upload ->
-            client.abortMultipartUpload {
-                bucket = bucketName
-                key = upload.key
-                uploadId = upload.uploadId
-            }
-        }
-    }
 }
 
 

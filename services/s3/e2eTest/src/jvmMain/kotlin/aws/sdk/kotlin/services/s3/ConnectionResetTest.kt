@@ -31,12 +31,12 @@ class ConnectionResetTest {
 
     @BeforeTest
     fun createResources() = runBlocking {
-        testBucket = S3TestUtils.getTestBucket(client)
+        testBucket = S3TestUtils.getOrCreateSharedBucket(client)
     }
 
     @AfterTest
     fun cleanup() = runBlocking {
-        S3TestUtils.deleteBucketAndAllContents(client, testBucket)
+        S3TestUtils.cleanupSharedBucket(client)
     }
 
     @Test
