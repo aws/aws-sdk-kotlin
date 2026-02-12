@@ -20,12 +20,12 @@ import aws.smithy.kotlin.runtime.auth.awssigning.AwsSigner
 import aws.smithy.kotlin.runtime.auth.awssigning.DefaultAwsSigner
 import aws.smithy.kotlin.runtime.auth.awssigning.crt.CrtAwsSigner
 import aws.smithy.kotlin.runtime.http.auth.SigV4AsymmetricAuthScheme
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Ignore
+import kotlin.jvm.JvmStatic
 import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -36,39 +36,42 @@ private const val MULTI_REGION_ACCESS_POINT_NAME = "aws-sdk-for-kotlin-test-mult
 private const val TEST_OBJECT_KEY = "test.txt"
 
 class MutliRegionAccessPointTest {
-    private lateinit var s3West: S3Client
-    private lateinit var s3East: S3Client
-    private lateinit var s3Control: S3ControlClient
+    companion object {
+        private lateinit var s3West: S3Client
+        private lateinit var s3East: S3Client
+        private lateinit var s3Control: S3ControlClient
+        private lateinit var accountId: String
+        private lateinit var multiRegionAccessPointArn: String
+        private lateinit var usWestBucket: String
+        private lateinit var usEastBucket: String
 
-    private lateinit var accountId: String
-    private lateinit var multiRegionAccessPointArn: String
-    private lateinit var usWestBucket: String
-    private lateinit var usEastBucket: String
+        @BeforeAll
+        @JvmStatic
+        fun setup() = runBlocking {
+            s3West = S3Client { region = "us-west-2" }
+            s3East = S3Client { region = "us-east-2" }
+            s3Control = S3ControlClient { region = "us-west-2" }
 
-    @BeforeTest
-    fun setup() = runBlocking {
-        s3West = S3Client { region = "us-west-2" }
-        s3East = S3Client { region = "us-east-2" }
-        s3Control = S3ControlClient { region = "us-west-2" }
+            accountId = getAccountId()
+            usWestBucket = getBucketWithPrefix(s3West, MRAP_BUCKET_PREFIX, "us-west-2", accountId)
+            usEastBucket = getBucketWithPrefix(s3East, MRAP_BUCKET_PREFIX, "us-east-2", accountId)
 
-        accountId = getAccountId()
-        usWestBucket = getBucketWithPrefix(s3West, MRAP_BUCKET_PREFIX, "us-west-2", accountId)
-        usEastBucket = getBucketWithPrefix(s3East, MRAP_BUCKET_PREFIX, "us-east-2", accountId)
+            multiRegionAccessPointArn = s3Control.createMultiRegionAccessPoint(
+                MULTI_REGION_ACCESS_POINT_NAME,
+                accountId,
+                listOf(usWestBucket, usEastBucket),
+            )
+        }
 
-        multiRegionAccessPointArn = s3Control.createMultiRegionAccessPoint(
-            MULTI_REGION_ACCESS_POINT_NAME,
-            accountId,
-            listOf(usWestBucket, usEastBucket),
-        )
-    }
+        @AfterAll
+        @JvmStatic
+        fun cleanup() = runBlocking {
+            s3Control.deleteMultiRegionAccessPoint(MULTI_REGION_ACCESS_POINT_NAME, accountId)
 
-    @AfterTest
-    fun cleanup() = runBlocking {
-        s3Control.deleteMultiRegionAccessPoint(MULTI_REGION_ACCESS_POINT_NAME, accountId)
-
-        s3West.close()
-        s3East.close()
-        s3Control.close()
+            s3West.close()
+            s3East.close()
+            s3Control.close()
+        }
     }
 
     @Test
