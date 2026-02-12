@@ -43,10 +43,9 @@ object S3TestUtils {
     private val sharedDirectoryBuckets: MutableMap<String, String> = mutableMapOf()
     private val directoryBucketMutex = Mutex()
 
-    suspend fun getOrCreateSharedBucket(client: S3Client, region: String = DEFAULT_REGION): String =
-        sharedBucket ?: bucketMutex.withLock {
-            sharedBucket ?: getTestBucket(client, region).also { sharedBucket = it }
-        }
+    suspend fun getOrCreateSharedBucket(client: S3Client, region: String = DEFAULT_REGION): String = sharedBucket ?: bucketMutex.withLock {
+        sharedBucket ?: getTestBucket(client, region).also { sharedBucket = it }
+    }
 
     suspend fun cleanupSharedBucket(client: S3Client) {
         sharedBucket?.let { bucket ->
@@ -54,15 +53,14 @@ object S3TestUtils {
         }
     }
 
-    suspend fun getOrCreateSharedDirectoryBuckets(client: S3Client, suffix: String): List<String> =
-        directoryBucketMutex.withLock {
-            (0 until 3).map { index ->
-                val key = "$suffix:$index"
-                sharedDirectoryBuckets[key] ?: getTestDirectoryBucket(client, suffix).also {
-                    sharedDirectoryBuckets[key] = it
-                }
+    suspend fun getOrCreateSharedDirectoryBuckets(client: S3Client, suffix: String): List<String> = directoryBucketMutex.withLock {
+        (0 until 3).map { index ->
+            val key = "$suffix:$index"
+            sharedDirectoryBuckets[key] ?: getTestDirectoryBucket(client, suffix).also {
+                sharedDirectoryBuckets[key] = it
             }
         }
+    }
 
     suspend fun cleanupSharedDirectoryBuckets(client: S3Client, suffix: String) {
         (0 until 3).forEach { index ->
@@ -237,7 +235,7 @@ object S3TestUtils {
             method = HttpMethod.PUT,
             url = presignedRequest.url,
             headers = presignedRequest.headers,
-            body = HttpBody.fromBytes(content.encodeToByteArray())
+            body = HttpBody.fromBytes(content.encodeToByteArray()),
         )
 
         val call = SdkHttpClient(engine).call(request)
@@ -256,5 +254,3 @@ object S3TestUtils {
         return checkNotNull(accountId) { "Unable to get AWS account ID" }
     }
 }
-
-

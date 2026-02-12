@@ -158,7 +158,6 @@ class S3ChecksumTest {
         file.delete()
     }
 
-
     @Test
     fun testPresignedUrlNoDefault() = runBlocking {
         val contents = "presign-test"

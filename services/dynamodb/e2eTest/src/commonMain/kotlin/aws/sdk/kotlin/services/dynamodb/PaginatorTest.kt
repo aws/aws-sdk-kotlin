@@ -23,7 +23,7 @@ class PaginatorTest {
     @BeforeTest
     fun setUp() = runBlocking {
         client = DynamoDbClient { region = "us-west-2" }
-        
+
         if (!client.tableExists(table)) {
             client.createTable {
                 tableName = table
@@ -74,48 +74,48 @@ class PaginatorTest {
     fun scanPaginatedRespectsExclusiveStartKey() = runBlocking {
         withTimeout(20.seconds) {
             client.putItem {
-            tableName = table
-            item = mapOf(
-                "Artist" to AttributeValue.S("Foo"),
-                "SongTitle" to AttributeValue.S("Bar"),
-            )
-        }
-
-        client.putItem {
-            tableName = table
-            item = mapOf(
-                "Artist" to AttributeValue.S("Foo"),
-                "SongTitle" to AttributeValue.S("Baz"),
-            )
-        }
-
-        client.putItem {
-            tableName = table
-            item = mapOf(
-                "Artist" to AttributeValue.S("Foo"),
-                "SongTitle" to AttributeValue.S("Qux"),
-            )
-        }
-
-        val results = mutableListOf<Map<String, AttributeValue>?>()
-
-        client.scanPaginated {
-            tableName = table
-            exclusiveStartKey = mapOf(
-                "Artist" to AttributeValue.S("Foo"),
-                "SongTitle" to AttributeValue.S("Bar"),
-            )
-            limit = 1
-        }.collect { scan ->
-            if (scan.items?.isNotEmpty() == true) {
-                results.add(scan.items.single())
+                tableName = table
+                item = mapOf(
+                    "Artist" to AttributeValue.S("Foo"),
+                    "SongTitle" to AttributeValue.S("Bar"),
+                )
             }
-        }
 
-        assertEquals(2, results.size)
-        // NOTE: Items are returned in alphabetical order
-        assertEquals((AttributeValue.S("Baz")), results[0]?.get("SongTitle"))
-        assertEquals((AttributeValue.S("Qux")), results[1]?.get("SongTitle"))
+            client.putItem {
+                tableName = table
+                item = mapOf(
+                    "Artist" to AttributeValue.S("Foo"),
+                    "SongTitle" to AttributeValue.S("Baz"),
+                )
+            }
+
+            client.putItem {
+                tableName = table
+                item = mapOf(
+                    "Artist" to AttributeValue.S("Foo"),
+                    "SongTitle" to AttributeValue.S("Qux"),
+                )
+            }
+
+            val results = mutableListOf<Map<String, AttributeValue>?>()
+
+            client.scanPaginated {
+                tableName = table
+                exclusiveStartKey = mapOf(
+                    "Artist" to AttributeValue.S("Foo"),
+                    "SongTitle" to AttributeValue.S("Bar"),
+                )
+                limit = 1
+            }.collect { scan ->
+                if (scan.items?.isNotEmpty() == true) {
+                    results.add(scan.items.single())
+                }
+            }
+
+            assertEquals(2, results.size)
+            // NOTE: Items are returned in alphabetical order
+            assertEquals((AttributeValue.S("Baz")), results[0]?.get("SongTitle"))
+            assertEquals((AttributeValue.S("Qux")), results[1]?.get("SongTitle"))
         }
     }
 }

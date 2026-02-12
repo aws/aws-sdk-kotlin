@@ -18,7 +18,7 @@ private const val FRAMES_PER_CHUNK = 4096
 actual fun loadAudioStream(): Flow<AudioStream> {
     val url = object {}.javaClass.classLoader.getResource("hello-kotlin-8000.wav") ?: error("failed to load test resource")
     val audioFile = Paths.get(url.toURI()).toFile()
-    
+
     val format = AudioSystem.getAudioFileFormat(audioFile)
     val ais = AudioSystem.getAudioInputStream(audioFile)
     val bytesPerFrame = ais.format.frameSize

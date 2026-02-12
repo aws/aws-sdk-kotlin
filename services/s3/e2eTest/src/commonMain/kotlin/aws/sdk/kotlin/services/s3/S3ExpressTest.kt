@@ -24,20 +24,20 @@ import kotlin.time.Duration.Companion.minutes
 class S3ExpressTest {
     companion object {
         private lateinit var client: S3Client
-        private const val suffix = "--usw2-az1--x-s3"
+        private const val S3_EXPRESS_BUCKET_SUFFIX = "--usw2-az1--x-s3"
         private lateinit var testBuckets: List<String>
 
         @BeforeAll
         @JvmStatic
         fun setup() = runBlocking {
             client = S3Client { region = S3TestUtils.DEFAULT_REGION }
-            testBuckets = S3TestUtils.getOrCreateSharedDirectoryBuckets(client, suffix)
+            testBuckets = S3TestUtils.getOrCreateSharedDirectoryBuckets(client, S3_EXPRESS_BUCKET_SUFFIX)
         }
 
         @AfterAll
         @JvmStatic
         fun cleanup() = runBlocking {
-            S3TestUtils.cleanupSharedDirectoryBuckets(client, suffix)
+            S3TestUtils.cleanupSharedDirectoryBuckets(client, S3_EXPRESS_BUCKET_SUFFIX)
             client.close()
         }
     }
@@ -97,7 +97,7 @@ class S3ExpressTest {
 
     @Test
     fun testChecksums(): Unit = runBlocking {
-        val bucketName = testBuckets.first()  // only need one bucket for this test
+        val bucketName = testBuckets.first() // only need one bucket for this test
 
         val keysToDelete = listOf("checksums.txt", "delete-me.txt", "dont-forget-about-me.txt")
         keysToDelete.forEach {

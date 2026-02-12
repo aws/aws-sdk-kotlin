@@ -16,7 +16,7 @@ kotlin {
                 api(libs.smithy.kotlin.http.client.engine.crt)
             }
         }
-        
+
         jvmMain {
             dependencies {
                 api(libs.smithy.kotlin.http.client.engine.default)

@@ -283,7 +283,7 @@ class S3BucketOpsIntegrationTest {
             // JVM error message contains the host, Native error message is generic DNS error
             assertTrue(
                 ex.message!!.contains(expectedHost) || ex.message!!.contains("Host name was invalid for dns resolution"),
-                "Expected error message to contain either '$expectedHost' or 'Host name was invalid for dns resolution', but got: ${ex.message}"
+                "Expected error message to contain either '$expectedHost' or 'Host name was invalid for dns resolution', but got: ${ex.message}",
             )
         }
     }
@@ -304,10 +304,9 @@ class S3BucketOpsIntegrationTest {
     }
 }
 
-internal fun ByteArray.chunk(partSize: Int): Sequence<ByteArray> = 
-    (0 until size step partSize).asSequence().map { start ->
-        copyOfRange(start, minOf(start + partSize, size))
-    }
+internal fun ByteArray.chunk(partSize: Int): Sequence<ByteArray> = (0 until size step partSize).asSequence().map { start ->
+    copyOfRange(start, minOf(start + partSize, size))
+}
 
 internal suspend fun s3WithAllEngines(block: suspend (S3Client) -> Unit) {
     withAllEngines { engine ->

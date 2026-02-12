@@ -77,7 +77,6 @@ class KinesisSubscribeToShardTest {
                         }
                     },
                 ) {
-
                     val event = it.eventStream?.first()
                     println("Got an event! $event")
                     val record = event?.asSubscribeToShardEvent()?.records?.single()
