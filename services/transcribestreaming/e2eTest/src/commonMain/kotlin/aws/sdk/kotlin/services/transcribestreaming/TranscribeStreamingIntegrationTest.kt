@@ -7,13 +7,14 @@ package aws.sdk.kotlin.e2etest
 import aws.sdk.kotlin.services.transcribestreaming.TranscribeStreamingClient
 import aws.sdk.kotlin.services.transcribestreaming.model.*
 import aws.smithy.kotlin.runtime.io.use
+import aws.smithy.kotlin.runtime.testing.IgnoreNative
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class TranscribeStreamingIntegrationTest {
-
+    @IgnoreNative // FIXME Implement native bidirectional streaming in CRT
     @Test
     fun testTranscribeEventStream() = runTest {
         TranscribeStreamingClient { region = "us-west-2" }.use { client ->
