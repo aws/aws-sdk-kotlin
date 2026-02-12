@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.6.16] - 02/12/2026
+
+### Features
+* (**ec2**) Launching nested virtualization. This feature allows you to run nested VMs inside virtual (non-bare metal) EC2 instances.
+
 ## [1.6.15] - 02/11/2026
 
 ### Features

@@ -16728,6 +16728,14 @@
                         "smithy.api#documentation": "<p>Indicates whether the instance is enabled for AMD SEV-SNP. For more information, see \n            <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP</a>.</p>",
                         "smithy.api#xmlName": "amdSevSnp"
                     }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NestedVirtualization",
+                        "smithy.api#documentation": "<p>Indicates whether the instance is enabled for nested virtualization.</p>",
+                        "smithy.api#xmlName": "nestedVirtualization"
+                    }
                 }
             },
             "traits": {
@@ -16753,6 +16761,12 @@
                     "target": "com.amazonaws.ec2#AmdSevSnpSpecification",
                     "traits": {
                         "smithy.api#documentation": "<p>Indicates whether to enable the instance for AMD SEV-SNP. AMD SEV-SNP is supported \n            with M6a, R6a, and C6a instance types only. For more information, see \n            <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP</a>.</p>"
+                    }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to enable the instance for nested virtualization.\n            Nested virtualization is supported only on 8th generation Intel-based instance types (c8i, m8i, r8i, and their flex variants).\n            When nested virtualization is enabled, Virtual Secure Mode (VSM) is automatically disabled for the instance.</p>"
                     }
                 }
             },
@@ -89222,6 +89236,14 @@
                         "smithy.api#documentation": "<p>Indicates whether the instance is enabled for AMD SEV-SNP. For more information, see\n                <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP\n                for Amazon EC2 instances</a>.</p>",
                         "smithy.api#xmlName": "amdSevSnp"
                     }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NestedVirtualization",
+                        "smithy.api#documentation": "<p>Indicates whether the instance is enabled for nested virtualization. </p>",
+                        "smithy.api#xmlName": "nestedVirtualization"
+                    }
                 }
             },
             "traits": {
@@ -89247,6 +89269,12 @@
                     "target": "com.amazonaws.ec2#AmdSevSnpSpecification",
                     "traits": {
                         "smithy.api#documentation": "<p>Indicates whether to enable the instance for AMD SEV-SNP. AMD SEV-SNP is supported\n            with M6a, R6a, and C6a instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP for\n                Amazon EC2 instances</a>.</p>"
+                    }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to enable the instance for nested virtualization.\n            Nested virtualization is supported only on 8th generation Intel-based instance types (c8i, m8i, r8i, and their flex variants).\n            When nested virtualization is enabled, Virtual Secure Mode (VSM) is automatically disabled for the instance.</p>"
                     }
                 }
             },
@@ -95447,17 +95475,19 @@
                 "CoreCount": {
                     "target": "com.amazonaws.ec2#Integer",
                     "traits": {
-                        "smithy.api#clientOptional": {},
-                        "smithy.api#documentation": "<p>The number of CPU cores to activate for the specified instance.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The number of CPU cores to activate for the specified instance.</p>"
                     }
                 },
                 "ThreadsPerCore": {
                     "target": "com.amazonaws.ec2#Integer",
                     "traits": {
-                        "smithy.api#clientOptional": {},
-                        "smithy.api#documentation": "<p>The number of threads to run for each CPU core.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The number of threads to run for each CPU core.</p>"
+                    }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to enable or disable nested virtualization for the instance.\n            When nested virtualization is enabled, Virtual Secure Mode (VSM) is automatically disabled for the instance.</p>"
                     }
                 },
                 "DryRun": {
@@ -95496,6 +95526,14 @@
                         "aws.protocols#ec2QueryName": "ThreadsPerCore",
                         "smithy.api#documentation": "<p>The number of threads that are running per CPU core for the specified \n\t\t\tinstance after the update.</p>",
                         "smithy.api#xmlName": "threadsPerCore"
+                    }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NestedVirtualization",
+                        "smithy.api#documentation": "<p>Indicates whether nested virtualization has been enabled or disabled.</p>",
+                        "smithy.api#xmlName": "nestedVirtualization"
                     }
                 }
             },
@@ -101613,6 +101651,23 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Describes the OpenID Connect (OIDC) options.</p>"
+            }
+        },
+        "com.amazonaws.ec2#NestedVirtualizationSpecification": {
+            "type": "enum",
+            "members": {
+                "enabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                },
+                "disabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
+                }
             }
         },
         "com.amazonaws.ec2#NetmaskLength": {
@@ -123500,6 +123555,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "amd-sev-snp"
+                    }
+                },
+                "NESTED_VIRTUALIZATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "nested-virtualization"
                     }
                 }
             }
