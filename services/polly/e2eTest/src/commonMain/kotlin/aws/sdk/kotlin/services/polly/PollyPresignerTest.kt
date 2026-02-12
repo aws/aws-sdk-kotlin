@@ -11,6 +11,7 @@ import aws.sdk.kotlin.services.polly.presigners.presignSynthesizeSpeech
 import aws.sdk.kotlin.testing.withAllEngines
 import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,7 +22,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 class PollyPresignerTest {
     @Test
-    fun clientBasedPresign() = runTest {
+    fun clientBasedPresign() = runBlocking {
         val unsignedRequest = SynthesizeSpeechRequest {
             voiceId = VoiceId.Salli
             outputFormat = OutputFormat.Pcm
