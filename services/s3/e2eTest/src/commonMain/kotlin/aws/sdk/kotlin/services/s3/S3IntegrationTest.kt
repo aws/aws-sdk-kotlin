@@ -288,7 +288,6 @@ class S3BucketOpsIntegrationTest {
         }
     }
 
-    @Ignore
     @Test
     fun testHeadObjectForbidden() = runBlocking {
         val ex = assertFailsWith<S3Exception> {
