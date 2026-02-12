@@ -8,6 +8,7 @@ import aws.sdk.kotlin.services.cloudwatchlogs.model.GetLogEventsResponse
 import aws.sdk.kotlin.services.cloudwatchlogs.model.InputLogEvent
 import aws.sdk.kotlin.services.cloudwatchlogs.model.OutputLogEvent
 import aws.sdk.kotlin.services.cloudwatchlogs.paginators.getLogEventsPaginated
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.epochMilliseconds
 import aws.smithy.kotlin.runtime.util.Uuid
@@ -32,8 +33,7 @@ private const val MAX_SEQUENTIAL_EMPTY_PAGES = 5
 class GetLogEventsPaginatorTest {
     @Test
     fun testGetLogEventsPagination() = runTest {
-        val cwl = CloudWatchLogsClient.fromEnvironment()
-        try {
+        CloudWatchLogsClient.fromEnvironment().use { cwl ->
             val (group, stream) = cwl.createLogGroupStream()
 
             try {
@@ -50,8 +50,6 @@ class GetLogEventsPaginatorTest {
             } finally {
                 cwl.deleteLogGroupStream(group, stream)
             }
-        } finally {
-            cwl.close()
         }
     }
 }
