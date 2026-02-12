@@ -10,26 +10,36 @@ import aws.sdk.kotlin.services.s3.model.*
 import aws.sdk.kotlin.services.s3.presigners.presignPutObject
 import aws.smithy.kotlin.runtime.content.*
 import aws.smithy.kotlin.runtime.hashing.crc32
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.RandomTempFile
 import kotlinx.coroutines.runBlocking
+import kotlin.jvm.JvmStatic
 import kotlin.random.Random
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
 class S3ChecksumTest {
-    private val client = S3Client { region = "us-west-2" }
-    private lateinit var testBucket: String
+    companion object {
+        private lateinit var client: S3Client
+        private lateinit var testBucket: String
+
+        @BeforeAll
+        @JvmStatic
+        fun setup() = runBlocking {
+            client = S3Client { region = S3TestUtils.DEFAULT_REGION }
+            testBucket = S3TestUtils.getOrCreateSharedBucket(client, "us-west-2")
+        }
+
+        @AfterAll
+        @JvmStatic
+        fun cleanup() = runBlocking {
+            S3TestUtils.cleanupSharedBucket(client)
+            client.close()
+        }
+    }
+
     private fun testKey(): String = "test-object${Random.nextInt()}"
-
-    @BeforeTest
-    fun setUp() = runBlocking {
-        testBucket = S3TestUtils.getOrCreateSharedBucket(client, "us-west-2")
-    }
-
-    @AfterTest
-    fun cleanUp() = runBlocking {
-        S3TestUtils.cleanupSharedBucket(client)
-    }
 
     @Test
     fun testPutObject() = runBlocking {

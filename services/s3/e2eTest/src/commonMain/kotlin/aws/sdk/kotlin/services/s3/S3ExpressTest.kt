@@ -14,23 +14,32 @@ import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.io.use
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.runBlocking
+import kotlin.jvm.JvmStatic
 import kotlin.test.*
 import kotlin.time.Duration.Companion.minutes
 
 class S3ExpressTest {
-    private val client = S3Client { region = S3TestUtils.DEFAULT_REGION }
-    private val suffix = "--usw2-az1--x-s3"
-    private lateinit var testBuckets: List<String>
+    companion object {
+        private lateinit var client: S3Client
+        private const val suffix = "--usw2-az1--x-s3"
+        private lateinit var testBuckets: List<String>
 
-    @BeforeTest
-    fun setup() = runBlocking {
-        testBuckets = S3TestUtils.getOrCreateSharedDirectoryBuckets(client, suffix)
-    }
+        @BeforeAll
+        @JvmStatic
+        fun setup() = runBlocking {
+            client = S3Client { region = S3TestUtils.DEFAULT_REGION }
+            testBuckets = S3TestUtils.getOrCreateSharedDirectoryBuckets(client, suffix)
+        }
 
-    @AfterTest
-    fun cleanup() = runBlocking {
-        S3TestUtils.cleanupSharedDirectoryBuckets(client, suffix)
+        @AfterAll
+        @JvmStatic
+        fun cleanup() = runBlocking {
+            S3TestUtils.cleanupSharedDirectoryBuckets(client, suffix)
+            client.close()
+        }
     }
 
     @Test

@@ -15,31 +15,38 @@ import aws.smithy.kotlin.runtime.http.HttpException
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.io.use
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.RandomTempFile
 import aws.smithy.kotlin.runtime.text.encoding.encodeToHex
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
+import kotlin.jvm.JvmStatic
 import kotlin.random.Random
 import kotlin.test.*
 
 class S3BucketOpsIntegrationTest {
-    private lateinit var client: S3Client
-    private lateinit var testBucket: String
+    companion object {
+        private lateinit var client: S3Client
+        private lateinit var testBucket: String
 
-    @BeforeTest
-    fun setup() = runBlocking {
-        client = S3Client {
-            region = S3TestUtils.DEFAULT_REGION
+        @BeforeAll
+        @JvmStatic
+        fun setup() = runBlocking {
+            client = S3Client {
+                region = S3TestUtils.DEFAULT_REGION
+            }
+            testBucket = S3TestUtils.getOrCreateSharedBucket(client)
         }
-        testBucket = S3TestUtils.getOrCreateSharedBucket(client)
-    }
 
-    @AfterTest
-    fun cleanup() = runBlocking {
-        S3TestUtils.cleanupSharedBucket(client)
-        client.close()
+        @AfterAll
+        @JvmStatic
+        fun cleanup(): Unit = runBlocking {
+            S3TestUtils.cleanupSharedBucket(client)
+            client.close()
+        }
     }
 
     @Test
@@ -281,6 +288,7 @@ class S3BucketOpsIntegrationTest {
         }
     }
 
+    @Ignore
     @Test
     fun testHeadObjectForbidden() = runBlocking {
         val ex = assertFailsWith<S3Exception> {

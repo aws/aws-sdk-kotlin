@@ -11,31 +11,37 @@ import aws.sdk.kotlin.services.s3.model.CompletedPart
 import aws.sdk.kotlin.services.s3.paginators.listPartsPaginated
 import aws.sdk.kotlin.services.s3.uploadPart
 import aws.smithy.kotlin.runtime.content.ByteStream
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
+import kotlin.jvm.JvmStatic
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.time.Duration.Companion.seconds
 
 class PaginatorTest {
-    private val client = S3Client {
-        region = S3TestUtils.DEFAULT_REGION
-    }
+    companion object {
+        private lateinit var client: S3Client
+        private lateinit var testBucket: String
 
-    private lateinit var testBucket: String
+        @BeforeAll
+        @JvmStatic
+        fun setups() = runBlocking {
+            client = S3Client {
+                region = S3TestUtils.DEFAULT_REGION
+            }
+            testBucket = S3TestUtils.getOrCreateSharedBucket(client)
+        }
 
-    @BeforeTest
-    fun createResources() = runBlocking {
-        testBucket = S3TestUtils.getOrCreateSharedBucket(client)
-    }
-
-    @AfterTest
-    fun cleanup() = runBlocking {
-        S3TestUtils.cleanupSharedBucket(client)
+        @AfterAll
+        @JvmStatic
+        fun cleanup() = runBlocking {
+            S3TestUtils.cleanupSharedBucket(client)
+            client.close()
+        }
     }
 
     // ListParts has a strange pagination termination condition via [IsTerminated]. Verify it actually works correctly.

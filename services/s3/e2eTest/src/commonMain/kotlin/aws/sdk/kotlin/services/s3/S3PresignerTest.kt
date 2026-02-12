@@ -19,31 +19,34 @@ import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
 import aws.smithy.kotlin.runtime.http.toByteStream
 import aws.smithy.kotlin.runtime.io.use
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.runBlocking
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Ignore
+import kotlin.jvm.JvmStatic
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
 class S3PresignerTest {
-    private lateinit var client: S3Client
-    private lateinit var testBucket: String
+    companion object {
+        private lateinit var client: S3Client
+        private lateinit var testBucket: String
 
-    @BeforeTest
-    fun createResources() = runBlocking {
-        client = S3Client {
-            region = S3TestUtils.DEFAULT_REGION
+        @BeforeAll
+        @JvmStatic
+        fun setup() = runBlocking {
+            client = S3Client {
+                region = S3TestUtils.DEFAULT_REGION
+            }
+            testBucket = S3TestUtils.getOrCreateSharedBucket(client)
         }
-        testBucket = S3TestUtils.getOrCreateSharedBucket(client)
-    }
 
-    @AfterTest
-    fun cleanup() = runBlocking {
-        S3TestUtils.cleanupSharedBucket(client)
-        client.close()
-        kotlinx.coroutines.delay(100)
+        @AfterAll
+        @JvmStatic
+        fun cleanup(): Unit = runBlocking {
+            S3TestUtils.cleanupSharedBucket(client)
+            client.close()
+        }
     }
 
     private suspend fun testPresign(client: S3Client) {
