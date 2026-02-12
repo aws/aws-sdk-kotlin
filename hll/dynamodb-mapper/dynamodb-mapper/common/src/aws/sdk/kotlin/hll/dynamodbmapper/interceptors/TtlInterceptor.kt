@@ -5,6 +5,7 @@
 
 package aws.sdk.kotlin.hll.dynamodbmapper.interceptors
 
+import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.model.SchemaAttributes
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
@@ -17,9 +18,9 @@ import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest as LowLevelPutItemR
  */
 public class TtlInterceptor<T>(
     private val clock: Clock = Clock.System,
-) : Interceptor<T, Any, Any, Any, Any> {
+) : Interceptor<T, ItemSchema<T>, Any, Any, Any, Any> {
 
-    override fun modifyBeforeInvocation(ctx: LReqContext<T, Any, Any>): Any {
+    override fun modifyBeforeInvocation(ctx: LReqContext<T, ItemSchema<T>, Any, Any>): Any {
         val ttlFields = ctx.serializeSchema.attributes.getOrNull(SchemaAttributes.TtlFields) ?: return ctx.lowLevelRequest
 
         return when (val request = ctx.lowLevelRequest) {

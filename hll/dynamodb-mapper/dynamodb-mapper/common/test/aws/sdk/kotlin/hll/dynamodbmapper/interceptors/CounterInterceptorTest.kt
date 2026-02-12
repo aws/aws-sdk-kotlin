@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.interceptors
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaPartitionKeyImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
@@ -106,7 +107,10 @@ class CounterInterceptorTest {
         }
     }
 
-    private fun createContext(lowLevelRequest: Any, counterFields: Set<String>?): LReqContext<String, Any, Any> {
+    private fun createContext(
+        lowLevelRequest: Any,
+        counterFields: Set<String>?,
+    ): LReqContext<String, ItemSchema<String>, Any, Any> {
         val attributes = attributesOf {
             counterFields?.let { SchemaAttributes.CounterFields to it }
         }

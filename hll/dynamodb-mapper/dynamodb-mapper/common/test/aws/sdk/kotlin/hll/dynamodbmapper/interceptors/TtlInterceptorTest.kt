@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.interceptors
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaPartitionKeyImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
@@ -110,7 +111,10 @@ class TtlInterceptorTest {
         assertSame(request, result)
     }
 
-    private fun createTestContext(lowLevelRequest: Any, ttlFields: Set<Pair<String, Long>>): LReqContext<String, Any, Any> {
+    private fun createTestContext(
+        lowLevelRequest: Any,
+        ttlFields: Set<Pair<String, Long>>,
+    ): LReqContext<String, ItemSchema<String>, Any, Any> {
         val attributes = attributesOf {
             if (ttlFields.isNotEmpty()) {
                 SchemaAttributes.TtlFields to ttlFields
