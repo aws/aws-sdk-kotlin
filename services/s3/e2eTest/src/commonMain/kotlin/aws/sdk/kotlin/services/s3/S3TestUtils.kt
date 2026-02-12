@@ -207,7 +207,7 @@ object S3TestUtils {
         val scope = this
 
         try {
-            println("Deleting contents of S3 buckets: $bucketName")
+            println("Deleting contents of S3 bucket: $bucketName")
             val dispatcher = Dispatchers.Default.limitedParallelism(64)
             val jobs = mutableListOf<Job>()
 
