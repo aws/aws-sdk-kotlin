@@ -33,12 +33,14 @@ class KinesisSubscribeToShardTest {
 
     @BeforeTest
     fun setup(): Unit = runBlocking {
+        println("Setting up...")
         dataStreamArn = client.getOrCreateStream()
         dataStreamConsumerArn = client.getOrRegisterStreamConsumer()
     }
 
     @AfterTest
     fun cleanUp(): Unit = runBlocking {
+        println("Cleaning up...")
         client.deregisterStreamConsumer {
             streamArn = dataStreamArn
             consumerArn = dataStreamConsumerArn
@@ -55,14 +57,17 @@ class KinesisSubscribeToShardTest {
      */
     @Test
     fun testSubscribeToShard(): Unit = runBlocking {
+        println("testSubscribeToShard starting...")
         val dataStreamShardId = client.listShards {
             streamArn = dataStreamArn
         }.shards?.single()!!.shardId
+        println("Found stream shard ID: $dataStreamShardId")
 
         withAllEngines { engine ->
             client.withConfig {
                 httpClient = engine
             }.use { clientWithTestEngine ->
+                println("Subscribing to shard...")
                 clientWithTestEngine.subscribeToShard(
                     SubscribeToShardRequest {
                         consumerArn = dataStreamConsumerArn
@@ -72,7 +77,9 @@ class KinesisSubscribeToShardTest {
                         }
                     },
                 ) {
+
                     val event = it.eventStream?.first()
+                    println("Got an event! $event")
                     val record = event?.asSubscribeToShardEvent()?.records?.single()
                     assertEquals(TEST_DATA, record?.data?.decodeToString())
                 }
@@ -83,6 +90,7 @@ class KinesisSubscribeToShardTest {
                 delay(5.seconds)
             }
         }
+        println("testSubscribeToShard ending...")
     }
 
     /**
@@ -96,17 +104,21 @@ class KinesisSubscribeToShardTest {
         ?.streamArn ?: run {
         // Create a new data stream, then wait for it to be active
         val randomStreamName = STREAM_NAME_PREFIX + (0..Int.MAX_VALUE).random()
+        println("Creating a new stream: $randomStreamName")
         createStream {
             streamName = randomStreamName
             shardCount = 1
         }
 
+        println("Waiting until stream exists...")
         val newStreamArn = waitUntilStreamExists({ streamName = randomStreamName })
             .getOrThrow()
             .streamDescription!!
             .streamArn!!
+        println("New stream now exists: $newStreamArn ")
 
         // Put a record, then wait for it to appear on the stream
+        println("Putting a record on the stream...")
         putRecord {
             data = TEST_DATA.encodeToByteArray()
             streamArn = newStreamArn
@@ -116,12 +128,14 @@ class KinesisSubscribeToShardTest {
         val newStreamShardId = client.listShards {
             streamArn = newStreamArn
         }.shards?.single()!!.shardId
+        println("New stream's shard ID: $newStreamShardId")
 
         val currentShardIterator = getShardIterator {
             shardId = newStreamShardId
             shardIteratorType = ShardIteratorType.TrimHorizon
             streamArn = newStreamArn
         }.shardIterator!!
+        println("New stream's shard iterator: $currentShardIterator")
 
         waitForResource {
             getRecords {
@@ -145,11 +159,13 @@ class KinesisSubscribeToShardTest {
         // Register a new consumer and wait for it to be active
 
         val randomConsumerName = STREAM_CONSUMER_NAME_PREFIX + (0..Int.MAX_VALUE).random()
+        println("Registering a new stream consumer: $randomConsumerName")
         registerStreamConsumer {
             consumerName = randomConsumerName
             streamArn = dataStreamArn
         }
 
+        println("Waiting for consumer to become active")
         waitForResource {
             listStreamConsumers { streamArn = dataStreamArn }
                 ?.consumers
