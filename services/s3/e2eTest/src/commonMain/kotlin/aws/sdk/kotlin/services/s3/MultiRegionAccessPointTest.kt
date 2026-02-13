@@ -20,6 +20,7 @@ import aws.smithy.kotlin.runtime.auth.awssigning.AwsSigner
 import aws.smithy.kotlin.runtime.auth.awssigning.DefaultAwsSigner
 import aws.smithy.kotlin.runtime.auth.awssigning.crt.CrtAwsSigner
 import aws.smithy.kotlin.runtime.http.auth.SigV4AsymmetricAuthScheme
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.delay
@@ -85,18 +86,18 @@ class MutliRegionAccessPointTest {
     private suspend fun testMultiRegionAccessPointOperation(signer: AwsSigner) {
         println("Testing multi-region access point operations with $signer")
 
-        val s3SigV4a = s3West.withConfig {
+        s3West.withConfig {
             authSchemes = listOf(SigV4AsymmetricAuthScheme(signer))
-        }
+        }.use { s3SigV4a ->
+            s3SigV4a.putObject {
+                bucket = multiRegionAccessPointArn
+                key = TEST_OBJECT_KEY
+            }
 
-        s3SigV4a.putObject {
-            bucket = multiRegionAccessPointArn
-            key = TEST_OBJECT_KEY
-        }
-
-        s3SigV4a.deleteObject {
-            bucket = multiRegionAccessPointArn
-            key = TEST_OBJECT_KEY
+            s3SigV4a.deleteObject {
+                bucket = multiRegionAccessPointArn
+                key = TEST_OBJECT_KEY
+            }
         }
     }
 }
