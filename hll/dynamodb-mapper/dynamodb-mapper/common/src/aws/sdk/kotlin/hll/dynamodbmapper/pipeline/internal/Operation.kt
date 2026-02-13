@@ -9,7 +9,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemResponse
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.HReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
-import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
 import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
 import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
 
@@ -57,7 +56,7 @@ internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
         serialize: (HReq, S) -> LReq,
         lowLevelInvoke: suspend (LReq) -> LRes,
         deserialize: (LRes, S) -> HRes,
-        interceptors: Collection<InterceptorAny>,
+        interceptors: Collection<Interceptor<*, *, *, *, *, *>>,
     ) : this(
         initialize,
         serialize,

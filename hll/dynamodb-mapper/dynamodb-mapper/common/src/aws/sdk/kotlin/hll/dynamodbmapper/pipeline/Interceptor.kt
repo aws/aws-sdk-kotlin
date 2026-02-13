@@ -181,4 +181,4 @@ public interface Interceptor<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes> {
 /**
  * A universal interceptor which acts on any type of high-level objects, requests, and responses
  */
-public typealias InterceptorAny = Interceptor<*, *, *, *, *, *>
+public typealias InterceptorAny = Interceptor<Any, ItemSchema<Any>, Any, Any, Any, Any>

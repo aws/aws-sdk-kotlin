@@ -5,6 +5,8 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
+import aws.sdk.kotlin.hll.dynamodbmapper.interceptors.CounterInterceptor
+import aws.sdk.kotlin.hll.dynamodbmapper.interceptors.TtlInterceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.model.internal.tableImpl
@@ -38,7 +40,11 @@ internal data class MapperConfigImpl(
 }
 
 internal class MapperConfigBuilderImpl : DynamoDbMapper.Config.Builder {
-    override var interceptors = mutableListOf<InterceptorAny>()
+    override var interceptors = mutableListOf<InterceptorAny>(
+        // Default interceptors
+        TtlInterceptor(),
+        CounterInterceptor(),
+    )
 
     override fun build() = MapperConfigImpl(interceptors.toList())
 }

@@ -8,13 +8,12 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaPartitionKeyImpl
-import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.PersistenceSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.model.SchemaAttributes
 import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.MapperContext
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
+import aws.sdk.kotlin.hll.mapping.core.converters.Converter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
 import aws.smithy.kotlin.runtime.collections.attributesOf
@@ -27,7 +26,7 @@ class CounterInterceptorTest {
     @Test
     fun testCounterInterceptorIncrementsFields() {
         val counterFields = setOf("counter1", "counter2")
-        val interceptor = CounterInterceptor<String>()
+        val interceptor = CounterInterceptor()
 
         val request = PutItemRequest {
             tableName = "test-table"
@@ -51,7 +50,7 @@ class CounterInterceptorTest {
     @Test
     fun testCounterInterceptorInitializesZeroFields() {
         val counterFields = setOf("newCounter")
-        val interceptor = CounterInterceptor<String>()
+        val interceptor = CounterInterceptor()
 
         val request = PutItemRequest {
             tableName = "test-table"
@@ -66,7 +65,7 @@ class CounterInterceptorTest {
 
     @Test
     fun testCounterInterceptorNoCounterFields() {
-        val interceptor = CounterInterceptor<String>()
+        val interceptor = CounterInterceptor()
         val request = PutItemRequest {
             tableName = "test-table"
             item = mapOf("id" to AttributeValue.S("test"))
@@ -79,7 +78,7 @@ class CounterInterceptorTest {
 
     @Test
     fun testCounterInterceptorNonPutItemRequest() {
-        val interceptor = CounterInterceptor<String>()
+        val interceptor = CounterInterceptor()
         val otherRequest = "not a put item request"
         val ctx = createContext(otherRequest, setOf("counter"))
 
@@ -90,7 +89,7 @@ class CounterInterceptorTest {
     @Test
     fun testCounterInterceptorThrowsOnUnparseableData() {
         val counterFields = setOf("counter1")
-        val interceptor = CounterInterceptor<String>()
+        val interceptor = CounterInterceptor()
 
         val request = PutItemRequest {
             tableName = "test-table"
@@ -110,15 +109,12 @@ class CounterInterceptorTest {
     private fun createContext(
         lowLevelRequest: Any,
         counterFields: Set<String>?,
-    ): LReqContext<String, ItemSchema<String>, Any, Any> {
+    ): LReqContext<Any, ItemSchema<Any>, Any, Any> {
         val attributes = attributesOf {
             counterFields?.let { SchemaAttributes.CounterFields to it }
         }
 
-        val converter = object : ItemConverter<String> {
-            override val left = MonoConverter<Item, String> { "" }
-            override val right = MonoConverter<String, Item> { buildItem { } }
-        }
+        val converter: ItemConverter<Any> = Converter(right = { buildItem { } }, left = { "" })
 
         val schema = ItemSchemaPartitionKeyImpl(
             converter = converter,
@@ -126,8 +122,8 @@ class CounterInterceptorTest {
             attributes = attributes,
         )
 
-        val mapperContext = object : MapperContext<String> {
-            override val persistenceSpec: PersistenceSpec<String>
+        val mapperContext = object : MapperContext<Any> {
+            override val persistenceSpec: PersistenceSpec<Any>
                 get() = error("Not needed for test")
             override val operation: String
                 get() = error("Not needed for test")
