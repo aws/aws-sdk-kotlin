@@ -26,7 +26,7 @@ private val TEST_DATA = "Bees, bees, bees, bees!"
  * Tests for Kinesis SubscribeToShard (an RPC-bound protocol)
  */
 class KinesisSubscribeToShardTest {
-    private val client = KinesisClient { region = "us-east-1" }
+    private lateinit var client: KinesisClient
 
     private lateinit var dataStreamArn: String
     private lateinit var dataStreamConsumerArn: String
@@ -34,6 +34,7 @@ class KinesisSubscribeToShardTest {
     @BeforeTest
     fun setup(): Unit = runBlocking {
         println("Setting up...")
+        client = KinesisClient { region = "us-east-1" }
         dataStreamArn = client.getOrCreateStream()
         dataStreamConsumerArn = client.getOrRegisterStreamConsumer()
     }
@@ -49,6 +50,7 @@ class KinesisSubscribeToShardTest {
         client.deleteStream {
             streamArn = dataStreamArn
         }
+        client.close()
     }
 
     /**
