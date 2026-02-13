@@ -27,7 +27,7 @@ import kotlin.jvm.JvmStatic
 import kotlin.random.Random
 import kotlin.test.*
 
-class S3BucketOpsIntegrationTest {
+class S3IntegrationTest {
     companion object {
         private lateinit var client: S3Client
         private lateinit var testBucket: String
@@ -293,9 +293,11 @@ class S3BucketOpsIntegrationTest {
         val ex = assertFailsWith<S3Exception> {
             client.withConfig {
                 region = "us-east-1"
-            }.headObject {
-                bucket = "bucket"
-                key = "any-key.txt"
+            }.use { clientEast ->
+                clientEast.headObject {
+                    bucket = "bucket"
+                    key = "any-key.txt"
+                }
             }
         }
 
