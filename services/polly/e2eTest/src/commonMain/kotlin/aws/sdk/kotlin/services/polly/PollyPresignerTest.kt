@@ -11,8 +11,8 @@ import aws.sdk.kotlin.services.polly.presigners.presignSynthesizeSpeech
 import aws.sdk.kotlin.testing.withAllEngines
 import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
+import aws.smithy.kotlin.runtime.io.use
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
@@ -29,8 +29,9 @@ class PollyPresignerTest {
             text = "hello world"
         }
 
-        val client = PollyClient { region = "us-east-1" }
-        val presignedRequest = client.presignSynthesizeSpeech(unsignedRequest, 10.seconds)
+        val presignedRequest = PollyClient { region = "us-east-1" }.use { client ->
+             client.presignSynthesizeSpeech(unsignedRequest, 10.seconds)
+        }
 
         withAllEngines { engine ->
             val httpClient = SdkHttpClient(engine)
