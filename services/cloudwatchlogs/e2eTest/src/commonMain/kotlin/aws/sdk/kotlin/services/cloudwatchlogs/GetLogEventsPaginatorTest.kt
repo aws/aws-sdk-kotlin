@@ -32,7 +32,7 @@ private const val MAX_SEQUENTIAL_EMPTY_PAGES = 5
 
 class GetLogEventsPaginatorTest {
     @Test
-    fun testGetLogEventsPagination() = runTest {
+    fun testGetLogEventsPagination() = runBlocking {
         CloudWatchLogsClient.fromEnvironment().use { cwl ->
             val (group, stream) = cwl.createLogGroupStream()
 
