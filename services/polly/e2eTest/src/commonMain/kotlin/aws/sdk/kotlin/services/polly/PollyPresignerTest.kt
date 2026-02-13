@@ -30,7 +30,7 @@ class PollyPresignerTest {
         }
 
         val presignedRequest = PollyClient { region = "us-east-1" }.use { client ->
-             client.presignSynthesizeSpeech(unsignedRequest, 10.seconds)
+            client.presignSynthesizeSpeech(unsignedRequest, 10.seconds)
         }
 
         withAllEngines { engine ->
