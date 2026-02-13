@@ -9777,6 +9777,22 @@
                         "smithy.api#xmlName": "groupLongName"
                     }
                 },
+                "Geography": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneGeographyList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "GeographySet",
+                        "smithy.api#documentation": "<p>The geography information for the Availability Zone or Local Zone. The geography is returned as a list.</p>",
+                        "smithy.api#xmlName": "geographySet"
+                    }
+                },
+                "SubGeography": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneSubGeographyList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SubGeographySet",
+                        "smithy.api#documentation": "<p>The sub-geography information for the Availability Zone or Local Zone. The sub-geography is returned\n      as a list.</p>",
+                        "smithy.api#xmlName": "subGeographySet"
+                    }
+                },
                 "State": {
                     "target": "com.amazonaws.ec2#AvailabilityZoneState",
                     "traits": {
@@ -9823,6 +9839,31 @@
                 "target": "com.amazonaws.ec2#AvailabilityZoneAddress",
                 "traits": {
                     "smithy.api#xmlName": "AvailabilityZoneAddress"
+                }
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityZoneGeography": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Name",
+                        "smithy.api#documentation": "<p>The name of the geography, for example, <code>United States of America</code>.</p>",
+                        "smithy.api#xmlName": "name"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the geography information for an Availability Zone or Local Zone.</p>"
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityZoneGeographyList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#AvailabilityZoneGeography",
+                "traits": {
+                    "smithy.api#xmlName": "item"
                 }
             }
         },
@@ -9939,6 +9980,31 @@
                 "target": "com.amazonaws.ec2#String",
                 "traits": {
                     "smithy.api#xmlName": "AvailabilityZone"
+                }
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityZoneSubGeography": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Name",
+                        "smithy.api#documentation": "<p>The name of the sub-geography, for example, <code>Oregon.</code>\n         </p>",
+                        "smithy.api#xmlName": "name"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the sub-geography information for an Availability Zone or Local Zone.</p>"
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityZoneSubGeographyList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#AvailabilityZoneSubGeography",
+                "traits": {
+                    "smithy.api#xmlName": "item"
                 }
             }
         },
@@ -108036,6 +108102,14 @@
                         "smithy.api#xmlName": "optInStatus"
                     }
                 },
+                "Geography": {
+                    "target": "com.amazonaws.ec2#RegionGeographyList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "GeographySet",
+                        "smithy.api#documentation": "<p>The geography information for the Region. The geography is returned as a list.</p>",
+                        "smithy.api#xmlName": "geographySet"
+                    }
+                },
                 "RegionName": {
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
@@ -108055,6 +108129,31 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Describes a Region.</p>"
+            }
+        },
+        "com.amazonaws.ec2#RegionGeography": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Name",
+                        "smithy.api#documentation": "<p>The name of the geography, for example, <code>United States of America</code>.</p>",
+                        "smithy.api#xmlName": "name"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the geography information for a Region.</p>"
+            }
+        },
+        "com.amazonaws.ec2#RegionGeographyList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#RegionGeography",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
             }
         },
         "com.amazonaws.ec2#RegionList": {
