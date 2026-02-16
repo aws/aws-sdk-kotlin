@@ -69,6 +69,9 @@ class MutliRegionAccessPointTest {
         fun cleanup() = runBlocking {
             s3Control.deleteMultiRegionAccessPoint(MULTI_REGION_ACCESS_POINT_NAME, accountId)
 
+            S3TestUtils.deleteBucketAndAllContents(s3West, usWestBucket)
+            S3TestUtils.deleteBucketAndAllContents(s3East, usEastBucket)
+
             s3West.close()
             s3East.close()
             s3Control.close()
