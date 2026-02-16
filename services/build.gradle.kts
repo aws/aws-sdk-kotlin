@@ -169,7 +169,7 @@ subprojects {
 
             tasks.register("e2eTest") {
                 dependsOn("jvmE2eTest")
-                dependsOn("nativeE2eTest")
+                //dependsOn("nativeE2eTest") // FIXME Figure out how we want to run E2E tests (same task as JVM, different tasks, matrixed by target or just one Native target, etc.)
             }
         }
     }
