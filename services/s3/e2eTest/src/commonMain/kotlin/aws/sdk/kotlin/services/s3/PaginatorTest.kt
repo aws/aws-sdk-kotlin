@@ -39,7 +39,7 @@ class PaginatorTest {
         @AfterAll
         @JvmStatic
         fun cleanup() = runBlocking {
-            S3TestUtils.cleanupSharedBucket(client)
+            S3TestUtils.deleteSharedBucket(client)
             client.close()
         }
     }

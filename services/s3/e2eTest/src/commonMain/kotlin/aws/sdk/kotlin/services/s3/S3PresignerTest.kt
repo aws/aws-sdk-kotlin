@@ -44,7 +44,7 @@ class S3PresignerTest {
         @AfterAll
         @JvmStatic
         fun cleanup(): Unit = runBlocking {
-            S3TestUtils.cleanupSharedBucket(client)
+            S3TestUtils.deleteSharedBucket(client)
             client.close()
         }
     }

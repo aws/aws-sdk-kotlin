@@ -32,6 +32,7 @@ class S3IntegrationTestJVM {
 
     @AfterTest
     fun cleanUp() = runBlocking {
+        S3TestUtils.deleteSharedBucket(client)
         client.close()
     }
 

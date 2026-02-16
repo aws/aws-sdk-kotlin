@@ -35,7 +35,7 @@ class ConnectionResetTest {
 
     @AfterTest
     fun cleanup() = runBlocking {
-        S3TestUtils.cleanupSharedBucket(client)
+        S3TestUtils.deleteSharedBucket(client)
     }
 
     @Test

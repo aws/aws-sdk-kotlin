@@ -37,7 +37,7 @@ class S3ExpressTest {
         @AfterAll
         @JvmStatic
         fun cleanup() = runBlocking {
-            S3TestUtils.cleanupSharedDirectoryBuckets(client, S3_EXPRESS_BUCKET_SUFFIX)
+            S3TestUtils.deleteSharedDirectoryBuckets(client, S3_EXPRESS_BUCKET_SUFFIX)
             client.close()
         }
     }

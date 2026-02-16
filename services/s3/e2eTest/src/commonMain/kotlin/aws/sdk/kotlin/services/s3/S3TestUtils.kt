@@ -8,8 +8,6 @@ import aws.sdk.kotlin.services.s3.*
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.*
 import aws.sdk.kotlin.services.s3.model.BucketLocationConstraint
-import aws.sdk.kotlin.services.s3.model.ExpirationStatus
-import aws.sdk.kotlin.services.s3.model.LifecycleRule
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import aws.sdk.kotlin.services.s3.waiters.waitUntilBucketExists
 import aws.sdk.kotlin.services.s3.waiters.waitUntilBucketNotExists
@@ -53,6 +51,13 @@ object S3TestUtils {
         }
     }
 
+    suspend fun deleteSharedBucket(client: S3Client) {
+        sharedBucket?.let { bucket ->
+            deleteBucketAndAllContents(client, bucket)
+            sharedBucket = null
+        }
+    }
+
     suspend fun getOrCreateSharedDirectoryBuckets(client: S3Client, suffix: String): List<String> = directoryBucketMutex.withLock {
         (0 until 3).map { index ->
             val key = "$suffix:$index"
@@ -67,6 +72,16 @@ object S3TestUtils {
             val key = "$suffix:$index"
             sharedDirectoryBuckets[key]?.let { bucket ->
                 deleteBucketContents(client, bucket)
+            }
+        }
+    }
+
+    suspend fun deleteSharedDirectoryBuckets(client: S3Client, suffix: String) {
+        (0 until 3).forEach { index ->
+            val key = "$suffix:$index"
+            sharedDirectoryBuckets[key]?.let { bucket ->
+                deleteBucketAndAllContents(client, bucket)
+                sharedDirectoryBuckets.remove(key)
             }
         }
     }
@@ -116,20 +131,6 @@ object S3TestUtils {
             println("Using existing S3 bucket: $testBucket")
         }
 
-        client.putBucketLifecycleConfiguration {
-            bucket = testBucket
-            lifecycleConfiguration {
-                rules = listOf(
-                    LifecycleRule {
-                        expiration { days = 1 }
-                        filter { this.prefix = "" }
-                        status = ExpirationStatus.Enabled
-                        id = "delete-old"
-                    },
-                )
-            }
-        }
-
         testBucket
     }
 
@@ -166,20 +167,6 @@ object S3TestUtils {
             }
         } else {
             println("Using existing S3 Express directory bucket: $testBucket")
-        }
-
-        client.putBucketLifecycleConfiguration {
-            bucket = testBucket
-            lifecycleConfiguration {
-                rules = listOf(
-                    LifecycleRule {
-                        expiration { days = 1 }
-                        filter { this.prefix = "" }
-                        status = ExpirationStatus.Enabled
-                        id = "delete-old"
-                    },
-                )
-            }
         }
 
         testBucket
