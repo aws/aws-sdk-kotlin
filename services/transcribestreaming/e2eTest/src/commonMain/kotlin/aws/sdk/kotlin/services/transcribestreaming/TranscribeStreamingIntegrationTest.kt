@@ -14,7 +14,7 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class TranscribeStreamingIntegrationTest {
-    @IgnoreNative // FIXME Implement native bidirectional streaming in CRT
+    @IgnoreNative // FIXME Implement bidirectional streaming in CrtHttpEngine (JVM and Native)
     @Test
     fun testTranscribeEventStream() = runTest {
         TranscribeStreamingClient { region = "us-west-2" }.use { client ->
