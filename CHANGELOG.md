@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.18] - 02/16/2026
+
+### Features
+* (**kafka**) Amazon MSK now supports dual-stack connectivity (IPv4 and IPv6) for existing MSK clusters. You can enable dual-stack on existing clusters by specifying the NetworkType parameter in updateConnectivity API.
+* (**kms**) Added support for Decrypt and ReEncrypt API's to use dry run feature without ciphertext for authorization validation
+* (**qconnect**) Update MessageType enum to include missing types.
+
+### Documentation
+* (**arcregionswitch**) Clarify documentation on ARC Region Switch start-plan-execution operation
+* (**ec2**) Documentation updates for EC2 Secondary Networks
+* (**ecr**) Adds support for enabling blob mounting, and removes support for Clair based image scanning
+
 ## [1.6.17] - 02/13/2026
 
 ### Features
