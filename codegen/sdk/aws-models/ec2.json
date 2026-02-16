@@ -22702,7 +22702,7 @@
                 "target": "com.amazonaws.ec2#CreateSecondaryNetworkResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Creates an Amazon secondary network.</p>\n         <p>The allowed size for a secondary network CIDR block is between /28 netmask (16 IP addresses) and /12 netmask (1,048,576 IP addresses).</p>",
+                "smithy.api#documentation": "<p>Creates a secondary network.</p>\n         <p>The allowed size for a secondary network CIDR block is between /28 netmask (16 IP addresses) and /12 netmask (1,048,576 IP addresses).</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To create a secondary network",
