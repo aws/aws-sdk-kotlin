@@ -16,8 +16,6 @@ plugins {
 
 val sdkVersion: String by project
 
-configureIosSimulatorTasks()
-
 val optinAnnotations = listOf(
     "aws.smithy.kotlin.runtime.InternalApi",
     "aws.sdk.kotlin.runtime.InternalSdkApi",
