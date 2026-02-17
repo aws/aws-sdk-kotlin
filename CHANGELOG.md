@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.19] - 02/17/2026
+
+### Features
+* (**ec2**) Add Operator field to CreatePlacementGroup and DescribePlacementGroup APIs.
+* (**grafana**) This release updates Amazon Managed Grafana's APIs to support customer managed KMS keys.
+* (**rds**) Adds support for the StorageEncryptionType field to specify encryption type for DB clusters, DB instances, snapshots, automated backups, and global clusters.
+* (**workspacesweb**) Adds support for branding customization without requiring a custom wallpaper.
+
 ## [1.6.18] - 02/16/2026
 
 ### Features

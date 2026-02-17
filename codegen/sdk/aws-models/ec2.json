@@ -21857,6 +21857,12 @@
                         "smithy.api#documentation": "<p>Reserved for future use.</p>"
                     }
                 },
+                "Operator": {
+                    "target": "com.amazonaws.ec2#OperatorRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Reserved for internal use.</p>"
+                    }
+                },
                 "DryRun": {
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
@@ -105653,6 +105659,14 @@
                         "aws.protocols#ec2QueryName": "LinkedGroupId",
                         "smithy.api#documentation": "<p>Reserved for future use.</p>",
                         "smithy.api#xmlName": "linkedGroupId"
+                    }
+                },
+                "Operator": {
+                    "target": "com.amazonaws.ec2#OperatorResponse",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Operator",
+                        "smithy.api#documentation": "<p>The service provider that manages the Placement Group.</p>",
+                        "smithy.api#xmlName": "operator"
                     }
                 }
             },
