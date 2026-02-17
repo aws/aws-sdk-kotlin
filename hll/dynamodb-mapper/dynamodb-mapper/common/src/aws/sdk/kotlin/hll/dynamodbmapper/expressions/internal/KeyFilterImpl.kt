@@ -38,8 +38,8 @@ private fun pkConditions(spec: KeySpec<*>, value: KeyType): List<BooleanExpr> = 
         "Provided number of partition keys (${values.size}) does not match the number of keys defined in the schema (${attrs.size})"
     }
 
-    attrs.zip(values).map { (attr, value) ->
-        attr(attr.name) eq LiteralExpr(dynamicAv(value))
+    attrs.zip(values).map { (attrSpec, value) ->
+        attr[attrSpec.name] eq LiteralExpr(dynamicAv(value))
     }
 }
 
@@ -51,8 +51,8 @@ private fun skConditions(spec: KeySpec<*>, sortKeyExpressions: List<SortKeyExpr>
 
     attrs
         .zip(sortKeyExpressions)
-        .map { (attr, expression) ->
-            val skAttr = attr(attr.name)
+        .map { (attrSpec, expression) ->
+            val skAttr = attr[attrSpec.name]
             when (expression) {
                 is BetweenExpr -> BetweenExpr(skAttr, expression.min, expression.max)
                 is ComparisonExpr -> ComparisonExpr(expression.comparator, skAttr, expression.right)

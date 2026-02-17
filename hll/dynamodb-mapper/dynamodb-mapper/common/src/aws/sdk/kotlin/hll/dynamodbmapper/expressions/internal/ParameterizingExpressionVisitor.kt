@@ -53,6 +53,14 @@ internal open class ParameterizingExpressionVisitor : ExpressionVisitor<String> 
         append(')')
     }
 
+    override fun visit(expr: AdditiveExpr) = buildString {
+        append(expr.left.accept())
+        append(' ')
+        append(expr.operation.exprString)
+        append(' ')
+        append(expr.right.accept())
+    }
+
     override fun visit(expr: AndExpr) = expr.operands.joinToString(" AND ") { "(${it.accept()})" }
 
     override fun visit(expr: AttributePath) = buildString {
@@ -110,6 +118,38 @@ internal open class ParameterizingExpressionVisitor : ExpressionVisitor<String> 
     override fun visit(expr: OrExpr) = expr.operands.joinToString(" OR ") { "(${it.accept()})" }
 
     override fun visit(expr: ScalarFuncExpr) = funcString(expr.func.exprString, expr.path, expr.additionalOperands)
+
+    override fun visit(expr: UpdateExpr): String = buildString {
+        fun appendClause(command: String, clause: UpdateExpr.Clause) {
+            val updates = clause.updates
+            if (updates.isNotEmpty()) {
+                append(command)
+                append(' ')
+                updates.joinTo(this) { it.accept() }
+                append(' ') // leave separator for later clauses
+            }
+        }
+
+        appendClause("SET", expr.set)
+        appendClause("REMOVE", expr.remove)
+        appendClause("ADD", expr.add)
+        appendClause("DELETE", expr.delete)
+    }.trim()
+
+    override fun visit(expr: UpdateClauseExpr) = buildString {
+        append(expr.target.accept())
+
+        if (expr.action != UpdateAction.REMOVE) {
+            append(
+                when (expr.action) {
+                    UpdateAction.SET -> " = "
+                    else -> " "
+                },
+            )
+
+            append(expr.value.accept())
+        }
+    }
 }
 
 /**

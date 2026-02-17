@@ -77,6 +77,12 @@ public class BuilderRenderer(
         write("#Lvar #L: #T = null", ctx.attributes.visibility, member.name, member.type.nullable())
 
         if (dslInfo != null) {
+            val dslBlockResultType = when (dslInfo.implFinalizer) {
+                null -> member.type
+                else -> Types.Kotlin.Unit
+            }
+            val constructorIfNecessary = if (dslInfo.implSingleton) "" else "()"
+
             blankLine()
             withBlock(
                 "#Lfun #L(block: #T.() -> #T) {",
@@ -84,10 +90,19 @@ public class BuilderRenderer(
                 ctx.attributes.visibility,
                 member.name,
                 dslInfo.interfaceType,
-                member.type,
+                dslBlockResultType,
             ) {
-                val constructorIfNecessary = if (dslInfo.implSingleton) "" else "()"
-                write("#L = #T#L.run(block)", member.name, dslInfo.implType, constructorIfNecessary)
+                if (dslInfo.implFinalizer == null) {
+                    write("#L = #T#L.run(block)", member.name, dslInfo.implType, constructorIfNecessary)
+                } else {
+                    write(
+                        "#L = #T#L.apply(block)#L",
+                        member.name,
+                        dslInfo.implType,
+                        constructorIfNecessary,
+                        dslInfo.implFinalizer,
+                    )
+                }
             }
             blankLine()
         }

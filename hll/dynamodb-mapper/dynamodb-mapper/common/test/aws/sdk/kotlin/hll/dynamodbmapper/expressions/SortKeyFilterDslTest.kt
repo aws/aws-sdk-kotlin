@@ -5,8 +5,8 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.ParameterizingExpressionVisitor
-import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SkAttrPathImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SortKeyFilterDslImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.placeholderExpr
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.UByteRange
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.UShortRange
 import aws.sdk.kotlin.hll.dynamodbmapper.util.av
@@ -232,7 +232,7 @@ class SortKeyFilterDslTest {
 
 private class SortKeyExpressionVisitor : ParameterizingExpressionVisitor() {
     override fun visit(expr: AttributePath) = when (expr) {
-        SkAttrPathImpl -> "foo" // Swap out dummy attr path for "foo" (normally KeyFilter.toExpression would do this)
+        placeholderExpr -> "foo" // Swap out dummy attr path for "foo" (normally KeyFilter.toExpression would do this)
         else -> super.visit(expr)
     }
 }

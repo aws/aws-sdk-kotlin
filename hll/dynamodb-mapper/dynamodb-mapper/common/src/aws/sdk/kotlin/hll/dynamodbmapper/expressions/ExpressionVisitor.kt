@@ -10,6 +10,12 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions
  */
 public interface ExpressionVisitor<T> {
     /**
+     * Visit an [AdditiveExpr]
+     * @param expr The expression to visit
+     */
+    public fun visit(expr: AdditiveExpr): T
+
+    /**
      * Visit an [AndExpr]
      * @param expr The expression to visit
      */
@@ -68,4 +74,16 @@ public interface ExpressionVisitor<T> {
      * @param expr The expression to visit
      */
     public fun visit(expr: ScalarFuncExpr): T
+
+    /**
+     * Visit an [UpdateExpr]
+     * @param expr The expression to visit
+     */
+    public fun visit(expr: UpdateExpr): T
+
+    /**
+     * Visit an [UpdateClauseExpr]
+     * @param expr The expression to visit
+     */
+    public fun visit(expr: UpdateClauseExpr): T
 }

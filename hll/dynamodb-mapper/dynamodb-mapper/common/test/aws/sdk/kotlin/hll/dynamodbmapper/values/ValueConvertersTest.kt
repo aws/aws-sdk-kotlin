@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
  * ```kotlin
  * fun testFooConverter() = given(fooConverterInstance) {
  *     // Test conversion of high-level value `aFoo` to low-level attribute value { "S": "a foo" } and back again
- *     aFoo inDdbIs attr("a foo")
+ *     aFoo inDdbIs av("a foo")
  *
  *     // Test conversion of high-level value to an automatically-derived identical representation and back again
  *     bFoo inDdbIs theSame
@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
  *     cFoo inDdbIs anError
  *
  *     // Test conversion only going one way (useful when conversion back results in a different value)
- *     dFoo inDdbIs attr("d foo") whenGoing Direction.TO_DDB
+ *     dFoo inDdbIs av("d foo") whenGoing Direction.TO_DDB
  * }
  * ```
  * @see [given]

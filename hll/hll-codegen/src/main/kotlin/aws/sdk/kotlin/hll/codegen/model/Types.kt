@@ -41,6 +41,7 @@ public object Types {
         public val UInt: TypeRef = kotlin("UInt")
         public val ULong: TypeRef = kotlin("ULong")
         public val UShort: TypeRef = kotlin("UShort")
+        public val Unit: TypeRef = kotlin("Unit")
 
         @InternalSdkApi
         public object Collections {

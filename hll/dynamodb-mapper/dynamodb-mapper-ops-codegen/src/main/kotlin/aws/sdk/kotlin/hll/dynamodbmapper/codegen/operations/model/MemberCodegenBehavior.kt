@@ -9,8 +9,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperPkg
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionArgumentsType.AttributeNames
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionArgumentsType.AttributeValues
-import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionLiteralType.Filter
-import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionLiteralType.KeyCondition
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionLiteralType.*
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.MemberCodegenBehavior.*
 
 /**
@@ -158,11 +157,11 @@ private val rules = listOf(
     // Expression literals
     Rule("keyConditionExpression", Types.Kotlin.String, ExpressionLiteral(KeyCondition)),
     Rule("filterExpression", Types.Kotlin.String, ExpressionLiteral(Filter)),
+    Rule("updateExpression", Types.Kotlin.String, ExpressionLiteral(Update)),
 
     // TODO add support for remaining expression types
     Rule("conditionExpression", Types.Kotlin.String, Drop),
     Rule("projectionExpression", Types.Kotlin.String, Drop),
-    Rule("updateExpression", Types.Kotlin.String, Drop),
 
     // Expression arguments
     Rule("expressionAttributeNames", Types.Kotlin.stringMap(Types.Kotlin.String), ExpressionArguments(AttributeNames)),
