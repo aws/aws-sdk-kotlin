@@ -63,13 +63,11 @@ public interface AttributePath : Expression {
  * @param parent The parent [AttributePath] (if any) of this element. If [parent] is `null` then this instance
  * represents a top-level attribute.
  */
-public fun AttributePath(name: String, parent: AttributePath? = null): AttributePath =
-    AttributePathImpl(AttrPathNameImpl(name), parent)
+public fun AttributePath(name: String, parent: AttributePath? = null): AttributePath = AttributePathImpl(AttrPathNameImpl(name), parent)
 
 /**
  * Creates a new [AttributePath] reference with the given index and parent path
  * @param index The index (starting at `0`) of this element
  * @param parent The parent [AttributePath] of this element
  */
-public fun AttributePath(index: Int, parent: AttributePath): AttributePath =
-    AttributePathImpl(AttrPathIndexImpl(index), parent)
+public fun AttributePath(index: Int, parent: AttributePath): AttributePath = AttributePathImpl(AttrPathIndexImpl(index), parent)

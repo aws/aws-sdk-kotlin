@@ -56,8 +56,7 @@ public fun <AK, AV, BK, BV> MapMappingMonoConverter(
 @Suppress("ktlint:standard:function-naming")
 public fun <LK, LV, RK, RV> MapMappingConverter(
     delegate: Converter<Pair<LK, LV>, Pair<RK, RV>>,
-): Converter<Map<LK, LV>, Map<RK, RV>> =
-    MapMappingMonoConverter(delegate.right) reversedBy MapMappingMonoConverter(delegate.left)
+): Converter<Map<LK, LV>, Map<RK, RV>> = MapMappingMonoConverter(delegate.right) reversedBy MapMappingMonoConverter(delegate.left)
 
 /**
  * Creates a map-mapping [Converter] which performs two-way conversions between values of type `Map<LK, LV>` and values
@@ -73,6 +72,5 @@ public fun <LK, LV, RK, RV> MapMappingConverter(
 public fun <LK, LV, RK, RV> MapMappingConverter(
     keyDelegate: Converter<LK, RK>,
     valueDelegate: Converter<LV, RV>,
-): Converter<Map<LK, LV>, Map<RK, RV>> =
-    MapMappingMonoConverter(keyDelegate.right, valueDelegate.right) reversedBy
-        MapMappingMonoConverter(keyDelegate.left, valueDelegate.left)
+): Converter<Map<LK, LV>, Map<RK, RV>> = MapMappingMonoConverter(keyDelegate.right, valueDelegate.right) reversedBy
+    MapMappingMonoConverter(keyDelegate.left, valueDelegate.left)

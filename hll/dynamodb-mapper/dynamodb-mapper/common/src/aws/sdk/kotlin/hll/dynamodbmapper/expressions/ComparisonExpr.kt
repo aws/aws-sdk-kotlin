@@ -38,5 +38,4 @@ public interface ComparisonExpr :
  * @param left The left value being compared
  * @param right The right value being compared
  */
-public fun ComparisonExpr(comparator: Comparator, left: Expression, right: Expression): ComparisonExpr =
-    ComparisonExprImpl(comparator, left, right)
+public fun ComparisonExpr(comparator: Comparator, left: Expression, right: Expression): ComparisonExpr = ComparisonExprImpl(comparator, left, right)
