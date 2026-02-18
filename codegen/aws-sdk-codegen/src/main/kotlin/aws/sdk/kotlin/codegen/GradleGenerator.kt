@@ -6,7 +6,10 @@ package aws.sdk.kotlin.codegen
 
 import aws.sdk.kotlin.codegen.model.traits.testing.TestFailedResponseTrait
 import aws.sdk.kotlin.codegen.model.traits.testing.TestSuccessResponseTrait
-import aws.smithy.kotlin.codegen.core.*
+import aws.smithy.kotlin.codegen.core.CodegenContext
+import aws.smithy.kotlin.codegen.core.KotlinDelegator
+import aws.smithy.kotlin.codegen.core.KotlinDependency
+import aws.smithy.kotlin.codegen.core.withBlock
 import aws.smithy.kotlin.codegen.integration.KotlinIntegration
 import aws.smithy.kotlin.codegen.model.expectShape
 import aws.smithy.kotlin.codegen.model.hasTrait
@@ -65,7 +68,7 @@ class GradleGenerator : KotlinIntegration {
                             withBlock("$sourceSet {", "}") {
                                 withBlock("dependencies {", "}") {
                                     dependencies
-                                        .map { it.dependencyNotation() }
+                                        .mapNotNull { it.dependencyNotation() }
                                         .forEach(::write)
                                 }
                             }
