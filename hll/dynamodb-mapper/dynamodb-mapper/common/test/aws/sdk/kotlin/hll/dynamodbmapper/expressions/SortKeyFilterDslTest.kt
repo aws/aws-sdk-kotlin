@@ -6,7 +6,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.ParameterizingExpressionVisitor
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SkAttrPathImpl
-import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SortKeyFilterImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SortKeyFilterDslImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.UByteRange
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.UShortRange
 import aws.sdk.kotlin.hll.dynamodbmapper.util.av
@@ -14,7 +14,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SortKeyFilterTest {
+class SortKeyFilterDslTest {
     @Test
     fun testByteArrays() {
         val b1 = byteArrayOf(1, 2, 3)
@@ -209,16 +209,16 @@ class SortKeyFilterTest {
         )
     }
 
-    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, SortKeyFilter.() -> SortKeyExpr>) =
+    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, SortKeyFilterDsl.() -> SortKeyExpr>) =
         testFilters(mapOf(":v0" to expectedAV), *tests)
 
     private fun testFilters(
         expectedAVs: Map<String, AttributeValue>?,
-        vararg tests: Pair<String, SortKeyFilter.() -> SortKeyExpr>,
+        vararg tests: Pair<String, SortKeyFilterDsl.() -> SortKeyExpr>,
         expectedANs: Map<String, String>? = null,
     ) = tests.forEach { (expectedExprString, block) ->
         val parameterizer = SortKeyExpressionVisitor()
-        val expr = SortKeyFilterImpl.block()
+        val expr = SortKeyFilterDslImpl.block()
         val actualExprString = expr.accept(parameterizer)
 
         assertEquals(expectedExprString, actualExprString)

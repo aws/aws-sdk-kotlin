@@ -8,7 +8,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.expressions.*
 
 private data object SortKeyImpl : SortKey
 
-internal data object SortKeyFilterImpl : SortKeyFilter {
+internal data object SortKeyFilterDslImpl : SortKeyFilterDsl {
     override val sortKey: SortKey
         get() = SortKeyImpl
 

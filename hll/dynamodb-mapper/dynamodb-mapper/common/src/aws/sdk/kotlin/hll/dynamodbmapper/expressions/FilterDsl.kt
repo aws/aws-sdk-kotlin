@@ -7,10 +7,11 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
 
 /**
- * A DSL interface providing support for "low-level" filter expressions. Implementations of this interface provide
- * methods and properties which create boolean expressions to filter item results (e.g., in Scan or Query operations).
- * Expressions are typically formed by getting a reference to an attribute path and then exercising some operation or
- * function upon it.
+ * A DSL interface providing support for "low-level"
+ * [DynamoDB filter/condition expressions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html).
+ * The methods and properties in this interface create boolean expressions to filter item results (e.g., in `Scan` or
+ * `Query` operations). Expressions are typically formed by getting a reference to an attribute path via the [attr]
+ * function and then exercising some operation or function upon it.
  *
  * For example:
  *
@@ -22,11 +23,11 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
  *
  * This example creates an expression which checks whether an attribute named `foo` is equal to the value `42`.
  *
- * ## (Non-)Relationship to schema
+ * # (Non-)Relationship to schema
  *
- * The expressions formed by [Filter] are referred to as a "low-level" filter expression. This is because they are not
- * restricted by or adherent to any defined schema. Instead, they are a DSL convenience layer over [literal DynamoDB
- * expression strings and expression attribute value maps](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.html).
+ * The expressions formed by `FilterDsl` are referred to as "low-level" filter expressions. This is because they are not
+ * restricted by or adherent to any defined schema. Instead, they are a DSL convenience layer over
+ * [literal DynamoDB expression strings and expression attribute value maps](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.html).
  * As such they provide **minimal type correctness** and may allow you to form expressions which are invalid given the
  * shape of your data, such as attributes which don't exist, comparisons with mismatched data types, etc.
  *
@@ -179,7 +180,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
  * attr("bar").exists()    // Checks whether any value exists for `bar` (including `null`)
  * ```
  */
-public interface Filter {
+public interface FilterDsl {
     // ATTRIBUTES
 
     /**

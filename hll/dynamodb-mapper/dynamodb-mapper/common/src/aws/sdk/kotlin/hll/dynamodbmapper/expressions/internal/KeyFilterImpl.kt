@@ -28,10 +28,10 @@ internal fun KeyFilter.toExpression(schema: ItemSchema<*>): Expression {
             pkConditions(schema.partitionKey, partitionKey) + skConditions(schema.sortKey, sortKeyExpressions)
     }
 
-    return if (conditions.size == 1) conditions.single() else FilterImpl.and(conditions)
+    return if (conditions.size == 1) conditions.single() else FilterDslImpl.and(conditions)
 }
 
-private fun pkConditions(spec: KeySpec<*>, value: KeyType): List<BooleanExpr> = FilterImpl.run {
+private fun pkConditions(spec: KeySpec<*>, value: KeyType): List<BooleanExpr> = FilterDslImpl.run {
     val attrs = spec.attrs
     val values = value.values
     require(attrs.size == values.size) {
@@ -43,7 +43,7 @@ private fun pkConditions(spec: KeySpec<*>, value: KeyType): List<BooleanExpr> = 
     }
 }
 
-private fun skConditions(spec: KeySpec<*>, sortKeyExpressions: List<SortKeyExpr>): List<BooleanExpr> = FilterImpl.run {
+private fun skConditions(spec: KeySpec<*>, sortKeyExpressions: List<SortKeyExpr>): List<BooleanExpr> = FilterDslImpl.run {
     val attrs = spec.attrs
     require(attrs.size >= sortKeyExpressions.size) {
         "Provided number of sort key expressions (${sortKeyExpressions.size}) is greater than the number of keys defined in the schema (${attrs.size})"

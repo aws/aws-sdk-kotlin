@@ -6,7 +6,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.*
 
-internal data object FilterImpl : Filter {
+internal data object FilterDslImpl : FilterDsl {
     // ATTRIBUTES
     override fun attr(name: String) = AttributePath(name)
     override fun AttributePath.get(index: Int) = AttributePath(index, parent = this)

@@ -4,7 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.FilterImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.FilterDslImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.ParameterizingExpressionVisitor
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.UByteRange
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.UShortRange
@@ -13,7 +13,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FilterTest {
+class FilterDslTest {
     @Test
     fun testAnd() {
         testFilters(
@@ -777,20 +777,20 @@ class FilterTest {
         }
     }
 
-    private fun testFilters(vararg tests: Pair<String, Filter.() -> Expression>) {
+    private fun testFilters(vararg tests: Pair<String, FilterDsl.() -> Expression>) {
         testFilters(null, *tests)
     }
 
-    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, Filter.() -> Expression>) =
+    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, FilterDsl.() -> Expression>) =
         testFilters(mapOf(":v0" to expectedAV), *tests)
 
     private fun testFilters(
         expectedAVs: Map<String, AttributeValue>?,
-        vararg tests: Pair<String, Filter.() -> Expression>,
+        vararg tests: Pair<String, FilterDsl.() -> Expression>,
         expectedANs: Map<String, String>? = null,
     ) = tests.forEach { (expectedExprString, block) ->
         val parameterizer = ParameterizingExpressionVisitor()
-        val expr = FilterImpl.block()
+        val expr = FilterDslImpl.block()
         val actualExprString = expr.accept(parameterizer)
 
         assertEquals(expectedExprString, actualExprString)
