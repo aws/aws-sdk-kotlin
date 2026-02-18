@@ -5,13 +5,13 @@
 package aws.sdk.kotlin.codegen.customization.polly
 
 import aws.sdk.kotlin.codegen.PresignerGenerator
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.core.*
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriter
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
-import software.amazon.smithy.kotlin.codegen.model.expectShape
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.HttpStringValuesMapSerializer
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.core.*
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.integration.SectionWriter
+import aws.smithy.kotlin.codegen.integration.SectionWriterBinding
+import aws.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.rendering.protocol.HttpStringValuesMapSerializer
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.knowledge.HttpBinding
 import software.amazon.smithy.model.shapes.OperationShape
@@ -22,8 +22,7 @@ import software.amazon.smithy.model.shapes.ServiceShape
  * parameters and setting the request method to `GET` (vs `POST`).
  */
 class PollyPresigner : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings) =
-        model.expectShape<ServiceShape>(settings.service).id.toString() == "com.amazonaws.polly#Parrot_v1"
+    override fun enabledForService(model: Model, settings: KotlinSettings) = model.expectShape<ServiceShape>(settings.service).id.toString() == "com.amazonaws.polly#Parrot_v1"
 
     override val sectionWriters: List<SectionWriterBinding>
         get() = listOf(

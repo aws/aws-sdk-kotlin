@@ -25,8 +25,7 @@ private val capturedMetrics = mapOf(
 class BenchmarkTelemetryProvider(private val metricAggregator: MetricAggregator) : AbstractTelemetryProvider() {
     override val meterProvider = object : AbstractMeterProvider() {
         override fun getOrCreateMeter(scope: String) = object : AbstractMeter() {
-            override fun createDoubleHistogram(name: String, units: String?, description: String?) =
-                capturedMetrics[name]?.let { BenchmarkDoubleHistogram(it, units) } ?: Histogram.DoubleNone
+            override fun createDoubleHistogram(name: String, units: String?, description: String?) = capturedMetrics[name]?.let { BenchmarkDoubleHistogram(it, units) } ?: Histogram.DoubleNone
         }
     }
 

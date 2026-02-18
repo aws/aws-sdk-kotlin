@@ -46,7 +46,7 @@ internal class MapperConfigBuilderImpl : DynamoDbMapper.Config.Builder {
 /**
  * An interceptor that emits the DynamoDB Mapper business metric
  */
-private object BusinessMetricInterceptor : HttpInterceptor {
+private val businessMetricInterceptor: HttpInterceptor = object : HttpInterceptor {
     override suspend fun modifyBeforeSerialization(context: RequestInterceptorContext<Any>): Any {
         context.executionContext.emitBusinessMetric(AwsBusinessMetric.DDB_MAPPER)
         return context.request
@@ -54,4 +54,4 @@ private object BusinessMetricInterceptor : HttpInterceptor {
 }
 
 internal inline fun <T> DynamoDbClient.withWrappedClient(block: (DynamoDbClient) -> T): T =
-    withConfig { interceptors += BusinessMetricInterceptor }.use(block)
+    withConfig { interceptors += businessMetricInterceptor }.use(block)

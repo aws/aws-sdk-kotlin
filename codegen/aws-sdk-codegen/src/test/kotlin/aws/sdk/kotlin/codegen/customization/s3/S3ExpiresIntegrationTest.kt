@@ -5,12 +5,12 @@
 package aws.sdk.kotlin.codegen.customization.s3
 
 import aws.sdk.kotlin.codegen.testutil.model
-import software.amazon.smithy.kotlin.codegen.model.isDeprecated
-import software.amazon.smithy.kotlin.codegen.model.targetOrSelf
-import software.amazon.smithy.kotlin.codegen.test.defaultSettings
-import software.amazon.smithy.kotlin.codegen.test.newTestContext
-import software.amazon.smithy.kotlin.codegen.test.toSmithyModel
-import software.amazon.smithy.kotlin.codegen.utils.getOrNull
+import aws.smithy.kotlin.codegen.model.isDeprecated
+import aws.smithy.kotlin.codegen.model.targetOrSelf
+import aws.smithy.kotlin.codegen.test.defaultSettings
+import aws.smithy.kotlin.codegen.test.newTestContext
+import aws.smithy.kotlin.codegen.test.toSmithyModel
+import aws.smithy.kotlin.codegen.utils.getOrNull
 import software.amazon.smithy.model.shapes.ShapeId
 import kotlin.test.*
 import kotlin.test.assertTrue

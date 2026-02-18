@@ -4,16 +4,17 @@
  */
 package aws.sdk.kotlin.codegen
 
+import aws.smithy.kotlin.codegen.core.GradleConfiguration
+import aws.smithy.kotlin.codegen.core.KotlinDependency
+import aws.smithy.kotlin.codegen.core.isImplicit
+import aws.smithy.kotlin.codegen.core.isValidVersion
 import software.amazon.smithy.codegen.core.CodegenException
-import software.amazon.smithy.kotlin.codegen.core.GradleConfiguration
-import software.amazon.smithy.kotlin.codegen.core.KotlinDependency
-import software.amazon.smithy.kotlin.codegen.core.isValidVersion
 
 // root namespace for the AWS client-runtime
 const val AWS_CLIENT_RT_ROOT_NS = "aws.sdk.kotlin.runtime"
 
 private fun getDefaultRuntimeVersion(): String {
-    // generated as part of the build, see smithy-aws-kotlin-codegen/build.gradle.kts
+    // generated as part of the build, see smithy-kotlin/codegen/aws-codegen/build.gradle.kts
     try {
         val version = object {}.javaClass.getResource("sdk-version.txt")?.readText() ?: throw CodegenException("sdk-version.txt does not exist")
         check(isValidVersion(version)) { "Version parsed from sdk-version.txt '$version' is not a valid version string" }
@@ -51,12 +52,11 @@ private val sameProjectDeps: Map<KotlinDependency, String> by lazy {
     )
 }
 
-internal fun KotlinDependency.dependencyNotation(allowProjectNotation: Boolean = true): String {
+internal fun KotlinDependency.dependencyNotation(allowProjectNotation: Boolean = true): String? {
     val dep = this
-    return if (allowProjectNotation && sameProjectDeps.contains(dep)) {
-        val projectNotation = sameProjectDeps[dep]
-        "${dep.config.kmpName}($projectNotation)"
-    } else {
-        "${dep.config.kmpName}(\"${dep.group}:${dep.artifact}:${dep.version}\")"
+    return when {
+        dep.isImplicit -> null
+        allowProjectNotation && sameProjectDeps.contains(dep) -> "${dep.config.kmpName}(${sameProjectDeps[dep]})"
+        else -> "${dep.config.kmpName}(\"${dep.group}:${dep.artifact}:${dep.version}\")"
     }
 }

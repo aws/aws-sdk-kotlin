@@ -200,5 +200,4 @@ public class AssumeRoleParameters(
 }
 
 // role session name must be provided to assume a role, when the user doesn't provide one we choose a name for them
-internal fun defaultSessionName(platformEnvironProvider: PlatformEnvironProvider = PlatformProvider.System): String =
-    AwsSdkSetting.AwsRoleSessionName.resolve(platformEnvironProvider) ?: "aws-sdk-kotlin-${Instant.now().epochMilliseconds}"
+internal fun defaultSessionName(platformEnvironProvider: PlatformEnvironProvider = PlatformProvider.System): String = AwsSdkSetting.AwsRoleSessionName.resolve(platformEnvironProvider) ?: "aws-sdk-kotlin-${Instant.now().epochMilliseconds}"

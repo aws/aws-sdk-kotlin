@@ -1270,6 +1270,40 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.bedrockruntime#CacheDetail": {
+            "type": "structure",
+            "members": {
+                "ttl": {
+                    "target": "com.amazonaws.bedrockruntime#CacheTTL",
+                    "traits": {
+                        "smithy.api#documentation": "<p>TTL duration for these cached tokens</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "inputTokens": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Number of tokens written to cache with this TTL (cache creation tokens)</p>",
+                        "smithy.api#range": {
+                            "min": 0
+                        },
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Cache creation metrics for a specific TTL duration</p>"
+            }
+        },
+        "com.amazonaws.bedrockruntime#CacheDetailsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockruntime#CacheDetail"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>List of cache details by TTL</p>"
+            }
+        },
         "com.amazonaws.bedrockruntime#CachePointBlock": {
             "type": "structure",
             "members": {
@@ -1278,6 +1312,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the type of cache point within the CachePointBlock.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "ttl": {
+                    "target": "com.amazonaws.bedrockruntime#CacheTTL",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Optional TTL duration for cache entries. When specified, enables extended TTL caching with the specified duration. When omitted, uses <code>type</code> value for caching behavior.</p>"
                     }
                 }
             },
@@ -1294,6 +1334,26 @@
                         "smithy.api#enumValue": "default"
                     }
                 }
+            }
+        },
+        "com.amazonaws.bedrockruntime#CacheTTL": {
+            "type": "enum",
+            "members": {
+                "FIVE_MINUTES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "5m"
+                    }
+                },
+                "ONE_HOUR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "1h"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Time-to-live duration for ephemeral cache entries</p>"
             }
         },
         "com.amazonaws.bedrockruntime#Citation": {
@@ -1908,6 +1968,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the processing tier configuration used for serving the request.</p>"
                     }
+                },
+                "outputConfig": {
+                    "target": "com.amazonaws.bedrockruntime#OutputConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Output configuration for a model response.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2228,6 +2294,12 @@
                     "target": "com.amazonaws.bedrockruntime#ServiceTier",
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the processing tier configuration used for serving the request.</p>"
+                    }
+                },
+                "outputConfig": {
+                    "target": "com.amazonaws.bedrockruntime#OutputConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Output configuration for a model response.</p>"
                     }
                 }
             },
@@ -5650,6 +5722,33 @@
                 "smithy.api#pattern": "^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})|(arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{1,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)$"
             }
         },
+        "com.amazonaws.bedrockruntime#JsonSchemaDefinition": {
+            "type": "structure",
+            "members": {
+                "schema": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The JSON schema to constrain the model's output. For more information, see <a href=\"https://json-schema.org/understanding-json-schema/reference\">JSON Schema Reference</a>. </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The name of the JSON schema. </p>"
+                    }
+                },
+                "description": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p> A description of the JSON schema. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> JSON schema structured output format options. </p>"
+            }
+        },
         "com.amazonaws.bedrockruntime#KmsKeyId": {
             "type": "string",
             "traits": {
@@ -5968,6 +6067,71 @@
                 "smithy.api#range": {
                     "min": 0
                 }
+            }
+        },
+        "com.amazonaws.bedrockruntime#OutputConfig": {
+            "type": "structure",
+            "members": {
+                "textFormat": {
+                    "target": "com.amazonaws.bedrockruntime#OutputFormat",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Structured output parameters to control the model's text response. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Output configuration for a model response in a call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>.</p>"
+            }
+        },
+        "com.amazonaws.bedrockruntime#OutputFormat": {
+            "type": "structure",
+            "members": {
+                "type": {
+                    "target": "com.amazonaws.bedrockruntime#OutputFormatType",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The type of structured output format. </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "structure": {
+                    "target": "com.amazonaws.bedrockruntime#OutputFormatStructure",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The structure that the model's output must adhere to. </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> Structured output parameters to control the model's response. </p>"
+            }
+        },
+        "com.amazonaws.bedrockruntime#OutputFormatStructure": {
+            "type": "union",
+            "members": {
+                "jsonSchema": {
+                    "target": "com.amazonaws.bedrockruntime#JsonSchemaDefinition",
+                    "traits": {
+                        "smithy.api#documentation": "<p> A JSON schema structure that the model's output must adhere to. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The structure that the model's output must adhere to. </p>",
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockruntime#OutputFormatType": {
+            "type": "enum",
+            "members": {
+                "JSON_SCHEMA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "json_schema"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The type of structured output format. Available options are: json_schema. </p>"
             }
         },
         "com.amazonaws.bedrockruntime#PaginationToken": {
@@ -6820,6 +6984,12 @@
                             "min": 0
                         }
                     }
+                },
+                "cacheDetails": {
+                    "target": "com.amazonaws.bedrockruntime#CacheDetailsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Detailed breakdown of cache writes by TTL. Empty if no cache creation occurred. Sorted by TTL duration (1h before 5m).</p>"
+                    }
                 }
             },
             "traits": {
@@ -7109,6 +7279,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The input schema for the tool in JSON format.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "strict": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Flag to enable structured output enforcement on a tool usage response.</p>"
                     }
                 }
             },

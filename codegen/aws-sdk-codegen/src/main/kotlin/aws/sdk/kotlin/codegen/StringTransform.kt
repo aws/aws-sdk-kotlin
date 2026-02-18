@@ -4,7 +4,7 @@
  */
 package aws.sdk.kotlin.codegen
 
-import software.amazon.smithy.kotlin.codegen.utils.toPascalCase
+import aws.smithy.kotlin.codegen.utils.toPascalCase
 
 private val whitespaceRegex = Regex("\\s")
 

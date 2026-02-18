@@ -8,9 +8,7 @@
     "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.*": "KotlinxCoroutinesCoreJvm-1.x",
     "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.*": "KotlinxCoroutinesJdk8-1.x",
     "com.google.devtools.ksp:symbol-processing-api:2.*": "Maven-com-google-devtools-ksp_symbol-processing-api-2.x",
-    "com.google.devtools.ksp:symbol-processing-gradle-plugin:2.*": "Maven-com-google-devtools-ksp_symbol-processing-gradle-plugin-2.x",
-    "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.*": "Maven-com-google-devtools-ksp_com_google_devtools_ksp_gradle_plugin-2.x",
-    "software.amazon.smithy:smithy-codegen-core:1.*": "Maven-software-amazon-smithy_smithy-codegen-core-1.x"
+    "com.google.devtools.ksp:symbol-processing-gradle-plugin:2.*": "Maven-com-google-devtools-ksp_symbol-processing-gradle-plugin-2.x"
   },
   "packageHandlingRules": {
     "versioning": {

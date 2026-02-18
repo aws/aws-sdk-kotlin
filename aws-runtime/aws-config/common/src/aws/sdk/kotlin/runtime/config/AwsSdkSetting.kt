@@ -58,7 +58,8 @@ public object AwsSdkSetting {
     /**
      * Configure the user agent app ID
      */
-    public val AwsAppId: EnvironmentSetting<String> = strEnvSetting(AWS_APP_ID_PROP, AWS_APP_ID_ENV)
+    public val AwsAppId: MultipleKeyEnvironmentSetting<String> = strEnvSetting(AWS_APP_ID_PROP, AWS_APP_ID_ENV)
+        .withAdditionalKeys(listOf("sdk.ua.appId"))
 
     /**
      * Configure the default path to the shared config file.
@@ -208,8 +209,8 @@ public object AwsSdkSetting {
     /**
      * The set of regions to use when signing a request with sigV4a.
      */
-    public val AwsSigV4aSigningRegionSet: EnvironmentSetting<String> =
-        strEnvSetting("aws.sigV4aSigningRegionSet", "AWS_SIGV4A_SIGNING_REGION_SET")
+    public val AwsSigV4aSigningRegionSet: MultipleKeyEnvironmentSetting<String> = strEnvSetting("aws.sigV4aSigningRegionSet", "AWS_SIGV4A_SIGNING_REGION_SET")
+        .withAdditionalKeys(listOf("aws.sigv4a.signing.region.set"))
 
     /**
      * A flag indicating whether endpoint discovery is enabled for AWS services that support it. The implicit default

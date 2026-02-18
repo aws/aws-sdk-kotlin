@@ -35,8 +35,7 @@ class ProfileChainTest {
         val activeProfile: String = "A",
     )
 
-    private fun chain(leaf: LeafProvider, vararg roles: RoleArn): TestOutput =
-        TestOutput.Chain(ProfileChain(leaf, roles.toList()))
+    private fun chain(leaf: LeafProvider, vararg roles: RoleArn): TestOutput = TestOutput.Chain(ProfileChain(leaf, roles.toList()))
 
     private val kitchenSinkTests = listOf(
         TestCase(
@@ -671,27 +670,26 @@ class ProfileChainTest {
         ),
     )
 
-    private fun List<TestCase>.run() =
-        this.forEachIndexed { idx, test ->
-            val profiles = parse(Logger.None, FileType.CONFIGURATION, test.profile.trimIndent())
-            val source = AwsConfigurationSource(test.activeProfile, "not-needed", "not-needed")
-            val config = profiles.toSharedConfig(source)
-            val result = runCatching { ProfileChain.resolve(config) }
+    private fun List<TestCase>.run() = this.forEachIndexed { idx, test ->
+        val profiles = parse(Logger.None, FileType.CONFIGURATION, test.profile.trimIndent())
+        val source = AwsConfigurationSource(test.activeProfile, "not-needed", "not-needed")
+        val config = profiles.toSharedConfig(source)
+        val result = runCatching { ProfileChain.resolve(config) }
 
-            when {
-                result.isFailure && test.output is TestOutput.Chain -> fail("[idx=$idx, desc=${test.description}]: expected success but chain failed to resolve: $result")
-                result.isSuccess && test.output is TestOutput.Error -> fail("[idx=$idx, desc=${test.description}]: expected failure but chain resolved successfully: $result")
-                result.isFailure && test.output is TestOutput.Error -> {
-                    val ex = result.exceptionOrNull() ?: fail("[idx=$idx, desc=${test.description}]: expected exception")
-                    assertEquals(test.output.message, ex.message, "[idx=$idx, desc=${test.description}]: expected exception")
-                }
-                else -> {
-                    val actual = result.getOrThrow()
-                    val expected = test.output as TestOutput.Chain
-                    assertEquals(expected.chain, actual, "[idx=$idx, desc=${test.description}]: chains not equal")
-                }
+        when {
+            result.isFailure && test.output is TestOutput.Chain -> fail("[idx=$idx, desc=${test.description}]: expected success but chain failed to resolve: $result")
+            result.isSuccess && test.output is TestOutput.Error -> fail("[idx=$idx, desc=${test.description}]: expected failure but chain resolved successfully: $result")
+            result.isFailure && test.output is TestOutput.Error -> {
+                val ex = result.exceptionOrNull() ?: fail("[idx=$idx, desc=${test.description}]: expected exception")
+                assertEquals(test.output.message, ex.message, "[idx=$idx, desc=${test.description}]: expected exception")
+            }
+            else -> {
+                val actual = result.getOrThrow()
+                val expected = test.output as TestOutput.Chain
+                assertEquals(expected.chain, actual, "[idx=$idx, desc=${test.description}]: chains not equal")
             }
         }
+    }
 
     @Test
     fun testProfileChainResolution() {
