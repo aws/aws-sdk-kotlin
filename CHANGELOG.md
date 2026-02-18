@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.20] - 02/18/2026
+
+### Features
+* (**cleanrooms**) This release adds support for federated catalogs in Athena-sourced configured tables.
+
+### Documentation
+* (**connect**) Correcting in-app notifications API documentation.
+
+### Miscellaneous
+* Remove CloudWatch Evidently service
+* Remove IoT Analytics service
+
 ## [1.6.19] - 02/17/2026
 
 ### Features
