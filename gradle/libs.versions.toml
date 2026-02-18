@@ -21,10 +21,11 @@ smithy-version = "1.64.0"
 # testing
 ddb-local-version = "2.6.1"
 junit-version = "5.13.2"
-kotest-version = "5.9.1"
+kotest-version = "6.1.3"
 kotlinx-benchmark-version = "0.4.12"
 kotlinx-serialization-version = "1.7.3"
 mockk-version = "1.13.13"
+mokkery-version = "2.10.1"
 slf4j-version = "2.0.16"
 jsoup-version = "1.20.1"
 
@@ -118,6 +119,7 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup-version" }
 
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-version" }
 kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest-version" }
+kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest-version" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest-version" }
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark-version" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-version" }
@@ -147,12 +149,14 @@ smithy-kotlin-service-client = [
 
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version"}
+kotest = { id = "io.kotest", version.ref = "kotest-version" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-version" }
 kotlinx-benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinx-benchmark-version" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator-version" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
+mokkery = { id = "dev.mokkery", version.ref = "mokkery-version" }
 aws-kotlin-repo-tools-kmp = { id = "aws.sdk.kotlin.gradle.kmp", version.ref = "aws-kotlin-repo-tools-version" }
 aws-kotlin-repo-tools-smithybuild = { id = "aws.sdk.kotlin.gradle.smithybuild", version.ref = "aws-kotlin-repo-tools-version" }
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.1"}

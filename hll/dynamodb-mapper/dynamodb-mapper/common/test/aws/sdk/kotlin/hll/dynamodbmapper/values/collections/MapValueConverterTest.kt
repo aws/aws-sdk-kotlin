@@ -4,7 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.values.collections
 
-import aws.sdk.kotlin.hll.dynamodbmapper.util.attr
+import aws.sdk.kotlin.hll.dynamodbmapper.util.av
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConvertersTest
 import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
@@ -36,7 +36,7 @@ private object BarConverter : ValueConverter<Bar> {
     }
 
     override val right: MonoConverter<Bar, AttributeValue> = MonoConverter { obj ->
-        val list = listOf(attr(obj.foo)) + obj.baz.map(::attr)
+        val list = listOf(av(obj.foo)) + obj.baz.map(::av)
         AttributeValue.L(list)
     }
 }

@@ -4,7 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAttr
+import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
 
 /**
  * A DSL interface providing support for "low-level" filter expressions. Implementations of this interface provide
@@ -873,7 +873,7 @@ public interface Filter {
      * Creates a contains expression for verifying this expression contains the given expression
      * @param value The value which may be contained
      */
-    public infix fun AttributePath.contains(value: Any?): BooleanExpr = contains(LiteralExpr(dynamicAttr(value)))
+    public infix fun AttributePath.contains(value: Any?): BooleanExpr = contains(LiteralExpr(dynamicAv(value)))
 
     /**
      * Creates an expression for verifying an attribute exists

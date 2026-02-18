@@ -5,7 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.model
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.internal.ItemImpl
-import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAttr
+import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 
 /**
@@ -36,7 +36,7 @@ public fun Map<String, AttributeValue>.toItem(): Item = ItemImpl(this)
  * Dynamically converts this map to an immutable [Item]
  */
 @JvmName("mapStringAnyToItem")
-internal fun Map<String, Any?>.toItem() = mapValues { (_, v) -> dynamicAttr(v) }.toItem()
+internal fun Map<String, Any?>.toItem() = mapValues { (_, v) -> dynamicAv(v) }.toItem()
 
 /**
  * Returns a new immutable [Item] with the specified attributes, given as name-value pairs

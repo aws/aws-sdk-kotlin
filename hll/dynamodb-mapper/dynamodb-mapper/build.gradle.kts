@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.local.main.ServerRunner
 import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer
 import com.google.devtools.ksp.gradle.KspTaskJvm
 import com.google.devtools.ksp.gradle.KspTaskMetadata
+import dev.mokkery.verify.VerifyMode
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.net.ServerSocket
 import java.nio.file.Files
@@ -26,6 +27,8 @@ buildscript {
 
 plugins {
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotest)
+    alias(libs.plugins.mokkery)
     `dokka-convention`
 }
 
@@ -43,14 +46,8 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation(libs.mockk)
+                implementation(libs.kotest.framework.engine)
                 implementation(libs.kotest.assertions.core)
-                implementation(libs.kotest.runner.junit5)
             }
         }
     }
@@ -184,4 +181,8 @@ tasks.withType<Test> {
     doLast {
         startDdbLocal.stop()
     }
+}
+
+mokkery {
+    defaultVerifyMode.set(VerifyMode.order)
 }

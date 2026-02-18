@@ -4,8 +4,8 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.values
 
-import aws.sdk.kotlin.hll.dynamodbmapper.util.attr
-import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAttr
+import aws.sdk.kotlin.hll.dynamodbmapper.util.av
+import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -38,7 +38,7 @@ import kotlin.test.assertTrue
  * @see [TestBuilder.theSame]
  * @see [TestBuilder.anError]
  * @see [TestBuilder.whenGoing]
- * @see [attr]
+ * @see [av]
  */
 abstract class ValueConvertersTest {
     /**
@@ -157,25 +157,25 @@ abstract class ValueConvertersTest {
                 .also(tests::add)
 
         infix fun T.inDdbIs(anError: AnError) = addTest(anError)
-        infix fun T.inDdbIs(theSame: TheSame) = addTest(dynamicAttr(this))
+        infix fun T.inDdbIs(theSame: TheSame) = addTest(dynamicAv(this))
 
         infix fun T.inDdbIs(attr: AttributeValue) = addTest(attr)
-        infix fun T.inDdbIs(value: Boolean) = addTest(attr(value))
-        infix fun T.inDdbIs(value: ByteArray) = addTest(attr(value))
-        infix fun T.inDdbIs(value: List<Any?>) = addTest(attr(value))
-        infix fun T.inDdbIs(value: Map<String, Any?>) = addTest(attr(value))
-        infix fun T.inDdbIs(value: Nothing?) = addTest(attr(null))
-        infix fun T.inDdbIs(value: Number) = addTest(attr(value))
-        infix fun T.inDdbIs(value: String) = addTest(attr(value))
+        infix fun T.inDdbIs(value: Boolean) = addTest(av(value))
+        infix fun T.inDdbIs(value: ByteArray) = addTest(av(value))
+        infix fun T.inDdbIs(value: List<Any?>) = addTest(av(value))
+        infix fun T.inDdbIs(value: Map<String, Any?>) = addTest(av(value))
+        infix fun T.inDdbIs(value: Nothing?) = addTest(av(null))
+        infix fun T.inDdbIs(value: Number) = addTest(av(value))
+        infix fun T.inDdbIs(value: String) = addTest(av(value))
 
         @JvmName("inDdbIsSetByteArray")
-        infix fun T.inDdbIs(value: Set<ByteArray>) = addTest(attr(value))
+        infix fun T.inDdbIs(value: Set<ByteArray>) = addTest(av(value))
 
         @JvmName("inDdbIsSetNumber")
-        infix fun T.inDdbIs(value: Set<Number>) = addTest(attr(value))
+        infix fun T.inDdbIs(value: Set<Number>) = addTest(av(value))
 
         @JvmName("inDdbIsSetString")
-        infix fun T.inDdbIs(value: Set<String>) = addTest(attr(value))
+        infix fun T.inDdbIs(value: Set<String>) = addTest(av(value))
 
         /**
          * Limits a test case to only a single direction (i.e., checking one of `fromAttributeValue`/`toAttributeValue`

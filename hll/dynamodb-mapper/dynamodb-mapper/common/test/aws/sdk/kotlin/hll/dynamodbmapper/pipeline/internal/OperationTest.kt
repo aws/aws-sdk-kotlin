@@ -18,7 +18,14 @@ import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
 import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import io.mockk.*
+import dev.mokkery.answering.calls
+import dev.mokkery.answering.throws
+import dev.mokkery.every
+import dev.mokkery.matcher.any
+import dev.mokkery.mock
+import dev.mokkery.spy
+import dev.mokkery.verify
+import dev.mokkery.verify.VerifyMode
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,18 +37,17 @@ private const val TABLE_NAME = "foo-table"
 // FIXME Should be in commonTest but mockk is JVM-only and finding a good KMP mocking library is hard
 
 class OperationTest {
-    private val ddbMapper = mockk<DynamoDbMapper>()
+    private val ddbMapper = mock<DynamoDbMapper>()
 
     private val fooTable = object : PersistenceSpec<Foo> {
         override val mapper = ddbMapper
         override val schema = fooSchema
     }
 
-    private fun interceptor(name: String) =
-        spyk(object : Interceptor<Foo, HFooRequest, LFooRequest, LFooResponse, HFooResponse> {}, name)
+    private fun interceptor() = spy<FooInterceptor>(object : FooInterceptor { })
 
-    private val interceptorA = interceptor("A")
-    private val interceptorB = interceptor("B")
+    private val interceptorA = interceptor()
+    private val interceptorB = interceptor()
     private val interceptors = listOf(interceptorA, interceptorB)
 
     private fun initialize(hReq: HFooRequest) = HReqContextImpl(hReq, fooSchema, MapperContextImpl(fooTable, "FooOp"))
@@ -59,7 +65,7 @@ class OperationTest {
         val res = op().execute(HFooRequest(Foo("the foo")))
         assertEquals("the foo", res.foo.value) // Sanity check
 
-        verifyOrder {
+        verify {
             interceptorA.readAfterInitialization(any())
             interceptorB.readAfterInitialization(any())
 
@@ -102,8 +108,8 @@ class OperationTest {
 
     @Test
     fun testModifyHook() = runTest {
-        every { interceptorA.modifyBeforeSerialization(any()) } answers {
-            val ctx = assertIs<HReqContext<Foo, HFooRequest>>(it.invocation.args[0])
+        every { interceptorA.modifyBeforeSerialization(any()) } calls {
+            val ctx = assertIs<HReqContext<Foo, HFooRequest>>(it.args[0])
             SerializeInputImpl(HFooRequest(Foo(ctx.highLevelRequest.foo.value.reversed())), ctx.serializeSchema)
         }
 
@@ -115,8 +121,8 @@ class OperationTest {
     fun testReadOnlyHookErrorIsThrown() = runTest {
         every { interceptorA.readAfterSerialization(any()) } throws RuntimeException("Cannot foo!")
 
-        every { interceptorB.readAfterSerialization(any()) } answers {
-            val ctx = assertIs<LReqContext<Foo, HFooRequest, LFooRequest?>>(it.invocation.args[0])
+        every { interceptorB.readAfterSerialization(any()) } calls {
+            val ctx = assertIs<LReqContext<Foo, HFooRequest, LFooRequest?>>(it.args[0])
             val ex = assertIs<RuntimeException>(ctx.error)
             assertEquals("Cannot foo!", ex.message)
         }
@@ -125,13 +131,13 @@ class OperationTest {
             op().execute(HFooRequest(Foo("the foo")))
         }
 
-        verifyOrder {
+        verify {
             interceptorA.readAfterSerialization(any())
             interceptorB.readAfterSerialization(any())
         }
 
         // Should not continue to later interceptors
-        verify(inverse = true) {
+        verify(VerifyMode.not) {
             interceptorA.modifyBeforeInvocation(any())
             interceptorB.modifyBeforeInvocation(any())
         }
@@ -142,8 +148,8 @@ class OperationTest {
         every { interceptorA.modifyBeforeSerialization(any()) } throws RuntimeException("Cannot foo!")
 
         interceptors.forEach { interceptor ->
-            every { interceptor.readBeforeSerialization(any()) } answers {
-                val ctx = assertIs<HReqContext<Foo, HFooRequest>>(it.invocation.args[0])
+            every { interceptor.readBeforeSerialization(any()) } calls {
+                val ctx = assertIs<HReqContext<Foo, HFooRequest>>(it.args[0])
                 val ex = assertIs<RuntimeException>(ctx.error)
                 assertEquals("Cannot foo!", ex.message)
             }
@@ -153,14 +159,14 @@ class OperationTest {
             op().execute(HFooRequest(Foo("the foo")))
         }
 
-        verifyOrder {
+        verify {
             interceptorA.modifyBeforeSerialization(any())
             interceptorA.readBeforeSerialization(any())
             interceptorB.readBeforeSerialization(any())
         }
 
         // Should not continue to later interceptors
-        verify(inverse = true) {
+        verify(VerifyMode.not) {
             interceptorB.modifyBeforeSerialization(any())
             interceptorA.readAfterSerialization(any())
             interceptorB.readAfterSerialization(any())
@@ -193,3 +199,5 @@ private fun LFooResponse.convert(schema: ItemSchema<Foo>) =
     HFooResponse(schema.converter.convertLeft(foo))
 
 private suspend fun dummyInvoke(req: LFooRequest) = LFooResponse(req.foo)
+
+private typealias FooInterceptor = Interceptor<Foo, HFooRequest, LFooRequest, LFooResponse, HFooResponse>

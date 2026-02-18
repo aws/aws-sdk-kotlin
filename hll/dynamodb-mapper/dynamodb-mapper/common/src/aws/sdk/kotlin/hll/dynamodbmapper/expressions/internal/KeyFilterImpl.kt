@@ -10,7 +10,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.attrs
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.values
-import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAttr
+import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
 
 internal data class KeyFilterImpl(
     override val partitionKey: KeyType,
@@ -39,7 +39,7 @@ private fun pkConditions(spec: KeySpec<*>, value: KeyType): List<BooleanExpr> = 
     }
 
     attrs.zip(values).map { (attr, value) ->
-        attr(attr.name) eq LiteralExpr(dynamicAttr(value))
+        attr(attr.name) eq LiteralExpr(dynamicAv(value))
     }
 }
 
