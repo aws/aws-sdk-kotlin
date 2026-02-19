@@ -22,6 +22,7 @@ public interface ItemSource<T> :
      */
     public interface PartitionKey<T, PK : KeyType> :
         ItemSource<T>,
+        ItemSourceOperations.PartitionKey<T, PK>,
         PersistenceSpec.PartitionKey<T, PK>
 
     /**
@@ -33,5 +34,6 @@ public interface ItemSource<T> :
      */
     public interface CompositeKey<T, PK : KeyType, SK : KeyType> :
         ItemSource<T>,
+        ItemSourceOperations.CompositeKey<T, PK, SK>,
         PersistenceSpec.CompositeKey<T, PK, SK>
 }

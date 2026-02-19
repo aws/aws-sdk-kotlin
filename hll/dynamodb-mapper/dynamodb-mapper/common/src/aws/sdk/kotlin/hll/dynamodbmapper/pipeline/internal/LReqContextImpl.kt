@@ -9,21 +9,21 @@ import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.MapperContext
 import aws.sdk.kotlin.hll.dynamodbmapper.util.requireNull
 
-internal data class LReqContextImpl<T, HReq, LReq>(
+internal data class LReqContextImpl<T, S : ItemSchema<T>, HReq, LReq>(
     override val highLevelRequest: HReq,
-    override val serializeSchema: ItemSchema<T>,
+    override val serializeSchema: S,
     override val mapperContext: MapperContext<T>,
     override val lowLevelRequest: LReq,
     override val error: Throwable?,
-) : LReqContext<T, HReq, LReq>,
-    ErrorCombinable<LReqContextImpl<T, HReq, LReq>>,
-    Combinable<LReqContextImpl<T, HReq, LReq>, LReq> {
+) : LReqContext<T, S, HReq, LReq>,
+    ErrorCombinable<LReqContextImpl<T, S, HReq, LReq>>,
+    Combinable<LReqContextImpl<T, S, HReq, LReq>, LReq> {
 
     override fun plus(e: Throwable?) = copy(error = e.suppressing(error))
     override fun plus(value: LReq) = copy(lowLevelRequest = value)
 }
 
-internal operator fun <T, HReq, LReq, LRes> LReqContext<T, HReq, LReq>.plus(
+internal operator fun <T, S : ItemSchema<T>, HReq, LReq, LRes> LReqContext<T, S, HReq, LReq>.plus(
     lowLevelResponse: LRes,
 ) = LResContextImpl(
     highLevelRequest,
@@ -35,7 +35,7 @@ internal operator fun <T, HReq, LReq, LRes> LReqContext<T, HReq, LReq>.plus(
     error,
 )
 
-internal fun <T, HReq, LReq> LReqContext<T, HReq, LReq?>.solidify() = LReqContextImpl(
+internal fun <T, S : ItemSchema<T>, HReq, LReq> LReqContext<T, S, HReq, LReq?>.solidify() = LReqContextImpl(
     highLevelRequest,
     serializeSchema,
     mapperContext,

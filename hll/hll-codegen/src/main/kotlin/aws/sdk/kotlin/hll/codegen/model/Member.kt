@@ -29,15 +29,11 @@ public data class Member(
         /**
          * Derive a [Member] from a [KSPropertyDeclaration]
          */
-        public fun from(prop: KSPropertyDeclaration): Member {
-            val member = Member(
-                name = prop.simpleName.getShortName(),
-                type = Type.from(prop.type),
-                mutable = prop.isMutable,
-            )
-
-            return ModelParsingPlugin.transform(member, ModelParsingPlugin::postProcessMember)
-        }
+        public fun from(prop: KSPropertyDeclaration): Member = Member(
+            name = prop.simpleName.getShortName(),
+            type = Type.from(prop.type),
+            mutable = prop.isMutable,
+        )
     }
 }
 

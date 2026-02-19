@@ -5,7 +5,6 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec.Companion.byteArray
-import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec.Companion.number
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec.Companion.string
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.KeyAttrSpecImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.KeySpec1Impl
@@ -20,8 +19,7 @@ import aws.sdk.kotlin.services.dynamodb.model.ScalarAttributeType
  *
  * A [KeySpec] consisting of a single attribute may be created manually by invoking one the companion object methods
  * [byteArray], [number], or [string]. A [KeySpec] consisting of more attributes may be created by invoking one of the
- * extension methods [thenByteArray], [thenNumber], or [thenString]. Key specifications may consist of up to four
- * attributes.
+ * extension methods [thenInt], [thenLong], [thenString], etc. Key specifications may consist of up to four attributes.
  *
  * **Important**: The order of attributes within a [KeySpec] is significant and must reflect the order of the attributes
  * defined in the table or index key within DynamoDB.
@@ -31,26 +29,25 @@ import aws.sdk.kotlin.services.dynamodb.model.ScalarAttributeType
  * To create a key specification for a single attribute:
  *
  * ```kotlin
- * val spec = KeySpec.number<Int>("companyId") // returns KeySpec.Key1<Int>
+ * val spec = KeySpec.int("companyId") // returns KeySpec.Key1<Int>
  * ```
  *
  * To create a key specification for multiple attributes:
  *
  * ```kotlin
  * val spec = KeySpec
- *     .number<Int>("companyId") // returns KeySpec.Key1<Int>
+ *     .int("companyId") // returns KeySpec.Key1<Int>
  *     .thenString("department") // returns KeySpec.Key2<Int, String>
- *     .thenNumber<_, Long>("timestamp") // returns KeySpec.Key3<Int, String, Long>
+ *     .thenLong("timestamp") // returns KeySpec.Key3<Int, String, Long>
  * ```
  *
  * @param K The type of the key, either [KeyType] or one of its specific derivations
  */
-public sealed interface KeySpec<in K : KeyType> {
+public sealed interface KeySpec<K : KeyType> {
     /**
-     * Given a value for this key, convert into an [Item] map of keys and values
-     * @param value The value to use for the key attribute
+     * An [ItemConverter] instance which converts between [K] values and [Item] values
      */
-    public fun toFields(value: K): Item
+    public val converter: ItemConverter<K>
 
     /**
      * Defines the specification for a key consisting of a single attribute
@@ -135,22 +132,42 @@ public sealed interface KeySpec<in K : KeyType> {
     public companion object {
         /**
          * Instantiates a new [KeySpec] for a single attribute. Additional attributes may be added with the extension
-         * methods [thenByteArray], [thenNumber], and [thenString].
+         * methods [thenInt], [thenLong], [thenString], etc.
+         * @param name The name of the attribute
+         */
+        public fun byte(name: String): Key1<Byte> = KeySpec1Impl(KeyAttrSpec.byte(name))
+
+        /**
+         * Instantiates a new [KeySpec] for a single attribute. Additional attributes may be added with the extension
+         * methods [thenInt], [thenLong], [thenString], etc.
          * @param name The name of the attribute
          */
         public fun byteArray(name: String): Key1<ByteArray> = KeySpec1Impl(KeyAttrSpec.byteArray(name))
 
         /**
          * Instantiates a new [KeySpec] for a single attribute. Additional attributes may be added with the extension
-         * methods [thenByteArray], [thenNumber], and [thenString].
-         * @param N The type of [Number] used for this attribute (e.g., [Int])
+         * methods [thenInt], [thenLong], [thenString], etc.
          * @param name The name of the attribute
          */
-        public fun <N : Number> number(name: String): Key1<N> = KeySpec1Impl(KeyAttrSpec.number(name))
+        public fun int(name: String): Key1<Int> = KeySpec1Impl(KeyAttrSpec.int(name))
 
         /**
          * Instantiates a new [KeySpec] for a single attribute. Additional attributes may be added with the extension
-         * methods [thenByteArray], [thenNumber], and [thenString].
+         * methods [thenInt], [thenLong], [thenString], etc.
+         * @param name The name of the attribute
+         */
+        public fun long(name: String): Key1<Long> = KeySpec1Impl(KeyAttrSpec.long(name))
+
+        /**
+         * Instantiates a new [KeySpec] for a single attribute. Additional attributes may be added with the extension
+         * methods [thenInt], [thenLong], [thenString], etc.
+         * @param name The name of the attribute
+         */
+        public fun short(name: String): Key1<Short> = KeySpec1Impl(KeyAttrSpec.short(name))
+
+        /**
+         * Instantiates a new [KeySpec] for a single attribute. Additional attributes may be added with the extension
+         * methods [thenInt], [thenLong], [thenString], etc.
          * @param name The name of the attribute
          */
         public fun string(name: String): Key1<String> = KeySpec1Impl(KeyAttrSpec.string(name))
@@ -173,6 +190,12 @@ public interface KeyAttrSpec<K> {
     public val type: ScalarAttributeType
 
     /**
+     * Extracts a key value from the DynamoDB [Item] attribute keyed by [name]
+     * @param item The [Item] to convert
+     */
+    public fun fromFieldInItem(item: Item): K
+
+    /**
      * Creates a DynamoDB key-value pair for an attribute as a `Pair<String, AttributeValue>`, suitable for use in an
      * [Item] instance.
      */
@@ -183,19 +206,38 @@ public interface KeyAttrSpec<K> {
          * Instantiates a new binary [KeyAttrSpec] with the given name
          * @param name The name of the attribute
          */
-        public fun byteArray(name: String): KeyAttrSpec<ByteArray> = KeyAttrSpecImpl(name, ScalarAttributeType.B, AttributeValue::B)
+        public fun byteArray(name: String): KeyAttrSpec<ByteArray> = KeyAttrSpecImpl(name, ScalarAttributeType.B, AttributeValue::B, AttributeValue::asB)
 
         /**
          * Instantiates a new numeric [KeyAttrSpec] with the given name
-         * @param N The type of [Number] of this attribute (e.g., [Int])
          * @param name The name of the attribute
          */
-        public fun <N : Number> number(name: String): KeyAttrSpec<N> = KeyAttrSpecImpl(name, ScalarAttributeType.N) { AttributeValue.N(it.toString()) }
+        public fun byte(name: String): KeyAttrSpec<Byte> = number(name) { it.toByte() }
+
+        /**
+         * Instantiates a new numeric [KeyAttrSpec] with the given name
+         * @param name The name of the attribute
+         */
+        public fun int(name: String): KeyAttrSpec<Int> = number(name) { it.toInt() }
+
+        /**
+         * Instantiates a new numeric [KeyAttrSpec] with the given name
+         * @param name The name of the attribute
+         */
+        public fun long(name: String): KeyAttrSpec<Long> = number(name) { it.toLong() }
+
+        /**
+         * Instantiates a new numeric [KeyAttrSpec] with the given name
+         * @param name The name of the attribute
+         */
+        public fun short(name: String): KeyAttrSpec<Short> = number(name) { it.toShort() }
+
+        private fun <N : Number> number(name: String, parser: (String) -> N): KeyAttrSpec<N> = KeyAttrSpecImpl(name, ScalarAttributeType.N, { AttributeValue.N(it.toString()) }, { parser(it.asN()) })
 
         /**
          * Instantiates a new string [KeyAttrSpec] with the given name
          * @param name The name of the attribute
          */
-        public fun string(name: String): KeyAttrSpec<String> = KeyAttrSpecImpl(name, ScalarAttributeType.S, AttributeValue::S)
+        public fun string(name: String): KeyAttrSpec<String> = KeyAttrSpecImpl(name, ScalarAttributeType.S, AttributeValue::S, AttributeValue::asS)
     }
 }

@@ -5,10 +5,7 @@
 
 package aws.sdk.kotlin.hll.dynamodbmapper.operations
 
-import aws.sdk.kotlin.hll.dynamodbmapper.items.AttributeDescriptor
-import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
-import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
-import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.items.*
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
@@ -51,7 +48,7 @@ class PaginatedScanTest : DdbLocalTest() {
             AttributeDescriptor("description", Card::description, Card::description::set, StringValueConverter),
         )
 
-        private val schema = ItemSchema(converter, KeySpec.string("suit"), KeySpec.number<Int>("rank"))
+        private val schema = ItemSchema(converter, KeySpec.string("suit"), KeySpec.int("rank"))
 
         private val allCards = listOf("Spades", "Clubs", "Hearts", "Diamonds").flatMap { suit ->
             (2..14).map { rank ->
@@ -97,12 +94,13 @@ class PaginatedScanTest : DdbLocalTest() {
     fun testPaginatedScanWithOffset() = runTest {
         val mapper = mapper()
         val table = mapper.getTable(TABLE_NAME, schema)
-        val startKey = allCards.first()
+        val startItem = allCards.first()
         var pages = 0
 
         val actual = table
             .scanPaginated {
-                exclusiveStartKey = startKey
+                exclusiveStartPartitionKey = Key(startItem.suit)
+                exclusiveStartSortKey = Key(startItem.rank)
             }
             .map {
                 pages++
@@ -110,7 +108,7 @@ class PaginatedScanTest : DdbLocalTest() {
             }
             .items()
             .toSet()
-        assertTrue(startKey !in actual)
+        assertTrue(startItem !in actual)
         assertTrue(pages > 1, "Got only $pages pages but expected at least 2")
     }
 }

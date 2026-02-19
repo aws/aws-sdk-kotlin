@@ -10,27 +10,27 @@ import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LResContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.MapperContext
 import aws.sdk.kotlin.hll.dynamodbmapper.util.requireNull
 
-internal data class LResContextImpl<T, HReq, LReq, LRes>(
+internal data class LResContextImpl<T, S : ItemSchema<T>, HReq, LReq, LRes>(
     override val highLevelRequest: HReq,
-    override val serializeSchema: ItemSchema<T>,
+    override val serializeSchema: S,
     override val mapperContext: MapperContext<T>,
     override val lowLevelRequest: LReq,
     override val lowLevelResponse: LRes,
-    override val deserializeSchema: ItemSchema<T>,
+    override val deserializeSchema: S,
     override val error: Throwable?,
-) : LResContext<T, HReq, LReq, LRes>,
-    ErrorCombinable<LResContextImpl<T, HReq, LReq, LRes>>,
-    Combinable<LResContextImpl<T, HReq, LReq, LRes>, DeserializeInput<T, LRes>> {
+) : LResContext<T, S, HReq, LReq, LRes>,
+    ErrorCombinable<LResContextImpl<T, S, HReq, LReq, LRes>>,
+    Combinable<LResContextImpl<T, S, HReq, LReq, LRes>, DeserializeInput<T, S, LRes>> {
 
     override fun plus(e: Throwable?) = copy(error = e.suppressing(error))
 
-    override fun plus(value: DeserializeInput<T, LRes>) = copy(
+    override fun plus(value: DeserializeInput<T, S, LRes>) = copy(
         lowLevelResponse = value.lowLevelResponse,
         deserializeSchema = value.deserializeSchema,
     )
 }
 
-internal operator fun <T, HReq, LReq, LRes, HRes> LResContext<T, HReq, LReq, LRes>.plus(
+internal operator fun <T, S : ItemSchema<T>, HReq, LReq, LRes, HRes> LResContext<T, S, HReq, LReq, LRes>.plus(
     highLevelResponse: HRes,
 ) = HResContextImpl(
     highLevelRequest,
@@ -43,7 +43,7 @@ internal operator fun <T, HReq, LReq, LRes, HRes> LResContext<T, HReq, LReq, LRe
     error,
 )
 
-internal fun <T, HReq, LReq, LRes> LResContext<T, HReq, LReq, LRes?>.solidify() = LResContextImpl(
+internal fun <T, S : ItemSchema<T>, HReq, LReq, LRes> LResContext<T, S, HReq, LReq, LRes?>.solidify() = LResContextImpl(
     highLevelRequest,
     serializeSchema,
     mapperContext,

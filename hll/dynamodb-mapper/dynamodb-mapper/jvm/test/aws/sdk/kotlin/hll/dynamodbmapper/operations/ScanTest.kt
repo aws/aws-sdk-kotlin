@@ -40,7 +40,7 @@ class ScanTest : DdbLocalTest() {
             AttributeDescriptor("released", Product::released, Product::released::set, InstantValueConverter.Iso8601),
         )
 
-        private val schema = ItemSchema(converter, KeySpec.number<Int>("id"))
+        private val schema = ItemSchema(converter, KeySpec.int("id"))
     }
 
     @BeforeAll

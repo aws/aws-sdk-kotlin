@@ -5,15 +5,15 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.interceptors
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaPartitionKeyImpl
-import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.PersistenceSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.model.SchemaAttributes
 import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.MapperContext
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
+import aws.sdk.kotlin.hll.mapping.core.converters.Converter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
 import aws.smithy.kotlin.runtime.collections.attributesOf
@@ -28,7 +28,7 @@ class TtlInterceptorTest {
     @Test
     fun testPutItemWithSingleTtlField() {
         val testClock = ManualClock(Instant.fromEpochSeconds(0))
-        val interceptor = TtlInterceptor<String>(testClock)
+        val interceptor = TtlInterceptor(testClock)
         val ttlFields = setOf("expiresAt" to 1.hours.inWholeSeconds)
 
         val request = PutItemRequest {
@@ -49,7 +49,7 @@ class TtlInterceptorTest {
     @Test
     fun testPutItemWithMultipleTtlFields() {
         val testClock = ManualClock(Instant.fromEpochSeconds(0))
-        val interceptor = TtlInterceptor<String>(testClock)
+        val interceptor = TtlInterceptor(testClock)
         val ttlFields = setOf(
             "expiresAt" to 1.hours.inWholeSeconds,
             "actuallyExpiresAt" to 2.hours.inWholeSeconds,
@@ -69,7 +69,7 @@ class TtlInterceptorTest {
 
     @Test
     fun testPutItemWithoutTtlFields() {
-        val interceptor = TtlInterceptor<String>()
+        val interceptor = TtlInterceptor()
 
         val request = PutItemRequest {
             tableName = "test-table"
@@ -84,7 +84,7 @@ class TtlInterceptorTest {
 
     @Test
     fun testNonPutItemRequest() {
-        val interceptor = TtlInterceptor<String>()
+        val interceptor = TtlInterceptor()
         val otherRequest = "not-a-put-request"
         val ttlFields = setOf("expiresAt" to 3600L)
 
@@ -96,7 +96,7 @@ class TtlInterceptorTest {
 
     @Test
     fun testPutItemWithEmptyItem() {
-        val interceptor = TtlInterceptor<String>()
+        val interceptor = TtlInterceptor()
         val ttlFields = setOf("expiresAt" to 3600L)
 
         val request = PutItemRequest {
@@ -110,17 +110,17 @@ class TtlInterceptorTest {
         assertSame(request, result)
     }
 
-    private fun createTestContext(lowLevelRequest: Any, ttlFields: Set<Pair<String, Long>>): LReqContext<String, Any, Any> {
+    private fun createTestContext(
+        lowLevelRequest: Any,
+        ttlFields: Set<Pair<String, Long>>,
+    ): LReqContext<Any, ItemSchema<Any>, Any, Any> {
         val attributes = attributesOf {
             if (ttlFields.isNotEmpty()) {
                 SchemaAttributes.TtlFields to ttlFields
             }
         }
 
-        val converter = object : ItemConverter<String> {
-            override val left = MonoConverter<Item, String> { "" }
-            override val right = MonoConverter<String, Item> { buildItem { } }
-        }
+        val converter: ItemConverter<Any> = Converter(right = { buildItem { } }, left = { "" })
 
         val schema = ItemSchemaPartitionKeyImpl(
             converter = converter,
@@ -128,8 +128,8 @@ class TtlInterceptorTest {
             attributes = attributes,
         )
 
-        val mapperContext = object : MapperContext<String> {
-            override val persistenceSpec: PersistenceSpec<String>
+        val mapperContext = object : MapperContext<Any> {
+            override val persistenceSpec: PersistenceSpec<Any>
                 get() = error("Not needed for test")
             override val operation: String
                 get() = error("Not needed for test")

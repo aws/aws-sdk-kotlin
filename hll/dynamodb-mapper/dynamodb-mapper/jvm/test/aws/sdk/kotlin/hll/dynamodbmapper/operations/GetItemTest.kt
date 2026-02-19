@@ -4,11 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.operations
 
-import aws.sdk.kotlin.hll.dynamodbmapper.items.AttributeDescriptor
-import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
-import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
-import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.model.Table
+import aws.sdk.kotlin.hll.dynamodbmapper.items.*
 import aws.sdk.kotlin.hll.dynamodbmapper.model.getItem
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
@@ -33,7 +29,7 @@ class GetItemTest : DdbLocalTest() {
             AttributeDescriptor("id", PkItem::id, PkItem::id::set, NumberValueConverters.Int),
             AttributeDescriptor("value", PkItem::value, PkItem::value::set, StringValueConverter),
         )
-        private val pkSchema = ItemSchema(pkConverter, KeySpec.number<Int>("id"))
+        private val pkSchema = ItemSchema(pkConverter, KeySpec.int("id"))
 
         private data class CkItem(var id: String = "", var version: Int = 0, var value: String = "")
 
@@ -44,7 +40,7 @@ class GetItemTest : DdbLocalTest() {
             AttributeDescriptor("version", CkItem::version, CkItem::version::set, NumberValueConverters.Int),
             AttributeDescriptor("value", CkItem::value, CkItem::value::set, StringValueConverter),
         )
-        private val ckSchema = ItemSchema(ckConverter, KeySpec.string("id"), KeySpec.number<Int>("version"))
+        private val ckSchema = ItemSchema(ckConverter, KeySpec.string("id"), KeySpec.int("version"))
     }
 
     @BeforeAll
@@ -54,26 +50,31 @@ class GetItemTest : DdbLocalTest() {
     }
 
     private fun testGetItem(
-        vararg keys: PkItem,
+        vararg keys: Int,
         returnConsumedCapacity: ReturnConsumedCapacity? = null,
         action: (GetItemResponse<PkItem>) -> Unit,
-    ) = testGetItem(mapper().getTable(PK_TABLE_NAME, pkSchema), returnConsumedCapacity, keys.toList(), action)
-
-    private fun testGetItem(
-        vararg keys: CkItem,
-        returnConsumedCapacity: ReturnConsumedCapacity? = null,
-        action: (GetItemResponse<CkItem>) -> Unit,
-    ) = testGetItem(mapper().getTable(CK_TABLE_NAME, ckSchema), returnConsumedCapacity, keys.toList(), action)
-
-    private fun <T> testGetItem(
-        table: Table<T>,
-        returnConsumedCapacity: ReturnConsumedCapacity? = null,
-        keys: List<T>,
-        action: (GetItemResponse<T>) -> Unit,
     ) = runTest {
+        val table = mapper().getTable(PK_TABLE_NAME, pkSchema)
         keys.forEach { key ->
             val response = table.getItem {
-                this.key = key
+                partitionKey = Key(key)
+                this.returnConsumedCapacity = returnConsumedCapacity
+            }
+
+            action(response)
+        }
+    }
+
+    private fun testGetItem(
+        vararg keys: Pair<String, Int>,
+        returnConsumedCapacity: ReturnConsumedCapacity? = null,
+        action: (GetItemResponse<CkItem>) -> Unit,
+    ) = runTest {
+        val table = mapper().getTable(CK_TABLE_NAME, ckSchema)
+        keys.forEach { key ->
+            val response = table.getItem {
+                partitionKey = Key(key.first)
+                sortKey = Key(key.second)
                 this.returnConsumedCapacity = returnConsumedCapacity
             }
 
@@ -82,22 +83,19 @@ class GetItemTest : DdbLocalTest() {
     }
 
     @Test
-    fun testPkGetItem() = testGetItem(PkItem(id = 1)) {
+    fun testPkGetItem() = testGetItem(1) {
         val item = assertNotNull(it.item)
         assertEquals(1, item.id)
         assertEquals("foo", item.value)
     }
 
     @Test
-    fun testPkGetItemInvalidKey() = testGetItem(
-        PkItem(id = 2),
-        PkItem(),
-    ) {
+    fun testPkGetItemInvalidKey() = testGetItem(2, 3) {
         assertNull(it.item)
     }
 
     @Test
-    fun testCkGetItem() = testGetItem(CkItem(id = "abcd", version = 42)) {
+    fun testCkGetItem() = testGetItem("abcd" to 42) {
         val item = assertNotNull(it.item)
         assertEquals("abcd", item.id)
         assertEquals(42, item.version)
@@ -105,20 +103,12 @@ class GetItemTest : DdbLocalTest() {
     }
 
     @Test
-    fun testCkGetItemInvalidKey() = testGetItem(
-        CkItem(id = "bcde", version = 41),
-        CkItem(id = "abcd", version = 41),
-        CkItem(id = "bcde", version = 42),
-        CkItem(id = "abcd"),
-    ) {
+    fun testCkGetItemInvalidKey() = testGetItem("bcde" to 41, "abcd" to 41, "bcde" to 42) {
         assertNull(it.item)
     }
 
     @Test
-    fun testGetItemAdditionalParams() = testGetItem(
-        PkItem(id = 42),
-        returnConsumedCapacity = ReturnConsumedCapacity.Indexes,
-    ) {
+    fun testGetItemAdditionalParams() = testGetItem(42, returnConsumedCapacity = ReturnConsumedCapacity.Indexes) {
         val cc = assertNotNull(it.consumedCapacity)
         assertEquals(0.5, cc.capacityUnits)
         assertEquals(PK_TABLE_NAME, cc.tableName)
@@ -141,9 +131,9 @@ class GetItemTest : DdbLocalTest() {
     fun testCkGetItemByScalarKeys() = runTest {
         val table = mapper().getTable(CK_TABLE_NAME, ckSchema)
 
-        val item = assertNotNull(table.getItem("abcd", 42))
+        val item = assertNotNull(table.getItem(Key("abcd"), Key(42)))
         assertEquals("foo", item.value)
 
-        assertNull(table.getItem("abcd", 43))
+        assertNull(table.getItem(Key("abcd"), Key(43)))
     }
 }

@@ -141,7 +141,7 @@ class SchemaGeneratorPluginTest {
             """
                 public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
                     override val converter: UserConverter = UserConverter
-                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
                     override val attributes: Attributes = emptyAttributes()
                 }
             """.trimIndent(),
@@ -412,7 +412,7 @@ class SchemaGeneratorPluginTest {
             """
                 public object CustomUserSchema : ItemSchema.PartitionKey<CustomUser, KeyType.Key1<Int>> {
                     override val converter: MyCustomUserConverter = MyCustomUserConverter
-                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
                     override val attributes: Attributes = emptyAttributes()
                 }
             """.trimIndent(),
@@ -569,7 +569,7 @@ class SchemaGeneratorPluginTest {
             """
                 public object RenamedPartitionKeySchema : ItemSchema.PartitionKey<RenamedPartitionKey, KeyType.Key1<Int>> {
                     override val converter: RenamedPartitionKeyConverter = RenamedPartitionKeyConverter
-                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("user_id")
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("user_id")
                     override val attributes: Attributes = emptyAttributes()
                 }
             """.trimIndent(),
@@ -631,7 +631,7 @@ class SchemaGeneratorPluginTest {
             """
             public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
                 override val converter: UserConverter = UserConverter
-                override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
                 override val attributes: Attributes = attributesOf {
                     SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 86400L))
                 }
@@ -666,7 +666,7 @@ class SchemaGeneratorPluginTest {
             """
             public object MultipleTtlAnnotationsSchema : ItemSchema.PartitionKey<MultipleTtlAnnotations, KeyType.Key1<Int>> {
                 override val converter: MultipleTtlAnnotationsConverter = MultipleTtlAnnotationsConverter
-                override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
                 override val attributes: Attributes = attributesOf {
                     SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 3600L), Pair("actuallyExpiresAt", 7200L))
                 }
@@ -701,7 +701,7 @@ class SchemaGeneratorPluginTest {
             """
             public object UserWithCounterSchema : ItemSchema.PartitionKey<UserWithCounter, KeyType.Key1<Int>> {
                 override val converter: UserWithCounterConverter = UserWithCounterConverter
-                override val partitionKey: KeySpec.Key1<Int> = KeySpec.number<Int>("id")
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
                 override val attributes: Attributes = attributesOf {
                     SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 3600L))
                     SchemaAttributes.CounterFields to setOf("accessCount", "updateCount")

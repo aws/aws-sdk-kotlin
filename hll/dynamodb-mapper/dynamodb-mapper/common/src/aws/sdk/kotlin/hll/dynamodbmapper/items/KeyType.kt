@@ -173,16 +173,39 @@ public sealed interface KeyType {
  * @param value1 The value of the single attribute
  */
 @Suppress("FunctionName")
+public fun Key(value1: Byte): KeyType.Key1<Byte> = KeyType1Impl(value1)
+
+/**
+ * Instantiates a new [KeyType] consisting of a single value. Additional values may be added with one of the [invoke]
+ * extension function overloads.
+ * @param value1 The value of the single attribute
+ */
+@Suppress("FunctionName")
 public fun Key(value1: ByteArray): KeyType.Key1<ByteArray> = KeyType1Impl(value1)
 
 /**
  * Instantiates a new [KeyType] consisting of a single value. Additional values may be added with one of the [invoke]
  * extension function overloads.
- * @param N The type of [Number] used for this attribute (e.g., [Int])
  * @param value1 The value of the single attribute
  */
 @Suppress("FunctionName")
-public fun <N : Number> Key(value1: N): KeyType.Key1<N> = KeyType1Impl(value1)
+public fun Key(value1: Int): KeyType.Key1<Int> = KeyType1Impl(value1)
+
+/**
+ * Instantiates a new [KeyType] consisting of a single value. Additional values may be added with one of the [invoke]
+ * extension function overloads.
+ * @param value1 The value of the single attribute
+ */
+@Suppress("FunctionName")
+public fun Key(value1: Long): KeyType.Key1<Long> = KeyType1Impl(value1)
+
+/**
+ * Instantiates a new [KeyType] consisting of a single value. Additional values may be added with one of the [invoke]
+ * extension function overloads.
+ * @param value1 The value of the single attribute
+ */
+@Suppress("FunctionName")
+public fun Key(value1: Short): KeyType.Key1<Short> = KeyType1Impl(value1)
 
 /**
  * Instantiates a new [KeyType] consisting of a single value. Additional values may be added with one of the [invoke]

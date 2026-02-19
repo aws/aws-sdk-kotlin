@@ -4,10 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.operations
 
-import aws.sdk.kotlin.hll.dynamodbmapper.items.AttributeDescriptor
-import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
-import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
-import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.items.*
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
@@ -48,7 +45,7 @@ class DeleteItemTest : DdbLocalTest() {
         val table = mapper.getTable(TABLE_NAME, schema)
 
         val resp = table.deleteItem {
-            key = Item(id = "foo")
+            partitionKey = Key("foo")
             returnConsumedCapacity = ReturnConsumedCapacity.Indexes
             returnValues = ReturnValue.AllOld
         }

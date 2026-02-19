@@ -5,22 +5,58 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemResponse
+import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.HReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
-import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
+import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
+import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
 
-internal data class Operation<T, HReq, LReq, LRes, HRes>(
-    val initialize: (HReq) -> HReqContextImpl<T, HReq>,
-    val serialize: (HReq, ItemSchema<T>) -> LReq,
+/**
+ * Models a high-level operation as a series of lambda functions which implement the various stages such as
+ * serialization or low-level invocation.
+ *
+ * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
+ * @param HReq The type of high-level request object (e.g., [GetItemRequest])
+ * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
+ * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
+ * @param HRes The type of high-level response object (e.g., [GetItemResponse])
+ * @param initialize The initialization logic, which takes a high-level request ([HReq]) input and produces a request
+ * context ([HReqContext]) output
+ * @param serialize The serialization logic, which takes high-level request ([HReq]) and item schema ([S]) inputs and
+ * produces a low-level request ([LReq]) output
+ * @param lowLevelInvoke The low-level invocation logic, which takes a low-level request ([LReq]) input and produces a
+ * low-level response ([LRes]) output
+ * @param deserialize The deserialization logic, which takes low-level response ([LRes]) and item schema ([S]) inputs
+ * and produces a high-level response ([HRes]) output
+ * @param interceptors Any attached interceptors to be executed at the appropriate stages
+ */
+internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
+    val initialize: (HReq) -> HReqContextImpl<T, S, HReq>,
+    val serialize: (HReq, S) -> LReq,
     val lowLevelInvoke: suspend (LReq) -> LRes,
-    val deserialize: (LRes, ItemSchema<T>) -> HRes,
-    val interceptors: List<Interceptor<T, HReq, LReq, LRes, HRes>>,
+    val deserialize: (LRes, S) -> HRes,
+    val interceptors: List<Interceptor<T, S, HReq, LReq, LRes, HRes>>,
 ) {
+    /**
+     * Initializes a new high-level operation
+     * @param initialize The initialization logic, which takes a high-level request ([HReq]) input and produces a
+     * request context ([HReqContext]) output
+     * @param serialize The serialization logic, which takes high-level request ([HReq]) and item schema ([S]) inputs
+     * and produces a low-level request ([LReq]) output
+     * @param lowLevelInvoke The low-level invocation logic, which takes a low-level request ([LReq]) input and produces
+     * a low-level response ([LRes]) output
+     * @param deserialize The deserialization logic, which takes low-level response ([LRes]) and item schema ([S])
+     * inputs and produces a high-level response ([HRes]) output
+     * @param interceptors Any attached interceptors to be executed at the appropriate stages
+     */
     constructor(
-        initialize: (HReq) -> HReqContextImpl<T, HReq>,
-        serialize: (HReq, ItemSchema<T>) -> LReq,
+        initialize: (HReq) -> HReqContextImpl<T, S, HReq>,
+        serialize: (HReq, S) -> LReq,
         lowLevelInvoke: suspend (LReq) -> LRes,
-        deserialize: (LRes, ItemSchema<T>) -> HRes,
-        interceptors: Collection<InterceptorAny>,
+        deserialize: (LRes, S) -> HRes,
+        interceptors: Collection<Interceptor<*, *, *, *, *, *>>,
     ) : this(
         initialize,
         serialize,
@@ -29,7 +65,7 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
         interceptors.map {
             // Will cause runtime ClassCastExceptions during interceptor invocation if the types don't match. Is that ok?
             @Suppress("UNCHECKED_CAST")
-            it as Interceptor<T, HReq, LReq, LRes, HRes>
+            it as Interceptor<T, S, HReq, LReq, LRes, HRes>
         },
     )
 
@@ -44,7 +80,7 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
     private fun <I : ErrorCombinable<I>> readOnlyHook(
         input: I,
         reverse: Boolean = false,
-        hook: Interceptor<T, HReq, LReq, LRes, HRes>.(I) -> Unit,
+        hook: Interceptor<T, S, HReq, LReq, LRes, HRes>.(I) -> Unit,
     ) = interceptors.fold(input, reverse) { ctx, interceptor ->
         runCatching {
             interceptor.hook(ctx)
@@ -57,7 +93,7 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
     private fun <I, V> modifyHook(
         input: I,
         reverse: Boolean = false,
-        hook: Interceptor<T, HReq, LReq, LRes, HRes>.(I) -> V,
+        hook: Interceptor<T, S, HReq, LReq, LRes, HRes>.(I) -> V,
     ): I where I : Combinable<I, V>, I : ErrorCombinable<I> {
         var latestCtx = input
         return runCatching {
@@ -72,12 +108,12 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
         )
     }
 
-    private fun doInitialize(input: HReq): HReqContextImpl<T, HReq> {
+    private fun doInitialize(input: HReq): HReqContextImpl<T, S, HReq> {
         val ctx = initialize(input)
         return readOnlyHook(ctx) { readAfterInitialization(it) }
     }
 
-    private fun doSerialize(inputCtx: HReqContextImpl<T, HReq>): LReqContextImpl<T, HReq, LReq> {
+    private fun doSerialize(inputCtx: HReqContextImpl<T, S, HReq>): LReqContextImpl<T, S, HReq, LReq> {
         val rbsCtx = modifyHook(inputCtx) { modifyBeforeSerialization(it) }
         val serCtx = readOnlyHook(rbsCtx) { readBeforeSerialization(it) }
 
@@ -89,8 +125,8 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
     }
 
     private suspend fun doLowLevelInvoke(
-        inputCtx: LReqContextImpl<T, HReq, LReq>,
-    ): LResContextImpl<T, HReq, LReq, LRes> {
+        inputCtx: LReqContextImpl<T, S, HReq, LReq>,
+    ): LResContextImpl<T, S, HReq, LReq, LRes> {
         val rbiCtx = modifyHook(inputCtx) { modifyBeforeInvocation(it) }
         val invCtx = readOnlyHook(rbiCtx) { readBeforeInvocation(it) }
 
@@ -102,8 +138,8 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
     }
 
     private fun doDeserialize(
-        inputCtx: LResContextImpl<T, HReq, LReq, LRes>,
-    ): HResContextImpl<T, HReq, LReq, LRes, HRes> {
+        inputCtx: LResContextImpl<T, S, HReq, LReq, LRes>,
+    ): HResContextImpl<T, S, HReq, LReq, LRes, HRes> {
         val rbdCtx = modifyHook(inputCtx, reverse = true) { modifyBeforeDeserialization(it) }
         val desCtx = readOnlyHook(rbdCtx, reverse = true) { readBeforeDeserialization(it) }
 
@@ -114,7 +150,7 @@ internal data class Operation<T, HReq, LReq, LRes, HRes>(
         return readOnlyHook(radCtx, reverse = true) { readAfterDeserialization(it) }.solidify()
     }
 
-    private fun finalize(inputCtx: HResContextImpl<T, HReq, LReq, LRes, HRes>): HRes {
+    private fun finalize(inputCtx: HResContextImpl<T, S, HReq, LReq, LRes, HRes>): HRes {
         val raeCtx = modifyHook(inputCtx, reverse = true) { modifyBeforeCompletion(it) }
         val finalCtx = readOnlyHook(raeCtx, reverse = true) { readBeforeCompletion(it) }
         return finalCtx.highLevelResponse!!

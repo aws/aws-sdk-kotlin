@@ -18,7 +18,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-@Ignored // DynamoDB Local 2.6.1 does not support multi-attribute keys yet
+@Ignored // TODO DynamoDB Local 2.6.1 does not support multi-attribute keys yet
 class QueryMultiAttrKeyTest : DdbLocalTest() {
     companion object {
         private const val TABLE_NAME = "query-multi-attr-keys-test"
@@ -47,8 +47,8 @@ class QueryMultiAttrKeyTest : DdbLocalTest() {
         private val tableSchema = eventConverter.withKeySpec(KeySpec.string("eventId"))
 
         private val indexSchema = eventConverter.withKeySpec(
-            KeySpec.number<Int>("companyId").thenString("department"),
-            KeySpec.string("category").thenNumber<_, Long>("timestamp"),
+            KeySpec.int("companyId").thenString("department"),
+            KeySpec.string("category").thenLong("timestamp"),
         )
     }
 

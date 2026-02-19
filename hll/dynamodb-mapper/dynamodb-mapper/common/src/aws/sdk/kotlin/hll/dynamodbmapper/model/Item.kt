@@ -19,7 +19,7 @@ public interface Item : Map<String, AttributeValue>
  * of it.
  * @param block The block to apply to the [MutableItem] builder
  */
-public inline fun buildItem(block: MutableItem.() -> Unit): Item = mutableMapOf<String, AttributeValue>().toMutableItem().apply(block).toItem()
+public inline fun buildItem(block: MutableItem.() -> Unit): Item = mutableItemOf().apply(block).toItem()
 
 /**
  * Convert this [Item] into a [MutableItem]. Changes to the returned instance do not affect this instance.
@@ -36,6 +36,11 @@ public fun Map<String, AttributeValue>.toItem(): Item = ItemImpl(this)
  */
 @JvmName("mapStringAnyToItem")
 internal fun Map<String, Any?>.toItem() = mapValues { (_, v) -> dynamicAttr(v) }.toItem()
+
+/**
+ * Returns a new immutable [Item] with no attributes (i.e., an empty item)
+ */
+public fun itemOf(): Item = mapOf<String, AttributeValue>().toItem()
 
 /**
  * Returns a new immutable [Item] with the specified attributes, given as name-value pairs
