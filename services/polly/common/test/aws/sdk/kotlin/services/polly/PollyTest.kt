@@ -47,7 +47,7 @@ class PollyPresignerTest {
             assertEquals("polly.us-east-2.amazonaws.com", presignedRequest.headers["Host"])
             assertEquals("/v1/speech", presignedRequest.url.path.toString())
             val expectedQueryParameters = setOf("OutputFormat", "Text", "VoiceId", "X-Amz-Algorithm", "X-Amz-Credential", "X-Amz-Date", "X-Amz-SignedHeaders", "X-Amz-Expires", "X-Amz-Signature")
-            assertEquals(expectedQueryParameters, presignedRequest.url.parameters.encodedParameters.keys)
+            assertEquals(expectedQueryParameters, presignedRequest.url.parameters.encodedParameters.keys.toSet())
         } finally {
             pollyClient.close()
         }
