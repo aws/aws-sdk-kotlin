@@ -48,8 +48,7 @@ public object NumberSetValueConverters {
     public fun <N> of(
         numberConverter: Converter<N, String>,
         stringSetValueConverter: ValueConverter<Set<String>> = String,
-    ): ValueConverter<Set<N>> =
-        SetMappingConverter(numberConverter) + stringSetValueConverter
+    ): ValueConverter<Set<N>> = SetMappingConverter(numberConverter) + stringSetValueConverter
 
     /**
      * Converts between a [Set] of [Byte] elements and

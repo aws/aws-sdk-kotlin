@@ -157,5 +157,4 @@ internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
     }
 }
 
-private inline fun <T, R> List<T>.fold(initial: R, reverse: Boolean, operation: (R, T) -> R): R =
-    if (reverse) foldRight(initial) { curr, acc -> operation(acc, curr) } else fold(initial, operation)
+private inline fun <T, R> List<T>.fold(initial: R, reverse: Boolean, operation: (R, T) -> R): R = if (reverse) foldRight(initial) { curr, acc -> operation(acc, curr) } else fold(initial, operation)

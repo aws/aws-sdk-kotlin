@@ -26,14 +26,13 @@ internal data class HResContextImpl<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes
     override fun plus(value: HRes) = copy(highLevelResponse = value)
 }
 
-internal fun <T, S : ItemSchema<T>, HReq, LReq, LRes, HRes> HResContextImpl<T, S, HReq, LReq, LRes, HRes?>.solidify() =
-    HResContextImpl(
-        highLevelRequest,
-        serializeSchema,
-        mapperContext,
-        lowLevelRequest,
-        lowLevelResponse,
-        deserializeSchema,
-        requireNotNull(highLevelResponse) { "Cannot solidify context with a null high-level response" } as HRes,
-        requireNull(error) { "Cannot solidify context with a non-null error" },
-    )
+internal fun <T, S : ItemSchema<T>, HReq, LReq, LRes, HRes> HResContextImpl<T, S, HReq, LReq, LRes, HRes?>.solidify() = HResContextImpl(
+    highLevelRequest,
+    serializeSchema,
+    mapperContext,
+    lowLevelRequest,
+    lowLevelResponse,
+    deserializeSchema,
+    requireNotNull(highLevelResponse) { "Cannot solidify context with a null high-level response" } as HRes,
+    requireNull(error) { "Cannot solidify context with a non-null error" },
+)

@@ -45,26 +45,26 @@ public object MapperTypes {
     }
 
     public object Items {
-        public fun itemSchemaPartitionKey(objectType: TypeRef, pkTypes: List<TypeRef>): TypeRef =
-            TypeRef(
-                MapperPkg.Hl.Items,
-                "ItemSchema.PartitionKey",
-                genericArgs = listOf(
-                    objectType,
-                    keyType(pkTypes),
-                ),
-            )
+        public fun itemSchema(typeVar: String): TypeRef = TypeRef(MapperPkg.Hl.Items, "ItemSchema", genericArgs = listOf(TypeVar(typeVar)))
 
-        public fun itemSchemaCompositeKey(objectType: TypeRef, pkTypes: List<TypeRef>, skTypes: List<TypeRef>): TypeRef =
-            TypeRef(
-                MapperPkg.Hl.Items,
-                "ItemSchema.CompositeKey",
-                genericArgs = listOf(
-                    objectType,
-                    keyType(pkTypes),
-                    keyType(skTypes),
-                ),
-            )
+        public fun itemSchemaPartitionKey(objectType: TypeRef, pkTypes: List<TypeRef>): TypeRef = TypeRef(
+            MapperPkg.Hl.Items,
+            "ItemSchema.PartitionKey",
+            genericArgs = listOf(
+                objectType,
+                keyType(pkTypes),
+            ),
+        )
+
+        public fun itemSchemaCompositeKey(objectType: TypeRef, pkTypes: List<TypeRef>, skTypes: List<TypeRef>): TypeRef = TypeRef(
+            MapperPkg.Hl.Items,
+            "ItemSchema.CompositeKey",
+            genericArgs = listOf(
+                objectType,
+                keyType(pkTypes),
+                keyType(skTypes),
+            ),
+        )
 
         public fun keySpec(keyTypes: List<TypeRef>): TypeRef {
             val keySize = keyTypes.size
@@ -120,8 +120,7 @@ public object MapperTypes {
 
         public val AttributeDescriptor: TypeRef = TypeRef(MapperPkg.Hl.Items, "AttributeDescriptor")
 
-        public fun itemConverter(objectType: TypeRef): TypeRef =
-            TypeRef(MapperPkg.Hl.Items, "ItemConverter", genericArgs = listOf(objectType))
+        public fun itemConverter(objectType: TypeRef): TypeRef = TypeRef(MapperPkg.Hl.Items, "ItemConverter", genericArgs = listOf(objectType))
 
         public val SimpleItemConverter: TypeRef = TypeRef(MapperPkg.Hl.Items, "SimpleItemConverter")
     }

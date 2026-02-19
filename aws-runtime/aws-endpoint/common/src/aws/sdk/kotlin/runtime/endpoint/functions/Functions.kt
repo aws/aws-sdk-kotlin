@@ -23,17 +23,16 @@ private const val ARN_INDEX_RELATIVE_ID = 5
  * Identifies the partition for the given AWS region.
  */
 @InternalSdkApi
-public fun partition(partitions: List<Partition>, region: String?): PartitionConfig? =
-    region?.let {
-        val explicitMatch = partitions.find { it.regions.contains(region) }
-        if (explicitMatch != null) {
-            return explicitMatch.baseConfig.mergeWith(explicitMatch.regions[region]!!)
-        }
-
-        val fallbackMatch = partitions.find { region.matches(it.regionRegex) }
-            ?: partitions.find { it.id == "aws" }
-        fallbackMatch?.baseConfig
+public fun partition(partitions: List<Partition>, region: String?): PartitionConfig? = region?.let {
+    val explicitMatch = partitions.find { it.regions.contains(region) }
+    if (explicitMatch != null) {
+        return explicitMatch.baseConfig.mergeWith(explicitMatch.regions[region]!!)
     }
+
+    val fallbackMatch = partitions.find { region.matches(it.regionRegex) }
+        ?: partitions.find { it.id == "aws" }
+    fallbackMatch?.baseConfig
+}
 
 /**
  * A partition defines a broader set of AWS regions.
@@ -69,15 +68,14 @@ public data class PartitionConfig(
     public val supportsDualStack: Boolean? = null,
     public val implicitGlobalRegion: String? = null,
 ) {
-    public fun mergeWith(other: PartitionConfig): PartitionConfig =
-        PartitionConfig(
-            other.name ?: name,
-            other.dnsSuffix ?: dnsSuffix,
-            other.dualStackDnsSuffix ?: dualStackDnsSuffix,
-            other.supportsFIPS ?: supportsFIPS,
-            other.supportsDualStack ?: supportsDualStack,
-            other.implicitGlobalRegion ?: implicitGlobalRegion,
-        )
+    public fun mergeWith(other: PartitionConfig): PartitionConfig = PartitionConfig(
+        other.name ?: name,
+        other.dnsSuffix ?: dnsSuffix,
+        other.dualStackDnsSuffix ?: dualStackDnsSuffix,
+        other.supportsFIPS ?: supportsFIPS,
+        other.supportsDualStack ?: supportsDualStack,
+        other.implicitGlobalRegion ?: implicitGlobalRegion,
+    )
 }
 
 /**
@@ -86,21 +84,20 @@ public data class PartitionConfig(
  * The resource identifier is further split based on the type or scope delimiter present (if any).
  */
 @InternalSdkApi
-public fun parseArn(value: String?): Arn? =
-    value?.let {
-        val split = it.split(':', limit = ARN_COMPONENT_COUNT)
-        if (split[0] != "arn") return null
-        if (split.size != ARN_COMPONENT_COUNT) return null
-        if (split[ARN_INDEX_PARTITION].isEmpty() || split[ARN_INDEX_VENDOR].isEmpty() || split[ARN_INDEX_RELATIVE_ID].isEmpty()) return null
+public fun parseArn(value: String?): Arn? = value?.let {
+    val split = it.split(':', limit = ARN_COMPONENT_COUNT)
+    if (split[0] != "arn") return null
+    if (split.size != ARN_COMPONENT_COUNT) return null
+    if (split[ARN_INDEX_PARTITION].isEmpty() || split[ARN_INDEX_VENDOR].isEmpty() || split[ARN_INDEX_RELATIVE_ID].isEmpty()) return null
 
-        return Arn(
-            split[ARN_INDEX_PARTITION],
-            split[ARN_INDEX_VENDOR],
-            split[ARN_INDEX_REGION],
-            split[ARN_INDEX_NAMESPACE],
-            split[ARN_INDEX_RELATIVE_ID].split(':', '/'),
-        )
-    }
+    return Arn(
+        split[ARN_INDEX_PARTITION],
+        split[ARN_INDEX_VENDOR],
+        split[ARN_INDEX_REGION],
+        split[ARN_INDEX_NAMESPACE],
+        split[ARN_INDEX_RELATIVE_ID].split(':', '/'),
+    )
+}
 
 /**
  * Represents a parsed form of an ARN (Amazon Resource Name).
@@ -118,18 +115,16 @@ public data class Arn(
  * Evaluates whether a string is a DNS-compatible bucket name that can be used with virtual hosted-style addressing.
  */
 @InternalSdkApi
-public fun isVirtualHostableS3Bucket(value: String?, allowSubdomains: Boolean): Boolean =
-    value?.let {
-        if (!isValidHostLabel(value, allowSubdomains)) {
-            return false
-        }
+public fun isVirtualHostableS3Bucket(value: String?, allowSubdomains: Boolean): Boolean = value?.let {
+    if (!isValidHostLabel(value, allowSubdomains)) {
+        return false
+    }
 
-        if (!allowSubdomains) {
-            value.isVirtualHostableS3Segment()
-        } else {
-            value.split('.').all(String::isVirtualHostableS3Segment)
-        }
-    } ?: false
+    if (!allowSubdomains) {
+        value.isVirtualHostableS3Segment()
+    } else {
+        value.split('.').all(String::isVirtualHostableS3Segment)
+    }
+} ?: false
 
-private fun String.isVirtualHostableS3Segment(): Boolean =
-    length in 3..63 && none { it in 'A'..'Z' } && !isIpv4() && !isIpv6()
+private fun String.isVirtualHostableS3Segment(): Boolean = length in 3..63 && none { it in 'A'..'Z' } && !isIpv4() && !isIpv6()

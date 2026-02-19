@@ -228,5 +228,4 @@ internal class OperationsTypeRenderer(
         }
 }
 
-private fun Operation.appliesToKindOrAncestor(kind: ItemSourceKind): Boolean =
-    kind in itemSourceKinds || (kind.parent?.let { appliesToKindOrAncestor(it) } ?: false)
+private fun Operation.appliesToKindOrAncestor(kind: ItemSourceKind): Boolean = kind in itemSourceKinds || (kind.parent?.let { appliesToKindOrAncestor(it) } ?: false)

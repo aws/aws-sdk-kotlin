@@ -98,11 +98,9 @@ public suspend fun <T, PK : KeyType, SK : KeyType> Table.CompositeKey<T, PK, SK>
     }
 }
 
-public suspend fun <T, PK : KeyType> Table.PartitionKey<T, PK>.getItem(item: T): T? =
-    this.getItem { partitionKey = entityToPk(schema, item) }.item
+public suspend fun <T, PK : KeyType> Table.PartitionKey<T, PK>.getItem(item: T): T? = this.getItem { partitionKey = entityToPk(schema, item) }.item
 
-public suspend fun <T, PK : KeyType> Table.PartitionKey<T, PK>.getItem(partitionKey: PK): T? =
-    this.getItem { this.partitionKey = partitionKey }.item
+public suspend fun <T, PK : KeyType> Table.PartitionKey<T, PK>.getItem(partitionKey: PK): T? = this.getItem { this.partitionKey = partitionKey }.item
 
 public suspend fun <T, PK : KeyType, SK : KeyType> Table.CompositeKey<T, PK, SK>.getItem(item: T): T? {
     val (pk, sk) = entityToCk(schema, item)
@@ -115,11 +113,10 @@ public suspend fun <T, PK : KeyType, SK : KeyType> Table.CompositeKey<T, PK, SK>
 public suspend fun <T, PK : KeyType, SK : KeyType> Table.CompositeKey<T, PK, SK>.getItem(
     partitionKey: PK,
     sortKey: SK,
-): T? =
-    this.getItem {
-        this.partitionKey = partitionKey
-        this.sortKey = sortKey
-    }.item
+): T? = this.getItem {
+    this.partitionKey = partitionKey
+    this.sortKey = sortKey
+}.item
 
 public suspend fun <T> Table<T>.putItem(item: T) {
     this.putItem { this.item = item }

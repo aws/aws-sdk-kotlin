@@ -8,22 +8,19 @@ import kotlin.test.*
 
 class FunctionsTest {
     @Test
-    fun testIsVirtualHostableS3BucketOk() =
-        assertTrue(
-            isVirtualHostableS3Bucket("abc", false),
-        )
+    fun testIsVirtualHostableS3BucketOk() = assertTrue(
+        isVirtualHostableS3Bucket("abc", false),
+    )
 
     @Test
-    fun testIsVirtualHostableS3BucketOkSubdomains() =
-        assertTrue(
-            isVirtualHostableS3Bucket("abc.def", true),
-        )
+    fun testIsVirtualHostableS3BucketOkSubdomains() = assertTrue(
+        isVirtualHostableS3Bucket("abc.def", true),
+    )
 
     @Test
-    fun testIsVirtualHostableS3BucketTooShort() =
-        assertFalse(
-            isVirtualHostableS3Bucket("cz", false),
-        )
+    fun testIsVirtualHostableS3BucketTooShort() = assertFalse(
+        isVirtualHostableS3Bucket("cz", false),
+    )
 
     @Test
     fun testIsVirtualHostableS3BucketTooLong() {
@@ -33,61 +30,52 @@ class FunctionsTest {
     }
 
     @Test
-    fun testIsVirtualHostableS3BucketUppercase() =
-        assertFalse(
-            isVirtualHostableS3Bucket("CZZ", false),
-        )
+    fun testIsVirtualHostableS3BucketUppercase() = assertFalse(
+        isVirtualHostableS3Bucket("CZZ", false),
+    )
 
     @Test
-    fun testIsVirtualHostableS3BucketIpv4() =
-        assertFalse(
-            isVirtualHostableS3Bucket("192.168.1.1", false),
-        )
+    fun testIsVirtualHostableS3BucketIpv4() = assertFalse(
+        isVirtualHostableS3Bucket("192.168.1.1", false),
+    )
 
     @Test
-    fun testIsVirtualHostableS3BucketIpv6() =
-        assertFalse(
-            isVirtualHostableS3Bucket("::1", false),
-        )
+    fun testIsVirtualHostableS3BucketIpv6() = assertFalse(
+        isVirtualHostableS3Bucket("::1", false),
+    )
 
     @Test
-    fun testParseInvalidArn() =
-        assertNull(parseArn("invalid"))
+    fun testParseInvalidArn() = assertNull(parseArn("invalid"))
 
     @Test
-    fun testParseInvalidLengthArn() =
-        assertNull(parseArn("arn:aws"))
+    fun testParseInvalidLengthArn() = assertNull(parseArn("arn:aws"))
 
     @Test
-    fun testParseInvalidArnNoPartition() =
-        assertNull(
-            parseArn("arn::service:region:account-id:resource-type/resource-id"),
-        )
+    fun testParseInvalidArnNoPartition() = assertNull(
+        parseArn("arn::service:region:account-id:resource-type/resource-id"),
+    )
 
     @Test
-    fun testParseInvalidArnNoService() =
-        assertNull(
-            parseArn("arn:partition::region:account-id:resource-type/resource-id"),
-        )
+    fun testParseInvalidArnNoService() = assertNull(
+        parseArn("arn:partition::region:account-id:resource-type/resource-id"),
+    )
 
     @Test
-    fun testParseInvalidArnNoResource() =
-        assertNull(
-            parseArn("arn:partition:service:region:account-id:"),
-        )
+    fun testParseInvalidArnNoResource() = assertNull(
+        parseArn("arn:partition:service:region:account-id:"),
+    )
 
     @Test
-    fun testParseArn() =
-        assertEquals(
-            Arn(
-                "partition",
-                "service",
-                "region",
-                "account-id",
-                listOf("resource-type", "resource-id"),
-            ),
-            parseArn("arn:partition:service:region:account-id:resource-type/resource-id"),
-        )
+    fun testParseArn() = assertEquals(
+        Arn(
+            "partition",
+            "service",
+            "region",
+            "account-id",
+            listOf("resource-type", "resource-id"),
+        ),
+        parseArn("arn:partition:service:region:account-id:resource-type/resource-id"),
+    )
 
     private val testPartitions = listOf(
         Partition(
@@ -130,37 +118,33 @@ class FunctionsTest {
     )
 
     @Test
-    fun testPartitionExplicit() =
-        assertEquals(
-            testPartitions[0].baseConfig,
-            actual = partition(testPartitions, "us-east-1"),
-        )
+    fun testPartitionExplicit() = assertEquals(
+        testPartitions[0].baseConfig,
+        actual = partition(testPartitions, "us-east-1"),
+    )
 
     @Test
-    fun testPartitionExplicitMerge() =
-        assertEquals(
-            PartitionConfig(
-                name = "aws",
-                dnsSuffix = "override.amazonaws.com",
-                dualStackDnsSuffix = "api.aws",
-                supportsFIPS = true,
-                supportsDualStack = true,
-                implicitGlobalRegion = "implicit-global-region",
-            ),
-            actual = partition(testPartitions, "aws-global"),
-        )
+    fun testPartitionExplicitMerge() = assertEquals(
+        PartitionConfig(
+            name = "aws",
+            dnsSuffix = "override.amazonaws.com",
+            dualStackDnsSuffix = "api.aws",
+            supportsFIPS = true,
+            supportsDualStack = true,
+            implicitGlobalRegion = "implicit-global-region",
+        ),
+        actual = partition(testPartitions, "aws-global"),
+    )
 
     @Test
-    fun testPartitionRegex() =
-        assertEquals(
-            testPartitions[1].baseConfig,
-            actual = partition(testPartitions, "us-gov-arbitrary-5"),
-        )
+    fun testPartitionRegex() = assertEquals(
+        testPartitions[1].baseConfig,
+        actual = partition(testPartitions, "us-gov-arbitrary-5"),
+    )
 
     @Test
-    fun testPartitionFallback() =
-        assertEquals(
-            testPartitions[0].baseConfig,
-            actual = partition(testPartitions, "foo"),
-        )
+    fun testPartitionFallback() = assertEquals(
+        testPartitions[0].baseConfig,
+        actual = partition(testPartitions, "foo"),
+    )
 }

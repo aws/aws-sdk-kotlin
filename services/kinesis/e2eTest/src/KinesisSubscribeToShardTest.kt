@@ -101,76 +101,74 @@ class KinesisSubscribeToShardTest {
      * create one and populate it with one test record.
      * @return the ARN of the data stream
      */
-    private suspend fun KinesisClient.getOrCreateStream(): String =
-        listStreams { }
-            .streamSummaries
-            ?.find { it.streamName?.startsWith(STREAM_NAME_PREFIX) ?: false }
-            ?.streamArn ?: run {
-            // Create a new data stream, then wait for it to be active
-            val randomStreamName = STREAM_NAME_PREFIX + UUID.randomUUID()
-            createStream {
-                streamName = randomStreamName
-                shardCount = 1
-            }
-
-            val newStreamArn = waitUntilStreamExists({ streamName = randomStreamName })
-                .getOrThrow()
-                .streamDescription!!
-                .streamArn!!
-
-            // Put a record, then wait for it to appear on the stream
-            putRecord {
-                data = TEST_DATA.encodeToByteArray()
-                streamArn = newStreamArn
-                partitionKey = "Goodbye"
-            }
-
-            val newStreamShardId = client.listShards {
-                streamArn = newStreamArn
-            }.shards?.single()!!.shardId
-
-            val currentShardIterator = getShardIterator {
-                shardId = newStreamShardId
-                shardIteratorType = ShardIteratorType.TrimHorizon
-                streamArn = newStreamArn
-            }.shardIterator!!
-
-            waitForResource {
-                getRecords {
-                    shardIterator = currentShardIterator
-                    streamArn = newStreamArn
-                }.records
-                    ?.firstOrNull { it.data?.decodeToString() == TEST_DATA }
-            }
-
-            newStreamArn
+    private suspend fun KinesisClient.getOrCreateStream(): String = listStreams { }
+        .streamSummaries
+        ?.find { it.streamName?.startsWith(STREAM_NAME_PREFIX) ?: false }
+        ?.streamArn ?: run {
+        // Create a new data stream, then wait for it to be active
+        val randomStreamName = STREAM_NAME_PREFIX + UUID.randomUUID()
+        createStream {
+            streamName = randomStreamName
+            shardCount = 1
         }
+
+        val newStreamArn = waitUntilStreamExists({ streamName = randomStreamName })
+            .getOrThrow()
+            .streamDescription!!
+            .streamArn!!
+
+        // Put a record, then wait for it to appear on the stream
+        putRecord {
+            data = TEST_DATA.encodeToByteArray()
+            streamArn = newStreamArn
+            partitionKey = "Goodbye"
+        }
+
+        val newStreamShardId = client.listShards {
+            streamArn = newStreamArn
+        }.shards?.single()!!.shardId
+
+        val currentShardIterator = getShardIterator {
+            shardId = newStreamShardId
+            shardIteratorType = ShardIteratorType.TrimHorizon
+            streamArn = newStreamArn
+        }.shardIterator!!
+
+        waitForResource {
+            getRecords {
+                shardIterator = currentShardIterator
+                streamArn = newStreamArn
+            }.records
+                ?.firstOrNull { it.data?.decodeToString() == TEST_DATA }
+        }
+
+        newStreamArn
+    }
 
     /**
      * Get a Kinesis data stream consumer, or if it doesn't exist, register a new one.
      * @return the ARN of the stream consumer
      */
-    private suspend fun KinesisClient.getOrRegisterStreamConsumer(): String =
-        listStreamConsumers { streamArn = dataStreamArn }
-            .consumers
-            ?.firstOrNull { it.consumerName?.startsWith(STREAM_CONSUMER_NAME_PREFIX) ?: false }
-            ?.consumerArn ?: run {
-            // Register a new consumer and wait for it to be active
+    private suspend fun KinesisClient.getOrRegisterStreamConsumer(): String = listStreamConsumers { streamArn = dataStreamArn }
+        .consumers
+        ?.firstOrNull { it.consumerName?.startsWith(STREAM_CONSUMER_NAME_PREFIX) ?: false }
+        ?.consumerArn ?: run {
+        // Register a new consumer and wait for it to be active
 
-            val randomConsumerName = STREAM_CONSUMER_NAME_PREFIX + UUID.randomUUID()
-            registerStreamConsumer {
-                consumerName = randomConsumerName
-                streamArn = dataStreamArn
-            }
-
-            waitForResource {
-                listStreamConsumers { streamArn = dataStreamArn }
-                    ?.consumers
-                    ?.firstOrNull { it.consumerName == randomConsumerName }
-                    ?.takeIf { it.consumerStatus == ConsumerStatus.Active }
-                    ?.consumerArn
-            }
+        val randomConsumerName = STREAM_CONSUMER_NAME_PREFIX + UUID.randomUUID()
+        registerStreamConsumer {
+            consumerName = randomConsumerName
+            streamArn = dataStreamArn
         }
+
+        waitForResource {
+            listStreamConsumers { streamArn = dataStreamArn }
+                ?.consumers
+                ?.firstOrNull { it.consumerName == randomConsumerName }
+                ?.takeIf { it.consumerStatus == ConsumerStatus.Active }
+                ?.consumerArn
+        }
+    }
 
     /**
      * Poll at a predefined [POLLING_RATE] for a resource to exist and return it.

@@ -4,21 +4,21 @@
  */
 package aws.sdk.kotlin.codegen
 
-import software.amazon.smithy.kotlin.codegen.core.CodegenContext
-import software.amazon.smithy.kotlin.codegen.core.RuntimeTypes
-import software.amazon.smithy.kotlin.codegen.core.getContextValue
-import software.amazon.smithy.kotlin.codegen.integration.AppendingSectionWriter
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.integration.SectionWriterBinding
-import software.amazon.smithy.kotlin.codegen.lang.KotlinTypes
-import software.amazon.smithy.kotlin.codegen.model.asNullable
-import software.amazon.smithy.kotlin.codegen.model.knowledge.AwsSignatureVersion4
-import software.amazon.smithy.kotlin.codegen.model.nullable
-import software.amazon.smithy.kotlin.codegen.rendering.ServiceClientGenerator
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.HttpProtocolClientGenerator
-import software.amazon.smithy.kotlin.codegen.rendering.util.ConfigProperty
-import software.amazon.smithy.kotlin.codegen.rendering.util.ConfigPropertyType
-import software.amazon.smithy.kotlin.codegen.rendering.util.RuntimeConfigProperty
+import aws.smithy.kotlin.codegen.core.CodegenContext
+import aws.smithy.kotlin.codegen.core.RuntimeTypes
+import aws.smithy.kotlin.codegen.core.getContextValue
+import aws.smithy.kotlin.codegen.integration.AppendingSectionWriter
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.integration.SectionWriterBinding
+import aws.smithy.kotlin.codegen.lang.KotlinTypes
+import aws.smithy.kotlin.codegen.model.asNullable
+import aws.smithy.kotlin.codegen.model.knowledge.AwsSignatureVersion4
+import aws.smithy.kotlin.codegen.model.nullable
+import aws.smithy.kotlin.codegen.rendering.ServiceClientGenerator
+import aws.smithy.kotlin.codegen.rendering.protocol.HttpProtocolClientGenerator
+import aws.smithy.kotlin.codegen.rendering.util.ConfigProperty
+import aws.smithy.kotlin.codegen.rendering.util.ConfigPropertyType
+import aws.smithy.kotlin.codegen.rendering.util.RuntimeConfigProperty
 import software.amazon.smithy.model.knowledge.ServiceIndex
 import software.amazon.smithy.model.traits.HttpBearerAuthTrait
 

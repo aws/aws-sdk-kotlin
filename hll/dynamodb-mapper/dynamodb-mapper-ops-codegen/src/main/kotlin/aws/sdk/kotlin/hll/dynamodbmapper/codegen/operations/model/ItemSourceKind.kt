@@ -42,16 +42,14 @@ internal enum class ItemSourceKind(
  * `TableOperations.PartitionKey<T, PK>`)
  * @param keyType The type of keys to include in the [TypeRef]
  */
-internal fun ItemSourceKind.opsType(keyType: KeyProjectionType): TypeRef =
-    TypeRef(MapperPkg.Hl.Ops, "${name}Operations${keyType.nameSuffix}", keyType.typeVars)
+internal fun ItemSourceKind.opsType(keyType: KeyProjectionType): TypeRef = TypeRef(MapperPkg.Hl.Ops, "${name}Operations${keyType.nameSuffix}", keyType.typeVars)
 
 /**
  * Forms the [TypeRef] for this [ItemSourceKind]'s specification type (e.g., `ItemSourceSpec<T>` or
  * `TableSpec.PartitionKey<T, PK>`)
  * @param keyType The type of keys to include in the [TypeRef]
  */
-internal fun ItemSourceKind.specType(keyType: KeyProjectionType): TypeRef =
-    TypeRef(MapperPkg.Hl.Model, "${name}Spec${keyType.nameSuffix}", keyType.typeVars)
+internal fun ItemSourceKind.specType(keyType: KeyProjectionType): TypeRef = TypeRef(MapperPkg.Hl.Model, "${name}Spec${keyType.nameSuffix}", keyType.typeVars)
 
 /**
  * Identifies the types of `ItemSource` on which an operation can be invoked (e.g., `Scan` can be invoked on a table,

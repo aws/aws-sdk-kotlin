@@ -23,17 +23,16 @@ class ExpiresFieldInterceptorTest {
     private fun newTestClient(
         status: HttpStatusCode = HttpStatusCode.OK,
         headers: Headers = Headers.Empty,
-    ): S3Client =
-        S3Client {
-            region = "us-east-1"
-            credentialsProvider = StaticCredentialsProvider {
-                accessKeyId = "accessKeyId"
-                secretAccessKey = "secretAccessKey"
-            }
-            httpClient = buildTestConnection {
-                expect(HttpResponse(status, headers, body = HttpBody.Empty))
-            }
+    ): S3Client = S3Client {
+        region = "us-east-1"
+        credentialsProvider = StaticCredentialsProvider {
+            accessKeyId = "accessKeyId"
+            secretAccessKey = "secretAccessKey"
         }
+        httpClient = buildTestConnection {
+            expect(HttpResponse(status, headers, body = HttpBody.Empty))
+        }
+    }
 
     @Test
     fun testHandlesParsableExpiresField() = runTest {

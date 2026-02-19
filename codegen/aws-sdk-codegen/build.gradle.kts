@@ -22,7 +22,7 @@ version = sdkVersion
 dependencies {
     implementation(libs.kotlin.stdlib.jdk8)
     api(libs.smithy.kotlin.codegen)
-    api(libs.smithy.aws.kotlin.codegen)
+    api(libs.smithy.kotlin.aws.codegen)
 
     api(libs.smithy.aws.traits)
     api(libs.smithy.aws.iam.traits)

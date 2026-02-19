@@ -12,8 +12,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.toItem
  * @param schema A partition key schema
  * @param pk The partition key value to convert
  */
-internal fun <PK : KeyType> keysToItem(schema: ItemSchema.PartitionKey<*, PK>, pk: PK?): Item? =
-    pk?.let { schema.partitionKey.converter.convertRight(it) }?.takeIf { it.isNotEmpty() }
+internal fun <PK : KeyType> keysToItem(schema: ItemSchema.PartitionKey<*, PK>, pk: PK?): Item? = pk?.let { schema.partitionKey.converter.convertRight(it) }?.takeIf { it.isNotEmpty() }
 
 /**
  * Converts the given composite key to an [Item] with the given schema
@@ -37,32 +36,28 @@ internal fun <PK : KeyType, SK : KeyType> keysToItem(
  * @param schema The partition key schema
  * @param item The item containing the key value(s)
  */
-internal fun <PK : KeyType> itemToPk(schema: ItemSchema.PartitionKey<*, PK>, item: Item?): PK? =
-    item?.let(schema.partitionKey.converter::convertLeft)
+internal fun <PK : KeyType> itemToPk(schema: ItemSchema.PartitionKey<*, PK>, item: Item?): PK? = item?.let(schema.partitionKey.converter::convertLeft)
 
 /**
  * Converts the given [Item] into a partition key with the given schema
  * @param schema The composite key schema
  * @param item The item containing the key value(s)
  */
-internal fun <PK : KeyType> itemToPk(schema: ItemSchema.CompositeKey<*, PK, *>, item: Item?): PK? =
-    item?.let(schema.partitionKey.converter::convertLeft)
+internal fun <PK : KeyType> itemToPk(schema: ItemSchema.CompositeKey<*, PK, *>, item: Item?): PK? = item?.let(schema.partitionKey.converter::convertLeft)
 
 /**
  * Converts the given [Item] into a sort key with the given schema
  * @param schema The composite key schema
  * @param item The item containing the key value(s)
  */
-internal fun <SK : KeyType> itemToSk(schema: ItemSchema.CompositeKey<*, *, SK>, item: Item?): SK? =
-    item?.let(schema.sortKey.converter::convertLeft)
+internal fun <SK : KeyType> itemToSk(schema: ItemSchema.CompositeKey<*, *, SK>, item: Item?): SK? = item?.let(schema.sortKey.converter::convertLeft)
 
 /**
  * Extracts the partition key an entity of type [T] using the given schema
  * @param schema The partition key schema
  * @param entity The entity from which to extract the key
  */
-internal fun <T, PK : KeyType> entityToPk(schema: ItemSchema.PartitionKey<T, PK>, entity: T): PK =
-    // TODO make this more efficient
+internal fun <T, PK : KeyType> entityToPk(schema: ItemSchema.PartitionKey<T, PK>, entity: T): PK = // TODO make this more efficient
     schema.partitionKey.converter.convertLeft(schema.converter.convertRight(entity))
 
 /**

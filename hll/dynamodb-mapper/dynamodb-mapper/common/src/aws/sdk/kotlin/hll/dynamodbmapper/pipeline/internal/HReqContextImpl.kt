@@ -26,5 +26,4 @@ internal data class HReqContextImpl<T, S : ItemSchema<T>, HReq>(
     )
 }
 
-internal operator fun <T, S : ItemSchema<T>, HReq, LReq> HReqContext<T, S, HReq>.plus(lowLevelRequest: LReq) =
-    LReqContextImpl(highLevelRequest, serializeSchema, mapperContext, lowLevelRequest, error)
+internal operator fun <T, S : ItemSchema<T>, HReq, LReq> HReqContext<T, S, HReq>.plus(lowLevelRequest: LReq) = LReqContextImpl(highLevelRequest, serializeSchema, mapperContext, lowLevelRequest, error)

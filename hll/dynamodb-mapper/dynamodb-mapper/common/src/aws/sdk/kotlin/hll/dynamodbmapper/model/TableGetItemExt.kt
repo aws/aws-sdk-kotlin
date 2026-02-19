@@ -14,48 +14,42 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
  * @param T The type of objects which will be read from and/or written to this table
  * @param partitionKey The partition key value of the item
  */
-public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<Byte>>.getItem(partitionKey: Byte): T? =
-    getItem(Key(partitionKey))
+public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<Byte>>.getItem(partitionKey: Byte): T? = getItem(Key(partitionKey))
 
 /**
  * Gets an item from this table with the given partition key value
  * @param T The type of objects which will be read from and/or written to this table
  * @param partitionKey The partition key value of the item
  */
-public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<ByteArray>>.getItem(partitionKey: ByteArray): T? =
-    getItem(Key(partitionKey))
+public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<ByteArray>>.getItem(partitionKey: ByteArray): T? = getItem(Key(partitionKey))
 
 /**
  * Gets an item from this table with the given partition key value
  * @param T The type of objects which will be read from and/or written to this table
  * @param partitionKey The partition key value of the item
  */
-public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<Int>>.getItem(partitionKey: Int): T? =
-    getItem(Key(partitionKey))
+public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<Int>>.getItem(partitionKey: Int): T? = getItem(Key(partitionKey))
 
 /**
  * Gets an item from this table with the given partition key value
  * @param T The type of objects which will be read from and/or written to this table
  * @param partitionKey The partition key value of the item
  */
-public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<Long>>.getItem(partitionKey: Long): T? =
-    getItem(Key(partitionKey))
+public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<Long>>.getItem(partitionKey: Long): T? = getItem(Key(partitionKey))
 
 /**
  * Gets an item from this table with the given partition key value
  * @param T The type of objects which will be read from and/or written to this table
  * @param partitionKey The partition key value of the item
  */
-public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<Short>>.getItem(partitionKey: Short): T? =
-    getItem(Key(partitionKey))
+public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<Short>>.getItem(partitionKey: Short): T? = getItem(Key(partitionKey))
 
 /**
  * Gets an item from this table with the given partition key value
  * @param T The type of objects which will be read from and/or written to this table
  * @param partitionKey The partition key value of the item
  */
-public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<String>>.getItem(partitionKey: String): T? =
-    getItem(Key(partitionKey))
+public suspend fun <T> Table.PartitionKey<T, KeyType.Key1<String>>.getItem(partitionKey: String): T? = getItem(Key(partitionKey))
 
 /**
  * Gets an item from this table with the given partition key and sort key values

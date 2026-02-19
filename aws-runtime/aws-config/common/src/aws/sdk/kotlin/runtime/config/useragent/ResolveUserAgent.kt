@@ -18,5 +18,4 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
  * @return The user agent app id if found, null if not
  */
 @InternalSdkApi
-public suspend fun resolveUserAgentAppId(platform: PlatformProvider = PlatformProvider.System, profile: LazyAsyncValue<AwsProfile>): String? =
-    AwsSdkSetting.AwsAppId.resolve(platform) ?: profile.get().sdkUserAgentAppId
+public suspend fun resolveUserAgentAppId(platform: PlatformProvider = PlatformProvider.System, profile: LazyAsyncValue<AwsProfile>): String? = AwsSdkSetting.AwsAppId.resolve(platform) ?: profile.get().sdkUserAgentAppId

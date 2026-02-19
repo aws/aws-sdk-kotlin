@@ -1,6 +1,18 @@
 {
     "smithy": "2.0",
     "shapes": {
+        "com.amazonaws.sagemaker#AbsoluteBorrowLimitResourceList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.sagemaker#ComputeQuotaResourceConfig"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 15
+                }
+            }
+        },
         "com.amazonaws.sagemaker#AcceleratorPartitionConfig": {
             "type": "structure",
             "members": {
@@ -6131,7 +6143,7 @@
                 "Arn": {
                     "target": "com.amazonaws.sagemaker#String1024",
                     "traits": {
-                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the metadata for the Amazon Bedrock custom model deployment. </p>"
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) for the Amazon Bedrock custom model deployment. </p>"
                     }
                 }
             },
@@ -6145,7 +6157,7 @@
                 "Arn": {
                     "target": "com.amazonaws.sagemaker#String1024",
                     "traits": {
-                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the Amazon Bedrock custom model metadata. </p>"
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the Amazon Bedrock custom model. </p>"
                     }
                 }
             },
@@ -6159,7 +6171,7 @@
                 "Arn": {
                     "target": "com.amazonaws.sagemaker#String1024",
                     "traits": {
-                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the Amazon Bedrock model import metadata. </p>"
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the Amazon Bedrock model import. </p>"
                     }
                 }
             },
@@ -6173,7 +6185,7 @@
                 "Arn": {
                     "target": "com.amazonaws.sagemaker#String1024",
                     "traits": {
-                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the Amazon Bedrock provisioned model throughput metadata. </p>"
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the Amazon Bedrock provisioned model throughput. </p>"
                     }
                 }
             },
@@ -6299,7 +6311,7 @@
             "traits": {
                 "smithy.api#range": {
                     "min": 0,
-                    "max": 500
+                    "max": 10000
                 }
             }
         },
@@ -8468,6 +8480,16 @@
                 }
             }
         },
+        "com.amazonaws.sagemaker#ClusterDnsName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 16,
+                    "max": 275
+                },
+                "smithy.api#pattern": "^((fs|fc)i?-[0-9a-f]{8,}\\..{4,253})$"
+            }
+        },
         "com.amazonaws.sagemaker#ClusterEbsVolumeConfig": {
             "type": "structure",
             "members": {
@@ -8688,6 +8710,65 @@
                 "smithy.api#documentation": "<p>A summary of an event in a HyperPod cluster.</p>"
             }
         },
+        "com.amazonaws.sagemaker#ClusterFsxLustreConfig": {
+            "type": "structure",
+            "members": {
+                "DnsName": {
+                    "target": "com.amazonaws.sagemaker#ClusterDnsName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The DNS name of the Amazon FSx for Lustre file system.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MountName": {
+                    "target": "com.amazonaws.sagemaker#ClusterMountName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The mount name of the Amazon FSx for Lustre file system.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MountPath": {
+                    "target": "com.amazonaws.sagemaker#ClusterFsxMountPath",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The local path where the Amazon FSx for Lustre file system is mounted on instances.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Defines the configuration for attaching an Amazon FSx for Lustre file system to instances in a SageMaker HyperPod cluster instance group.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterFsxMountPath": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1024
+                },
+                "smithy.api#pattern": "^/[a-zA-Z0-9._/-]+$"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterFsxOpenZfsConfig": {
+            "type": "structure",
+            "members": {
+                "DnsName": {
+                    "target": "com.amazonaws.sagemaker#ClusterDnsName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The DNS name of the Amazon FSx for OpenZFS file system.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MountPath": {
+                    "target": "com.amazonaws.sagemaker#ClusterFsxMountPath",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The local path where the Amazon FSx for OpenZFS file system is mounted on instances.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Defines the configuration for attaching an Amazon FSx for OpenZFS file system to instances in a SageMaker HyperPod cluster instance group.</p>"
+            }
+        },
         "com.amazonaws.sagemaker#ClusterInstanceCount": {
             "type": "integer",
             "traits": {
@@ -8834,6 +8915,12 @@
                 },
                 "ActiveSoftwareUpdateConfig": {
                     "target": "com.amazonaws.sagemaker#DeploymentConfiguration"
+                },
+                "SlurmConfig": {
+                    "target": "com.amazonaws.sagemaker#ClusterSlurmConfigDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Slurm configuration for the instance group.</p>"
+                    }
                 }
             },
             "traits": {
@@ -8951,6 +9038,12 @@
                     "target": "com.amazonaws.sagemaker#ClusterKubernetesConfig",
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the Kubernetes configuration for the instance group. You describe what you want the labels and taints to look like, and the cluster works to reconcile the actual state with the declared state for nodes in this instance group. </p>"
+                    }
+                },
+                "SlurmConfig": {
+                    "target": "com.amazonaws.sagemaker#ClusterSlurmConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the Slurm configuration for the instance group.</p>"
                     }
                 },
                 "CapacityRequirements": {
@@ -9094,6 +9187,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Defines the configuration for attaching additional Amazon Elastic Block Store (EBS) volumes to the instances in the SageMaker HyperPod cluster instance group. The additional EBS volume is attached to each instance within the SageMaker HyperPod cluster instance group and mounted to <code>/opt/sagemaker</code>.</p>"
                     }
+                },
+                "FsxLustreConfig": {
+                    "target": "com.amazonaws.sagemaker#ClusterFsxLustreConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Defines the configuration for attaching an Amazon FSx for Lustre file system to the instances in the SageMaker HyperPod cluster instance group.</p>"
+                    }
+                },
+                "FsxOpenZfsConfig": {
+                    "target": "com.amazonaws.sagemaker#ClusterFsxOpenZfsConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Defines the configuration for attaching an Amazon FSx for OpenZFS file system to the instances in the SageMaker HyperPod cluster instance group.</p>"
+                    }
                 }
             },
             "traits": {
@@ -9108,7 +9213,7 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 0,
-                    "max": 2
+                    "max": 4
                 }
             }
         },
@@ -10075,6 +10180,16 @@
                 "smithy.api#documentation": "<p>Metadata information about a HyperPod cluster showing information about the cluster level operations, such as creating, updating, and deleting.</p>"
             }
         },
+        "com.amazonaws.sagemaker#ClusterMountName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 8
+                },
+                "smithy.api#pattern": "^([A-Za-z0-9_-]{1,8})$"
+            }
+        },
         "com.amazonaws.sagemaker#ClusterName": {
             "type": "string",
             "traits": {
@@ -10401,6 +10516,12 @@
                         "smithy.api#clientOptional": {},
                         "smithy.api#documentation": "<p>The Amazon EKS cluster used as the orchestrator for the SageMaker HyperPod cluster.</p>"
                     }
+                },
+                "Slurm": {
+                    "target": "com.amazonaws.sagemaker#ClusterOrchestratorSlurmConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Slurm orchestrator configuration for the SageMaker HyperPod cluster.</p>"
+                    }
                 }
             },
             "traits": {
@@ -10421,6 +10542,40 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The configuration settings for the Amazon EKS cluster used as the orchestrator for the SageMaker HyperPod cluster.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterOrchestratorSlurmConfig": {
+            "type": "structure",
+            "members": {
+                "SlurmConfigStrategy": {
+                    "target": "com.amazonaws.sagemaker#ClusterSlurmConfigStrategy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The strategy for managing partitions for the Slurm configuration. Valid values are <code>Managed</code>, <code>Overwrite</code>, and <code>Merge</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration settings for the Slurm orchestrator used with the SageMaker HyperPod cluster.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterPartitionName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 1024
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterPartitionNames": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.sagemaker#ClusterPartitionName"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 1
+                }
             }
         },
         "com.amazonaws.sagemaker#ClusterPrivateDnsHostname": {
@@ -10722,6 +10877,94 @@
             "type": "string",
             "traits": {
                 "smithy.api#pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9]){0,39}?$"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterSlurmConfig": {
+            "type": "structure",
+            "members": {
+                "NodeType": {
+                    "target": "com.amazonaws.sagemaker#ClusterSlurmNodeType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of Slurm node for the instance group. Valid values are <code>Controller</code>, <code>Worker</code>, and <code>Login</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PartitionNames": {
+                    "target": "com.amazonaws.sagemaker#ClusterPartitionNames",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of Slurm partition names that the instance group belongs to.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Slurm configuration for an instance group in a SageMaker HyperPod cluster.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterSlurmConfigDetails": {
+            "type": "structure",
+            "members": {
+                "NodeType": {
+                    "target": "com.amazonaws.sagemaker#ClusterSlurmNodeType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of Slurm node for the instance group. Valid values are <code>Controller</code>, <code>Worker</code>, and <code>Login</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PartitionNames": {
+                    "target": "com.amazonaws.sagemaker#ClusterPartitionNames",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of Slurm partition names that the instance group belongs to.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Slurm configuration details for an instance group in a SageMaker HyperPod cluster.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterSlurmConfigStrategy": {
+            "type": "enum",
+            "members": {
+                "OVERWRITE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Overwrite"
+                    }
+                },
+                "MANAGED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Managed"
+                    }
+                },
+                "MERGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Merge"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterSlurmNodeType": {
+            "type": "enum",
+            "members": {
+                "CONTROLLER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Controller"
+                    }
+                },
+                "LOGIN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Login"
+                    }
+                },
+                "COMPUTE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Compute"
+                    }
+                }
             }
         },
         "com.amazonaws.sagemaker#ClusterSortBy": {
@@ -12912,7 +13155,7 @@
                 "Orchestrator": {
                     "target": "com.amazonaws.sagemaker#ClusterOrchestrator",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of orchestrator to use for the SageMaker HyperPod cluster. Currently, the only supported value is <code>\"eks\"</code>, which is to use an Amazon Elastic Kubernetes Service cluster as the orchestrator.</p>"
+                        "smithy.api#documentation": "<p>The type of orchestrator to use for the SageMaker HyperPod cluster. Currently, supported values are <code>\"Eks\"</code> and <code>\"Slurm\"</code>, which is to use an Amazon Elastic Kubernetes Service or Slurm cluster as the orchestrator.</p> <note> <p>If you specify the <code>Orchestrator</code> field, you must provide exactly one orchestrator configuration: either <code>Eks</code> or <code>Slurm</code>. Specifying both or providing an empty configuration returns a validation error.</p> </note>"
                     }
                 },
                 "NodeRecovery": {
@@ -16629,7 +16872,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Creates a lifecycle configuration that you can associate with a notebook instance. A <i>lifecycle configuration</i> is a collection of shell scripts that run when you create or start a notebook instance.</p> <p>Each lifecycle configuration script has a limit of 16384 characters.</p> <p>The value of the <code>$PATH</code> environment variable that is available to both scripts is <code>/sbin:bin:/usr/sbin:/usr/bin</code>.</p> <p>View Amazon CloudWatch Logs for notebook instance lifecycle configurations in log group <code>/aws/sagemaker/NotebookInstances</code> in log stream <code>[notebook-instance-name]/[LifecycleConfigHook]</code>.</p> <p>Lifecycle configuration scripts cannot run for longer than 5 minutes. If a script runs for longer than 5 minutes, it fails and the notebook instance is not created or started.</p> <p>For information about notebook instance lifestyle configurations, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Step 2.1: (Optional) Customize a Notebook Instance</a>.</p>"
+                "smithy.api#documentation": "<p>Creates a lifecycle configuration that you can associate with a notebook instance. A <i>lifecycle configuration</i> is a collection of shell scripts that run when you create or start a notebook instance.</p> <p>Each lifecycle configuration script has a limit of 16384 characters.</p> <p>The value of the <code>$PATH</code> environment variable that is available to both scripts is <code>/sbin:bin:/usr/sbin:/usr/bin</code>.</p> <p>View Amazon CloudWatch Logs for notebook instance lifecycle configurations in log group <code>/aws/sagemaker/NotebookInstances</code> in log stream <code>[notebook-instance-name]/[LifecycleConfigHook]</code>.</p> <p>Lifecycle configuration scripts cannot run for longer than 5 minutes. If a script runs for longer than 5 minutes, it fails and the notebook instance is not created or started.</p> <p>For information about notebook instance lifestyle configurations, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Step 2.1: (Optional) Customize a Notebook Instance</a>.</p> <note> <p>Lifecycle configuration scripts execute with root access and the notebook instance's IAM execution role privileges. Grant this permission only to trusted principals. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Customize a Notebook Instance Using a Lifecycle Configuration Script</a> for security best practices.</p> </note>"
             }
         },
         "com.amazonaws.sagemaker#CreateNotebookInstanceLifecycleConfigInput": {
@@ -23401,6 +23644,12 @@
                     "target": "com.amazonaws.sagemaker#FailureReason",
                     "traits": {
                         "smithy.api#documentation": "<p>Failure reason of the cluster policy.</p>"
+                    }
+                },
+                "StatusDetails": {
+                    "target": "com.amazonaws.sagemaker#StatusDetailsMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Additional details about the status of the cluster policy. This field provides context when the policy is in a non-active state, such as during creation, updates, or if failures occur.</p>"
                     }
                 },
                 "ClusterArn": {
@@ -38833,6 +39082,23 @@
                 }
             }
         },
+        "com.amazonaws.sagemaker#IdleResourceSharing": {
+            "type": "enum",
+            "members": {
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Enabled"
+                    }
+                },
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Disabled"
+                    }
+                }
+            }
+        },
         "com.amazonaws.sagemaker#IdleSettings": {
             "type": "structure",
             "members": {
@@ -39717,7 +39983,7 @@
                 "Arn": {
                     "target": "com.amazonaws.sagemaker#String2048",
                     "traits": {
-                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the inference component metadata. </p>"
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the inference component. </p>"
                     }
                 }
             },
@@ -43266,25 +43532,25 @@
                 "ActionArns": {
                     "target": "com.amazonaws.sagemaker#MapString2048",
                     "traits": {
-                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the lineage metadata action. </p>"
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the lineage action. </p>"
                     }
                 },
                 "ArtifactArns": {
                     "target": "com.amazonaws.sagemaker#MapString2048",
                     "traits": {
-                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the lineage metadata artifact. </p>"
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the lineage artifact. </p>"
                     }
                 },
                 "ContextArns": {
                     "target": "com.amazonaws.sagemaker#MapString2048",
                     "traits": {
-                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the lineage metadata context. </p>"
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the lineage context. </p>"
                     }
                 },
                 "Associations": {
                     "target": "com.amazonaws.sagemaker#AssociationInfoList",
                     "traits": {
-                        "smithy.api#documentation": "<p> The lineage metadata associations. </p>"
+                        "smithy.api#documentation": "<p> The lineage associations. </p>"
                     }
                 }
             },
@@ -54908,13 +55174,13 @@
                 "IsCheckpoint": {
                     "target": "com.amazonaws.sagemaker#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "<p> The checkpoint of the model package. </p>"
+                        "smithy.api#documentation": "<p> Specifies whether the model data is a training checkpoint. </p>"
                     }
                 },
                 "BaseModel": {
                     "target": "com.amazonaws.sagemaker#BaseModel",
                     "traits": {
-                        "smithy.api#documentation": "<p> The base model of the package. </p>"
+                        "smithy.api#documentation": "<p> Identifies the foundation model that was used as the starting point for model customization. </p>"
                     }
                 }
             },
@@ -61704,6 +61970,42 @@
                     "traits": {
                         "smithy.api#enumValue": "ml.p5.4xlarge"
                     }
+                },
+                "ML_G7E_2XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.2xlarge"
+                    }
+                },
+                "ML_G7E_4XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.4xlarge"
+                    }
+                },
+                "ML_G7E_8XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.8xlarge"
+                    }
+                },
+                "ML_G7E_12XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.12xlarge"
+                    }
+                },
+                "ML_G7E_24XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.24xlarge"
+                    }
+                },
+                "ML_G7E_48XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.48xlarge"
+                    }
                 }
             }
         },
@@ -67391,6 +67693,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The limit on how much idle compute can be borrowed.The values can be 1 - 500 percent of idle compute that the team is allowed to borrow.</p> <p>Default is <code>50</code>.</p>"
                     }
+                },
+                "AbsoluteBorrowLimits": {
+                    "target": "com.amazonaws.sagemaker#AbsoluteBorrowLimitResourceList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The absolute limits on compute resources that can be borrowed from idle compute. When specified, these limits define the maximum amount of specific resource types (such as accelerators, vCPU, or memory) that an entity can borrow, regardless of the percentage-based <code>BorrowLimit</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -70601,10 +70909,39 @@
                     "traits": {
                         "smithy.api#documentation": "<p>When enabled, entities borrow idle compute based on their assigned <code>FairShareWeight</code>.</p> <p>When disabled, entities borrow idle compute based on a first-come first-serve basis.</p> <p>Default is <code>Enabled</code>.</p>"
                     }
+                },
+                "IdleResourceSharing": {
+                    "target": "com.amazonaws.sagemaker#IdleResourceSharing",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configuration for sharing idle compute resources across entities in the cluster. When enabled, unallocated resources are automatically calculated and made available for entities to borrow. </p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Cluster policy configuration. This policy is used for task prioritization and fair-share allocation. This helps prioritize critical workloads and distributes idle compute across entities.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#SchedulerConfigComponent": {
+            "type": "enum",
+            "members": {
+                "PRIORITY_CLASSES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PriorityClasses"
+                    }
+                },
+                "FAIR_SHARE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FairShare"
+                    }
+                },
+                "IDLE_RESOURCE_SHARING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IdleResourceSharing"
+                    }
+                }
             }
         },
         "com.amazonaws.sagemaker#SchedulerResourceStatus": {
@@ -71005,17 +71342,13 @@
                 "DurationHours": {
                     "target": "com.amazonaws.sagemaker#TrainingPlanDurationHoursInput",
                     "traits": {
-                        "smithy.api#clientOptional": {},
-                        "smithy.api#documentation": "<p>The desired duration in hours for the training plan offerings.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The desired duration in hours for the training plan offerings.</p>"
                     }
                 },
                 "TargetResources": {
                     "target": "com.amazonaws.sagemaker#SageMakerResourceNames",
                     "traits": {
-                        "smithy.api#clientOptional": {},
-                        "smithy.api#documentation": "<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
                     }
                 }
             },
@@ -73056,7 +73389,7 @@
                 "MlflowExperimentName": {
                     "target": "com.amazonaws.sagemaker#MlflowExperimentEntityName",
                     "traits": {
-                        "smithy.api#documentation": "<p> The MLflow experiment name of the start execution. </p>"
+                        "smithy.api#documentation": "<p> The MLflow experiment name of the pipeline execution. </p>"
                     }
                 }
             },
@@ -73183,6 +73516,15 @@
                     "max": 1024
                 },
                 "smithy.api#pattern": ".*"
+            }
+        },
+        "com.amazonaws.sagemaker#StatusDetailsMap": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.sagemaker#SchedulerConfigComponent"
+            },
+            "value": {
+                "target": "com.amazonaws.sagemaker#SchedulerResourceStatus"
             }
         },
         "com.amazonaws.sagemaker#StatusMessage": {
@@ -76782,6 +77124,42 @@
                     "traits": {
                         "smithy.api#enumValue": "ml.p6-b300.48xlarge"
                     }
+                },
+                "ML_G7E_2XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.2xlarge"
+                    }
+                },
+                "ML_G7E_4XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.4xlarge"
+                    }
+                },
+                "ML_G7E_8XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.8xlarge"
+                    }
+                },
+                "ML_G7E_12XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.12xlarge"
+                    }
+                },
+                "ML_G7E_24XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.24xlarge"
+                    }
+                },
+                "ML_G7E_48XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.g7e.48xlarge"
+                    }
                 }
             }
         },
@@ -80102,6 +80480,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The unique identifier of the UltraServer.</p>"
                     }
+                },
+                "Type": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the UltraServer.</p>"
+                    }
                 }
             },
             "traits": {
@@ -80543,6 +80927,9 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Updates the autoscaling configuration for the cluster. Use to enable or disable automatic node scaling.</p>"
                     }
+                },
+                "Orchestrator": {
+                    "target": "com.amazonaws.sagemaker#ClusterOrchestrator"
                 }
             },
             "traits": {
@@ -82646,7 +83033,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Updates a notebook instance. NotebookInstance updates include upgrading or downgrading the ML compute instance used for your notebook instance to accommodate changes in your workload requirements.</p>"
+                "smithy.api#documentation": "<p>Updates a notebook instance. NotebookInstance updates include upgrading or downgrading the ML compute instance used for your notebook instance to accommodate changes in your workload requirements.</p> <note> <p>This API can attach lifecycle configurations to notebook instances. Lifecycle configuration scripts execute with root access and the notebook instance's IAM execution role privileges. Principals with this permission and access to lifecycle configurations can execute code with the execution role's credentials. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Customize a Notebook Instance Using a Lifecycle Configuration Script</a> for security best practices.</p> </note>"
             }
         },
         "com.amazonaws.sagemaker#UpdateNotebookInstanceInput": {
@@ -82769,7 +83156,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Updates a notebook instance lifecycle configuration created with the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateNotebookInstanceLifecycleConfig.html\">CreateNotebookInstanceLifecycleConfig</a> API.</p>"
+                "smithy.api#documentation": "<p>Updates a notebook instance lifecycle configuration created with the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateNotebookInstanceLifecycleConfig.html\">CreateNotebookInstanceLifecycleConfig</a> API.</p> <note> <p>Updates to lifecycle configurations affect all notebook instances using that configuration upon their next start. Lifecycle configuration scripts execute with root access and the notebook instance's IAM execution role privileges. Grant this permission only to trusted principals. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Customize a Notebook Instance Using a Lifecycle Configuration Script</a> for security best practices.</p> </note>"
             }
         },
         "com.amazonaws.sagemaker#UpdateNotebookInstanceLifecycleConfigInput": {

@@ -25,17 +25,16 @@ import kotlin.test.assertTrue
 class UserAgentTest {
     private val client = SdkHttpClient(TestEngine())
 
-    private fun initializeOp(platformProvider: PlatformProvider = TestPlatformProvider()) =
-        SdkHttpOperation.build<Unit, HttpResponse> {
-            serializeWith = HttpSerializer.Unit
-            deserializeWith = HttpDeserializer.Identity
-            operationName = "testOperation"
-            serviceName = "TestService"
-        }.apply {
-            val apiMd = ApiMetadata("Test Service", "1.2.3")
-            val metadata = loadAwsUserAgentMetadataFromEnvironment(platformProvider, apiMd)
-            install(UserAgent(metadata))
-        }
+    private fun initializeOp(platformProvider: PlatformProvider = TestPlatformProvider()) = SdkHttpOperation.build<Unit, HttpResponse> {
+        serializeWith = HttpSerializer.Unit
+        deserializeWith = HttpDeserializer.Identity
+        operationName = "testOperation"
+        serviceName = "TestService"
+    }.apply {
+        val apiMd = ApiMetadata("Test Service", "1.2.3")
+        val metadata = loadAwsUserAgentMetadataFromEnvironment(platformProvider, apiMd)
+        install(UserAgent(metadata))
+    }
 
     @Test
     fun itSetsUAHeaders() = runTest {

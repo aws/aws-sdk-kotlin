@@ -44,8 +44,7 @@ internal val KeyProjection.keyType: KeyProjectionType
  */
 internal class KeyProjections(private val projections: Map<KeyProjectionType, KeyProjection>) {
     companion object {
-        internal fun fromInterface(interfaceStruct: Structure): KeyProjections =
-            KeyProjectionsBuilder(interfaceStruct).build()
+        internal fun fromInterface(interfaceStruct: Structure): KeyProjections = KeyProjectionsBuilder(interfaceStruct).build()
     }
 
     /**

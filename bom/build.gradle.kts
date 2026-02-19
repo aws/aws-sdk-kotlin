@@ -94,8 +94,7 @@ fun Project.gav(target: KotlinTarget): String {
     return "$group:$artifactId:$version"
 }
 
-fun DependencyConstraintHandler.api(constraintNotation: Any) =
-    add("api", constraintNotation)
+fun DependencyConstraintHandler.api(constraintNotation: Any) = add("api", constraintNotation)
 
 createBomConstraintsAndVersionCatalog()
 

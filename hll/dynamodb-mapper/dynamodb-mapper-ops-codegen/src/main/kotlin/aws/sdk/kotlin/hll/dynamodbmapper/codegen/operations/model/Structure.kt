@@ -84,8 +84,7 @@ private fun deriveListMapToObject(llMember: Member): Member {
     return llMember.copy(type = hlListType)
 }
 
-private fun Structure.addKeyProjections(): Structure =
-    copy(attributes = attributes + (MapperAttributes.KeyProjections to KeyProjections.fromInterface(this)))
+private fun Structure.addKeyProjections(): Structure = copy(attributes = attributes + (MapperAttributes.KeyProjections to KeyProjections.fromInterface(this)))
 
 /**
  * Iterate over the members of this structure and execute the inner [block]. If a [MemberCodegenBehavior] is passed,

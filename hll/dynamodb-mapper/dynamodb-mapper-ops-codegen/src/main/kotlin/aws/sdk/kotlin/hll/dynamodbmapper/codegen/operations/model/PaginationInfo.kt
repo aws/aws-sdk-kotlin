@@ -28,11 +28,9 @@ internal data class PaginationInfo(
     val items: Member,
 ) {
     companion object {
-        private fun KeyProjection.findMemberByLowLevelName(name: String): Member? =
-            interfaceStruct.members.find { it.lowLevel.name == name }
+        private fun KeyProjection.findMemberByLowLevelName(name: String): Member? = interfaceStruct.members.find { it.lowLevel.name == name }
 
-        private fun KeyProjection.findMembersByLowLevelName(name: String): List<Member>? =
-            interfaceStruct.members.filter { it.lowLevel.name == name }
+        private fun KeyProjection.findMembersByLowLevelName(name: String): List<Member>? = interfaceStruct.members.filter { it.lowLevel.name == name }
 
         /**
          * Derive [PaginationInfo] for the given request and response projections, or `null` if the given

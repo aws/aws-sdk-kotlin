@@ -13,5 +13,4 @@ internal data class SerializeInputImpl<T, S : ItemSchema<T>, HReq>(
     override val serializeSchema: S,
 ) : SerializeInput<T, S, HReq>
 
-internal operator fun <T, S : ItemSchema<T>, HReq> SerializeInput<T, S, HReq>.plus(mapperContext: MapperContext<T>) =
-    HReqContextImpl(highLevelRequest, serializeSchema, mapperContext, null)
+internal operator fun <T, S : ItemSchema<T>, HReq> SerializeInput<T, S, HReq>.plus(mapperContext: MapperContext<T>) = HReqContextImpl(highLevelRequest, serializeSchema, mapperContext, null)

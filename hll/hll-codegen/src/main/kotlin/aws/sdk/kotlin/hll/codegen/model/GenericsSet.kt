@@ -51,26 +51,24 @@ public class GenericsSet internal constructor(internal val byName: Map<String, T
     override fun contains(element: TypeVar): Boolean = element.shortName in byName
     override fun iterator(): Iterator<TypeVar> = byName.values.iterator()
 
-    override fun containsAll(elements: Collection<TypeVar>): Boolean =
-        byName.keys.containsAll(elements.map { it.shortName })
+    override fun containsAll(elements: Collection<TypeVar>): Boolean = byName.keys.containsAll(elements.map { it.shortName })
 
     /**
      * Add the contents of this and another generics set, yielding a new generics set. Variables with the same name will
      * be deduplicated, favoring non-null instances where possible.
      * @param other The other set to add to this one
      */
-    public operator fun plus(other: GenericsSet): GenericsSet =
-        GenericsSet(
-            buildMap {
-                putAll(byName)
-                other.forEach { newVar ->
-                    val oldVar = byName[newVar.shortName]
-                    if (oldVar == null || (oldVar.nullable && !newVar.nullable)) {
-                        put(newVar.shortName, newVar)
-                    }
+    public operator fun plus(other: GenericsSet): GenericsSet = GenericsSet(
+        buildMap {
+            putAll(byName)
+            other.forEach { newVar ->
+                val oldVar = byName[newVar.shortName]
+                if (oldVar == null || (oldVar.nullable && !newVar.nullable)) {
+                    put(newVar.shortName, newVar)
                 }
-            },
-        )
+            }
+        },
+    )
 
     /**
      * Add the contents of this generics set and the given [TypeVar], yielding a new generics set. Variables with the
