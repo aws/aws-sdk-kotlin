@@ -36,6 +36,8 @@ class S3IntegrationTestJVM {
         client.close()
     }
 
+    // TODO This test relies on ByteStream.fromFile, which is a JVM-only API (based on java.io.File). Move this to common
+    //  if we implement a Native variant of this API.
     @Test
     fun testPutObjectFromFile() = runBlocking<Unit> {
         val tempFile = RandomTempFile(1024)
