@@ -4,11 +4,12 @@
  */
 package aws.sdk.kotlin.codegen.testutil
 
+import aws.smithy.kotlin.codegen.test.TestModelDefault
 import aws.smithy.kotlin.codegen.test.prependNamespaceAndService
 import aws.smithy.kotlin.codegen.test.toSmithyModel
 import software.amazon.smithy.model.Model
 
-internal fun model(serviceName: String): Model =
+internal fun model(serviceName: String = TestModelDefault.SERVICE_NAME): Model =
     """
         @http(method: "PUT", uri: "/foo")
         operation Foo { }
