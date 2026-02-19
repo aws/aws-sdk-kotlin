@@ -1,5 +1,299 @@
 # Changelog
 
+## [1.6.20] - 02/18/2026
+
+### Features
+* (**cleanrooms**) This release adds support for federated catalogs in Athena-sourced configured tables.
+
+### Documentation
+* (**connect**) Correcting in-app notifications API documentation.
+
+### Miscellaneous
+* Remove CloudWatch Evidently service
+* Remove IoT Analytics service
+
+## [1.6.19] - 02/17/2026
+
+### Features
+* (**ec2**) Add Operator field to CreatePlacementGroup and DescribePlacementGroup APIs.
+* (**grafana**) This release updates Amazon Managed Grafana's APIs to support customer managed KMS keys.
+* (**rds**) Adds support for the StorageEncryptionType field to specify encryption type for DB clusters, DB instances, snapshots, automated backups, and global clusters.
+* (**workspacesweb**) Adds support for branding customization without requiring a custom wallpaper.
+
+## [1.6.18] - 02/16/2026
+
+### Features
+* (**kafka**) Amazon MSK now supports dual-stack connectivity (IPv4 and IPv6) for existing MSK clusters. You can enable dual-stack on existing clusters by specifying the NetworkType parameter in updateConnectivity API.
+* (**kms**) Added support for Decrypt and ReEncrypt API's to use dry run feature without ciphertext for authorization validation
+* (**qconnect**) Update MessageType enum to include missing types.
+
+### Documentation
+* (**arcregionswitch**) Clarify documentation on ARC Region Switch start-plan-execution operation
+* (**ec2**) Documentation updates for EC2 Secondary Networks
+* (**ecr**) Adds support for enabling blob mounting, and removes support for Clair based image scanning
+
+## [1.6.17] - 02/13/2026
+
+### Features
+* (**cloudwatch**) Adding new evaluation states that provides information about the alarm evaluation process. Evaluation error Indicates configuration errors in alarm setup that require review and correction. Evaluation failure Indicates temporary CloudWatch issues.
+* (**connect**) API release for headerr notifications in the admin website. APIs allow customers to publish brief messages (including URLs) to a specified audience, and a new header icon will indicate when unread messages are available.
+* (**ec2**) This release adds geography information to EC2 region and availability zone APIs. DescribeRegions now includes a Geography field, while DescribeAvailabilityZones includes both Geography and SubGeography fields, enabling better geographic classification for AWS regions and zones.
+* (**inspector2**) Added .Net 10 (dotnet10) and Node 24.x (node24.x) runtime support for lambda package scanning
+* (**sagemaker**) Enable g7e instance type support for SageMaker Processing, and enable single file configuration provisioning for HyperPod Slurm, where customers have the option to use HyperPod API to provide the provisioning parameters.
+
+## [1.6.16] - 02/12/2026
+
+### Features
+* (**ec2**) Launching nested virtualization. This feature allows you to run nested VMs inside virtual (non-bare metal) EC2 instances.
+
+## [1.6.15] - 02/11/2026
+
+### Features
+* (**batch**) Add support for listing jobs by share identifier and getting snapshots of active capacity utilization by job queue and share.
+* (**ec2**) R8i instances powered by custom Intel Xeon 6 processors available only on AWS with sustained all-core 3.9 GHz turbo frequency
+* (**eks**) This release adds support for Windows Server 2025 in Amazon EKS Managed Node Groups.
+* (**kafkaconnect**) Support configurable upper limits on task count during autoscaling operations via maxAutoscalingTaskCount parameter.
+* (**s3tables**) S3 Tables now supports setting partition specifications and sort orders on tables. Partition specs allow users to define how data is organized using transform functions. Sort order configurations enable users to specify sort directions and null ordering preferences for optimized data layout.
+
+## [1.6.14] - 02/10/2026
+
+### Features
+* (**bedrockagentcore**) Added AgentCore browser proxy configuration support, allowing routing of browser traffic through HTTP and HTTPS proxy servers with authentication and bypass rules.
+* (**connect**) Amazon Connect now supports per-channel auto-accept and After Contact Work (ACW) timeouts. Configure agents with auto-accept and ACW timeout settings for chat, tasks, emails, and callbacks. Use the new UpdateUserConfig API to manage these settings.
+* (**eks**) Introducing an optional policy field, an IAM policy applied to pod identity associations in addition to IAM role policies. When specified, pod permissions are the intersection of IAM role policies and the policy field, ensuring the principle of least privilege.
+* (**kafka**) Amazon MSK adds three new APIs, CreateTopic, UpdateTopic, and DeleteTopic for managing Kafka topics in your MSK clusters.
+* (**rds**) This release adds backup configuration for RDS and Aurora restores, letting customers set backup retention period and preferred backup window during restore. It also enables viewing backup settings when describing snapshots or automated backups for instances and clusters.
+
+## [1.6.13] - 02/09/2026
+
+### Features
+* (**connectcampaignsv2**) Add the missing event type for WhatsApp
+* (**ec2**) Amazon Secondary Networks is a networking feature that provides high-performance, low-latency connectivity for specialized workloads.
+* (**eks**) Amazon EKS adds a new DescribeUpdate update type, VendedLogsUpdate, to support an integration between EKS Auto Mode and Amazon CloudWatch Vended Logs.
+* (**imagebuilder**) EC2 Image Builder now supports wildcard patterns in lifecycle policies with recipes and enhances the experience of tag-scoped policies.
+* (**neptunedata**) Added edgeOnlyLoad boolean parameter to Neptune bulk load request. When TRUE, files are loaded in order without scanning. When FALSE (default), the loader scans files first, then loads vertex files before edge files automatically.
+* (**pcs**) Introduces RESUMING state for clusters, compute node groups, and queues.
+
+### Documentation
+* (**lakeformation**) Allow cross account v5 in put data lake settings
+* (**transfer**) This release adds a documentation update for MdnResponse of type "ASYNC"
+
+## [1.6.12] - 02/06/2026
+
+### Features
+* (**bedrockdataautomationruntime**) Add OutputConfiguration to InvokeDataAutomation input and output to support S3 output
+* (**deadline**) Adds support for tagging jobs during job creation
+* (**iotmanagedintegrations**) Adding support for Custom(General) Authorization in managed integrations for AWS IoT Device Management cloud connectors.
+* (**partnercentralselling**) Releasing AWS Opportunity Snapshots for SDK release.
+* (**sagemaker**) Adding g7e instance support in Sagemaker Training
+
+## [1.6.11] - 02/05/2026
+
+### Features
+* (**arcregionswitch**) Updates documentation for ARC Region switch and provides stronger validation for Amazon Aurora Global Database execution block parameters.
+* (**athena**) Reduces the minimum TargetDpus to create or update capacity reservations from 24 to 4.
+* (**bedrockagentcore**) Support Browser profile persistence (cookies and local storage) across sessions for AgentCore Browser.
+* (**bedrockagentcorecontrol**) Support Browser profile persistence (cookies and local storage) across sessions for AgentCore Browser.
+* (**glue**) This release adds the capability to easily create custom AWS Glue connections to data sources with REST APIs.
+* (**medialive**) Outputs using the AV1 codec in CMAF Ingest output groups in MediaLive now have the ability to specify a target bit depth of 8 or 10.
+* (**ram**) Added ListSourceAssociations API. Allows RAM resource share owners to list source associations that determine which sources can access resources through service principal associations. Supports filtering by resource share ARN, source ID, source type, or status, with pagination.
+* (**transfer**) Adds support for the customer to send custom HTTP headers and configure an AS2 Connector to receive Asynchronous MDNs from their trading partner
+* (**workspaces**) Added support for 12 new graphics-optimized compute types - Graphics.g6 (xlarge, 2xlarge, 4xlarge, 8xlarge, 16xlarge), Graphics.gr6 (4xlarge, 8xlarge), Graphics.g6f (large, xlarge, 2xlarge, 4xlarge), and Graphics.gr6f (4xlarge).
+
+### Documentation
+* (**neptunegraph**) Minor neptune-graph documentation changes
+
+## [1.6.10] - 02/04/2026
+
+### Features
+* (**bedrockruntime**) Added support for structured outputs to Converse and ConverseStream APIs.
+* (**connectcases**) Amazon Connect Cases now supports larger, multi-line text fields with up to 4,100 characters. Administrators can use the Admin UI to select the appropriate configuration (single-line or multi-line) on a per-field basis, improving case documentation capabilities.
+* (**medialive**) AWS Elemental MediaLive now supports SRT listener mode for inputs and outputs, in addition to the existing SRT caller mode.
+* (**workspacesweb**) Support for configuring and managing custom domain names for WorkSpaces Secure Browser portals.
+
+### Documentation
+* (**eks**) Update delete cluster description
+* (**redshift**) We have increased the maximum duration for a deferred maintenance window from 45 days to 60 days for Amazon Redshift provisioned clusters. This enhancement provides customers with greater flexibility in scheduling patching and maintenance activities while also maintaining security compliance.
+
+## [1.6.9] - 02/03/2026
+
+### Features
+* (**batch**) AWS Batch Array Job Visibility feature support. Includes new statusSummaryLastUpdatedAt for array job parent DescribeJobs responses for the last time the statusSummary was updated. Includes both statusSummary and statusSummaryLastUpdatedAt in ListJobs responses for array job parents.
+* (**dynamodb**) This change supports the creation of multi-account global tables. It adds two new arguments to CreateTable, GlobalTableSourceArn and GlobalTableSettingsReplicationMode. DescribeTable is also updated to include information about GlobalTableSettingsReplicationMode.
+* (**geomaps**) Added support for optional style parameters in maps, including 3D terrain and 3D Buildings
+* (**kinesis**) Adds StreamId parameter to AWS Kinesis Data Streams APIs that is reserved for future use.
+* (**marketplacecatalog**) Adds support for Catalog API us-east-1 dualstack endpoint catalog-marketplace.us-east-1.api.aws
+* (**ssoadmin**) Added new Region management APIs to support multi-Region replication in IAM Identity Center.
+
+### Documentation
+* (**organizations**) Updated the CloseAccount description.
+
+## [1.6.8] - 02/02/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Adds tagging support for AgentCore Evaluations (evaluator and online evaluation config)
+* (**cloudfront**) Add OriginMTLS support to CloudFront Distribution APIs
+* (**mpa**) Updates to multi-party approval (MPA) service to add support for multi-factor authentication (MFA) for voting operations.
+
+## [1.6.7] - 01/30/2026
+
+### Features
+* (**connect**) This release adds Estimated Wait Time support to the GetContactMetrics API for Amazon Connect.
+* (**quicksight**) Improve SessionTag usage guidelines in the GenerateEmbedURLForAnonymousUser API documentation. Update the GetIdentityContext document with the region support context.
+
+## [1.6.6] - 01/29/2026
+
+### Features
+* (**ec2**) G7e instances feature up to 8 NVIDIA RTX PRO 6000 Blackwell Server Edition GPUs with 768 GB of memory and 5th generation Intel Xeon Scalable processors. Supporting up to 192 vCPUs, 1600 Gbps networking bandwidth with EFA, up to 2 TiB of system memory, and up to 15.2 TB of local NVMe SSD storage.
+* (**gamelift**) Amazon GameLift Servers now supports automatic scaling to and from zero instances based on game session activity. Fleets scale down to zero following a defined period of no game session activity and scale up from zero when game sessions are requested, providing an option for cost optimization.
+
+### Fixes
+* Upgrade to **smithy-kotlin** [**v1.6.1**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.6.1) to pick up codegen fixes
+
+## [1.6.5] - 01/28/2026
+
+### Features
+* (**cognitoidentityprovider**) This release adds support for a new lambda trigger to transform federated user attributes during the authentication with external identity providers on Cognito Managed Login.
+* (**connect**) Adds support for filtering search results based on tags assigned to contacts.
+* (**ec2**) SearchTransitGatewayRoutes API response now includes a NextToken field, enabling pagination when retrieving large sets of transit gateway routes. Pass the returned NextToken value in subsequent requests to retrieve the next page of results.
+* (**lambda**) We are launching ESM Metrics and logging for Kafka ESM to allow customers to monitor Kafka event processing using CloudWatch Metrics and Logs.
+* (**mediaconnect**) This release adds support for NDI flow sources in AWS Elemental MediaConnect. You can now send content to your MediaConnect transport streams directly from your NDI environment using the new NDI source type. Also adds support for LARGE 4X flow size, which can be used when creating CDI JPEG-XS flows.
+* (**mediaconvert**) This release adds a follow source mode for audio output channel count, an AES audio frame wrapping option for MXF outputs, and an option to signal DolbyVision compatibility using the SUPPLEMENTAL-CODECS tag in HLS manifests.
+* (**s3**) Adds support for the UpdateObjectEncryption API to change the server-side encryption type of objects in general purpose buckets.
+* (**s3control**) Adds support for the UpdateObjectEncryption API to change the server-side encryption type of objects in general purpose buckets.
+
+## [1.6.4] - 01/27/2026
+
+### Features
+* (**connect**) Added support for task attachments. The StartTaskContact API now accepts file attachments, enabling customers to include files (.csv, .doc, .docx, .heic, .jfif, .jpeg, .jpg, .mov, .mp4, .pdf, .png, .ppt, .pptx, .rtf, .txt, etc.) when creating Task contacts. Supports up to 5 attachments per task.
+* (**deadline**) AWS Deadline Cloud now supports editing job names and descriptions after submission.
+* (**ec2**) Releasing new EC2 instances. C8gb and M8gb with highest EBS performance, M8gn with 600 Gbps network bandwidth, X8aedz and M8azn with 5GHz AMD processors, X8i with Intel Xeon 6 processors and up to 6TB memory, and Mac-m4max with Apple M4 Max chip for 25 percent faster builds.
+* (**medialive**) AWS Elemental MediaLive released two new features that allows customers 1) to set Output Timecode for AV1 encoder, 2) to set a Custom Epoch for CMAF Ingest and MediaPackage V2 output groups when using Pipeline Locking or Disabled Locking modes.
+* (**sagemaker**) Idle resource sharing enables teams to borrow unused compute resources in your SageMaker HyperPod cluster. This capability maximizes resource utilization by allowing teams to borrow idle compute capacity beyond their allocated compute quotas.
+
+## [1.6.3] - 01/26/2026
+
+### Features
+* (**connectcases**) Amazon Connect now enables you to use tag-based access controls to define who can access specific cases. You can associate tags with case templates and configure security profiles to determine which users can access cases with those tags.
+* (**ec2**) DescribeInstanceTypes API response now includes an additionalFlexibleNetworkInterfaces field, the number of interfaces attachable to an instance when using flexible Elastic Network Adapter (ENA) queues in addition to the base number specified by maximumNetworkInterfaces.
+* (**evidently**) Deprecate all Evidently API for AWS CloudWatch Evidently deprecation
+* (**groundstation**) Adds support for AWS Ground Station Telemetry.
+
+## [1.6.2] - 01/23/2026
+
+### Features
+* (**connect**) Amazon Connect now offers public APIs to programmatically configure and run automated tests for contact center experiences. Integrate testing into CICD pipelines, run multiple tests at scale, and retrieve results via API to automate validation of voice interactions and workflows.
+* (**datazone**) Added api for deleting data export configuration for a domain
+* (**qconnect**) Fixes incorrect types in the UpdateAssistantAIAgent API request, adds MESSAGE to TargetType enum, and other minor changes.
+
+## [1.6.1] - 01/22/2026
+
+### Features
+* (**autoscaling**) This release adds support for Amazon EC2 Auto Scaling group deletion protection
+* (**budgets**) Add Budget FilterExpression and Metrics fields to DescribeBudgetPerformanceHistory to support more granular filtering options.
+* (**dynamodb**) Adds additional waiters to Amazon DynamoDB.
+* (**ec2**) Add better support for fractional GPU instances in DescribeInstanceTypes API. The new fields, logicalGpuCount, gpuPartitionSize, and workload array enable better GPU resource selection and filtering for both full and fractional GPU instance types.
+* (**gamelift**) Amazon GameLift Servers Realtime now supports Node.js 24.x runtime on the Amazon Linux 2023 operating system.
+* (**guardduty**) Adding new enum value for ScanStatusReason
+* (**health**) Updates the lower range for the maxResults request property for DescribeAffectedEntities, DescribeAffectedEntitiesForOrganization, DescribeEvents, and DescribeEventsForOrganization API request properties.
+
+### Documentation
+* (**marketplacemetering**) Customer Identifier parameter deprecation date has been removed. For new implementations, we recommend using the CustomerAWSAccountID. Your current integration will continue to work. When updating your implementation, consider migrating to CustomerAWSAccountID for improved integration.
+* (**verifiedpermissions**) Adding documentation to user guide and API documentation for how customers can create new encrypted policy stores by passing in their customer managed key during policy store creation.
+
+## [1.6.0] - 01/21/2026
+
+### Features
+* (**bedrockagentcore**) Supports custom browser extensions for AgentCore Browser and increased message payloads up to 100KB per message in an Event for AgentCore Memory
+* (**configservice**) AWS Config Conformance Packs now support tag-on-create through PutConformancePack API.
+* (**ec2**) Added support of multiple EBS cards. New EbsCardIndex parameter enables attaching volumes to specific EBS cards on supported instance types for improved storage performance.
+* (**quicksight**) Added documentation and model for sheet layout groups - allows sheet elements to be grouped, Added documentation and the feature enables admins to have granular control over connectors under actions, Updated API documentation for PDF Export in Snapshot Export APIs
+
+### Miscellaneous
+* ⚠️ **IMPORTANT**: Upgrade to Kotlin 2.3.0
+
+## [1.5.123] - 01/20/2026
+
+### Features
+* (**autoscaling**) This release adds support for three new filters when describing scaling activities, StartTimeLowerBound, StartTimeUpperBound, and Status.
+* (**bedrockruntime**) Added support for extended prompt caching with one hour TTL.
+* (**keyspaces**) Adds support for managing table pre-warming in Amazon Keyspaces (for Apache Cassandra)
+* (**odb**) Adds support for associating and disassociating IAM roles with Autonomous VM cluster resources through the AssociateIamRoleToResource and DisassociateIamRoleFromResource APIs. The GetCloudAutonomousVmCluster and ListCloudAutonomousVmClusters API responses now include the iamRoles field.
+* (**verifiedpermissions**) Amazon Verified Permissions now supports encryption of resources by a customer managed KMS key. Customers can now create new encrypted policy stores by passing in their customer managed key during policy store creation.
+* (**workspacesinstances**) Added billing configuration support for WorkSpaces Instances with monthly and hourly billing modes, including new filtering capabilities for instance type searches.
+
+## [1.5.122] - 01/16/2026
+
+### Features
+* (**connect**) Adds support to allow customers to create form with Dispute configuration
+* (**datazone**) This release adds support for numeric filtering and complex free-text searches cases for the Search and SearchListings APIs.
+* (**launchwizard**) Added UpdateDeployment, ListDeploymentPatternVersions and GetDeploymentPatternVersion APIs for Launch Wizard
+* (**resourceexplorer2**) Added ViewName to View-related responses and ServiceViewName to GetServiceView response.
+
+### Documentation
+* (**glacier**) Documentation updates for Amazon Glacier's maintenance mode
+* (**sagemaker**) Adding security consideration comments for lcc accessing execution role under root access
+
+## [1.5.121] - 01/15/2026
+
+### Features
+* (**cleanrooms**) This release adds support for parameters in PySpark analysis templates.
+* (**deadline**) AWS Deadline Cloud now supports tagging Budget resources with ABAC for permissions management and selecting up to 16 filter values in the monitor and Search API.
+* (**ecs**) Adds support for configuring FIPS in AWS GovCloud (US) Regions via a new ECS Capacity Provider field fipsEnabled. When enabled, instances launched by the capacity provider will use a FIPS-140 enabled AMI. Instances will use FIPS-140 compliant cryptographic modules and AWS FIPS endpoints.
+* (**evs**) A new GetVersions API has been added to retrieve VCF, ESX versions, and EC2 instances provided by Amazon EVS. The CreateEnvironment API now allows you to select a VCF version and the CreateEnvironmentHost API introduces a optional esxVersion parameter.
+* (**lakeformation**) API Changes for GTCForLocation feature. Includes a new API, GetTemporaryDataLocationCredentials and updates to the APIs RegisterResource and UpdateResource
+* (**opensearchserverless**) Collection groups in Amazon OpenSearch Serverless enables to organize multiple collections and enable compute resource sharing across collections with different KMS keys. This shared compute model reduces costs by eliminating the need for separate OpenSearch Compute Units (OCUs) for each KMS key.
+* (**qconnect**) Fix inference configuration shapes for the CreateAIPrompt and UpdateAIPrompt APIs, Modify Text Length Limit for SendMessage API
+
+### Documentation
+* (**ec2**) This release includes documentation updates to support up to four Elastic Volume modifications per Amazon EBS volume within a rolling 24-hour period.
+
+## [1.5.120] - 01/14/2026
+
+### Features
+* (**connect**) Amazon Connect makes it easier to manage contact center operating hours by enabling automated scheduling for recurring events like holidays and maintenance windows. Set up recurring patterns (weekly, monthly, etc.) or link to another hours of operation to inherit overrides.
+* (**eks**) Added support for BOTTLEROCKET NVIDIA FIPS AMIs to AMI types in US regions.
+* (**rds**) no feature changes. model migrated to Smithy
+* (**redshift**) Adds support for enabling extra compute resources for automatic optimization during create and modify operations in Amazon Redshift clusters.
+* (**redshiftserverless**) Adds support for enabling extra compute resources for automatic optimization during create and update operations in Amazon Redshift Serverless workgroups.
+* (**socialmessaging**) This release clarifies WhatsApp template operations as a resource-authenticated operation via the parent WhatsApp Business Account. It also introduces new parameters for parameter format, CTA URL link tracking, and template body examples, and increases the phone number ID length.
+
+### Documentation
+* (**costexplorer**) Cost Categories added support to BillingView data filter expressions through the new costCategories parameter, enabling users to filter billing views by AWS Cost Categories for more granular cost management and allocation.
+
+## [1.5.119] - 01/13/2026
+
+### Features
+* (**bedrock**) This change will increase TestCase guardContent input size from 1024 to 2028 characters and PolicyBuildDocumentDescription from 2000 to 4000 characters
+* (**datazone**) Adds support for IAM role subscriptions to Glue table listings via CreateSubscriptionRequest API. Also adds owningIamPrincipalArn filter to List APIs and subscriptionGrantCreationMode parameter to subscription target APIs for controlling grant creation behavior.
+
+## [1.5.118] - 01/12/2026
+
+### Features
+* (**billing**) Cost Categories filtering support to BillingView data filter expressions through the new costCategories parameter, enabling users to filter billing views by AWS Cost Categories for more granular cost management and allocation.
+* (**iotmanagedintegrations**) This release introduces WiFi Simple Setup (WSS) enabling device provisioning via barcode scanning with automated network discovery, authentication, and credential provisioning. Additionally, it introduces 2P Device Capability Rediscovery for updating hub-managed device capabilities post-onboarding.
+* (**sagemaker**) Added ultraServerType to the UltraServerInfo structure to support server type identification for SageMaker HyperPod
+
+## [1.5.117] - 01/09/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Adds optional field "view" to GetMemory API input to give customers control over whether CMK encrypted data such as strategy decryption or override prompts is returned or not.
+* (**cloudfront**) Added EntityLimitExceeded exception handling to the following API operations AssociateDistributionWebACL, AssociateDistributionTenantWebACL, UpdateDistributionWithStagingConfig
+* (**glue**) Adding MaterializedViews task run APIs
+* (**medialive**) MediaPackage v2 output groups in MediaLive can now accept one additional destination for single pipeline channels and up to two additional destinations for standard channels. MediaPackage v2 destinations now support sending to cross region MediaPackage channels.
+* (**transcribe**) Adds waiters to Amazon Transcribe.
+
+## [1.5.116] - 01/07/2026
+
+### Features
+* (**workspaces**) Add StateMessage and ProgressPercentage fields to DescribeCustomWorkspaceImageImport API response.
+
+## [1.5.115] - 01/06/2026
+
+### Features
+* (**costexplorer**) This release updates existing reservation recommendations API to support deployment model.
+* (**emrserverless**) Added support for enabling disk encryption using customer managed AWS KMS keys to CreateApplication, UpdateApplication and StartJobRun APIs.
+
 ## [1.5.114] - 01/05/2026
 
 ### Features

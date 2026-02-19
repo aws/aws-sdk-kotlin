@@ -183,22 +183,19 @@ public interface KeyAttrSpec<K> {
          * Instantiates a new binary [KeyAttrSpec] with the given name
          * @param name The name of the attribute
          */
-        public fun byteArray(name: String): KeyAttrSpec<ByteArray> =
-            KeyAttrSpecImpl(name, ScalarAttributeType.B, AttributeValue::B)
+        public fun byteArray(name: String): KeyAttrSpec<ByteArray> = KeyAttrSpecImpl(name, ScalarAttributeType.B, AttributeValue::B)
 
         /**
          * Instantiates a new numeric [KeyAttrSpec] with the given name
          * @param N The type of [Number] of this attribute (e.g., [Int])
          * @param name The name of the attribute
          */
-        public fun <N : Number> number(name: String): KeyAttrSpec<N> =
-            KeyAttrSpecImpl(name, ScalarAttributeType.N) { AttributeValue.N(it.toString()) }
+        public fun <N : Number> number(name: String): KeyAttrSpec<N> = KeyAttrSpecImpl(name, ScalarAttributeType.N) { AttributeValue.N(it.toString()) }
 
         /**
          * Instantiates a new string [KeyAttrSpec] with the given name
          * @param name The name of the attribute
          */
-        public fun string(name: String): KeyAttrSpec<String> =
-            KeyAttrSpecImpl(name, ScalarAttributeType.S, AttributeValue::S)
+        public fun string(name: String): KeyAttrSpec<String> = KeyAttrSpecImpl(name, ScalarAttributeType.S, AttributeValue::S)
     }
 }

@@ -28,5 +28,4 @@ public fun MutableMap<String, AttributeValue>.toMutableItem(): MutableItem = Mut
  * @param pairs A collection of [Pair]<[String], [AttributeValue]> where the first value is the attribute name and the
  * second is the attribute value.
  */
-public fun mutableItemOf(vararg pairs: Pair<String, AttributeValue>): MutableItem =
-    MutableItemImpl(mutableMapOf(*pairs))
+public fun mutableItemOf(vararg pairs: Pair<String, AttributeValue>): MutableItem = MutableItemImpl(mutableMapOf(*pairs))

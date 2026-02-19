@@ -16,7 +16,8 @@ local.properties
 # ignore generated files
 services/*/generated-src
 services/*/build.gradle.kts
-services/*/API.md
+services/*/EXAMPLES.md
+services/*/OPERATIONS.md
 services/*/OVERVIEW.md
 .kotest/
 .kotlin/

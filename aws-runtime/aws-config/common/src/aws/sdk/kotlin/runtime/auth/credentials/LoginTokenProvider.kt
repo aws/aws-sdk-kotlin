@@ -156,8 +156,7 @@ internal class LoginTokenProvider(
         }
     }
 
-    private fun throwTokenExpired(cause: Throwable? = null, message: String? = null): Nothing =
-        throw InvalidLoginTokenException(message ?: "Login token for login-session: $loginSessionName is expired", cause)
+    private fun throwTokenExpired(cause: Throwable? = null, message: String? = null): Nothing = throw InvalidLoginTokenException(message ?: "Login token for login-session: $loginSessionName is expired", cause)
 
     private suspend fun refreshToken(oldToken: LoginToken): LoginToken {
         client.withConfig {
@@ -265,12 +264,11 @@ private fun parseECKeyPem(pem: String): ECKeyData {
     return ECKeyData(d, x, y)
 }
 
-private fun ByteArray.padTo32(): ByteArray =
-    if (size > 32) {
-        error("Unexpected byte array of size $size; expected 32 bytes or less")
-    } else {
-        ByteArray(32 - size) + this
-    }
+private fun ByteArray.padTo32(): ByteArray = if (size > 32) {
+    error("Unexpected byte array of size $size; expected 32 bytes or less")
+} else {
+    ByteArray(32 - size) + this
+}
 
 /**
  * Generates a DPoP (Demonstration of Proof-of-Possession) JWT proof for OAuth 2.0 requests.
@@ -430,23 +428,22 @@ internal fun deserializeLoginToken(json: ByteArray): LoginToken {
     )
 }
 
-internal fun serializeLoginToken(token: LoginToken): ByteArray =
-    jsonStreamWriter(pretty = true).apply {
-        beginObject()
-        writeName("accessToken")
-        beginObject()
-        writeNotNull("accessKeyId", token.accessKeyId)
-        writeNotNull("secretAccessKey", token.secretAccessKey)
-        writeNotNull("sessionToken", token.sessionToken)
-        writeNotNull("accountId", token.accountId)
-        writeNotNull("expiresAt", token.expiresAt.format(TimestampFormat.ISO_8601))
-        endObject()
-        writeNotNull("tokenType", token.tokenType)
-        writeNotNull("refreshToken", token.refreshToken)
-        writeNotNull("idToken", token.idToken)
-        writeNotNull("clientId", token.clientId)
-        writeNotNull("dpopKey", token.dpopKey)
-        endObject()
-    }.bytes ?: error("serializing LoginToken failed")
+internal fun serializeLoginToken(token: LoginToken): ByteArray = jsonStreamWriter(pretty = true).apply {
+    beginObject()
+    writeName("accessToken")
+    beginObject()
+    writeNotNull("accessKeyId", token.accessKeyId)
+    writeNotNull("secretAccessKey", token.secretAccessKey)
+    writeNotNull("sessionToken", token.sessionToken)
+    writeNotNull("accountId", token.accountId)
+    writeNotNull("expiresAt", token.expiresAt.format(TimestampFormat.ISO_8601))
+    endObject()
+    writeNotNull("tokenType", token.tokenType)
+    writeNotNull("refreshToken", token.refreshToken)
+    writeNotNull("idToken", token.idToken)
+    writeNotNull("clientId", token.clientId)
+    writeNotNull("dpopKey", token.dpopKey)
+    endObject()
+}.bytes ?: error("serializing LoginToken failed")
 
 public class InvalidLoginTokenException(message: String, cause: Throwable? = null) : ConfigurationException(message, cause)

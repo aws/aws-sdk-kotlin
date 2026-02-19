@@ -19,8 +19,7 @@ public interface Item : Map<String, AttributeValue>
  * of it.
  * @param block The block to apply to the [MutableItem] builder
  */
-public inline fun buildItem(block: MutableItem.() -> Unit): Item =
-    mutableMapOf<String, AttributeValue>().toMutableItem().apply(block).toItem()
+public inline fun buildItem(block: MutableItem.() -> Unit): Item = mutableMapOf<String, AttributeValue>().toMutableItem().apply(block).toItem()
 
 /**
  * Convert this [Item] into a [MutableItem]. Changes to the returned instance do not affect this instance.

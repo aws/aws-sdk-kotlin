@@ -15,8 +15,7 @@ import aws.sdk.kotlin.hll.mapping.core.converters.reversedBy
  * @param delegate A [MonoConverter] from type [A] to type [B] to use for each set element
  */
 @Suppress("ktlint:standard:function-naming")
-public fun <A, B> SetMappingMonoConverter(delegate: MonoConverter<A, B>): MonoConverter<Set<A>, Set<B>> =
-    MonoConverter { it.map(delegate::convert).toSet() }
+public fun <A, B> SetMappingMonoConverter(delegate: MonoConverter<A, B>): MonoConverter<Set<A>, Set<B>> = MonoConverter { it.map(delegate::convert).toSet() }
 
 /**
  * Creates a set-mapping [Converter] which performs two-way conversions between values of type `Set<L>` and values of
@@ -25,5 +24,4 @@ public fun <A, B> SetMappingMonoConverter(delegate: MonoConverter<A, B>): MonoCo
  * @param R The **right** element type
  */
 @Suppress("ktlint:standard:function-naming")
-public fun <L, R> SetMappingConverter(delegate: Converter<L, R>): Converter<Set<L>, Set<R>> =
-    SetMappingMonoConverter(delegate.right) reversedBy SetMappingMonoConverter(delegate.left)
+public fun <L, R> SetMappingConverter(delegate: Converter<L, R>): Converter<Set<L>, Set<R>> = SetMappingMonoConverter(delegate.right) reversedBy SetMappingMonoConverter(delegate.left)

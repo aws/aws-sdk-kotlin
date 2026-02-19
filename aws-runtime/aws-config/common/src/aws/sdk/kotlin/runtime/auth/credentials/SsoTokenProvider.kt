@@ -228,21 +228,20 @@ internal fun deserializeSsoToken(json: ByteArray): SsoToken {
     )
 }
 
-internal fun serializeSsoToken(token: SsoToken): ByteArray =
-    jsonStreamWriter(pretty = true).apply {
-        beginObject()
-        writeName("accessToken")
-        writeValue(token.token)
-        writeName("expiresAt")
-        writeValue(token.expiration.format(TimestampFormat.ISO_8601))
-        writeNotNull("refreshToken", token.refreshToken)
-        writeNotNull("clientId", token.clientId)
-        writeNotNull("clientSecret", token.clientSecret)
-        writeNotNull("registrationExpiresAt", token.registrationExpiresAt?.let { it.format(TimestampFormat.ISO_8601) })
-        writeNotNull("region", token.region)
-        writeNotNull("startUrl", token.startUrl)
-        endObject()
-    }.bytes ?: error("serializing SsoToken failed")
+internal fun serializeSsoToken(token: SsoToken): ByteArray = jsonStreamWriter(pretty = true).apply {
+    beginObject()
+    writeName("accessToken")
+    writeValue(token.token)
+    writeName("expiresAt")
+    writeValue(token.expiration.format(TimestampFormat.ISO_8601))
+    writeNotNull("refreshToken", token.refreshToken)
+    writeNotNull("clientId", token.clientId)
+    writeNotNull("clientSecret", token.clientSecret)
+    writeNotNull("registrationExpiresAt", token.registrationExpiresAt?.let { it.format(TimestampFormat.ISO_8601) })
+    writeNotNull("region", token.region)
+    writeNotNull("startUrl", token.startUrl)
+    endObject()
+}.bytes ?: error("serializing SsoToken failed")
 
 internal fun JsonStreamWriter.writeNotNull(name: String, value: String?) {
     if (value == null) return

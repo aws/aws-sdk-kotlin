@@ -26,11 +26,10 @@ public data class TemplateProcessor(val key: Char, val handler: (Any) -> String)
          * with this processor
          * @param handler A function that accepts an input argument of type [T] and returns a formatted string
          */
-        public inline fun <reified T> typed(key: Char, crossinline handler: (T) -> String): TemplateProcessor =
-            TemplateProcessor(key) { value ->
-                require(value is T) { "Expected argument of type ${T::class} but found $value" }
-                handler(value)
-            }
+        public inline fun <reified T> typed(key: Char, crossinline handler: (T) -> String): TemplateProcessor = TemplateProcessor(key) { value ->
+            require(value is T) { "Expected argument of type ${T::class} but found $value" }
+            handler(value)
+        }
 
         /**
          * A literal template processor. This processor substitutes parameters in the form of `#L` with the [toString]

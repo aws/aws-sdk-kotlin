@@ -6,6 +6,10 @@ ktlint_standard_no-wildcard-imports = disabled
 ktlint_standard_filename = disabled
 ktlint_standard_backing-property-naming = disabled
 
+# TODO decide if we want to enable these new rules
+ktlint_standard_mixed-condition-operators = disabled
+ktlint_standard_blank-line-between-when-conditions = disabled
+
 # enable trailing commas per JetBrains recommendation
 # (https://kotlinlang.org/docs/coding-conventions.html#trailing-commas)
 ij_kotlin_allow_trailing_comma_on_call_site = true

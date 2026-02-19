@@ -146,12 +146,11 @@ public fun Type.genericVars(): List<TypeVar> = buildList {
  * destination for the string is codegen and additional spacing may be required.
  */
 @InternalSdkApi
-public fun List<TypeVar>.asParamsList(postfix: String = ""): String =
-    takeUnless { isEmpty() }
-        ?.map { it.shortName }
-        ?.requireAllDistinct()
-        ?.joinToString(", ", "<", ">$postfix")
-        ?: ""
+public fun List<TypeVar>.asParamsList(postfix: String = ""): String = takeUnless { isEmpty() }
+    ?.map { it.shortName }
+    ?.requireAllDistinct()
+    ?.joinToString(", ", "<", ">$postfix")
+    ?: ""
 
 /**
  * Returns whether this [TypeRef] is generic for an [other]

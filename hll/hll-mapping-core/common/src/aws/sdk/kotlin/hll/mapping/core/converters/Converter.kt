@@ -48,8 +48,7 @@ public interface Converter<L, R> {
  * @param right A converter instance for converting one-way from [L] to [R]
  * @param left A converter instance for converting one-way from [R] to [L]
  */
-public fun <L, R> Converter(right: MonoConverter<L, R>, left: MonoConverter<R, L>): Converter<L, R> =
-    ConverterImpl(right, left)
+public fun <L, R> Converter(right: MonoConverter<L, R>, left: MonoConverter<R, L>): Converter<L, R> = ConverterImpl(right, left)
 
 /**
  * Chains this converter with a subsequent converter, yielding a new converter which performs two-stage transformations.
@@ -59,5 +58,4 @@ public fun <L, R> Converter(right: MonoConverter<L, R>, left: MonoConverter<R, L
  * @param R The **right** type of the next converter
  * @param next The subsequent converter to chain
  */
-public operator fun <L, M, R> Converter<L, M>.plus(next: Converter<M, R>): Converter<L, R> =
-    Converter(this.right + next.right, next.left + this.left)
+public operator fun <L, M, R> Converter<L, M>.plus(next: Converter<M, R>): Converter<L, R> = Converter(this.right + next.right, next.left + this.left)

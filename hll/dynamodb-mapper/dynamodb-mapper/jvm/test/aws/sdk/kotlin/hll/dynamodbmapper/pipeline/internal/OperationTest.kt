@@ -37,8 +37,7 @@ class OperationTest {
         override val schema = fooSchema
     }
 
-    private fun interceptor(name: String) =
-        spyk(object : Interceptor<Foo, HFooRequest, LFooRequest, LFooResponse, HFooResponse> {}, name)
+    private fun interceptor(name: String) = spyk(object : Interceptor<Foo, HFooRequest, LFooRequest, LFooResponse, HFooResponse> {}, name)
 
     private val interceptorA = interceptor("A")
     private val interceptorB = interceptor("B")
@@ -186,10 +185,8 @@ private data class LFooRequest(val table: String, val foo: Item)
 private data class LFooResponse(val foo: Item)
 private data class HFooResponse(val foo: Foo)
 
-private fun HFooRequest.convert(table: String, schema: ItemSchema<Foo>) =
-    LFooRequest(table, schema.converter.convertRight(foo))
+private fun HFooRequest.convert(table: String, schema: ItemSchema<Foo>) = LFooRequest(table, schema.converter.convertRight(foo))
 
-private fun LFooResponse.convert(schema: ItemSchema<Foo>) =
-    HFooResponse(schema.converter.convertLeft(foo))
+private fun LFooResponse.convert(schema: ItemSchema<Foo>) = HFooResponse(schema.converter.convertLeft(foo))
 
 private suspend fun dummyInvoke(req: LFooRequest) = LFooResponse(req.foo)

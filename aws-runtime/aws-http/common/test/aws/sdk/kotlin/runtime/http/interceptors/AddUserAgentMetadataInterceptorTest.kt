@@ -42,8 +42,7 @@ class AddUserAgentMetadataInterceptorTest {
 
 private val metadata = mapOf("foo" to "bar")
 
-private fun interceptorContext(executionContext: ExecutionContext = ExecutionContext()) =
-    object : RequestInterceptorContext<Any> {
-        override val request: Any = Unit
-        override val executionContext: ExecutionContext = executionContext
-    }
+private fun interceptorContext(executionContext: ExecutionContext = ExecutionContext()) = object : RequestInterceptorContext<Any> {
+    override val request: Any = Unit
+    override val executionContext: ExecutionContext = executionContext
+}

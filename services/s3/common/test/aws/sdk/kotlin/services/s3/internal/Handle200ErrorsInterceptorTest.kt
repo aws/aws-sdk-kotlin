@@ -40,17 +40,16 @@ class Handle200ErrorsInterceptorTest {
     private fun newTestClient(
         status: HttpStatusCode = HttpStatusCode.OK,
         payload: ByteArray = errorResponsePayload,
-    ): S3Client =
-        S3Client {
-            region = "us-east-1"
-            credentialsProvider = TestCredentialsProvider
-            retryStrategy {
-                maxAttempts = 1
-            }
-            httpClient = buildTestConnection {
-                expect(HttpResponse(status, body = HttpBody.fromBytes(payload)))
-            }
+    ): S3Client = S3Client {
+        region = "us-east-1"
+        credentialsProvider = TestCredentialsProvider
+        retryStrategy {
+            maxAttempts = 1
         }
+        httpClient = buildTestConnection {
+            expect(HttpResponse(status, body = HttpBody.fromBytes(payload)))
+        }
+    }
 
     fun assertException(ex: S3Exception) {
         val expectedMessage = "Please reduce your request rate."

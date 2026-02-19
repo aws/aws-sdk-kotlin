@@ -28,8 +28,6 @@ private val jvmMetadataExtras = lazy {
     metadata
 }
 
-internal actual fun platformLanguageMetadata() =
-    LanguageMetadata(extras = jvmMetadataExtras.value)
+internal actual fun platformLanguageMetadata() = LanguageMetadata(extras = jvmMetadataExtras.value)
 
-private fun getSystemProperty(name: String, defaultValue: String = "unknown"): String =
-    runCatching { System.getProperty(name) }.getOrDefault(defaultValue)
+private fun getSystemProperty(name: String, defaultValue: String = "unknown"): String = runCatching { System.getProperty(name) }.getOrDefault(defaultValue)

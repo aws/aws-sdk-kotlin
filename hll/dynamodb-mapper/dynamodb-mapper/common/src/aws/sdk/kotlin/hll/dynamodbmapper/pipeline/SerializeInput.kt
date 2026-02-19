@@ -32,5 +32,4 @@ public interface SerializeInput<T, HReq> {
  * @param highLevelRequest The high-level request object which is to be serialized into a low-level request object
  * @param serializeSchema The [ItemSchema] to use for serializing objects into items
  */
-public fun <T, HReq> SerializeInput(highLevelRequest: HReq, serializeSchema: ItemSchema<T>): SerializeInput<T, HReq> =
-    SerializeInputImpl(highLevelRequest, serializeSchema)
+public fun <T, HReq> SerializeInput(highLevelRequest: HReq, serializeSchema: ItemSchema<T>): SerializeInput<T, HReq> = SerializeInputImpl(highLevelRequest, serializeSchema)
