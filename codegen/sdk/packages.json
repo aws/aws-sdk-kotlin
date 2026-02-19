@@ -853,12 +853,6 @@
             "brazilName": "AwsSdkKotlinEventbridge"
         },
         {
-            "sdkId": "Evidently",
-            "namespace": "aws.sdk.kotlin.services.evidently",
-            "artifactName": "evidently",
-            "brazilName": "AwsSdkKotlinEvidently"
-        },
-        {
             "sdkId": "FMS",
             "namespace": "aws.sdk.kotlin.services.fms",
             "artifactName": "fms",
@@ -1055,12 +1049,6 @@
             "namespace": "aws.sdk.kotlin.services.iotwireless",
             "artifactName": "iotwireless",
             "brazilName": "AwsSdkKotlinIotWireless"
-        },
-        {
-            "sdkId": "IoTAnalytics",
-            "namespace": "aws.sdk.kotlin.services.iotanalytics",
-            "artifactName": "iotanalytics",
-            "brazilName": "AwsSdkKotlinIotanalytics"
         },
         {
             "sdkId": "IoTFleetWise",

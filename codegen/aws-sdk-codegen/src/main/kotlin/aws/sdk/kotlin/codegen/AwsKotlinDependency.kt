@@ -6,6 +6,7 @@ package aws.sdk.kotlin.codegen
 
 import aws.smithy.kotlin.codegen.core.GradleConfiguration
 import aws.smithy.kotlin.codegen.core.KotlinDependency
+import aws.smithy.kotlin.codegen.core.isImplicit
 import aws.smithy.kotlin.codegen.core.isValidVersion
 import software.amazon.smithy.codegen.core.CodegenException
 
@@ -51,12 +52,11 @@ private val sameProjectDeps: Map<KotlinDependency, String> by lazy {
     )
 }
 
-internal fun KotlinDependency.dependencyNotation(allowProjectNotation: Boolean = true): String {
+internal fun KotlinDependency.dependencyNotation(allowProjectNotation: Boolean = true): String? {
     val dep = this
-    return if (allowProjectNotation && sameProjectDeps.contains(dep)) {
-        val projectNotation = sameProjectDeps[dep]
-        "${dep.config.kmpName}($projectNotation)"
-    } else {
-        "${dep.config.kmpName}(\"${dep.group}:${dep.artifact}:${dep.version}\")"
+    return when {
+        dep.isImplicit -> null
+        allowProjectNotation && sameProjectDeps.contains(dep) -> "${dep.config.kmpName}(${sameProjectDeps[dep]})"
+        else -> "${dep.config.kmpName}(\"${dep.group}:${dep.artifact}:${dep.version}\")"
     }
 }

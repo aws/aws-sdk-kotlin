@@ -4469,12 +4469,6 @@
                         "smithy.api#documentation": "<p>Indicates whether the data provider is virtual.</p>"
                     }
                 },
-                "Virtual": {
-                    "target": "com.amazonaws.databasemigrationservice#BooleanOptional",
-                    "traits": {
-                        "smithy.api#documentation": "<p>Indicates whether the data provider is virtual.</p>"
-                    }
-                },
                 "Settings": {
                     "target": "com.amazonaws.databasemigrationservice#DataProviderSettings",
                     "traits": {
@@ -13244,12 +13238,6 @@
                     "target": "com.amazonaws.databasemigrationservice#String",
                     "traits": {
                         "smithy.api#documentation": "<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, \n         <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, \n         <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code>, <code>docdb</code>, and <code>sybase</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
-                    }
-                },
-                "Virtual": {
-                    "target": "com.amazonaws.databasemigrationservice#BooleanOptional",
-                    "traits": {
-                        "smithy.api#documentation": "<p>Indicates whether the data provider is virtual.</p>"
                     }
                 },
                 "Virtual": {
