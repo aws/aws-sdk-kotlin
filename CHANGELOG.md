@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.21] - 02/19/2026
+
+### Features
+* (**bcmdashboards**) The Billing and Cost Management GetDashboard API now returns identifier for each widget, enabling users to uniquely identify widgets within their dashboards.
+* (**ecr**) Adds multiple artifact types filter support in ListImageReferrers API.
+* (**pcaconnectorscep**) AWS Private CA Connector for SCEP now supports AWS PrivateLink, allowing your clients to request certificates from within your Amazon Virtual Private Cloud (VPC) without traversing the public internet. With this launch, you can create VPC endpoints to connect to your SCEP connector privately.
+
+### Fixes
+* Remove explicit Gradle dependencies on Kotlin's standard library in all service clients
+
 ## [1.6.20] - 02/18/2026
 
 ### Features
