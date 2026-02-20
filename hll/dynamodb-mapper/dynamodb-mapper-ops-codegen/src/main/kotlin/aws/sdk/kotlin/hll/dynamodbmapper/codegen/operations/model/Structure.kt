@@ -57,8 +57,8 @@ private fun deriveExpressionLiteral(llMember: Member, type: ExpressionLiteralTyp
 
     val dslInfo = when (type) {
         ExpressionLiteralType.Filter -> DslInfo(
-            interfaceType = MapperTypes.Expressions.Filter,
-            implType = MapperTypes.Expressions.Internal.FilterImpl,
+            interfaceType = MapperTypes.Expressions.FilterDsl,
+            implType = MapperTypes.Expressions.Internal.FilterDslImpl,
             implSingleton = true,
         )
 

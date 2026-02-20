@@ -10,7 +10,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.attrs
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.values
-import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAttr
+import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
 
 internal data class KeyFilterImpl(
     override val partitionKey: KeyType,
@@ -28,10 +28,10 @@ internal fun KeyFilter.toExpression(schema: ItemSchema<*>): Expression {
             pkConditions(schema.partitionKey, partitionKey) + skConditions(schema.sortKey, sortKeyExpressions)
     }
 
-    return if (conditions.size == 1) conditions.single() else FilterImpl.and(conditions)
+    return if (conditions.size == 1) conditions.single() else FilterDslImpl.and(conditions)
 }
 
-private fun pkConditions(spec: KeySpec<*>, value: KeyType): List<BooleanExpr> = FilterImpl.run {
+private fun pkConditions(spec: KeySpec<*>, value: KeyType): List<BooleanExpr> = FilterDslImpl.run {
     val attrs = spec.attrs
     val values = value.values
     require(attrs.size == values.size) {
@@ -39,11 +39,11 @@ private fun pkConditions(spec: KeySpec<*>, value: KeyType): List<BooleanExpr> = 
     }
 
     attrs.zip(values).map { (attr, value) ->
-        attr(attr.name) eq LiteralExpr(dynamicAttr(value))
+        attr(attr.name) eq LiteralExpr(dynamicAv(value))
     }
 }
 
-private fun skConditions(spec: KeySpec<*>, sortKeyExpressions: List<SortKeyExpr>): List<BooleanExpr> = FilterImpl.run {
+private fun skConditions(spec: KeySpec<*>, sortKeyExpressions: List<SortKeyExpr>): List<BooleanExpr> = FilterDslImpl.run {
     val attrs = spec.attrs
     require(attrs.size >= sortKeyExpressions.size) {
         "Provided number of sort key expressions (${sortKeyExpressions.size}) is greater than the number of keys defined in the schema (${attrs.size})"

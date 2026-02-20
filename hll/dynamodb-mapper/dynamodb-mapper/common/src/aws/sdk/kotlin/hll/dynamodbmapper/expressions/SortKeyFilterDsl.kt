@@ -24,7 +24,7 @@ public interface SortKey
  *
  * ## (Non-)Relationship to schema
  *
- * The expressions formed by [SortKeyFilter] are referred to as a "low-level" filter expression. This is because they
+ * The expressions formed by [SortKeyFilterDsl] are referred to as a "low-level" filter expression. This is because they
  * are not restricted by or adherent to any defined schema. Instead, they are a DSL convenience layer over [literal
  * DynamoDB expression strings and expression attribute value maps](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.KeyConditionExpressions.html).
  * As such they provide **minimal type correctness** and may allow you to form expressions which are invalid given the
@@ -71,7 +71,7 @@ public interface SortKey
  * sortKey startsWith "abc" // Checks whether the value of the sort key starts with `"abc"`
  * ```
  */
-public interface SortKeyFilter {
+public interface SortKeyFilterDsl {
     /**
      * Gets an attribute reference to the sort key
      */

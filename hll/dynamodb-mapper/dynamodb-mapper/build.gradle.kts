@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import com.amazonaws.services.dynamodbv2.local.main.ServerRunner
-import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer
+import dev.mokkery.verify.VerifyMode
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+import software.amazon.dynamodb.services.local.main.ServerRunner
+import software.amazon.dynamodb.services.local.server.DynamoDBProxyServer
 import java.net.ServerSocket
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -23,6 +24,7 @@ buildscript {
 
 plugins {
     alias(libs.plugins.ksp)
+    alias(libs.plugins.mokkery)
     `dokka-convention`
 }
 
@@ -40,14 +42,8 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation(libs.mockk)
+                implementation(libs.kotest.framework.engine)
                 implementation(libs.kotest.assertions.core)
-                implementation(libs.kotest.runner.junit5)
             }
         }
     }
@@ -175,4 +171,8 @@ tasks.withType<Test> {
     doLast {
         startDdbLocal.get().stop()
     }
+}
+
+mokkery {
+    defaultVerifyMode.set(VerifyMode.order)
 }

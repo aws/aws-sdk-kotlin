@@ -18,9 +18,9 @@ import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.net.Host
 import aws.smithy.kotlin.runtime.net.Scheme
 import aws.smithy.kotlin.runtime.net.url.Url
+import aws.smithy.kotlin.runtime.util.PlatformProvider
 import io.kotest.core.spec.style.AnnotationSpec
 import kotlinx.coroutines.runBlocking
-import java.io.File
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -49,9 +49,12 @@ abstract class DdbLocalTest : AnnotationSpec() {
     private val requestInterceptor = RequestCapturingInterceptor(this@DdbLocalTest.requests)
 
     private val ddbHolder = lazy {
-        val portFile = File("build/ddblocal/port.info").absoluteFile // Keep in sync with build.gradle.kts
-        println("Reading DDB Local port info from ${portFile.absolutePath}")
-        val port = portFile.readText().toInt()
+        val portFilePath = "build/ddblocal/port.info" // Keep in sync with build.gradle.kts
+        println("Reading DDB Local port info from $portFilePath")
+        val portFileContents = requireNotNull(runBlocking { PlatformProvider.System.readFileOrNull(portFilePath) }) {
+            "Failed to locate $portFilePath containing DDB Local port specification"
+        }
+        val port = portFileContents.decodeToString().toInt()
         println("Connecting to DDB Local on port $port")
 
         DynamoDbClient {

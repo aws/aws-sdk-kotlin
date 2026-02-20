@@ -40,7 +40,7 @@ public sealed interface AttrPathElement {
  * key in a map attribute) or indices (i.e., into a list). The first (and often only) element of an attribute path is a
  * name.
  *
- * See [Filter] for more information about creating references to attributes.
+ * See [FilterDsl] for more information about creating references to attributes.
  */
 public interface AttributePath : Expression {
     /**

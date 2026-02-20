@@ -4,23 +4,23 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.FilterImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.FilterDslImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.ParameterizingExpressionVisitor
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.UByteRange
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.UShortRange
-import aws.sdk.kotlin.hll.dynamodbmapper.util.attr
+import aws.sdk.kotlin.hll.dynamodbmapper.util.av
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FilterTest {
+class FilterDslTest {
     @Test
     fun testAnd() {
         testFilters(
             mapOf(
-                ":v0" to attr(5),
-                ":v1" to attr("banana"),
-                ":v2" to attr(null),
+                ":v0" to av(5),
+                ":v1" to av("banana"),
+                ":v2" to av(null),
             ),
             "(foo = :v0) AND (bar < :v1) AND (baz <> :v2)" to {
                 and(
@@ -36,7 +36,7 @@ class FilterTest {
     fun testBooleans() {
         listOf(false, true, null).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "contains(foo, :v0)" to { attr("foo") contains value },
@@ -52,7 +52,7 @@ class FilterTest {
 
         listOf(b1, b2, b3).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "foo < :v0" to { attr("foo") lt value },
@@ -65,15 +65,15 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(b1),
-                ":v1" to attr(b2),
+                ":v0" to av(b1),
+                ":v1" to av(b2),
             ),
             "foo BETWEEN :v0 AND :v1" to { attr("foo").isBetween(b1, b2) },
         )
 
         (null as ByteArray?).let { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "contains(foo, :v0)" to { attr("foo") contains value },
@@ -85,9 +85,9 @@ class FilterTest {
     fun testCollectionsOfByteArrays() {
         testFilters(
             mapOf(
-                ":v0" to attr(byteArrayOf(1, 2, 3)),
-                ":v1" to attr(byteArrayOf(4, 5, 6)),
-                ":v2" to attr(byteArrayOf(7, 8, 9)),
+                ":v0" to av(byteArrayOf(1, 2, 3)),
+                ":v1" to av(byteArrayOf(4, 5, 6)),
+                ":v2" to av(byteArrayOf(7, 8, 9)),
             ),
             "foo IN (:v0, :v1, :v2)" to {
                 attr("foo") isIn setOf(
@@ -103,10 +103,10 @@ class FilterTest {
     fun testCollectionsOfLists() {
         testFilters(
             mapOf(
-                ":v0" to attr(listOf("apple", false, 1, null)),
-                ":v1" to attr(listOf("banana", true, 2)),
-                ":v2" to attr(listOf("cherry", 3)),
-                ":v3" to attr(null),
+                ":v0" to av(listOf("apple", false, 1, null)),
+                ":v1" to av(listOf("banana", true, 2)),
+                ":v2" to av(listOf("cherry", 3)),
+                ":v3" to av(null),
             ),
             "foo IN (:v0, :v1, :v2, :v3)" to {
                 attr("foo") isIn setOf(
@@ -123,10 +123,10 @@ class FilterTest {
     fun testCollectionsOfMaps() {
         testFilters(
             mapOf(
-                ":v0" to attr(mapOf("a" to "apple", "b" to false, "c" to 1, "d" to null)),
-                ":v1" to attr(mapOf("e" to "banana", "f" to true, "g" to 2)),
-                ":v2" to attr(mapOf("h" to "cherry", "i" to 3)),
-                ":v3" to attr(null),
+                ":v0" to av(mapOf("a" to "apple", "b" to false, "c" to 1, "d" to null)),
+                ":v1" to av(mapOf("e" to "banana", "f" to true, "g" to 2)),
+                ":v2" to av(mapOf("h" to "cherry", "i" to 3)),
+                ":v3" to av(null),
             ),
             "foo IN (:v0, :v1, :v2, :v3)" to {
                 attr("foo") isIn setOf(
@@ -143,9 +143,9 @@ class FilterTest {
     fun testCollectionsOfNumbers() {
         testFilters(
             mapOf(
-                ":v0" to attr(42),
-                ":v1" to attr(-1_000_000_000_000_000L),
-                ":v2" to attr(null),
+                ":v0" to av(42),
+                ":v1" to av(-1_000_000_000_000_000L),
+                ":v2" to av(null),
             ),
             "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn setOf(42, -1_000_000_000_000_000L, null) },
         )
@@ -167,9 +167,9 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(sets[0]),
-                ":v1" to attr(sets[1]),
-                ":v2" to attr(sets[2]),
+                ":v0" to av(sets[0]),
+                ":v1" to av(sets[1]),
+                ":v2" to av(sets[2]),
             ),
             "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
         )
@@ -192,9 +192,9 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(sets[0]),
-                ":v1" to attr(sets[1]),
-                ":v2" to attr(sets[2]),
+                ":v0" to av(sets[0]),
+                ":v1" to av(sets[1]),
+                ":v2" to av(sets[2]),
             ),
             "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
         )
@@ -214,9 +214,9 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(sets[0]),
-                ":v1" to attr(sets[1]),
-                ":v2" to attr(sets[2]),
+                ":v0" to av(sets[0]),
+                ":v1" to av(sets[1]),
+                ":v2" to av(sets[2]),
             ),
             "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
         )
@@ -236,9 +236,9 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(sets[0]),
-                ":v1" to attr(sets[1]),
-                ":v2" to attr(sets[2]),
+                ":v0" to av(sets[0]),
+                ":v1" to av(sets[1]),
+                ":v2" to av(sets[2]),
             ),
             "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
         )
@@ -258,9 +258,9 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(sets[0]),
-                ":v1" to attr(sets[1]),
-                ":v2" to attr(sets[2]),
+                ":v0" to av(sets[0]),
+                ":v1" to av(sets[1]),
+                ":v2" to av(sets[2]),
             ),
             "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
         )
@@ -280,9 +280,9 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(sets[0]),
-                ":v1" to attr(sets[1]),
-                ":v2" to attr(sets[2]),
+                ":v0" to av(sets[0]),
+                ":v1" to av(sets[1]),
+                ":v2" to av(sets[2]),
             ),
             "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
         )
@@ -302,9 +302,9 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(sets[0]),
-                ":v1" to attr(sets[1]),
-                ":v2" to attr(sets[2]),
+                ":v0" to av(sets[0]),
+                ":v1" to av(sets[1]),
+                ":v2" to av(sets[2]),
             ),
             "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
         )
@@ -347,7 +347,7 @@ class FilterTest {
 
     @Test
     fun testIsOfType() = testFilters(
-        attr("S"),
+        av("S"),
         "attribute_type(foo, :v0)" to { attr("foo") isOfType AttributeType.String },
     )
 
@@ -360,7 +360,7 @@ class FilterTest {
             null,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -376,7 +376,7 @@ class FilterTest {
             null,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -404,7 +404,7 @@ class FilterTest {
             3.14159,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "foo < :v0" to { attr("foo") lt value },
@@ -417,8 +417,8 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(100),
-                ":v1" to attr(200),
+                ":v0" to av(100),
+                ":v1" to av(200),
             ),
             "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn 100..200 },
             "foo IN (:v0, :v1)" to { attr("foo") isIn setOf(100, 200) },
@@ -426,7 +426,7 @@ class FilterTest {
 
         (null as Number?).let { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "contains(foo, :v0)" to { attr("foo") contains value },
@@ -438,9 +438,9 @@ class FilterTest {
     fun testOr() {
         testFilters(
             mapOf(
-                ":v0" to attr(5),
-                ":v1" to attr("banana"),
-                ":v2" to attr(null),
+                ":v0" to av(5),
+                ":v1" to av("banana"),
+                ":v2" to av(null),
             ),
             "(foo > :v0) OR (bar >= :v1) OR (baz = :v2)" to {
                 or(
@@ -464,7 +464,7 @@ class FilterTest {
             null,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -486,7 +486,7 @@ class FilterTest {
             null,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -505,7 +505,7 @@ class FilterTest {
             null,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -524,7 +524,7 @@ class FilterTest {
             null,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -543,7 +543,7 @@ class FilterTest {
             null,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -562,7 +562,7 @@ class FilterTest {
             null,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -581,7 +581,7 @@ class FilterTest {
             null,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -601,7 +601,7 @@ class FilterTest {
             "cherry",
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "foo < :v0" to { attr("foo") lt value },
@@ -615,8 +615,8 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr("apple"),
-                ":v1" to attr("banana"),
+                ":v0" to av("apple"),
+                ":v1" to av("banana"),
             ),
             "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn "apple".."banana" },
             "foo IN (:v0, :v1)" to { attr("foo") isIn setOf("apple", "banana") },
@@ -624,7 +624,7 @@ class FilterTest {
 
         (null as String?).let { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "contains(foo, :v0)" to { attr("foo") contains value },
@@ -640,7 +640,7 @@ class FilterTest {
             UByte.MAX_VALUE,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "foo < :v0" to { attr("foo") lt value },
@@ -652,8 +652,8 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(100.toUByte()),
-                ":v1" to attr(200.toUByte()),
+                ":v0" to av(100.toUByte()),
+                ":v1" to av(200.toUByte()),
             ),
             "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn UByteRange(100.toUByte(), 200.toUByte()) },
             "foo IN (:v0, :v1)" to { attr("foo") isIn setOf(100.toUByte(), 200.toUByte()) },
@@ -661,7 +661,7 @@ class FilterTest {
 
         (null as UByte?).let { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -676,7 +676,7 @@ class FilterTest {
             UInt.MAX_VALUE,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "foo < :v0" to { attr("foo") lt value },
@@ -688,8 +688,8 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(100.toUInt()),
-                ":v1" to attr(200.toUInt()),
+                ":v0" to av(100.toUInt()),
+                ":v1" to av(200.toUInt()),
             ),
             "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn 100.toUInt().rangeTo(200.toUInt()) },
             "foo IN (:v0, :v1)" to { attr("foo") isIn setOf(100.toUInt(), 200.toUInt()) },
@@ -697,7 +697,7 @@ class FilterTest {
 
         (null as UInt?).let { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -712,7 +712,7 @@ class FilterTest {
             ULong.MAX_VALUE,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "foo < :v0" to { attr("foo") lt value },
@@ -724,8 +724,8 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(100.toULong()),
-                ":v1" to attr(200.toULong()),
+                ":v0" to av(100.toULong()),
+                ":v1" to av(200.toULong()),
             ),
             "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn 100.toULong().rangeTo(200.toULong()) },
             "foo IN (:v0, :v1)" to { attr("foo") isIn setOf(100.toULong(), 200.toULong()) },
@@ -733,7 +733,7 @@ class FilterTest {
 
         (null as ULong?).let { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
@@ -748,7 +748,7 @@ class FilterTest {
             UShort.MAX_VALUE,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
                 "foo < :v0" to { attr("foo") lt value },
@@ -760,8 +760,8 @@ class FilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(100.toUShort()),
-                ":v1" to attr(200.toUShort()),
+                ":v0" to av(100.toUShort()),
+                ":v1" to av(200.toUShort()),
             ),
             "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn UShortRange(100.toUShort(), 200.toUShort()) },
             "foo IN (:v0, :v1)" to { attr("foo") isIn setOf(100.toUShort(), 200.toUShort()) },
@@ -769,26 +769,26 @@ class FilterTest {
 
         (null as UShort?).let { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { attr("foo") eq value },
                 "foo <> :v0" to { attr("foo") neq value },
             )
         }
     }
 
-    private fun testFilters(vararg tests: Pair<String, Filter.() -> Expression>) {
+    private fun testFilters(vararg tests: Pair<String, FilterDsl.() -> Expression>) {
         testFilters(null, *tests)
     }
 
-    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, Filter.() -> Expression>) = testFilters(mapOf(":v0" to expectedAV), *tests)
+    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, FilterDsl.() -> Expression>) = testFilters(mapOf(":v0" to expectedAV), *tests)
 
     private fun testFilters(
         expectedAVs: Map<String, AttributeValue>?,
-        vararg tests: Pair<String, Filter.() -> Expression>,
+        vararg tests: Pair<String, FilterDsl.() -> Expression>,
         expectedANs: Map<String, String>? = null,
     ) = tests.forEach { (expectedExprString, block) ->
         val parameterizer = ParameterizingExpressionVisitor()
-        val expr = FilterImpl.block()
+        val expr = FilterDslImpl.block()
         val actualExprString = expr.accept(parameterizer)
 
         assertEquals(expectedExprString, actualExprString)

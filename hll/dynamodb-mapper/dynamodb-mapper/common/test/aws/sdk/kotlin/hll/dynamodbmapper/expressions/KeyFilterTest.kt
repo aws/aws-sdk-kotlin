@@ -4,7 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.FilterImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.FilterDslImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.toExpression
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
@@ -22,7 +22,7 @@ class KeyFilterTest {
     fun testSingleKeySchema() {
         val kf = KeyFilter("foo")
         val actual = kf.toExpression(singleKeySchema)
-        val expected = FilterImpl.run { attr("primary") eq "foo" }
+        val expected = FilterDslImpl.run { attr("primary") eq "foo" }
 
         assertEquals(expected, actual)
     }
@@ -40,7 +40,7 @@ class KeyFilterTest {
     fun testCompositeSchema() {
         val kf = KeyFilter("foo", { sortKey lte 10 })
         val actual = kf.toExpression(compositeSchema)
-        val expected = FilterImpl.run {
+        val expected = FilterDslImpl.run {
             and(
                 attr("primary") eq "foo",
                 attr("secondary") lte 10,
@@ -54,7 +54,7 @@ class KeyFilterTest {
     fun testCompositeSchemaWithoutSortKey() {
         val kf = KeyFilter("foo")
         val actual = kf.toExpression(compositeSchema)
-        val expected = FilterImpl.run { attr("primary") eq "foo" }
+        val expected = FilterDslImpl.run { attr("primary") eq "foo" }
 
         assertEquals(expected, actual)
     }

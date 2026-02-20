@@ -18,12 +18,13 @@ smithy-kotlin-version = "1.6.4"
 smithy-version = "1.67.0"
 
 # testing
-ddb-local-version = "2.6.1"
+ddb-local-version = "3.3.0"
 junit-version = "5.14.1"
 kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.15"
 kotlinx-serialization-version = "1.9.0"
 mockk-version = "1.14.7"
+mokkery-version = "3.2.0"
 slf4j-version = "2.0.17"
 jsoup-version = "1.21.2"
 
@@ -113,12 +114,13 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup-version" }
 
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-version" }
 kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest-version" }
+kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest-version" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest-version" }
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark-version" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-version" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk-version" }
 
-ddb-local = { module = "com.amazonaws:DynamoDBLocal", version.ref = "ddb-local-version" }
+ddb-local = { module = "software.amazon.dynamodb:DynamoDBLocal", version.ref = "ddb-local-version" }
 
 [bundles]
 # bundle of smithy-kotlin dependencies all AWS service clients have
@@ -141,11 +143,13 @@ smithy-kotlin-service-client = [
 ]
 
 [plugins]
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version"}
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-version" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator-version" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
+mokkery = { id = "dev.mokkery", version.ref = "mokkery-version" }
 aws-kotlin-repo-tools-kmp = { id = "aws.sdk.kotlin.gradle.kmp", version.ref = "aws-kotlin-repo-tools-version" }
 aws-kotlin-repo-tools-smithybuild = { id = "aws.sdk.kotlin.gradle.smithybuild", version.ref = "aws-kotlin-repo-tools-version" }
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.1"}

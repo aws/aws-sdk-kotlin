@@ -6,15 +6,15 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.ParameterizingExpressionVisitor
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SkAttrPathImpl
-import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SortKeyFilterImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SortKeyFilterDslImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.UByteRange
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.UShortRange
-import aws.sdk.kotlin.hll.dynamodbmapper.util.attr
+import aws.sdk.kotlin.hll.dynamodbmapper.util.av
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SortKeyFilterTest {
+class SortKeyFilterDslTest {
     @Test
     fun testByteArrays() {
         val b1 = byteArrayOf(1, 2, 3)
@@ -23,7 +23,7 @@ class SortKeyFilterTest {
 
         listOf(b1, b2, b3).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { sortKey eq value },
                 "foo <> :v0" to { sortKey neq value },
                 "foo < :v0" to { sortKey lt value },
@@ -36,8 +36,8 @@ class SortKeyFilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(b1),
-                ":v1" to attr(b2),
+                ":v0" to av(b1),
+                ":v1" to av(b2),
             ),
             "foo BETWEEN :v0 AND :v1" to { sortKey.isBetween(b1, b2) },
         )
@@ -54,7 +54,7 @@ class SortKeyFilterTest {
             3.14159,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { sortKey eq value },
                 "foo <> :v0" to { sortKey neq value },
                 "foo < :v0" to { sortKey lt value },
@@ -66,8 +66,8 @@ class SortKeyFilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(100),
-                ":v1" to attr(200),
+                ":v0" to av(100),
+                ":v1" to av(200),
             ),
             "foo BETWEEN :v0 AND :v1" to { sortKey isIn 100..200 },
         )
@@ -81,7 +81,7 @@ class SortKeyFilterTest {
             "cherry",
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { sortKey eq value },
                 "foo <> :v0" to { sortKey neq value },
                 "foo < :v0" to { sortKey lt value },
@@ -94,8 +94,8 @@ class SortKeyFilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr("apple"),
-                ":v1" to attr("banana"),
+                ":v0" to av("apple"),
+                ":v1" to av("banana"),
             ),
             "foo BETWEEN :v0 AND :v1" to { sortKey isIn "apple".."banana" },
         )
@@ -109,7 +109,7 @@ class SortKeyFilterTest {
             UByte.MAX_VALUE,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { sortKey eq value },
                 "foo <> :v0" to { sortKey neq value },
                 "foo < :v0" to { sortKey lt value },
@@ -121,8 +121,8 @@ class SortKeyFilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(100.toUByte()),
-                ":v1" to attr(200.toUByte()),
+                ":v0" to av(100.toUByte()),
+                ":v1" to av(200.toUByte()),
             ),
             "foo BETWEEN :v0 AND :v1" to { sortKey isIn UByteRange(100.toUByte(), 200.toUByte()) },
         )
@@ -136,7 +136,7 @@ class SortKeyFilterTest {
             UInt.MAX_VALUE,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { sortKey eq value },
                 "foo <> :v0" to { sortKey neq value },
                 "foo < :v0" to { sortKey lt value },
@@ -148,8 +148,8 @@ class SortKeyFilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(100.toUInt()),
-                ":v1" to attr(200.toUInt()),
+                ":v0" to av(100.toUInt()),
+                ":v1" to av(200.toUInt()),
             ),
             "foo BETWEEN :v0 AND :v1" to { sortKey isIn 100.toUInt().rangeTo(200.toUInt()) },
         )
@@ -163,7 +163,7 @@ class SortKeyFilterTest {
             ULong.MAX_VALUE,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { sortKey eq value },
                 "foo <> :v0" to { sortKey neq value },
                 "foo < :v0" to { sortKey lt value },
@@ -175,8 +175,8 @@ class SortKeyFilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(100.toULong()),
-                ":v1" to attr(200.toULong()),
+                ":v0" to av(100.toULong()),
+                ":v1" to av(200.toULong()),
             ),
             "foo BETWEEN :v0 AND :v1" to { sortKey isIn 100.toULong().rangeTo(200.toULong()) },
         )
@@ -190,7 +190,7 @@ class SortKeyFilterTest {
             UShort.MAX_VALUE,
         ).forEach { value ->
             testFilters(
-                attr(value),
+                av(value),
                 "foo = :v0" to { sortKey eq value },
                 "foo <> :v0" to { sortKey neq value },
                 "foo < :v0" to { sortKey lt value },
@@ -202,22 +202,22 @@ class SortKeyFilterTest {
 
         testFilters(
             mapOf(
-                ":v0" to attr(100.toUShort()),
-                ":v1" to attr(200.toUShort()),
+                ":v0" to av(100.toUShort()),
+                ":v1" to av(200.toUShort()),
             ),
             "foo BETWEEN :v0 AND :v1" to { sortKey isIn UShortRange(100.toUShort(), 200.toUShort()) },
         )
     }
 
-    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, SortKeyFilter.() -> SortKeyExpr>) = testFilters(mapOf(":v0" to expectedAV), *tests)
+    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, SortKeyFilterDsl.() -> SortKeyExpr>) = testFilters(mapOf(":v0" to expectedAV), *tests)
 
     private fun testFilters(
         expectedAVs: Map<String, AttributeValue>?,
-        vararg tests: Pair<String, SortKeyFilter.() -> SortKeyExpr>,
+        vararg tests: Pair<String, SortKeyFilterDsl.() -> SortKeyExpr>,
         expectedANs: Map<String, String>? = null,
     ) = tests.forEach { (expectedExprString, block) ->
         val parameterizer = SortKeyExpressionVisitor()
-        val expr = SortKeyFilterImpl.block()
+        val expr = SortKeyFilterDslImpl.block()
         val actualExprString = expr.accept(parameterizer)
 
         assertEquals(expectedExprString, actualExprString)
