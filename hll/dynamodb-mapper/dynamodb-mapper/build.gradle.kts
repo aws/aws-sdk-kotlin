@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import com.amazonaws.services.dynamodbv2.local.main.ServerRunner
-import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer
+import software.amazon.dynamodb.services.local.main.ServerRunner
+import software.amazon.dynamodb.services.local.server.DynamoDBProxyServer
 import dev.mokkery.verify.VerifyMode
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.net.ServerSocket

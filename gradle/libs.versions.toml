@@ -18,7 +18,7 @@ smithy-kotlin-version = "1.6.4"
 smithy-version = "1.67.0"
 
 # testing
-ddb-local-version = "2.6.1"
+ddb-local-version = "3.3.0"
 junit-version = "5.14.1"
 kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.15"
@@ -120,7 +120,7 @@ kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-version" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk-version" }
 
-ddb-local = { module = "com.amazonaws:DynamoDBLocal", version.ref = "ddb-local-version" }
+ddb-local = { module = "software.amazon.dynamodb:DynamoDBLocal", version.ref = "ddb-local-version" }
 
 [bundles]
 # bundle of smithy-kotlin dependencies all AWS service clients have

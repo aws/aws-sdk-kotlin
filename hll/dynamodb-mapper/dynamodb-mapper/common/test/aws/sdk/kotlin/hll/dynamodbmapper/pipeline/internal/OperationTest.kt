@@ -33,8 +33,6 @@ import kotlin.test.assertIs
 
 private const val TABLE_NAME = "foo-table"
 
-// FIXME Should be in commonTest but mockk is JVM-only and finding a good KMP mocking library is hard
-
 class OperationTest {
     private val ddbMapper = mock<DynamoDbMapper>()
 
