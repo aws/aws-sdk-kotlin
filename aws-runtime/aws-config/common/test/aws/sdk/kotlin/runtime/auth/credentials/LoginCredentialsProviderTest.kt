@@ -19,7 +19,6 @@ import aws.smithy.kotlin.runtime.time.ManualClock
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import io.kotest.matchers.string.shouldMatch
 import kotlinx.coroutines.test.runTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -35,7 +34,6 @@ class LoginCredentialsProviderTest {
         assertEquals(expected, actual)
     }
 
-    @Ignore
     @Test
     fun testExpiredToken() = runTest(
         // TODO: Figure out why this test takes so long to run on some developer machines (@aoperez)
@@ -83,7 +81,6 @@ class LoginCredentialsProviderTest {
         }.message.shouldMatch(Regex("Login token for login-session: .* is expired"))
     }
 
-    @Ignore
     @Test
     fun testSuccess() = runTest {
         val expectedExpiration = Instant.fromIso8601("2020-10-16T04:56:00Z")
