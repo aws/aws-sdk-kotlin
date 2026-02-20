@@ -4,7 +4,7 @@ ksp-version = "2.3.4"
 
 dokka-version = "2.0.0"
 
-aws-kotlin-repo-tools-version = "0.5.1"
+aws-kotlin-repo-tools-version = "0.5.2"
 
 # libs
 coroutines-version = "1.10.2"
@@ -12,10 +12,10 @@ atomicfu-version = "0.29.0"
 binary-compatibility-validator-version = "0.18.0"
 
 # smithy-kotlin
-smithy-kotlin-version = "1.6.3"
+smithy-kotlin-version = "1.6.4"
 
 # codegen
-smithy-version = "1.65.0"
+smithy-version = "1.67.0"
 
 # testing
 ddb-local-version = "2.5.2"
@@ -45,7 +45,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-version" }
 
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp-version" }
-ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp-version" }
+ksp-gradle-plugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp-version" }
 
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-version" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j-version" }
