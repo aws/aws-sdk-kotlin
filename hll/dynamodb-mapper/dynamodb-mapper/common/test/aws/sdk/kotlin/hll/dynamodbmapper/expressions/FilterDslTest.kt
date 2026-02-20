@@ -346,11 +346,10 @@ class FilterDslTest {
     }
 
     @Test
-    fun testIsOfType() =
-        testFilters(
-            av("S"),
-            "attribute_type(foo, :v0)" to { attr("foo") isOfType AttributeType.String },
-        )
+    fun testIsOfType() = testFilters(
+        av("S"),
+        "attribute_type(foo, :v0)" to { attr("foo") isOfType AttributeType.String },
+    )
 
     @Test
     fun testLists() {
@@ -781,8 +780,7 @@ class FilterDslTest {
         testFilters(null, *tests)
     }
 
-    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, FilterDsl.() -> Expression>) =
-        testFilters(mapOf(":v0" to expectedAV), *tests)
+    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, FilterDsl.() -> Expression>) = testFilters(mapOf(":v0" to expectedAV), *tests)
 
     private fun testFilters(
         expectedAVs: Map<String, AttributeValue>?,

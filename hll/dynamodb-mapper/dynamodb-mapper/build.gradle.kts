@@ -24,7 +24,6 @@ buildscript {
 
 plugins {
     alias(libs.plugins.ksp)
-    alias(libs.plugins.kotest)
     alias(libs.plugins.mokkery)
     `dokka-convention`
 }

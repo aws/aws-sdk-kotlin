@@ -72,5 +72,4 @@ public fun KeyFilter(partitionKey: String, vararg sortKeyExpressions: SortKeyFil
  * @param partitionKey The partition key value to assert
  * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
  */
-public fun KeyFilter(partitionKey: KeyType, vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr): KeyFilter =
-    KeyFilterImpl(partitionKey, SortKeyFilterDslImpl.run { sortKeyExpressions.map { it() } })
+public fun KeyFilter(partitionKey: KeyType, vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr): KeyFilter = KeyFilterImpl(partitionKey, SortKeyFilterDslImpl.run { sortKeyExpressions.map { it() } })

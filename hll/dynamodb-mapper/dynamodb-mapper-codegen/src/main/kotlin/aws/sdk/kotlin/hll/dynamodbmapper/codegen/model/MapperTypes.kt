@@ -29,11 +29,11 @@ public object MapperTypes {
 
     public object Expressions {
         public val BooleanExpr: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Base, "BooleanExpr")
-        public val Filter: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Base, "Filter")
+        public val FilterDsl: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Base, "FilterDsl")
         public val KeyFilter: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Base, "KeyFilter")
 
         public object Internal {
-            public val FilterImpl: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Internal, "FilterImpl")
+            public val FilterDslImpl: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Internal, "FilterDslImpl")
             public val ParameterizingExpressionVisitor: TypeRef =
                 TypeRef(MapperPkg.Hl.Expressions.Internal, "ParameterizingExpressionVisitor")
             public val toExpression: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Internal, "toExpression")

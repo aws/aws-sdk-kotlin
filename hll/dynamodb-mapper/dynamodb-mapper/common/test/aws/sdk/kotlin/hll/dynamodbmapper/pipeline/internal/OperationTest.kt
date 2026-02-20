@@ -197,4 +197,4 @@ private fun LFooResponse.convert(schema: ItemSchema<Foo>) = HFooResponse(schema.
 
 private suspend fun dummyInvoke(req: LFooRequest) = LFooResponse(req.foo)
 
-private typealias FooInterceptor = Interceptor<Foo, HFooRequest, LFooRequest, LFooResponse, HFooResponse>
+private typealias FooInterceptor = Interceptor<Foo, ItemSchema<Foo>, HFooRequest, LFooRequest, LFooResponse, HFooResponse>

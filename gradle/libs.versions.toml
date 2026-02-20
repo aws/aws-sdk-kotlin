@@ -20,11 +20,11 @@ smithy-version = "1.67.0"
 # testing
 ddb-local-version = "2.6.1"
 junit-version = "5.14.1"
-kotest-version = "6.1.3"
+kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.15"
 kotlinx-serialization-version = "1.9.0"
 mockk-version = "1.14.7"
-mokkery-version = "2.10.1"
+mokkery-version = "3.2.0"
 slf4j-version = "2.0.17"
 jsoup-version = "1.21.2"
 
@@ -144,7 +144,6 @@ smithy-kotlin-service-client = [
 
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version"}
-kotest = { id = "io.kotest", version.ref = "kotest-version" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-version" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator-version" }

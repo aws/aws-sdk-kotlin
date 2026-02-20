@@ -209,8 +209,7 @@ class SortKeyFilterDslTest {
         )
     }
 
-    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, SortKeyFilterDsl.() -> SortKeyExpr>) =
-        testFilters(mapOf(":v0" to expectedAV), *tests)
+    private fun testFilters(expectedAV: AttributeValue, vararg tests: Pair<String, SortKeyFilterDsl.() -> SortKeyExpr>) = testFilters(mapOf(":v0" to expectedAV), *tests)
 
     private fun testFilters(
         expectedAVs: Map<String, AttributeValue>?,
