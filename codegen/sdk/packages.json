@@ -2059,6 +2059,12 @@
             "brazilName": "AwsSdkKotlinShield"
         },
         {
+            "sdkId": "Signer Data",
+            "namespace": "aws.sdk.kotlin.services.signerdata",
+            "artifactName": "signerdata",
+            "brazilName": "AwsSdkKotlinSignerData"
+        },
+        {
             "sdkId": "Signin",
             "namespace": "aws.sdk.kotlin.services.signin",
             "artifactName": "signin",
