@@ -5,22 +5,14 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.model.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
-import aws.sdk.kotlin.hll.dynamodbmapper.interceptors.CounterInterceptor
-import aws.sdk.kotlin.hll.dynamodbmapper.interceptors.TtlInterceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Index
-import aws.sdk.kotlin.hll.dynamodbmapper.model.SchemaAttributes
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Table
 import aws.sdk.kotlin.hll.dynamodbmapper.model.TableSpec
-import aws.sdk.kotlin.hll.dynamodbmapper.operations.*
-import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
-import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
-import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
-import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
-import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest as LowLevelPutItemRequest
-import aws.sdk.kotlin.services.dynamodb.model.PutItemResponse as LowLevelPutItemResponse
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.TableOperations
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.TableOperationsCompositeKeyImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.TableOperationsPartitionKeyImpl
 
 internal fun <T, PK : KeyType> tableImpl(
     mapper: DynamoDbMapper,
@@ -28,11 +20,11 @@ internal fun <T, PK : KeyType> tableImpl(
     schema: ItemSchema.PartitionKey<T, PK>,
 ): Table.PartitionKey<T, PK> {
     val specImpl = TableSpecPartitionKeyImpl(mapper, name, schema)
-    val opsImpl = TableOperationsImpl(specImpl)
+    val opsImpl = TableOperationsPartitionKeyImpl(specImpl)
     return object :
         Table.PartitionKey<T, PK>,
         TableSpec.PartitionKey<T, PK> by specImpl,
-        TableOperations<T> by opsImpl {
+        TableOperations.PartitionKey<T, PK> by opsImpl {
 
         override fun <T, PK : KeyType> getIndex(
             name: String,
@@ -43,39 +35,6 @@ internal fun <T, PK : KeyType> tableImpl(
             name: String,
             schema: ItemSchema.CompositeKey<T, PK, SK>,
         ): Index.CompositeKey<T, PK, SK> = indexImpl(mapper, tableName, name, schema)
-
-        override suspend fun getItem(partitionKey: PK): T? {
-            val keyItem = schema.partitionKey.toFields(partitionKey)
-            val interceptor = KeyInsertionInterceptor<T>(keyItem)
-            val op = getItemOperation(specImpl).let {
-                it.copy(
-                    interceptors = it.interceptors.prepend(interceptor),
-                )
-            }
-            val hRes = op.execute(GetItemRequest { })
-            return hRes.item
-        }
-
-        override suspend fun putItem(request: PutItemRequest<T>): PutItemResponse<T> {
-            val ttlInterceptor = schema.ttlInterceptor
-            val counterInterceptor = schema.counterInterceptor
-
-            val op = putItemOperation(specImpl).let {
-                var operation = it
-                if (ttlInterceptor != null) {
-                    @Suppress("UNCHECKED_CAST")
-                    val typedInterceptor = ttlInterceptor as Interceptor<T, PutItemRequest<T>, LowLevelPutItemRequest, LowLevelPutItemResponse, PutItemResponse<T>>
-                    operation = operation.copy(interceptors = operation.interceptors.prepend(typedInterceptor))
-                }
-                if (counterInterceptor != null) {
-                    @Suppress("UNCHECKED_CAST")
-                    val typedInterceptor = counterInterceptor as Interceptor<T, PutItemRequest<T>, LowLevelPutItemRequest, LowLevelPutItemResponse, PutItemResponse<T>>
-                    operation = operation.copy(interceptors = operation.interceptors.prepend(typedInterceptor))
-                }
-                operation
-            }
-            return op.execute(request)
-        }
     }
 }
 
@@ -85,11 +44,11 @@ internal fun <T, PK : KeyType, SK : KeyType> tableImpl(
     schema: ItemSchema.CompositeKey<T, PK, SK>,
 ): Table.CompositeKey<T, PK, SK> {
     val specImpl = TableSpecCompositeKeyImpl(mapper, name, schema)
-    val opsImpl = TableOperationsImpl(specImpl)
+    val opsImpl = TableOperationsCompositeKeyImpl(specImpl)
     return object :
         Table.CompositeKey<T, PK, SK>,
         TableSpec.CompositeKey<T, PK, SK> by specImpl,
-        TableOperations<T> by opsImpl {
+        TableOperations.CompositeKey<T, PK, SK> by opsImpl {
 
         override fun <T, PK : KeyType> getIndex(
             name: String,
@@ -100,68 +59,5 @@ internal fun <T, PK : KeyType, SK : KeyType> tableImpl(
             name: String,
             schema: ItemSchema.CompositeKey<T, PK, SK>,
         ): Index.CompositeKey<T, PK, SK> = indexImpl(mapper, tableName, name, schema)
-
-        override suspend fun getItem(partitionKey: PK, sortKey: SK): T? {
-            val keyItem = schema.partitionKey.toFields(partitionKey) + schema.sortKey.toFields(sortKey)
-            val interceptor = KeyInsertionInterceptor<T>(keyItem)
-            val op = getItemOperation(specImpl).let {
-                it.copy(
-                    interceptors = it.interceptors.prepend(interceptor),
-                )
-            }
-            val hRes = op.execute(GetItemRequest { })
-            return hRes.item
-        }
-
-        override suspend fun putItem(request: PutItemRequest<T>): PutItemResponse<T> {
-            val ttlInterceptor = schema.ttlInterceptor
-            val counterInterceptor = schema.counterInterceptor
-
-            val op = putItemOperation(specImpl).let {
-                var operation = it
-                if (ttlInterceptor != null) {
-                    @Suppress("UNCHECKED_CAST")
-                    val typedInterceptor = ttlInterceptor as Interceptor<T, PutItemRequest<T>, aws.sdk.kotlin.services.dynamodb.model.PutItemRequest, aws.sdk.kotlin.services.dynamodb.model.PutItemResponse, PutItemResponse<T>>
-                    operation = operation.copy(interceptors = operation.interceptors.prepend(typedInterceptor))
-                }
-                if (counterInterceptor != null) {
-                    @Suppress("UNCHECKED_CAST")
-                    val typedInterceptor = counterInterceptor as Interceptor<T, PutItemRequest<T>, aws.sdk.kotlin.services.dynamodb.model.PutItemRequest, aws.sdk.kotlin.services.dynamodb.model.PutItemResponse, PutItemResponse<T>>
-                    operation = operation.copy(interceptors = operation.interceptors.prepend(typedInterceptor))
-                }
-                operation
-            }
-
-            return op.execute(request)
-        }
     }
 }
-
-private typealias GetItemInterceptor<T> =
-    Interceptor<T, GetItemRequest<T>, LowLevelGetItemRequest, LowLevelGetItemResponse, GetItemResponse<T>>
-
-private class KeyInsertionInterceptor<T>(private val newKey: Map<String, AttributeValue>) : GetItemInterceptor<T> {
-    override fun modifyBeforeInvocation(ctx: LReqContext<T, GetItemRequest<T>, LowLevelGetItemRequest>) =
-        ctx.lowLevelRequest.copy {
-            if (key == null) {
-                key = newKey
-            }
-        }
-}
-
-private fun <T> List<T>.prepend(element: T): List<T> = buildList(size + 1) {
-    add(element)
-    addAll(this)
-}
-
-private val <T> ItemSchema<T>.ttlInterceptor: TtlInterceptor<T>?
-    get() = attributes
-        .getOrNull(SchemaAttributes.TtlFields)
-        ?.takeIf { it.isNotEmpty() }
-        ?.let { TtlInterceptor() }
-
-private val <T> ItemSchema<T>.counterInterceptor: CounterInterceptor<T>?
-    get() = attributes
-        .getOrNull(SchemaAttributes.CounterFields)
-        ?.takeIf { it.isNotEmpty() }
-        ?.let { CounterInterceptor() }

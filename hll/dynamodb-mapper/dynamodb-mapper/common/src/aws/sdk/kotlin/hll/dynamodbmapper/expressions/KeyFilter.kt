@@ -37,7 +37,28 @@ public fun KeyFilter(partitionKey: ByteArray, vararg sortKeyExpressions: SortKey
  * @param partitionKey The partition key value to assert
  * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
  */
-public fun KeyFilter(partitionKey: Number, vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
+public fun KeyFilter(partitionKey: Byte, vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
+
+/**
+ * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions
+ * @param partitionKey The partition key value to assert
+ * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
+ */
+public fun KeyFilter(partitionKey: Int, vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
+
+/**
+ * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions
+ * @param partitionKey The partition key value to assert
+ * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
+ */
+public fun KeyFilter(partitionKey: Long, vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
+
+/**
+ * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions
+ * @param partitionKey The partition key value to assert
+ * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
+ */
+public fun KeyFilter(partitionKey: Short, vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
 
 /**
  * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions

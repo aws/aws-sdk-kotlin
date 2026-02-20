@@ -52,8 +52,7 @@ public fun <K, V> MapValueConverter(
     keyConverter: Converter<K, String>,
     valueConverter: ValueConverter<V>,
     attributeValueMapValueConverter: ValueConverter<Map<String, AttributeValue>> = AttributeValueMapValueConverter,
-): ValueConverter<Map<K, V>> =
-    MapMappingConverter(keyConverter, valueConverter) + attributeValueMapValueConverter
+): ValueConverter<Map<K, V>> = MapMappingConverter(keyConverter, valueConverter) + attributeValueMapValueConverter
 
 /**
  * Creates a new string-keyed map converter using the given [valueConverter] as a delegate
@@ -65,5 +64,4 @@ public fun <K, V> MapValueConverter(
 public fun <V> MapValueConverter(
     valueConverter: ValueConverter<V>,
     attributeValueMapValueConverter: ValueConverter<Map<String, AttributeValue>> = AttributeValueMapValueConverter,
-): ValueConverter<Map<String, V>> =
-    MapMappingConverter(Converter.identity<String>(), valueConverter) + attributeValueMapValueConverter
+): ValueConverter<Map<String, V>> = MapMappingConverter(Converter.identity<String>(), valueConverter) + attributeValueMapValueConverter

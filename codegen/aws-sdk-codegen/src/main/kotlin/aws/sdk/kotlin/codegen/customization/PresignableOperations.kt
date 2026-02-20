@@ -5,9 +5,9 @@
 package aws.sdk.kotlin.codegen.customization
 
 import aws.sdk.kotlin.codegen.model.traits.Presignable
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
-import software.amazon.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.model.expectShape
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.ServiceShape
 import software.amazon.smithy.model.transform.ModelTransformer

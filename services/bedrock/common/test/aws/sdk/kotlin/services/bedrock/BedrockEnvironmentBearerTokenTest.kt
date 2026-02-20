@@ -30,15 +30,14 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class BedrockEnvironmentBearerTokenTest {
-    private fun mockHttpClient(handler: (HttpRequest) -> HttpResponse): HttpClientEngine =
-        object : HttpClientEngineBase("test engine") {
-            override val config: HttpClientEngineConfig = HttpClientEngineConfig.Default
+    private fun mockHttpClient(handler: (HttpRequest) -> HttpResponse): HttpClientEngine = object : HttpClientEngineBase("test engine") {
+        override val config: HttpClientEngineConfig = HttpClientEngineConfig.Default
 
-            override suspend fun roundTrip(context: ExecutionContext, request: HttpRequest): HttpCall {
-                val response = handler(request)
-                return HttpCall(request, response, Instant.now(), Instant.now())
-            }
+        override suspend fun roundTrip(context: ExecutionContext, request: HttpRequest): HttpCall {
+            val response = handler(request)
+            return HttpCall(request, response, Instant.now(), Instant.now())
         }
+    }
 
     private val mockPlatformProvider = TestPlatformProvider(
         env = mapOf("AWS_BEARER_TOKEN_BEDROCK" to "bedrock-token"),

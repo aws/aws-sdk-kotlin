@@ -37,15 +37,11 @@ public data class Operation(
         /**
          * Derive an [Operation] from a [KSFunctionDeclaration]
          */
-        public fun from(declaration: KSFunctionDeclaration): Operation {
-            val op = Operation(
-                methodName = declaration.simpleName.getShortName(),
-                request = Structure.from(declaration.parameters.single().type),
-                response = Structure.from(declaration.returnType!!),
-            )
-
-            return ModelParsingPlugin.transform(op, ModelParsingPlugin::postProcessOperation)
-        }
+        public fun from(declaration: KSFunctionDeclaration): Operation = Operation(
+            methodName = declaration.simpleName.getShortName(),
+            request = Structure.from(declaration.parameters.single().type),
+            response = Structure.from(declaration.returnType!!),
+        )
     }
 }
 

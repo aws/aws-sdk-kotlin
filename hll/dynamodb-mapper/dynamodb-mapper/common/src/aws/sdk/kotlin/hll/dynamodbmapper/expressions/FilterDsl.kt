@@ -666,8 +666,7 @@ public interface FilterDsl {
      * @param min The lower bound value
      * @param max The upper bound value (inclusive)
      */
-    public fun AttributePath.isBetween(min: ByteArray, max: ByteArray): BooleanExpr =
-        isBetween(LiteralExpr(min), LiteralExpr(max))
+    public fun AttributePath.isBetween(min: ByteArray, max: ByteArray): BooleanExpr = isBetween(LiteralExpr(min), LiteralExpr(max))
 
     // TODO The following overloads support [ClosedRange] but [OpenEndRange] also exists. DynamoDB expressions don't
     //  support it directly but we may be able to cheese it with two inequalities ANDed together.
@@ -678,8 +677,7 @@ public interface FilterDsl {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeNumber")
-    public infix fun <N> AttributePath.isIn(range: ClosedRange<N>): BooleanExpr where N : Number, N : Comparable<N> =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun <N> AttributePath.isIn(range: ClosedRange<N>): BooleanExpr where N : Number, N : Comparable<N> = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a range expression for verifying this expression is in the given range
@@ -687,8 +685,7 @@ public interface FilterDsl {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeString")
-    public infix fun AttributePath.isIn(range: ClosedRange<String>): BooleanExpr =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun AttributePath.isIn(range: ClosedRange<String>): BooleanExpr = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a range expression for verifying this expression is in the given range
@@ -696,8 +693,7 @@ public interface FilterDsl {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeUByte")
-    public infix fun AttributePath.isIn(range: ClosedRange<UByte>): BooleanExpr =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun AttributePath.isIn(range: ClosedRange<UByte>): BooleanExpr = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a range expression for verifying this expression is in the given range
@@ -705,8 +701,7 @@ public interface FilterDsl {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeUInt")
-    public infix fun AttributePath.isIn(range: ClosedRange<UInt>): BooleanExpr =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun AttributePath.isIn(range: ClosedRange<UInt>): BooleanExpr = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a range expression for verifying this expression is in the given range
@@ -714,8 +709,7 @@ public interface FilterDsl {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeULong")
-    public infix fun AttributePath.isIn(range: ClosedRange<ULong>): BooleanExpr =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun AttributePath.isIn(range: ClosedRange<ULong>): BooleanExpr = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a range expression for verifying this expression is in the given range
@@ -723,8 +717,7 @@ public interface FilterDsl {
      */
     @Suppress("INAPPLICABLE_JVM_NAME")
     @JvmName("isInRangeUShort")
-    public infix fun AttributePath.isIn(range: ClosedRange<UShort>): BooleanExpr =
-        isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
+    public infix fun AttributePath.isIn(range: ClosedRange<UShort>): BooleanExpr = isBetween(LiteralExpr(range.start), LiteralExpr(range.endInclusive))
 
     /**
      * Creates a contains expression for verifying this expression is in the given set of elements

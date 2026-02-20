@@ -10,11 +10,10 @@ const val SDK_PACKAGE_NAME_PREFIX: String = "aws.sdk.kotlin.services."
 /**
  * Get the package name to use for a service from it's `sdkId`
  */
-fun packageNameForService(sdkId: String): String =
-    sdkId.replace(" ", "")
-        .replace("-", "")
-        .lowercase()
-        .kotlinNamespace()
+fun packageNameForService(sdkId: String): String = sdkId.replace(" ", "")
+    .replace("-", "")
+    .lowercase()
+    .kotlinNamespace()
 
 /**
  * Get the package namespace for a service from it's `sdkId`

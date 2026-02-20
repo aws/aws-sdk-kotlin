@@ -14,13 +14,13 @@ import aws.sdk.kotlin.hll.dynamodbmapper.*
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.AnnotationsProcessorOptions
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.GenerateBuilderClasses
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
+import aws.smithy.kotlin.codegen.core.RuntimeTypes
 import aws.smithy.kotlin.runtime.collections.get
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.getConstructors
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.*
-import software.amazon.smithy.kotlin.codegen.core.RuntimeTypes
 
 /**
  * Renders the classes and objects required to make a class usable with the DynamoDbMapper such as schemas, builders, and converters.
@@ -110,7 +110,7 @@ internal class SchemaRenderer(
 
     private fun renderBuilder() {
         val members = properties.map(Member.Companion::from).toSet()
-        BuilderRenderer(this, classType, classType, members, ctx).render()
+        BuilderRenderer(ctx, this, classType, classType, members).render()
     }
 
     private fun renderItemConverter() {
@@ -390,16 +390,12 @@ internal class SchemaRenderer(
         val rest = keyProps.drop(1)
 
         val firstTypeRef = when (first.typeRef) {
+            Types.Kotlin.Byte -> MapperTypes.Items.KeySpecByte
             Types.Kotlin.ByteArray -> MapperTypes.Items.KeySpecByteArray
-
-            Types.Kotlin.Byte,
-            Types.Kotlin.Int,
-            Types.Kotlin.Long,
-            Types.Kotlin.Short,
-            -> MapperTypes.Items.keySpecNumber(first.typeRef)
-
+            Types.Kotlin.Int -> MapperTypes.Items.KeySpecInt
+            Types.Kotlin.Long -> MapperTypes.Items.KeySpecLong
+            Types.Kotlin.Short -> MapperTypes.Items.KeySpecShort
             Types.Kotlin.String -> MapperTypes.Items.KeySpecString
-
             else -> error("Unsupported key attribute type ${first.typeRef}")
         }
 
@@ -407,16 +403,12 @@ internal class SchemaRenderer(
 
         rest.forEach { prop ->
             val typeRef = when (prop.typeRef) {
+                Types.Kotlin.Byte -> MapperTypes.Items.KeySpecThenByte
                 Types.Kotlin.ByteArray -> MapperTypes.Items.KeySpecThenByteArray
-
-                Types.Kotlin.Byte,
-                Types.Kotlin.Int,
-                Types.Kotlin.Long,
-                Types.Kotlin.Short,
-                -> MapperTypes.Items.keySpecThenNumber(prop.typeRef)
-
+                Types.Kotlin.Int -> MapperTypes.Items.KeySpecThenInt
+                Types.Kotlin.Long -> MapperTypes.Items.KeySpecThenLong
+                Types.Kotlin.Short -> MapperTypes.Items.KeySpecThenShort
                 Types.Kotlin.String -> MapperTypes.Items.KeySpecThenString
-
                 else -> error("Unsupported key attribute type ${prop.typeRef}")
             }
 

@@ -4,19 +4,18 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.rendering
 
-import aws.sdk.kotlin.hll.codegen.model.*
-import aws.sdk.kotlin.hll.codegen.rendering.BuilderRenderer
+import aws.sdk.kotlin.hll.codegen.model.Operation
+import aws.sdk.kotlin.hll.codegen.model.Type
+import aws.sdk.kotlin.hll.codegen.model.TypeRef
+import aws.sdk.kotlin.hll.codegen.model.genericVars
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.RendererBase
-import aws.sdk.kotlin.hll.codegen.util.lowercaseFirstChar
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
-import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ItemSourceKind
-import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.itemSourceKinds
-import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.paginationInfo
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.*
 
 /**
- * Renders the `*Operations` interface and `*OperationsImpl` class which contain a method for each codegenned
- * operation and dispatches to the factory function rendered in [OperationRenderer]
+ * Renders an `*Operations` interface and `*OperationsImpl` class which contain methods for each code-generated
+ * operation projection, which dispatches to the factory function rendered in [FactoryRenderer]
  * @param ctx The active [RenderContext]
  * @param itemSourceKind The type of `ItemSource` for which to render operations
  * @param parentType The [Type] of the direct parent interface of the to-be-generated `*Operations` interface (e.g., if
@@ -30,87 +29,141 @@ internal class OperationsTypeRenderer(
     private val parentType: Type?,
     private val operations: List<Operation>,
 ) : RendererBase(ctx, "${itemSourceKind.name}Operations") {
-    private val entityName = itemSourceKind.name.lowercaseFirstChar
-    private val intfName = "${itemSourceKind.name}Operations"
+    private val keyedOperations: List<Operation>
+    private val unkeyedOperations: List<Operation>
 
-    val interfaceType = TypeRef(ctx.pkg, intfName, listOf(TypeVar("T")))
+    init {
+        val (keyedOperations, unkeyedOperations) = operations.partition { it.isKeyed }
+        this.keyedOperations = keyedOperations
+        this.unkeyedOperations = unkeyedOperations
+    }
+
+    val unkeyedType = itemSourceKind.opsType(KeyProjectionType.NONE)
+    private val pkType = itemSourceKind.opsType(KeyProjectionType.PARTITION_KEY)
+    private val ckType = itemSourceKind.opsType(KeyProjectionType.COMPOSITE_KEY)
 
     override fun generate() {
         renderInterface()
         renderDslOps()
-        renderPaginators(forResponses = true)
+        renderResponsePaginators()
 
         if (itemSourceKind.isAbstract) {
             blankLine()
-            renderPaginators(forItems = true)
+            renderItemsPaginators()
         } else {
             blankLine()
             renderImpl()
         }
     }
 
-    private fun renderDslOps() = operations
-        .filterNot { it.appliesToAncestorKind() }
-        .forEach(::renderDslOp)
+    private fun renderDslOps() {
+        unkeyedOperations
+            .filterNot { it.appliesToAncestorKind() }
+            .forEach { renderDslOp(it, KeyProjectionType.NONE) }
 
-    private fun renderDslOp(op: Operation) {
-        val builderType = BuilderRenderer.builderType(op.request.type)
-        val generics = op.request.genericVars().asParamsList(" ")
+        keyedOperations
+            .filterNot { it.appliesToAncestorKind() }
+            .forEach {
+                renderDslOp(it, KeyProjectionType.PARTITION_KEY)
+                renderDslOp(it, KeyProjectionType.COMPOSITE_KEY)
+            }
+    }
 
-        if (op.paginationInfo != null) renderManualPaginationAnnotation(op) else blankLine()
+    private fun renderDslOp(op: Operation, keyType: KeyProjectionType) {
+        val requestProjection = op.request.keyProjections[keyType]
+        val responseProjection = op.response.keyProjections[keyType]
 
+        val request = requestProjection.interfaceStruct.type
+        val response = responseProjection.interfaceStruct.type
+        val generics = request.genericVars() + response.genericVars()
+
+        val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
+        if (paginationInfo != null) renderManualPaginationAnnotation(op) else blankLine()
         withBlock(
-            "public suspend inline fun #L#T.#L(crossinline block: #T.() -> Unit): #T =",
+            "public suspend inline fun #G#T.#L(crossinline block: #T.() -> Unit): #T =",
             "",
             generics,
-            interfaceType,
+            keyType.interfaceType,
             op.methodName,
-            builderType,
-            op.response.type,
+            requestProjection.builderStruct.type,
+            response,
         ) {
-            write("#L(#T().apply(block).build())", op.methodName, builderType)
+            write("#L(#T().apply(block).build())", op.methodName, requestProjection.builderStruct.type)
         }
-
-        blankLine()
     }
 
     private fun renderImpl() {
-        val implName = "${itemSourceKind.name}OperationsImpl"
+        val keyTypes = when {
+            keyedOperations.isEmpty() -> listOf(KeyProjectionType.NONE)
+            else -> listOf(KeyProjectionType.PARTITION_KEY, KeyProjectionType.COMPOSITE_KEY)
+        }
 
-        withBlock(
-            "internal class #L<T>(private val spec: #T) : #T {",
-            "}",
-            implName,
-            itemSourceKind.getSpecType("T"),
-            interfaceType,
-        ) {
-            operations.forEach { op ->
-                if (op.paginationInfo != null) renderManualPaginationAnnotation(op)
+        keyTypes.forEach { keyType ->
+            val interfaceType = keyType.interfaceType
+            val implName = "${interfaceType.shortName.replace(".", "")}Impl"
+            val implType = interfaceType.copy(shortName = implName)
 
-                write(
-                    "override suspend fun #L(request: #T) = #L(spec).execute(request)",
-                    op.methodName,
-                    op.request.type,
-                    OperationRenderer.factoryFunctionName(op),
-                )
+            blankLine()
+            withBlock(
+                "internal class #D(private val spec: #T) : #T {",
+                "}",
+                implType,
+                itemSourceKind.specType(keyType),
+                interfaceType,
+            ) {
+                operations.forEach { op ->
+                    val requestProjection = op.request.keyProjections[keyType]
+                    val responseProjection = op.response.keyProjections[keyType]
 
-                if (op.paginationInfo != null) blankLine()
+                    val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
+                    if (paginationInfo != null) renderManualPaginationAnnotation(op)
+
+                    write(
+                        "override suspend fun #L(request: #T) = #L(spec).execute(request)",
+                        op.methodName,
+                        requestProjection.interfaceStruct.type,
+                        FactoryRenderer.factoryFunctionName(op),
+                    )
+
+                    if (paginationInfo != null) blankLine()
+                }
             }
         }
     }
 
     private fun renderInterface() {
         withDocs {
-            write("Provides access to operations on a particular #L, which will invoke low-level", entityName)
-            write("operations after mapping objects to items and vice versa")
-            write("@param T The type of objects which will be read from and/or written to this #L", entityName)
+            write("Provides access to operations on a particular [#L], which will invoke", itemSourceKind.name)
+            write("low-level operations after mapping objects to items and vice versa")
         }
-        writeInline("public interface #T ", interfaceType)
-
+        writeInline("public interface #T ", unkeyedType)
         parentType?.let { writeInline(": #T ", parentType) }
-
         withBlock("{", "}") {
-            operations.forEach(::renderOp)
+            unkeyedOperations.forEach { renderOp(it, KeyProjectionType.NONE) }
+
+            if (keyedOperations.isNotEmpty()) {
+                docs("Provides access to operations a particular [#L.PartitionKey]", itemSourceKind.name, unkeyedType)
+                writeInline("public interface PartitionKey#G : #T", pkType.genericVars(), unkeyedType)
+
+                itemSourceKind.parent?.let { parentType ->
+                    writeInline(", #T", parentType.opsType(KeyProjectionType.PARTITION_KEY))
+                }
+
+                withBlock(" {", "}") {
+                    keyedOperations.forEach { renderOp(it, KeyProjectionType.PARTITION_KEY) }
+                }
+
+                docs("Provides access to operations on a particular [#L.CompositeKey]", itemSourceKind.name, unkeyedType)
+                writeInline("public interface CompositeKey#G : #T", ckType.genericVars(), unkeyedType)
+
+                itemSourceKind.parent?.let { parentType ->
+                    writeInline(", #T", parentType.opsType(KeyProjectionType.COMPOSITE_KEY))
+                }
+
+                withBlock(" {", "}") {
+                    keyedOperations.forEach { renderOp(it, KeyProjectionType.COMPOSITE_KEY) }
+                }
+            }
         }
     }
 
@@ -123,28 +176,56 @@ internal class OperationsTypeRenderer(
         )
     }
 
-    private fun renderOp(op: Operation) {
-        val overrideModifier = if (op.appliesToAncestorKind()) " override" else ""
+    private fun renderOp(op: Operation, keyType: KeyProjectionType) {
+        if (op.appliesToAncestorKind()) return
 
-        if (op.paginationInfo != null) renderManualPaginationAnnotation(op)
+        val requestProjection = op.request.keyProjections[keyType]
+        val responseProjection = op.response.keyProjections[keyType]
+
+        val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
+        if (paginationInfo != null) renderManualPaginationAnnotation(op)
 
         write(
-            "public#L suspend fun #L(request: #T): #T",
-            overrideModifier,
+            "public suspend fun #L(request: #T): #T",
             op.methodName,
-            op.request.type,
-            op.response.type,
+            requestProjection.interfaceStruct.type,
+            responseProjection.interfaceStruct.type,
         )
 
-        if (op.paginationInfo != null) blankLine()
+        if (paginationInfo != null) blankLine()
     }
 
-    private fun renderPaginators(forResponses: Boolean = false, forItems: Boolean = false) = operations
-        .filterNot { it.paginationInfo == null }
-        .forEach { op -> PaginatorRenderer(ctx, this, op, interfaceType, forResponses, forItems).render() }
+    private fun renderItemsPaginators() = operations
+        .forEach { op ->
+            val requestProjection = op.request.keyProjections.unkeyedProjection
+            val responseProjection = op.response.keyProjections.unkeyedProjection
 
+            val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
+            paginationInfo?.let {
+                PaginatorRenderer(ctx, this, requestProjection.interfaceStruct.type, op, it, forItems = true).render()
+            }
+        }
+
+    private fun renderResponsePaginators() = operations
+        .forEach { op ->
+            op.keyTypes.forEach { keyType ->
+                val requestProjection = op.request.keyProjections[keyType]
+                val responseProjection = op.response.keyProjections[keyType]
+
+                val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
+                paginationInfo?.let {
+                    PaginatorRenderer(ctx, this, keyType.interfaceType, op, it, forResponses = true).render()
+                }
+            }
+        }
     private fun Operation.appliesToAncestorKind() = itemSourceKind.parent?.let { appliesToKindOrAncestor(it) } ?: false
+
+    private val KeyProjectionType.interfaceType: TypeRef
+        get() = when (this) {
+            KeyProjectionType.NONE -> unkeyedType
+            KeyProjectionType.PARTITION_KEY -> pkType
+            KeyProjectionType.COMPOSITE_KEY -> ckType
+        }
 }
 
-private fun Operation.appliesToKindOrAncestor(kind: ItemSourceKind): Boolean =
-    kind in itemSourceKinds || (kind.parent?.let { appliesToKindOrAncestor(it) } ?: false)
+private fun Operation.appliesToKindOrAncestor(kind: ItemSourceKind): Boolean = kind in itemSourceKinds || (kind.parent?.let { appliesToKindOrAncestor(it) } ?: false)

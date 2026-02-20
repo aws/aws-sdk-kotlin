@@ -254,7 +254,7 @@ fun discoverAwsModelsRepoPath(): String? {
     return typedProp<String>("awsModelsDir")?.let { File(it) }?.absolutePath
 }
 
-/**
+/*
  * Synchronize upstream changes from aws-models repository.
  *
  * Steps to synchronize:

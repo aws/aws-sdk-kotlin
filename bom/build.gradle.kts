@@ -2,7 +2,7 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import aws.sdk.kotlin.gradle.dsl.configurePublishing
+import aws.sdk.kotlin.gradle.publishing.configurePublishing
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
@@ -94,8 +94,7 @@ fun Project.gav(target: KotlinTarget): String {
     return "$group:$artifactId:$version"
 }
 
-fun DependencyConstraintHandler.api(constraintNotation: Any) =
-    add("api", constraintNotation)
+fun DependencyConstraintHandler.api(constraintNotation: Any) = add("api", constraintNotation)
 
 createBomConstraintsAndVersionCatalog()
 

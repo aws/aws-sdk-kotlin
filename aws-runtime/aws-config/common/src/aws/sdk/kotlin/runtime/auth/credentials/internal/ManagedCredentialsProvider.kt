@@ -18,5 +18,4 @@ private class ManagedCredentialsProvider(
  * Wraps a [CredentialsProvider] for internal runtime management by the SDK.
  */
 @InternalSdkApi
-public fun CloseableCredentialsProvider.manage(): CredentialsProvider =
-    if (this is ManagedCredentialsProvider) this else ManagedCredentialsProvider(this)
+public fun CloseableCredentialsProvider.manage(): CredentialsProvider = if (this is ManagedCredentialsProvider) this else ManagedCredentialsProvider(this)

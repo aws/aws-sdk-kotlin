@@ -13,10 +13,11 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemR
  * Contextual data for stages in the pipeline dealing with low-level requests (i.e., between serialization and low-level
  * invocation)
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  */
-public interface LReqContext<T, HReq, LReq> : HReqContext<T, HReq> {
+public interface LReqContext<T, S : ItemSchema<T>, HReq, LReq> : HReqContext<T, S, HReq> {
     /**
      * The low-level request object which is to be used in the low-level operation invocation
      */
@@ -26,6 +27,7 @@ public interface LReqContext<T, HReq, LReq> : HReqContext<T, HReq> {
 /**
  * Creates a new [LReqContext]
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param highLevelRequest The high-level request object which is to be serialized into a low-level request object
@@ -34,13 +36,13 @@ public interface LReqContext<T, HReq, LReq> : HReqContext<T, HReq> {
  * @param lowLevelRequest The low-level request object which is to be used in the low-level operation invocation
  * @param error The most recent error which occurred, if any. Defaults to null.
  */
-public fun <T, HReq, LReq> LReqContext(
+public fun <T, S : ItemSchema<T>, HReq, LReq> LReqContext(
     highLevelRequest: HReq,
-    serializeSchema: ItemSchema<T>,
+    serializeSchema: S,
     mapperContext: MapperContext<T>,
     lowLevelRequest: LReq,
     error: Throwable? = null,
-): LReqContext<T, HReq, LReq> = LReqContextImpl(
+): LReqContext<T, S, HReq, LReq> = LReqContextImpl(
     highLevelRequest,
     serializeSchema,
     mapperContext,

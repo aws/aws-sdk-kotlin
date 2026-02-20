@@ -32,7 +32,7 @@ The following steps will create a project that will codegen a client when built.
    dependencies {
        ...
        // NOTE: More smithy dependencies may be required depending on what's referenced by your API models.
-       implementation("software.amazon.smithy.kotlin:smithy-aws-kotlin-codegen:<latest version>")
+       implementation("aws.smithy.kotlin:aws-codegen:<latest version>")
    }
    ```
 3. Add your model file(s) into a new directory at the root of your project called `model`.

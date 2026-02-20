@@ -46,16 +46,14 @@ internal class ImdsEndpointProvider(
         return mode.defaultEndpoint
     }
 
-    private fun loadEndpointFromEnv(): Endpoint? =
-        AwsSdkSetting.AwsEc2MetadataServiceEndpoint.resolve(platformProvider)?.toEndpoint()
+    private fun loadEndpointFromEnv(): Endpoint? = AwsSdkSetting.AwsEc2MetadataServiceEndpoint.resolve(platformProvider)?.toEndpoint()
 
     private suspend fun loadEndpointFromProfile(): Endpoint? {
         val profile = activeProfile.get()
         return profile.getOrNull(EC2_METADATA_SERVICE_ENDPOINT_PROFILE_KEY)?.toEndpoint()
     }
 
-    private fun loadEndpointModeFromEnv(): EndpointMode? =
-        AwsSdkSetting.AwsEc2MetadataServiceEndpointMode.resolve(platformProvider)?.let { EndpointMode.fromValue(it) }
+    private fun loadEndpointModeFromEnv(): EndpointMode? = AwsSdkSetting.AwsEc2MetadataServiceEndpointMode.resolve(platformProvider)?.let { EndpointMode.fromValue(it) }
 
     private suspend fun loadEndpointModeFromProfile(): EndpointMode? {
         val profile = activeProfile.get()

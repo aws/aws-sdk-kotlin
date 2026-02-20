@@ -5,15 +5,14 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.rendering
 
 import aws.sdk.kotlin.hll.codegen.core.CodeGenerator
-import aws.sdk.kotlin.hll.codegen.model.Operation
-import aws.sdk.kotlin.hll.codegen.model.Type
-import aws.sdk.kotlin.hll.codegen.model.TypeVar
-import aws.sdk.kotlin.hll.codegen.model.Types
-import aws.sdk.kotlin.hll.codegen.rendering.BuilderRenderer
+import aws.sdk.kotlin.hll.codegen.model.*
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.util.capitalizeFirstChar
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
-import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.paginationInfo
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.MemberKeyType
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.PaginationInfo
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.PaginationToken
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.keyType
 
 /**
  * Renders paginator methods for an operation. There are two types of paginators handled by this renderer:
@@ -64,19 +63,17 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.paginationInfo
  * @param ctx The context for this renderer
  * @param generator The underlying code generator to use when rendering
  * @param op The operation for which paginators will be rendered
- * @param extensionOf The type from which paginators will be extension methods. This type is optional—if `null` is
- * passed then the rendered paginators will be simple functions instead of extension methods. This only applies to
- * **response** paginators.
  * @param forResponses Enables generating response paginators
  * @param forItems Enables generating item paginators
  */
 internal class PaginatorRenderer(
     private val ctx: RenderContext,
     private val generator: CodeGenerator,
+    private val receiver: Type,
     private val op: Operation,
-    private val extensionOf: Type?,
-    private val forResponses: Boolean,
-    private val forItems: Boolean,
+    private val paginationInfo: PaginationInfo,
+    private val forResponses: Boolean = false,
+    private val forItems: Boolean = false,
 ) : CodeGenerator by generator {
     init {
         require(forResponses || forItems) { "One of `forResponses` or `forItems` must be set to true" }
@@ -86,15 +83,14 @@ internal class PaginatorRenderer(
         fun paginatorName(op: Operation) = "${op.methodName}Paginated"
     }
 
-    private val paginationInfo = requireNotNull(op.paginationInfo) { "Operation ${op.name} is not paginatable" }
     private val name = paginatorName(op)
 
-    private val requestType = op.request.type
-    private val requestBuilderType = BuilderRenderer.builderType(requestType)
-    private val responseType = op.response.type
+    private val request = paginationInfo.request.type
+    private val response = paginationInfo.response.type
+    private val generics = request.genericVars() + response.genericVars()
 
-    private val itemFlowType = Types.Kotlinx.Coroutines.Flow.flow(TypeVar("T"))
-    private val pageFlowType = Types.Kotlinx.Coroutines.Flow.flow(responseType)
+    private val itemFlowType = Types.Kotlinx.Coroutines.Flow.flow(TypeVar.T)
+    private val pageFlowType = Types.Kotlinx.Coroutines.Flow.flow(paginationInfo.response.type)
 
     fun render() {
         if (forResponses) {
@@ -113,7 +109,8 @@ internal class PaginatorRenderer(
     private fun renderItemsPaginator() {
         val jvmName = "${op.methodName}${paginationInfo.items.name.capitalizeFirstChar}"
         write("@#T(#S)", Types.Kotlin.Jvm.JvmName, jvmName)
-        withBlock("public fun <T> #T.items(): #T =", "", pageFlowType, itemFlowType) {
+
+        withBlock("public fun #G#T.items(): #T =", "", generics, pageFlowType, itemFlowType) {
             withBlock("#T { page ->", "}", Types.Kotlinx.Coroutines.Flow.transform) {
                 withBlock("page.#L?.forEach { item ->", "}", paginationInfo.items.name) {
                     write("emit(item)")
@@ -123,13 +120,15 @@ internal class PaginatorRenderer(
     }
 
     private fun renderPaginatorWithDsl() {
-        writeInline("public inline fun <T> ")
-
-        extensionOf?.let { writeInline("#T.", extensionOf) }
+        val requestBuilderType = requireNotNull(paginationInfo.requestBuilder) {
+            "Builder structs are required for request paginators. Please supply a concrete (not abstract) data type."
+        }.type
 
         withBlock(
-            "#L(crossinline block: #T.() -> Unit): #T =",
+            "public inline fun #G#T.#L(crossinline block: #T.() -> Unit): #T =",
             "",
+            generics,
+            receiver,
             name,
             requestBuilderType,
             pageFlowType,
@@ -139,33 +138,48 @@ internal class PaginatorRenderer(
     }
 
     private fun renderPaginatorWithRequest() {
-        writeInline("public fun <T> ")
-
-        extensionOf?.let { writeInline("#T.", extensionOf) }
-
         withBlock(
-            "#L(initialRequest: #T): #T = #T {",
+            "public fun #G#T.#L(initialRequest: #T): #T = #T {",
             "}",
+            generics,
+            receiver,
             name,
-            requestType,
+            request,
             pageFlowType,
             Types.Kotlinx.Coroutines.Flow.flow,
         ) {
-            write("var cursor = initialRequest.#L", paginationInfo.inputToken.name)
+            paginationInfo.tokens.forEach { paginationToken ->
+                write("var #L = initialRequest.#L", paginationToken.cursorName, paginationToken.input.name)
+            }
             write("var hasNextPage = true")
             blankLine()
             withBlock("while (hasNextPage) {", "}") {
-                write("val req = initialRequest.copy { #L = cursor }", paginationInfo.inputToken.name)
+                withBlock("val req = initialRequest.copy {", "}") {
+                    paginationInfo.tokens.forEach { paginationToken ->
+                        write("#L = #L", paginationToken.input.name, paginationToken.cursorName)
+                    }
+                }
 
                 blankLine()
                 write("@#T(#T::class)", Types.Kotlin.OptIn, MapperTypes.Annotations.ManualPagination)
                 write("val res = this@#L.#L(req)", name, op.methodName)
 
                 blankLine()
-                write("cursor = res.#L", paginationInfo.outputToken.name)
-                write("hasNextPage = cursor != null")
+                paginationInfo.tokens.forEach { paginationToken ->
+                    write("#L = res.#L", paginationToken.cursorName, paginationToken.output.name)
+                }
+
+                val nextPageCheck = paginationInfo.tokens.joinToString(" && ") { "${it.cursorName} != null" }
+                write("hasNextPage = #L", nextPageCheck)
                 write("emit(res)")
             }
         }
     }
 }
+
+private val PaginationToken.cursorName: String
+    get() = when (input.keyType) {
+        MemberKeyType.PARTITION -> "pkCursor"
+        MemberKeyType.SORT -> "skCursor"
+        else -> "cursor"
+    }
