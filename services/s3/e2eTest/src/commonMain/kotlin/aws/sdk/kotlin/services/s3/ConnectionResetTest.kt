@@ -1,0 +1,80 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+package aws.sdk.kotlin.e2etest
+
+import aws.sdk.kotlin.services.s3.S3Client
+import aws.sdk.kotlin.services.s3.model.PutObjectRequest
+import aws.smithy.kotlin.runtime.content.ByteStream
+import aws.smithy.kotlin.runtime.http.HttpException
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlin.jvm.JvmStatic
+import kotlin.test.Test
+import kotlin.time.Duration.Companion.seconds
+
+/**
+ * Reproduces "unexpected end of stream" errors as seen in https://github.com/aws/aws-sdk-kotlin/issues/1214
+ * and ensures they are resolved by OkHttp's retryOnConnectionFailure option
+ */
+class ConnectionResetTest {
+    companion object {
+        private lateinit var client: S3Client
+        private lateinit var testBucket: String
+
+        @BeforeAll
+        @JvmStatic
+        fun createResources() = runBlocking {
+            client = S3Client {
+                region = S3TestUtils.DEFAULT_REGION
+            }
+            testBucket = S3TestUtils.getOrCreateSharedBucket(client)
+        }
+
+        @AfterAll
+        @JvmStatic
+        fun cleanup() = runBlocking {
+            S3TestUtils.deleteSharedBucket(client)
+            client.close()
+        }
+    }
+
+    @Test
+    fun testConnectionResetDoesntThrow() = runBlocking {
+        // Launch multiple coroutines to populate connection pool
+        val jobs = (1..10).map {
+            async { client.putTestObject() }
+        }
+        jobs.awaitAll()
+        // Connections are now idle in the pool
+
+        // Wait for S3 to close stale connections
+        delay(7.seconds)
+
+        // Try to re-use a connection
+        client.putTestObject()
+    }
+
+    private suspend fun S3Client.putTestObject() {
+        val putObjectRequest = PutObjectRequest {
+            bucket = testBucket
+            key = (0..Int.MAX_VALUE).random().toString()
+            body = ByteStream.fromString("Content")
+        }
+
+        try {
+            putObject(putObjectRequest)
+        } catch (e: HttpException) {
+            if (e.cause?.message?.contains("unexpected end of stream") == true) {
+                throw RetryOnConnectionFailureException("SDK unexpectedly threw exception which should have been retried by HTTP engine's retry feature", e)
+            }
+        }
+    }
+}
+
+class RetryOnConnectionFailureException(message: String, cause: Exception? = null) : Exception(message, cause)

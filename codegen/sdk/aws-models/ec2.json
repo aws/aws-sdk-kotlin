@@ -2779,6 +2779,12 @@
                     "target": "com.amazonaws.ec2#CreateRouteTable"
                 },
                 {
+                    "target": "com.amazonaws.ec2#CreateSecondaryNetwork"
+                },
+                {
+                    "target": "com.amazonaws.ec2#CreateSecondarySubnet"
+                },
+                {
                     "target": "com.amazonaws.ec2#CreateSecurityGroup"
                 },
                 {
@@ -3053,6 +3059,12 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#DeleteRouteTable"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DeleteSecondaryNetwork"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DeleteSecondarySubnet"
                 },
                 {
                     "target": "com.amazonaws.ec2#DeleteSecurityGroup"
@@ -3557,6 +3569,15 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#DescribeScheduledInstances"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DescribeSecondaryInterfaces"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DescribeSecondaryNetworks"
+                },
+                {
+                    "target": "com.amazonaws.ec2#DescribeSecondarySubnets"
                 },
                 {
                     "target": "com.amazonaws.ec2#DescribeSecurityGroupReferences"
@@ -9756,6 +9777,22 @@
                         "smithy.api#xmlName": "groupLongName"
                     }
                 },
+                "Geography": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneGeographyList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "GeographySet",
+                        "smithy.api#documentation": "<p>The geography information for the Availability Zone or Local Zone. The geography is returned as a list.</p>",
+                        "smithy.api#xmlName": "geographySet"
+                    }
+                },
+                "SubGeography": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneSubGeographyList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SubGeographySet",
+                        "smithy.api#documentation": "<p>The sub-geography information for the Availability Zone or Local Zone. The sub-geography is returned\n      as a list.</p>",
+                        "smithy.api#xmlName": "subGeographySet"
+                    }
+                },
                 "State": {
                     "target": "com.amazonaws.ec2#AvailabilityZoneState",
                     "traits": {
@@ -9802,6 +9839,31 @@
                 "target": "com.amazonaws.ec2#AvailabilityZoneAddress",
                 "traits": {
                     "smithy.api#xmlName": "AvailabilityZoneAddress"
+                }
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityZoneGeography": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Name",
+                        "smithy.api#documentation": "<p>The name of the geography, for example, <code>United States of America</code>.</p>",
+                        "smithy.api#xmlName": "name"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the geography information for an Availability Zone or Local Zone.</p>"
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityZoneGeographyList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#AvailabilityZoneGeography",
+                "traits": {
+                    "smithy.api#xmlName": "item"
                 }
             }
         },
@@ -9918,6 +9980,31 @@
                 "target": "com.amazonaws.ec2#String",
                 "traits": {
                     "smithy.api#xmlName": "AvailabilityZone"
+                }
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityZoneSubGeography": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Name",
+                        "smithy.api#documentation": "<p>The name of the sub-geography, for example, <code>Oregon.</code>\n         </p>",
+                        "smithy.api#xmlName": "name"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the sub-geography information for an Availability Zone or Local Zone.</p>"
+            }
+        },
+        "com.amazonaws.ec2#AvailabilityZoneSubGeographyList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#AvailabilityZoneSubGeography",
+                "traits": {
+                    "smithy.api#xmlName": "item"
                 }
             }
         },
@@ -16707,6 +16794,14 @@
                         "smithy.api#documentation": "<p>Indicates whether the instance is enabled for AMD SEV-SNP. For more information, see \n            <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP</a>.</p>",
                         "smithy.api#xmlName": "amdSevSnp"
                     }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NestedVirtualization",
+                        "smithy.api#documentation": "<p>Indicates whether the instance is enabled for nested virtualization.</p>",
+                        "smithy.api#xmlName": "nestedVirtualization"
+                    }
                 }
             },
             "traits": {
@@ -16732,6 +16827,12 @@
                     "target": "com.amazonaws.ec2#AmdSevSnpSpecification",
                     "traits": {
                         "smithy.api#documentation": "<p>Indicates whether to enable the instance for AMD SEV-SNP. AMD SEV-SNP is supported \n            with M6a, R6a, and C6a instance types only. For more information, see \n            <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP</a>.</p>"
+                    }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to enable the instance for nested virtualization.\n            Nested virtualization is supported only on 8th generation Intel-based instance types (c8i, m8i, r8i, and their flex variants).\n            When nested virtualization is enabled, Virtual Secure Mode (VSM) is automatically disabled for the instance.</p>"
                     }
                 }
             },
@@ -21756,6 +21857,12 @@
                         "smithy.api#documentation": "<p>Reserved for future use.</p>"
                     }
                 },
+                "Operator": {
+                    "target": "com.amazonaws.ec2#OperatorRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Reserved for internal use.</p>"
+                    }
+                },
                 "DryRun": {
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
@@ -22577,6 +22684,280 @@
                         "aws.protocols#ec2QueryName": "RouteTable",
                         "smithy.api#documentation": "<p>Information about the route table.</p>",
                         "smithy.api#xmlName": "routeTable"
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ClientToken",
+                        "smithy.api#documentation": "<p>Unique, case-sensitive identifier to ensure the idempotency of the request. Only returned if a client token was provided in the request.</p>",
+                        "smithy.api#xmlName": "clientToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateSecondaryNetwork": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#CreateSecondaryNetworkRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#CreateSecondaryNetworkResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Creates a secondary network.</p>\n         <p>The allowed size for a secondary network CIDR block is between /28 netmask (16 IP addresses) and /12 netmask (1,048,576 IP addresses).</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To create a secondary network",
+                        "documentation": "This example creates a rdma secondary network with a /16 CIDR block.",
+                        "input": {
+                            "Ipv4CidrBlock": "10.0.0.0/16",
+                            "NetworkType": "rdma",
+                            "ClientToken": "550e8400-e29b-41d4-a716-446655440000",
+                            "TagSpecifications": [
+                                {
+                                    "ResourceType": "secondary-network",
+                                    "Tags": [
+                                        {
+                                            "Key": "Name",
+                                            "Value": "Prod Secondary Network"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "output": {
+                            "SecondaryNetwork": {
+                                "SecondaryNetworkId": "sn-0123456789abcdef0",
+                                "SecondaryNetworkArn": "arn:aws:ec2:us-east-2:123456789012:secondary-network/sn-0123456789abcdef0",
+                                "OwnerId": "123456789012",
+                                "Type": "rdma",
+                                "State": "create-in-progress",
+                                "Ipv4CidrBlockAssociations": [
+                                    {
+                                        "AssociationId": "sn-cidr-assoc-56789901234abcdef0",
+                                        "CidrBlock": "10.0.0.0/16",
+                                        "State": "associating"
+                                    }
+                                ],
+                                "Tags": [
+                                    {
+                                        "Key": "Name",
+                                        "Value": "Prod Secondary Network"
+                                    }
+                                ]
+                            },
+                            "ClientToken": "550e8400-e29b-41d4-a716-446655440000"
+                        }
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.ec2#CreateSecondaryNetworkRequest": {
+            "type": "structure",
+            "members": {
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensure Idempotency</a>.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "Ipv4CidrBlock": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The IPv4 CIDR block for the secondary network. The CIDR block size must be between /12 and /28.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "NetworkType": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkType",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The type of secondary network.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TagSpecifications": {
+                    "target": "com.amazonaws.ec2#TagSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags to assign to the secondary network.</p>",
+                        "smithy.api#xmlName": "TagSpecification"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateSecondaryNetworkResult": {
+            "type": "structure",
+            "members": {
+                "SecondaryNetwork": {
+                    "target": "com.amazonaws.ec2#SecondaryNetwork",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetwork",
+                        "smithy.api#documentation": "<p>Information about the secondary network.</p>",
+                        "smithy.api#xmlName": "secondaryNetwork"
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ClientToken",
+                        "smithy.api#documentation": "<p>Unique, case-sensitive identifier to ensure the idempotency of the request. Only returned if a client token was provided in the request.</p>",
+                        "smithy.api#xmlName": "clientToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateSecondarySubnet": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#CreateSecondarySubnetRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#CreateSecondarySubnetResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Creates a secondary subnet in a secondary network.</p>\n         <p>A secondary subnet CIDR block must not overlap with the CIDR block of an existing secondary subnet in the secondary network. After you create a secondary subnet, you can't change its CIDR block.</p>\n         <p>The allowed size for a secondary subnet CIDR block is between /28 netmask (16 IP addresses) and /12 netmask (1,048,576 IP addresses). Amazon reserves the first four IP addresses and the last IP address in each secondary subnet for internal use.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To create a secondary subnet",
+                        "documentation": "This example creates a secondary subnet with a /24 CIDR block in the specified secondary network and Availability Zone.",
+                        "input": {
+                            "SecondaryNetworkId": "sn-0123456789abcdef0",
+                            "Ipv4CidrBlock": "10.0.0.0/24",
+                            "AvailabilityZoneId": "use2-az1",
+                            "ClientToken": "550e8400-e29b-41d4-a716-446655440000",
+                            "TagSpecifications": [
+                                {
+                                    "ResourceType": "secondary-subnet",
+                                    "Tags": [
+                                        {
+                                            "Key": "Name",
+                                            "Value": "Prod Secondary Subnet"
+                                        },
+                                        {
+                                            "Key": "Environment",
+                                            "Value": "Production"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "output": {
+                            "SecondarySubnet": {
+                                "SecondarySubnetId": "ss-0123456789abcdef0",
+                                "SecondarySubnetArn": "arn:aws:ec2:us-east-2:123456789012:secondary-subnet/ss-0123456789abcdef0",
+                                "SecondaryNetworkId": "sn-0123456789abcdef0",
+                                "SecondaryNetworkType": "rdma",
+                                "OwnerId": "123456789012",
+                                "AvailabilityZoneId": "use2-az1",
+                                "AvailabilityZone": "us-east-2a",
+                                "Ipv4CidrBlockAssociations": [
+                                    {
+                                        "AssociationId": "ss-cidr-assoc-56789901234abcdef0",
+                                        "CidrBlock": "10.0.0.0/24",
+                                        "State": "associating"
+                                    }
+                                ],
+                                "State": "create-in-progress",
+                                "Tags": [
+                                    {
+                                        "Key": "Name",
+                                        "Value": "Prod Secondary Subnet"
+                                    },
+                                    {
+                                        "Key": "Environment",
+                                        "Value": "Production"
+                                    }
+                                ]
+                            },
+                            "ClientToken": "550e8400-e29b-41d4-a716-446655440000"
+                        }
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.ec2#CreateSecondarySubnetRequest": {
+            "type": "structure",
+            "members": {
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensure Idempotency</a>.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "AvailabilityZone": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Availability Zone for the secondary subnet. You cannot specify both <code>AvailabilityZone</code> and <code>AvailabilityZoneId</code> in the same request.</p>"
+                    }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Availability Zone for the secondary subnet. This option is preferred over <code>AvailabilityZone</code> as it provides a consistent identifier across Amazon Web Services accounts. You cannot specify both <code>AvailabilityZone</code> and <code>AvailabilityZoneId</code> in the same request.</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "Ipv4CidrBlock": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The IPv4 CIDR block for the secondary subnet. The CIDR block size must be between /12 and /28.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "SecondaryNetworkId": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the secondary network in which to create the secondary subnet.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TagSpecifications": {
+                    "target": "com.amazonaws.ec2#TagSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags to assign to the secondary subnet.</p>",
+                        "smithy.api#xmlName": "TagSpecification"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#CreateSecondarySubnetResult": {
+            "type": "structure",
+            "members": {
+                "SecondarySubnet": {
+                    "target": "com.amazonaws.ec2#SecondarySubnet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondarySubnet",
+                        "smithy.api#documentation": "<p>Information about the secondary subnet.</p>",
+                        "smithy.api#xmlName": "secondarySubnet"
                     }
                 },
                 "ClientToken": {
@@ -29783,7 +30164,7 @@
                     }
                 },
                 "GroupName": {
-                    "target": "com.amazonaws.ec2#PlacementGroupName",
+                    "target": "com.amazonaws.ec2#PlacementGroupNameWithResolver",
                     "traits": {
                         "aws.protocols#ec2QueryName": "GroupName",
                         "smithy.api#clientOptional": {},
@@ -30239,6 +30620,205 @@
             },
             "traits": {
                 "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteSecondaryNetwork": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DeleteSecondaryNetworkRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DeleteSecondaryNetworkResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes a secondary network. You must delete all secondary subnets in the secondary network before you can delete the secondary network.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To delete a secondary network",
+                        "documentation": "This example deletes a secondary network.",
+                        "input": {
+                            "SecondaryNetworkId": "sn-0123456789abcdef0",
+                            "ClientToken": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "output": {
+                            "SecondaryNetwork": {
+                                "SecondaryNetworkId": "sn-0123456789abcdef0",
+                                "SecondaryNetworkArn": "arn:aws:ec2:us-east-2:123456789012:secondary-network/sn-0123456789abcdef0",
+                                "OwnerId": "123456789012",
+                                "Type": "rdma",
+                                "State": "delete-in-progress",
+                                "Ipv4CidrBlockAssociations": [
+                                    {
+                                        "AssociationId": "sn-cidr-assoc-56789901234abcdef0",
+                                        "CidrBlock": "10.0.0.0/16",
+                                        "State": "disassociating"
+                                    }
+                                ],
+                                "Tags": [
+                                    {
+                                        "Key": "Name",
+                                        "Value": "Prod Secondary Network"
+                                    }
+                                ]
+                            },
+                            "ClientToken": "550e8400-e29b-41d4-a716-446655440000"
+                        }
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.ec2#DeleteSecondaryNetworkRequest": {
+            "type": "structure",
+            "members": {
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensure Idempotency</a>.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "SecondaryNetworkId": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the secondary network.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteSecondaryNetworkResult": {
+            "type": "structure",
+            "members": {
+                "SecondaryNetwork": {
+                    "target": "com.amazonaws.ec2#SecondaryNetwork",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetwork",
+                        "smithy.api#documentation": "<p>Information about the secondary network.</p>",
+                        "smithy.api#xmlName": "secondaryNetwork"
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ClientToken",
+                        "smithy.api#documentation": "<p>Unique, case-sensitive identifier to ensure the idempotency of the request. Only returned if a client token was provided in the request.</p>",
+                        "smithy.api#xmlName": "clientToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteSecondarySubnet": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DeleteSecondarySubnetRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DeleteSecondarySubnetResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes a secondary subnet. A secondary subnet must not contain any secondary interfaces prior to deletion.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To delete a secondary subnet",
+                        "documentation": "This example deletes a secondary subnet.",
+                        "input": {
+                            "SecondarySubnetId": "ss-0123456789abcdef0",
+                            "ClientToken": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "output": {
+                            "SecondarySubnet": {
+                                "SecondarySubnetId": "ss-0123456789abcdef0",
+                                "SecondarySubnetArn": "arn:aws:ec2:us-east-2:123456789012:secondary-subnet/ss-0123456789abcdef0",
+                                "SecondaryNetworkId": "sn-0123456789abcdef0",
+                                "SecondaryNetworkType": "rdma",
+                                "OwnerId": "123456789012",
+                                "AvailabilityZoneId": "use2-az1",
+                                "AvailabilityZone": "us-east-2a",
+                                "Ipv4CidrBlockAssociations": [
+                                    {
+                                        "AssociationId": "ss-cidr-assoc-56789901234abcdef0",
+                                        "CidrBlock": "10.0.0.0/24",
+                                        "State": "disassociating"
+                                    }
+                                ],
+                                "State": "delete-in-progress",
+                                "Tags": [
+                                    {
+                                        "Key": "Name",
+                                        "Value": "Prod Secondary Subnet"
+                                    }
+                                ]
+                            },
+                            "ClientToken": "550e8400-e29b-41d4-a716-446655440000"
+                        }
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.ec2#DeleteSecondarySubnetRequest": {
+            "type": "structure",
+            "members": {
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensure Idempotency</a>.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "SecondarySubnetId": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the secondary subnet to delete.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DeleteSecondarySubnetResult": {
+            "type": "structure",
+            "members": {
+                "SecondarySubnet": {
+                    "target": "com.amazonaws.ec2#SecondarySubnet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondarySubnet",
+                        "smithy.api#documentation": "<p>Information about the secondary subnet being deleted.</p>",
+                        "smithy.api#xmlName": "secondarySubnet"
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ClientToken",
+                        "smithy.api#documentation": "<p>Unique, case-sensitive identifier to ensure the idempotency of the request. Only returned if a client token was provided in the request.</p>",
+                        "smithy.api#xmlName": "clientToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.ec2#DeleteSecurityGroup": {
@@ -44766,6 +45346,665 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Contains the output of DescribeScheduledInstances.</p>",
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondaryInterfaces": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeSecondaryInterfacesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeSecondaryInterfacesResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes one or more of your secondary interfaces.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To describe all secondary interfaces",
+                        "documentation": "This example describes all secondary interfaces in the current Region.",
+                        "output": {
+                            "SecondaryInterfaces": [
+                                {
+                                    "SecondaryInterfaceId": "si-0123456789abcdef0",
+                                    "SecondaryInterfaceArn": "arn:aws:ec2:us-east-2:123456789012:secondary-interface/si-0123456789abcdef0",
+                                    "OwnerId": "123456789012",
+                                    "SecondarySubnetId": "ss-0123456789abcdef0",
+                                    "SecondaryNetworkId": "sn-0123456789abcdef0",
+                                    "SecondaryNetworkType": "rdma",
+                                    "AvailabilityZoneId": "use2-az1",
+                                    "AvailabilityZone": "us-east-2a",
+                                    "MacAddress": "02:2f:8f:b0:cf:75",
+                                    "SourceDestCheck": true,
+                                    "Status": "in-use",
+                                    "SecondaryInterfaceType": "secondary",
+                                    "PrivateIpv4Addresses": [
+                                        {
+                                            "PrivateIpAddress": "10.0.1.17"
+                                        }
+                                    ],
+                                    "Attachment": {
+                                        "Status": "attached",
+                                        "DeviceIndex": 0,
+                                        "NetworkCardIndex": 1,
+                                        "InstanceId": "i-1234567890abcdef0",
+                                        "DeleteOnTermination": true,
+                                        "AttachmentId": "si-attach-0123456789abcdef0",
+                                        "InstanceOwnerId": "123456789012",
+                                        "AttachTime": "2026-02-28T23:35:33.000Z"
+                                    },
+                                    "Tags": [
+                                        {
+                                            "Key": "Name",
+                                            "Value": "Prod Secondary Interface"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "title": "To describe secondary interfaces using filters",
+                        "documentation": "This example uses filters to describe secondary interfaces attached to a specific instance.",
+                        "input": {
+                            "Filters": [
+                                {
+                                    "Name": "attachment.instance-id",
+                                    "Values": [
+                                        "i-1234567890abcdef0"
+                                    ]
+                                }
+                            ],
+                            "MaxResults": 5
+                        },
+                        "output": {
+                            "SecondaryInterfaces": [
+                                {
+                                    "SecondaryInterfaceId": "si-0123456789abcdef0",
+                                    "SecondaryInterfaceArn": "arn:aws:ec2:us-east-2:123456789012:secondary-interface/si-0123456789abcdef0",
+                                    "OwnerId": "123456789012",
+                                    "SecondarySubnetId": "ss-0123456789abcdef0",
+                                    "SecondaryNetworkId": "sn-0123456789abcdef0",
+                                    "SecondaryNetworkType": "rdma",
+                                    "AvailabilityZoneId": "use2-az1",
+                                    "AvailabilityZone": "us-east-2a",
+                                    "MacAddress": "02:2f:8f:b0:cf:75",
+                                    "SourceDestCheck": true,
+                                    "Status": "in-use",
+                                    "SecondaryInterfaceType": "secondary",
+                                    "PrivateIpv4Addresses": [
+                                        {
+                                            "PrivateIpAddress": "10.0.1.17"
+                                        }
+                                    ],
+                                    "Attachment": {
+                                        "Status": "attached",
+                                        "DeviceIndex": 0,
+                                        "NetworkCardIndex": 1,
+                                        "InstanceId": "i-1234567890abcdef0",
+                                        "DeleteOnTermination": true,
+                                        "AttachmentId": "si-attach-0123456789abcdef0",
+                                        "InstanceOwnerId": "123456789012",
+                                        "AttachTime": "2026-02-28T23:35:33.000Z"
+                                    },
+                                    "Tags": [
+                                        {
+                                            "Key": "Name",
+                                            "Value": "Prod Secondary Interface"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "NextToken": "123456789MSIsInMiOjEsImMiOiIteGh3TERRTUEwanpsaVpab1dOdjZhMlBuRXZpZXJqTl=="
+                        }
+                    }
+                ],
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "SecondaryInterfaces",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondaryInterfacesMaxResults": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 5,
+                    "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondaryInterfacesRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The filters.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>attachment.attachment-id</code> - The ID of the secondary interface attachment.</p>\n            </li>\n            <li>\n               <p>\n                  <code>attachment.instance-id</code> - The ID of the instance to which the secondary interface is attached.</p>\n            </li>\n            <li>\n               <p>\n                  <code>attachment.instance-owner-id</code> - The ID of the Amazon Web Services account that owns the instance to which the secondary interface is attached.</p>\n            </li>\n            <li>\n               <p>\n                  <code>attachment.status</code> - The attachment status (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>private-ipv4-addresses.private-ip-address</code> - The private IPv4 address associated with the secondary interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>owner-id</code> - The ID of the Amazon Web Services account that owns the secondary interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-interface-arn</code> - The ARN of the secondary interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-interface-id</code> - The ID of the secondary interface.</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-interface-type</code> - The type of secondary interface (<code>secondary</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-network-id</code> - The ID of the secondary network.</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-network-type</code> - The type of the secondary network (<code>rdma</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-subnet-id</code> - The ID of the secondary subnet.</p>\n            </li>\n            <li>\n               <p>\n                  <code>status</code> - The status of the secondary interface (<code>available</code> | <code>in-use</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag</code>:<key> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p>\n            </li>\n         </ul>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#DescribeSecondaryInterfacesMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
+                },
+                "SecondaryInterfaceIds": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the secondary interfaces.</p>",
+                        "smithy.api#xmlName": "SecondaryInterfaceId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondaryInterfacesResult": {
+            "type": "structure",
+            "members": {
+                "SecondaryInterfaces": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryInterfaceSet",
+                        "smithy.api#documentation": "<p>Information about the secondary interfaces.</p>",
+                        "smithy.api#xmlName": "secondaryInterfaceSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondaryNetworks": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeSecondaryNetworksRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeSecondaryNetworksResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes one or more secondary networks.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To describe specified secondary networks",
+                        "documentation": "This example describes the specified secondary networks.",
+                        "input": {
+                            "SecondaryNetworkIds": [
+                                "sn-0123456789abcdef0",
+                                "sn-0987654321fedcba0"
+                            ]
+                        },
+                        "output": {
+                            "SecondaryNetworks": [
+                                {
+                                    "SecondaryNetworkId": "sn-0123456789abcdef0",
+                                    "SecondaryNetworkArn": "arn:aws:ec2:us-east-2:123456789012:secondary-network/sn-0123456789abcdef0",
+                                    "OwnerId": "123456789012",
+                                    "Type": "rdma",
+                                    "State": "create-complete",
+                                    "Ipv4CidrBlockAssociations": [
+                                        {
+                                            "AssociationId": "sn-cidr-assoc-56789901234abcdef0",
+                                            "CidrBlock": "10.0.0.0/16",
+                                            "State": "associated"
+                                        }
+                                    ],
+                                    "Tags": [
+                                        {
+                                            "Key": "Name",
+                                            "Value": "Prod Secondary Network"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "SecondaryNetworkId": "sn-0987654321fedcba0",
+                                    "SecondaryNetworkArn": "arn:aws:ec2:us-east-2:123456789012:secondary-network/sn-0987654321fedcba0",
+                                    "OwnerId": "123456789012",
+                                    "Type": "rdma",
+                                    "State": "create-complete",
+                                    "Ipv4CidrBlockAssociations": [
+                                        {
+                                            "AssociationId": "sn-cidr-assoc-09876543210fedcba0",
+                                            "CidrBlock": "10.1.0.0/16",
+                                            "State": "associated"
+                                        }
+                                    ],
+                                    "Tags": [
+                                        {
+                                            "Key": "Name",
+                                            "Value": "Dev Secondary Network"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "title": "To describe secondary networks using filters",
+                        "documentation": "This example uses filters to describe any secondary network you own that has a tag with the key Environment and the value Production and whose state is create-complete.",
+                        "input": {
+                            "Filters": [
+                                {
+                                    "Name": "tag:Environment",
+                                    "Values": [
+                                        "Production"
+                                    ]
+                                },
+                                {
+                                    "Name": "state",
+                                    "Values": [
+                                        "create-complete"
+                                    ]
+                                }
+                            ],
+                            "MaxResults": 5
+                        },
+                        "output": {
+                            "SecondaryNetworks": [
+                                {
+                                    "SecondaryNetworkId": "sn-9876543210abc1234",
+                                    "SecondaryNetworkArn": "arn:aws:ec2:us-east-2:123456789012:secondary-network/sn-9876543210abc1234",
+                                    "OwnerId": "123456789012",
+                                    "Type": "rdma",
+                                    "State": "create-complete",
+                                    "Ipv4CidrBlockAssociations": [
+                                        {
+                                            "AssociationId": "sn-cidr-assoc-12349901234abc1234",
+                                            "CidrBlock": "10.0.0.0/16",
+                                            "State": "associated"
+                                        }
+                                    ],
+                                    "Tags": [
+                                        {
+                                            "Key": "Environment",
+                                            "Value": "Production"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "NextToken": "123456789MSIsInMiOjEsImMiOiIteGh3TERRTUEwanpsaVpab1dOdjZhMlBuRXZpZXJqTl=="
+                        }
+                    }
+                ],
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "SecondaryNetworks",
+                    "pageSize": "MaxResults"
+                },
+                "smithy.api#suppress": [
+                    "WaitableTraitInvalidErrorType"
+                ],
+                "smithy.waiters#waitable": {
+                    "SecondaryNetworkCreateComplete": {
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "SecondaryNetworks[].State",
+                                        "expected": "create-complete",
+                                        "comparator": "allStringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "SecondaryNetworks[].State",
+                                        "expected": "create-failed",
+                                        "comparator": "anyStringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "retry",
+                                "matcher": {
+                                    "errorType": "InvalidSecondaryNetworkId.NotFound"
+                                }
+                            }
+                        ],
+                        "minDelay": 10
+                    },
+                    "SecondaryNetworkDeleteComplete": {
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "SecondaryNetworks[].State",
+                                        "expected": "delete-complete",
+                                        "comparator": "allStringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "SecondaryNetworks[].State",
+                                        "expected": "delete-failed",
+                                        "comparator": "anyStringEquals"
+                                    }
+                                }
+                            }
+                        ],
+                        "minDelay": 10
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondaryNetworksMaxResults": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 5,
+                    "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondaryNetworksRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The filters. The following are the possible values:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ipv4-cidr-block-association.association-id</code> - The association ID for an IPv4 CIDR block associated with the secondary network.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ipv4-cidr-block-association.cidr-block</code> - An IPv4 CIDR block associated with the secondary network.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ipv4-cidr-block-association.state</code> - The state of an IPv4 CIDR block associated with the secondary network.</p>\n            </li>\n            <li>\n               <p>\n                  <code>owner-id</code> - The ID of the Amazon Web Services account that owns the secondary network.</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-network-id</code> - The ID of the secondary network.</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-network-arn</code> - The ARN of the secondary network.</p>\n            </li>\n            <li>\n               <p>\n                  <code>state</code> - The state of the secondary network (<code>create-in-progress</code> | <code>create-complete</code> | <code>create-failed</code> | <code>delete-in-progress</code> | <code>delete-complete</code> | <code>delete-failed</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag</code>:<key> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>type</code> - The type of the secondary network (<code>rdma</code>).</p>\n            </li>\n         </ul>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#DescribeSecondaryNetworksMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
+                },
+                "SecondaryNetworkIds": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the secondary networks.</p>",
+                        "smithy.api#xmlName": "SecondaryNetworkId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondaryNetworksResult": {
+            "type": "structure",
+            "members": {
+                "SecondaryNetworks": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetworkSet",
+                        "smithy.api#documentation": "<p>Information about the secondary networks.</p>",
+                        "smithy.api#xmlName": "secondaryNetworkSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondarySubnets": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeSecondarySubnetsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeSecondarySubnetsResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes one or more of your secondary subnets.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To describe specified secondary subnets",
+                        "documentation": "This example describes the specified secondary subnets.",
+                        "input": {
+                            "SecondarySubnetIds": [
+                                "ss-0123456789abcdef0",
+                                "ss-0987654321fedcba0"
+                            ]
+                        },
+                        "output": {
+                            "SecondarySubnets": [
+                                {
+                                    "SecondarySubnetId": "ss-0123456789abcdef0",
+                                    "SecondarySubnetArn": "arn:aws:ec2:us-east-2:123456789012:secondary-subnet/ss-0123456789abcdef0",
+                                    "SecondaryNetworkId": "sn-0123456789abcdef0",
+                                    "SecondaryNetworkType": "rdma",
+                                    "OwnerId": "123456789012",
+                                    "AvailabilityZoneId": "use2-az1",
+                                    "AvailabilityZone": "us-east-2a",
+                                    "Ipv4CidrBlockAssociations": [
+                                        {
+                                            "AssociationId": "ss-cidr-assoc-56789901234abcdef0",
+                                            "CidrBlock": "10.0.0.0/24",
+                                            "State": "associated"
+                                        }
+                                    ],
+                                    "State": "create-complete",
+                                    "Tags": [
+                                        {
+                                            "Key": "Name",
+                                            "Value": "Prod Secondary Subnet"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "SecondarySubnetId": "ss-0987654321fedcba0",
+                                    "SecondarySubnetArn": "arn:aws:ec2:us-east-2:123456789012:secondary-subnet/ss-0987654321fedcba0",
+                                    "SecondaryNetworkId": "sn-0123456789abcdef0",
+                                    "SecondaryNetworkType": "rdma",
+                                    "OwnerId": "123456789012",
+                                    "AvailabilityZoneId": "use2-az1",
+                                    "AvailabilityZone": "us-east-2a",
+                                    "Ipv4CidrBlockAssociations": [
+                                        {
+                                            "AssociationId": "ss-cidr-assoc-09876543210fedcba0",
+                                            "CidrBlock": "10.0.1.0/24",
+                                            "State": "associated"
+                                        }
+                                    ],
+                                    "State": "create-complete",
+                                    "Tags": [
+                                        {
+                                            "Key": "Name",
+                                            "Value": "Dev Secondary Subnet"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "SecondarySubnets",
+                    "pageSize": "MaxResults"
+                },
+                "smithy.api#suppress": [
+                    "WaitableTraitInvalidErrorType"
+                ],
+                "smithy.waiters#waitable": {
+                    "SecondarySubnetCreateComplete": {
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "SecondarySubnets[].State",
+                                        "expected": "create-complete",
+                                        "comparator": "allStringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "SecondarySubnets[].State",
+                                        "expected": "delete-failed",
+                                        "comparator": "anyStringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "retry",
+                                "matcher": {
+                                    "errorType": "InvalidSecondarySubnetId.NotFound"
+                                }
+                            }
+                        ],
+                        "minDelay": 10
+                    },
+                    "SecondarySubnetDeleteComplete": {
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "SecondarySubnets[].State",
+                                        "expected": "delete-complete",
+                                        "comparator": "allStringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "SecondarySubnets[].State",
+                                        "expected": "delete-failed",
+                                        "comparator": "anyStringEquals"
+                                    }
+                                }
+                            }
+                        ],
+                        "minDelay": 10
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondarySubnetsMaxResults": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 5,
+                    "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondarySubnetsRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The filters.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ipv4-cidr-block-association.association-id</code> - The association ID for an IPv4 CIDR block associated with the secondary subnet.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ipv4-cidr-block-association.cidr-block</code> - An IPv4 CIDR block associated with the secondary subnet.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ipv4-cidr-block-association.state</code> - The state of an IPv4 CIDR block associated with the secondary subnet.</p>\n            </li>\n            <li>\n               <p>\n                  <code>owner-id</code> - The ID of the Amazon Web Services account that owns the secondary subnet.</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-network-id</code> - The ID of the secondary network.</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-network-type</code> - The type of the secondary network (<code>rdma</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-subnet-id</code> - The ID of the secondary subnet.</p>\n            </li>\n            <li>\n               <p>\n                  <code>secondary-subnet-arn</code> - The ARN of the secondary subnet.</p>\n            </li>\n            <li>\n               <p>\n                  <code>state</code> - The state of the secondary subnet (<code>create-in-progress</code> | <code>create-complete</code> | <code>create-failed</code> | <code>delete-in-progress</code> | <code>delete-complete</code> | <code>delete-failed</code>).</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag</code>:<key> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>\n            </li>\n            <li>\n               <p>\n                  <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p>\n            </li>\n         </ul>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#DescribeSecondarySubnetsMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
+                },
+                "SecondarySubnetIds": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the secondary subnets.</p>",
+                        "smithy.api#xmlName": "SecondarySubnetId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeSecondarySubnetsResult": {
+            "type": "structure",
+            "members": {
+                "SecondarySubnets": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondarySubnetSet",
+                        "smithy.api#documentation": "<p>Information about the secondary subnets.</p>",
+                        "smithy.api#xmlName": "secondarySubnetSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
                 "smithy.api#output": {}
             }
         },
@@ -71258,6 +72497,14 @@
                         "smithy.api#xmlName": "operator"
                     }
                 },
+                "SecondaryInterfaces": {
+                    "target": "com.amazonaws.ec2#InstanceSecondaryInterfaceList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryInterfaceSet",
+                        "smithy.api#documentation": "<p>The secondary interfaces for the instance.</p>",
+                        "smithy.api#xmlName": "secondaryInterfaceSet"
+                    }
+                },
                 "InstanceId": {
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
@@ -72904,7 +74151,7 @@
                     "target": "com.amazonaws.ec2#InstanceMetadataTagsState",
                     "traits": {
                         "aws.protocols#ec2QueryName": "InstanceMetadataTags",
-                        "smithy.api#documentation": "<p>Indicates whether access to instance tags from the instance metadata is enabled or\n            disabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with\n                instance tags using the instance metadata</a> in the\n            <i>Amazon EC2 User Guide</i>.</p>",
+                        "smithy.api#documentation": "<p>Indicates whether access to instance tags from the instance metadata is enabled or\n            disabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2\n                instances using instance metadata</a> in the\n                <i>Amazon EC2 User Guide</i>.</p>",
                         "smithy.api#xmlName": "instanceMetadataTags"
                     }
                 },
@@ -72976,7 +74223,7 @@
                 "InstanceMetadataTags": {
                     "target": "com.amazonaws.ec2#InstanceMetadataTagsState",
                     "traits": {
-                        "smithy.api#documentation": "<p>Set to <code>enabled</code> to allow access to instance tags from the instance\n            metadata. Set to <code>disabled</code> to turn off access to instance tags from the\n            instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with\n                instance tags using the instance metadata</a>.</p>\n         <p>Default: <code>disabled</code>\n         </p>"
+                        "smithy.api#documentation": "<p>Set to <code>enabled</code> to allow access to instance tags from the instance\n            metadata. Set to <code>disabled</code> to turn off access to instance tags from the\n            instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2\n                instances using instance metadata</a>.</p>\n         <p>Default: <code>disabled</code>\n         </p>"
                     }
                 }
             },
@@ -73031,7 +74278,7 @@
                     "target": "com.amazonaws.ec2#InstanceMetadataTagsState",
                     "traits": {
                         "aws.protocols#ec2QueryName": "InstanceMetadataTags",
-                        "smithy.api#documentation": "<p>Indicates whether access to instance tags from the instance metadata is enabled or\n            disabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with\n                instance tags using the instance metadata</a>.</p>",
+                        "smithy.api#documentation": "<p>Indicates whether access to instance tags from the instance metadata is enabled or\n            disabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2\n                instances using instance metadata</a>.</p>",
                         "smithy.api#xmlName": "instanceMetadataTags"
                     }
                 }
@@ -74115,6 +75362,269 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The architecture type, virtualization type, and other attributes for the instance types.\n         When you specify instance attributes, Amazon EC2 will identify instance types with those\n         attributes.</p>\n         <p>If you specify <code>InstanceRequirementsWithMetadataRequest</code>, you can't specify\n         <code>InstanceTypes</code>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#InstanceSecondaryInterface": {
+            "type": "structure",
+            "members": {
+                "Attachment": {
+                    "target": "com.amazonaws.ec2#InstanceSecondaryInterfaceAttachment",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Attachment",
+                        "smithy.api#documentation": "<p>The attachment information for the secondary interface.</p>",
+                        "smithy.api#xmlName": "attachment"
+                    }
+                },
+                "MacAddress": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MacAddress",
+                        "smithy.api#documentation": "<p>The MAC address of the secondary interface.</p>",
+                        "smithy.api#xmlName": "macAddress"
+                    }
+                },
+                "SecondaryInterfaceId": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryInterfaceId",
+                        "smithy.api#documentation": "<p>The ID of the secondary interface.</p>",
+                        "smithy.api#xmlName": "secondaryInterfaceId"
+                    }
+                },
+                "OwnerId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OwnerId",
+                        "smithy.api#documentation": "<p>The Amazon Web Services account ID of the owner of the secondary interface.</p>",
+                        "smithy.api#xmlName": "ownerId"
+                    }
+                },
+                "PrivateIpAddresses": {
+                    "target": "com.amazonaws.ec2#InstanceSecondaryInterfacePrivateIpAddressList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PrivateIpAddressSet",
+                        "smithy.api#documentation": "<p>The private IPv4 addresses associated with the secondary interface.</p>",
+                        "smithy.api#xmlName": "privateIpAddressSet"
+                    }
+                },
+                "SourceDestCheck": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceDestCheck",
+                        "smithy.api#documentation": "<p>Indicates whether source/destination checking is enabled.</p>",
+                        "smithy.api#xmlName": "sourceDestCheck"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Status",
+                        "smithy.api#documentation": "<p>The status of the secondary interface.</p>",
+                        "smithy.api#xmlName": "status"
+                    }
+                },
+                "SecondarySubnetId": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondarySubnetId",
+                        "smithy.api#documentation": "<p>The ID of the secondary subnet.</p>",
+                        "smithy.api#xmlName": "secondarySubnetId"
+                    }
+                },
+                "SecondaryNetworkId": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetworkId",
+                        "smithy.api#documentation": "<p>The ID of the secondary network.</p>",
+                        "smithy.api#xmlName": "secondaryNetworkId"
+                    }
+                },
+                "InterfaceType": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterfaceType",
+                        "smithy.api#documentation": "<p>The type of secondary interface.</p>",
+                        "smithy.api#xmlName": "interfaceType"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a secondary interface attached to an instance.</p>"
+            }
+        },
+        "com.amazonaws.ec2#InstanceSecondaryInterfaceAttachment": {
+            "type": "structure",
+            "members": {
+                "AttachTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AttachTime",
+                        "smithy.api#documentation": "<p>The timestamp when the attachment was created.</p>",
+                        "smithy.api#xmlName": "attachTime"
+                    }
+                },
+                "AttachmentId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AttachmentId",
+                        "smithy.api#documentation": "<p>The ID of the attachment.</p>",
+                        "smithy.api#xmlName": "attachmentId"
+                    }
+                },
+                "DeleteOnTermination": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DeleteOnTermination",
+                        "smithy.api#documentation": "<p>Indicates whether the secondary interface is deleted when the instance is terminated.</p>\n         <p>The only supported value for this field is <code>true</code>.</p>",
+                        "smithy.api#xmlName": "deleteOnTermination"
+                    }
+                },
+                "DeviceIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DeviceIndex",
+                        "smithy.api#documentation": "<p>The device index of the secondary interface.</p>",
+                        "smithy.api#xmlName": "deviceIndex"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.ec2#AttachmentStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Status",
+                        "smithy.api#documentation": "<p>The attachment state.</p>",
+                        "smithy.api#xmlName": "status"
+                    }
+                },
+                "NetworkCardIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NetworkCardIndex",
+                        "smithy.api#documentation": "<p>The index of the network card.</p>",
+                        "smithy.api#xmlName": "networkCardIndex"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the attachment of a secondary interface to an instance.</p>"
+            }
+        },
+        "com.amazonaws.ec2#InstanceSecondaryInterfaceList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#InstanceSecondaryInterface",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#InstanceSecondaryInterfacePrivateIpAddress": {
+            "type": "structure",
+            "members": {
+                "PrivateIpAddress": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PrivateIpAddress",
+                        "smithy.api#documentation": "<p>The private IPv4 address.</p>",
+                        "smithy.api#xmlName": "privateIpAddress"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a private IPv4 address for a secondary interface.</p>"
+            }
+        },
+        "com.amazonaws.ec2#InstanceSecondaryInterfacePrivateIpAddressList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#InstanceSecondaryInterfacePrivateIpAddress",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#InstanceSecondaryInterfacePrivateIpAddressListRequest": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#InstanceSecondaryInterfacePrivateIpAddressRequest",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#InstanceSecondaryInterfacePrivateIpAddressRequest": {
+            "type": "structure",
+            "members": {
+                "PrivateIpAddress": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The private IPv4 address.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a private IPv4 address for a secondary interface request.</p>"
+            }
+        },
+        "com.amazonaws.ec2#InstanceSecondaryInterfaceSpecificationListRequest": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#InstanceSecondaryInterfaceSpecificationRequest",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#InstanceSecondaryInterfaceSpecificationRequest": {
+            "type": "structure",
+            "members": {
+                "DeleteOnTermination": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether the secondary interface is deleted when the instance is terminated.</p>\n         <p>The only supported value for this field is <code>true</code>.</p>"
+                    }
+                },
+                "DeviceIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The device index for the secondary interface attachment.</p>"
+                    }
+                },
+                "PrivateIpAddresses": {
+                    "target": "com.amazonaws.ec2#InstanceSecondaryInterfacePrivateIpAddressListRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The private IPv4 addresses to assign to the secondary interface.</p>",
+                        "smithy.api#xmlName": "PrivateIpAddress"
+                    }
+                },
+                "PrivateIpAddressCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of private IPv4 addresses to assign to the secondary interface.</p>"
+                    }
+                },
+                "SecondarySubnetId": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the secondary subnet.</p>"
+                    }
+                },
+                "InterfaceType": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of secondary interface.</p>"
+                    }
+                },
+                "NetworkCardIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The index of the network card. The network card must support secondary interfaces.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a secondary interface specification for launching an instance.</p>"
             }
         },
         "com.amazonaws.ec2#InstanceSet": {
@@ -81679,6 +83189,84 @@
                     "traits": {
                         "smithy.api#enumValue": "g7e.48xlarge"
                     }
+                },
+                "r8id_large": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.large"
+                    }
+                },
+                "r8id_xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.xlarge"
+                    }
+                },
+                "r8id_2xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.2xlarge"
+                    }
+                },
+                "r8id_4xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.4xlarge"
+                    }
+                },
+                "r8id_8xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.8xlarge"
+                    }
+                },
+                "r8id_12xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.12xlarge"
+                    }
+                },
+                "r8id_16xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.16xlarge"
+                    }
+                },
+                "r8id_24xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.24xlarge"
+                    }
+                },
+                "r8id_32xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.32xlarge"
+                    }
+                },
+                "r8id_48xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.48xlarge"
+                    }
+                },
+                "r8id_96xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.96xlarge"
+                    }
+                },
+                "r8id_metal_48xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.metal-48xl"
+                    }
+                },
+                "r8id_metal_96xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "r8id.metal-96xl"
+                    }
                 }
             }
         },
@@ -86629,6 +88217,9 @@
                 }
             }
         },
+        "com.amazonaws.ec2#Ipv4AddressesPerSecondaryInterface": {
+            "type": "integer"
+        },
         "com.amazonaws.ec2#Ipv4PoolCoipId": {
             "type": "string"
         },
@@ -87717,6 +89308,14 @@
                         "smithy.api#documentation": "<p>Indicates whether the instance is enabled for AMD SEV-SNP. For more information, see\n                <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP\n                for Amazon EC2 instances</a>.</p>",
                         "smithy.api#xmlName": "amdSevSnp"
                     }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NestedVirtualization",
+                        "smithy.api#documentation": "<p>Indicates whether the instance is enabled for nested virtualization. </p>",
+                        "smithy.api#xmlName": "nestedVirtualization"
+                    }
                 }
             },
             "traits": {
@@ -87742,6 +89341,12 @@
                     "target": "com.amazonaws.ec2#AmdSevSnpSpecification",
                     "traits": {
                         "smithy.api#documentation": "<p>Indicates whether to enable the instance for AMD SEV-SNP. AMD SEV-SNP is supported\n            with M6a, R6a, and C6a instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP for\n                Amazon EC2 instances</a>.</p>"
+                    }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to enable the instance for nested virtualization.\n            Nested virtualization is supported only on 8th generation Intel-based instance types (c8i, m8i, r8i, and their flex variants).\n            When nested virtualization is enabled, Virtual Secure Mode (VSM) is automatically disabled for the instance.</p>"
                     }
                 }
             },
@@ -88783,6 +90388,139 @@
                 "target": "com.amazonaws.ec2#LaunchTemplateInstanceNetworkInterfaceSpecificationRequest",
                 "traits": {
                     "smithy.api#xmlName": "InstanceNetworkInterfaceSpecification"
+                }
+            }
+        },
+        "com.amazonaws.ec2#LaunchTemplateInstanceSecondaryInterfaceSpecification": {
+            "type": "structure",
+            "members": {
+                "DeleteOnTermination": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DeleteOnTermination",
+                        "smithy.api#documentation": "<p>Indicates whether the secondary interface is deleted when the instance is terminated.</p>\n         <p>The only supported value for this field is <code>true</code>.</p>",
+                        "smithy.api#xmlName": "deleteOnTermination"
+                    }
+                },
+                "DeviceIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DeviceIndex",
+                        "smithy.api#documentation": "<p>The device index for the secondary interface attachment.</p>",
+                        "smithy.api#xmlName": "deviceIndex"
+                    }
+                },
+                "PrivateIpAddresses": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfacePrivateIpAddressSpecificationList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PrivateIpAddressesSet",
+                        "smithy.api#documentation": "<p>The private IPv4 addresses to assign to the secondary interface.</p>\n         <p>If you specify <code>privateIpAddresses</code> you cannot specify <code>privateIpAddressCount</code>\n         </p>",
+                        "smithy.api#xmlName": "privateIpAddressesSet"
+                    }
+                },
+                "PrivateIpAddressCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PrivateIpAddressCount",
+                        "smithy.api#documentation": "<p>The number of private IPv4 addresses to assign to the secondary interface.</p>\n         <p>If you specify <code>privateIpAddressCount</code> you cannot specify <code>privateIpAddresses</code>\n         </p>",
+                        "smithy.api#xmlName": "privateIpAddressCount"
+                    }
+                },
+                "SecondarySubnetId": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondarySubnetId",
+                        "smithy.api#documentation": "<p>The ID of the secondary subnet.</p>",
+                        "smithy.api#xmlName": "secondarySubnetId"
+                    }
+                },
+                "InterfaceType": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InterfaceType",
+                        "smithy.api#documentation": "<p>The type of secondary interface.</p>",
+                        "smithy.api#xmlName": "interfaceType"
+                    }
+                },
+                "NetworkCardIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NetworkCardIndex",
+                        "smithy.api#documentation": "<p>The index of the network card.</p>",
+                        "smithy.api#xmlName": "networkCardIndex"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a secondary interface specification in a launch template.</p>"
+            }
+        },
+        "com.amazonaws.ec2#LaunchTemplateInstanceSecondaryInterfaceSpecificationList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#LaunchTemplateInstanceSecondaryInterfaceSpecification",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#LaunchTemplateInstanceSecondaryInterfaceSpecificationRequest": {
+            "type": "structure",
+            "members": {
+                "DeleteOnTermination": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether the secondary interface is deleted when the instance is terminated.</p>\n         <p>The only supported value for this field is <code>true</code>.</p>"
+                    }
+                },
+                "DeviceIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The device index for the secondary interface attachment.</p>"
+                    }
+                },
+                "PrivateIpAddresses": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfacePrivateIpAddressSpecificationListRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The private IPv4 addresses to assign to the secondary interface.</p>",
+                        "smithy.api#xmlName": "PrivateIpAddress"
+                    }
+                },
+                "PrivateIpAddressCount": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of private IPv4 addresses to assign to the secondary interface.</p>"
+                    }
+                },
+                "SecondarySubnetId": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the secondary subnet.</p>"
+                    }
+                },
+                "InterfaceType": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of secondary interface.</p>"
+                    }
+                },
+                "NetworkCardIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The index of the network card.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a secondary interface specification for a launch template request.</p>"
+            }
+        },
+        "com.amazonaws.ec2#LaunchTemplateInstanceSecondaryInterfaceSpecificationRequestList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#LaunchTemplateInstanceSecondaryInterfaceSpecificationRequest",
+                "traits": {
+                    "smithy.api#xmlName": "InstanceSecondaryInterfaceSpecification"
                 }
             }
         },
@@ -91748,6 +93486,9 @@
         "com.amazonaws.ec2#MaximumNetworkCards": {
             "type": "integer"
         },
+        "com.amazonaws.ec2#MaximumSecondaryNetworkInterfaces": {
+            "type": "integer"
+        },
         "com.amazonaws.ec2#MaximumThroughputInMBps": {
             "type": "double"
         },
@@ -93806,17 +95547,19 @@
                 "CoreCount": {
                     "target": "com.amazonaws.ec2#Integer",
                     "traits": {
-                        "smithy.api#clientOptional": {},
-                        "smithy.api#documentation": "<p>The number of CPU cores to activate for the specified instance.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The number of CPU cores to activate for the specified instance.</p>"
                     }
                 },
                 "ThreadsPerCore": {
                     "target": "com.amazonaws.ec2#Integer",
                     "traits": {
-                        "smithy.api#clientOptional": {},
-                        "smithy.api#documentation": "<p>The number of threads to run for each CPU core.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The number of threads to run for each CPU core.</p>"
+                    }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to enable or disable nested virtualization for the instance.\n            When nested virtualization is enabled, Virtual Secure Mode (VSM) is automatically disabled for the instance.</p>"
                     }
                 },
                 "DryRun": {
@@ -93855,6 +95598,14 @@
                         "aws.protocols#ec2QueryName": "ThreadsPerCore",
                         "smithy.api#documentation": "<p>The number of threads that are running per CPU core for the specified \n\t\t\tinstance after the update.</p>",
                         "smithy.api#xmlName": "threadsPerCore"
+                    }
+                },
+                "NestedVirtualization": {
+                    "target": "com.amazonaws.ec2#NestedVirtualizationSpecification",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NestedVirtualization",
+                        "smithy.api#documentation": "<p>Indicates whether nested virtualization has been enabled or disabled.</p>",
+                        "smithy.api#xmlName": "nestedVirtualization"
                     }
                 }
             },
@@ -94176,7 +95927,7 @@
                 "InstanceMetadataTags": {
                     "target": "com.amazonaws.ec2#DefaultInstanceMetadataTagsState",
                     "traits": {
-                        "smithy.api#documentation": "<p>Enables or disables access to an instance's tags from the instance metadata. For more\n            information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with\n                instance tags using the instance metadata</a> in the\n            <i>Amazon EC2 User Guide</i>.</p>"
+                        "smithy.api#documentation": "<p>Enables or disables access to an instance's tags from the instance metadata. For more\n            information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2\n                instances using instance metadata</a> in the\n            <i>Amazon EC2 User Guide</i>.</p>"
                     }
                 },
                 "DryRun": {
@@ -94262,7 +96013,7 @@
                 "InstanceMetadataTags": {
                     "target": "com.amazonaws.ec2#InstanceMetadataTagsState",
                     "traits": {
-                        "smithy.api#documentation": "<p>Set to <code>enabled</code> to allow access to instance tags from the instance\n            metadata. Set to <code>disabled</code> to turn off access to instance tags from the\n            instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with\n                instance tags using the instance metadata</a>.</p>"
+                        "smithy.api#documentation": "<p>Set to <code>enabled</code> to allow access to instance tags from the instance\n            metadata. Set to <code>disabled</code> to turn off access to instance tags from the\n            instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2\n                instances using instance metadata</a>.</p>"
                     }
                 }
             },
@@ -99974,6 +101725,23 @@
                 "smithy.api#documentation": "<p>Describes the OpenID Connect (OIDC) options.</p>"
             }
         },
+        "com.amazonaws.ec2#NestedVirtualizationSpecification": {
+            "type": "enum",
+            "members": {
+                "enabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                },
+                "disabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#NetmaskLength": {
             "type": "integer"
         },
@@ -100444,6 +102212,30 @@
                         "aws.protocols#ec2QueryName": "FlexibleEnaQueuesSupport",
                         "smithy.api#documentation": "<p>Indicates whether changing the number of ENA queues is supported.</p>",
                         "smithy.api#xmlName": "flexibleEnaQueuesSupport"
+                    }
+                },
+                "SecondaryNetworkSupported": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkSupportedFlag",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetworkSupported",
+                        "smithy.api#documentation": "<p>Indicates whether secondary interface attachments from secondary network are supported.</p>",
+                        "smithy.api#xmlName": "secondaryNetworkSupported"
+                    }
+                },
+                "MaximumSecondaryNetworkInterfaces": {
+                    "target": "com.amazonaws.ec2#MaximumSecondaryNetworkInterfaces",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MaximumSecondaryNetworkInterfaces",
+                        "smithy.api#documentation": "<p>The maximum number of secondary interfaces for the instance type.</p>",
+                        "smithy.api#xmlName": "maximumSecondaryNetworkInterfaces"
+                    }
+                },
+                "Ipv4AddressesPerSecondaryInterface": {
+                    "target": "com.amazonaws.ec2#Ipv4AddressesPerSecondaryInterface",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Ipv4AddressesPerSecondaryInterface",
+                        "smithy.api#documentation": "<p>The maximum number of IPv4 addresses per secondary interface.</p>",
+                        "smithy.api#xmlName": "ipv4AddressesPerSecondaryInterface"
                     }
                 }
             },
@@ -103345,8 +105137,7 @@
             "type": "integer",
             "traits": {
                 "smithy.api#range": {
-                    "min": 3600,
-                    "max": 86400
+                    "min": 3600
                 }
             }
         },
@@ -103869,6 +105660,14 @@
                         "smithy.api#documentation": "<p>Reserved for future use.</p>",
                         "smithy.api#xmlName": "linkedGroupId"
                     }
+                },
+                "Operator": {
+                    "target": "com.amazonaws.ec2#OperatorResponse",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Operator",
+                        "smithy.api#documentation": "<p>The service provider that manages the Placement Group.</p>",
+                        "smithy.api#xmlName": "operator"
+                    }
                 }
             },
             "traits": {
@@ -103919,6 +105718,9 @@
             }
         },
         "com.amazonaws.ec2#PlacementGroupName": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#PlacementGroupNameWithResolver": {
             "type": "string"
         },
         "com.amazonaws.ec2#PlacementGroupState": {
@@ -106314,6 +108116,14 @@
                         "smithy.api#xmlName": "optInStatus"
                     }
                 },
+                "Geography": {
+                    "target": "com.amazonaws.ec2#RegionGeographyList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "GeographySet",
+                        "smithy.api#documentation": "<p>The geography information for the Region. The geography is returned as a list.</p>",
+                        "smithy.api#xmlName": "geographySet"
+                    }
+                },
                 "RegionName": {
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
@@ -106333,6 +108143,31 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Describes a Region.</p>"
+            }
+        },
+        "com.amazonaws.ec2#RegionGeography": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Name",
+                        "smithy.api#documentation": "<p>The name of the geography, for example, <code>United States of America</code>.</p>",
+                        "smithy.api#xmlName": "name"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the geography information for a Region.</p>"
+            }
+        },
+        "com.amazonaws.ec2#RegionGeographyList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#RegionGeography",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
             }
         },
         "com.amazonaws.ec2#RegionList": {
@@ -108761,6 +110596,13 @@
                     "target": "com.amazonaws.ec2#LaunchTemplateNetworkPerformanceOptionsRequest",
                     "traits": {
                         "smithy.api#documentation": "<p>Contains launch template settings to boost network performance for the type of\n            workload that runs on your instance.</p>"
+                    }
+                },
+                "SecondaryInterfaces": {
+                    "target": "com.amazonaws.ec2#LaunchTemplateInstanceSecondaryInterfaceSpecificationRequestList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The secondary interfaces to associate with instances launched from the template.</p>",
+                        "smithy.api#xmlName": "SecondaryInterface"
                     }
                 }
             },
@@ -111386,6 +113228,24 @@
                         "smithy.api#enumValue": "ipam-prefix-list-resolver-target"
                     }
                 },
+                "secondary_interface": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "secondary-interface"
+                    }
+                },
+                "secondary_network": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "secondary-network"
+                    }
+                },
+                "secondary_subnet": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "secondary-subnet"
+                    }
+                },
                 "capacity_manager_data_export": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -111770,6 +113630,14 @@
                         "aws.protocols#ec2QueryName": "NetworkPerformanceOptions",
                         "smithy.api#documentation": "<p>Contains the launch template settings for network performance options for your\n            instance.</p>",
                         "smithy.api#xmlName": "networkPerformanceOptions"
+                    }
+                },
+                "SecondaryInterfaces": {
+                    "target": "com.amazonaws.ec2#LaunchTemplateInstanceSecondaryInterfaceSpecificationList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryInterfaceSet",
+                        "smithy.api#documentation": "<p>The secondary interfaces associated with the launch template.</p>",
+                        "smithy.api#xmlName": "secondaryInterfaceSet"
                     }
                 }
             },
@@ -114489,6 +116357,13 @@
                         "smithy.api#documentation": "<p>Reserved for internal use.</p>"
                     }
                 },
+                "SecondaryInterfaces": {
+                    "target": "com.amazonaws.ec2#InstanceSecondaryInterfaceSpecificationListRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The secondary interfaces to associate with the instance.</p>",
+                        "smithy.api#xmlName": "SecondaryInterface"
+                    }
+                },
                 "DryRun": {
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
@@ -115756,6 +117631,820 @@
             },
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterface": {
+            "type": "structure",
+            "members": {
+                "AvailabilityZone": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneName",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZone",
+                        "smithy.api#documentation": "<p>The Availability Zone of the secondary interface.</p>",
+                        "smithy.api#xmlName": "availabilityZone"
+                    }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZoneId",
+                        "smithy.api#documentation": "<p>The ID of the Availability Zone of the secondary interface.</p>",
+                        "smithy.api#xmlName": "availabilityZoneId"
+                    }
+                },
+                "Attachment": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceAttachment",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Attachment",
+                        "smithy.api#documentation": "<p>The attachment information for the secondary interface.</p>",
+                        "smithy.api#xmlName": "attachment"
+                    }
+                },
+                "MacAddress": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "MacAddress",
+                        "smithy.api#documentation": "<p>The MAC address of the secondary interface.</p>",
+                        "smithy.api#xmlName": "macAddress"
+                    }
+                },
+                "OwnerId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OwnerId",
+                        "smithy.api#documentation": "<p>The ID of the Amazon Web Services account that owns the secondary interface.</p>",
+                        "smithy.api#xmlName": "ownerId"
+                    }
+                },
+                "PrivateIpv4Addresses": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceIpv4AddressList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PrivateIpv4AddressSet",
+                        "smithy.api#documentation": "<p>The private IPv4 addresses associated with the secondary interface.</p>",
+                        "smithy.api#xmlName": "privateIpv4AddressSet"
+                    }
+                },
+                "SecondaryInterfaceId": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryInterfaceId",
+                        "smithy.api#documentation": "<p>The ID of the secondary interface.</p>",
+                        "smithy.api#xmlName": "secondaryInterfaceId"
+                    }
+                },
+                "SecondaryInterfaceArn": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryInterfaceArn",
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the secondary interface.</p>",
+                        "smithy.api#xmlName": "secondaryInterfaceArn"
+                    }
+                },
+                "SecondaryInterfaceType": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryInterfaceType",
+                        "smithy.api#documentation": "<p>The type of secondary interface.</p>",
+                        "smithy.api#xmlName": "secondaryInterfaceType"
+                    }
+                },
+                "SecondarySubnetId": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondarySubnetId",
+                        "smithy.api#documentation": "<p>The ID of the secondary subnet.</p>",
+                        "smithy.api#xmlName": "secondarySubnetId"
+                    }
+                },
+                "SecondaryNetworkId": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetworkId",
+                        "smithy.api#documentation": "<p>The ID of the secondary network.</p>",
+                        "smithy.api#xmlName": "secondaryNetworkId"
+                    }
+                },
+                "SecondaryNetworkType": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetworkType",
+                        "smithy.api#documentation": "<p>The type of the secondary network.</p>",
+                        "smithy.api#xmlName": "secondaryNetworkType"
+                    }
+                },
+                "SourceDestCheck": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SourceDestCheck",
+                        "smithy.api#documentation": "<p>Indicates whether source/destination checking is enabled.</p>",
+                        "smithy.api#xmlName": "sourceDestCheck"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.ec2#SecondaryInterfaceStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Status",
+                        "smithy.api#documentation": "<p>The status of the secondary interface.</p>",
+                        "smithy.api#xmlName": "status"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.ec2#TagList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>The tags assigned to the secondary interface.</p>",
+                        "smithy.api#xmlName": "tagSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a secondary interface.</p>"
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfaceAttachment": {
+            "type": "structure",
+            "members": {
+                "AttachmentId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AttachmentId",
+                        "smithy.api#documentation": "<p>The ID of the attachment.</p>",
+                        "smithy.api#xmlName": "attachmentId"
+                    }
+                },
+                "AttachTime": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AttachTime",
+                        "smithy.api#documentation": "<p>The timestamp when the attachment was created.</p>",
+                        "smithy.api#xmlName": "attachTime"
+                    }
+                },
+                "DeleteOnTermination": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DeleteOnTermination",
+                        "smithy.api#documentation": "<p>Indicates whether the secondary interface is deleted when the instance is terminated.</p>\n         <p>The only supported value for this field is <code>true</code>.</p>",
+                        "smithy.api#xmlName": "deleteOnTermination"
+                    }
+                },
+                "DeviceIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DeviceIndex",
+                        "smithy.api#documentation": "<p>The device index of the secondary interface.</p>",
+                        "smithy.api#xmlName": "deviceIndex"
+                    }
+                },
+                "InstanceId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceId",
+                        "smithy.api#documentation": "<p>The ID of the instance to which the secondary interface is attached.</p>",
+                        "smithy.api#xmlName": "instanceId"
+                    }
+                },
+                "InstanceOwnerId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "InstanceOwnerId",
+                        "smithy.api#documentation": "<p>The Amazon Web Services account ID of the owner of the instance.</p>",
+                        "smithy.api#xmlName": "instanceOwnerId"
+                    }
+                },
+                "NetworkCardIndex": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NetworkCardIndex",
+                        "smithy.api#documentation": "<p>The index of the network card.</p>",
+                        "smithy.api#xmlName": "networkCardIndex"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.ec2#AttachmentStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Status",
+                        "smithy.api#documentation": "<p>The attachment state.</p>",
+                        "smithy.api#xmlName": "status"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the attachment of a secondary interface to an instance.</p>"
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfaceId": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#SecondaryInterfaceIdList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondaryInterfaceId",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfaceIpv4Address": {
+            "type": "structure",
+            "members": {
+                "PrivateIpAddress": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PrivateIpAddress",
+                        "smithy.api#documentation": "<p>The private IPv4 address.</p>",
+                        "smithy.api#xmlName": "privateIpAddress"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a private IPv4 address for a secondary interface.</p>"
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfaceIpv4AddressList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondaryInterfaceIpv4Address",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfaceList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondaryInterface",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfacePrivateIpAddressSpecification": {
+            "type": "structure",
+            "members": {
+                "PrivateIpAddress": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PrivateIpAddress",
+                        "smithy.api#documentation": "<p>The private IPv4 address.</p>",
+                        "smithy.api#xmlName": "privateIpAddress"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a private IPv4 address specification for a secondary interface.</p>"
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfacePrivateIpAddressSpecificationList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondaryInterfacePrivateIpAddressSpecification",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfacePrivateIpAddressSpecificationListRequest": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondaryInterfacePrivateIpAddressSpecificationRequest",
+                "traits": {
+                    "smithy.api#xmlName": "SecondaryInterfacePrivateIpAddressSpecification"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfacePrivateIpAddressSpecificationRequest": {
+            "type": "structure",
+            "members": {
+                "PrivateIpAddress": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The private IPv4 address.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a private IPv4 address specification for a secondary interface request.</p>"
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfaceStatus": {
+            "type": "enum",
+            "members": {
+                "available": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "available"
+                    }
+                },
+                "in_use": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "in-use"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryInterfaceType": {
+            "type": "enum",
+            "members": {
+                "SECONDARY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "secondary"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryNetwork": {
+            "type": "structure",
+            "members": {
+                "SecondaryNetworkId": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetworkId",
+                        "smithy.api#documentation": "<p>The ID of the secondary network.</p>",
+                        "smithy.api#xmlName": "secondaryNetworkId"
+                    }
+                },
+                "SecondaryNetworkArn": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetworkArn",
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the secondary network.</p>",
+                        "smithy.api#xmlName": "secondaryNetworkArn"
+                    }
+                },
+                "OwnerId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OwnerId",
+                        "smithy.api#documentation": "<p>The ID of the Amazon Web Services account that owns the secondary network.</p>",
+                        "smithy.api#xmlName": "ownerId"
+                    }
+                },
+                "Type": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Type",
+                        "smithy.api#documentation": "<p>The type of the secondary network.</p>",
+                        "smithy.api#xmlName": "type"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The state of the secondary network.</p>",
+                        "smithy.api#xmlName": "state"
+                    }
+                },
+                "StateReason": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "StateReason",
+                        "smithy.api#documentation": "<p>The reason for the current state of the secondary network.</p>",
+                        "smithy.api#xmlName": "stateReason"
+                    }
+                },
+                "Ipv4CidrBlockAssociations": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkIpv4CidrBlockAssociationList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Ipv4CidrBlockAssociationSet",
+                        "smithy.api#documentation": "<p>Information about the IPv4 CIDR blocks associated with the secondary network.</p>",
+                        "smithy.api#xmlName": "ipv4CidrBlockAssociationSet"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.ec2#TagList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>The tags assigned to the secondary network.</p>",
+                        "smithy.api#xmlName": "tagSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a secondary network.</p>"
+            }
+        },
+        "com.amazonaws.ec2#SecondaryNetworkCidrAssociationId": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#SecondaryNetworkCidrBlockAssociationState": {
+            "type": "enum",
+            "members": {
+                "associating": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "associating"
+                    }
+                },
+                "associated": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "associated"
+                    }
+                },
+                "association_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "association-failed"
+                    }
+                },
+                "disassociating": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disassociating"
+                    }
+                },
+                "disassociated": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disassociated"
+                    }
+                },
+                "disassociation_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disassociation-failed"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryNetworkId": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#SecondaryNetworkIdList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondaryNetworkId",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryNetworkIpv4CidrBlockAssociation": {
+            "type": "structure",
+            "members": {
+                "AssociationId": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkCidrAssociationId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AssociationId",
+                        "smithy.api#documentation": "<p>The association ID for the IPv4 CIDR block.</p>",
+                        "smithy.api#xmlName": "associationId"
+                    }
+                },
+                "CidrBlock": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CidrBlock",
+                        "smithy.api#documentation": "<p>The IPv4 CIDR block.</p>",
+                        "smithy.api#xmlName": "cidrBlock"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkCidrBlockAssociationState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The state of the CIDR block association.</p>",
+                        "smithy.api#xmlName": "state"
+                    }
+                },
+                "StateReason": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "StateReason",
+                        "smithy.api#documentation": "<p>The reason for the current state of the CIDR block association.</p>",
+                        "smithy.api#xmlName": "stateReason"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes an IPv4 CIDR block associated with a secondary network.</p>"
+            }
+        },
+        "com.amazonaws.ec2#SecondaryNetworkIpv4CidrBlockAssociationList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondaryNetworkIpv4CidrBlockAssociation",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryNetworkList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondaryNetwork",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryNetworkState": {
+            "type": "enum",
+            "members": {
+                "create_in_progress": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "create-in-progress"
+                    }
+                },
+                "create_complete": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "create-complete"
+                    }
+                },
+                "create_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "create-failed"
+                    }
+                },
+                "delete_in_progress": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delete-in-progress"
+                    }
+                },
+                "delete_complete": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delete-complete"
+                    }
+                },
+                "delete_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delete-failed"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondaryNetworkSupportedFlag": {
+            "type": "boolean"
+        },
+        "com.amazonaws.ec2#SecondaryNetworkType": {
+            "type": "enum",
+            "members": {
+                "rdma": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "rdma"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondarySubnet": {
+            "type": "structure",
+            "members": {
+                "SecondarySubnetId": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondarySubnetId",
+                        "smithy.api#documentation": "<p>The ID of the secondary subnet.</p>",
+                        "smithy.api#xmlName": "secondarySubnetId"
+                    }
+                },
+                "SecondarySubnetArn": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondarySubnetArn",
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the secondary subnet.</p>",
+                        "smithy.api#xmlName": "secondarySubnetArn"
+                    }
+                },
+                "SecondaryNetworkId": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetworkId",
+                        "smithy.api#documentation": "<p>The ID of the secondary network.</p>",
+                        "smithy.api#xmlName": "secondaryNetworkId"
+                    }
+                },
+                "SecondaryNetworkType": {
+                    "target": "com.amazonaws.ec2#SecondaryNetworkType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SecondaryNetworkType",
+                        "smithy.api#documentation": "<p>The type of the secondary network.</p>",
+                        "smithy.api#xmlName": "secondaryNetworkType"
+                    }
+                },
+                "OwnerId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "OwnerId",
+                        "smithy.api#documentation": "<p>The ID of the Amazon Web Services account that owns the secondary subnet.</p>",
+                        "smithy.api#xmlName": "ownerId"
+                    }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZoneId",
+                        "smithy.api#documentation": "<p>The ID of the Availability Zone of the secondary subnet.</p>",
+                        "smithy.api#xmlName": "availabilityZoneId"
+                    }
+                },
+                "AvailabilityZone": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneName",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZone",
+                        "smithy.api#documentation": "<p>The Availability Zone of the secondary subnet.</p>",
+                        "smithy.api#xmlName": "availabilityZone"
+                    }
+                },
+                "Ipv4CidrBlockAssociations": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetIpv4CidrBlockAssociationList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Ipv4CidrBlockAssociationSet",
+                        "smithy.api#documentation": "<p>Information about the IPv4 CIDR blocks associated with the secondary subnet.</p>",
+                        "smithy.api#xmlName": "ipv4CidrBlockAssociationSet"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The state of the secondary subnet.</p>",
+                        "smithy.api#xmlName": "state"
+                    }
+                },
+                "StateReason": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "StateReason",
+                        "smithy.api#documentation": "<p>The reason for the current state of the secondary subnet.</p>",
+                        "smithy.api#xmlName": "stateReason"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.ec2#TagList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>The tags assigned to the secondary subnet.</p>",
+                        "smithy.api#xmlName": "tagSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a secondary subnet.</p>"
+            }
+        },
+        "com.amazonaws.ec2#SecondarySubnetCidrAssociationId": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#SecondarySubnetCidrBlockAssociationState": {
+            "type": "enum",
+            "members": {
+                "associating": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "associating"
+                    }
+                },
+                "associated": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "associated"
+                    }
+                },
+                "association_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "association-failed"
+                    }
+                },
+                "disassociating": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disassociating"
+                    }
+                },
+                "disassociated": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disassociated"
+                    }
+                },
+                "disassociation_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disassociation-failed"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondarySubnetId": {
+            "type": "string"
+        },
+        "com.amazonaws.ec2#SecondarySubnetIdList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondarySubnetId",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondarySubnetIpv4CidrBlockAssociation": {
+            "type": "structure",
+            "members": {
+                "AssociationId": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetCidrAssociationId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AssociationId",
+                        "smithy.api#documentation": "<p>The association ID for the IPv4 CIDR block.</p>",
+                        "smithy.api#xmlName": "associationId"
+                    }
+                },
+                "CidrBlock": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CidrBlock",
+                        "smithy.api#documentation": "<p>The IPv4 CIDR block.</p>",
+                        "smithy.api#xmlName": "cidrBlock"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.ec2#SecondarySubnetCidrBlockAssociationState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "State",
+                        "smithy.api#documentation": "<p>The state of the CIDR block association.</p>",
+                        "smithy.api#xmlName": "state"
+                    }
+                },
+                "StateReason": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "StateReason",
+                        "smithy.api#documentation": "<p>The reason for the current state of the CIDR block association.</p>",
+                        "smithy.api#xmlName": "stateReason"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes an IPv4 CIDR block associated with a secondary subnet.</p>"
+            }
+        },
+        "com.amazonaws.ec2#SecondarySubnetIpv4CidrBlockAssociationList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondarySubnetIpv4CidrBlockAssociation",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondarySubnetList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#SecondarySubnet",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#SecondarySubnetState": {
+            "type": "enum",
+            "members": {
+                "create_in_progress": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "create-in-progress"
+                    }
+                },
+                "create_complete": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "create-complete"
+                    }
+                },
+                "create_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "create-failed"
+                    }
+                },
+                "delete_in_progress": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delete-in-progress"
+                    }
+                },
+                "delete_complete": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delete-complete"
+                    }
+                },
+                "delete_failed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "delete-failed"
+                    }
+                }
             }
         },
         "com.amazonaws.ec2#SecretArn": {
@@ -120979,6 +123668,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "amd-sev-snp"
+                    }
+                },
+                "NESTED_VIRTUALIZATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "nested-virtualization"
                     }
                 }
             }

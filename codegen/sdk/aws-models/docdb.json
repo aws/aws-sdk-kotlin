@@ -1990,12 +1990,6 @@
                         "smithy.api#documentation": "<p>Contains the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
                     }
                 },
-                "ServerlessV2ScalingConfiguration": {
-                    "target": "com.amazonaws.docdb#ServerlessV2ScalingConfiguration",
-                    "traits": {
-                        "smithy.api#documentation": "<p>Contains the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
-                    }
-                },
                 "ManageMasterUserPassword": {
                     "target": "com.amazonaws.docdb#BooleanOptional",
                     "traits": {

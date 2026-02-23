@@ -2,8 +2,8 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import aws.sdk.kotlin.gradle.dsl.configurePublishing
 import aws.sdk.kotlin.gradle.kmp.*
+import aws.sdk.kotlin.gradle.publishing.configurePublishing
 import aws.sdk.kotlin.gradle.util.typedProp
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.LocalDateTime
@@ -60,54 +60,59 @@ subprojects {
         }
 
         if (project.file("e2eTest").exists()) {
+            sourceSets {
+                val e2eTest by creating {
+                    kotlin.srcDir("e2eTest/src/commonMain")
+                    resources.srcDir("e2eTest/test-resources")
+                    dependsOn(this@kotlin.sourceSets.getByName("commonMain"))
+
+                    dependencies {
+                        api(libraries.smithy.kotlin.testing)
+                        implementation(libraries.kotlin.test)
+                        implementation(libraries.kotlinx.coroutines.test)
+                        implementation(libraries.smithy.kotlin.http.test)
+                        implementation(project(":tests:e2e-test-util"))
+                    }
+
+                    if (project.name == "s3") {
+                        dependencies {
+                            rootProject.findProject(":services:s3control")?.let { implementation(it) }
+                            rootProject.findProject(":services:sts")?.let { implementation(it) }
+                        }
+                    }
+                }
+            }
+
             jvm().compilations {
                 val e2eTest by creating {
                     defaultSourceSet {
-                        kotlin.srcDir("e2eTest/src")
-                        resources.srcDir("e2eTest/test-resources")
-                        dependsOn(this@kotlin.sourceSets.getByName("commonMain"))
+                        kotlin.srcDir("e2eTest/src/jvmMain")
+                        dependsOn(this@kotlin.sourceSets["e2eTest"])
                         dependsOn(this@kotlin.sourceSets.getByName("jvmMain"))
-
                         dependencies {
-                            api(libraries.smithy.kotlin.testing)
-                            implementation(libraries.kotlin.test)
-                            implementation(libraries.kotlin.test.junit5)
-                            implementation(project(":tests:e2e-test-util"))
                             implementation(libraries.slf4j.simple)
-                        }
-                    }
-
-                    tasks.register<Test>("e2eTest") {
-                        description = "Run e2e service tests"
-                        group = "verification"
-
-                        if (project.name == "s3") {
-                            dependencies {
-                                implementation(project(":services:s3control"))
-                                implementation(project(":services:sts"))
-                                implementation(libs.smithy.kotlin.aws.signing.crt)
-                            }
+                            implementation(libraries.kotlin.test.junit5)
+                            implementation(libraries.smithy.kotlin.aws.signing.crt)
                         }
 
                         if (project.name == "sesv2") {
                             dependencies {
-                                implementation(libs.smithy.kotlin.aws.signing.crt) // needed for E2E test of SigV4a
+                                implementation(libraries.smithy.kotlin.aws.signing.crt)
                             }
                         }
 
                         if (project.name == "route53") {
                             dependencies {
-                                implementation(libraries.smithy.kotlin.http.test) // needed for URI E2E tests
+                                implementation(libraries.smithy.kotlin.http.test)
                             }
                         }
+                    }
 
-                        // Run the tests with the classpath containing the compile dependencies (including 'main'),
-                        // runtime dependencies, and the outputs of this compilation:
+                    tasks.register<Test>("jvmE2eTest") {
+                        description = "Run JVM E2E service tests"
+                        group = "verification"
                         classpath = compileDependencyFiles + runtimeDependencyFiles + output.allOutputs
-
-                        // Run only the tests from this compilation's outputs:
                         testClassesDirs = output.classesDirs
-
                         useJUnitPlatform()
                         testLogging {
                             events("passed", "skipped", "failed")
@@ -116,13 +121,53 @@ subprojects {
                             showExceptions = true
                             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
                         }
-
-                        // model a random input to enable re-running e2e tests back to back without
-                        // up-to-date checks or cache getting in the way
-                        inputs.property("integration.datetime", LocalDateTime.now())
                         systemProperty("org.slf4j.simpleLogger.defaultLogLevel", System.getProperty("org.slf4j.simpleLogger.defaultLogLevel", "WARN"))
                     }
                 }
+            }
+
+            targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().configureEach {
+                val target = this
+                target.compilations {
+                    val e2eTest by creating {
+                        defaultSourceSet {
+                            kotlin.srcDir("e2eTest/src/nativeMain")
+                            dependsOn(this@kotlin.sourceSets["e2eTest"])
+                            dependsOn(this@kotlin.sourceSets.getByName("nativeMain"))
+                            dependencies {
+                                implementation(project(":tests:e2e-test-util"))
+                            }
+                        }
+                    }
+                }
+
+                binaries.test("e2eTest", listOf(DEBUG)) {
+                    compilation = target.compilations.getByName("e2eTest")
+                }
+
+                tasks.register<Exec>("${target.targetName}E2eTest") {
+                    description = "Run ${target.targetName} E2E service tests"
+                    group = "verification"
+                    val linkTaskName = "linkE2eTestDebugTest${target.targetName.replaceFirstChar { it.uppercase() }}"
+                    dependsOn(linkTaskName)
+                    executable = "build/bin/${target.targetName}/e2eTestDebugTest/e2eTest.kexe"
+
+                    // TODO More consideration needed for running E2E tests on iOS... booting simulator, configuring credentials inside the sim, etc.
+                    onlyIf { !target.targetName.startsWith("ios") }
+                }
+            }
+
+            tasks.register("nativeE2eTest") {
+                description = "Run Native E2E service tests"
+                group = "verification"
+                targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().forEach {
+                    dependsOn("${it.targetName}E2eTest")
+                }
+            }
+
+            tasks.register("e2eTest") {
+                dependsOn("jvmE2eTest")
+                // dependsOn("nativeE2eTest") // FIXME Figure out how we want to run E2E tests (same task as JVM, different tasks, matrixed by target or just one Native target, etc.)
             }
         }
     }
