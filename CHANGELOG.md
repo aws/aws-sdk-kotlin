@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.23] - 02/23/2026
+
+### Features
+* (**bedrock**) Automated Reasoning checks in Amazon Bedrock Guardrails now support fidelity report generation. The new workflow type assesses policy coverage and accuracy against customer documents. The GetAutomatedReasoningPolicyBuildWorkflowResultAssets API adds support for the three new asset types.
+* (**connectcases**) SearchCases API can now accept 25 fields in the request and response as opposed to the previous limit of 10. DeleteField's hard limit of 100 fields per domain has been lifted.
+* (**datazone**) Add workflow properties support to connections APIs
+* (**dynamodb**) This change supports the creation of multi-account global tables. It adds one new arguments to UpdateTable, GlobalTableSettingsReplicationMode.
+* (**mediatailor**) Updated endpoint rule set for dualstack endpoints. Added a new opt-in option to log raw ad decision server requests for Playback Configurations.
+* (**quicksight**) Adds support for SEMISTRUCT to InputColumn Type
+* (**wickr**) AWS Wickr now provides APIs to manage your Wickr OpenTDF integration. These APIs enable you to test and save your OpenTDF configuration allowing you to manage rooms based on Trusted Data Format attributes.
+
+### Documentation
+* (**controlcatalog**) Updated ExemptedPrincipalArns parameter documentation for improved accuracy
+
 ## [1.6.22] - 02/20/2026
 
 ### Features
