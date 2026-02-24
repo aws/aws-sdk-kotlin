@@ -4,7 +4,6 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.operations
 
-import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.FilterDslImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.items.AttributeDescriptor
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.Key
@@ -100,8 +99,8 @@ class UpdateItemTest : DdbLocalTest() {
                     attr["duration"] = attr["start"] + attr["end"]
                 }
                 remove {
-                    -FilterDslImpl.attr["recentAtBats"][0]
-                    -FilterDslImpl.attr["recentAtBats"][2]
+                    -attr["recentAtBats"][0]
+                    -attr["recentAtBats"][2]
                 }
                 add {
                     attr["luckyNumber"] += 13
