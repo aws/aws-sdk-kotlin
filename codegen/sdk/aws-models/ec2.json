@@ -2010,7 +2010,7 @@
                     }
                 },
                 "AvailabilityZone": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#AvailabilityZoneName",
                     "traits": {
                         "aws.protocols#ec2QueryName": "AvailabilityZone",
                         "smithy.api#documentation": "<p>The Availability Zone in which to allocate the Dedicated Host.</p>",
@@ -27470,6 +27470,29 @@
         },
         "com.amazonaws.ec2#DefaultEnaQueueCountPerInterface": {
             "type": "integer"
+        },
+        "com.amazonaws.ec2#DefaultHttpTokensEnforcedState": {
+            "type": "enum",
+            "members": {
+                "disabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
+                },
+                "enabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                },
+                "no_preference": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "no-preference"
+                    }
+                }
+            }
         },
         "com.amazonaws.ec2#DefaultInstanceMetadataEndpointState": {
             "type": "enum",
@@ -68982,6 +69005,23 @@
                 }
             }
         },
+        "com.amazonaws.ec2#HttpTokensEnforcedState": {
+            "type": "enum",
+            "members": {
+                "disabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
+                },
+                "enabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#HttpTokensState": {
             "type": "enum",
             "members": {
@@ -74169,6 +74209,14 @@
                         "aws.protocols#ec2QueryName": "ManagedExceptionMessage",
                         "smithy.api#documentation": "<p>The customized exception message that is specified in the declarative policy.</p>",
                         "smithy.api#xmlName": "managedExceptionMessage"
+                    }
+                },
+                "HttpTokensEnforced": {
+                    "target": "com.amazonaws.ec2#HttpTokensEnforcedState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "HttpTokensEnforced",
+                        "smithy.api#documentation": "<p>Indicates whether to enforce the requirement of IMDSv2 on an instance at the time of\n            launch. When enforcement is enabled, the instance can't launch unless IMDSv2\n                (<code>HttpTokens</code>) is set to <code>required</code>.</p>",
+                        "smithy.api#xmlName": "httpTokensEnforced"
                     }
                 }
             },
@@ -95934,6 +95982,12 @@
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
                         "smithy.api#documentation": "<p>Checks whether you have the required permissions for the operation, without actually making the \n  request, and provides an error response. If you have the required permissions, the error response is \n  <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "HttpTokensEnforced": {
+                    "target": "com.amazonaws.ec2#DefaultHttpTokensEnforcedState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to enforce the requirement of IMDSv2 on an instance at the time of\n            launch. When enforcement is enabled, the instance can't launch unless IMDSv2\n                (<code>HttpTokens</code>) is set to <code>required</code>. For more information, see\n                <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-IMDS-new-instances.html#enforce-imdsv2-at-the-account-level\">Enforce IMDSv2 at the account level</a> in the\n                <i>Amazon EC2 User Guide</i>.</p>"
                     }
                 }
             },
