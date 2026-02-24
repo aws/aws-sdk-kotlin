@@ -841,6 +841,12 @@
             "brazilName": "AwsSdkKotlinElasticsearchService"
         },
         {
+            "sdkId": "ElementalInference",
+            "namespace": "aws.sdk.kotlin.services.elementalinference",
+            "artifactName": "elementalinference",
+            "brazilName": "AwsSdkKotlinElementalinference"
+        },
+        {
             "sdkId": "EntityResolution",
             "namespace": "aws.sdk.kotlin.services.entityresolution",
             "artifactName": "entityresolution",
