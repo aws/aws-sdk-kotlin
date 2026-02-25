@@ -12036,6 +12036,14 @@
                         "smithy.api#documentation": "<p>The currency of the payment for the Capacity Block extension.</p>",
                         "smithy.api#xmlName": "currencyCode"
                     }
+                },
+                "ZoneType": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ZoneType",
+                        "smithy.api#documentation": "<p>The type of zone where the Capacity Block extension is located.</p>",
+                        "smithy.api#xmlName": "zoneType"
+                    }
                 }
             },
             "traits": {
@@ -12139,6 +12147,14 @@
                         "aws.protocols#ec2QueryName": "Tenancy",
                         "smithy.api#documentation": "<p>Indicates the tenancy of the Capacity Block extension offering. A Capacity Block can\n\t\t\thave one of the following tenancy settings:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>default</code> - The Capacity Block is created on hardware that is\n\t\t\t\t\tshared with other Amazon Web Services accounts.</p>\n            </li>\n            <li>\n               <p>\n                  <code>dedicated</code> - The Capacity Block is created on single-tenant\n\t\t\t\t\thardware that is dedicated to a single Amazon Web Services account.</p>\n            </li>\n         </ul>",
                         "smithy.api#xmlName": "tenancy"
+                    }
+                },
+                "ZoneType": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ZoneType",
+                        "smithy.api#documentation": "<p>The type of zone where the Capacity Block extension offering is available.</p>",
+                        "smithy.api#xmlName": "zoneType"
                     }
                 }
             },
@@ -12327,6 +12343,14 @@
                         "aws.protocols#ec2QueryName": "CapacityBlockDurationMinutes",
                         "smithy.api#documentation": "<p>The number of minutes (in addition to <code>capacityBlockDurationHours</code>) for the\n\t\t\tduration of the Capacity Block reservation. For example, if a Capacity Block starts at\n\t\t\t\t<b>08:55</b> and ends at <b>11:30</b>, the minutes field would be <b>35</b>.</p>",
                         "smithy.api#xmlName": "capacityBlockDurationMinutes"
+                    }
+                },
+                "ZoneType": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ZoneType",
+                        "smithy.api#documentation": "<p>The type of zone where the Capacity Block offering is available.</p>",
+                        "smithy.api#xmlName": "zoneType"
                     }
                 }
             },
@@ -34429,6 +34453,12 @@
                     "target": "com.amazonaws.ec2#Integer",
                     "traits": {
                         "smithy.api#documentation": "<p>The number of EC2 UltraServers in the offerings.</p>"
+                    }
+                },
+                "AllAvailabilityZones": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tInclude all Availability Zones and Local Zones, regardless of your opt-in status.\n\t\t\tIf you do not use this parameter, the results include available offerings from all\n\t\t\tAvailability Zones in the Amazon Web Services Region and Local Zones you are opted into.\n\t\t</p>"
                     }
                 }
             },
