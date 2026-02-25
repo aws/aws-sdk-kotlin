@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.6.25] - 02/25/2026
+
+### Features
+* (**ec2**) Add support for EC2 Capacity Blocks in Local Zones.
+* (**ecr**) Update repository name regex to comply with OCI Distribution Specification
+* (**neptune**) Neptune global clusters now supports tags
+* (**wafv2**) AWS WAF now supports GetTopPathStatisticsByTraffic that provides aggregated statistics on the top URI paths accessed by bot traffic. Use this operation to see which paths receive the most bot traffic, identify the specific bots accessing them, and filter by category, organization, or bot name.
+
+### Documentation
+* (**batch**) AWS Batch documentation update for service job capacity units.
+
 ## [1.6.24] - 02/24/2026
 
 ### Features
