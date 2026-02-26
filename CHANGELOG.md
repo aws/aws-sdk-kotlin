@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.26] - 02/26/2026
+
+### Features
+* (**backupgateway**) This release updates GetGateway API to include deprecationDate and softwareVersion in the response, enabling customers to track gateway software versions and upcoming deprecation dates.
+* (**ec2**) Add c8id, m8id and hpc8a instance types.
+* (**ecs**) Adding support for Capacity Reservations for ECS Managed Instances by introducing a new "capacityOptionType" value of "RESERVED" and new field "capacityReservations" for CreateCapacityProvider and UpdateCapacityProvider APIs.
+* (**marketplaceentitlementservice**) Added License Arn as a new optional filter for GetEntitlements and LicenseArn field in each entitlement in the response.
+* (**marketplacemetering**) Added LicenseArn to ResolveCustomer response and BatchMeterUsage usage records. BatchMeterUsage now accepts LicenseArn in each UsageRecord to report usage at the license level. Added InvalidLicenseException error response for invalid license parameters.
+* (**securityhub**) Security Hub added EXTENDED PLAN integration type to DescribeProductsV2 and added metadata.product.vendor name GroupBy support to GetFindingStatisticsV2
+
 ## [1.6.25] - 02/25/2026
 
 ### Features
