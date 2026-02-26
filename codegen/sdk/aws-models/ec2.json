@@ -83345,6 +83345,168 @@
                     "traits": {
                         "smithy.api#enumValue": "r8id.metal-96xl"
                     }
+                },
+                "c8id_large": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.large"
+                    }
+                },
+                "c8id_xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.xlarge"
+                    }
+                },
+                "c8id_2xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.2xlarge"
+                    }
+                },
+                "c8id_4xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.4xlarge"
+                    }
+                },
+                "c8id_8xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.8xlarge"
+                    }
+                },
+                "c8id_12xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.12xlarge"
+                    }
+                },
+                "c8id_16xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.16xlarge"
+                    }
+                },
+                "c8id_24xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.24xlarge"
+                    }
+                },
+                "c8id_32xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.32xlarge"
+                    }
+                },
+                "c8id_48xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.48xlarge"
+                    }
+                },
+                "c8id_96xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.96xlarge"
+                    }
+                },
+                "c8id_metal_48xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.metal-48xl"
+                    }
+                },
+                "c8id_metal_96xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.metal-96xl"
+                    }
+                },
+                "m8id_large": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.large"
+                    }
+                },
+                "m8id_xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.xlarge"
+                    }
+                },
+                "m8id_2xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.2xlarge"
+                    }
+                },
+                "m8id_4xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.4xlarge"
+                    }
+                },
+                "m8id_8xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.8xlarge"
+                    }
+                },
+                "m8id_12xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.12xlarge"
+                    }
+                },
+                "m8id_16xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.16xlarge"
+                    }
+                },
+                "m8id_24xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.24xlarge"
+                    }
+                },
+                "m8id_32xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.32xlarge"
+                    }
+                },
+                "m8id_48xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.48xlarge"
+                    }
+                },
+                "m8id_96xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.96xlarge"
+                    }
+                },
+                "m8id_metal_48xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.metal-48xl"
+                    }
+                },
+                "m8id_metal_96xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.metal-96xl"
+                    }
+                },
+                "hpc8a_96xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hpc8a.96xlarge"
+                    }
                 }
             }
         },
