@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model
 
 import aws.sdk.kotlin.hll.codegen.model.*
+import aws.sdk.kotlin.hll.codegen.model.nullable
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.info
 import aws.sdk.kotlin.hll.codegen.util.plus
@@ -50,6 +51,7 @@ private fun deriveExpressionLiteral(llMember: Member, type: ExpressionLiteralTyp
     val expressionType = when (type) {
         ExpressionLiteralType.Filter -> MapperTypes.Expressions.BooleanExpr
         ExpressionLiteralType.KeyCondition -> MapperTypes.Expressions.KeyFilter
+        ExpressionLiteralType.Update -> MapperTypes.Expressions.UpdateExpr
 
         // TODO add support for other expression types
         else -> return null
@@ -65,8 +67,11 @@ private fun deriveExpressionLiteral(llMember: Member, type: ExpressionLiteralTyp
         // KeyCondition doesn't use a top-level DSL (SortKeyCondition is nested)
         ExpressionLiteralType.KeyCondition -> null
 
-        // TODO add support for other expression types
-        else -> return null
+        ExpressionLiteralType.Update -> DslInfo(
+            interfaceType = MapperTypes.Expressions.UpdateDsl,
+            implType = MapperTypes.Expressions.Internal.UpdateDslImpl,
+            implFinalizer = ".toExpression()",
+        )
     }
 
     return llMember.copy(

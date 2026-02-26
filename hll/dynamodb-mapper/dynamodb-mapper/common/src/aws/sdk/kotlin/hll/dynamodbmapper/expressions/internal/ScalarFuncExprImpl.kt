@@ -8,6 +8,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.expressions.*
 
 internal data class ScalarFuncExprImpl(
     override val func: ScalarFunc,
-    override val path: AttributePath,
+    override val initialOperand: Expression,
     override val additionalOperands: List<Expression> = listOf(),
 ) : ScalarFuncExpr

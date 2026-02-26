@@ -22,7 +22,7 @@ class KeyFilterTest {
     fun testSingleKeySchema() {
         val kf = KeyFilter("foo")
         val actual = kf.toExpression(singleKeySchema)
-        val expected = FilterDslImpl.run { attr("primary") eq "foo" }
+        val expected = FilterDslImpl.run { attr["primary"] eq "foo" }
 
         assertEquals(expected, actual)
     }
@@ -42,8 +42,8 @@ class KeyFilterTest {
         val actual = kf.toExpression(compositeSchema)
         val expected = FilterDslImpl.run {
             and(
-                attr("primary") eq "foo",
-                attr("secondary") lte 10,
+                attr["primary"] eq "foo",
+                attr["secondary"] lte 10,
             )
         }
 
@@ -54,7 +54,7 @@ class KeyFilterTest {
     fun testCompositeSchemaWithoutSortKey() {
         val kf = KeyFilter("foo")
         val actual = kf.toExpression(compositeSchema)
-        val expected = FilterDslImpl.run { attr("primary") eq "foo" }
+        val expected = FilterDslImpl.run { attr["primary"] eq "foo" }
 
         assertEquals(expected, actual)
     }

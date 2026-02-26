@@ -58,6 +58,7 @@ ksp {
         "putItem",
         "query",
         "scan",
+        "updateItem",
     )
     arg("op-allowlist", allowlist.joinToString(";"))
 }

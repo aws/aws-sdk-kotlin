@@ -4,6 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal
 
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.Attr
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.AttrPathElement
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.AttributePath
 
@@ -20,13 +21,11 @@ internal data class AttributePathImpl(
             "Top-level attribute paths must be names (not indices)"
         }
     }
+
+    override fun get(index: Int) = AttributePath(index, parent = this)
+    override fun get(key: String) = AttributePath(key, parent = this)
 }
 
-/**
- * An abstract attribute path that represents the sort key in a given schema. This isn't a concrete path and will be
- * replaced by the schema's _actual_ sort key in [KeyFilterImpl.toExpression].
- */
-internal data object SkAttrPathImpl : AttributePath {
-    override val element get() = error("Unsupported")
-    override val parent get() = error("Unsupported")
+internal object AttrImpl : Attr {
+    override fun get(name: String) = AttributePath(name)
 }

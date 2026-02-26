@@ -24,9 +24,9 @@ class FilterDslTest {
             ),
             "(foo = :v0) AND (bar < :v1) AND (baz <> :v2)" to {
                 and(
-                    attr("foo") eq 5,
-                    attr("bar") lt "banana",
-                    attr("baz") neq null,
+                    attr["foo"] eq 5,
+                    attr["bar"] lt "banana",
+                    attr["baz"] neq null,
                 )
             },
         )
@@ -37,9 +37,9 @@ class FilterDslTest {
         listOf(false, true, null).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "contains(foo, :v0)" to { attr("foo") contains value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "contains(foo, :v0)" to { attr["foo"] contains value },
             )
         }
     }
@@ -53,13 +53,13 @@ class FilterDslTest {
         listOf(b1, b2, b3).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "foo < :v0" to { attr("foo") lt value },
-                "foo <= :v0" to { attr("foo") lte value },
-                "foo > :v0" to { attr("foo") gt value },
-                "foo >= :v0" to { attr("foo") gte value },
-                "contains(foo, :v0)" to { attr("foo") contains value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "foo < :v0" to { attr["foo"] lt value },
+                "foo <= :v0" to { attr["foo"] lte value },
+                "foo > :v0" to { attr["foo"] gt value },
+                "foo >= :v0" to { attr["foo"] gte value },
+                "contains(foo, :v0)" to { attr["foo"] contains value },
             )
         }
 
@@ -68,15 +68,15 @@ class FilterDslTest {
                 ":v0" to av(b1),
                 ":v1" to av(b2),
             ),
-            "foo BETWEEN :v0 AND :v1" to { attr("foo").isBetween(b1, b2) },
+            "foo BETWEEN :v0 AND :v1" to { attr["foo"].isBetween(b1, b2) },
         )
 
         (null as ByteArray?).let { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "contains(foo, :v0)" to { attr("foo") contains value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "contains(foo, :v0)" to { attr["foo"] contains value },
             )
         }
     }
@@ -90,7 +90,7 @@ class FilterDslTest {
                 ":v2" to av(byteArrayOf(7, 8, 9)),
             ),
             "foo IN (:v0, :v1, :v2)" to {
-                attr("foo") isIn setOf(
+                attr["foo"] isIn setOf(
                     byteArrayOf(1, 2, 3),
                     byteArrayOf(4, 5, 6),
                     byteArrayOf(7, 8, 9),
@@ -109,7 +109,7 @@ class FilterDslTest {
                 ":v3" to av(null),
             ),
             "foo IN (:v0, :v1, :v2, :v3)" to {
-                attr("foo") isIn setOf(
+                attr["foo"] isIn setOf(
                     listOf("apple", false, 1, null),
                     listOf("banana", true, 2),
                     listOf("cherry", 3),
@@ -129,7 +129,7 @@ class FilterDslTest {
                 ":v3" to av(null),
             ),
             "foo IN (:v0, :v1, :v2, :v3)" to {
-                attr("foo") isIn setOf(
+                attr["foo"] isIn setOf(
                     mapOf("a" to "apple", "b" to false, "c" to 1, "d" to null),
                     mapOf("e" to "banana", "f" to true, "g" to 2),
                     mapOf("h" to "cherry", "i" to 3),
@@ -147,7 +147,7 @@ class FilterDslTest {
                 ":v1" to av(-1_000_000_000_000_000L),
                 ":v2" to av(null),
             ),
-            "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn setOf(42, -1_000_000_000_000_000L, null) },
+            "foo IN (:v0, :v1, :v2)" to { attr["foo"] isIn setOf(42, -1_000_000_000_000_000L, null) },
         )
     }
 
@@ -171,7 +171,7 @@ class FilterDslTest {
                 ":v1" to av(sets[1]),
                 ":v2" to av(sets[2]),
             ),
-            "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
+            "foo IN (:v0, :v1, :v2)" to { attr["foo"] isIn sets },
         )
     }
 
@@ -196,7 +196,7 @@ class FilterDslTest {
                 ":v1" to av(sets[1]),
                 ":v2" to av(sets[2]),
             ),
-            "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
+            "foo IN (:v0, :v1, :v2)" to { attr["foo"] isIn sets },
         )
     }
 
@@ -218,7 +218,7 @@ class FilterDslTest {
                 ":v1" to av(sets[1]),
                 ":v2" to av(sets[2]),
             ),
-            "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
+            "foo IN (:v0, :v1, :v2)" to { attr["foo"] isIn sets },
         )
     }
 
@@ -240,7 +240,7 @@ class FilterDslTest {
                 ":v1" to av(sets[1]),
                 ":v2" to av(sets[2]),
             ),
-            "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
+            "foo IN (:v0, :v1, :v2)" to { attr["foo"] isIn sets },
         )
     }
 
@@ -262,7 +262,7 @@ class FilterDslTest {
                 ":v1" to av(sets[1]),
                 ":v2" to av(sets[2]),
             ),
-            "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
+            "foo IN (:v0, :v1, :v2)" to { attr["foo"] isIn sets },
         )
     }
 
@@ -284,7 +284,7 @@ class FilterDslTest {
                 ":v1" to av(sets[1]),
                 ":v2" to av(sets[2]),
             ),
-            "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
+            "foo IN (:v0, :v1, :v2)" to { attr["foo"] isIn sets },
         )
     }
 
@@ -306,28 +306,28 @@ class FilterDslTest {
                 ":v1" to av(sets[1]),
                 ":v2" to av(sets[2]),
             ),
-            "foo IN (:v0, :v1, :v2)" to { attr("foo") isIn sets },
+            "foo IN (:v0, :v1, :v2)" to { attr["foo"] isIn sets },
         )
     }
 
     @Test
     fun testExists() = testFilters(
-        "attribute_exists(foo)" to { attr("foo").exists() },
+        "attribute_exists(foo)" to { attr["foo"].exists() },
     )
 
     @Test
     fun testExpressions() {
         testFilters(
-            "foo = bar" to { attr("foo") eq attr("bar") },
-            "foo <> bar" to { attr("foo") neq attr("bar") },
-            "foo < bar" to { attr("foo") lt attr("bar") },
-            "foo <= bar" to { attr("foo") lte attr("bar") },
-            "foo > bar" to { attr("foo") gt attr("bar") },
-            "foo >= bar" to { attr("foo") gte attr("bar") },
-            "contains(foo, bar)" to { attr("foo") contains attr("bar") },
-            "begins_with(foo, bar)" to { attr("foo") startsWith attr("bar") },
-            "foo BETWEEN bar AND baz" to { attr("foo").isBetween(attr("bar"), attr("baz")) },
-            "foo IN (bar, baz, qux)" to { attr("foo") isIn listOf(attr("bar"), attr("baz"), attr("qux")) },
+            "foo = bar" to { attr["foo"] eq attr["bar"] },
+            "foo <> bar" to { attr["foo"] neq attr["bar"] },
+            "foo < bar" to { attr["foo"] lt attr["bar"] },
+            "foo <= bar" to { attr["foo"] lte attr["bar"] },
+            "foo > bar" to { attr["foo"] gt attr["bar"] },
+            "foo >= bar" to { attr["foo"] gte attr["bar"] },
+            "contains(foo, bar)" to { attr["foo"] contains attr["bar"] },
+            "begins_with(foo, bar)" to { attr["foo"] startsWith attr["bar"] },
+            "foo BETWEEN bar AND baz" to { attr["foo"].isBetween(attr["bar"], attr["baz"]) },
+            "foo IN (bar, baz, qux)" to { attr["foo"] isIn listOf(attr["bar"], attr["baz"], attr["qux"]) },
         )
 
         testFilters(
@@ -339,7 +339,7 @@ class FilterDslTest {
             ),
             tests = arrayOf(
                 "foo = Attr.#k0.#k1.#k2.Indices[5]" to {
-                    attr("foo") eq attr("Attr")["Key.With.Dots"]["And"]["Or"]["Indices"][5]
+                    attr["foo"] eq attr["Attr"]["Key.With.Dots"]["And"]["Or"]["Indices"][5]
                 },
             ),
         )
@@ -348,7 +348,7 @@ class FilterDslTest {
     @Test
     fun testIsOfType() = testFilters(
         av("S"),
-        "attribute_type(foo, :v0)" to { attr("foo") isOfType AttributeType.String },
+        "attribute_type(foo, :v0)" to { attr["foo"] isOfType AttributeType.String },
     )
 
     @Test
@@ -361,8 +361,8 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
@@ -377,20 +377,20 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
 
     @Test
     fun testNot() = testFilters(
-        "NOT (foo = bar)" to { not(attr("foo") eq attr("bar")) },
+        "NOT (foo = bar)" to { not(attr["foo"] eq attr["bar"]) },
     )
 
     @Test
     fun testNotExists() = testFilters(
-        "attribute_not_exists(foo)" to { attr("foo").notExists() },
+        "attribute_not_exists(foo)" to { attr["foo"].notExists() },
     )
 
     @Test
@@ -405,13 +405,13 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "foo < :v0" to { attr("foo") lt value },
-                "foo <= :v0" to { attr("foo") lte value },
-                "foo > :v0" to { attr("foo") gt value },
-                "foo >= :v0" to { attr("foo") gte value },
-                "contains(foo, :v0)" to { attr("foo") contains value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "foo < :v0" to { attr["foo"] lt value },
+                "foo <= :v0" to { attr["foo"] lte value },
+                "foo > :v0" to { attr["foo"] gt value },
+                "foo >= :v0" to { attr["foo"] gte value },
+                "contains(foo, :v0)" to { attr["foo"] contains value },
             )
         }
 
@@ -420,16 +420,16 @@ class FilterDslTest {
                 ":v0" to av(100),
                 ":v1" to av(200),
             ),
-            "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn 100..200 },
-            "foo IN (:v0, :v1)" to { attr("foo") isIn setOf(100, 200) },
+            "foo BETWEEN :v0 AND :v1" to { attr["foo"] isIn 100..200 },
+            "foo IN (:v0, :v1)" to { attr["foo"] isIn setOf(100, 200) },
         )
 
         (null as Number?).let { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "contains(foo, :v0)" to { attr("foo") contains value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "contains(foo, :v0)" to { attr["foo"] contains value },
             )
         }
     }
@@ -444,9 +444,9 @@ class FilterDslTest {
             ),
             "(foo > :v0) OR (bar >= :v1) OR (baz = :v2)" to {
                 or(
-                    attr("foo") gt 5,
-                    attr("bar") gte "banana",
-                    attr("baz") eq null,
+                    attr["foo"] gt 5,
+                    attr["bar"] gte "banana",
+                    attr["baz"] eq null,
                 )
             },
         )
@@ -465,8 +465,8 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
@@ -487,8 +487,8 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
@@ -506,8 +506,8 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
@@ -525,8 +525,8 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
@@ -544,8 +544,8 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
@@ -563,8 +563,8 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
@@ -582,15 +582,15 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
 
     @Test
     fun testSize() = testFilters(
-        "size(foo)" to { attr("foo").size },
+        "size(foo)" to { attr["foo"].size },
     )
 
     @Test
@@ -602,14 +602,14 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "foo < :v0" to { attr("foo") lt value },
-                "foo <= :v0" to { attr("foo") lte value },
-                "foo > :v0" to { attr("foo") gt value },
-                "foo >= :v0" to { attr("foo") gte value },
-                "contains(foo, :v0)" to { attr("foo") contains value },
-                "begins_with(foo, :v0)" to { attr("foo") startsWith value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "foo < :v0" to { attr["foo"] lt value },
+                "foo <= :v0" to { attr["foo"] lte value },
+                "foo > :v0" to { attr["foo"] gt value },
+                "foo >= :v0" to { attr["foo"] gte value },
+                "contains(foo, :v0)" to { attr["foo"] contains value },
+                "begins_with(foo, :v0)" to { attr["foo"] startsWith value },
             )
         }
 
@@ -618,16 +618,16 @@ class FilterDslTest {
                 ":v0" to av("apple"),
                 ":v1" to av("banana"),
             ),
-            "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn "apple".."banana" },
-            "foo IN (:v0, :v1)" to { attr("foo") isIn setOf("apple", "banana") },
+            "foo BETWEEN :v0 AND :v1" to { attr["foo"] isIn "apple".."banana" },
+            "foo IN (:v0, :v1)" to { attr["foo"] isIn setOf("apple", "banana") },
         )
 
         (null as String?).let { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "contains(foo, :v0)" to { attr("foo") contains value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "contains(foo, :v0)" to { attr["foo"] contains value },
             )
         }
     }
@@ -641,12 +641,12 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "foo < :v0" to { attr("foo") lt value },
-                "foo <= :v0" to { attr("foo") lte value },
-                "foo > :v0" to { attr("foo") gt value },
-                "foo >= :v0" to { attr("foo") gte value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "foo < :v0" to { attr["foo"] lt value },
+                "foo <= :v0" to { attr["foo"] lte value },
+                "foo > :v0" to { attr["foo"] gt value },
+                "foo >= :v0" to { attr["foo"] gte value },
             )
         }
 
@@ -655,15 +655,15 @@ class FilterDslTest {
                 ":v0" to av(100.toUByte()),
                 ":v1" to av(200.toUByte()),
             ),
-            "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn UByteRange(100.toUByte(), 200.toUByte()) },
-            "foo IN (:v0, :v1)" to { attr("foo") isIn setOf(100.toUByte(), 200.toUByte()) },
+            "foo BETWEEN :v0 AND :v1" to { attr["foo"] isIn UByteRange(100.toUByte(), 200.toUByte()) },
+            "foo IN (:v0, :v1)" to { attr["foo"] isIn setOf(100.toUByte(), 200.toUByte()) },
         )
 
         (null as UByte?).let { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
@@ -677,12 +677,12 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "foo < :v0" to { attr("foo") lt value },
-                "foo <= :v0" to { attr("foo") lte value },
-                "foo > :v0" to { attr("foo") gt value },
-                "foo >= :v0" to { attr("foo") gte value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "foo < :v0" to { attr["foo"] lt value },
+                "foo <= :v0" to { attr["foo"] lte value },
+                "foo > :v0" to { attr["foo"] gt value },
+                "foo >= :v0" to { attr["foo"] gte value },
             )
         }
 
@@ -691,15 +691,15 @@ class FilterDslTest {
                 ":v0" to av(100.toUInt()),
                 ":v1" to av(200.toUInt()),
             ),
-            "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn 100.toUInt().rangeTo(200.toUInt()) },
-            "foo IN (:v0, :v1)" to { attr("foo") isIn setOf(100.toUInt(), 200.toUInt()) },
+            "foo BETWEEN :v0 AND :v1" to { attr["foo"] isIn 100.toUInt().rangeTo(200.toUInt()) },
+            "foo IN (:v0, :v1)" to { attr["foo"] isIn setOf(100.toUInt(), 200.toUInt()) },
         )
 
         (null as UInt?).let { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
@@ -713,12 +713,12 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "foo < :v0" to { attr("foo") lt value },
-                "foo <= :v0" to { attr("foo") lte value },
-                "foo > :v0" to { attr("foo") gt value },
-                "foo >= :v0" to { attr("foo") gte value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "foo < :v0" to { attr["foo"] lt value },
+                "foo <= :v0" to { attr["foo"] lte value },
+                "foo > :v0" to { attr["foo"] gt value },
+                "foo >= :v0" to { attr["foo"] gte value },
             )
         }
 
@@ -727,15 +727,15 @@ class FilterDslTest {
                 ":v0" to av(100.toULong()),
                 ":v1" to av(200.toULong()),
             ),
-            "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn 100.toULong().rangeTo(200.toULong()) },
-            "foo IN (:v0, :v1)" to { attr("foo") isIn setOf(100.toULong(), 200.toULong()) },
+            "foo BETWEEN :v0 AND :v1" to { attr["foo"] isIn 100.toULong().rangeTo(200.toULong()) },
+            "foo IN (:v0, :v1)" to { attr["foo"] isIn setOf(100.toULong(), 200.toULong()) },
         )
 
         (null as ULong?).let { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }
@@ -749,12 +749,12 @@ class FilterDslTest {
         ).forEach { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
-                "foo < :v0" to { attr("foo") lt value },
-                "foo <= :v0" to { attr("foo") lte value },
-                "foo > :v0" to { attr("foo") gt value },
-                "foo >= :v0" to { attr("foo") gte value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
+                "foo < :v0" to { attr["foo"] lt value },
+                "foo <= :v0" to { attr["foo"] lte value },
+                "foo > :v0" to { attr["foo"] gt value },
+                "foo >= :v0" to { attr["foo"] gte value },
             )
         }
 
@@ -763,15 +763,15 @@ class FilterDslTest {
                 ":v0" to av(100.toUShort()),
                 ":v1" to av(200.toUShort()),
             ),
-            "foo BETWEEN :v0 AND :v1" to { attr("foo") isIn UShortRange(100.toUShort(), 200.toUShort()) },
-            "foo IN (:v0, :v1)" to { attr("foo") isIn setOf(100.toUShort(), 200.toUShort()) },
+            "foo BETWEEN :v0 AND :v1" to { attr["foo"] isIn UShortRange(100.toUShort(), 200.toUShort()) },
+            "foo IN (:v0, :v1)" to { attr["foo"] isIn setOf(100.toUShort(), 200.toUShort()) },
         )
 
         (null as UShort?).let { value ->
             testFilters(
                 av(value),
-                "foo = :v0" to { attr("foo") eq value },
-                "foo <> :v0" to { attr("foo") neq value },
+                "foo = :v0" to { attr["foo"] eq value },
+                "foo <> :v0" to { attr["foo"] neq value },
             )
         }
     }

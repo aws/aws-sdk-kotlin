@@ -175,7 +175,7 @@ class QueryTest : DdbLocalTest() {
 
         val items = table.queryPaginated {
             keyCondition = KeyFilter("foo-corp")
-            filter { attr("title") eq "SDE" }
+            filter { attr["title"] eq "SDE" }
         }.items().toList()
 
         val expected = listOf(

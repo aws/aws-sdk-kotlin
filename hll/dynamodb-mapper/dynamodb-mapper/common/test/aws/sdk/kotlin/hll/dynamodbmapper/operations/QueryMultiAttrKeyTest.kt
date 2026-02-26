@@ -6,6 +6,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.operations
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.KeyFilter
 import aws.sdk.kotlin.hll.dynamodbmapper.items.*
+import aws.sdk.kotlin.hll.dynamodbmapper.items.invoke
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters

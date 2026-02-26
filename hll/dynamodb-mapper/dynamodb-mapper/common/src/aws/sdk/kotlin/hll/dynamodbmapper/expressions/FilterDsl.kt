@@ -11,13 +11,13 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
  * [DynamoDB filter/condition expressions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html).
  * The methods and properties in this interface create boolean expressions to filter item results (e.g., in `Scan` or
  * `Query` operations). Expressions are typically formed by getting a reference to an attribute path via the [attr]
- * function and then exercising some operation or function upon it.
+ * property and then exercising some operation or function upon it.
  *
  * For example:
  *
  * ```kotlin
  * filter {
- *     attr("foo") eq 42
+ *     attr["foo"] eq 42
  * }
  * ```
  *
@@ -44,7 +44,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
  * All attribute paths start with a top-level attribute expression, created by the [attr] function:
  *
  * ```kotlin
- * attr("foo") // References the top-level attribute "foo"
+ * attr["foo"] // References the top-level attribute "foo"
  * ```
  *
  * Note, the attribute `foo` may not exist for a given item or for an entire table.
@@ -73,7 +73,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
  * The value `"Yay"` can be referenced with the following DSL syntax:
  *
  * ```kotlin
- * attr("bar")["baz"][0]
+ * attr["bar"]["baz"][0]
  * ```
  *
  * That is, in the top-level attribute `bar`, in the value keyed by `baz`, the element at index `0`.
@@ -92,8 +92,8 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
  * For example:
  *
  * ```kotlin
- * attr("foo") eq 5           // Checks whether the value of attribute `foo` is `5`
- * attr("bar") gt attr("baz") // Checks whether the value of attribute `bar` is greater than attribute `baz`
+ * attr["foo"] eq 5           // Checks whether the value of attribute `foo` is `5`
+ * attr["bar"] gt attr["baz"] // Checks whether the value of attribute `bar` is greater than attribute `baz`
  * ```
  *
  * # Ranges and sets
@@ -103,13 +103,13 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
  *
  * ```kotlin
  * // Checks whether the value of attribute `foo` is between 40 and 60 (inclusive)
- * attr("foo") isIn 40..60
+ * attr["foo"] isIn 40..60
  *
  * // Checks whether the value of attribute `foo` is either 1, 2, 4, 8, 16, or 32
- * attr("bar") isIn setOf(1, 2, 4, 8, 16, 32)
+ * attr["bar"] isIn setOf(1, 2, 4, 8, 16, 32)
  *
- * // Checks whether the value of attribute `baz` is between the value of `foo` and the value of `baz`
- * attr("baz").isBetween(attr("foo"), attr("baz"))
+ * // Checks whether the value of attribute `baz` is between the value of `foo` and the value of `bar`
+ * attr["baz"].isBetween(attr["foo"], attr["bar"])
  * ```
  *
  * # Boolean logic
@@ -120,8 +120,8 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
  *
  * ```kotlin
  * and(
- *     attr("foo") eq 42,
- *     attr("bar") neq 42,
+ *     attr["foo"] eq 42,
+ *     attr["bar"] neq 42,
  * )
  * ```
  *
@@ -136,13 +136,13 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
  *
  * ```kotlin
  * or(
- *     attr("foo") eq "apple",
+ *     attr["foo"] eq "apple",
  *     and(
- *         attr("bar") lt attr("baz"),
- *         attr("baz") gte 42,
+ *         attr["bar"] lt attr["baz"],
+ *         attr["baz"] gte 42,
  *     ),
  *     not(
- *         attr("qux") in setOf("ready", "set", "go"),
+ *         attr["qux"] in setOf("ready", "set", "go"),
  *     ),
  * )
  * ```
@@ -176,31 +176,18 @@ import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
  * For example:
  *
  * ```kotlin
- * attr("foo") contains 13 // Checks whether the value of attribute `foo` contains the value `13`
- * attr("bar").exists()    // Checks whether any value exists for `bar` (including `null`)
+ * attr["foo"] contains 13 // Checks whether the value of attribute `foo` contains the value `13`
+ * attr["bar"].exists()    // Checks whether any value exists for `bar` (including `null`)
  * ```
  */
 public interface FilterDsl {
     // ATTRIBUTES
 
     /**
-     * Creates an attribute path reference from a top-level attribute name. To reference nested properties or indexed
-     * elements, use the `[]` operator or [AttributePath.get].
-     * @param name The top-level attribute name
+     * Accesses an attribute path reference from a top-level attribute name in this filter expression (e.g.,
+     * `attr["foo"]` references the "foo" attribute of items being filtered)
      */
-    public fun attr(name: String): AttributePath
-
-    /**
-     * Creates an attribute path reference for an index into a list or set
-     * @param index The index to dereference
-     */
-    public operator fun AttributePath.get(index: Int): AttributePath
-
-    /**
-     * Creates an attribute path reference for a key in map
-     * @param key The key to dereference
-     */
-    public operator fun AttributePath.get(key: String): AttributePath
+    public val attr: Attr
 
     // BINARY OPERATORS
 

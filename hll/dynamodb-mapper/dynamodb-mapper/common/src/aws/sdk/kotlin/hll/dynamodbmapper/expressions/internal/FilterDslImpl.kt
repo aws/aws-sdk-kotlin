@@ -8,9 +8,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.expressions.*
 
 internal data object FilterDslImpl : FilterDsl {
     // ATTRIBUTES
-    override fun attr(name: String) = AttributePath(name)
-    override fun AttributePath.get(index: Int) = AttributePath(index, parent = this)
-    override fun AttributePath.get(key: String) = AttributePath(key, parent = this)
+    override val attr = AttrImpl
 
     // BINARY OPERATORS
     override fun Expression.eq(expr: Expression) = ComparisonExpr(Comparator.EQUALS, this, expr)

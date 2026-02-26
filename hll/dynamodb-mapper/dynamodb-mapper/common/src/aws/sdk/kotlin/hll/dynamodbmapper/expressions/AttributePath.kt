@@ -54,6 +54,18 @@ public interface AttributePath : Expression {
      */
     public val parent: AttributePath?
 
+    /**
+     * Creates an attribute path reference for an index into a list or set
+     * @param index The index to dereference
+     */
+    public operator fun get(index: Int): AttributePath
+
+    /**
+     * Creates an attribute path reference for a key in map
+     * @param key The key to dereference
+     */
+    public operator fun get(key: String): AttributePath
+
     override fun <T> accept(visitor: ExpressionVisitor<T>): T = visitor.visit(this)
 }
 
@@ -63,11 +75,27 @@ public interface AttributePath : Expression {
  * @param parent The parent [AttributePath] (if any) of this element. If [parent] is `null` then this instance
  * represents a top-level attribute.
  */
-public fun AttributePath(name: String, parent: AttributePath? = null): AttributePath = AttributePathImpl(AttrPathNameImpl(name), parent)
+public fun AttributePath(
+    name: String,
+    parent: AttributePath? = null,
+): AttributePath = AttributePathImpl(AttrPathNameImpl(name), parent)
 
 /**
  * Creates a new [AttributePath] reference with the given index and parent path
  * @param index The index (starting at `0`) of this element
  * @param parent The parent [AttributePath] of this element
  */
-public fun AttributePath(index: Int, parent: AttributePath): AttributePath = AttributePathImpl(AttrPathIndexImpl(index), parent)
+public fun AttributePath(
+    index: Int,
+    parent: AttributePath,
+): AttributePath = AttributePathImpl(AttrPathIndexImpl(index), parent)
+
+/**
+ * Provides access to top-level attributes on an item or in an item filter
+ */
+public interface Attr {
+    /**
+     * Creates an attribute path reference from a top-level attribute name
+     */
+    public operator fun get(name: String): AttributePath
+}

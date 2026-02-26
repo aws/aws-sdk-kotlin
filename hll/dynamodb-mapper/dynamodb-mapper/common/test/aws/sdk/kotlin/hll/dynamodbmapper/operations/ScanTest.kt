@@ -95,7 +95,7 @@ class ScanTest : DdbLocalTest() {
         val table = mapper.getTable(TABLE_NAME, schema)
 
         table.scanPaginated {
-            filter { attr("id") gt 2 }
+            filter { attr["id"] gt 2 }
         }.assertItems("Gizmo", "Thingy", "Doohickey")
     }
 
@@ -105,7 +105,7 @@ class ScanTest : DdbLocalTest() {
         val table = mapper.getTable(TABLE_NAME, schema)
 
         table.scanPaginated {
-            filter { attr("released") isIn "2024-09-21T00:00:00Z".."2024-09-25T00:00:00Z" }
+            filter { attr["released"] isIn "2024-09-21T00:00:00Z".."2024-09-25T00:00:00Z" }
         }.assertItems("Standard Widget", "Doohickey")
     }
 
@@ -115,7 +115,7 @@ class ScanTest : DdbLocalTest() {
         val table = mapper.getTable(TABLE_NAME, schema)
 
         table.scanPaginated {
-            filter { attr("name").size gte 10 }
+            filter { attr["name"].size gte 10 }
         }.assertItems("Standard Widget", "Widget Plus+")
     }
 

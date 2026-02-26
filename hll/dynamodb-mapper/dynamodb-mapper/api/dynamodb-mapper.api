@@ -36,6 +36,30 @@ public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/ann
 	public abstract fun paginatedEquivalent ()Ljava/lang/String;
 }
 
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveExpr : aws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression {
+	public fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
+	public abstract fun getLeft ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public abstract fun getOperation ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveOperation;
+	public abstract fun getRight ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveExpr$DefaultImpls {
+	public static fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveExpr;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveExprKt {
+	public static final fun AdditiveExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveOperation;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveExpr;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveOperation : java/lang/Enum {
+	public static final field ADD Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveOperation;
+	public static final field SUBTRACT Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveOperation;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getExprString ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveOperation;
+	public static fun values ()[Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveOperation;
+}
+
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/AndExpr : aws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr {
 	public fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
 	public abstract fun getOperands ()Ljava/util/List;
@@ -47,6 +71,10 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/AndExpr$Default
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/AndExprKt {
 	public static final fun AndExpr (Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AndExpr;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr {
+	public abstract fun get (Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/AttrPathElement {
@@ -62,6 +90,8 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/At
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath : aws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression {
 	public fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
+	public abstract fun get (I)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;
+	public abstract fun get (Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;
 	public abstract fun getElement ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttrPathElement;
 	public abstract fun getParent ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;
 }
@@ -173,6 +203,7 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/Ex
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor {
+	public abstract fun visit (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AdditiveExpr;)Ljava/lang/Object;
 	public abstract fun visit (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AndExpr;)Ljava/lang/Object;
 	public abstract fun visit (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;)Ljava/lang/Object;
 	public abstract fun visit (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BetweenExpr;)Ljava/lang/Object;
@@ -183,12 +214,13 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/Ex
 	public abstract fun visit (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/NotExpr;)Ljava/lang/Object;
 	public abstract fun visit (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/OrExpr;)Ljava/lang/Object;
 	public abstract fun visit (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;)Ljava/lang/Object;
+	public abstract fun visit (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateClauseExpr;)Ljava/lang/Object;
+	public abstract fun visit (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;)Ljava/lang/Object;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/FilterDsl {
 	public abstract fun and (Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public fun and ([Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
-	public abstract fun attr (Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;
 	public abstract fun contains (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public fun contains (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public abstract fun eq (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
@@ -211,8 +243,7 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/Fi
 	public fun eqSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public fun eqSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public abstract fun exists (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
-	public abstract fun get (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;I)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;
-	public abstract fun get (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;
+	public abstract fun getAttr ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;
 	public abstract fun getSize (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
 	public abstract fun gt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public fun gt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/lang/Number;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
@@ -482,6 +513,8 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/OrExprKt {
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc : java/lang/Enum {
+	public static final field IF_NOT_EXISTS Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;
+	public static final field LIST_APPEND Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;
 	public static final field SIZE Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getExprString ()Ljava/lang/String;
@@ -493,7 +526,7 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/Sc
 	public fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
 	public abstract fun getAdditionalOperands ()Ljava/util/List;
 	public abstract fun getFunc ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;
-	public abstract fun getPath ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;
+	public abstract fun getInitialOperand ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr$DefaultImpls {
@@ -501,9 +534,9 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr$
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExprKt {
-	public static final fun ScalarFuncExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
-	public static final fun ScalarFuncExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;[Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
-	public static synthetic fun ScalarFuncExpr$default (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/List;ILjava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
+	public static final fun ScalarFuncExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
+	public static final fun ScalarFuncExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;[Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
+	public static synthetic fun ScalarFuncExpr$default (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/util/List;ILjava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKey {
@@ -627,6 +660,303 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyFilterDs
 	public static fun neq-i8woANY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyFilterDsl;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKey;S)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyExpr;
 	public static fun startsWith (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyFilterDsl;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKey;Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyExpr;
 	public static fun startsWith (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyFilterDsl;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKey;[B)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKeyExpr;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateAction : java/lang/Enum {
+	public static final field ADD Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateAction;
+	public static final field DELETE Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateAction;
+	public static final field REMOVE Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateAction;
+	public static final field SET Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateAction;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateAction;
+	public static fun values ()[Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateAction;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateClauseExpr : aws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression {
+	public fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
+	public abstract fun getAction ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateAction;
+	public abstract fun getTarget ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;
+	public abstract fun getValue ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateClauseExpr$DefaultImpls {
+	public static fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateClauseExpr;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateClauseExprKt {
+	public static final fun UpdateClauseExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateAction;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateClauseExpr;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl {
+	public abstract fun add (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun delete (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun remove (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun set (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add {
+	public abstract fun getAttr ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;
+	public abstract fun plusAssign (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)V
+	public fun plusAssign (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/Number;)V
+	public fun plusAssign-2TYgG_w (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;J)V
+	public fun plusAssign-EK-6454 (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;B)V
+	public fun plusAssign-Qn1smSk (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;I)V
+	public fun plusAssign-i8woANY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;S)V
+	public fun plusAssignSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun plusAssignSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun plusAssignSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun plusAssignSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun plusAssignSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun plusAssignSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun plusAssignSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add$DefaultImpls {
+	public static fun plusAssign (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/Number;)V
+	public static fun plusAssign-2TYgG_w (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;J)V
+	public static fun plusAssign-EK-6454 (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;B)V
+	public static fun plusAssign-Qn1smSk (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;I)V
+	public static fun plusAssign-i8woANY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;S)V
+	public static fun plusAssignSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun plusAssignSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun plusAssignSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun plusAssignSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun plusAssignSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun plusAssignSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun plusAssignSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Add;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Delete {
+	public abstract fun getAttr ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;
+	public abstract fun minusAssign (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)V
+	public fun minusAssignSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun minusAssignSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun minusAssignSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun minusAssignSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun minusAssignSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun minusAssignSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public fun minusAssignSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Delete$DefaultImpls {
+	public static fun minusAssignSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Delete;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun minusAssignSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Delete;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun minusAssignSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Delete;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun minusAssignSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Delete;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun minusAssignSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Delete;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun minusAssignSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Delete;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+	public static fun minusAssignSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Delete;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Remove {
+	public abstract fun getAttr ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;
+	public abstract fun unaryMinus (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set {
+	public abstract fun appending (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun appending (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public abstract fun appending (Ljava/util/List;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun attrSetSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attrSetSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attrSetSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attrSetSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attrSetSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attrSetSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attrSetSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attributePathOrElseSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun attributePathOrElseSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun attributePathOrElseSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun attributePathOrElseSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun attributePathOrElseSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun attributePathOrElseSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun attributePathOrElseSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun attributePathSetSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public fun attributePathSetSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attributePathSetSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public fun attributePathSetSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attributePathSetSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public fun attributePathSetSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attributePathSetSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public fun attributePathSetSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attributePathSetSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public fun attributePathSetSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attributePathSetSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public fun attributePathSetSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public fun attributePathSetSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public fun attributePathSetSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public abstract fun getAttr ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;
+	public abstract fun minus (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun minus (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/lang/Number;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun minus-2TYgG_w (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;J)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun minus-EK-6454 (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;B)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun minus-Qn1smSk (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;I)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun minus-i8woANY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;S)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public abstract fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/Boolean;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/Number;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/Void;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Map;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;[B)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse-FrkygD8 (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Lkotlin/UInt;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse-X7ZSXPM (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Lkotlin/UShort;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse-Zf_Lc9A (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Lkotlin/ULong;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun orElse-tA8902A (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Lkotlin/UByte;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public abstract fun plus (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun plus (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/lang/Number;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun plus-2TYgG_w (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;J)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun plus-EK-6454 (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;B)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun plus-Qn1smSk (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;I)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun plus-i8woANY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;S)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public abstract fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/lang/Boolean;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/lang/Number;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/lang/String;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/lang/Void;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/List;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Map;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;[B)V
+	public abstract fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILaws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/lang/Boolean;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/lang/Number;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/lang/String;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/lang/Void;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/List;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Map;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;I[B)V
+	public abstract fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/lang/Boolean;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/lang/Number;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/lang/String;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/lang/Void;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/List;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Map;)V
+	public fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;[B)V
+	public fun set-At9poAI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Lkotlin/UInt;)V
+	public fun set-At9poAI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILkotlin/UInt;)V
+	public fun set-At9poAI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Lkotlin/UInt;)V
+	public fun set-KiT_PLY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Lkotlin/UShort;)V
+	public fun set-KiT_PLY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILkotlin/UShort;)V
+	public fun set-KiT_PLY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Lkotlin/UShort;)V
+	public fun set-XliYbEA (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Lkotlin/UByte;)V
+	public fun set-XliYbEA (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILkotlin/UByte;)V
+	public fun set-XliYbEA (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Lkotlin/UByte;)V
+	public fun set-rhs9BDI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Lkotlin/ULong;)V
+	public fun set-rhs9BDI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILkotlin/ULong;)V
+	public fun set-rhs9BDI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Lkotlin/ULong;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set$DefaultImpls {
+	public static fun appending (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun attrSetSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attrSetSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attrSetSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attrSetSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attrSetSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attrSetSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attrSetSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attributePathOrElseSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun attributePathOrElseSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun attributePathOrElseSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun attributePathOrElseSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun attributePathOrElseSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun attributePathOrElseSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun attributePathOrElseSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Set;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun attributePathSetSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public static fun attributePathSetSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attributePathSetSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public static fun attributePathSetSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attributePathSetSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public static fun attributePathSetSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attributePathSetSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public static fun attributePathSetSetUByte (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attributePathSetSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public static fun attributePathSetSetUInt (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attributePathSetSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public static fun attributePathSetSetULong (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun attributePathSetSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Set;)V
+	public static fun attributePathSetSetUShort (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Set;)V
+	public static fun minus (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/lang/Number;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun minus-2TYgG_w (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;J)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun minus-EK-6454 (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;B)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun minus-Qn1smSk (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;I)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun minus-i8woANY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;S)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/Boolean;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/Number;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/Void;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/Map;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;[B)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse-FrkygD8 (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Lkotlin/UInt;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse-X7ZSXPM (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Lkotlin/UShort;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse-Zf_Lc9A (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Lkotlin/ULong;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun orElse-tA8902A (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Lkotlin/UByte;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun plus (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/lang/Number;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun plus-2TYgG_w (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;J)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun plus-EK-6454 (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;B)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun plus-Qn1smSk (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;I)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun plus-i8woANY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;S)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/lang/Boolean;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/lang/Number;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/lang/String;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/lang/Void;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/List;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Map;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;[B)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/lang/Boolean;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/lang/Number;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/lang/String;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/lang/Void;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/List;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILjava/util/Map;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;I[B)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/lang/Boolean;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/lang/Number;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/lang/String;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/lang/Void;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/List;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Ljava/util/Map;)V
+	public static fun set (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;[B)V
+	public static fun set-At9poAI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Lkotlin/UInt;)V
+	public static fun set-At9poAI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILkotlin/UInt;)V
+	public static fun set-At9poAI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Lkotlin/UInt;)V
+	public static fun set-KiT_PLY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Lkotlin/UShort;)V
+	public static fun set-KiT_PLY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILkotlin/UShort;)V
+	public static fun set-KiT_PLY (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Lkotlin/UShort;)V
+	public static fun set-XliYbEA (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Lkotlin/UByte;)V
+	public static fun set-XliYbEA (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILkotlin/UByte;)V
+	public static fun set-XliYbEA (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Lkotlin/UByte;)V
+	public static fun set-rhs9BDI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Lkotlin/ULong;)V
+	public static fun set-rhs9BDI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;ILkotlin/ULong;)V
+	public static fun set-rhs9BDI (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/lang/String;Lkotlin/ULong;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr : aws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Companion;
+	public fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
+	public abstract fun getAdd ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;
+	public abstract fun getDelete ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;
+	public abstract fun getRemove ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;
+	public abstract fun getSet ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause {
+	public abstract fun getUpdates ()Ljava/util/List;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Companion {
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$DefaultImpls {
+	public static fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExprKt {
+	public static final fun Clause (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Companion;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;
+	public static final fun UpdateExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/interceptors/CounterInterceptor : aws/sdk/kotlin/hll/dynamodbmapper/pipeline/Interceptor {
@@ -1631,11 +1961,13 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/Tab
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/ItemSourceOperations$CompositeKey, aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations {
 	public abstract fun deleteItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequest$CompositeKey;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemRequest$CompositeKey;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun updateItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$CompositeKey;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/ItemSourceOperations$PartitionKey, aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations {
 	public abstract fun deleteItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequest$PartitionKey;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemRequest$PartitionKey;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun updateItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$PartitionKey;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperationsKt {
@@ -1652,6 +1984,111 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperationsK
 	public static final fun scanPaginated (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations$CompositeKey;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun scanPaginated (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations$PartitionKey;Laws/sdk/kotlin/hll/dynamodbmapper/operations/ScanRequest$PartitionKey;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun scanPaginated (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations$PartitionKey;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun updateItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations$CompositeKey;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun updateItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations$PartitionKey;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$Companion;
+	public abstract fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
+	public abstract fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
+	public abstract fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
+	public abstract fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
+	public abstract fun getUpdate ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$Companion {
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$CompositeKey$Companion;
+	public abstract fun getPartitionKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
+	public abstract fun getSortKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$CompositeKey$Companion {
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$PartitionKey$Companion;
+	public abstract fun getPartitionKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$PartitionKey$Companion {
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequestCompositeKeyBuilder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$CompositeKey;
+	public final fun getPartitionKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
+	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
+	public final fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
+	public final fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
+	public final fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
+	public final fun getSortKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
+	public final fun getUpdate ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;
+	public final fun setPartitionKey (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
+	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
+	public final fun setReturnItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;)V
+	public final fun setReturnValues (Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;)V
+	public final fun setReturnValuesOnConditionCheckFailure (Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)V
+	public final fun setSortKey (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
+	public final fun setUpdate (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;)V
+	public final fun update (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequestKt {
+	public static final fun CompositeKey (Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$Companion;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$CompositeKey;
+	public static final fun PartitionKey (Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$Companion;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$PartitionKey;
+	public static final fun copy (Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$CompositeKey;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$CompositeKey;
+	public static final fun copy (Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$PartitionKey;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$PartitionKey;
+	public static final fun toBuilder (Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$CompositeKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequestCompositeKeyBuilder;
+	public static final fun toBuilder (Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$PartitionKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequestPartitionKeyBuilder;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequestPartitionKeyBuilder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$PartitionKey;
+	public final fun getPartitionKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
+	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
+	public final fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
+	public final fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
+	public final fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
+	public final fun getUpdate ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;
+	public final fun setPartitionKey (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
+	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
+	public final fun setReturnItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;)V
+	public final fun setReturnValues (Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;)V
+	public final fun setReturnValuesOnConditionCheckFailure (Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)V
+	public final fun setUpdate (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;)V
+	public final fun update (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponse {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponse$Companion;
+	public abstract fun getAttributes ()Ljava/lang/Object;
+	public abstract fun getConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;
+	public abstract fun getItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ItemCollectionMetrics;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponse$Companion {
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponseBuilder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponse;
+	public final fun getAttributes ()Ljava/lang/Object;
+	public final fun getConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;
+	public final fun getItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ItemCollectionMetrics;
+	public final fun setAttributes (Ljava/lang/Object;)V
+	public final fun setConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ConsumedCapacity;)V
+	public final fun setItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ItemCollectionMetrics;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponseKt {
+	public static final fun UpdateItemResponse (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponse;
+	public static final fun copy (Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponse;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponse;
+	public static final fun toBuilder (Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponse;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemResponseBuilder;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/pipeline/DeserializeInput {
