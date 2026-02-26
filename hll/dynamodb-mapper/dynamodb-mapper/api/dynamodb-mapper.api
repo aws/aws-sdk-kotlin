@@ -514,6 +514,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/OrExprKt {
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc : java/lang/Enum {
 	public static final field IF_NOT_EXISTS Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;
+	public static final field LIST_APPEND Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;
 	public static final field SIZE Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getExprString ()Ljava/lang/String;
@@ -525,7 +526,7 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/Sc
 	public fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
 	public abstract fun getAdditionalOperands ()Ljava/util/List;
 	public abstract fun getFunc ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;
-	public abstract fun getPath ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;
+	public abstract fun getInitialOperand ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr$DefaultImpls {
@@ -533,9 +534,9 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr$
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExprKt {
-	public static final fun ScalarFuncExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
-	public static final fun ScalarFuncExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;[Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
-	public static synthetic fun ScalarFuncExpr$default (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/List;ILjava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
+	public static final fun ScalarFuncExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
+	public static final fun ScalarFuncExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;[Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
+	public static synthetic fun ScalarFuncExpr$default (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFunc;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;Ljava/util/List;ILjava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ScalarFuncExpr;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/SortKey {
@@ -753,6 +754,9 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/Up
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set {
+	public abstract fun appending (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public fun appending (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
+	public abstract fun appending (Ljava/util/List;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
 	public fun attrSetSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
 	public fun attrSetSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
 	public fun attrSetSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
@@ -845,6 +849,7 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/Up
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set$DefaultImpls {
+	public static fun appending (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/AttributePath;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression;
 	public static fun attrSetSetByteArray (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
 	public static fun attrSetSetNumber (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V
 	public static fun attrSetSetString (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/Attr;Ljava/lang/String;Ljava/util/Set;)V

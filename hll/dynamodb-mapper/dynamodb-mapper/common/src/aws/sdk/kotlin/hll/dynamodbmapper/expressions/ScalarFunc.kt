@@ -12,10 +12,16 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions
  */
 public enum class ScalarFunc(public val exprString: String) {
     /**
-     * The [`if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET)
+     * The [`if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites)
      * function
      */
     IF_NOT_EXISTS("if_not_exists"),
+
+    /**
+     * The [`list_append`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.UpdatingListElements)
+     * function
+     */
+    LIST_APPEND("list_append"),
 
     /**
      * The [`size`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html#Expressions.OperatorsAndFunctions.Functions)

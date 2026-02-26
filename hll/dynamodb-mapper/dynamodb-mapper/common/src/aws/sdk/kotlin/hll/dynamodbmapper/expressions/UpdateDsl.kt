@@ -179,6 +179,17 @@ public interface UpdateDsl {
      * }
      * ```
      *
+     * # Appending lists
+     *
+     * Update expressions may form a value by appending a list value to another list value using the [appending] method:
+     *
+     * ```kotlin
+     * set {
+     *     attr["foo"] = attr["foo"] appending listOf(1, 2, 3) // Appends the value [1, 2, 3] to the value of `foo`
+     *     attr["bar"] = listOf(4, 5, 6) appending attr["bar"] // Prepends the value [4, 5, 6] to the value of `bar`
+     * }
+     * ```
+     *
      * @see UpdateDsl
      */
     public interface Set {
@@ -781,7 +792,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(value: Expression): Expression
@@ -789,7 +800,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(value: Boolean?): Expression = orElse(LiteralExpr(value))
@@ -797,7 +808,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(value: ByteArray?): Expression = orElse(LiteralExpr(value))
@@ -805,7 +816,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(value: List<Any?>?): Expression = orElse(LiteralExpr(value))
@@ -813,7 +824,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(value: Map<String, Any?>?): Expression = orElse(LiteralExpr(value))
@@ -821,7 +832,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(value: Nothing?): Expression = orElse(LiteralExpr(value))
@@ -829,7 +840,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(value: Number?): Expression = orElse(LiteralExpr(value))
@@ -837,7 +848,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         @Suppress("INAPPLICABLE_JVM_NAME")
@@ -849,7 +860,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         @Suppress("INAPPLICABLE_JVM_NAME")
@@ -861,7 +872,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         @Suppress("INAPPLICABLE_JVM_NAME")
@@ -873,7 +884,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         @Suppress("INAPPLICABLE_JVM_NAME")
@@ -885,7 +896,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         @Suppress("INAPPLICABLE_JVM_NAME")
@@ -897,7 +908,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         @Suppress("INAPPLICABLE_JVM_NAME")
@@ -909,7 +920,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         @Suppress("INAPPLICABLE_JVM_NAME")
@@ -921,7 +932,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(
@@ -931,7 +942,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(
@@ -941,7 +952,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(
@@ -951,7 +962,7 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(
@@ -961,12 +972,36 @@ public interface UpdateDsl {
         /**
          * Creates a function expression which represents the value of this attribute path _unless_ a value does not
          * exist, in which case the given [value] is used. This corresponds to the
-         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET).
+         * [low-level DynamoDB function `if_not_exists`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.PreventingAttributeOverwrites).
          * @param value The value to use if this attribute does not exist
          */
         public infix fun AttributePath.orElse(
             value: UShort?,
         ): Expression = orElse(LiteralExpr(value))
+
+        /**
+         * Creates a function expression which represents the list value of this attribute path concatenated with the
+         * given list [value]. This corresponds to the
+         * [low-level DynamoDB function `list_append`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.UpdatingListElements).
+         * @param value The list value to append to this list value
+         */
+        public infix fun AttributePath.appending(value: Expression): Expression
+
+        /**
+         * Creates a function expression which represents the list value of this attribute path concatenated with the
+         * given list [value]. This corresponds to the
+         * [low-level DynamoDB function `list_append`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.UpdatingListElements).
+         * @param value The list value to append to this list value
+         */
+        public infix fun AttributePath.appending(value: List<Any?>): Expression = appending(LiteralExpr(value))
+
+        /**
+         * Creates a function expression which represents the given list [value] with the value of this attribute path.
+         * This corresponds to the
+         * [low-level DynamoDB function `list_append`](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.UpdatingListElements).
+         * @param value The list-valued attribute to append to this list
+         */
+        public infix fun List<Any?>.appending(value: Expression): Expression
     }
 
     /**

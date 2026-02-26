@@ -53,7 +53,7 @@ class UpdateDslTest {
     @Test
     fun testExpressions() {
         testUpdates(
-            "SET foo = oof, bar[0] = rab[0], baz.qux = zab.xuq, nox = xon + onx, pix = xip - ipx, moo = if_not_exists(oom, omo) ADD bur rub DELETE zip piz" to {
+            "SET foo = oof, bar[0] = rab[0], baz.qux = zab.xuq, nox = xon + onx, pix = xip - ipx, moo = if_not_exists(oom, omo), paz = list_append(paz, zap) REMOVE yum, muy ADD bur rub DELETE zip piz" to {
                 set {
                     attr["foo"] = attr["oof"]
                     attr["bar"][0] = attr["rab"][0]
@@ -61,6 +61,11 @@ class UpdateDslTest {
                     attr["nox"] = attr["xon"] + attr["onx"]
                     attr["pix"] = attr["xip"] - attr["ipx"]
                     attr["moo"] = attr["oom"] orElse attr["omo"]
+                    attr["paz"] = attr["paz"] appending attr["zap"]
+                }
+                remove {
+                    -attr["yum"]
+                    -attr["muy"]
                 }
                 add {
                     attr["bur"] += attr["rub"]
@@ -91,6 +96,18 @@ class UpdateDslTest {
                     }
                 },
             )
+
+            if (value != null) {
+                testUpdates(
+                    av(value),
+                    "SET paz = list_append(paz, :v0), zap = list_append(:v0, zap)" to {
+                        set {
+                            attr["paz"] = attr["paz"] appending value
+                            attr["zap"] = value appending attr["zap"]
+                        }
+                    },
+                )
+            }
         }
     }
 

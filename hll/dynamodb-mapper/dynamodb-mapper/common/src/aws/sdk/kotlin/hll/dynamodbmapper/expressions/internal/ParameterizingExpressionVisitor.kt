@@ -42,10 +42,14 @@ internal open class ParameterizingExpressionVisitor : ExpressionVisitor<String> 
         .associate { (value, placeholder) -> placeholder to value }
         .takeUnless { it.isEmpty() }
 
-    private fun funcString(funcName: String, path: AttributePath, additionalOperands: List<Expression>) = buildString {
+    private fun funcString(
+        funcName: String,
+        initialOperand: Expression,
+        additionalOperands: List<Expression>,
+    ) = buildString {
         append(funcName)
         append('(')
-        append(path.accept())
+        append(initialOperand.accept())
         additionalOperands.forEach { operand ->
             append(", ")
             append(operand.accept())
@@ -117,7 +121,11 @@ internal open class ParameterizingExpressionVisitor : ExpressionVisitor<String> 
 
     override fun visit(expr: OrExpr) = expr.operands.joinToString(" OR ") { "(${it.accept()})" }
 
-    override fun visit(expr: ScalarFuncExpr) = funcString(expr.func.exprString, expr.path, expr.additionalOperands)
+    override fun visit(expr: ScalarFuncExpr) = funcString(
+        expr.func.exprString,
+        expr.initialOperand,
+        expr.additionalOperands,
+    )
 
     override fun visit(expr: UpdateExpr): String = buildString {
         fun appendClause(command: String, clause: UpdateExpr.Clause) {

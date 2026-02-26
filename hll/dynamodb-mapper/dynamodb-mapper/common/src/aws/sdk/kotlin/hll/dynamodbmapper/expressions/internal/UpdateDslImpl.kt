@@ -45,6 +45,14 @@ internal class UpdateSetImpl :
     override fun AttributePath.set(index: Int, value: Expression) = get(index).update(value)
     override fun AttributePath.set(key: String, value: Expression) = get(key).update(value)
 
+    override fun AttributePath.appending(
+        value: Expression,
+    ): Expression = ScalarFuncExpr(ScalarFunc.LIST_APPEND, this, value)
+
+    override fun List<Any?>.appending(
+        value: Expression,
+    ): Expression = ScalarFuncExpr(ScalarFunc.LIST_APPEND, LiteralExpr(this), value)
+
     override fun AttributePath.orElse(
         value: Expression,
     ): Expression = ScalarFuncExpr(ScalarFunc.IF_NOT_EXISTS, this, value)

@@ -17,9 +17,9 @@ public interface ScalarFuncExpr : BooleanExpr {
     public val func: ScalarFunc
 
     /**
-     * The attribute path to pass as the function's first argument
+     * The expression to pass as the function's first argument
      */
-    public val path: AttributePath
+    public val initialOperand: Expression
 
     /**
      * Any additional arguments used by the function
@@ -32,23 +32,23 @@ public interface ScalarFuncExpr : BooleanExpr {
 /**
  * Creates a new non-boolean function expression
  * @param func The specific non-boolean function to use
- * @param path The attribute path to pass as the function's first argument
+ * @param initialOperand The expression to pass as the function's first argument
  * @param additionalOperands Any additional arguments used by the function
  */
 public fun ScalarFuncExpr(
     func: ScalarFunc,
-    path: AttributePath,
+    initialOperand: Expression,
     additionalOperands: List<Expression> = listOf(),
-): ScalarFuncExpr = ScalarFuncExprImpl(func, path, additionalOperands)
+): ScalarFuncExpr = ScalarFuncExprImpl(func, initialOperand, additionalOperands)
 
 /**
  * Creates a new non-boolean function expression
  * @param func The specific non-boolean function to use
- * @param path The attribute path to pass as the function's first argument
+ * @param initialOperand The expression to pass as the function's first argument
  * @param additionalOperands Any additional arguments used by the function
  */
 public fun ScalarFuncExpr(
     func: ScalarFunc,
-    path: AttributePath,
+    initialOperand: Expression,
     vararg additionalOperands: Expression,
-): ScalarFuncExpr = ScalarFuncExprImpl(func, path, additionalOperands.toList())
+): ScalarFuncExpr = ScalarFuncExprImpl(func, initialOperand, additionalOperands.toList())
