@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.28] - 03/03/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Support for AgentCore Policy GA
+* (**cloudwatchlogs**) CloudWatch Logs updates- Added support for the PutBearerTokenAuthentication API to enable or disable bearer token authentication on a log group. For more information, see CloudWatch Logs API documentation.
+* (**datazone**) Adding QueryGraph operation to DataZone SDK
+* (**partnercentralchannel**) Adds the Resold Unified Operations support plan and removes the Resold Business support plan in the CreateRelationship and UpdateRelationship APIs
+* (**sagemaker**) This release adds b300 and g7e instance types for SageMaker inference endpoints.
+
 ## [1.6.27] - 02/27/2026
 
 ### Features
