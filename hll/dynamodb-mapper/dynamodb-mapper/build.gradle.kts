@@ -24,6 +24,7 @@ buildscript {
 
 plugins {
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotest)
     alias(libs.plugins.mokkery)
     `dokka-convention`
 }
@@ -44,6 +45,12 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.kotest.framework.engine)
                 implementation(libs.kotest.assertions.core)
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation(libs.kotest.runner.junit5)
             }
         }
     }

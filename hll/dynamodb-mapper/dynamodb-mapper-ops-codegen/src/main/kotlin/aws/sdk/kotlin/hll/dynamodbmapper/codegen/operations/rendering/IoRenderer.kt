@@ -210,6 +210,10 @@ internal abstract class IoRenderer(
                     )
                 }
 
+                toStruct.members(MemberCodegenBehavior.ExpressionLiteral(ExpressionLiteralType.Update)) {
+                    write("#L = this@convert.#L?.accept(expressionVisitor)", name, fromMember(fromStruct).name)
+                }
+
                 toStruct.members(MemberCodegenBehavior.ExpressionArguments(ExpressionArgumentsType.AttributeNames)) {
                     write("#L = expressionVisitor.expressionAttributeNames()", name)
                 }
