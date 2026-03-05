@@ -11827,10 +11827,51 @@
                         "smithy.api#documentation": "<p>The amount of instance capacity associated with the usage. For example a value of\n\t\t\t\t<code>4</code> indicates that instance capacity for 4 instances is currently in\n\t\t\tuse.</p>",
                         "smithy.api#xmlName": "count"
                     }
+                },
+                "AllocationMetadata": {
+                    "target": "com.amazonaws.ec2#CapacityAllocationMetadataList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AllocationMetadataList",
+                        "smithy.api#documentation": "<p>Additional metadata associated with the capacity allocation. Each entry contains a key-value pair providing context \n\t\t\tabout the allocation.</p>",
+                        "smithy.api#xmlName": "allocationMetadataList"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Information about instance capacity usage for a Capacity Reservation.</p>"
+            }
+        },
+        "com.amazonaws.ec2#CapacityAllocationMetadataEntry": {
+            "type": "structure",
+            "members": {
+                "Key": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Key",
+                        "smithy.api#documentation": "<p>The key of the metadata entry.</p>",
+                        "smithy.api#xmlName": "key"
+                    }
+                },
+                "Value": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Value",
+                        "smithy.api#documentation": "<p>The value of the metadata entry.</p>",
+                        "smithy.api#xmlName": "value"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A key-value pair that provides additional metadata about a capacity allocation.</p>"
+            }
+        },
+        "com.amazonaws.ec2#CapacityAllocationMetadataList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#CapacityAllocationMetadataEntry",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
             }
         },
         "com.amazonaws.ec2#CapacityAllocations": {

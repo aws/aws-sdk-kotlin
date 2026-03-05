@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.30] - 03/05/2026
+
+### Features
+* (**connecthealth**) Connect-Health SDK is AWS's unified SDK for the Amazon Connect Health offering. It allows healthcare developers to integrate purpose-built agents - such as patient insights, ambient documentation, and medical coding - into their existing applications, including EHRs, telehealth, and revenue cycle.
+* (**ec2**) Added metadata field to CapacityAllocation.
+* (**guardduty**) Added MALICIOUS FILE to IndicatorType enum in MDC Sequence
+* (**mpa**) Updates to multi-party approval (MPA) service to add support for approval team baseline operations.
+* (**sagemaker**) Adds support for S3 Bucket Ownership validation for SageMaker Managed MLflow.
+* (**savingsplans**) Added support for OpenSearch and Neptune Analytics to Database Savings Plans.
+
 ## [1.6.29] - 03/04/2026
 
 ### Features

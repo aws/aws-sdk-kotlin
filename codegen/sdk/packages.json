@@ -583,6 +583,12 @@
             "brazilName": "AwsSdkKotlinConnectcases"
         },
         {
+            "sdkId": "ConnectHealth",
+            "namespace": "aws.sdk.kotlin.services.connecthealth",
+            "artifactName": "connecthealth",
+            "brazilName": "AwsSdkKotlinConnecthealth"
+        },
+        {
             "sdkId": "ConnectParticipant",
             "namespace": "aws.sdk.kotlin.services.connectparticipant",
             "artifactName": "connectparticipant",
