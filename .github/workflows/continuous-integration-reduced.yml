@@ -59,8 +59,9 @@ jobs:
         with:
           working-directory: './smithy-kotlin'
 
+      # TODO: Replace with kat command (SDK-KT-1089)
       - name: Enable JAR reduction & disable Kotlin Native
-        uses: aws/aws-kotlin-repo-tools/.github/actions/utils/add-to-local-properties@proguard-testing
+        uses: aws/aws-kotlin-repo-tools/.github/actions/utils/add-to-local-properties@main
         with:
           working-directory: '~/.sdkdev'
           addition: 'aws.kotlin.native = false\naws.sdk.proguard = true'
