@@ -42,7 +42,6 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
-                implementation(libs.kotest.assertions.core)
                 implementation(libs.smithy.kotlin.testing)
             }
         }
