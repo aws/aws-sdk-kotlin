@@ -60,10 +60,12 @@ allprojects {
             )
         }
 
-        // Required to enable reflective access in testing.
-        // See smithy-kotlin/runtime/testing/jvm/src/aws/smithy/kotlin/runtime/testing/SystemOverrides.kt
-        // for more info
-        jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+        if (testJavaVersion == null || testJavaVersion.asInt() >= 9) {
+            // Required to enable reflective access in testing in JDK 9+.
+            // See smithy-kotlin/runtime/testing/jvm/src/aws/smithy/kotlin/runtime/testing/SystemOverrides.kt for more
+            // info.
+            jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+        }
     }
 
     // Enables running `./gradlew allDeps` to get a comprehensive list of dependencies for every subproject
