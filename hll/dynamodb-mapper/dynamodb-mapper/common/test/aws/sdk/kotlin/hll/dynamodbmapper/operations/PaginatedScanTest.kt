@@ -10,9 +10,11 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
+import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.test.runTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 

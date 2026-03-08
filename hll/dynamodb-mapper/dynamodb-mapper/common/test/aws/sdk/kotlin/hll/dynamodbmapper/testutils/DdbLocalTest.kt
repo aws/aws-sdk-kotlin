@@ -18,12 +18,11 @@ import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.net.Host
 import aws.smithy.kotlin.runtime.net.Scheme
 import aws.smithy.kotlin.runtime.net.url.Url
+import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.util.PlatformProvider
-import io.kotest.core.spec.style.AnnotationSpec
 import kotlinx.coroutines.runBlocking
-import kotlin.test.assertContains
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
+import org.junit.jupiter.api.TestInstance
+import kotlin.test.*
 
 /**
  * The base class for test classes which need DynamoDB Local running. This class provides a few convenience declarations
@@ -35,7 +34,8 @@ import kotlin.test.assertNotNull
  *   unsuccessfully).
  * * [mapper] — Returns a [DynamoDbMapper] instance utilizing the DynamoDB Local instance
  */
-abstract class DdbLocalTest : AnnotationSpec() {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+abstract class DdbLocalTest {
     companion object {
         private const val DOUBLE_TOLERANCE = 0.000001
 
@@ -130,7 +130,7 @@ abstract class DdbLocalTest : AnnotationSpec() {
         config: DynamoDbMapper.Config.Builder.() -> Unit = { },
     ) = DynamoDbMapper(ddb ?: this.ddb, config)
 
-    @BeforeEach
+    @BeforeTest
     fun initializeTest() {
         requestInterceptor.enabled = true
     }
@@ -144,7 +144,7 @@ abstract class DdbLocalTest : AnnotationSpec() {
         return block(ddb).also { requestInterceptor.enabled = true }
     }
 
-    @AfterEach
+    @AfterTest
     fun postVerify() {
         requests.forEach { req ->
             val uaString = requireNotNull(req.headers["User-Agent"]) {

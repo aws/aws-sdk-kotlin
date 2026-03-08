@@ -11,7 +11,9 @@ import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import aws.sdk.kotlin.services.dynamodb.model.ReturnConsumedCapacity
 import aws.sdk.kotlin.services.dynamodb.model.ReturnValue
+import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.test.runTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 

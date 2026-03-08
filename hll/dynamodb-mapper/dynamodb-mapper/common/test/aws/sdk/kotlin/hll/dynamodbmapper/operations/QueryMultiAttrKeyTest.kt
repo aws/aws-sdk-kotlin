@@ -6,20 +6,18 @@ package aws.sdk.kotlin.hll.dynamodbmapper.operations
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.KeyFilter
 import aws.sdk.kotlin.hll.dynamodbmapper.items.*
-import aws.sdk.kotlin.hll.dynamodbmapper.items.invoke
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
-import aws.sdk.kotlin.services.dynamodb.model.DynamoDbException
-import io.kotest.core.annotation.Ignored
+import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-@Ignored // TODO DynamoDB Local 2.6.1 does not support multi-attribute keys yet
 class QueryMultiAttrKeyTest : DdbLocalTest() {
     companion object {
         private const val TABLE_NAME = "query-multi-attr-keys-test"
@@ -118,6 +116,6 @@ class QueryMultiAttrKeyTest : DdbLocalTest() {
             keyCondition = KeyFilter(Key(128)) // Should fail because PK has two attributes but we only set one value
         }.items()
 
-        assertFailsWith<DynamoDbException> { items.toList() }
+        assertFailsWith<IllegalArgumentException> { items.toList() }
     }
 }
