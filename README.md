@@ -1,4 +1,4 @@
-# AWS SDK for Kotlin
+# AWS SDK for Kotlin.
 [![Apache 2 licensed][apache-badge]][apache-url] [![Maven][maven-badge]][maven-url]
 
 [apache-badge]: https://img.shields.io/badge/license-APACHE2-blue.svg
