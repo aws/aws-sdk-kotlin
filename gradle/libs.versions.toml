@@ -114,8 +114,6 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup-version" }
 
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-version" }
 kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest-version" }
-kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest-version" }
-kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest-version" }
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark-version" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-version" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk-version" }
@@ -144,6 +142,7 @@ smithy-kotlin-service-client = [
 
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version"}
+kotest = { id = "io.kotest", version.ref = "kotest-version" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-version" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator-version" }
