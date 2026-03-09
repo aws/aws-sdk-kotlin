@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.32] - 03/09/2026
+
+### Features
+* (**mgn**) Adds support for new storeSnapshotOnLocalZone field in ReplicationConfiguration and updateReplicationConfiguration
+* (**opensearch**) This change enables cross-account and cross-region access for DataSources. Customers can now define access policies on their datasources to allow other AWS accounts to access and query their data.
+* (**route53globalresolver**) Adds support for dual stack Global Resolvers and Dictionary-based Domain Generation Firewall Advanced Protection.
+
+### Documentation
+* (**iam**) Added support for CloudWatch Logs long-term API keys, currently available in Preview
+
 ## [1.6.31] - 03/06/2026
 
 ### Features
