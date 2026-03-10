@@ -102,15 +102,27 @@ internal class OperationsTypeRenderer(
             val interfaceType = keyType.interfaceType
             val implName = "${interfaceType.shortName.replace(".", "")}Impl"
             val implType = interfaceType.copy(shortName = implName)
+            val specType = itemSourceKind.specType(keyType)
+
+            val (abstractModifier, argsList) = when (itemSourceKind.isSchemaless) {
+                true -> "abstract " to ""
+                else -> "" to format("private val spec: #T", specType)
+            }
 
             blankLine()
             withBlock(
-                "internal class #D(private val spec: #T) : #T {",
+                "internal #Lclass #D(#L) : #T {",
                 "}",
+                abstractModifier,
                 implType,
-                itemSourceKind.specType(keyType),
+                argsList,
                 interfaceType,
             ) {
+                if (itemSourceKind.isSchemaless) {
+                    write("abstract val spec: #T", specType) // Spec must be provided by subtype on demand
+                    blankLine()
+                }
+
                 operations.forEach { op ->
                     val requestProjection = op.request.keyProjections[keyType]
                     val responseProjection = op.response.keyProjections[keyType]

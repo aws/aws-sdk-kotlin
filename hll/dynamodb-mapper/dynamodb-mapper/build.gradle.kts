@@ -52,6 +52,7 @@ ksp {
     arg("pkg", "aws.sdk.kotlin.hll.dynamodbmapper.operations")
 
     val allowlist = listOf(
+        "batchGetItem",
         "deleteItem",
         "getItem",
         "putItem",

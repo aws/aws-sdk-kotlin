@@ -13,9 +13,9 @@ import aws.smithy.kotlin.runtime.collections.AttributeKey
 @InternalSdkApi
 public object ModelAttributes {
     /**
-     * The types involved for a DSL-style method for working with a complex member, if applicable
+     * The types involved for DSL-style method(s) for working with a complex member, if applicable
      */
-    public val DslInfo: AttributeKey<DslInfo> = AttributeKey("aws.sdk.kotlin.hll#DslInfo")
+    public val Dsls: AttributeKey<List<DslInfo>> = AttributeKey("aws.sdk.kotlin.hll#Dsls")
 
     /**
      * For a given high-level [Member], this attribute key identifies the associated low-level [Member]

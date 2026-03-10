@@ -129,8 +129,17 @@ public data class TypeVar(
     @InternalSdkApi
     public companion object {
         @InternalSdkApi
+        public val Star: TypeVar = TypeVar("*")
+
+        @InternalSdkApi
         public val T: TypeVar = TypeVar("T")
     }
+}
+
+@InternalSdkApi
+public data object StarProjection : Type {
+    override val nullable: Boolean = false
+    override val shortName: String = "*"
 }
 
 /**
@@ -138,7 +147,7 @@ public data class TypeVar(
  */
 @InternalSdkApi
 public fun Type.nullable(value: Boolean = true): Type = when {
-    nullable == value -> this
+    nullable == value || this == StarProjection -> this
     this is TypeRef -> this.nullable(value)
     this is TypeVar -> this.nullable(value)
     else -> error("Unknown Type ${this::class}") // Should be unreachable, only here to make compiler happy
@@ -166,10 +175,11 @@ public fun TypeVar.nullable(value: Boolean = true): TypeVar = when {
  * Gets a collection of all generic variables referenced by this [Type]
  */
 @InternalSdkApi
-public fun Type.genericVars(): GenericsSet = GenericsSet(genericVarsList())
+public fun Type?.genericVars(): GenericsSet = GenericsSet(genericVarsList())
 
-private fun Type.genericVarsList(): List<TypeVar> = buildList {
+private fun Type?.genericVarsList(): List<TypeVar> = buildList {
     when (val type = this@genericVarsList) {
+        null, is StarProjection -> { }
         is TypeVar -> add(type.nullable(false))
         is TypeRef -> addAll(type.genericArgs.flatMap { it.genericVars() })
     }
@@ -179,7 +189,7 @@ private fun Type.genericVarsList(): List<TypeVar> = buildList {
  * Assembles the list of generic variables referenced by all member types in this collection
  */
 @InternalSdkApi
-public fun Collection<Member>.genericVars(): GenericsSet = GenericsSet(flatMap { it.type.genericVars().toList() })
+public fun Collection<Member>.genericVars(): GenericsSet = GenericsSet(flatMap { it.type.genericVarsList() })
 
 /**
  * Returns whether this [TypeRef] is generic for an [other]

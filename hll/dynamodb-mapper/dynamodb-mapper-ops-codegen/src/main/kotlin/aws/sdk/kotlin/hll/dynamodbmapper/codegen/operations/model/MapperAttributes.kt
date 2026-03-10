@@ -18,6 +18,11 @@ internal object MapperAttributes {
     val CodegenBehavior: AttributeKey<MemberCodegenBehavior> = AttributeKey("aws.sdk.kotlin.ddbmapper#CodegenBehavior")
 
     /**
+     * Gets the list of additional parameters used in the high-low conversion method generated for a given structure
+     */
+    val ConversionParameters: AttributeKey<List<ConversionParameter>> = AttributeKey("aws.sdk.kotlin.ddbmapper#ConversionParameters")
+
+    /**
      * Identifies whether this [Member] is inherited from the type hierarchy of its [Structure]
      */
     val IsInherited: AttributeKey<Boolean> = AttributeKey("aws.sdk.kotlin#InInherited")

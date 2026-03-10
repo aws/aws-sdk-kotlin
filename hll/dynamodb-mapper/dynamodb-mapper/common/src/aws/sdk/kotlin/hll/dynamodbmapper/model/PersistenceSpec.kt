@@ -40,3 +40,8 @@ public interface PersistenceSpec<T> {
         override val schema: ItemSchema.CompositeKey<T, PK, SK>
     }
 }
+
+/**
+ * Defines the specification for reading/writing items from [DynamoDbMapper] directly (e.g., cross-table operations)
+ */
+public typealias DynamoDbMapperSpec = PersistenceSpec<Any?>

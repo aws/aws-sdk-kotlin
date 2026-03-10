@@ -51,7 +51,9 @@ public class GenericsSet internal constructor(internal val byName: Map<String, T
     override fun contains(element: TypeVar): Boolean = element.shortName in byName
     override fun iterator(): Iterator<TypeVar> = byName.values.iterator()
 
-    override fun containsAll(elements: Collection<TypeVar>): Boolean = byName.keys.containsAll(elements.map { it.shortName })
+    override fun containsAll(elements: Collection<TypeVar>): Boolean = byName
+        .keys
+        .containsAll(elements.map { it.shortName })
 
     /**
      * Add the contents of this and another generics set, yielding a new generics set. Variables with the same name will
@@ -82,4 +84,12 @@ public class GenericsSet internal constructor(internal val byName: Map<String, T
             else -> this
         }
     }
+}
+
+/**
+ * Returns this collection if it's not `null` and an empty collection otherwise
+ */
+public fun GenericsSet?.orEmpty(): GenericsSet = when (this) {
+    null -> GenericsSet()
+    else -> this
 }

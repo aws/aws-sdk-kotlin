@@ -15,12 +15,17 @@ public object MapperPkg {
         public val Internal: String = "$Base.internal"
         public val Items: String = "$Base.items"
         public val Model: String = "$Base.model"
-        public val Ops: String = "$Base.operations"
         public val PipelineImpl: String = "$Base.pipeline.internal"
         public val Values: String = "$Base.values"
         public val CollectionValues: String = "$Values.collections"
         public val ScalarValues: String = "$Values.scalars"
         public val SmithyTypeValues: String = "$Values.smithytypes"
+
+        @InternalSdkApi
+        public object Ops {
+            public val Base: String = "${Hl.Base}.operations"
+            public val Internal: String = "$Base.internal"
+        }
 
         @InternalSdkApi
         public object Expressions {
