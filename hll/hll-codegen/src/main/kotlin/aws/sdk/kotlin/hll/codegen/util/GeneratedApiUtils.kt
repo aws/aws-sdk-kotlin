@@ -15,8 +15,10 @@ import aws.smithy.kotlin.runtime.collections.Attributes
  * Writes a `@GeneratedApi` annotation if the given [subject]'s attributes have [generatedApi] set
  */
 @InternalSdkApi
-public fun CodeGenerator.generatedAnnotation(vararg subjects: HasAttributes): Unit =
-    generatedAnnotation(*subjects.map { it.attributes }.toTypedArray())
+public fun CodeGenerator.generatedAnnotation(vararg subjects: HasAttributes) {
+    val subjectAttributes = subjects.map { it.attributes }.toTypedArray()
+    generatedAnnotation(*subjectAttributes)
+}
 
 /**
  * Writes a `@GeneratedApi` annotation if the given [subjectAttributes] have [generatedApi] set

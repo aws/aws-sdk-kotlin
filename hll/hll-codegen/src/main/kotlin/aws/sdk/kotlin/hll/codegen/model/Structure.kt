@@ -50,8 +50,10 @@ public data class Structure(
         /**
          * Derives a [Structure] from the given [KSTypeReference]
          */
-        public fun from(ksTypeRef: KSTypeReference): Structure =
-            from(ksTypeRef.resolve().declaration as KSClassDeclaration)
+        public fun from(ksTypeRef: KSTypeReference): Structure {
+            val ksClassDeclaration = ksTypeRef.resolve().declaration as KSClassDeclaration
+            return from(ksClassDeclaration)
+        }
     }
 }
 
