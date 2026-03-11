@@ -126,7 +126,7 @@ public interface CodeGenerator {
     /**
      * Writes a newline
      */
-    public fun write() {
+    public fun newline() {
         write("")
     }
 

@@ -229,7 +229,7 @@ internal class KeyProjectedTypeRenderer(
         BuilderRenderer(
             ctx = builderCtx,
             generator = this@KeyProjectedTypeRenderer,
-            builtType = projection.interfaceStruct.type,
+            builtStructure = projection.interfaceStruct,
             implementationType = projection.implStruct.type,
             members = projection.builderStruct.members,
             builderNameOverride = projection.builderStruct.type.shortName,

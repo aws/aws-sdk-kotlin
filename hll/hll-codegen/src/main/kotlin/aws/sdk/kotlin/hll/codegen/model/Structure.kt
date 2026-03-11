@@ -5,9 +5,7 @@
 package aws.sdk.kotlin.hll.codegen.model
 
 import aws.sdk.kotlin.runtime.InternalSdkApi
-import aws.smithy.kotlin.runtime.collections.Attributes
-import aws.smithy.kotlin.runtime.collections.emptyAttributes
-import aws.smithy.kotlin.runtime.collections.get
+import aws.smithy.kotlin.runtime.collections.*
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
@@ -22,17 +20,20 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 public data class Structure(
     val type: TypeRef,
     val members: Set<Member>,
-    val attributes: Attributes = emptyAttributes(),
-) {
+    override val attributes: Attributes = emptyAttributes(),
+) : HasAttributes {
     @InternalSdkApi
     public companion object {
         /**
-         * Derives a [Structure] from the given [KSTypeReference]
+         * Derives a [Structure] from the given [KSClassDeclaration]
          */
-        public fun from(ksTypeRef: KSTypeReference): Structure {
-            val initialTypeRef = Type.from(ksTypeRef)
+        public fun from(
+            ksClassDeclaration: KSClassDeclaration,
+            additionalAttributes: AttributesBuilder.() -> Unit = { },
+        ): Structure {
+            val initialTypeRef = Type.from(ksClassDeclaration)
 
-            val members = (ksTypeRef.resolve().declaration as KSClassDeclaration)
+            val members = ksClassDeclaration
                 .getDeclaredProperties()
                 .map(Member.Companion::from)
                 .toSet()
@@ -42,7 +43,16 @@ public data class Structure(
             return Structure(
                 type = initialTypeRef.copy(genericArgs = typeArgs.toList()),
                 members = members,
+                attributes = attributesOf { additionalAttributes() },
             )
+        }
+
+        /**
+         * Derives a [Structure] from the given [KSTypeReference]
+         */
+        public fun from(ksTypeRef: KSTypeReference): Structure {
+            val ksClassDeclaration = ksTypeRef.resolve().declaration as KSClassDeclaration
+            return from(ksClassDeclaration)
         }
     }
 }

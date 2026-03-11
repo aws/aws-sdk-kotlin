@@ -200,10 +200,6 @@ private val rules = listOf(
     Rule("attributesToGet", Types.Kotlin.list(Types.Kotlin.String), Drop),
     Rule("attributeUpdates", Types.Kotlin.stringMap(llType("AttributeValueUpdate")), Drop),
 
-    // FIXME Add support for workloadProfileName as a pass-through field by applying a @Synthetic annotation to
-    //  pass-through members and ignoring API validation for them
-    Rule("workloadProfileName", Types.Kotlin.String, Drop),
-
     // Hoisted members
     Rule("tableName", Types.Kotlin.String, Hoist),
     Rule("indexName", Types.Kotlin.String, Hoist),

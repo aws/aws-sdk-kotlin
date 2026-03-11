@@ -91,17 +91,43 @@ class SchemaGeneratorPluginTest {
         val schemaContents = schemaFile.readText()
 
         // Builder
-        assertContains(schemaContents, "public class UserBuilder")
-        assertContains(schemaContents, "public var id: Int? = null")
-        assertContains(schemaContents, "public var givenName: String? = null")
-        assertContains(schemaContents, "public var surname: String? = null")
-        assertContains(schemaContents, "public var age: Int? = null")
-        assertContains(schemaContents, "public fun build(): User")
+        assertContains(
+            schemaContents,
+            """
+                @GeneratedApi
+                public class UserBuilder {
+                    @GeneratedApi
+                    public var id: Int? = null
+                    @GeneratedApi
+                    public var givenName: String? = null
+                    @GeneratedApi
+                    public var surname: String? = null
+                    @GeneratedApi
+                    public var age: Int? = null
+
+                    @GeneratedApi
+                    public fun build(): User {
+                        val id = requireNotNull(id) { "Missing value for id" }
+                        val givenName = requireNotNull(givenName) { "Missing value for givenName" }
+                        val surname = requireNotNull(surname) { "Missing value for surname" }
+                        val age = requireNotNull(age) { "Missing value for age" }
+
+                        return User(
+                            id,
+                            givenName,
+                            surname,
+                            age,
+                        )
+                    }
+                }
+            """.trimIndent(),
+        )
 
         // Converter
         assertContains(
             schemaContents,
             """
+                @GeneratedApi
                 public object UserConverter : ItemConverter<User> by SimpleItemConverter(
                     builderFactory = ::UserBuilder,
                     build = UserBuilder::build,
@@ -139,6 +165,7 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
+                @GeneratedApi
                 public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
                     override val converter: UserConverter = UserConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
@@ -150,7 +177,10 @@ class SchemaGeneratorPluginTest {
         // GetTable
         assertContains(
             schemaContents,
-            "public fun DynamoDbMapper.getUserTable(name: String): Table.PartitionKey<User, KeyType.Key1<Int>> = getTable(name, UserSchema)",
+            """
+                @GeneratedApi
+                public fun DynamoDbMapper.getUserTable(name: String): Table.PartitionKey<User, KeyType.Key1<Int>> = getTable(name, UserSchema)
+            """.trimIndent(),
         )
     }
 
@@ -173,6 +203,7 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
+                @GeneratedApi
                 public object BuilderNotRequiredConverter : ItemConverter<BuilderNotRequired> by SimpleItemConverter(
                     builderFactory = { BuilderNotRequired() },
                     build = { this },
@@ -230,12 +261,37 @@ class SchemaGeneratorPluginTest {
         val schemaContents = schemaFile.readText()
 
         // Assert a builder is still generated, because we configured GenerateBuilderClasses.ALWAYS
-        assertContains(schemaContents, "public class BuilderNotRequiredBuilder")
-        assertContains(schemaContents, "public var id: Int? = null")
-        assertContains(schemaContents, "public var givenName: String? = null")
-        assertContains(schemaContents, "public var surname: String? = null")
-        assertContains(schemaContents, "public var age: Int? = null")
-        assertContains(schemaContents, "public fun build(): BuilderNotRequired")
+        assertContains(
+            schemaContents,
+            """
+                @GeneratedApi
+                public class BuilderNotRequiredBuilder {
+                    @GeneratedApi
+                    public var id: Int? = null
+                    @GeneratedApi
+                    public var givenName: String? = null
+                    @GeneratedApi
+                    public var surname: String? = null
+                    @GeneratedApi
+                    public var age: Int? = null
+
+                    @GeneratedApi
+                    public fun build(): BuilderNotRequired {
+                        val id = requireNotNull(id) { "Missing value for id" }
+                        val givenName = requireNotNull(givenName) { "Missing value for givenName" }
+                        val surname = requireNotNull(surname) { "Missing value for surname" }
+                        val age = requireNotNull(age) { "Missing value for age" }
+
+                        return BuilderNotRequired(
+                            id,
+                            givenName,
+                            surname,
+                            age,
+                        )
+                    }
+                }
+            """.trimIndent(),
+        )
     }
 
     @Test
@@ -383,12 +439,37 @@ class SchemaGeneratorPluginTest {
 
         val schemaContents = schemaFile.readText()
 
-        assertContains(schemaContents, "public class IgnoredProperty")
-        assertContains(schemaContents, "public var id: Int? = null")
-        assertContains(schemaContents, "public var givenName: String? = null")
-        assertContains(schemaContents, "public var surname: String? = null")
-        assertContains(schemaContents, "public var age: Int? = null")
-        assertContains(schemaContents, "public fun build(): IgnoredProperty")
+        assertContains(
+            schemaContents,
+            """
+                @GeneratedApi
+                public class IgnoredPropertyBuilder {
+                    @GeneratedApi
+                    public var id: Int? = null
+                    @GeneratedApi
+                    public var givenName: String? = null
+                    @GeneratedApi
+                    public var surname: String? = null
+                    @GeneratedApi
+                    public var age: Int? = null
+                
+                    @GeneratedApi
+                    public fun build(): IgnoredProperty {
+                        val id = requireNotNull(id) { "Missing value for id" }
+                        val givenName = requireNotNull(givenName) { "Missing value for givenName" }
+                        val surname = requireNotNull(surname) { "Missing value for surname" }
+                        val age = requireNotNull(age) { "Missing value for age" }
+                
+                        return IgnoredProperty(
+                            id,
+                            givenName,
+                            surname,
+                            age,
+                        )
+                    }
+                }
+            """.trimIndent(),
+        )
 
         // ssn is annotated with DynamoDbIgnore
         assertFalse(schemaContents.contains("public var ssn: String? = null"))
@@ -410,6 +491,7 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
+                @GeneratedApi
                 public object CustomUserSchema : ItemSchema.PartitionKey<CustomUser, KeyType.Key1<Int>> {
                     override val converter: MyCustomUserConverter = MyCustomUserConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
@@ -567,6 +649,7 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
+                @GeneratedApi
                 public object RenamedPartitionKeySchema : ItemSchema.PartitionKey<RenamedPartitionKey, KeyType.Key1<Int>> {
                     override val converter: RenamedPartitionKeyConverter = RenamedPartitionKeyConverter
                     override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("user_id")

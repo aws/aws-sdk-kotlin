@@ -6,9 +6,7 @@ package aws.sdk.kotlin.hll.codegen.model
 
 import aws.sdk.kotlin.hll.codegen.util.capitalizeFirstChar
 import aws.sdk.kotlin.runtime.InternalSdkApi
-import aws.smithy.kotlin.runtime.collections.Attributes
-import aws.smithy.kotlin.runtime.collections.emptyAttributes
-import aws.smithy.kotlin.runtime.collections.get
+import aws.smithy.kotlin.runtime.collections.*
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 
 /**
@@ -24,8 +22,8 @@ public data class Operation(
     val methodName: String,
     val request: Structure,
     val response: Structure,
-    val attributes: Attributes = emptyAttributes(),
-) {
+    override val attributes: Attributes = emptyAttributes(),
+) : HasAttributes {
     /**
      * The capitalized name of this operation's [methodName]. For example, if [methodName] is `getItem` then [name]
      * would be `GetItem`.
@@ -37,10 +35,14 @@ public data class Operation(
         /**
          * Derive an [Operation] from a [KSFunctionDeclaration]
          */
-        public fun from(declaration: KSFunctionDeclaration): Operation = Operation(
+        public fun from(
+            declaration: KSFunctionDeclaration,
+            additionalAttributes: AttributesBuilder.() -> Unit = { },
+        ): Operation = Operation(
             methodName = declaration.simpleName.getShortName(),
             request = Structure.from(declaration.parameters.single().type),
             response = Structure.from(declaration.returnType!!),
+            attributes = attributesOf { additionalAttributes() },
         )
     }
 }
