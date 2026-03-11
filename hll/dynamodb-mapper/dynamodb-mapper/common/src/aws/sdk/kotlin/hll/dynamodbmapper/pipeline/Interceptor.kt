@@ -69,12 +69,13 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItem
  * * For phases _after_ the **Low-level invocation** step, hooks will be executed _in reverse order_
  *
  * @param T The type of item being serialized
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
  * @param HRes The type of high-level response object (e.g., [GetItemResponse])
  */
-public interface Interceptor<T, HReq, LReq, LRes, HRes> {
+public interface Interceptor<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes> {
     // Hooks functions are defined in the same order as pipeline execution below:
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -85,20 +86,20 @@ public interface Interceptor<T, HReq, LReq, LRes, HRes> {
      * A **read-only** hook that runs _after_ the **Initialization** step
      * @param ctx Context containing the high-level request
      */
-    public fun readAfterInitialization(ctx: HReqContext<T, HReq>) { }
+    public fun readAfterInitialization(ctx: HReqContext<T, S, HReq>) { }
 
     /**
      * A **modify** hook that runs _before_ the **Serialization** step
      * @param ctx Context containing the high-level request
      * @return A [SerializeInput] containing a potentially-modified high-level request and/or [ItemSchema]
      */
-    public fun modifyBeforeSerialization(ctx: HReqContext<T, HReq>): SerializeInput<T, HReq> = ctx
+    public fun modifyBeforeSerialization(ctx: HReqContext<T, S, HReq>): SerializeInput<T, S, HReq> = ctx
 
     /**
      * A **read-only** hook that runs _before_ the **Serialization** step
      * @param ctx Context containing the high-level request
      */
-    public fun readBeforeSerialization(ctx: HReqContext<T, HReq>) { }
+    public fun readBeforeSerialization(ctx: HReqContext<T, S, HReq>) { }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Serialization step
@@ -109,20 +110,20 @@ public interface Interceptor<T, HReq, LReq, LRes, HRes> {
      * @param ctx Context containing the high-level request and low-level request, which may be `null` if an exception
      * was caught during serialization
      */
-    public fun readAfterSerialization(ctx: LReqContext<T, HReq, LReq?>) { }
+    public fun readAfterSerialization(ctx: LReqContext<T, S, HReq, LReq?>) { }
 
     /**
      * A **modify** hook that runs _before_ the **Low-level invocation** step
      * @param ctx Context containing the high-level and low-level requests
      * @return A potentially-modified low-level request
      */
-    public fun modifyBeforeInvocation(ctx: LReqContext<T, HReq, LReq>): LReq = ctx.lowLevelRequest
+    public fun modifyBeforeInvocation(ctx: LReqContext<T, S, HReq, LReq>): LReq = ctx.lowLevelRequest
 
     /**
      * A **read-only** hook that runs _before_ the **Low-level invocation** step
      * @param ctx Context containing the high-level and low-level requests
      */
-    public fun readBeforeInvocation(ctx: LReqContext<T, HReq, LReq>) { }
+    public fun readBeforeInvocation(ctx: LReqContext<T, S, HReq, LReq>) { }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Invocation step
@@ -133,20 +134,20 @@ public interface Interceptor<T, HReq, LReq, LRes, HRes> {
      * @param ctx Context containing the high-level/low-level requests and the low-level response, which may be
      * `null` if an exception was caught during low-level invocation
      */
-    public fun readAfterInvocation(ctx: LResContext<T, HReq, LReq, LRes?>) { }
+    public fun readAfterInvocation(ctx: LResContext<T, S, HReq, LReq, LRes?>) { }
 
     /**
      * A **modify** hook that runs _before_ the **Deserialization** step
      * @param ctx Context containing the high-level/low-level requests and the low-level response
      * @return A [DeserializeInput] containing a potentially-modified low-level response and/or [ItemSchema]
      */
-    public fun modifyBeforeDeserialization(ctx: LResContext<T, HReq, LReq, LRes>): DeserializeInput<T, LRes> = ctx
+    public fun modifyBeforeDeserialization(ctx: LResContext<T, S, HReq, LReq, LRes>): DeserializeInput<T, S, LRes> = ctx
 
     /**
      * A **read-only** hook that runs _before_ the **Deserialization** step
      * @param ctx Context containing the high-level/low-level requests and the low-level response
      */
-    public fun readBeforeDeserialization(ctx: LResContext<T, HReq, LReq, LRes>) { }
+    public fun readBeforeDeserialization(ctx: LResContext<T, S, HReq, LReq, LRes>) { }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Deserialization step
@@ -157,20 +158,20 @@ public interface Interceptor<T, HReq, LReq, LRes, HRes> {
      * @param ctx Context containing the high-level/low-level requests, the low-level response, and the high-level
      * response, which may be `null` if an exception was caught during deserialization
      */
-    public fun readAfterDeserialization(ctx: HResContext<T, HReq, LReq, LRes, HRes?>) { }
+    public fun readAfterDeserialization(ctx: HResContext<T, S, HReq, LReq, LRes, HRes?>) { }
 
     /**
      * A **modify** hook that runs _before_ the **Completion** step
      * @param ctx Context containing the high-level/low-level requests and responses
      * @return A potentially-modified high-level response
      */
-    public fun modifyBeforeCompletion(ctx: HResContext<T, HReq, LReq, LRes, HRes>): HRes = ctx.highLevelResponse
+    public fun modifyBeforeCompletion(ctx: HResContext<T, S, HReq, LReq, LRes, HRes>): HRes = ctx.highLevelResponse
 
     /**
      * A **read-only** hook that runs _before_ the **Completion** step
      * @param ctx Context containing the high-level/low-level requests and responses
      */
-    public fun readBeforeCompletion(ctx: HResContext<T, HReq, LReq, LRes, HRes>) { }
+    public fun readBeforeCompletion(ctx: HResContext<T, S, HReq, LReq, LRes, HRes>) { }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Completion step
@@ -180,4 +181,4 @@ public interface Interceptor<T, HReq, LReq, LRes, HRes> {
 /**
  * A universal interceptor which acts on any type of high-level objects, requests, and responses
  */
-public typealias InterceptorAny = Interceptor<*, *, *, *, *>
+public typealias InterceptorAny = Interceptor<Any, ItemSchema<Any>, Any, Any, Any, Any>

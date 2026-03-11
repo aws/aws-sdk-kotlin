@@ -3,12 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import aws.sdk.kotlin.gradle.kmp.NATIVE_ENABLED
-import com.amazonaws.services.dynamodbv2.local.main.ServerRunner
-import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer
-import com.google.devtools.ksp.gradle.KspTaskJvm
-import com.google.devtools.ksp.gradle.KspTaskMetadata
+import dev.mokkery.verify.VerifyMode
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+import software.amazon.dynamodb.services.local.main.ServerRunner
+import software.amazon.dynamodb.services.local.server.DynamoDBProxyServer
 import java.net.ServerSocket
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -26,6 +24,7 @@ buildscript {
 
 plugins {
     alias(libs.plugins.ksp)
+    alias(libs.plugins.mokkery)
     `dokka-convention`
 }
 
@@ -43,14 +42,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation(libs.mockk)
-                implementation(libs.kotest.assertions.core)
-                implementation(libs.kotest.runner.junit5)
+                implementation(libs.smithy.kotlin.testing)
             }
         }
     }
@@ -65,71 +57,66 @@ ksp {
         "putItem",
         "query",
         "scan",
+        "updateItem",
     )
     arg("op-allowlist", allowlist.joinToString(";"))
 }
+// FIXME dynamodb-mapper native compilation never worked?
+// if (project.NATIVE_ENABLED) {
+//    // Configure KSP for multiplatform: https://kotlinlang.org/docs/ksp-multiplatform.html
+//    // https://github.com/google/ksp/issues/963#issuecomment-1894144639
+//    // https://github.com/google/ksp/issues/965
+//    dependencies.kspCommonMainMetadata(project(":hll:dynamodb-mapper:dynamodb-mapper-ops-codegen"))
+//
+//    kotlin.sourceSets.commonMain {
+//        // Wire up the generated source to the commonMain source set
+//        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+//    }
+// }
 
-if (project.NATIVE_ENABLED) {
-    // Configure KSP for multiplatform: https://kotlinlang.org/docs/ksp-multiplatform.html
-    // https://github.com/google/ksp/issues/963#issuecomment-1894144639
-    // https://github.com/google/ksp/issues/965
-    dependencies.kspCommonMainMetadata(project(":hll:dynamodb-mapper:dynamodb-mapper-ops-codegen"))
+// FIXME This is a dirty hack for JVM-only builds which KSP doesn't consider to be "multiplatform".
+//  Explanation of hack follows in narrative, minimally-opinionated comments.
 
-    kotlin.sourceSets.commonMain {
-        tasks.withType<KspTaskMetadata> {
-            // Wire up the generated source to the commonMain source set
-            kotlin.srcDir(destinationDirectory)
+// Start by invoking the JVM-only KSP configuration
+dependencies.kspJvm(project(":hll:dynamodb-mapper:dynamodb-mapper-ops-codegen"))
+
+// Then we need to move the generated source from jvm to common
+val moveGenSrc by tasks.registering {
+    // Can't move src until the src is generated
+    dependsOn(tasks.named("kspKotlinJvm"))
+
+    // Detecting these paths programmatically is complex; just hardcode them
+    val srcDir = file("build/generated/ksp/jvm/jvmMain")
+    val destDir = file("build/generated/ksp/common/commonMain")
+
+    inputs.dir(srcDir)
+    outputs.dirs(srcDir, destDir)
+
+    doLast {
+        if (destDir.exists()) {
+            // Clean out the existing destination, otherwise move fails
+            require(destDir.deleteRecursively()) { "Failed to delete $destDir before moving from $srcDir" }
+        } else {
+            // Create the destination directories, otherwise move fails
+            require(destDir.mkdirs()) { "Failed to create path $destDir" }
         }
+
+        Files.move(srcDir.toPath(), destDir.toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
-} else {
-    // FIXME This is a dirty hack for JVM-only builds which KSP doesn't consider to be "multiplatform". Explanation of
-    //  hack follows in narrative, minimally-opinionated comments.
+}
 
-    // Start by invoking the JVM-only KSP configuration
-    dependencies.kspJvm(project(":hll:dynamodb-mapper:dynamodb-mapper-ops-codegen"))
+// Ensure all source jar tasks depend on the generated source move
+tasks.matching { it.name.endsWith("SourcesJar", ignoreCase = true) || it.name == "jvmProcessResources" }.configureEach {
+    dependsOn(moveGenSrc)
+}
 
-    // Then we need to move the generated source from jvm to common
-    val moveGenSrc by tasks.registering {
-        // Can't move src until the src is generated
-        dependsOn(tasks.named("kspKotlinJvm"))
+tasks.withType<KotlinCompilationTask<*>> {
+    dependsOn(moveGenSrc)
+}
 
-        // Detecting these paths programmatically is complex; just hardcode them
-        val srcDir = file("build/generated/ksp/jvm/jvmMain")
-        val destDir = file("build/generated/ksp/common/commonMain")
-
-        inputs.dir(srcDir)
-        outputs.dirs(srcDir, destDir)
-
-        doLast {
-            if (destDir.exists()) {
-                // Clean out the existing destination, otherwise move fails
-                require(destDir.deleteRecursively()) { "Failed to delete $destDir before moving from $srcDir" }
-            } else {
-                // Create the destination directories, otherwise move fails
-                require(destDir.mkdirs()) { "Failed to create path $destDir" }
-            }
-
-            Files.move(srcDir.toPath(), destDir.toPath(), StandardCopyOption.REPLACE_EXISTING)
-        }
-    }
-
-    listOf("jvmSourcesJar", "metadataSourcesJar", "jvmProcessResources").forEach {
-        tasks.named(it) {
-            dependsOn(moveGenSrc)
-        }
-    }
-
-    tasks.withType<KotlinCompilationTask<*>> {
-        if (this !is KspTaskJvm) {
-            // Ensure that any **non-KSP** compile tasks depend on the generated src move
-            dependsOn(moveGenSrc)
-        }
-    }
-
-    // Finally, wire up the generated source to the commonMain source set
-    kotlin.sourceSets.commonMain {
-        kotlin.srcDir("build/generated/ksp/common/commonMain/kotlin")
-    }
+// Finally, wire up the generated source to the commonMain source set
+kotlin.sourceSets.commonMain {
+    kotlin.srcDir("build/generated/ksp/common/commonMain/kotlin")
 }
 
 open class DynamoDbLocalInstance : DefaultTask() {
@@ -174,7 +161,7 @@ open class DynamoDbLocalInstance : DefaultTask() {
     }
 }
 
-val startDdbLocal = task<DynamoDbLocalInstance>("startDdbLocal") {
+val startDdbLocal = tasks.register<DynamoDbLocalInstance>("startDdbLocal") {
     portFile.set(file("build/ddblocal/port.info")) // Keep in sync with DdbLocalTest.kt
     outputs.upToDateWhen { false } // Always run this task even if a portFile already exists
 }
@@ -182,6 +169,10 @@ val startDdbLocal = task<DynamoDbLocalInstance>("startDdbLocal") {
 tasks.withType<Test> {
     dependsOn(startDdbLocal)
     doLast {
-        startDdbLocal.stop()
+        startDdbLocal.get().stop()
     }
+}
+
+mokkery {
+    defaultVerifyMode.set(VerifyMode.order)
 }

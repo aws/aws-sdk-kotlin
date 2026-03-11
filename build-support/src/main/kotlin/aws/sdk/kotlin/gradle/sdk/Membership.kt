@@ -9,8 +9,7 @@ package aws.sdk.kotlin.gradle.sdk
  */
 data class Membership(val inclusions: Set<String> = emptySet(), val exclusions: Set<String> = emptySet())
 
-fun Membership.isMember(vararg memberNames: String): Boolean =
-    memberNames.none(exclusions::contains) && (inclusions.isEmpty() || memberNames.any(inclusions::contains))
+fun Membership.isMember(vararg memberNames: String): Boolean = memberNames.none(exclusions::contains) && (inclusions.isEmpty() || memberNames.any(inclusions::contains))
 fun parseMembership(rawList: String?): Membership {
     if (rawList == null) return Membership()
 

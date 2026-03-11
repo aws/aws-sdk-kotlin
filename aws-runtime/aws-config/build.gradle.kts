@@ -57,7 +57,6 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation(libs.mockk)
-                implementation(libs.kotest.runner.junit5)
             }
         }
 
@@ -68,8 +67,7 @@ kotlin {
     }
 }
 
-fun awsModelFile(name: String): String =
-    rootProject.file("codegen/sdk/aws-models/$name").relativeTo(project.layout.buildDirectory.get().asFile).toString()
+fun awsModelFile(name: String): String = rootProject.file("codegen/sdk/aws-models/$name").relativeTo(project.layout.buildDirectory.get().asFile).toString()
 
 val codegen by configurations.getting
 dependencies {

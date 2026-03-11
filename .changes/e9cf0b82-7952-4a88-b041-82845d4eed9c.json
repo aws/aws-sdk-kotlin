@@ -1,0 +1,5 @@
+{
+    "id": "e9cf0b82-7952-4a88-b041-82845d4eed9c",
+    "type": "feature",
+    "description": "Add support for resource counting through the `@DynamoDbCounter` annotation"
+}

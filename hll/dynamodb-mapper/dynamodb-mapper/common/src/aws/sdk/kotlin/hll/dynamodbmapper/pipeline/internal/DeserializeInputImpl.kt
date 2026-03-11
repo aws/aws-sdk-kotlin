@@ -7,7 +7,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.DeserializeInput
 
-internal data class DeserializeInputImpl<T, LRes>(
+internal data class DeserializeInputImpl<T, S : ItemSchema<T>, LRes>(
     override val lowLevelResponse: LRes,
-    override val deserializeSchema: ItemSchema<T>,
-) : DeserializeInput<T, LRes>
+    override val deserializeSchema: S,
+) : DeserializeInput<T, S, LRes>

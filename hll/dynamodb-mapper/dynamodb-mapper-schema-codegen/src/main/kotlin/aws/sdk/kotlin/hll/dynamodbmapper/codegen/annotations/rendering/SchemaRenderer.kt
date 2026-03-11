@@ -16,6 +16,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.*
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.AnnotationsProcessorOptions
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.GenerateBuilderClasses
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
+import aws.smithy.kotlin.codegen.core.RuntimeTypes
 import aws.smithy.kotlin.runtime.collections.get
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAnnotationsByType
@@ -41,16 +42,20 @@ internal class SchemaRenderer(
     private val converterName = "${className}Converter"
     private val schemaName = "${className}Schema"
 
-    private val dynamoDbItemAnnotation = classDeclaration.getAnnotationsByType(DynamoDbItem::class).single()
+    // The fully qualified name of the user-specified ItemConverter, if set
+    private val userItemConverterFqn: String? = (
+        classDeclaration
+            .annotations
+            .single { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbItem::class.qualifiedName }
+            .arguments.single().value as? KSType
+        )?.declaration?.qualifiedName?.asString()
+        ?.takeIf { it != "aws.sdk.kotlin.hll.mapping.core.converters.Converter" } // filter default values
 
-    private val itemConverter: Type = dynamoDbItemAnnotation
-        .converterName
-        .takeIf { it.isNotBlank() }
-        ?.let {
-            val pkg = it.substringBeforeLast(".")
-            val shortName = it.removePrefix("$pkg.")
-            TypeRef(pkg, shortName)
-        } ?: TypeRef(ctx.pkg, converterName)
+    private val itemConverter: Type = userItemConverterFqn?.let {
+        val pkg = it.substringBeforeLast(".")
+        val shortName = it.removePrefix("$pkg.")
+        TypeRef(pkg, shortName)
+    } ?: TypeRef(ctx.pkg, converterName)
 
     private val properties = classDeclaration
         .getAllProperties()
@@ -91,7 +96,7 @@ internal class SchemaRenderer(
             renderBuilder()
         }
 
-        if (dynamoDbItemAnnotation.converterName.isBlank()) {
+        if (userItemConverterFqn == null) {
             renderItemConverter()
         }
 
@@ -111,7 +116,7 @@ internal class SchemaRenderer(
             attributes = ctx.attributes + (ModelAttributes.GeneratedApi to true),
         )
         val members = properties.map(Member::from).toSet()
-        BuilderRenderer(this, classStructure, classType, members, builderCtx).render()
+        BuilderRenderer(builderCtx, this, classStructure, classType, members).render()
     }
 
     private fun renderItemConverter() {
@@ -332,6 +337,65 @@ internal class SchemaRenderer(
                 keySpecInstantiation(sortKeyProps)
                 newline()
             }
+
+            // Handle TTL annotations
+            val ttlFields = properties.mapNotNull { prop ->
+                prop.annotations
+                    .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbTtlSeconds::class.qualifiedName }
+                    ?.let { annotation ->
+                        val lifetime = annotation.arguments.single().value as? Long ?: error("@DynamoDbTtlSeconds annotation argument on property ${prop.ddbName} could not be evaluated at compile time. Use a literal value like @DynamoDbTtlSeconds(3600) instead of expressions like @DynamoDbTtlSeconds(1.hours.inWholeSeconds).")
+                        require(lifetime > 0) { "@DynamoDbTtlSeconds must be positive, got $lifetime seconds on property ${prop.ddbName}" }
+                        prop.simpleName.getShortName() to lifetime
+                    }
+            }
+
+            // Handle Counter annotation
+            val counterFields = properties.mapNotNull { prop ->
+                prop.annotations
+                    .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbCounter::class.qualifiedName }
+                    ?.let {
+                        // Validate that counter properties are Int or Long
+                        require(prop.typeRef == Types.Kotlin.Int || prop.typeRef == Types.Kotlin.Long) {
+                            "Property '${prop.name}' annotated with @DynamoDbCounter must be of type Int or Long, but was ${prop.typeRef.shortName}"
+                        }
+                        prop.simpleName.getShortName()
+                    }
+            }.toSet()
+
+            val hasAttributes = ttlFields.isNotEmpty() || counterFields.isNotEmpty()
+
+            if (hasAttributes) {
+                withBlock(
+                    "override val attributes: #T = #T {",
+                    "}",
+                    Type.from(RuntimeTypes.Core.Collections.Attributes),
+                    Type.from(RuntimeTypes.Core.Collections.attributesOf),
+                ) {
+                    if (ttlFields.isNotEmpty()) {
+                        writeInline("#T.#L to #T(", MapperTypes.Model.SchemaAttributes, "TtlFields", Types.Kotlin.Collections.setOf)
+                        ttlFields.forEachIndexed { index, (fieldName, lifetime) ->
+                            if (index > 0) writeInline(", ")
+                            writeInline("#T(#S, #LL)", Types.Kotlin.Pair, fieldName, lifetime)
+                        }
+                        write(")")
+                    }
+                    if (counterFields.isNotEmpty()) {
+                        write(
+                            "#T.#L to #T(#L)",
+                            MapperTypes.Model.SchemaAttributes,
+                            "CounterFields",
+                            Types.Kotlin.Collections.setOf,
+                            counterFields.joinToString(", ") { "\"$it\"" },
+                        )
+                    }
+                }
+            } else {
+                write(
+                    "override val attributes: #T = #T()",
+                    Type.from(RuntimeTypes.Core.Collections.Attributes),
+                    Type.from(RuntimeTypes.Core.Collections.emptyAttributes),
+                )
+            }
         }
 
         blankLine()
@@ -342,16 +406,12 @@ internal class SchemaRenderer(
         val rest = keyProps.drop(1)
 
         val firstTypeRef = when (first.typeRef) {
+            Types.Kotlin.Byte -> MapperTypes.Items.KeySpecByte
             Types.Kotlin.ByteArray -> MapperTypes.Items.KeySpecByteArray
-
-            Types.Kotlin.Byte,
-            Types.Kotlin.Int,
-            Types.Kotlin.Long,
-            Types.Kotlin.Short,
-            -> MapperTypes.Items.keySpecNumber(first.typeRef)
-
+            Types.Kotlin.Int -> MapperTypes.Items.KeySpecInt
+            Types.Kotlin.Long -> MapperTypes.Items.KeySpecLong
+            Types.Kotlin.Short -> MapperTypes.Items.KeySpecShort
             Types.Kotlin.String -> MapperTypes.Items.KeySpecString
-
             else -> error("Unsupported key attribute type ${first.typeRef}")
         }
 
@@ -359,16 +419,12 @@ internal class SchemaRenderer(
 
         rest.forEach { prop ->
             val typeRef = when (prop.typeRef) {
+                Types.Kotlin.Byte -> MapperTypes.Items.KeySpecThenByte
                 Types.Kotlin.ByteArray -> MapperTypes.Items.KeySpecThenByteArray
-
-                Types.Kotlin.Byte,
-                Types.Kotlin.Int,
-                Types.Kotlin.Long,
-                Types.Kotlin.Short,
-                -> MapperTypes.Items.keySpecThenNumber(prop.typeRef)
-
+                Types.Kotlin.Int -> MapperTypes.Items.KeySpecThenInt
+                Types.Kotlin.Long -> MapperTypes.Items.KeySpecThenLong
+                Types.Kotlin.Short -> MapperTypes.Items.KeySpecThenShort
                 Types.Kotlin.String -> MapperTypes.Items.KeySpecThenString
-
                 else -> error("Unsupported key attribute type ${prop.typeRef}")
             }
 

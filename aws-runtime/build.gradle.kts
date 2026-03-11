@@ -2,9 +2,9 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import aws.sdk.kotlin.gradle.dsl.configurePublishing
 import aws.sdk.kotlin.gradle.kmp.kotlin
 import aws.sdk.kotlin.gradle.kmp.needsKmpConfigured
+import aws.sdk.kotlin.gradle.publishing.configurePublishing
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 description = "AWS client runtime support for generated service clients"
@@ -32,7 +32,6 @@ subprojects {
         plugin(libraries.plugins.aws.kotlin.repo.tools.kmp.get().pluginId)
     }
 
-    // TODO Use configurePublishing when migrating to Sonatype Publisher API / JReleaser
     configurePublishing("aws-sdk-kotlin")
 
     kotlin {
@@ -51,6 +50,7 @@ subprojects {
                 dependencies {
                     implementation(libraries.kotest.assertions.core.jvm)
                     implementation(libraries.slf4j.simple)
+                    implementation(libraries.smithy.kotlin.testing)
                 }
             }
         }

@@ -2,7 +2,7 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import aws.sdk.kotlin.gradle.dsl.configurePublishing
+import aws.sdk.kotlin.gradle.publishing.configurePublishing
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
@@ -20,7 +20,7 @@ group = "aws.sdk.kotlin"
 version = sdkVersion
 description = "Provides a BOM"
 
-val evaluateAfter = listOf(":services", ":aws-runtime", ":tests", ":codegen")
+val evaluateAfter = listOf(":services", ":aws-runtime", ":tests", ":codegen", ":hll")
 evaluateAfter.forEach { evaluationDependsOn(it) }
 
 fun createBomConstraintsAndVersionCatalog() {
@@ -43,6 +43,7 @@ fun createBomConstraintsAndVersionCatalog() {
                     val prefix = when {
                         subproject.path.contains(":services") -> "services-"
                         subproject.path.contains(":aws-runtime") -> "runtime-"
+                        subproject.path.contains(":hll") && !subproject.name.startsWith("hll-") -> "hll-"
                         else -> ""
                     }
                     val alias = prefix + artifactId(target)
@@ -93,12 +94,10 @@ fun Project.gav(target: KotlinTarget): String {
     return "$group:$artifactId:$version"
 }
 
-fun DependencyConstraintHandler.api(constraintNotation: Any) =
-    add("api", constraintNotation)
+fun DependencyConstraintHandler.api(constraintNotation: Any) = add("api", constraintNotation)
 
 createBomConstraintsAndVersionCatalog()
 
-// TODO Use configurePublishing when migrating to Sonatype Publisher API / JReleaser
 configurePublishing("aws-sdk-kotlin")
 
 publishing {

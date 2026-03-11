@@ -9,8 +9,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperPkg
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionArgumentsType.AttributeNames
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionArgumentsType.AttributeValues
-import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionLiteralType.Filter
-import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionLiteralType.KeyCondition
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionLiteralType.*
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.MemberCodegenBehavior.*
 
 /**
@@ -27,24 +26,24 @@ internal sealed interface MemberCodegenBehavior {
 
     /**
      * Indicates that a member is an attribute map which may contain _all_ attributes for a data type (as opposed to
-     * only _key_ attributes) and should be replaced with a generic type (i.e., a `Map<String, AttributeValue>` member
-     * in a low-level structure should be replaced with a generic `T` member in a high-level structure)
+     * only _key_ attributes) and should be mapped from a generic item type (i.e., a `Map<String, AttributeValue>`
+     * member) in a low-level structure to a generic `T` member in a high-level structure
      */
-    data object MapAll : MemberCodegenBehavior
+    data object MapToObject : MemberCodegenBehavior
 
     /**
      * Indicates that a member is an attribute map which contains _key_ attributes for a data type (as opposed to _all_
-     * attributes) and should be replaced with a generic type (i.e., a `Map<String, AttributeValue>` member in a
-     * low-level structure should be replaced with a generic `T` member in a high-level structure)
+     * attributes) and should be mapped from a generic item type (i.e., a `Map<String, AttributeValue>` member) in a
+     * low-level structure to `KeyType` derivations in a high-level structure
      */
-    data object MapKeys : MemberCodegenBehavior
+    data object MapToKeys : MemberCodegenBehavior
 
     /**
      * Indicates that a member is a list of attribute maps which may contain attributes for a data type and should be
-     * replaced with a generic list type (i.e., a `List<Map<String, AttributeValue>>` member in a low-level structure
-     * should be replaced with a generic `List<T>` member in a high-level structure)
+     * mapped from a generic list of items (i.e., a `List<Map<String, AttributeValue>>` member) in a low-level structure
+     * to a generic `List<T>` member in a high-level structure
      */
-    data object ListMapAll : MemberCodegenBehavior
+    data object ListMapToObject : MemberCodegenBehavior
 
     /**
      * Indicates that a member is unsupported and should not be replicated from a low-level structure to the high-level
@@ -94,10 +93,18 @@ internal enum class ExpressionArgumentsType {
 }
 
 /**
+ * Indicates whether this behavior represents one of the expression types (e.g., literal or arguments)
+ */
+internal val MemberCodegenBehavior.isExpression: Boolean
+    get() = this is ExpressionLiteral || this is ExpressionArguments
+
+/**
  * Identifies a [MemberCodegenBehavior] for this [Member] by way of various heuristics
  */
 internal val Member.codegenBehavior: MemberCodegenBehavior
-    get() = rules.firstNotNullOfOrNull { it.matchedBehaviorOrNull(this) } ?: PassThrough
+    get() = attributes.getOrNull(MapperAttributes.CodegenBehavior)
+        ?: rules.firstNotNullOfOrNull { it.matchedBehaviorOrNull(this) }
+        ?: PassThrough
 
 private fun llType(name: String) = TypeRef(MapperPkg.Ll.Model, name)
 
@@ -139,6 +146,10 @@ private val rules = listOf(
     Rule("attributesToGet", Types.Kotlin.list(Types.Kotlin.String), Drop),
     Rule("attributeUpdates", Types.Kotlin.stringMap(llType("AttributeValueUpdate")), Drop),
 
+    // FIXME Add support for workloadProfileName as a pass-through field by applying a @Synthetic annotation to
+    //  pass-through members and ignoring API validation for them
+    Rule("workloadProfileName", Types.Kotlin.String, Drop),
+
     // Hoisted members
     Rule("tableName", Types.Kotlin.String, Hoist),
     Rule("indexName", Types.Kotlin.String, Hoist),
@@ -146,18 +157,18 @@ private val rules = listOf(
     // Expression literals
     Rule("keyConditionExpression", Types.Kotlin.String, ExpressionLiteral(KeyCondition)),
     Rule("filterExpression", Types.Kotlin.String, ExpressionLiteral(Filter)),
+    Rule("updateExpression", Types.Kotlin.String, ExpressionLiteral(Update)),
 
     // TODO add support for remaining expression types
     Rule("conditionExpression", Types.Kotlin.String, Drop),
     Rule("projectionExpression", Types.Kotlin.String, Drop),
-    Rule("updateExpression", Types.Kotlin.String, Drop),
 
     // Expression arguments
     Rule("expressionAttributeNames", Types.Kotlin.stringMap(Types.Kotlin.String), ExpressionArguments(AttributeNames)),
     Rule("expressionAttributeValues", MapperTypes.AttributeMap, ExpressionArguments(AttributeValues)),
 
     // Mappable members
-    Rule(".*".toRegex(), Types.Kotlin.list(MapperTypes.AttributeMap), ListMapAll),
-    Rule("key|lastEvaluatedKey|exclusiveStartKey".toRegex(), MapperTypes.AttributeMap, MapKeys),
-    Rule(".*".toRegex(), MapperTypes.AttributeMap, MapAll),
+    Rule(".*".toRegex(), Types.Kotlin.list(MapperTypes.AttributeMap), ListMapToObject),
+    Rule("key|lastEvaluatedKey|exclusiveStartKey".toRegex(), MapperTypes.AttributeMap, MapToKeys),
+    Rule(".*".toRegex(), MapperTypes.AttributeMap, MapToObject),
 )

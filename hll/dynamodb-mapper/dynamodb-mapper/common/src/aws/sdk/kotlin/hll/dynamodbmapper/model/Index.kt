@@ -24,7 +24,9 @@ public interface Index<T> :
      */
     public interface PartitionKey<T, PK : KeyType> :
         Index<T>,
-        PersistenceSpec.PartitionKey<T, PK>
+        IndexSpec.PartitionKey<T, PK>,
+        IndexOperations.PartitionKey<T, PK>,
+        ItemSource.PartitionKey<T, PK>
 
     /**
      * Represents a secondary index whose primary key is a composite of a partition key and a sort key
@@ -34,5 +36,7 @@ public interface Index<T> :
      */
     public interface CompositeKey<T, PK : KeyType, SK : KeyType> :
         Index<T>,
-        PersistenceSpec.CompositeKey<T, PK, SK>
+        IndexSpec.CompositeKey<T, PK, SK>,
+        IndexOperations.CompositeKey<T, PK, SK>,
+        ItemSource.CompositeKey<T, PK, SK>
 }

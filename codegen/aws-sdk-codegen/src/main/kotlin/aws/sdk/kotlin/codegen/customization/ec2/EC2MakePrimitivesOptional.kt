@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 package aws.sdk.kotlin.codegen.customization.ec2
-import software.amazon.smithy.kotlin.codegen.KotlinSettings
-import software.amazon.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.KotlinSettings
+import aws.smithy.kotlin.codegen.integration.KotlinIntegration
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.Shape
 import software.amazon.smithy.model.shapes.ShapeId
@@ -20,8 +20,7 @@ import software.amazon.smithy.model.transform.ModelTransformer
  */
 class EC2MakePrimitivesOptional : KotlinIntegration {
     override val order: Byte = -127
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        settings.service == ShapeId.from("com.amazonaws.ec2#AmazonEC2")
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = settings.service == ShapeId.from("com.amazonaws.ec2#AmazonEC2")
 
     override fun preprocessModel(model: Model, settings: KotlinSettings): Model {
         val updates = mutableListOf<Shape>()

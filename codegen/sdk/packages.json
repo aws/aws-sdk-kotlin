@@ -835,12 +835,6 @@
             "brazilName": "AwsSdkKotlinElasticLoadBalancingV2"
         },
         {
-            "sdkId": "Elastic Transcoder",
-            "namespace": "aws.sdk.kotlin.services.elastictranscoder",
-            "artifactName": "elastictranscoder",
-            "brazilName": "AwsSdkKotlinElasticTranscoder"
-        },
-        {
             "sdkId": "Elasticsearch Service",
             "namespace": "aws.sdk.kotlin.services.elasticsearchservice",
             "artifactName": "elasticsearchservice",
@@ -857,12 +851,6 @@
             "namespace": "aws.sdk.kotlin.services.eventbridge",
             "artifactName": "eventbridge",
             "brazilName": "AwsSdkKotlinEventbridge"
-        },
-        {
-            "sdkId": "Evidently",
-            "namespace": "aws.sdk.kotlin.services.evidently",
-            "artifactName": "evidently",
-            "brazilName": "AwsSdkKotlinEvidently"
         },
         {
             "sdkId": "FMS",
@@ -1061,12 +1049,6 @@
             "namespace": "aws.sdk.kotlin.services.iotwireless",
             "artifactName": "iotwireless",
             "brazilName": "AwsSdkKotlinIotWireless"
-        },
-        {
-            "sdkId": "IoTAnalytics",
-            "namespace": "aws.sdk.kotlin.services.iotanalytics",
-            "artifactName": "iotanalytics",
-            "brazilName": "AwsSdkKotlinIotanalytics"
         },
         {
             "sdkId": "IoTFleetWise",
@@ -2237,6 +2219,12 @@
             "namespace": "aws.sdk.kotlin.services.wellarchitected",
             "artifactName": "wellarchitected",
             "brazilName": "AwsSdkKotlinWellarchitected"
+        },
+        {
+            "sdkId": "Wickr",
+            "namespace": "aws.sdk.kotlin.services.wickr",
+            "artifactName": "wickr",
+            "brazilName": "AwsSdkKotlinWickr"
         },
         {
             "sdkId": "Wisdom",

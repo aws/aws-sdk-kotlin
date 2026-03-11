@@ -33,5 +33,4 @@ internal class S3ExpressDefaultChecksumAlgorithm(
     }
 }
 
-private fun ExecutionContext.usingS3Express(): Boolean =
-    this.getOrNull(AttributeKey(S3_EXPRESS_ENDPOINT_PROPERTY_KEY)) != S3_EXPRESS_ENDPOINT_PROPERTY_VALUE
+private fun ExecutionContext.usingS3Express(): Boolean = this.getOrNull(AttributeKey(S3_EXPRESS_ENDPOINT_PROPERTY_KEY)) != S3_EXPRESS_ENDPOINT_PROPERTY_VALUE

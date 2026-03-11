@@ -13,6 +13,7 @@ import aws.sdk.kotlin.runtime.InternalSdkApi
 
 /**
  * A DSL-style builder renderer.
+ * @param ctx The rendering context
  * @param generator The generator in which the builder will be written
  * @param builtType The [Structure] for which a builder will be generated
  * @param implementationType The [TypeRef] representing the implementing type whose constructor will be called by the
@@ -20,15 +21,17 @@ import aws.sdk.kotlin.runtime.InternalSdkApi
  * Note that this type doesn't have to be public (merely accessible to the `build` method) and may be the same as
  * [builtType] if it has an appropriate constructor.
  * @param members The [Set] of members of [builtType] which will be included in the builder
- * @param ctx The rendering context
+ * @param builderNameOverride May be set to override the name for the builder. If not set, the builder name will be
+ * the same as the interface name concatenated with "Builder".
  */
 @InternalSdkApi
 public class BuilderRenderer(
+    private val ctx: RenderContext,
     private val generator: CodeGenerator,
     private val builtStructure: Structure,
     private val implementationType: TypeRef,
     private val members: Set<Member>,
-    private val ctx: RenderContext,
+    builderNameOverride: String? = null,
 ) : CodeGenerator by generator {
     @InternalSdkApi
     public companion object {
@@ -37,19 +40,20 @@ public class BuilderRenderer(
     }
 
     private val builtType = builtStructure.type
-    private val builderName = builderName(builtStructure)
+    private val builderName = builderNameOverride ?: builderName(builtStructure)
 
     public fun render() {
         docs("A DSL-style builder for instances of [#T]", builtType)
 
         generatedAnnotation(builtStructure, ctx)
-        val genericParams = members.flatMap { it.type.genericVars() }.asParamsList()
-        withBlock("#Lclass #L#L {", "}", ctx.attributes.visibility, builderName, genericParams) {
+        val generics = members.genericVars()
+
+        withBlock("#Lclass #L#G {", "}", ctx.attributes.visibility, builderName, generics) {
             members.forEach(::renderProperty)
             blankLine()
 
             generatedAnnotation(builtStructure, ctx)
-            withBlock("#Lfun build(): #T {", "}", ctx.attributes.visibility, builtType, genericParams) {
+            withBlock("#Lfun build(): #T {", "}", ctx.attributes.visibility, builtType) {
                 members.forEach {
                     if (it.type.nullable) {
                         write("val #1L = #1L", it.name)
@@ -79,6 +83,12 @@ public class BuilderRenderer(
         write("#Lvar #L: #T = null", ctx.attributes.visibility, member.name, member.type.nullable())
 
         if (dslInfo != null) {
+            val dslBlockResultType = when (dslInfo.implFinalizer) {
+                null -> member.type
+                else -> Types.Kotlin.Unit
+            }
+            val constructorIfNecessary = if (dslInfo.implSingleton) "" else "()"
+
             blankLine()
             generatedAnnotation(member, ctx)
             withBlock(
@@ -87,10 +97,19 @@ public class BuilderRenderer(
                 ctx.attributes.visibility,
                 member.name,
                 dslInfo.interfaceType,
-                member.type,
+                dslBlockResultType,
             ) {
-                val constructorIfNecessary = if (dslInfo.implSingleton) "" else "()"
-                write("#L = #T#L.run(block)", member.name, dslInfo.implType, constructorIfNecessary)
+                if (dslInfo.implFinalizer == null) {
+                    write("#L = #T#L.run(block)", member.name, dslInfo.implType, constructorIfNecessary)
+                } else {
+                    write(
+                        "#L = #T#L.apply(block)#L",
+                        member.name,
+                        dslInfo.implType,
+                        constructorIfNecessary,
+                        dslInfo.implFinalizer,
+                    )
+                }
             }
             blankLine()
         }

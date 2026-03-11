@@ -120,35 +120,32 @@ suspend fun S3Client.uploadToS3(mediaMetadata: MediaMetadata): UploadResult {
 }
 
 /** Determine if a object exists in a bucket */
-suspend fun S3Client.keyExists(s3bucket: String, s3key: String) =
-    try {
-        headObject {
-            bucket = s3bucket
-            key = s3key
-        }
-        true
-    } catch (e: Exception) { // Checking Service Exception coming in future release
-        false
+suspend fun S3Client.keyExists(s3bucket: String, s3key: String) = try {
+    headObject {
+        bucket = s3bucket
+        key = s3key
     }
+    true
+} catch (e: Exception) { // Checking Service Exception coming in future release
+    false
+}
 
 /** Determine if a object exists in a bucket */
-suspend fun S3Client.bucketExists(s3bucket: String) =
-    try {
-        headBucket { bucket = s3bucket }
-        true
-    } catch (e: Exception) { // Checking Service Exception coming in future release
-        false
-    }
+suspend fun S3Client.bucketExists(s3bucket: String) = try {
+    headBucket { bucket = s3bucket }
+    true
+} catch (e: Exception) { // Checking Service Exception coming in future release
+    false
+}
 
 /** Move files to directories based on upload results */
-fun moveFiles(uploadResults: List<UploadResult>) =
-    uploadResults
-        .map { uploadResult -> uploadResult.mediaMetadata.file.toPath() to (uploadResult is Success) }
-        .forEach { (file, uploadSuccess) ->
-            val targetFilePath = if (uploadSuccess) COMPLETED_DIR_PATH else FAILED_DIR_PATH
-            val targetPath = File(targetFilePath)
-            Files.move(file, File(targetPath, file.fileName.toString()).toPath())
-        }
+fun moveFiles(uploadResults: List<UploadResult>) = uploadResults
+    .map { uploadResult -> uploadResult.mediaMetadata.file.toPath() to (uploadResult is Success) }
+    .forEach { (file, uploadSuccess) ->
+        val targetFilePath = if (uploadSuccess) COMPLETED_DIR_PATH else FAILED_DIR_PATH
+        val targetPath = File(targetFilePath)
+        Files.move(file, File(targetPath, file.fileName.toString()).toPath())
+    }
 
 // Classes for S3 upload results
 sealed class UploadResult {

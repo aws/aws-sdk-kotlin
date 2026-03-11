@@ -38,16 +38,12 @@ public data class Operation(
         public fun from(
             declaration: KSFunctionDeclaration,
             additionalAttributes: AttributesBuilder.() -> Unit = { },
-        ): Operation {
-            val op = Operation(
-                methodName = declaration.simpleName.getShortName(),
-                request = Structure.from(declaration.parameters.single().type),
-                response = Structure.from(declaration.returnType!!),
-                attributes = attributesOf { additionalAttributes() },
-            )
-
-            return ModelParsingPlugin.transform(op, ModelParsingPlugin::postProcessOperation)
-        }
+        ): Operation = Operation(
+            methodName = declaration.simpleName.getShortName(),
+            request = Structure.from(declaration.parameters.single().type),
+            response = Structure.from(declaration.returnType!!),
+            attributes = attributesOf { additionalAttributes() },
+        )
     }
 }
 

@@ -12,17 +12,16 @@ import aws.sdk.kotlin.runtime.region.DefaultRegionProviderChain
 import aws.smithy.kotlin.runtime.client.*
 import aws.smithy.kotlin.runtime.client.region.RegionProvider
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
+import aws.smithy.kotlin.runtime.testing.withEnvVars
+import aws.smithy.kotlin.runtime.testing.withSystemProperties
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
-import io.kotest.extensions.system.withEnvironment
-import io.kotest.extensions.system.withSystemProperties
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.writeText
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -60,8 +59,6 @@ class AbstractAwsSdkClientFactoryTest {
         }
     }
 
-    // FIXME java.lang.reflect.InaccessibleObjectException: Unable to make field private final java.util.Map java.util.Collections$UnmodifiableMap.m accessible: module java.base does not "opens java.util" to unnamed module @7ee7980d
-    @Ignore
     @Test
     fun testFromEnvironmentResolvesAppId() = runTest(
         timeout = 20.seconds,
@@ -88,16 +85,16 @@ class AbstractAwsSdkClientFactoryTest {
         configFile.deleteIfExists()
         credentialsFile.deleteIfExists()
 
-        withEnvironment(
+        withEnvVars(
             mapOf(
-                AwsSdkSetting.AwsAppId.envVar to "env-app-id",
+                AwsSdkSetting.AwsAppId.envVars.first() to "env-app-id",
             ),
         ) {
             assertEquals("env-app-id", TestClient.fromEnvironment().config.applicationId)
 
             withSystemProperties(
                 mapOf(
-                    AwsSdkSetting.AwsAppId.sysProp to "system-properties-app-id",
+                    AwsSdkSetting.AwsAppId.sysProps.first() to "system-properties-app-id",
                 ),
             ) {
                 assertEquals("system-properties-app-id", TestClient.fromEnvironment().config.applicationId)

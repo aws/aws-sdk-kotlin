@@ -8,11 +8,24 @@ import aws.sdk.kotlin.hll.codegen.model.TypeRef
 import aws.sdk.kotlin.runtime.InternalSdkApi
 
 /**
- * A mutable collection of [ImportDirectives] for eventually writing to a code generator
+ * A mutable collection of [ImportDirective] entries for eventually writing to a code generator. Imports within this
+ * collection may be queried by their full-qualified name (e.g., `com.foo.bar.Baz`) or by their "short" name (e.g.,
+ * `Baz` or `BazAlias`).
  */
 @InternalSdkApi
 public class ImportDirectives : MutableSet<ImportDirective> by mutableSetOf() {
-    public operator fun get(shortName: String): ImportDirective? = firstOrNull { it.shortName == shortName }
+    /**
+     * Find a matching [ImportDirective] by its short name, which may be the normal unqualified type name or an import
+     * alias
+     * @param shortName The short name by which to search
+     */
+    public fun getByShortName(shortName: String): ImportDirective? = find { it.shortName == shortName }
+
+    /**
+     * Find a matching [ImportDirective] by its full name
+     * @param fullName The full name by which to search
+     */
+    public fun getByFullName(fullName: String): ImportDirective? = find { it.fullName == fullName }
 
     /**
      * Returns a formatted code string with each import on a dedicated line. Imports will be sorted with the following
@@ -46,10 +59,12 @@ private val importComparator = compareBy<ImportDirective> { it.alias != null } /
 @InternalSdkApi
 public data class ImportDirective(val fullName: String, val alias: String? = null) {
     /**
-     * The unaliased "short name" of an import directive—namely, everything after the last `.` separator. For example,
-     * for the full name `java.net.Socket` the short name is `Socket`.
+     * Initializes a new import directive
+     * @param type The type reference to import
+     * @param alias An optional alias by which to refer to the type in code
      */
-    public val shortName: String = fullName.split(".").last()
+    @InternalSdkApi
+    public constructor(type: TypeRef, alias: String? = null) : this(type.fullName, alias)
 
     private val aliasFormatted = alias?.let { " as $it" } ?: ""
 
@@ -57,8 +72,10 @@ public data class ImportDirective(val fullName: String, val alias: String? = nul
      * The formatted `import` code string for this directive
      */
     public val formatted: String = "import $fullName$aliasFormatted"
-}
 
-@InternalSdkApi
-public fun ImportDirective(type: TypeRef, alias: String? = null): ImportDirective =
-    ImportDirective(type.fullName, alias)
+    /**
+     * The "short name" of an import directive that can be used in code. This is [alias] (if not null) or the last
+     * segment of the full name (e.g., the last segment of `foo.bar.Baz` is `Baz`).
+     */
+    public val shortName: String = alias ?: fullName.split(".").last()
+}

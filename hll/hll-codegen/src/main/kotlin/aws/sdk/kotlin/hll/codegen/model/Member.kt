@@ -30,16 +30,12 @@ public data class Member(
         public fun from(
             prop: KSPropertyDeclaration,
             additionalAttributes: AttributesBuilder.() -> Unit = { },
-        ): Member {
-            val member = Member(
-                name = prop.simpleName.getShortName(),
-                type = Type.from(prop.type),
-                mutable = prop.isMutable,
-                attributes = attributesOf { additionalAttributes() },
-            )
-
-            return ModelParsingPlugin.transform(member, ModelParsingPlugin::postProcessMember)
-        }
+        ): Member = Member(
+            name = prop.simpleName.getShortName(),
+            type = Type.from(prop.type),
+            mutable = prop.isMutable,
+            attributes = attributesOf { additionalAttributes() },
+        )
     }
 }
 

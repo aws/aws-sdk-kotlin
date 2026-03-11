@@ -113,10 +113,16 @@
                     "traits": {
                         "smithy.api#enumValue": "CODING_MODE_5_1"
                     }
+                },
+                "CODING_MODE_AUTO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CODING_MODE_AUTO"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Six channels, C, L, R, Ls, Rs, LFE."
+                "smithy.api#documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Six channels, C, L, R, Ls, Rs, LFE. To follow the number of channels from your input audio, choose CODING_MODE_AUTO, and the service will automatically choose from one of the coding modes above."
             }
         },
         "com.amazonaws.mediaconvert#AacLoudnessMeasurementMode": {
@@ -206,7 +212,7 @@
                 "CodingMode": {
                     "target": "com.amazonaws.mediaconvert#AacCodingMode",
                     "traits": {
-                        "smithy.api#documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Six channels, C, L, R, Ls, Rs, LFE.",
+                        "smithy.api#documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Six channels, C, L, R, Ls, Rs, LFE. To follow the number of channels from your input audio, choose CODING_MODE_AUTO, and the service will automatically choose from one of the coding modes above.",
                         "smithy.api#jsonName": "codingMode"
                     }
                 },
@@ -404,6 +410,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "CODING_MODE_3_2_LFE"
+                    }
+                },
+                "CODING_MODE_AUTO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CODING_MODE_AUTO"
                     }
                 }
             },
@@ -837,9 +849,9 @@
                     }
                 },
                 "Channels": {
-                    "target": "com.amazonaws.mediaconvert#__integerMin1Max64",
+                    "target": "com.amazonaws.mediaconvert#__integerMin0Max64",
                     "traits": {
-                        "smithy.api#documentation": "Specify the number of channels in this output audio track. Valid values are 1 and even numbers up to 64. For example, 1, 2, 4, 6, and so on, up to 64.",
+                        "smithy.api#documentation": "Specify the number of channels in this output audio track. Valid values are 0, 1, and even numbers up to 64.  Choose 0 to follow the number of channels from your input audio. Otherwise,  manually choose from 1, 2, 4, 6, and so on, up to 64.",
                         "smithy.api#jsonName": "channels"
                     }
                 },
@@ -1444,7 +1456,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "Enable this setting on one audio selector to set it as the default for the job. The service uses this default for outputs where it can't find the specified input audio. If you don't set a default, those outputs have no audio."
+                "smithy.api#documentation": "Specify a fallback audio selector for this input. Use to ensure outputs have audio even when the audio selector you specify in your output is missing from the source. DEFAULT (Checked in the MediaConvert console): If your output settings specify an audio selector that does not exist in this input, MediaConvert uses this audio selector instead. This is useful when you have multiple inputs with a different number of audio tracks. NOT_DEFAULT (Unchecked in the MediaConvert console): MediaConvert will not fallback from any missing audio selector. Any output specifying a missing audio selector will be silent."
             }
         },
         "com.amazonaws.mediaconvert#AudioDescription": {
@@ -1831,7 +1843,7 @@
                 "DefaultSelection": {
                     "target": "com.amazonaws.mediaconvert#AudioDefaultSelection",
                     "traits": {
-                        "smithy.api#documentation": "Enable this setting on one audio selector to set it as the default for the job. The service uses this default for outputs where it can't find the specified input audio. If you don't set a default, those outputs have no audio.",
+                        "smithy.api#documentation": "Specify a fallback audio selector for this input. Use to ensure outputs have audio even when the audio selector you specify in your output is missing from the source. DEFAULT (Checked in the MediaConvert console): If your output settings specify an audio selector that does not exist in this input, MediaConvert uses this audio selector instead. This is useful when you have multiple inputs with a different number of audio tracks. NOT_DEFAULT (Unchecked in the MediaConvert console): MediaConvert will not fallback from any missing audio selector. Any output specifying a missing audio selector will be silent.",
                         "smithy.api#jsonName": "defaultSelection"
                     }
                 },
@@ -1887,7 +1899,7 @@
                 "SelectorType": {
                     "target": "com.amazonaws.mediaconvert#AudioSelectorType",
                     "traits": {
-                        "smithy.api#documentation": "Specify how MediaConvert selects audio content within your input. The default is Track. PID: Select audio by specifying the Packet Identifier (PID) values for MPEG Transport Stream inputs. Use this when you know the exact PID values of your audio streams. Track: Default. Select audio by track number. This is the most common option and works with most input container formats. If more types of audio data get recognized in the future, these numberings may shift, but the numberings used for Stream mode will not. Language code: Select audio by language using an ISO 639-2 or ISO 639-3 three-letter       code in all capital letters. Use this when your source has embedded language metadata and you want to select tracks based on their language. HLS rendition group: Select audio from an HLS rendition group. Use this when your input is an HLS package with multiple audio renditions and you want to select specific rendition groups. All PCM: Select all uncompressed PCM audio tracks from your input automatically. This is useful when you want to include all PCM audio tracks without specifying individual track numbers. Stream: Select audio by stream number. Stream numbers include all tracks in the source file, regardless of type, and correspond to either the order of tracks in the file, or if applicable, the stream number metadata of the track. Although all tracks count toward these stream numbers, in this audio selector context, only the stream number of a track containing audio data may be used. If your source file contains a track which is not recognized by the service, then the corresponding stream number will still be reserved for future use. If more types of audio data get recognized in the future, these numberings will not shift.",
+                        "smithy.api#documentation": "Specify how MediaConvert selects audio content within your input. The default is Track. PID: Select audio by specifying the Packet Identifier (PID) values for MPEG Transport Stream inputs. Use this when you know the exact PID values of your audio streams. Track: Default. Select audio by track number. This is the most common option and works with most input container formats. If more types of audio data get recognized in the future, these numberings may shift, but the numberings used for Stream mode will not. Language code: Select audio by language using an ISO 639-2 or ISO 639-3 three-letter code in all capital letters. Use this when your source has embedded language metadata and you want to select tracks based on their language. HLS rendition group: Select audio from an HLS rendition group. Use this when your input is an HLS package with multiple audio renditions and you want to select specific rendition groups. All PCM: Select all uncompressed PCM audio tracks from your input automatically. This is useful when you want to include all PCM audio tracks without specifying individual track numbers. Stream: Select audio by stream number. Stream numbers include all tracks in the source file, regardless of type, and correspond to either the order of tracks in the file, or if applicable, the stream number metadata of the track. Although all tracks count toward these stream numbers, in this audio selector context, only the stream number of a track containing audio data may be used. If your source file contains a track which is not recognized by the service, then the corresponding stream number will still be reserved for future use. If more types of audio data get recognized in the future, these numberings will not shift.",
                         "smithy.api#jsonName": "selectorType"
                     }
                 },
@@ -1966,7 +1978,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "Specify how MediaConvert selects audio content within your input. The default is Track. PID: Select audio by specifying the Packet Identifier (PID) values for MPEG Transport Stream inputs. Use this when you know the exact PID values of your audio streams. Track: Default. Select audio by track number. This is the most common option and works with most input container formats. If more types of audio data get recognized in the future, these numberings may shift, but the numberings used for Stream mode will not. Language code: Select audio by language using an ISO 639-2 or ISO 639-3 three-letter       code in all capital letters. Use this when your source has embedded language metadata and you want to select tracks based on their language. HLS rendition group: Select audio from an HLS rendition group. Use this when your input is an HLS package with multiple audio renditions and you want to select specific rendition groups. All PCM: Select all uncompressed PCM audio tracks from your input automatically. This is useful when you want to include all PCM audio tracks without specifying individual track numbers. Stream: Select audio by stream number. Stream numbers include all tracks in the source file, regardless of type, and correspond to either the order of tracks in the file, or if applicable, the stream number metadata of the track. Although all tracks count toward these stream numbers, in this audio selector context, only the stream number of a track containing audio data may be used. If your source file contains a track which is not recognized by the service, then the corresponding stream number will still be reserved for future use. If more types of audio data get recognized in the future, these numberings will not shift."
+                "smithy.api#documentation": "Specify how MediaConvert selects audio content within your input. The default is Track. PID: Select audio by specifying the Packet Identifier (PID) values for MPEG Transport Stream inputs. Use this when you know the exact PID values of your audio streams. Track: Default. Select audio by track number. This is the most common option and works with most input container formats. If more types of audio data get recognized in the future, these numberings may shift, but the numberings used for Stream mode will not. Language code: Select audio by language using an ISO 639-2 or ISO 639-3 three-letter code in all capital letters. Use this when your source has embedded language metadata and you want to select tracks based on their language. HLS rendition group: Select audio from an HLS rendition group. Use this when your input is an HLS package with multiple audio renditions and you want to select specific rendition groups. All PCM: Select all uncompressed PCM audio tracks from your input automatically. This is useful when you want to include all PCM audio tracks without specifying individual track numbers. Stream: Select audio by stream number. Stream numbers include all tracks in the source file, regardless of type, and correspond to either the order of tracks in the file, or if applicable, the stream number metadata of the track. Although all tracks count toward these stream numbers, in this audio selector context, only the stream number of a track containing audio data may be used. If your source file contains a track which is not recognized by the service, then the corresponding stream number will still be reserved for future use. If more types of audio data get recognized in the future, these numberings will not shift."
             }
         },
         "com.amazonaws.mediaconvert#AudioTypeControl": {
@@ -3883,6 +3895,12 @@
                     "traits": {
                         "smithy.api#enumValue": "WEBVTT"
                     }
+                },
+                "TT_3GPP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TT_3GPP"
+                    }
                 }
             },
             "traits": {
@@ -5762,7 +5780,7 @@
                 "Format": {
                     "target": "com.amazonaws.mediaconvert#Format",
                     "traits": {
-                        "smithy.api#documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM or MXF. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize.",
+                        "smithy.api#documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF or Wave. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize.",
                         "smithy.api#jsonName": "format"
                     }
                 },
@@ -7706,6 +7724,13 @@
         "com.amazonaws.mediaconvert#DolbyVision": {
             "type": "structure",
             "members": {
+                "Compatibility": {
+                    "target": "com.amazonaws.mediaconvert#DolbyVisionCompatibility",
+                    "traits": {
+                        "smithy.api#documentation": "When you set Compatibility mapping to Duplicate Stream, DolbyVision streams that have a backward compatible base layer (e.g., DolbyVision 8.1) will cause a duplicate stream to be signaled in the manifest as a duplicate stream. When you set Compatibility mapping to Supplemntal Codecs, DolbyVision streams that have a backward compatible base layer (e.g., DolbyVision 8.1) will cause the associate stream in the manifest to include a SUPPLEMENTAL_CODECS property.",
+                        "smithy.api#jsonName": "compatibility"
+                    }
+                },
                 "L6Metadata": {
                     "target": "com.amazonaws.mediaconvert#DolbyVisionLevel6Metadata",
                     "traits": {
@@ -7737,6 +7762,26 @@
             },
             "traits": {
                 "smithy.api#documentation": "Create Dolby Vision Profile 5 or Profile 8.1 compatible video output."
+            }
+        },
+        "com.amazonaws.mediaconvert#DolbyVisionCompatibility": {
+            "type": "enum",
+            "members": {
+                "DUPLICATE_STREAM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DUPLICATE_STREAM"
+                    }
+                },
+                "SUPPLEMENTAL_CODECS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SUPPLEMENTAL_CODECS"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "When you set Compatibility mapping to Duplicate Stream, DolbyVision streams that have a backward compatible base layer (e.g., DolbyVision 8.1) will cause a duplicate stream to be signaled in the manifest as a duplicate stream. When you set Compatibility mapping to Supplemntal Codecs, DolbyVision streams that have a backward compatible base layer (e.g., DolbyVision 8.1) will cause the associate stream in the manifest to include a SUPPLEMENTAL_CODECS property."
             }
         },
         "com.amazonaws.mediaconvert#DolbyVisionLevel6Metadata": {
@@ -9077,6 +9122,12 @@
                     "traits": {
                         "smithy.api#enumValue": "CODING_MODE_3_2"
                     }
+                },
+                "CODING_MODE_AUTO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CODING_MODE_AUTO"
+                    }
                 }
             },
             "traits": {
@@ -9938,9 +9989,9 @@
                     }
                 },
                 "Channels": {
-                    "target": "com.amazonaws.mediaconvert#__integerMin1Max8",
+                    "target": "com.amazonaws.mediaconvert#__integerMin0Max8",
                     "traits": {
-                        "smithy.api#documentation": "Specify the number of channels in this output audio track. Choosing Mono on the console gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are between 1 and 8.",
+                        "smithy.api#documentation": "Specify the number of channels in this output audio track. Valid values are 0, 1, and even numbers up to 8.  Choose 0 to follow the number of channels from your input audio. Otherwise, manually choose from 1, 2, 4, 6, and 8.",
                         "smithy.api#jsonName": "channels"
                     }
                 },
@@ -10051,6 +10102,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "mxf"
+                    }
+                },
+                "wave": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "wave"
                     }
                 }
             }
@@ -12233,6 +12290,46 @@
                 "smithy.api#documentation": "Choose the scan line type for the output. Keep the default value, Progressive to create a progressive output, regardless of the scan type of your input. Use Top field first or Bottom field first to create an output that's interlaced with the same field polarity throughout. Use Follow, default top or Follow, default bottom to produce outputs with the same field polarity as the source. For jobs that have multiple inputs, the output field polarity might change over the course of the output. Follow behavior depends on the input scan type. If the source is interlaced, the output will be interlaced with the same polarity as the source. If the source is progressive, the output will be interlaced with top field bottom field first, depending on which of the Follow options you choose."
             }
         },
+        "com.amazonaws.mediaconvert#H265MvOverPictureBoundaries": {
+            "type": "enum",
+            "members": {
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ENABLED"
+                    }
+                },
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DISABLED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "If you are setting up the picture as a tile, you must set this to \"disabled\". In all other configurations, you typically enter \"enabled\"."
+            }
+        },
+        "com.amazonaws.mediaconvert#H265MvTemporalPredictor": {
+            "type": "enum",
+            "members": {
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ENABLED"
+                    }
+                },
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DISABLED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "If you are setting up the picture as a tile, you must set this to \"disabled\". In other configurations, you typically enter \"enabled\"."
+            }
+        },
         "com.amazonaws.mediaconvert#H265ParControl": {
             "type": "enum",
             "members": {
@@ -12577,6 +12674,20 @@
                         "smithy.api#jsonName": "minIInterval"
                     }
                 },
+                "MvOverPictureBoundaries": {
+                    "target": "com.amazonaws.mediaconvert#H265MvOverPictureBoundaries",
+                    "traits": {
+                        "smithy.api#documentation": "If you are setting up the picture as a tile, you must set this to \"disabled\". In all other configurations, you typically enter \"enabled\".",
+                        "smithy.api#jsonName": "mvOverPictureBoundaries"
+                    }
+                },
+                "MvTemporalPredictor": {
+                    "target": "com.amazonaws.mediaconvert#H265MvTemporalPredictor",
+                    "traits": {
+                        "smithy.api#documentation": "If you are setting up the picture as a tile, you must set this to \"disabled\". In other configurations, you typically enter \"enabled\".",
+                        "smithy.api#jsonName": "mvTemporalPredictor"
+                    }
+                },
                 "NumberBFramesBetweenReferenceFrames": {
                     "target": "com.amazonaws.mediaconvert#__integerMin0Max7",
                     "traits": {
@@ -12703,11 +12814,39 @@
                         "smithy.api#jsonName": "temporalIds"
                     }
                 },
+                "TileHeight": {
+                    "target": "com.amazonaws.mediaconvert#__integerMin64Max2160",
+                    "traits": {
+                        "smithy.api#documentation": "Set this field to set up the picture as a tile. You must also set TileWidth. The tile height must result in 22 or fewer rows in the frame. The tile width must result in 20 or fewer columns in the frame. And finally, the product of the column count and row count must be 64 or less. If the tile width and height are specified, MediaConvert will override the video codec slices field with a value that MediaConvert calculates.",
+                        "smithy.api#jsonName": "tileHeight"
+                    }
+                },
+                "TilePadding": {
+                    "target": "com.amazonaws.mediaconvert#H265TilePadding",
+                    "traits": {
+                        "smithy.api#documentation": "Set to \"padded\" to force MediaConvert to add padding to the frame, to obtain a frame that is a whole multiple of the tile size. If you are setting up the picture as a tile, you must enter \"padded\". In all other configurations, you typically enter \"none\".",
+                        "smithy.api#jsonName": "tilePadding"
+                    }
+                },
+                "TileWidth": {
+                    "target": "com.amazonaws.mediaconvert#__integerMin256Max3840",
+                    "traits": {
+                        "smithy.api#documentation": "Set this field to set up the picture as a tile. See TileHeight for more information.",
+                        "smithy.api#jsonName": "tileWidth"
+                    }
+                },
                 "Tiles": {
                     "target": "com.amazonaws.mediaconvert#H265Tiles",
                     "traits": {
                         "smithy.api#documentation": "Enable use of tiles, allowing horizontal as well as vertical subdivision of the encoded pictures.",
                         "smithy.api#jsonName": "tiles"
+                    }
+                },
+                "TreeBlockSize": {
+                    "target": "com.amazonaws.mediaconvert#H265TreeBlockSize",
+                    "traits": {
+                        "smithy.api#documentation": "Select the tree block size used for encoding. If you enter \"auto\", the encoder will pick the best size. If you are setting up the picture as a tile, you must set this to 32x32. In all other configurations, you typically enter \"auto\".",
+                        "smithy.api#jsonName": "treeBlockSize"
                     }
                 },
                 "UnregisteredSeiTimecode": {
@@ -12835,6 +12974,26 @@
                 "smithy.api#documentation": "Enables temporal layer identifiers in the encoded bitstream. Up to 3 layers are supported depending on GOP structure: I- and P-frames form one layer, reference B-frames can form a second layer and non-reference b-frames can form a third layer. Decoders can optionally decode only the lower temporal layers to generate a lower frame rate output. For example, given a bitstream with temporal IDs and with b-frames = 1 (i.e. IbPbPb display order), a decoder could decode all the frames for full frame rate output or only the I and P frames (lowest temporal layer) for a half frame rate output."
             }
         },
+        "com.amazonaws.mediaconvert#H265TilePadding": {
+            "type": "enum",
+            "members": {
+                "NONE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NONE"
+                    }
+                },
+                "PADDED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PADDED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Set to \"padded\" to force MediaConvert to add padding to the frame, to obtain a frame that is a whole multiple of the tile size. If you are setting up the picture as a tile, you must enter \"padded\". In all other configurations, you typically enter \"none\"."
+            }
+        },
         "com.amazonaws.mediaconvert#H265Tiles": {
             "type": "enum",
             "members": {
@@ -12853,6 +13012,26 @@
             },
             "traits": {
                 "smithy.api#documentation": "Enable use of tiles, allowing horizontal as well as vertical subdivision of the encoded pictures."
+            }
+        },
+        "com.amazonaws.mediaconvert#H265TreeBlockSize": {
+            "type": "enum",
+            "members": {
+                "AUTO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AUTO"
+                    }
+                },
+                "TREE_SIZE_32X32": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TREE_SIZE_32X32"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Select the tree block size used for encoding. If you enter \"auto\", the encoder will pick the best size. If you are setting up the picture as a tile, you must set this to 32x32. In all other configurations, you typically enter \"auto\"."
             }
         },
         "com.amazonaws.mediaconvert#H265UnregisteredSeiTimecode": {
@@ -14940,6 +15119,13 @@
                     "traits": {
                         "smithy.api#documentation": "Specify the height, in pixels, for your video generator input. This is useful for positioning when you include one or more video overlays for this input. To use the default resolution 540x360: Leave both width and height blank. To specify a height: Enter an even integer from 32 to 8192. When you do, you must also specify a value for width.",
                         "smithy.api#jsonName": "height"
+                    }
+                },
+                "ImageInput": {
+                    "target": "com.amazonaws.mediaconvert#__stringMin14PatternS3BmpBMPPngPNGTgaTGAHttpsBmpBMPPngPNGTgaTGA",
+                    "traits": {
+                        "smithy.api#documentation": "Specify the HTTP, HTTPS, or Amazon S3 location of the image that you want to overlay on the video. Use a PNG or TGA file.",
+                        "smithy.api#jsonName": "imageInput"
                     }
                 },
                 "SampleRate": {
@@ -20196,9 +20382,9 @@
                     }
                 },
                 "Channels": {
-                    "target": "com.amazonaws.mediaconvert#__integerMin1Max2",
+                    "target": "com.amazonaws.mediaconvert#__integerMin0Max2",
                     "traits": {
-                        "smithy.api#documentation": "Set Channels to specify the number of channels in this output audio track. Choosing Mono in will give you 1 output channel; choosing Stereo will give you 2. In the API, valid values are 1 and 2.",
+                        "smithy.api#documentation": "Set Channels to specify the number of channels in this output audio track. Choosing Follow input will use the number of channels found in the audio source; choosing Mono will give you 1 output channel; choosing Stereo will give you 2. In the API, valid values are 0, 1, and 2.",
                         "smithy.api#jsonName": "channels"
                     }
                 },
@@ -20245,9 +20431,9 @@
                     }
                 },
                 "Channels": {
-                    "target": "com.amazonaws.mediaconvert#__integerMin1Max2",
+                    "target": "com.amazonaws.mediaconvert#__integerMin0Max2",
                     "traits": {
-                        "smithy.api#documentation": "Specify the number of channels in this output audio track. Choosing Mono gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 1 and 2.",
+                        "smithy.api#documentation": "Specify the number of channels in this output audio track. Choosing Follow input will use the number of channels found in the audio source; choosing Mono gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 0, 1, and 2.",
                         "smithy.api#jsonName": "channels"
                     }
                 },
@@ -21680,6 +21866,13 @@
                         "smithy.api#jsonName": "profile"
                     }
                 },
+                "UncompressedAudioWrapping": {
+                    "target": "com.amazonaws.mediaconvert#MxfUncompressedAudioWrapping",
+                    "traits": {
+                        "smithy.api#documentation": "Choose the audio frame wrapping mode for PCM tracks in MXF outputs. AUTO (default): Uses codec-appropriate defaults - BWF for H.264/AVC, AES3 for MPEG2/XDCAM. AES3: Use AES3 frame wrapping with SMPTE-compliant descriptors. This setting only takes effect when the MXF profile is OP1a.",
+                        "smithy.api#jsonName": "uncompressedAudioWrapping"
+                    }
+                },
                 "XavcProfileSettings": {
                     "target": "com.amazonaws.mediaconvert#MxfXavcProfileSettings",
                     "traits": {
@@ -21690,6 +21883,26 @@
             },
             "traits": {
                 "smithy.api#documentation": "These settings relate to your MXF output container."
+            }
+        },
+        "com.amazonaws.mediaconvert#MxfUncompressedAudioWrapping": {
+            "type": "enum",
+            "members": {
+                "AUTO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AUTO"
+                    }
+                },
+                "AES3": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AES3"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Choose the audio frame wrapping mode for PCM tracks in MXF outputs. AUTO (default): Uses codec-appropriate defaults - BWF for H.264/AVC, AES3 for MPEG2/XDCAM. AES3: Use AES3 frame wrapping with SMPTE-compliant descriptors. This setting only takes effect when the MXF profile is OP1a."
             }
         },
         "com.amazonaws.mediaconvert#MxfXavcDurationMode": {
@@ -22201,9 +22414,9 @@
                     }
                 },
                 "Channels": {
-                    "target": "com.amazonaws.mediaconvert#__integerMin1Max2",
+                    "target": "com.amazonaws.mediaconvert#__integerMin0Max2",
                     "traits": {
-                        "smithy.api#documentation": "Specify the number of channels in this output audio track. Choosing Mono on gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 1 and 2.",
+                        "smithy.api#documentation": "Specify the number of channels in this output audio track. Choosing Follow input will use the number of channels found in the audio source; choosing Mono gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 0, 1, and 2.",
                         "smithy.api#jsonName": "channels"
                     }
                 },
@@ -26868,6 +27081,13 @@
         "com.amazonaws.mediaconvert#VideoOverlayInput": {
             "type": "structure",
             "members": {
+                "AudioSelectors": {
+                    "target": "com.amazonaws.mediaconvert#__mapOfAudioSelector",
+                    "traits": {
+                        "smithy.api#documentation": "Use Audio selectors to specify audio to use during your Video overlay. You can use multiple Audio selectors per Video overlay. When you include an Audio selector within a Video overlay, MediaConvert mutes any Audio selectors with the same name from the underlying input. For example, if your underlying input has Audio selector 1 and Audio selector 2, and your Video overlay only has Audio selector 1, then MediaConvert replaces all audio for Audio selector 1 during the Video overlay. To replace all audio for all Audio selectors from the underlying input by using a single Audio selector in your overlay, set DefaultSelection to DEFAULT (Check \\\"Use as default\\\" in the MediaConvert console).",
+                        "smithy.api#jsonName": "audioSelectors"
+                    }
+                },
                 "FileInput": {
                     "target": "com.amazonaws.mediaconvert#__stringPatternS3Https",
                     "traits": {
@@ -27267,7 +27487,7 @@
                 "Streams": {
                     "target": "com.amazonaws.mediaconvert#__listOf__integerMin1Max2147483647",
                     "traits": {
-                        "smithy.api#documentation": "Specify one or more video streams for MediaConvert to use from your HLS input. Enter an integer corresponding to the stream number, with the first stream in your HLS multivariant playlist starting at 1.For re-encoding workflows, MediaConvert uses the video stream that you select with the highest bitrate as the input.For video passthrough workflows, you specify whether to passthrough a single video stream or multiple video streams under Video selector source in the output video encoding settings.",
+                        "smithy.api#documentation": "Specify one or more video streams for MediaConvert to use from your HLS input. Enter an integer corresponding to the stream number, with the first stream in your HLS multivariant playlist starting at 1. For re-encoding workflows, MediaConvert uses the video stream that you select with the highest bitrate as the input. For video passthrough workflows, you specify whether to passthrough a single video stream or multiple video streams under Video selector source in the output video encoding settings.",
                         "smithy.api#jsonName": "streams"
                     }
                 }
@@ -27340,9 +27560,9 @@
             "type": "structure",
             "members": {
                 "Channels": {
-                    "target": "com.amazonaws.mediaconvert#__integerMin1Max2",
+                    "target": "com.amazonaws.mediaconvert#__integerMin0Max2",
                     "traits": {
-                        "smithy.api#documentation": "Optional. Specify the number of channels in this output audio track. Choosing Mono on the console gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 1 and 2. The default value is 2.",
+                        "smithy.api#documentation": "Optional. Specify the number of channels in this output audio track. Choosing Follow input will use the number of channels found in the audio source; choosing Mono on the console gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 0, 1, and 2. The default value is 2.",
                         "smithy.api#jsonName": "channels"
                     }
                 },
@@ -27876,9 +28096,9 @@
                     }
                 },
                 "Channels": {
-                    "target": "com.amazonaws.mediaconvert#__integerMin1Max64",
+                    "target": "com.amazonaws.mediaconvert#__integerMin0Max64",
                     "traits": {
-                        "smithy.api#documentation": "Specify the number of channels in this output audio track. Valid values are 1 and even numbers up to 64. For example, 1, 2, 4, 6, and so on, up to 64.",
+                        "smithy.api#documentation": "Specify the number of channels in this output audio track. Valid values are 0, 1, and even numbers up to 64.  Choose 0 to follow the number of channels from your input audio. Otherwise,  manually choose from 1, 2, 4, 6, and so on, up to 64.",
                         "smithy.api#jsonName": "channels"
                     }
                 },
@@ -28972,6 +29192,15 @@
                 }
             }
         },
+        "com.amazonaws.mediaconvert#__integerMin0Max2": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 0,
+                    "max": 2
+                }
+            }
+        },
         "com.amazonaws.mediaconvert#__integerMin0Max2147483647": {
             "type": "integer",
             "traits": {
@@ -29086,6 +29315,15 @@
                 "smithy.api#range": {
                     "min": 0,
                     "max": 50000
+                }
+            }
+        },
+        "com.amazonaws.mediaconvert#__integerMin0Max64": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 0,
+                    "max": 64
                 }
             }
         },
@@ -29323,15 +29561,6 @@
                 }
             }
         },
-        "com.amazonaws.mediaconvert#__integerMin1Max2": {
-            "type": "integer",
-            "traits": {
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 2
-                }
-            }
-        },
         "com.amazonaws.mediaconvert#__integerMin1Max20": {
             "type": "integer",
             "traits": {
@@ -29440,15 +29669,6 @@
                 }
             }
         },
-        "com.amazonaws.mediaconvert#__integerMin1Max8": {
-            "type": "integer",
-            "traits": {
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 8
-                }
-            }
-        },
         "com.amazonaws.mediaconvert#__integerMin1Max86400000": {
             "type": "integer",
             "traits": {
@@ -29491,6 +29711,15 @@
                 "smithy.api#range": {
                     "min": 24,
                     "max": 60000
+                }
+            }
+        },
+        "com.amazonaws.mediaconvert#__integerMin256Max3840": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 256,
+                    "max": 3840
                 }
             }
         },
@@ -29635,6 +29864,15 @@
                 "smithy.api#range": {
                     "min": 64000,
                     "max": 640000
+                }
+            }
+        },
+        "com.amazonaws.mediaconvert#__integerMin64Max2160": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 64,
+                    "max": 2160
                 }
             }
         },

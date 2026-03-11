@@ -4,8 +4,6 @@
  */
 package aws.sdk.kotlin.hll.codegen.core
 
-import aws.sdk.kotlin.hll.codegen.model.Type
-import aws.sdk.kotlin.hll.codegen.model.TypeRef
 import aws.sdk.kotlin.hll.codegen.util.quote
 import aws.sdk.kotlin.runtime.InternalSdkApi
 
@@ -26,11 +24,10 @@ public data class TemplateProcessor(val key: Char, val handler: (Any) -> String)
          * with this processor
          * @param handler A function that accepts an input argument of type [T] and returns a formatted string
          */
-        public inline fun <reified T> typed(key: Char, crossinline handler: (T) -> String): TemplateProcessor =
-            TemplateProcessor(key) { value ->
-                require(value is T) { "Expected argument of type ${T::class} but found $value" }
-                handler(value)
-            }
+        public inline fun <reified T> typed(key: Char, crossinline handler: (T) -> String): TemplateProcessor = TemplateProcessor(key) { value ->
+            require(value is T) { "Expected argument of type ${T::class} but found $value" }
+            handler(value)
+        }
 
         /**
          * A literal template processor. This processor substitutes parameters in the form of `#L` with the [toString]
@@ -43,50 +40,9 @@ public data class TemplateProcessor(val key: Char, val handler: (Any) -> String)
          * quoted/escaped form of a string argument. See [quote] for more details.
          */
         public val QuotedString: TemplateProcessor = typed<String>('S') { it.quote() }
-
-        /**
-         * Creates a template processor for [Type] values. This processor substitutes parameters in the form of `#T`
-         * with the name or an alias of the type. It also appends `import` directives if necessary.
-         * @param pkg The Kotlin package into which code is being generated. An `import` directive will not be added if
-         * a passed argument has the same package as this processor.
-         * @param imports An [ImportDirectives] collection to which new imports will be appended
-         */
-        public fun forType(pkg: String, imports: ImportDirectives): TemplateProcessor {
-            val processor = ImportingTypeProcessor(pkg, imports)
-            return typed<Type>('T', processor::format)
-        }
     }
 
     init {
         require(key in 'A'..'Z') { "Key character must be a capital letter (A-Z)" }
-    }
-}
-
-private open class TypeProcessor {
-    open fun format(type: Type): String = buildString {
-        append(type.shortName)
-
-        if (type is TypeRef && type.genericArgs.isNotEmpty()) {
-            type.genericArgs.joinToString(", ", "<", ">", transform = ::format).let(::append)
-        }
-
-        if (type.nullable) append('?')
-    }
-}
-
-private class ImportingTypeProcessor(private val pkg: String, private val imports: ImportDirectives) : TypeProcessor() {
-    override fun format(type: Type): String = buildString {
-        if (type is TypeRef && type.pkg != pkg && type.pkg != "kotlin") {
-            val existingImport = imports[type.baseName]
-
-            if (existingImport == null) {
-                imports += ImportDirective("${type.pkg}.${type.baseName}")
-            } else if (existingImport.fullName != "${type.pkg}.${type.baseName}") {
-                append(type.pkg)
-                append('.')
-            }
-        }
-
-        append(super.format(type))
     }
 }

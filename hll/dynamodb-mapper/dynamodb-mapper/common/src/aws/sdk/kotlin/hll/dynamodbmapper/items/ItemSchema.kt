@@ -7,6 +7,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaCompositeKeyImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaPartitionKeyImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.attrs
+import aws.smithy.kotlin.runtime.collections.Attributes
 
 /**
  * Defines a schema for handling objects of type [T], including an [ItemConverter] for converting between objects and
@@ -23,6 +24,11 @@ public sealed interface ItemSchema<T> {
      * The names of the attributes which form the primary key of this table
      */
     public val keyAttributeNames: List<String>
+
+    /**
+     * Generic attributes for associating metadata with this schema
+     */
+    public val attributes: Attributes
 
     /**
      * Represents a schema with a primary key consisting of a single partition key
@@ -69,8 +75,7 @@ public sealed interface ItemSchema<T> {
  * @param partitionKey The [KeySpec] for the partition key
  */
 @Suppress("FunctionName")
-public fun <T, PK : KeyType> ItemSchema(converter: ItemConverter<T>, partitionKey: KeySpec<PK>): ItemSchema.PartitionKey<T, PK> =
-    ItemSchemaPartitionKeyImpl(converter, partitionKey)
+public fun <T, PK : KeyType> ItemSchema(converter: ItemConverter<T>, partitionKey: KeySpec<PK>): ItemSchema.PartitionKey<T, PK> = ItemSchemaPartitionKeyImpl(converter, partitionKey)
 
 /**
  * Create a new item schema with a primary key consisting of a single partition key.
@@ -94,8 +99,7 @@ public fun <T, PK : KeyType, SK : KeyType> ItemSchema(
  * @param PK The type of the partition key property, either [KeyType] or one of its specific derivations
  * @param partitionKey The [KeySpec] that describes the partition key
  */
-public fun <T, PK : KeyType> ItemConverter<T>.withKeySpec(partitionKey: KeySpec<PK>): ItemSchema.PartitionKey<T, PK> =
-    ItemSchema(this, partitionKey)
+public fun <T, PK : KeyType> ItemConverter<T>.withKeySpec(partitionKey: KeySpec<PK>): ItemSchema.PartitionKey<T, PK> = ItemSchema(this, partitionKey)
 
 /**
  * Associate this [ItemConverter] with [KeySpec] instances for a composite key to form a complete [ItemSchema]

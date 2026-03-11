@@ -31,5 +31,4 @@ public interface MapperContext<T> {
  * @param persistenceSpec The metadata about an operation invocation
  * @param operation The name of the high-level operation being invoked
  */
-public fun <T> MapperContext(persistenceSpec: PersistenceSpec<T>, operation: String): MapperContext<T> =
-    MapperContextImpl(persistenceSpec, operation)
+public fun <T> MapperContext(persistenceSpec: PersistenceSpec<T>, operation: String): MapperContext<T> = MapperContextImpl(persistenceSpec, operation)

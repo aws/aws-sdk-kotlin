@@ -2,8 +2,8 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import aws.sdk.kotlin.gradle.dsl.configurePublishing
 import aws.sdk.kotlin.gradle.kmp.*
+import aws.sdk.kotlin.gradle.publishing.configurePublishing
 import aws.sdk.kotlin.gradle.util.typedProp
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.LocalDateTime
@@ -135,7 +135,6 @@ subprojects {
         }
     }
 
-    // TODO Use configurePublishing when migrating to Sonatype Publisher API / JReleaser
     configurePublishing("aws-sdk-kotlin")
 
     publishing {

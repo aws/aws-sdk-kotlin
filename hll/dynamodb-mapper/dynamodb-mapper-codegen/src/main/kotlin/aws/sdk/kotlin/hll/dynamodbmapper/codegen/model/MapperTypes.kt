@@ -29,13 +29,16 @@ public object MapperTypes {
 
     public object Expressions {
         public val BooleanExpr: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Base, "BooleanExpr")
-        public val Filter: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Base, "Filter")
+        public val FilterDsl: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Base, "FilterDsl")
         public val KeyFilter: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Base, "KeyFilter")
+        public val UpdateDsl: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Base, "UpdateDsl")
+        public val UpdateExpr: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Base, "UpdateExpr")
 
         public object Internal {
-            public val FilterImpl: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Internal, "FilterImpl")
+            public val FilterDslImpl: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Internal, "FilterDslImpl")
             public val ParameterizingExpressionVisitor: TypeRef =
                 TypeRef(MapperPkg.Hl.Expressions.Internal, "ParameterizingExpressionVisitor")
+            public val UpdateDslImpl: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Internal, "UpdateDslImpl")
             public val toExpression: TypeRef = TypeRef(MapperPkg.Hl.Expressions.Internal, "toExpression")
         }
     }
@@ -45,29 +48,26 @@ public object MapperTypes {
     }
 
     public object Items {
-        public fun itemSchema(typeVar: String): TypeRef =
-            TypeRef(MapperPkg.Hl.Items, "ItemSchema", genericArgs = listOf(TypeVar(typeVar)))
+        public fun itemSchema(typeVar: String): TypeRef = TypeRef(MapperPkg.Hl.Items, "ItemSchema", genericArgs = listOf(TypeVar(typeVar)))
 
-        public fun itemSchemaPartitionKey(objectType: TypeRef, pkTypes: List<TypeRef>): TypeRef =
-            TypeRef(
-                MapperPkg.Hl.Items,
-                "ItemSchema.PartitionKey",
-                genericArgs = listOf(
-                    objectType,
-                    keyType(pkTypes),
-                ),
-            )
+        public fun itemSchemaPartitionKey(objectType: TypeRef, pkTypes: List<TypeRef>): TypeRef = TypeRef(
+            MapperPkg.Hl.Items,
+            "ItemSchema.PartitionKey",
+            genericArgs = listOf(
+                objectType,
+                keyType(pkTypes),
+            ),
+        )
 
-        public fun itemSchemaCompositeKey(objectType: TypeRef, pkTypes: List<TypeRef>, skTypes: List<TypeRef>): TypeRef =
-            TypeRef(
-                MapperPkg.Hl.Items,
-                "ItemSchema.CompositeKey",
-                genericArgs = listOf(
-                    objectType,
-                    keyType(pkTypes),
-                    keyType(skTypes),
-                ),
-            )
+        public fun itemSchemaCompositeKey(objectType: TypeRef, pkTypes: List<TypeRef>, skTypes: List<TypeRef>): TypeRef = TypeRef(
+            MapperPkg.Hl.Items,
+            "ItemSchema.CompositeKey",
+            genericArgs = listOf(
+                objectType,
+                keyType(pkTypes),
+                keyType(skTypes),
+            ),
+        )
 
         public fun keySpec(keyTypes: List<TypeRef>): TypeRef {
             val keySize = keyTypes.size
@@ -75,21 +75,23 @@ public object MapperTypes {
             return TypeRef(MapperPkg.Hl.Items, "KeySpec.Key$keySize", keyTypes)
         }
 
+        public val KeySpecByte: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.byte")
         public val KeySpecByteArray: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.byteArray")
-        public fun keySpecNumber(numberTypeRef: TypeRef? = null): TypeRef = TypeRef(
-            MapperPkg.Hl.Items,
-            "KeySpec.number",
-            genericArgs = listOfNotNull(numberTypeRef),
-        )
+        public val KeySpecInt: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.int")
+        public val KeySpecLong: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.long")
+        public val KeySpecShort: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.short")
         public val KeySpecString: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.string")
 
+        public val KeySpecThenByte: TypeRef = TypeRef(MapperPkg.Hl.Items, "thenByte")
         public val KeySpecThenByteArray: TypeRef = TypeRef(MapperPkg.Hl.Items, "thenByteArray")
-        public fun keySpecThenNumber(numberTypeRef: TypeRef): TypeRef = TypeRef(
-            MapperPkg.Hl.Items,
-            "thenNumber",
-            genericArgs = listOfNotNull(numberTypeRef),
-        )
+        public val KeySpecThenInt: TypeRef = TypeRef(MapperPkg.Hl.Items, "thenInt")
+        public val KeySpecThenLong: TypeRef = TypeRef(MapperPkg.Hl.Items, "thenLong")
+        public val KeySpecThenShort: TypeRef = TypeRef(MapperPkg.Hl.Items, "thenShort")
         public val KeySpecThenString: TypeRef = TypeRef(MapperPkg.Hl.Items, "thenString")
+
+        public val KeyType: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeyType")
+        public val KeyTypeAsPK: TypeVar = TypeVar("PK", false, KeyType)
+        public val KeyTypeAsSK: TypeVar = TypeVar("SK", false, KeyType)
 
         public fun keyType(keyTypes: List<TypeRef>): TypeRef {
             val keySize = keyTypes.size
@@ -97,10 +99,31 @@ public object MapperTypes {
             return TypeRef(MapperPkg.Hl.Items, "KeyType.Key$keySize", keyTypes)
         }
 
+        public val keysToItem: TypeRef = TypeRef(MapperPkg.Hl.Items, "keysToItem")
+        public val itemToPk: TypeRef = TypeRef(MapperPkg.Hl.Items, "itemToPk")
+        public val itemToSk: TypeRef = TypeRef(MapperPkg.Hl.Items, "itemToSk")
+
+        public val ItemSchema: TypeRef = TypeRef(
+            MapperPkg.Hl.Items,
+            "ItemSchema",
+            genericArgs = listOf(TypeVar.T),
+        )
+
+        public val ItemSchemaPartitionKey: TypeRef = TypeRef(
+            MapperPkg.Hl.Items,
+            "ItemSchema.PartitionKey",
+            genericArgs = listOf(TypeVar.T, KeyTypeAsPK),
+        )
+
+        public val ItemSchemaCompositeKey: TypeRef = TypeRef(
+            MapperPkg.Hl.Items,
+            "ItemSchema.CompositeKey",
+            genericArgs = listOf(TypeVar.T, KeyTypeAsPK, KeyTypeAsSK),
+        )
+
         public val AttributeDescriptor: TypeRef = TypeRef(MapperPkg.Hl.Items, "AttributeDescriptor")
 
-        public fun itemConverter(objectType: TypeRef): TypeRef =
-            TypeRef(MapperPkg.Hl.Items, "ItemConverter", genericArgs = listOf(objectType))
+        public fun itemConverter(objectType: TypeRef): TypeRef = TypeRef(MapperPkg.Hl.Items, "ItemConverter", genericArgs = listOf(objectType))
 
         public val SimpleItemConverter: TypeRef = TypeRef(MapperPkg.Hl.Items, "SimpleItemConverter")
     }
@@ -129,7 +152,9 @@ public object MapperTypes {
             )
         }
 
+        public val Item: TypeRef = TypeRef(MapperPkg.Hl.Model, "Item")
         public val toItem: TypeRef = TypeRef(MapperPkg.Hl.Model, "toItem")
+        public val SchemaAttributes: TypeRef = TypeRef(MapperPkg.Hl.Model, "SchemaAttributes")
     }
 
     public object Values {

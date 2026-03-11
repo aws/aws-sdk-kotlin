@@ -16,7 +16,12 @@ import aws.sdk.kotlin.runtime.InternalSdkApi
  * instantiation
  */
 @InternalSdkApi
-public data class DslInfo(val interfaceType: TypeRef, val implType: TypeRef, val implSingleton: Boolean = false)
+public data class DslInfo(
+    val interfaceType: TypeRef,
+    val implType: TypeRef,
+    val implSingleton: Boolean = false,
+    val implFinalizer: String? = null,
+)
 
 @InternalSdkApi
 public val Member.dslInfo: DslInfo?
