@@ -9,6 +9,8 @@ import aws.sdk.kotlin.hll.codegen.model.*
 import aws.sdk.kotlin.hll.codegen.rendering.BuilderRenderer
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.RendererBase
+import aws.sdk.kotlin.hll.codegen.util.generatedAnnotation
+import aws.sdk.kotlin.hll.codegen.util.plus
 import aws.sdk.kotlin.hll.codegen.util.visibility
 import aws.sdk.kotlin.hll.dynamodbmapper.*
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.AnnotationsProcessorOptions
@@ -33,6 +35,7 @@ internal class SchemaRenderer(
     private val ctx: RenderContext,
 ) : RendererBase(ctx, "${classDeclaration.qualifiedName!!.getShortName()}Schema") {
     private val className = classDeclaration.qualifiedName!!.getShortName()
+    private val classStructure = Structure.from(classDeclaration)
     private val classType = Type.from(classDeclaration)
 
     private val builderName = "${className}Builder"
@@ -109,12 +112,23 @@ internal class SchemaRenderer(
     }
 
     private fun renderBuilder() {
-        val members = properties.map(Member.Companion::from).toSet()
-        BuilderRenderer(ctx, this, classType, classType, members).render()
+        val builderCtx = ctx.copy(
+            attributes = ctx.attributes + (ModelAttributes.GeneratedApi to true),
+        )
+        val members = properties.map(Member::from).toSet()
+        BuilderRenderer(builderCtx, this, classStructure, classType, members).render()
     }
 
     private fun renderItemConverter() {
-        withBlock("#Lobject #L : #T by #T(", ")", ctx.attributes.visibility, converterName, MapperTypes.Items.itemConverter(classType), MapperTypes.Items.SimpleItemConverter) {
+        generatedAnnotation()
+        withBlock(
+            "#Lobject #L : #T by #T(",
+            ")",
+            ctx.attributes.visibility,
+            converterName,
+            MapperTypes.Items.itemConverter(classType),
+            MapperTypes.Items.SimpleItemConverter,
+        ) {
             if (shouldRenderBuilder) {
                 write("builderFactory = ::#L,", builderName)
                 write("build = #L::build,", builderName)
@@ -138,6 +152,7 @@ internal class SchemaRenderer(
      */
     private fun renderValueConverter() {
         // TODO Offer alternate serialization options besides AttributeValue.M?
+        generatedAnnotation()
         write(
             "#Lval #L : #T = #T.#T(#T)",
             ctx.attributes.visibility,
@@ -309,17 +324,18 @@ internal class SchemaRenderer(
             MapperTypes.Items.itemSchemaCompositeKey(classType, partitionKeyTypeRefs, sortKeyTypeRefs)
         }
 
+        generatedAnnotation()
         withBlock("#Lobject #L : #T {", "}", ctx.attributes.visibility, schemaName, schemaType) {
             write("override val converter: #1T = #1T", itemConverter)
 
             writeInline("override val partitionKey: #T = ", MapperTypes.Items.keySpec(partitionKeyTypeRefs))
             keySpecInstantiation(partitionKeyProps)
-            write()
+            newline()
 
             if (sortKeyProps.isNotEmpty()) {
                 writeInline("override val sortKey: #T = ", MapperTypes.Items.keySpec(sortKeyTypeRefs))
                 keySpecInstantiation(sortKeyProps)
-                write()
+                newline()
             }
 
             // Handle TTL annotations
@@ -425,6 +441,7 @@ internal class SchemaRenderer(
             MapperTypes.Model.tableCompositeKey(classType, partitionKeyTypeRefs, sortKeyTypeRefs)
         }
 
+        generatedAnnotation()
         val fnName = "get${className}Table"
         write(
             "#Lfun #T.#L(name: String): #T = #L(name, #L)",

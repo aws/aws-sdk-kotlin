@@ -5,7 +5,6 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model
 
 import aws.sdk.kotlin.hll.codegen.model.*
-import aws.sdk.kotlin.hll.codegen.model.nullable
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.info
 import aws.sdk.kotlin.hll.codegen.util.plus

@@ -99,11 +99,11 @@ val projectsToIgnore = listOf(
     "dynamodb-mapper-codegen",
     "dynamodb-mapper-ops-codegen",
     "dynamodb-mapper-schema-codegen",
-    "dynamodb-mapper-schema-generator-plugin-test",
 ).filter { it in subprojects.map { it.name }.toSet() } // Some projects may not be in the build depending on bootstrapping
 
 apiValidation {
     ignoredProjects += projectsToIgnore
+    nonPublicMarkers += "aws.smithy.kotlin.runtime.GeneratedApi"
 }
 
 // Configure Dokka for subprojects
