@@ -189,6 +189,4 @@ private data class LFooRequest(val table: String, val foo: Item)
 private data class LFooResponse(val foo: Item)
 private data class HFooResponse(val foo: Foo)
 
-private fun LFooResponse.convert(schema: ItemSchema<Foo>) = HFooResponse(schema.converter.convertLeft(foo))
-
 private typealias FooInterceptor = Interceptor<Foo, ItemSchema<Foo>, HFooRequest, LFooRequest, LFooResponse, HFooResponse>

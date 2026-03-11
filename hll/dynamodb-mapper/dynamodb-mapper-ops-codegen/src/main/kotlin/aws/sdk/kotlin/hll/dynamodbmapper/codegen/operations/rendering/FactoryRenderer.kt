@@ -50,7 +50,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.*
  *
  *     serialize = { ctx -> ctx.highLevelRequest.convert(spec.tableName, ctx.serializeSchema) },
  *
- *     lowLevelInvoke = { lowLevelReq ->
+ *     lowLevelInvoke = { ctx ->
  *         spec.mapper.client.withWrappedClient { client ->
  *             client.getItem(ctx.lowLevelRequest)
  *         }
