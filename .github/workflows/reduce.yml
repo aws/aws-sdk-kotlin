@@ -1,0 +1,37 @@
+name: Reduce JARs
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: reduce-pr-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+
+jobs:
+  reduce:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout SDK
+        uses: actions/checkout@v4
+
+      - name: Configure Gradle
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+
+      # TODO: Replace with kat command (SDK-KT-1089)
+      - name: Enable JAR reduction & disable Kotlin Native
+        uses: aws/aws-kotlin-repo-tools/.github/actions/utils/add-to-local-properties@main
+        with:
+          addition: 'aws.kotlin.native = false\naws.sdk.proguard = true'
+
+      - name: Reduce JARs
+        run: |
+          ./gradlew publishToMavenLocal # publish full size and reduced JARs
+          ./gradlew replaceMavenLocalFullSizeJars # reduce JARs become the default
