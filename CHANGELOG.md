@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.34] - 03/11/2026
+
+### Features
+* (**customerprofiles**) Today, Amazon Connect is announcing the ability to filter (include or exclude) recommendations based on properties of items and interactions.
+* (**eks**) Adds support for a new tier in controlPlaneScalingConfig on EKS Clusters.
+* (**polly**) Added support for the new voices - Ambre (fr-FR), Beatrice (it-IT), Florian (fr-FR), Lennart (de-DE), Lorenzo (it-IT) and Tiffany (en-US). They are available as a Generative voices only.
+* (**sagemaker**) SageMaker training plans allow you to extend your existing training plans to avoid workload interruptions without workload reconfiguration. When a training plan is approaching expiration, you can extend it directly through the SageMaker AI console or programmatically using the API or AWS CLI.
+* (**simpledbv2**) Introduced Amazon SimpleDB export functionality enabling domain data export to S3 in JSON format. Added three new APIs StartDomainExport, GetExport, and ListExports via SimpleDBv2 service. Supports cross-region exports and KMS encryption.
+* (**workspaces**) Added WINDOWS SERVER 2025 OperatingSystemName.
+
 ## [1.6.33] - 03/10/2026
 
 ### Features

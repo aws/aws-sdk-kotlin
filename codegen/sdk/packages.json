@@ -2089,6 +2089,12 @@
             "brazilName": "AwsSdkKotlinSimspaceweaver"
         },
         {
+            "sdkId": "SimpleDBv2",
+            "namespace": "aws.sdk.kotlin.services.simpledbv2",
+            "artifactName": "simpledbv2",
+            "brazilName": "AwsSdkKotlinSimpledbv2"
+        },
+        {
             "sdkId": "Snow Device Management",
             "namespace": "aws.sdk.kotlin.services.snowdevicemanagement",
             "artifactName": "snowdevicemanagement",
