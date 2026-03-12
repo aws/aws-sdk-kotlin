@@ -5,10 +5,7 @@
 
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.model
 
-import aws.sdk.kotlin.hll.codegen.model.Type
-import aws.sdk.kotlin.hll.codegen.model.TypeRef
-import aws.sdk.kotlin.hll.codegen.model.TypeVar
-import aws.sdk.kotlin.hll.codegen.model.Types
+import aws.sdk.kotlin.hll.codegen.model.*
 import aws.sdk.kotlin.runtime.InternalSdkApi
 
 /**
@@ -18,7 +15,8 @@ import aws.sdk.kotlin.runtime.InternalSdkApi
 public object MapperTypes {
     // Low-level types
     public val AttributeValue: TypeRef = TypeRef(MapperPkg.Ll.Model, "AttributeValue")
-    public val AttributeMap: TypeRef = Types.Kotlin.map(Types.Kotlin.String, AttributeValue)
+    public val AttributeMap: TypeRef = Types.Kotlin.stringMap(AttributeValue)
+    public val KeysAndAttributes: TypeRef = TypeRef(MapperPkg.Ll.Model, "KeysAndAttributes")
 
     // High-level types
     public val DynamoDbMapper: TypeRef = TypeRef(MapperPkg.Hl.Base, "DynamoDbMapper")
@@ -152,9 +150,62 @@ public object MapperTypes {
             )
         }
 
+        public val DynamoDbMapperSpec: TypeRef = TypeRef(MapperPkg.Hl.Model, "DynamoDbMapperSpec")
         public val Item: TypeRef = TypeRef(MapperPkg.Hl.Model, "Item")
         public val toItem: TypeRef = TypeRef(MapperPkg.Hl.Model, "toItem")
         public val SchemaAttributes: TypeRef = TypeRef(MapperPkg.Hl.Model, "SchemaAttributes")
+
+        public val TablePartitionKeyGeneric: TypeRef = TypeRef(
+            MapperPkg.Hl.Model,
+            "Table.PartitionKey",
+            genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK),
+        )
+
+        public val TableCompositeKeyGeneric: TypeRef = TypeRef(
+            MapperPkg.Hl.Model,
+            "Table.CompositeKey",
+            genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK, Items.KeyTypeAsSK),
+        )
+    }
+
+    public object Operations {
+        public val BatchGetItemRequestTable: TypeRef = TypeRef(
+            MapperPkg.Hl.Ops.Base,
+            "BatchGetItemRequestTable",
+            genericArgs = listOf(StarProjection),
+        )
+
+        public val BatchGetItemRequestTableDslPartitionKey: TypeRef = TypeRef(
+            MapperPkg.Hl.Ops.Base,
+            "BatchGetItemRequestTableDsl.PartitionKey",
+            genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK),
+        )
+
+        public val BatchGetItemRequestTableDslCompositeKey: TypeRef = TypeRef(
+            MapperPkg.Hl.Ops.Base,
+            "BatchGetItemRequestTableDsl.CompositeKey",
+            genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK, Items.KeyTypeAsSK),
+        )
+
+        public val BatchGetItemResponseTable: TypeRef = TypeRef(
+            MapperPkg.Hl.Ops.Base,
+            "BatchGetItemResponseTable",
+            genericArgs = listOf(StarProjection),
+        )
+
+        public object Internal {
+            public val BatchGetItemRequestTableDslPartitionKeyImpl: TypeRef = TypeRef(
+                MapperPkg.Hl.Ops.Internal,
+                "BatchGetItemRequestTableDslPartitionKeyImpl",
+                genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK),
+            )
+
+            public val BatchGetItemRequestTableDslCompositeKeyImpl: TypeRef = TypeRef(
+                MapperPkg.Hl.Ops.Internal,
+                "BatchGetItemRequestTableDslCompositeKeyImpl",
+                genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK, Items.KeyTypeAsSK),
+            )
+        }
     }
 
     public object Values {

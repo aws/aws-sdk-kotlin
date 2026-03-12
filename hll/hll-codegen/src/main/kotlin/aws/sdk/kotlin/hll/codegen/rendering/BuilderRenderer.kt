@@ -73,43 +73,51 @@ public class BuilderRenderer(
     }
 
     private fun renderProperty(member: Member) {
-        val dslInfo = member.dslInfo
+        val dsls = member.dsls
 
-        if (dslInfo != null) {
+        if (dsls.isNotEmpty()) {
             blankLine()
         }
 
         generatedAnnotation(member, ctx)
         write("#Lvar #L: #T = null", ctx.attributes.visibility, member.name, member.type.nullable())
 
-        if (dslInfo != null) {
+        dsls.forEach { dslInfo ->
             val dslBlockResultType = when (dslInfo.implFinalizer) {
                 null -> member.type
                 else -> Types.Kotlin.Unit
             }
-            val constructorIfNecessary = if (dslInfo.implSingleton) "" else "()"
+
+            val dslName = dslInfo.nameOverride ?: member.name
 
             blankLine()
             generatedAnnotation(member, ctx)
+            writeInline("#Lfun #G#L(", ctx.attributes.visibility, dslInfo.interfaceType.genericVars(), dslName)
+
+            dslInfo.dslMethodParams.forEach { arg ->
+                writeInline("#L: #T, ", arg.name, arg.type)
+            }
+
             withBlock(
-                "#Lfun #L(block: #T.() -> #T) {",
+                "block: #T.() -> #T) {",
                 "}",
-                ctx.attributes.visibility,
-                member.name,
+
                 dslInfo.interfaceType,
                 dslBlockResultType,
             ) {
-                if (dslInfo.implFinalizer == null) {
-                    write("#L = #T#L.run(block)", member.name, dslInfo.implType, constructorIfNecessary)
-                } else {
-                    write(
-                        "#L = #T#L.apply(block)#L",
-                        member.name,
-                        dslInfo.implType,
-                        constructorIfNecessary,
-                        dslInfo.implFinalizer,
-                    )
+                val scopeMethod = when (dslInfo.implFinalizer) {
+                    null -> "run" // The result of DSL method call is the DSL block return value
+                    else -> "apply" // The result of the DSL method call is provided by the finalizer
                 }
+
+                write(
+                    "#L = #T#L.#L(block)#L",
+                    member.name,
+                    dslInfo.implType,
+                    dslInfo.implInvocationStyle.invocationString,
+                    scopeMethod,
+                    dslInfo.implFinalizer ?: "",
+                )
             }
             blankLine()
         }

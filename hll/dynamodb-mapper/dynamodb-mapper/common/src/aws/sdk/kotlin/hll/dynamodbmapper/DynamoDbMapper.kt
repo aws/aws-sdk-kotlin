@@ -4,13 +4,12 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper
 
-import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper.Companion.Config
-import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper.Config.Companion.Builder
 import aws.sdk.kotlin.hll.dynamodbmapper.internal.DynamoDbMapperImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.internal.MapperConfigBuilderImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Table
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.DynamoDbMapperOperations
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
@@ -18,10 +17,10 @@ import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 /**
  * A high-level client for DynamoDB which maps custom data types into DynamoDB attributes and vice versa.
  */
-public interface DynamoDbMapper {
+public interface DynamoDbMapper : DynamoDbMapperOperations {
     public companion object {
         /**
-         * Instantiate a new [Config] object
+         * Instantiate a new [DynamoDbMapper.Config] object
          * @param config A DSL block for setting properties of the config
          */
         public fun Config(config: Config.Builder.() -> Unit = { }): Config = Config.Builder().apply(config).build()
@@ -70,7 +69,7 @@ public interface DynamoDbMapper {
     public interface Config {
         public companion object {
             /**
-             * Instantiate a new [Builder] object
+             * Instantiate a new [Config.Builder] object
              */
             public fun Builder(): Builder = MapperConfigBuilderImpl()
         }
@@ -82,8 +81,8 @@ public interface DynamoDbMapper {
         public val interceptors: List<InterceptorAny>
 
         /**
-         * Convert this immutable configuration into a mutable [Builder] object. Updates made to the mutable builder
-         * properties will not affect this instance.
+         * Convert this immutable configuration into a mutable [Config.Builder] object. Updates made to the mutable
+         * builder properties will not affect this instance.
          */
         public fun toBuilder(): Builder
 

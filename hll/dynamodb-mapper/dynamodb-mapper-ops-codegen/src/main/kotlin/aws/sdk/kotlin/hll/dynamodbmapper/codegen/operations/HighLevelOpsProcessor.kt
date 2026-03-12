@@ -28,7 +28,7 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
     private val codeGenerator = environment.codeGenerator
     private val logger = environment.logger
     private val opAllowlist = environment.options["op-allowlist"]?.split(";")
-    private val pkg = environment.options["pkg"] ?: MapperPkg.Hl.Ops
+    private val pkg = environment.options["pkg"] ?: MapperPkg.Hl.Ops.Base
 
     private val ctx by lazy {
         val codegenFactory = CodeGeneratorFactory(codeGenerator, logger) // FIXME Pass dependencies

@@ -9,7 +9,9 @@ import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.info
 import aws.sdk.kotlin.hll.codegen.util.plus
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
+import aws.smithy.kotlin.runtime.collections.AttributeKey
 import aws.smithy.kotlin.runtime.collections.attributesOf
+import aws.smithy.kotlin.runtime.collections.toMutableAttributes
 
 /**
  * Derives a high-level, unprojected [Structure] equivalent for this low-level structure. The applicable set of keyed
@@ -29,6 +31,7 @@ internal fun Structure.toHighLevel(ctx: RenderContext): Structure {
             MemberCodegenBehavior.MapToKeys -> null // will be added later by TypeFamily
             MemberCodegenBehavior.ListMapToObject -> deriveListMapToObject(llMember)
             is MemberCodegenBehavior.ExpressionLiteral -> deriveExpressionLiteral(llMember, behavior.type)
+            is MemberCodegenBehavior.CustomTransformation -> behavior.replacementMember
             else -> null
         }
 
@@ -43,8 +46,22 @@ internal fun Structure.toHighLevel(ctx: RenderContext): Structure {
     val genericArgs = hlMembers.genericVars()
     val hlType = TypeRef(ctx.pkg, llStructure.type.shortName, genericArgs)
     val hlAttributes = llStructure.attributes + (ModelAttributes.LowLevelStructure to llStructure)
-    return Structure(hlType, hlMembers, hlAttributes).addKeyProjections()
+    val hlStructure = Structure(hlType, hlMembers, hlAttributes)
+
+    return hlStructure
+        .withAttribute(ModelAttributes.LowLevelStructure, llStructure)
+        .withAttribute(MapperAttributes.ConversionParameters, ConversionParameter::fromInterface)
+        .withAttribute(MapperAttributes.KeyProjections, KeyProjections::fromInterface)
 }
+
+private fun <T : Any> Structure.withAttribute(key: AttributeKey<T>, value: T) = copy(
+    attributes = attributes.toMutableAttributes().apply { set(key, value) },
+)
+
+private fun <T : Any> Structure.withAttribute(
+    key: AttributeKey<T>,
+    valueSupplier: (Structure) -> T,
+) = withAttribute(key, valueSupplier(this))
 
 private fun deriveExpressionLiteral(llMember: Member, type: ExpressionLiteralType): Member? {
     val expressionType = when (type) {
@@ -60,7 +77,7 @@ private fun deriveExpressionLiteral(llMember: Member, type: ExpressionLiteralTyp
         ExpressionLiteralType.Filter -> DslInfo(
             interfaceType = MapperTypes.Expressions.FilterDsl,
             implType = MapperTypes.Expressions.Internal.FilterDslImpl,
-            implSingleton = true,
+            implInvocationStyle = DslInvocationStyle.Singleton,
         )
 
         // KeyCondition doesn't use a top-level DSL (SortKeyCondition is nested)
@@ -76,7 +93,9 @@ private fun deriveExpressionLiteral(llMember: Member, type: ExpressionLiteralTyp
     return llMember.copy(
         name = llMember.name.removeSuffix("Expression"),
         type = expressionType,
-        attributes = llMember.attributes + (ModelAttributes.DslInfo to dslInfo),
+        attributes = llMember.attributes.toMutableAttributes().apply {
+            if (dslInfo != null) dsls += dslInfo
+        },
     )
 }
 
@@ -88,21 +107,37 @@ private fun deriveListMapToObject(llMember: Member): Member {
     return llMember.copy(type = hlListType)
 }
 
-private fun Structure.addKeyProjections(): Structure = copy(attributes = attributes + (MapperAttributes.KeyProjections to KeyProjections.fromInterface(this)))
+/**
+ * Iterate over the members of this structure and execute the inner [block]. If a [MemberCodegenBehavior] is passed,
+ * only matching members are iterated.
+ * @param block The lambda to execute for each member
+ */
+@JvmName("membersAll")
+internal inline fun Structure.members(crossinline block: Member.() -> Unit) = members({ true }, block)
 
 /**
  * Iterate over the members of this structure and execute the inner [block]. If a [MemberCodegenBehavior] is passed,
  * only matching members are iterated.
- * @param memberCodegenBehavior The optional behavior by which to filter members.
+ * @param memberCodegenBehavior The behavior by which to filter members
  * @param block The lambda to execute for each member
  */
+@JvmName("membersByBehavior")
 internal inline fun Structure.members(
-    memberCodegenBehavior: MemberCodegenBehavior? = null,
+    memberCodegenBehavior: MemberCodegenBehavior,
     crossinline block: Member.() -> Unit,
-) {
-    val list = when (memberCodegenBehavior) {
-        null -> members
-        else -> members.filter { it.codegenBehavior == memberCodegenBehavior }
-    }
-    list.forEach { it.block() }
-}
+) = members({ it == memberCodegenBehavior }, block)
+
+/**
+ * Iterate over the members of this structure and execute the inner [block]. If a [MemberCodegenBehavior] is passed,
+ * only matching members are iterated.
+ * @param block The lambda to execute for each member
+ */
+@JvmName("membersByGenericType")
+internal inline fun <reified T : MemberCodegenBehavior> Structure.members(
+    crossinline block: Member.() -> Unit,
+) = members({ it is T }, block)
+
+private inline fun Structure.members(
+    behaviorPredicate: (MemberCodegenBehavior) -> Boolean,
+    crossinline block: Member.() -> Unit,
+) = members.filter { behaviorPredicate(it.codegenBehavior) }.forEach(block)

@@ -95,7 +95,25 @@ abstract class DdbLocalTest {
      * @param items A collection of maps of strings to values which will be mapped and persisted to the new table before
      * returning. This can be used to pre-populate a table for a test.
      */
-    suspend fun createTable(name: String, schema: ItemSchema<*>, vararg items: Item) = createTable(name, schema, mapOf(), mapOf(), items.toList())
+    suspend fun createTable(
+        name: String,
+        schema: ItemSchema<*>,
+        vararg items: Item,
+    ) = createTable(name, schema, mapOf(), mapOf(), items.toList())
+
+    /**
+     * Creates a table for the given name/schema and optionally persists the given items into it. All tables created via
+     * this method will be automatically dropped when the test spec completes (whether successfully or unsuccessfully).
+     * @param name The name of the table to create
+     * @param schema The schema for the table. This is used to derive the primary key and to map the [items] (if any).
+     * @param items A collection of maps of strings to values which will be mapped and persisted to the new table before
+     * returning. This can be used to pre-populate a table for a test.
+     */
+    suspend fun createTable(
+        name: String,
+        schema: ItemSchema<*>,
+        items: List<Item>,
+    ) = createTable(name, schema, mapOf(), mapOf(), items)
 
     /**
      * Creates a table for the given name/schema and optionally persists the given items into it. All tables created via

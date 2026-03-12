@@ -30,15 +30,15 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.*
  *         HReqContextImpl(highLevelReq, spec.schema, MapperContextImpl(spec, "GetItem"))
  *     },
  *
- *     serialize = { highLevelReq, schema -> highLevelReq.convert(spec.tableName, schema) },
+ *     serialize = { ctx -> ctx.highLevelRequest.convert(spec.tableName, ctx.serializeSchema) },
  *
- *     lowLevelInvoke = { lowLevelReq ->
+ *     lowLevelInvoke = { ctx ->
  *         spec.mapper.client.withWrappedClient { client ->
- *             client.getItem(lowLevelReq)
+ *             client.getItem(ctx.lowLevelRequest)
  *         }
  *     },
  *
- *     deserialize = { lowLevelRes, schema -> lowLevelRes.convert(schema) },
+ *     deserialize = { ctx -> ctx.lowLevelResponse.convert(ctx.deserializeSchema) },
  * )
  *
  * fun <PK : KeyType, SK : KeyType, T> getItemOperation(spec: TableSpec.CompositeKey<T, PK, SK>) = Operation(
@@ -48,15 +48,15 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.*
  *         HReqContextImpl(highLevelReq, spec.schema, MapperContextImpl(spec, "GetItem"))
  *     },
  *
- *     serialize = { highLevelReq, schema -> highLevelReq.convert(spec.tableName, schema) },
+ *     serialize = { ctx -> ctx.highLevelRequest.convert(spec.tableName, ctx.serializeSchema) },
  *
- *     lowLevelInvoke = { lowLevelReq ->
+ *     lowLevelInvoke = { ctx ->
  *         spec.mapper.client.withWrappedClient { client ->
- *             client.getItem(lowLevelReq)
+ *             client.getItem(ctx.lowLevelRequest)
  *         }
  *     },
  *
- *     deserialize = { lowLevelRes, schema -> lowLevelRes.convert(schema) },
+ *     deserialize = { ctx -> ctx.lowLevelResponse.convert(ctx.deserializeSchema) },
  * )
  * ```
  *
@@ -79,6 +79,27 @@ internal class FactoryRenderer(
                 val request = operation.request.keyProjections[keyType].interfaceStruct
                 val response = operation.response.keyProjections[keyType].interfaceStruct
                 val generics = request.type.genericVars() + response.type.genericVars()
+                val isSchemaless = request.type.genericVars().isEmpty() && response.type.genericVars().isEmpty()
+
+                fun renderConversionFields(structure: Structure, schemaName: String) {
+                    structure
+                        .lowLevel
+                        .members
+                        .filter { it.codegenBehavior == MemberCodegenBehavior.Hoist }
+                        .forEach { member ->
+                            if (member.name in itemSourceKind.hoistedFields) {
+                                write("spec.#L,", member.name)
+                            } else {
+                                write("#L = null,", member.name)
+                            }
+                        }
+
+                    structure
+                        .conversionParameters
+                        .forEach { parameter -> write(parameter.argValue) }
+
+                    if (!isSchemaless) write("ctx.#L,", schemaName)
+                }
 
                 blankLine()
                 withBlock(
@@ -101,43 +122,27 @@ internal class FactoryRenderer(
                     )
 
                     blankLine()
-                    withBlock("serialize = { highLevelReq, schema ->", "},") {
-                        withBlock("highLevelReq.convert(", ")") {
-                            renderHoistedFields(request, itemSourceKind)
-                            write("schema,")
+                    withBlock("serialize = { ctx ->", "},") {
+                        withBlock("ctx.highLevelRequest.convert(", ")") {
+                            renderConversionFields(request, "serializeSchema")
                         }
                     }
 
                     blankLine()
-                    withBlock("lowLevelInvoke = { lowLevelReq ->", "},") {
+                    withBlock("lowLevelInvoke = { ctx ->", "},") {
                         withBlock("spec.mapper.client.#T { client ->", "}", MapperTypes.Internal.withWrappedClient) {
-                            write("client.#L(lowLevelReq)", operation.methodName)
+                            write("client.#L(ctx.lowLevelRequest)", operation.methodName)
                         }
                     }
 
                     blankLine()
-                    withBlock("deserialize = { lowLevelRes, schema ->", "},") {
-                        withBlock("lowLevelRes.convert(", ")") {
-                            renderHoistedFields(response, itemSourceKind)
-                            write("schema,")
+                    withBlock("deserialize = { ctx ->", "},") {
+                        withBlock("ctx.lowLevelResponse.convert(", ")") {
+                            renderConversionFields(response, "deserializeSchema")
                         }
                     }
                 }
             }
         }
-    }
-
-    private fun renderHoistedFields(structure: Structure, itemSourceKind: ItemSourceKind) {
-        structure
-            .lowLevel
-            .members
-            .filter { it.codegenBehavior == MemberCodegenBehavior.Hoist }
-            .forEach { member ->
-                if (member.name in itemSourceKind.hoistedFields) {
-                    write("spec.#L,", member.name)
-                } else {
-                    write("#L = null,", member.name)
-                }
-            }
     }
 }

@@ -4,6 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model
 
+import aws.sdk.kotlin.hll.codegen.core.CodeGenerator
 import aws.sdk.kotlin.hll.codegen.model.*
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperPkg
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
@@ -11,6 +12,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionArgu
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionArgumentsType.AttributeValues
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.ExpressionLiteralType.*
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.MemberCodegenBehavior.*
+import aws.smithy.kotlin.runtime.collections.mutableAttributes
 
 /**
  * Describes a behavior to apply for a given [Member] in a low-level structure when generating code for an equivalent
@@ -58,6 +60,18 @@ internal sealed interface MemberCodegenBehavior {
      * structure).
      */
     data object Hoist : MemberCodegenBehavior
+
+    /**
+     * Indicates that a member from a low-level structure should be replaced with a custom member and custom conversion
+     * code
+     * @param replacementMember The member to substitute in the high-level structure
+     * @param renderConversion A function which returns a Kotlin expression to be used as the right-hand side of a
+     * high-low conversion
+     */
+    data class CustomTransformation(
+        val replacementMember: Member,
+        val renderConversion: CodeGenerator.(fromMemberName: String) -> String,
+    ) : MemberCodegenBehavior
 
     /**
      * Indicates that a member is a string expression parameter which should be replaced by an expression DSL
@@ -116,6 +130,9 @@ private data class Rule(
     constructor(name: String, type: TypeRef, behavior: MemberCodegenBehavior) :
         this(name::equals, type::isEquivalentTo, behavior)
 
+    constructor(name: String, typePredicate: (TypeRef) -> Boolean, behavior: MemberCodegenBehavior) :
+        this(name::equals, typePredicate, behavior)
+
     constructor(name: Regex, type: TypeRef, behavior: MemberCodegenBehavior) :
         this(name::matches, type::isEquivalentTo, behavior)
 
@@ -124,6 +141,7 @@ private data class Rule(
 }
 
 private fun Type.isEquivalentTo(other: Type): Boolean = when (this) {
+    StarProjection -> other == StarProjection
     is TypeVar -> other is TypeVar && shortName == other.shortName
     is TypeRef ->
         other is TypeRef &&
@@ -131,6 +149,42 @@ private fun Type.isEquivalentTo(other: Type): Boolean = when (this) {
             genericArgs.size == other.genericArgs.size &&
             genericArgs.zip(other.genericArgs).all { (thisArg, otherArg) -> thisArg.isEquivalentTo(otherArg) }
 }
+
+private val batchGetItemRequestTables = CustomTransformation(
+    replacementMember = Member(
+        name = "tables",
+        type = Types.Kotlin.list(MapperTypes.Operations.BatchGetItemRequestTable),
+        attributes = mutableAttributes().apply {
+            dsls += listOf(
+                DslInfo(
+                    interfaceType = MapperTypes.Operations.BatchGetItemRequestTableDslPartitionKey,
+                    implType = MapperTypes.Operations.Internal.BatchGetItemRequestTableDslPartitionKeyImpl,
+                    implInvocationStyle = DslInvocationStyle.Constructor("tables", "table"),
+                    implFinalizer = ".toTables()",
+                    nameOverride = "table",
+                    dslMethodParams = listOf(Member("table", MapperTypes.Model.TablePartitionKeyGeneric)),
+                ),
+                DslInfo(
+                    interfaceType = MapperTypes.Operations.BatchGetItemRequestTableDslCompositeKey,
+                    implType = MapperTypes.Operations.Internal.BatchGetItemRequestTableDslCompositeKeyImpl,
+                    implInvocationStyle = DslInvocationStyle.Constructor("tables", "table"),
+                    implFinalizer = ".toTables()",
+                    nameOverride = "table",
+                    dslMethodParams = listOf(Member("table", MapperTypes.Model.TableCompositeKeyGeneric)),
+                ),
+            )
+        },
+    ),
+    renderConversion = { fromMemberName -> format("#L.convert()", fromMemberName) },
+)
+
+private val batchGetItemResponseTables = CustomTransformation(
+    replacementMember = Member(
+        name = "tables",
+        type = Types.Kotlin.list(MapperTypes.Operations.BatchGetItemResponseTable),
+    ),
+    renderConversion = { _ -> "BatchGetItemResponseTables(responses, unprocessedKeys, requestTables)" },
+)
 
 /**
  * Priority-ordered list of dispositions to apply to members found in structures. The first element from this list that
@@ -149,6 +203,11 @@ private val rules = listOf(
     // Hoisted members
     Rule("tableName", Types.Kotlin.String, Hoist),
     Rule("indexName", Types.Kotlin.String, Hoist),
+
+    // Batch/transact transformations
+    Rule("requestItems", Types.Kotlin.stringMap(MapperTypes.KeysAndAttributes), batchGetItemRequestTables),
+    Rule("responses", Types.Kotlin.stringMap(Types.Kotlin.list(MapperTypes.AttributeMap)), batchGetItemResponseTables),
+    Rule("unprocessedKeys", Types.Kotlin.stringMap(MapperTypes.KeysAndAttributes), Drop), // handled by `responses`
 
     // Expression literals
     Rule("keyConditionExpression", Types.Kotlin.String, ExpressionLiteral(KeyCondition)),

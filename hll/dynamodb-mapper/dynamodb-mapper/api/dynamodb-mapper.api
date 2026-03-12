@@ -1,4 +1,4 @@
-public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbMapper {
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbMapper : aws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations {
 	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/DynamoDbMapper$Companion;
 	public abstract fun getClient ()Laws/sdk/kotlin/services/dynamodb/DynamoDbClient;
 	public abstract fun getConfig ()Laws/sdk/kotlin/hll/dynamodbmapper/DynamoDbMapper$Config;
@@ -1355,6 +1355,121 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/TableSpe
 	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
 }
 
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest$Companion;
+	public abstract fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
+	public abstract fun getTables ()Ljava/util/List;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest$Companion {
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestBuilder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest;
+	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
+	public final fun getTables ()Ljava/util/List;
+	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
+	public final fun setTables (Ljava/util/List;)V
+	public final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$CompositeKey;Lkotlin/jvm/functions/Function1;)V
+	public final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$PartitionKey;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestKt {
+	public static final fun BatchGetItemRequest (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest;
+	public static final fun copy (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest;
+	public static final fun toBuilder (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestBuilder;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTable {
+	public abstract fun getConsistentRead ()Ljava/lang/Boolean;
+	public abstract fun getTableName ()Ljava/lang/String;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTable$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTable {
+	public abstract fun getKeys ()Ljava/util/List;
+	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTable$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTable {
+	public abstract fun getKeys ()Ljava/util/List;
+	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTableDsl {
+	public abstract fun getConsistentRead ()Ljava/lang/Boolean;
+	public abstract fun setConsistentRead (Ljava/lang/Boolean;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTableDsl$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTableDsl {
+	public abstract fun getKeys ()Ljava/util/List;
+	public abstract fun key (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
+	public abstract fun keys (Ljava/lang/Iterable;)V
+	public abstract fun setKeys (Ljava/util/List;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTableDsl$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTableDsl {
+	public abstract fun getKeys ()Ljava/util/List;
+	public abstract fun key (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
+	public abstract fun keys (Ljava/lang/Iterable;)V
+	public abstract fun setKeys (Ljava/util/List;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTableKt {
+	public static final fun BatchGetItemRequestTable (Ljava/lang/Boolean;Ljava/util/List;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTable$CompositeKey;
+	public static final fun BatchGetItemRequestTable (Ljava/lang/Boolean;Ljava/util/List;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequestTable$PartitionKey;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponse {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponse$Companion;
+	public abstract fun getConsumedCapacity ()Ljava/util/List;
+	public abstract fun getTables ()Ljava/util/List;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponse$Companion {
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseBuilder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponse;
+	public final fun getConsumedCapacity ()Ljava/util/List;
+	public final fun getTables ()Ljava/util/List;
+	public final fun setConsumedCapacity (Ljava/util/List;)V
+	public final fun setTables (Ljava/util/List;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseKt {
+	public static final fun BatchGetItemResponse (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponse;
+	public static final fun copy (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponse;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponse;
+	public static final fun toBuilder (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponse;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseBuilder;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable$Companion;
+	public abstract fun getItems ()Ljava/util/List;
+	public abstract fun getTableName ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable$Companion {
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable {
+	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
+	public abstract fun getUnprocessedKeys ()Ljava/util/List;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable {
+	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+	public abstract fun getUnprocessedKeys ()Ljava/util/List;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTableKt {
+	public static final fun BatchGetItemResponseTable (Ljava/util/List;Ljava/lang/String;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable$CompositeKey;
+	public static final fun BatchGetItemResponseTable (Ljava/util/List;Ljava/lang/String;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable$PartitionKey;
+	public static final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponse;Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$CompositeKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable$CompositeKey;
+	public static final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponse;Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$PartitionKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemResponseTable$PartitionKey;
+}
+
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequest {
 	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequest$Companion;
 	public abstract fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
@@ -1449,6 +1564,14 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRespon
 	public static final fun DeleteItemResponse (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemResponse;
 	public static final fun copy (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemResponse;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemResponse;
 	public static final fun toBuilder (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemResponse;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemResponseBuilder;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations {
+	public abstract fun batchGetItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperationsKt {
+	public static final fun batchGetItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemRequest {

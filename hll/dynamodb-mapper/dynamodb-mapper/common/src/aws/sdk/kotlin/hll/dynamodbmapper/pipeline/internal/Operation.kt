@@ -9,6 +9,8 @@ import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemResponse
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.HReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
+import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
+import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LResContext
 import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
 import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
 
@@ -34,9 +36,9 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItem
  */
 internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
     val initialize: (HReq) -> HReqContextImpl<T, S, HReq>,
-    val serialize: (HReq, S) -> LReq,
-    val lowLevelInvoke: suspend (LReq) -> LRes,
-    val deserialize: (LRes, S) -> HRes,
+    val serialize: (HReqContext<T, S, HReq>) -> LReq,
+    val lowLevelInvoke: suspend (LReqContext<T, S, HReq, LReq>) -> LRes,
+    val deserialize: (LResContext<T, S, HReq, LReq, LRes>) -> HRes,
     val interceptors: List<Interceptor<T, S, HReq, LReq, LRes, HRes>>,
 ) {
     /**
@@ -53,9 +55,9 @@ internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
      */
     constructor(
         initialize: (HReq) -> HReqContextImpl<T, S, HReq>,
-        serialize: (HReq, S) -> LReq,
-        lowLevelInvoke: suspend (LReq) -> LRes,
-        deserialize: (LRes, S) -> HRes,
+        serialize: (HReqContext<T, S, HReq>) -> LReq,
+        lowLevelInvoke: suspend (LReqContext<T, S, HReq, LReq>) -> LRes,
+        deserialize: (LResContext<T, S, HReq, LReq, LRes>) -> HRes,
         interceptors: Collection<Interceptor<*, *, *, *, *, *>>,
     ) : this(
         initialize,
@@ -117,7 +119,7 @@ internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
         val rbsCtx = modifyHook(inputCtx) { modifyBeforeSerialization(it) }
         val serCtx = readOnlyHook(rbsCtx) { readBeforeSerialization(it) }
 
-        val serRes = serCtx.runCatching { serialize(serCtx.highLevelRequest, serCtx.serializeSchema) }
+        val serRes = runCatching { serialize(serCtx) }
         val lReq = serRes.getOrNull()
         val rasCtx = serCtx + serRes.exceptionOrNull() + lReq
 
@@ -130,7 +132,7 @@ internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
         val rbiCtx = modifyHook(inputCtx) { modifyBeforeInvocation(it) }
         val invCtx = readOnlyHook(rbiCtx) { readBeforeInvocation(it) }
 
-        val invRes = runCatching { lowLevelInvoke(invCtx.lowLevelRequest) }
+        val invRes = runCatching { lowLevelInvoke(invCtx) }
         val lRes = invRes.getOrNull()
         val raiCtx = invCtx + invRes.exceptionOrNull() + lRes
 
@@ -143,7 +145,7 @@ internal data class Operation<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes>(
         val rbdCtx = modifyHook(inputCtx, reverse = true) { modifyBeforeDeserialization(it) }
         val desCtx = readOnlyHook(rbdCtx, reverse = true) { readBeforeDeserialization(it) }
 
-        val desRes = desCtx.runCatching { deserialize(desCtx.lowLevelResponse, desCtx.deserializeSchema) }
+        val desRes = runCatching { deserialize(desCtx) }
         val hRes = desRes.getOrNull()
         val radCtx = desCtx + desRes.exceptionOrNull() + hRes
 

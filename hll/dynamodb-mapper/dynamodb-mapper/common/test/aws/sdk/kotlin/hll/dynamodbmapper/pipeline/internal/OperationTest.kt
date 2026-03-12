@@ -51,9 +51,9 @@ class OperationTest {
 
     private val op = Operation(
         ::initialize,
-        { hReq, schema -> hReq.convert(TABLE_NAME, schema) },
-        ::dummyInvoke,
-        { lRes, schema -> lRes.convert(schema) },
+        { ctx -> LFooRequest(TABLE_NAME, ctx.serializeSchema.converter.convertRight(ctx.highLevelRequest.foo)) },
+        { ctx -> LFooResponse(ctx.lowLevelRequest.foo) },
+        { ctx -> HFooResponse(ctx.deserializeSchema.converter.convertLeft(ctx.lowLevelResponse.foo)) },
         interceptors,
     )
 
@@ -188,11 +188,5 @@ private data class HFooRequest(val foo: Foo)
 private data class LFooRequest(val table: String, val foo: Item)
 private data class LFooResponse(val foo: Item)
 private data class HFooResponse(val foo: Foo)
-
-private fun HFooRequest.convert(table: String, schema: ItemSchema<Foo>) = LFooRequest(table, schema.converter.convertRight(foo))
-
-private fun LFooResponse.convert(schema: ItemSchema<Foo>) = HFooResponse(schema.converter.convertLeft(foo))
-
-private suspend fun dummyInvoke(req: LFooRequest) = LFooResponse(req.foo)
 
 private typealias FooInterceptor = Interceptor<Foo, ItemSchema<Foo>, HFooRequest, LFooRequest, LFooResponse, HFooResponse>

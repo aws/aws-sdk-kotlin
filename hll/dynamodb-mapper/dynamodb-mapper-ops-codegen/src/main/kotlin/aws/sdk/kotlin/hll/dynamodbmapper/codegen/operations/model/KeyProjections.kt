@@ -133,7 +133,7 @@ private class KeyProjectionsBuilder(val baseStruct: Structure) {
             genericArgs = interfaceStruct.members.genericVars().toList(),
         )
 
-        return interfaceStruct.copy(members = interfaceStruct.members, type = implType)
+        return interfaceStruct.copy(type = implType)
     }
 
     private fun builderFor(interfaceStruct: Structure, implStruct: Structure): Structure {

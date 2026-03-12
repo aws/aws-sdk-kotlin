@@ -15,9 +15,9 @@ import aws.smithy.kotlin.runtime.collections.MutableAttributes
 @InternalSdkApi
 public object ModelAttributes {
     /**
-     * The types involved for a DSL-style method for working with a complex member, if applicable
+     * The types involved for DSL-style method(s) for working with a complex member, if applicable
      */
-    public val DslInfo: AttributeKey<DslInfo> = AttributeKey("aws.sdk.kotlin.hll#DslInfo")
+    public val Dsls: AttributeKey<List<DslInfo>> = AttributeKey("aws.sdk.kotlin.hll#Dsls")
 
     /**
      * Specifies whether the given API declaration (e.g., method, field, parameter, etc.) is generated.

@@ -5,7 +5,10 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.rendering
 
 import aws.sdk.kotlin.hll.codegen.core.ImportDirective
-import aws.sdk.kotlin.hll.codegen.model.*
+import aws.sdk.kotlin.hll.codegen.model.Member
+import aws.sdk.kotlin.hll.codegen.model.Structure
+import aws.sdk.kotlin.hll.codegen.model.genericVars
+import aws.sdk.kotlin.hll.codegen.model.lowLevel
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.RendererBase
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
@@ -155,18 +158,27 @@ internal abstract class IoRenderer(
     }
 
     private fun renderConversion(keyType: KeyProjectionType, fromStruct: Structure, toStruct: Structure) {
-        val schemaType = when (keyType) {
-            KeyProjectionType.NONE -> MapperTypes.Items.ItemSchema
-            KeyProjectionType.PARTITION_KEY -> MapperTypes.Items.ItemSchemaPartitionKey
-            KeyProjectionType.COMPOSITE_KEY -> MapperTypes.Items.ItemSchemaCompositeKey
+        val isSchemaless = fromStruct.type.genericVars().isEmpty() && toStruct.type.genericVars().isEmpty()
+
+        val schemaType = when {
+            isSchemaless -> null
+            keyType == KeyProjectionType.NONE -> MapperTypes.Items.ItemSchema
+            keyType == KeyProjectionType.PARTITION_KEY -> MapperTypes.Items.ItemSchemaPartitionKey
+            keyType == KeyProjectionType.COMPOSITE_KEY -> MapperTypes.Items.ItemSchemaCompositeKey
+            else -> error("Unknown key/schema constraints")
         }
 
-        val generics = fromStruct.type.genericVars() + toStruct.type.genericVars() + TypeVar.T
+        val generics = fromStruct.type.genericVars() + toStruct.type.genericVars() + schemaType.genericVars()
 
         blankLine()
         withBlock("internal fun #G#T.convert(", "}", generics, fromStruct.type) {
             toStruct.members(MemberCodegenBehavior.Hoist) { write("#L: #T,", name, type) }
-            write("schema: #T,", schemaType)
+
+            val extraParams = fromStruct.conversionParameters + toStruct.conversionParameters
+            extraParams.forEach { parameter -> write("#L: #T,", parameter.name, parameter.type) }
+
+            schemaType?.let { write("schema: #T,", it) }
+
             closeAndOpenBlock(") = #T {", toStruct.type)
 
             toStruct.members(MemberCodegenBehavior.PassThrough) {
@@ -192,6 +204,13 @@ internal abstract class IoRenderer(
             }
 
             toStruct.members(MemberCodegenBehavior.Hoist) { write("this.#1L = #1L", name) }
+
+            toStruct.members<MemberCodegenBehavior.CustomTransformation> {
+                val transform = codegenBehavior as MemberCodegenBehavior.CustomTransformation
+                val fromMemberString = format("this@convert.#L", fromMember(fromStruct).name)
+                val conversionString = transform.renderConversion(this@IoRenderer, fromMemberString)
+                write("this.#L = #L", name, conversionString)
+            }
 
             if (toStruct.members.any { it.codegenBehavior.isExpression }) {
                 blankLine()
