@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.35] - 03/12/2026
+
+### Features
+* (**datasync**) DataSync's 3 location types, Hadoop Distributed File System (HDFS), FSx for Windows File Server (FSx Windows), and FSx for NetApp ONTAP (FSx ONTAP) now have credentials managed via Secrets Manager, which may be encrypted with service keys or be configured to use customer-managed keys or secret.
+* (**ecr**) Add Chainguard to PTC upstreamRegistry enum
+* (**s3**) Adds support for account regional namespaces for general purpose buckets. The account regional namespace is a reserved subdivision of the global bucket namespace where only your account can create general purpose buckets.
+
 ## [1.6.34] - 03/11/2026
 
 ### Features
