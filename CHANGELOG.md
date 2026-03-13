@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.6.36] - 03/13/2026
+
+### Features
+* (**apigateway**) API Gateway now supports an additional security policy "SecurityPolicy-TLS13-1-2-FIPS-PFS-PQ-2025-09" for REST APIs and custom domain names. The new policy is compliant with TLS 1.3, Federal Information Processing Standards (FIPS), Perfect Forward Secrecy (PFS), and post-quantum (PQ) cryptography
+* (**configservice**) Fix pagination support for DescribeConformancePackCompliance, and update OrganizationConfigRule InputParameters max length to match ConfigRule.
+* (**connect**) Deprecating PredefinedNotificationID field
+* (**gameliftstreams**) Feature launch that enables customers to connect streaming sessions to their own VPCs running in AWS.
+* (**glue**) Add QuerySessionContext to BatchGetPartitionRequest
+* (**ivsrealtime**) Updates maximum reconnect window seconds from 60 to 300 for participant replication
+* (**mediaconvert**) This update adds support for Dolby AC-4 audio output, frame rate conversion between non-Dolby Vision inputs to Dolby Vision outputs, and clear lead CMAF HLS output.
+* (**mgn**) Network Migration APIs are now publicly available for direct programmatic access. Customers can now call Network Migration APIs directly without going through AWS Transform (ATX), enabling automation, integration with existing tools, and self-service migration workflows.
+* (**quicksight**) The change adds a new capability named ManageSharedFolders in Custom Permissions
+
+### Documentation
+* (**medialive**) Documents the VideoDescription.ScalingBehavior.SMART(underscore)CROP enum value.
+
 ## [1.6.35] - 03/12/2026
 
 ### Features
