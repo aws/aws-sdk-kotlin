@@ -6,6 +6,7 @@ import aws.sdk.kotlin.gradle.dsl.configureLinting
 import aws.sdk.kotlin.gradle.dsl.configureMinorVersionStrategyRules
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalPublishTask
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalWaitForPublicationTask
+import aws.sdk.kotlin.gradle.publishing.configureJarReduction
 import aws.sdk.kotlin.gradle.util.typedProp
 
 buildscript {
@@ -105,3 +106,5 @@ configureMinorVersionStrategyRules(lintPaths)
 
 tasks.register<SonatypeCentralPortalPublishTask>("publishToCentralPortal") { }
 tasks.register<SonatypeCentralPortalWaitForPublicationTask>("waitForCentralPortalPublication") { }
+
+configureJarReduction("aws/sdk/kotlin")
