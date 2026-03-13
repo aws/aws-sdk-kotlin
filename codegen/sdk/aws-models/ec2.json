@@ -2010,7 +2010,7 @@
                     }
                 },
                 "AvailabilityZone": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#AvailabilityZoneName",
                     "traits": {
                         "aws.protocols#ec2QueryName": "AvailabilityZone",
                         "smithy.api#documentation": "<p>The Availability Zone in which to allocate the Dedicated Host.</p>",
@@ -11827,10 +11827,51 @@
                         "smithy.api#documentation": "<p>The amount of instance capacity associated with the usage. For example a value of\n\t\t\t\t<code>4</code> indicates that instance capacity for 4 instances is currently in\n\t\t\tuse.</p>",
                         "smithy.api#xmlName": "count"
                     }
+                },
+                "AllocationMetadata": {
+                    "target": "com.amazonaws.ec2#CapacityAllocationMetadataList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AllocationMetadataList",
+                        "smithy.api#documentation": "<p>Additional metadata associated with the capacity allocation. Each entry contains a key-value pair providing context \n\t\t\tabout the allocation.</p>",
+                        "smithy.api#xmlName": "allocationMetadataList"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Information about instance capacity usage for a Capacity Reservation.</p>"
+            }
+        },
+        "com.amazonaws.ec2#CapacityAllocationMetadataEntry": {
+            "type": "structure",
+            "members": {
+                "Key": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Key",
+                        "smithy.api#documentation": "<p>The key of the metadata entry.</p>",
+                        "smithy.api#xmlName": "key"
+                    }
+                },
+                "Value": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Value",
+                        "smithy.api#documentation": "<p>The value of the metadata entry.</p>",
+                        "smithy.api#xmlName": "value"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A key-value pair that provides additional metadata about a capacity allocation.</p>"
+            }
+        },
+        "com.amazonaws.ec2#CapacityAllocationMetadataList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#CapacityAllocationMetadataEntry",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
             }
         },
         "com.amazonaws.ec2#CapacityAllocations": {
@@ -12036,6 +12077,14 @@
                         "smithy.api#documentation": "<p>The currency of the payment for the Capacity Block extension.</p>",
                         "smithy.api#xmlName": "currencyCode"
                     }
+                },
+                "ZoneType": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ZoneType",
+                        "smithy.api#documentation": "<p>The type of zone where the Capacity Block extension is located.</p>",
+                        "smithy.api#xmlName": "zoneType"
+                    }
                 }
             },
             "traits": {
@@ -12139,6 +12188,14 @@
                         "aws.protocols#ec2QueryName": "Tenancy",
                         "smithy.api#documentation": "<p>Indicates the tenancy of the Capacity Block extension offering. A Capacity Block can\n\t\t\thave one of the following tenancy settings:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>default</code> - The Capacity Block is created on hardware that is\n\t\t\t\t\tshared with other Amazon Web Services accounts.</p>\n            </li>\n            <li>\n               <p>\n                  <code>dedicated</code> - The Capacity Block is created on single-tenant\n\t\t\t\t\thardware that is dedicated to a single Amazon Web Services account.</p>\n            </li>\n         </ul>",
                         "smithy.api#xmlName": "tenancy"
+                    }
+                },
+                "ZoneType": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ZoneType",
+                        "smithy.api#documentation": "<p>The type of zone where the Capacity Block extension offering is available.</p>",
+                        "smithy.api#xmlName": "zoneType"
                     }
                 }
             },
@@ -12327,6 +12384,14 @@
                         "aws.protocols#ec2QueryName": "CapacityBlockDurationMinutes",
                         "smithy.api#documentation": "<p>The number of minutes (in addition to <code>capacityBlockDurationHours</code>) for the\n\t\t\tduration of the Capacity Block reservation. For example, if a Capacity Block starts at\n\t\t\t\t<b>08:55</b> and ends at <b>11:30</b>, the minutes field would be <b>35</b>.</p>",
                         "smithy.api#xmlName": "capacityBlockDurationMinutes"
+                    }
+                },
+                "ZoneType": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ZoneType",
+                        "smithy.api#documentation": "<p>The type of zone where the Capacity Block offering is available.</p>",
+                        "smithy.api#xmlName": "zoneType"
                     }
                 }
             },
@@ -27471,6 +27536,29 @@
         "com.amazonaws.ec2#DefaultEnaQueueCountPerInterface": {
             "type": "integer"
         },
+        "com.amazonaws.ec2#DefaultHttpTokensEnforcedState": {
+            "type": "enum",
+            "members": {
+                "disabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
+                },
+                "enabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                },
+                "no_preference": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "no-preference"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#DefaultInstanceMetadataEndpointState": {
             "type": "enum",
             "members": {
@@ -34406,6 +34494,12 @@
                     "target": "com.amazonaws.ec2#Integer",
                     "traits": {
                         "smithy.api#documentation": "<p>The number of EC2 UltraServers in the offerings.</p>"
+                    }
+                },
+                "AllAvailabilityZones": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tInclude all Availability Zones and Local Zones, regardless of your opt-in status.\n\t\t\tIf you do not use this parameter, the results include available offerings from all\n\t\t\tAvailability Zones in the Amazon Web Services Region and Local Zones you are opted into.\n\t\t</p>"
                     }
                 }
             },
@@ -68982,6 +69076,23 @@
                 }
             }
         },
+        "com.amazonaws.ec2#HttpTokensEnforcedState": {
+            "type": "enum",
+            "members": {
+                "disabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
+                },
+                "enabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                }
+            }
+        },
         "com.amazonaws.ec2#HttpTokensState": {
             "type": "enum",
             "members": {
@@ -74169,6 +74280,14 @@
                         "aws.protocols#ec2QueryName": "ManagedExceptionMessage",
                         "smithy.api#documentation": "<p>The customized exception message that is specified in the declarative policy.</p>",
                         "smithy.api#xmlName": "managedExceptionMessage"
+                    }
+                },
+                "HttpTokensEnforced": {
+                    "target": "com.amazonaws.ec2#HttpTokensEnforcedState",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "HttpTokensEnforced",
+                        "smithy.api#documentation": "<p>Indicates whether to enforce the requirement of IMDSv2 on an instance at the time of\n            launch. When enforcement is enabled, the instance can't launch unless IMDSv2\n                (<code>HttpTokens</code>) is set to <code>required</code>.</p>",
+                        "smithy.api#xmlName": "httpTokensEnforced"
                     }
                 }
             },
@@ -83266,6 +83385,168 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "r8id.metal-96xl"
+                    }
+                },
+                "c8id_large": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.large"
+                    }
+                },
+                "c8id_xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.xlarge"
+                    }
+                },
+                "c8id_2xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.2xlarge"
+                    }
+                },
+                "c8id_4xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.4xlarge"
+                    }
+                },
+                "c8id_8xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.8xlarge"
+                    }
+                },
+                "c8id_12xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.12xlarge"
+                    }
+                },
+                "c8id_16xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.16xlarge"
+                    }
+                },
+                "c8id_24xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.24xlarge"
+                    }
+                },
+                "c8id_32xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.32xlarge"
+                    }
+                },
+                "c8id_48xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.48xlarge"
+                    }
+                },
+                "c8id_96xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.96xlarge"
+                    }
+                },
+                "c8id_metal_48xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.metal-48xl"
+                    }
+                },
+                "c8id_metal_96xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "c8id.metal-96xl"
+                    }
+                },
+                "m8id_large": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.large"
+                    }
+                },
+                "m8id_xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.xlarge"
+                    }
+                },
+                "m8id_2xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.2xlarge"
+                    }
+                },
+                "m8id_4xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.4xlarge"
+                    }
+                },
+                "m8id_8xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.8xlarge"
+                    }
+                },
+                "m8id_12xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.12xlarge"
+                    }
+                },
+                "m8id_16xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.16xlarge"
+                    }
+                },
+                "m8id_24xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.24xlarge"
+                    }
+                },
+                "m8id_32xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.32xlarge"
+                    }
+                },
+                "m8id_48xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.48xlarge"
+                    }
+                },
+                "m8id_96xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.96xlarge"
+                    }
+                },
+                "m8id_metal_48xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.metal-48xl"
+                    }
+                },
+                "m8id_metal_96xl": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "m8id.metal-96xl"
+                    }
+                },
+                "hpc8a_96xlarge": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hpc8a.96xlarge"
                     }
                 }
             }
@@ -95934,6 +96215,12 @@
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
                         "smithy.api#documentation": "<p>Checks whether you have the required permissions for the operation, without actually making the \n  request, and provides an error response. If you have the required permissions, the error response is \n  <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "HttpTokensEnforced": {
+                    "target": "com.amazonaws.ec2#DefaultHttpTokensEnforcedState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to enforce the requirement of IMDSv2 on an instance at the time of\n            launch. When enforcement is enabled, the instance can't launch unless IMDSv2\n                (<code>HttpTokens</code>) is set to <code>required</code>. For more information, see\n                <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-IMDS-new-instances.html#enforce-imdsv2-at-the-account-level\">Enforce IMDSv2 at the account level</a> in the\n                <i>Amazon EC2 User Guide</i>.</p>"
                     }
                 }
             },

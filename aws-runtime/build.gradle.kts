@@ -92,6 +92,7 @@ dependencies {
     }
 }
 val packagesToIgnore = listOf(
+    "aws.sdk.kotlin.runtime.auth.credentials.internal.signin",
     "aws.sdk.kotlin.runtime.auth.credentials.internal.sts",
     "aws.sdk.kotlin.runtime.auth.credentials.internal.sso",
     "aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc",
