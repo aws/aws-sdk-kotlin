@@ -81,27 +81,25 @@ public class MutableTransferContext(
     override var transferableObjects: Long? = null,
     override var transferredObjects: Long? = null,
 ) : TransferInterceptorContext {
-    internal fun immutableCopy() =
-        TransferContext(
-            s3Request,
-            s3Response,
-            tmRequest,
-            tmResponse,
-            transferableBytes,
-            transferredBytes,
-            transferableObjects,
-            transferredObjects,
-        )
+    internal fun immutableCopy() = TransferContext(
+        s3Request,
+        s3Response,
+        tmRequest,
+        tmResponse,
+        transferableBytes,
+        transferredBytes,
+        transferableObjects,
+        transferredObjects,
+    )
 
-    internal fun copy() =
-        MutableTransferContext(
-            s3Request,
-            s3Response,
-            tmRequest,
-            tmResponse,
-            transferableBytes,
-            transferredBytes,
-            transferableObjects,
-            transferredObjects,
-        )
+    internal fun copy() = MutableTransferContext(
+        s3Request,
+        s3Response,
+        tmRequest,
+        tmResponse,
+        transferableBytes,
+        transferredBytes,
+        transferableObjects,
+        transferredObjects,
+    )
 }

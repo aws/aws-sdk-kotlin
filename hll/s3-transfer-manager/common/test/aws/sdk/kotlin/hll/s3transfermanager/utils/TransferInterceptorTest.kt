@@ -77,16 +77,13 @@ class TransferInterceptorTest {
                 S3TransferManager(s3Client) {
                     interceptors += listOf(
                         object : TransferInterceptor {
-                            override fun readBeforeTransferInitiated(context: TransferContext): Unit =
-                                throw Exception("1")
+                            override fun readBeforeTransferInitiated(context: TransferContext): Unit = throw Exception("1")
                         },
                         object : TransferInterceptor {
-                            override fun readBeforeTransferInitiated(context: TransferContext): Unit =
-                                throw Exception("2")
+                            override fun readBeforeTransferInitiated(context: TransferContext): Unit = throw Exception("2")
                         },
                         object : TransferInterceptor {
-                            override fun readBeforeTransferInitiated(context: TransferContext): Unit =
-                                throw Exception("3")
+                            override fun readBeforeTransferInitiated(context: TransferContext): Unit = throw Exception("3")
                         },
                     )
                 }.uploadObject {

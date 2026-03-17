@@ -49,16 +49,15 @@ internal fun resolvePartSize(contentLength: Long, targetPartSize: Long, objectNa
  *  [ByteStream.ChannelStream]
  *  [ByteStream.SourceStream]
  */
-internal fun resolveSource(body: ByteStream): Any =
-    when (body) {
-        is ByteStream.Buffer -> body.bytes()
-        is ByteStream.ChannelStream -> body.readFrom()
-        is ByteStream.SourceStream -> body.readFrom()
-        else ->
-            throw S3TransferManagerException(
-                "Unhandled body type: ${body::class.simpleName }",
-            )
-    }
+internal fun resolveSource(body: ByteStream): Any = when (body) {
+    is ByteStream.Buffer -> body.bytes()
+    is ByteStream.ChannelStream -> body.readFrom()
+    is ByteStream.SourceStream -> body.readFrom()
+    else ->
+        throw S3TransferManagerException(
+            "Unhandled body type: ${body::class.simpleName }",
+        )
+}
 
 /**
  * Retrieves the bytes for the next part of a multipart upload from the given part source into a [SdkBuffer]
