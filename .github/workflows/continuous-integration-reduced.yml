@@ -64,7 +64,7 @@ jobs:
         uses: aws/aws-kotlin-repo-tools/.github/actions/utils/add-to-local-properties@main
         with:
           working-directory: '~/.sdkdev'
-          addition: 'aws.kotlin.native = false\naws.sdk.proguard = true'
+          addition: 'aws.kotlin.native = false'
 
       - name: Publish reduced Smithy Kotlin to Maven Local
         working-directory: './smithy-kotlin'
