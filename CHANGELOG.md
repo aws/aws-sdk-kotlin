@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.38] - 03/17/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Deprecating namespaces field and adding namespaceTemplates.
+* (**emr**) Add S3LoggingConfiguration to Control LogUploads
+* (**glue**) Provide approval to overwrite existing Lake Formation permissions on all child resources with the default permissions specified in 'CreateTableDefaultPermissions' and 'CreateDatabaseDefaultPermissions' when updating catalog. Allowed values are ["Accept","Deny"] .
+
 ## [1.6.37] - 03/16/2026
 
 ### Features
