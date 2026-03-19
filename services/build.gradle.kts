@@ -181,8 +181,18 @@ subprojects {
                 freeCompilerArgs.add("-Xjdk-release=1.8")
             }
         }
+    }
 
-        configurePublishing("aws-sdk-kotlin")
+    configurePublishing("aws-sdk-kotlin")
+
+    publishing {
+        publications.all {
+            if (this !is MavenPublication) return@all
+            project.afterEvaluate {
+                val sdkId = project.typedProp<String>("aws.sdk.id") ?: error("service build `${project.name}` is missing `aws.sdk.id` property required for publishing")
+                pom.properties.put("aws.sdk.id", sdkId)
+            }
+        }
     }
 }
 
