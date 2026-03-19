@@ -2,6 +2,7 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
+
 package aws.sdk.kotlin.e2etest
 
 import aws.sdk.kotlin.e2etest.S3TestUtils.responseCodeFromPut

@@ -74,6 +74,10 @@ subprojects {
                         implementation(project(":tests:e2e-test-util"))
                     }
 
+                    tasks.register<Test>("e2eTest") {
+                        description = "Run e2e service tests"
+                        group = "verification"
+
                     if (project.name == "s3") {
                         dependencies {
                             rootProject.findProject(":services:s3control")?.let { implementation(it) }

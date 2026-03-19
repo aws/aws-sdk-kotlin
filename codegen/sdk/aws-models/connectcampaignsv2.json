@@ -2273,22 +2273,6 @@
                 ]
             }
         },
-        "com.amazonaws.connectcampaignsv2#ExternalCampaignType": {
-            "type": "string",
-            "traits": {
-                "smithy.api#documentation": "The type of campaign externally exposed in APIs.",
-                "smithy.api#enum": [
-                    {
-                        "value": "MANAGED",
-                        "name": "MANAGED"
-                    },
-                    {
-                        "value": "JOURNEY",
-                        "name": "JOURNEY"
-                    }
-                ]
-            }
-        },
         "com.amazonaws.connectcampaignsv2#FailedCampaignStateResponse": {
             "type": "structure",
             "members": {

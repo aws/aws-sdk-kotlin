@@ -95,7 +95,6 @@ class LoginTokenProviderTest {
         data class Error(val message: String) : TestOutcome()
     }
 
-    @Ignore
     @Test
     fun testLoginTokenCacheBehavior() = runTest(timeout = 2.minutes) {
         val testList = Json.parseToJsonElement(LOGIN_TOKEN_PROVIDER_TEST_SUITE).jsonArray
