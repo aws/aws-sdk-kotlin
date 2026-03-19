@@ -583,6 +583,12 @@
             "brazilName": "AwsSdkKotlinConnectcases"
         },
         {
+            "sdkId": "ConnectHealth",
+            "namespace": "aws.sdk.kotlin.services.connecthealth",
+            "artifactName": "connecthealth",
+            "brazilName": "AwsSdkKotlinConnecthealth"
+        },
+        {
             "sdkId": "ConnectParticipant",
             "namespace": "aws.sdk.kotlin.services.connectparticipant",
             "artifactName": "connectparticipant",
@@ -839,6 +845,12 @@
             "namespace": "aws.sdk.kotlin.services.elasticsearchservice",
             "artifactName": "elasticsearchservice",
             "brazilName": "AwsSdkKotlinElasticsearchService"
+        },
+        {
+            "sdkId": "ElementalInference",
+            "namespace": "aws.sdk.kotlin.services.elementalinference",
+            "artifactName": "elementalinference",
+            "brazilName": "AwsSdkKotlinElementalinference"
         },
         {
             "sdkId": "EntityResolution",
@@ -2059,6 +2071,12 @@
             "brazilName": "AwsSdkKotlinShield"
         },
         {
+            "sdkId": "Signer Data",
+            "namespace": "aws.sdk.kotlin.services.signerdata",
+            "artifactName": "signerdata",
+            "brazilName": "AwsSdkKotlinSignerData"
+        },
+        {
             "sdkId": "Signin",
             "namespace": "aws.sdk.kotlin.services.signin",
             "artifactName": "signin",
@@ -2069,6 +2087,12 @@
             "namespace": "aws.sdk.kotlin.services.simspaceweaver",
             "artifactName": "simspaceweaver",
             "brazilName": "AwsSdkKotlinSimspaceweaver"
+        },
+        {
+            "sdkId": "SimpleDBv2",
+            "namespace": "aws.sdk.kotlin.services.simpledbv2",
+            "artifactName": "simpledbv2",
+            "brazilName": "AwsSdkKotlinSimpledbv2"
         },
         {
             "sdkId": "Snow Device Management",

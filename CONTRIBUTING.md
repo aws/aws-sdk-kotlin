@@ -23,6 +23,18 @@ The `smithy-kotlin` repository contains the generic Smithy code generation tools
 If you want to contribute by diving into the codegen machinery and helping develop the SDK please refer to the [contributing guide](https://github.com/smithy-lang/smithy-kotlin/blob/main/CONTRIBUTING.md) in that repo.
 
 
+## Prerequisites
+
+Building this project requires JDK 17 or later. On Amazon Linux, the default Corretto installation may not include the
+`jmods` files required by the ProGuard reduction step that runs during publishing tasks. Install them separately:
+
+```
+yum install java-17-amazon-corretto-jmods.x86_64
+```
+
+Adjust the version (e.g., `java-21-amazon-corretto-jmods.x86_64`) to match the JDK version you are using.
+
+
 ## Reporting Bugs/Feature Requests
 
 We welcome you to use the GitHub issue tracker to report bugs or suggest features.
