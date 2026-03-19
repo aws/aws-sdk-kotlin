@@ -10,6 +10,5 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 
 public class S3TransferManagerSymbolProcessorProvider : SymbolProcessorProvider {
-    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =
-        S3TransferManagerSymbolProcessor(environment)
+    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor = S3TransferManagerSymbolProcessor(environment)
 }

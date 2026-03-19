@@ -22,5 +22,4 @@ internal object S3TransferManagerBusinessMetricInterceptor : HttpInterceptor {
     }
 }
 
-internal inline fun <T> S3Client.withTmBusinessMetric(block: (S3Client) -> T): T =
-    withConfig { interceptors += S3TransferManagerBusinessMetricInterceptor }.use(block)
+internal inline fun <T> S3Client.withTmBusinessMetric(block: (S3Client) -> T): T = withConfig { interceptors += S3TransferManagerBusinessMetricInterceptor }.use(block)

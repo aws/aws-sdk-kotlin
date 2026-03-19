@@ -66,8 +66,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
     public val maxConcurrentPartUploads: Int = builder.maxConcurrentPartUploads
 
     public companion object {
-        public operator fun invoke(client: S3Client, block: Builder.() -> Unit = {}): S3TransferManager =
-            Builder().apply(block).build(client)
+        public operator fun invoke(client: S3Client, block: Builder.() -> Unit = {}): S3TransferManager = Builder().apply(block).build(client)
     }
 
     public class Builder {
@@ -118,8 +117,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
          */
         public var maxConcurrentPartUploads: Int = 5
 
-        internal fun build(client: S3Client): S3TransferManager =
-            S3TransferManager(client, this)
+        internal fun build(client: S3Client): S3TransferManager = S3TransferManager(client, this)
     }
 
     // Keeps track of how many parts are in memory for this S3 TM via permits
@@ -131,17 +129,16 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
      */
     public suspend fun uploadObject(
         uploadObjectRequest: UploadObjectRequest,
-    ): UploadObjectResponse =
-        uploadObjectImplementation(
-            uploadObjectRequest,
-            s3Client,
-            multipartUploadThresholdBytes,
-            targetPartSizeBytes,
-            interceptors,
-            maxInMemoryParts,
-            maxConcurrentPartUploads,
-            bufferSemaphore,
-        )
+    ): UploadObjectResponse = uploadObjectImplementation(
+        uploadObjectRequest,
+        s3Client,
+        multipartUploadThresholdBytes,
+        targetPartSizeBytes,
+        interceptors,
+        maxInMemoryParts,
+        maxConcurrentPartUploads,
+        bufferSemaphore,
+    )
 
     /**
      * Uploads an object to S3 via [aws.smithy.kotlin.runtime.content.ByteStream].
@@ -149,6 +146,5 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
      */
     public suspend inline fun uploadObject(
         crossinline block: UploadObjectRequest.Builder.() -> Unit,
-    ): UploadObjectResponse =
-        uploadObject(UploadObjectRequest.Builder().apply(block).build())
+    ): UploadObjectResponse = uploadObject(UploadObjectRequest.Builder().apply(block).build())
 }

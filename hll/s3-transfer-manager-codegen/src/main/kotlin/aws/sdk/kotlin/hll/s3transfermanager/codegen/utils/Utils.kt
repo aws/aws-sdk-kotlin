@@ -19,37 +19,21 @@ internal fun Resolver.operationMembers(
     operationName: String,
     type: MappingType,
     relevantMembers: Set<String>,
-): List<Member> =
-    Operation.from(
-        this
-            .getClassDeclarationByName<S3Client>()!!
-            .getDeclaredFunctions()
-            .find { it.simpleName.getShortName().equals(operationName, ignoreCase = true) }
-            ?: throw S3TransferManagerCodegenException("Operation $operationName not found"),
-    )
-        .let {
-            if (type == MappingType.REQUEST) {
-                it.request
-            } else {
-                it.response
-            }
-        }
-        .members
-        .filter { member ->
-            relevantMembers.any { it.equals(member.name, ignoreCase = true) }
-        }
-
-internal fun Type.renderMember(): String {
-    val code = StringBuilder()
-    code.append(this.shortName) // Map
-
-    (this as TypeRef).genericArgs.let { args ->
-        if (args.isNotEmpty()) {
-            code.append(
-                args.joinToString(", ", "<", ">") { it.shortName }, // Map<String, String>
-            )
+): List<Member> = Operation.from(
+    this
+        .getClassDeclarationByName<S3Client>()!!
+        .getDeclaredFunctions()
+        .find { it.simpleName.getShortName().equals(operationName, ignoreCase = true) }
+        ?: throw S3TransferManagerCodegenException("Operation $operationName not found"),
+)
+    .let {
+        if (type == MappingType.REQUEST) {
+            it.request
+        } else {
+            it.response
         }
     }
-
-    return code.toString()
-}
+    .members
+    .filter { member ->
+        relevantMembers.any { it.equals(member.name, ignoreCase = true) }
+    }

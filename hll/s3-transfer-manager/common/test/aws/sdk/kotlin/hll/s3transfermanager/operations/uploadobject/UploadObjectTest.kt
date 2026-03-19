@@ -83,11 +83,10 @@ class UploadObjectTest {
     }
 }
 
-private fun randomBody(sizeInBytes: Long): ByteStream =
-    ByteStream.fromBytes(
-        Random.nextBytes(
-            ByteArray(
-                sizeInBytes.toInt(),
-            ),
+private fun randomBody(sizeInBytes: Long): ByteStream = ByteStream.fromBytes(
+    Random.nextBytes(
+        ByteArray(
+            sizeInBytes.toInt(),
         ),
-    )
+    ),
+)
