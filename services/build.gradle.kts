@@ -74,10 +74,6 @@ subprojects {
                         implementation(project(":tests:e2e-test-util"))
                     }
 
-                    tasks.register<Test>("e2eTest") {
-                        description = "Run e2e service tests"
-                        group = "verification"
-
                     if (project.name == "s3") {
                         dependencies {
                             rootProject.findProject(":services:s3control")?.let { implementation(it) }
@@ -125,7 +121,10 @@ subprojects {
                             showExceptions = true
                             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
                         }
-                        systemProperty("org.slf4j.simpleLogger.defaultLogLevel", System.getProperty("org.slf4j.simpleLogger.defaultLogLevel", "WARN"))
+                        systemProperty(
+                            "org.slf4j.simpleLogger.defaultLogLevel",
+                            System.getProperty("org.slf4j.simpleLogger.defaultLogLevel", "WARN"),
+                        )
                     }
                 }
             }
@@ -174,26 +173,16 @@ subprojects {
                 // dependsOn("nativeE2eTest") // FIXME Figure out how we want to run E2E tests (same task as JVM, different tasks, matrixed by target or just one Native target, etc.)
             }
         }
-    }
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        compilerOptions {
-            allWarningsAsErrors.set(false) // FIXME Tons of errors occur in generated code
-            jvmTarget.set(JvmTarget.JVM_1_8) // fixes outgoing variant metadata: https://github.com/smithy-lang/smithy-kotlin/issues/258
-            freeCompilerArgs.add("-Xjdk-release=1.8")
-        }
-    }
-
-    configurePublishing("aws-sdk-kotlin")
-
-    publishing {
-        publications.all {
-            if (this !is MavenPublication) return@all
-            project.afterEvaluate {
-                val sdkId = project.typedProp<String>("aws.sdk.id") ?: error("service build `${project.name}` is missing `aws.sdk.id` property required for publishing")
-                pom.properties.put("aws.sdk.id", sdkId)
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+            compilerOptions {
+                allWarningsAsErrors.set(false) // FIXME Tons of errors occur in generated code
+                jvmTarget.set(JvmTarget.JVM_1_8) // fixes outgoing variant metadata: https://github.com/smithy-lang/smithy-kotlin/issues/258
+                freeCompilerArgs.add("-Xjdk-release=1.8")
             }
         }
+
+        configurePublishing("aws-sdk-kotlin")
     }
 }
 
