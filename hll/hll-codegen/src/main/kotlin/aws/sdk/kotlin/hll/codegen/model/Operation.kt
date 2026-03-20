@@ -40,8 +40,22 @@ public data class Operation(
         public fun from(declaration: KSFunctionDeclaration): Operation {
             val op = Operation(
                 methodName = declaration.simpleName.getShortName(),
-                request = Structure.from(declaration.parameters.single().type),
-                response = Structure.from(declaration.returnType!!),
+                /*
+                Some operations have multiple parameters but the request is always first in our codegen.
+                e.g. fun <T> getObject(input: GetObjectRequest, block: suspend (GetObjectResponse) -> T): T
+                 */
+                request = Structure.from(declaration.parameters.first().type),
+                /*
+                Some operations have a generic return type but handle the modeled return type in a function.
+                e.g. fun <T> getObject(input: GetObjectRequest, block: suspend (GetObjectResponse) -> T): T
+                 */
+                response = Structure.from(
+                    if (declaration.returnType!!.toString().contains("response", ignoreCase = true)) {
+                        declaration.returnType!!
+                    } else {
+                        declaration.parameters[1].type.resolve().arguments[0].type!!
+                    },
+                ),
             )
 
             return ModelParsingPlugin.transform(op, ModelParsingPlugin::postProcessOperation)

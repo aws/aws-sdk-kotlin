@@ -118,6 +118,202 @@ public abstract interface class aws/sdk/kotlin/hll/s3transfermanager/interceptor
 	public abstract fun getTransferredObjects ()Ljava/lang/Long;
 }
 
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectRequest {
+	public static final field Companion Laws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectRequest$Companion;
+	public synthetic fun <init> (Laws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectRequest$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getBucket ()Ljava/lang/String;
+	public final fun getChecksumMode ()Laws/sdk/kotlin/services/s3/model/ChecksumMode;
+	public final fun getExpectedBucketOwner ()Ljava/lang/String;
+	public final fun getIfMatch ()Ljava/lang/String;
+	public final fun getIfModifiedSince ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getIfNoneMatch ()Ljava/lang/String;
+	public final fun getIfUnmodifiedSince ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getRequestPayer ()Laws/sdk/kotlin/services/s3/model/RequestPayer;
+	public final fun getResponseCacheControl ()Ljava/lang/String;
+	public final fun getResponseContentDisposition ()Ljava/lang/String;
+	public final fun getResponseContentEncoding ()Ljava/lang/String;
+	public final fun getResponseContentLanguage ()Ljava/lang/String;
+	public final fun getResponseContentType ()Ljava/lang/String;
+	public final fun getResponseExpires ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getSseCustomerAlgorithm ()Ljava/lang/String;
+	public final fun getSseCustomerKey ()Ljava/lang/String;
+	public final fun getSseCustomerKeyMd5 ()Ljava/lang/String;
+	public final fun getVersionId ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectRequest$Builder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectRequest;
+	public final fun getBucket ()Ljava/lang/String;
+	public final fun getChecksumMode ()Laws/sdk/kotlin/services/s3/model/ChecksumMode;
+	public final fun getExpectedBucketOwner ()Ljava/lang/String;
+	public final fun getIfMatch ()Ljava/lang/String;
+	public final fun getIfModifiedSince ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getIfNoneMatch ()Ljava/lang/String;
+	public final fun getIfUnmodifiedSince ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getRequestPayer ()Laws/sdk/kotlin/services/s3/model/RequestPayer;
+	public final fun getResponseCacheControl ()Ljava/lang/String;
+	public final fun getResponseContentDisposition ()Ljava/lang/String;
+	public final fun getResponseContentEncoding ()Ljava/lang/String;
+	public final fun getResponseContentLanguage ()Ljava/lang/String;
+	public final fun getResponseContentType ()Ljava/lang/String;
+	public final fun getResponseExpires ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getSseCustomerAlgorithm ()Ljava/lang/String;
+	public final fun getSseCustomerKey ()Ljava/lang/String;
+	public final fun getSseCustomerKeyMd5 ()Ljava/lang/String;
+	public final fun getVersionId ()Ljava/lang/String;
+	public final fun setBucket (Ljava/lang/String;)V
+	public final fun setChecksumMode (Laws/sdk/kotlin/services/s3/model/ChecksumMode;)V
+	public final fun setExpectedBucketOwner (Ljava/lang/String;)V
+	public final fun setIfMatch (Ljava/lang/String;)V
+	public final fun setIfModifiedSince (Laws/smithy/kotlin/runtime/time/Instant;)V
+	public final fun setIfNoneMatch (Ljava/lang/String;)V
+	public final fun setIfUnmodifiedSince (Laws/smithy/kotlin/runtime/time/Instant;)V
+	public final fun setKey (Ljava/lang/String;)V
+	public final fun setRequestPayer (Laws/sdk/kotlin/services/s3/model/RequestPayer;)V
+	public final fun setResponseCacheControl (Ljava/lang/String;)V
+	public final fun setResponseContentDisposition (Ljava/lang/String;)V
+	public final fun setResponseContentEncoding (Ljava/lang/String;)V
+	public final fun setResponseContentLanguage (Ljava/lang/String;)V
+	public final fun setResponseContentType (Ljava/lang/String;)V
+	public final fun setResponseExpires (Laws/smithy/kotlin/runtime/time/Instant;)V
+	public final fun setSseCustomerAlgorithm (Ljava/lang/String;)V
+	public final fun setSseCustomerKey (Ljava/lang/String;)V
+	public final fun setSseCustomerKeyMd5 (Ljava/lang/String;)V
+	public final fun setVersionId (Ljava/lang/String;)V
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectRequest$Companion {
+	public final fun invoke (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectRequest;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectResponse {
+	public static final field Companion Laws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectResponse$Companion;
+	public synthetic fun <init> (Laws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectResponse$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAcceptRanges ()Ljava/lang/String;
+	public final fun getBucketKeyEnabled ()Ljava/lang/Boolean;
+	public final fun getCacheControl ()Ljava/lang/String;
+	public final fun getChecksumCrc32 ()Ljava/lang/String;
+	public final fun getChecksumCrc32C ()Ljava/lang/String;
+	public final fun getChecksumCrc64Nvme ()Ljava/lang/String;
+	public final fun getChecksumSha1 ()Ljava/lang/String;
+	public final fun getChecksumSha256 ()Ljava/lang/String;
+	public final fun getChecksumType ()Laws/sdk/kotlin/services/s3/model/ChecksumType;
+	public final fun getContentDisposition ()Ljava/lang/String;
+	public final fun getContentEncoding ()Ljava/lang/String;
+	public final fun getContentLanguage ()Ljava/lang/String;
+	public final fun getContentLength ()Ljava/lang/Long;
+	public final fun getContentRange ()Ljava/lang/String;
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getDeleteMarker ()Ljava/lang/Boolean;
+	public final fun getETag ()Ljava/lang/String;
+	public final fun getExpiration ()Ljava/lang/String;
+	public final fun getExpires ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getLastModified ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getMetadata ()Ljava/util/Map;
+	public final fun getMissingMeta ()Ljava/lang/Integer;
+	public final fun getObjectLockLegalHoldStatus ()Laws/sdk/kotlin/services/s3/model/ObjectLockLegalHoldStatus;
+	public final fun getObjectLockMode ()Laws/sdk/kotlin/services/s3/model/ObjectLockMode;
+	public final fun getObjectLockRetainUntilDate ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getPartsCount ()Ljava/lang/Integer;
+	public final fun getReplicationStatus ()Laws/sdk/kotlin/services/s3/model/ReplicationStatus;
+	public final fun getRequestCharged ()Laws/sdk/kotlin/services/s3/model/RequestCharged;
+	public final fun getRestore ()Ljava/lang/String;
+	public final fun getServerSideEncryption ()Laws/sdk/kotlin/services/s3/model/ServerSideEncryption;
+	public final fun getSseCustomerAlgorithm ()Ljava/lang/String;
+	public final fun getSseCustomerKeyMd5 ()Ljava/lang/String;
+	public final fun getSsekmsKeyId ()Ljava/lang/String;
+	public final fun getStorageClass ()Laws/sdk/kotlin/services/s3/model/StorageClass;
+	public final fun getTagCount ()Ljava/lang/Integer;
+	public final fun getVersionId ()Ljava/lang/String;
+	public final fun getWebsiteRedirectLocation ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectResponse$Builder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectResponse;
+	public final fun getAcceptRanges ()Ljava/lang/String;
+	public final fun getBucketKeyEnabled ()Ljava/lang/Boolean;
+	public final fun getCacheControl ()Ljava/lang/String;
+	public final fun getChecksumCrc32 ()Ljava/lang/String;
+	public final fun getChecksumCrc32C ()Ljava/lang/String;
+	public final fun getChecksumCrc64Nvme ()Ljava/lang/String;
+	public final fun getChecksumSha1 ()Ljava/lang/String;
+	public final fun getChecksumSha256 ()Ljava/lang/String;
+	public final fun getChecksumType ()Laws/sdk/kotlin/services/s3/model/ChecksumType;
+	public final fun getContentDisposition ()Ljava/lang/String;
+	public final fun getContentEncoding ()Ljava/lang/String;
+	public final fun getContentLanguage ()Ljava/lang/String;
+	public final fun getContentLength ()Ljava/lang/Long;
+	public final fun getContentRange ()Ljava/lang/String;
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getDeleteMarker ()Ljava/lang/Boolean;
+	public final fun getETag ()Ljava/lang/String;
+	public final fun getExpiration ()Ljava/lang/String;
+	public final fun getExpires ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getLastModified ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getMetadata ()Ljava/util/Map;
+	public final fun getMissingMeta ()Ljava/lang/Integer;
+	public final fun getObjectLockLegalHoldStatus ()Laws/sdk/kotlin/services/s3/model/ObjectLockLegalHoldStatus;
+	public final fun getObjectLockMode ()Laws/sdk/kotlin/services/s3/model/ObjectLockMode;
+	public final fun getObjectLockRetainUntilDate ()Laws/smithy/kotlin/runtime/time/Instant;
+	public final fun getPartsCount ()Ljava/lang/Integer;
+	public final fun getReplicationStatus ()Laws/sdk/kotlin/services/s3/model/ReplicationStatus;
+	public final fun getRequestCharged ()Laws/sdk/kotlin/services/s3/model/RequestCharged;
+	public final fun getRestore ()Ljava/lang/String;
+	public final fun getServerSideEncryption ()Laws/sdk/kotlin/services/s3/model/ServerSideEncryption;
+	public final fun getSseCustomerAlgorithm ()Ljava/lang/String;
+	public final fun getSseCustomerKeyMd5 ()Ljava/lang/String;
+	public final fun getSsekmsKeyId ()Ljava/lang/String;
+	public final fun getStorageClass ()Laws/sdk/kotlin/services/s3/model/StorageClass;
+	public final fun getTagCount ()Ljava/lang/Integer;
+	public final fun getVersionId ()Ljava/lang/String;
+	public final fun getWebsiteRedirectLocation ()Ljava/lang/String;
+	public final fun setAcceptRanges (Ljava/lang/String;)V
+	public final fun setBucketKeyEnabled (Ljava/lang/Boolean;)V
+	public final fun setCacheControl (Ljava/lang/String;)V
+	public final fun setChecksumCrc32 (Ljava/lang/String;)V
+	public final fun setChecksumCrc32C (Ljava/lang/String;)V
+	public final fun setChecksumCrc64Nvme (Ljava/lang/String;)V
+	public final fun setChecksumSha1 (Ljava/lang/String;)V
+	public final fun setChecksumSha256 (Ljava/lang/String;)V
+	public final fun setChecksumType (Laws/sdk/kotlin/services/s3/model/ChecksumType;)V
+	public final fun setContentDisposition (Ljava/lang/String;)V
+	public final fun setContentEncoding (Ljava/lang/String;)V
+	public final fun setContentLanguage (Ljava/lang/String;)V
+	public final fun setContentLength (Ljava/lang/Long;)V
+	public final fun setContentRange (Ljava/lang/String;)V
+	public final fun setContentType (Ljava/lang/String;)V
+	public final fun setDeleteMarker (Ljava/lang/Boolean;)V
+	public final fun setETag (Ljava/lang/String;)V
+	public final fun setExpiration (Ljava/lang/String;)V
+	public final fun setExpires (Laws/smithy/kotlin/runtime/time/Instant;)V
+	public final fun setLastModified (Laws/smithy/kotlin/runtime/time/Instant;)V
+	public final fun setMetadata (Ljava/util/Map;)V
+	public final fun setMissingMeta (Ljava/lang/Integer;)V
+	public final fun setObjectLockLegalHoldStatus (Laws/sdk/kotlin/services/s3/model/ObjectLockLegalHoldStatus;)V
+	public final fun setObjectLockMode (Laws/sdk/kotlin/services/s3/model/ObjectLockMode;)V
+	public final fun setObjectLockRetainUntilDate (Laws/smithy/kotlin/runtime/time/Instant;)V
+	public final fun setPartsCount (Ljava/lang/Integer;)V
+	public final fun setReplicationStatus (Laws/sdk/kotlin/services/s3/model/ReplicationStatus;)V
+	public final fun setRequestCharged (Laws/sdk/kotlin/services/s3/model/RequestCharged;)V
+	public final fun setRestore (Ljava/lang/String;)V
+	public final fun setServerSideEncryption (Laws/sdk/kotlin/services/s3/model/ServerSideEncryption;)V
+	public final fun setSseCustomerAlgorithm (Ljava/lang/String;)V
+	public final fun setSseCustomerKeyMd5 (Ljava/lang/String;)V
+	public final fun setSsekmsKeyId (Ljava/lang/String;)V
+	public final fun setStorageClass (Laws/sdk/kotlin/services/s3/model/StorageClass;)V
+	public final fun setTagCount (Ljava/lang/Integer;)V
+	public final fun setVersionId (Ljava/lang/String;)V
+	public final fun setWebsiteRedirectLocation (Ljava/lang/String;)V
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectResponse$Companion {
+	public final fun invoke (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectResponse;
+}
+
 public abstract interface class aws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType {
 }
 
