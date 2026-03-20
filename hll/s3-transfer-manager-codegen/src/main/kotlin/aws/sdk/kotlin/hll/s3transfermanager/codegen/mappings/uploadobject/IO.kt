@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadObject
+package aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadobject
 
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.IoMapping
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.MappingType
