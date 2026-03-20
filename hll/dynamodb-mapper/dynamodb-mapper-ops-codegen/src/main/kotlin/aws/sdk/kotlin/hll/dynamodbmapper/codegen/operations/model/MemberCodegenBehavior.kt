@@ -186,6 +186,42 @@ private val batchGetItemResponseTables = CustomTransformation(
     renderConversion = { _ -> "BatchGetItemResponseTables(responses, unprocessedKeys, requestTables)" },
 )
 
+private val batchWriteItemRequestTables = CustomTransformation(
+    replacementMember = Member(
+        name = "tables",
+        type = Types.Kotlin.list(MapperTypes.Operations.BatchWriteItemRequestTable),
+        attributes = mutableAttributes().apply {
+            dsls += listOf(
+                DslInfo(
+                    interfaceType = MapperTypes.Operations.BatchWriteItemRequestTableDslPartitionKey,
+                    implType = MapperTypes.Operations.Internal.BatchWriteItemRequestTableDslPartitionKeyImpl,
+                    implInvocationStyle = DslInvocationStyle.Constructor("tables", "table"),
+                    implFinalizer = ".toTables()",
+                    nameOverride = "table",
+                    dslMethodParams = listOf(Member("table", MapperTypes.Model.TablePartitionKeyGeneric)),
+                ),
+                DslInfo(
+                    interfaceType = MapperTypes.Operations.BatchWriteItemRequestTableDslCompositeKey,
+                    implType = MapperTypes.Operations.Internal.BatchWriteItemRequestTableDslCompositeKeyImpl,
+                    implInvocationStyle = DslInvocationStyle.Constructor("tables", "table"),
+                    implFinalizer = ".toTables()",
+                    nameOverride = "table",
+                    dslMethodParams = listOf(Member("table", MapperTypes.Model.TableCompositeKeyGeneric)),
+                ),
+            )
+        },
+    ),
+    renderConversion = { fromMemberName -> format("#L.convert()", fromMemberName) },
+)
+
+private val batchWriteItemResponseTables = CustomTransformation(
+    replacementMember = Member(
+        name = "tables",
+        type = Types.Kotlin.list(MapperTypes.Operations.BatchWriteItemResponseTable),
+    ),
+    renderConversion = { _ -> "BatchWriteItemResponseTables(responses, unprocessedKeys, requestTables)" },
+)
+
 /**
  * Priority-ordered list of dispositions to apply to members found in structures. The first element from this list that
  * successfully matches with a member will be chosen.
@@ -208,6 +244,8 @@ private val rules = listOf(
     Rule("requestItems", Types.Kotlin.stringMap(MapperTypes.KeysAndAttributes), batchGetItemRequestTables),
     Rule("responses", Types.Kotlin.stringMap(Types.Kotlin.list(MapperTypes.AttributeMap)), batchGetItemResponseTables),
     Rule("unprocessedKeys", Types.Kotlin.stringMap(MapperTypes.KeysAndAttributes), Drop), // handled by `responses`
+    Rule("requestItems", Types.Kotlin.stringMap(Types.Kotlin.list(MapperTypes.WriteRequest)), batchWriteItemRequestTables),
+    Rule("unprocessedKeys", Types.Kotlin.stringMap(Types.Kotlin.list(MapperTypes.WriteRequest)), batchWriteItemResponseTables),
 
     // Expression literals
     Rule("keyConditionExpression", Types.Kotlin.String, ExpressionLiteral(KeyCondition)),
