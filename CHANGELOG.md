@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.41] - 03/20/2026
+
+### Features
+* (**dynamodb**) Adding ReplicaArn to ReplicaDescription of a global table replica
+* (**opensearch**) Added support for Amazon Managed Service for Prometheus (AMP) as a connected data source in OpenSearch UI. Now users can analyze Prometheus metrics in OpenSearch UI without data copy.
+* (**verifiedpermissions**) Adds support for Policy Store Aliases, Policy Names, and Policy Template Names. These are customizable identifiers that can be used in place of Policy Store ids, Policy ids, and Policy Template ids respectively in Amazon Verified Permissions APIs.
+
+### Documentation
+* (**backup**) Fix Typo for S3Backup Options ( S3BackupACLs to BackupACLs)
+
 ## [1.6.40] - 03/19/2026
 
 ### Features
