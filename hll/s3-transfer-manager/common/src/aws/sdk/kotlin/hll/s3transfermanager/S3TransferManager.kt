@@ -6,11 +6,15 @@
 package aws.sdk.kotlin.hll.s3transfermanager
 
 import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferInterceptor
+import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectRequest
+import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectResponse
 import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
 import aws.sdk.kotlin.hll.s3transfermanager.model.UploadObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.model.UploadObjectResponse
+import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.downloadObjectImplementation
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject.uploadObjectImplementation
 import aws.sdk.kotlin.services.s3.S3Client
+import aws.sdk.kotlin.services.s3.model.GetObjectResponse
 import kotlinx.coroutines.sync.Semaphore
 
 /**
@@ -147,4 +151,26 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
     public suspend inline fun uploadObject(
         crossinline block: UploadObjectRequest.Builder.() -> Unit,
     ): UploadObjectResponse = uploadObject(UploadObjectRequest.Builder().apply(block).build())
+
+    // TODO: KDocs
+    public suspend fun <T> downloadObject(
+        downloadObjectRequest: DownloadObjectRequest,
+        downloadPath: String? = null,
+        objectHandler: (suspend (GetObjectResponse) -> T)? = null,
+    ): DownloadObjectResponse = downloadObjectImplementation(
+        downloadObjectRequest,
+        objectHandler,
+        s3Client,
+        multipartDownloadType,
+        targetPartSizeBytes,
+        interceptors,
+        downloadPath,
+    )
+
+    // TODO: KDocs
+    public suspend inline fun <T> downloadObject(
+        crossinline downloadObjectRequest: DownloadObjectRequest.Builder.() -> Unit,
+        downloadPath: String? = null,
+        noinline objectHandler: (suspend (GetObjectResponse) -> T)? = null,
+    ): DownloadObjectResponse = downloadObject(DownloadObjectRequest.Builder().apply(downloadObjectRequest).build(), downloadPath, objectHandler)
 }

@@ -53,8 +53,8 @@ public interface TransferInterceptorContext {
 }
 
 /**
- * The context around an [aws.sdk.kotlin.hll.s3transfermanager.S3TransferManager] transfer.
- * Used to track transfer progress or to modify in progress transfers.
+ * The context around a [aws.sdk.kotlin.hll.s3transfermanager.S3TransferManager] transfer.
+ * Used to track in progress transfers.
  */
 public class TransferContext(
     override val s3Request: Any? = null,
@@ -68,8 +68,8 @@ public class TransferContext(
 ) : TransferInterceptorContext
 
 /**
- * The context around an [aws.sdk.kotlin.hll.s3transfermanager.S3TransferManager] transfer.
- * Used to track transfer progress or to modify in progress transfers.
+ * The context around a [aws.sdk.kotlin.hll.s3transfermanager.S3TransferManager] transfer.
+ * Used to modify in progress transfers.
  */
 public class MutableTransferContext(
     override var s3Request: Any? = null,
