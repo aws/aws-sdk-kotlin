@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.42] - 03/23/2026
+
+### Features
+* (**batch**) AWS Batch AMI Visibility feature support. Adds read-only batchImageStatus to Ec2Configuration to provide visibility on the status of Batch-vended AMIs used by Compute Environments.
+* (**connectcases**) You can now use the UpdateRelatedItem API to update the content of comments and custom related items associated with a case.
+* (**lightsail**) Add support for tagging of ContactMethod resource type
+* (**omics**) Adds support for batch workflow runs in Amazon Omics, enabling users to submit, manage, and monitor multiple runs as a single batch. Includes APIs to create, cancel, and delete batches, track submission statuses and counts, list runs within a batch, and configure default settings.
+
 ## [1.6.41] - 03/20/2026
 
 ### Features
