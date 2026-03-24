@@ -127,6 +127,13 @@ private data class Rule(
     val typePredicate: (TypeRef) -> Boolean,
     val behavior: MemberCodegenBehavior,
 ) {
+    val declarationFrame: StackTraceElement = Exception("Exception for tracing purposes only")
+        .stackTrace
+        .first { it.className != Rule::class.qualifiedName }
+
+    var matchCount: Int = 0
+        private set
+
     constructor(name: String, type: TypeRef, behavior: MemberCodegenBehavior) :
         this(name::equals, type::isEquivalentTo, behavior)
 
@@ -137,7 +144,12 @@ private data class Rule(
         this(name::matches, type::isEquivalentTo, behavior)
 
     fun matchedBehaviorOrNull(member: Member) = if (matches(member)) behavior else null
-    fun matches(member: Member) = namePredicate(member.name) && typePredicate(member.type as TypeRef)
+
+    fun matches(member: Member): Boolean {
+        val result = namePredicate(member.name) && typePredicate(member.type as TypeRef)
+        if (result) matchCount++
+        return result
+    }
 }
 
 private fun Type.isEquivalentTo(other: Type): Boolean = when (this) {
@@ -219,7 +231,7 @@ private val batchWriteItemResponseTables = CustomTransformation(
         name = "tables",
         type = Types.Kotlin.list(MapperTypes.Operations.BatchWriteItemResponseTable),
     ),
-    renderConversion = { _ -> "BatchWriteItemResponseTables(responses, unprocessedKeys, requestTables)" },
+    renderConversion = { _ -> "BatchWriteItemResponseTables(unprocessedItems, requestTables)" },
 )
 
 /**
@@ -245,7 +257,7 @@ private val rules = listOf(
     Rule("responses", Types.Kotlin.stringMap(Types.Kotlin.list(MapperTypes.AttributeMap)), batchGetItemResponseTables),
     Rule("unprocessedKeys", Types.Kotlin.stringMap(MapperTypes.KeysAndAttributes), Drop), // handled by `responses`
     Rule("requestItems", Types.Kotlin.stringMap(Types.Kotlin.list(MapperTypes.WriteRequest)), batchWriteItemRequestTables),
-    Rule("unprocessedKeys", Types.Kotlin.stringMap(Types.Kotlin.list(MapperTypes.WriteRequest)), batchWriteItemResponseTables),
+    Rule("unprocessedItems", Types.Kotlin.stringMap(Types.Kotlin.list(MapperTypes.WriteRequest)), batchWriteItemResponseTables),
 
     // Expression literals
     Rule("keyConditionExpression", Types.Kotlin.String, ExpressionLiteral(KeyCondition)),
@@ -265,3 +277,18 @@ private val rules = listOf(
     Rule("key|lastEvaluatedKey|exclusiveStartKey".toRegex(), MapperTypes.AttributeMap, MapToKeys),
     Rule(".*".toRegex(), MapperTypes.AttributeMap, MapToObject),
 )
+
+internal fun assertAllCodegenBehaviorRulesMatched() {
+    val unmatched = rules.filter { it.matchCount == 0 }
+    check(unmatched.isEmpty()) {
+        buildString {
+            append("${unmatched.size} rules were not selected during the codegen pass. This likely indicates a bug in ")
+            append("member matching behavior since _all_ rules should be matched. The specific rules which weren't ")
+            appendLine("matched are:")
+
+            unmatched.forEach { rule ->
+                appendLine("* Rule declared at ${rule.declarationFrame.fileName}:${rule.declarationFrame.lineNumber}")
+            }
+        }
+    }
+}

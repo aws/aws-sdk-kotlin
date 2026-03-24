@@ -10,13 +10,17 @@ import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import aws.sdk.kotlin.services.dynamodb.scan
 import aws.smithy.kotlin.runtime.testing.BeforeAll
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class BatchWriteItemTest : DdbLocalTest() {
     companion object {
-        private const val PLAYERS_TABLE_NAME = "shuttles-table"
+        private const val PLAYERS_TABLE_NAME = "players-table"
         private data class Player(var teamName: String = "", var number: Int = 0, var name: String = "")
         private val playerConverter = SimpleItemConverter(
             ::Player,
@@ -75,6 +79,9 @@ class BatchWriteItemTest : DdbLocalTest() {
         assertEquals(5, tableSize(PLAYERS_TABLE_NAME))
         assertEquals(5, tableSize(TEAMS_TABLE_NAME))
 
+        val originalTeamNames = teamsTable.scanPaginated { }.items().map { it.teamName }.toList()
+        assertTrue("Astroids" in originalTeamNames)
+
         mapper.batchWriteItem {
             table(teamsTable) {
                 deleteKey(Key("Astroids"))
@@ -89,6 +96,10 @@ class BatchWriteItemTest : DdbLocalTest() {
 
         assertEquals(5, tableSize(PLAYERS_TABLE_NAME))
         assertEquals(5, tableSize(TEAMS_TABLE_NAME))
+
+        val updatedTeamNames = teamsTable.scanPaginated { }.items().map { it.teamName }.toList()
+        assertFalse("Astroids" in updatedTeamNames)
+        assertTrue("Astros" in updatedTeamNames)
     }
 
     private suspend fun tableSize(tableName: String): Int = lowLevelAccess {

@@ -9,6 +9,7 @@ import aws.sdk.kotlin.hll.codegen.ksp.processors.HllKspProcessor
 import aws.sdk.kotlin.hll.codegen.model.Operation
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperPkg
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.assertAllCodegenBehaviorRulesMatched
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.toHighLevel
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.rendering.HighLevelRenderer
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
@@ -41,6 +42,7 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
 
         logger.info("Rendering high-level operations and types for ${operations.map { it.name }}")
         HighLevelRenderer(ctx, operations).render()
+        assertAllCodegenBehaviorRulesMatched()
         return listOf()
     }
 

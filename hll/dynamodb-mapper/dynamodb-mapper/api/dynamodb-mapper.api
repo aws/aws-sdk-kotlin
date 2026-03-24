@@ -1540,7 +1540,7 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/Bat
 	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchWriteItemResponse$Companion;
 	public abstract fun getConsumedCapacity ()Ljava/util/List;
 	public abstract fun getItemCollectionMetrics ()Ljava/util/Map;
-	public abstract fun getUnprocessedItems ()Ljava/util/Map;
+	public abstract fun getTables ()Ljava/util/List;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchWriteItemResponse$Companion {
@@ -1551,10 +1551,10 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchWriteItemRe
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchWriteItemResponse;
 	public final fun getConsumedCapacity ()Ljava/util/List;
 	public final fun getItemCollectionMetrics ()Ljava/util/Map;
-	public final fun getUnprocessedItems ()Ljava/util/Map;
+	public final fun getTables ()Ljava/util/List;
 	public final fun setConsumedCapacity (Ljava/util/List;)V
 	public final fun setItemCollectionMetrics (Ljava/util/Map;)V
-	public final fun setUnprocessedItems (Ljava/util/Map;)V
+	public final fun setTables (Ljava/util/List;)V
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchWriteItemResponseKt {
