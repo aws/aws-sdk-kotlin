@@ -76,7 +76,7 @@ internal fun ItemSourceKind.specType(
  */
 internal val Operation.itemSourceKinds: Set<ItemSourceKind>
     get() = when (name) {
-        "BatchGetItem" -> setOf(ItemSourceKind.DynamoDbMapper)
+        "BatchGetItem", "BatchWriteItem" -> setOf(ItemSourceKind.DynamoDbMapper)
         "Query", "Scan" -> setOf(ItemSourceKind.ItemSource, ItemSourceKind.Index, ItemSourceKind.Table)
         else -> setOf(ItemSourceKind.Table)
     }

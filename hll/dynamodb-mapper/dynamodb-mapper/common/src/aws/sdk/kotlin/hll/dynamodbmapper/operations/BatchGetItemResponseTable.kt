@@ -16,8 +16,6 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.KeysAndAttributes
 
 public sealed interface BatchGetItemResponseTable<T> {
-    public companion object { }
-
     public val items: List<T>
     public val tableName: String
 

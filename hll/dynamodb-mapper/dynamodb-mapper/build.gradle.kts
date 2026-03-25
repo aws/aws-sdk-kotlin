@@ -53,6 +53,7 @@ ksp {
 
     val allowlist = listOf(
         "batchGetItem",
+        "batchWriteItem",
         "deleteItem",
         "getItem",
         "putItem",

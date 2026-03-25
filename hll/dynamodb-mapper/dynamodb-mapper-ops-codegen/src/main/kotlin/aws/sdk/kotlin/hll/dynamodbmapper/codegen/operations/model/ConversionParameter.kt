@@ -24,6 +24,14 @@ private fun deriveParams(struct: Structure) = when (struct.type.shortName) {
         ),
     )
 
+    "BatchWriteItemResponse" -> listOf(
+        ConversionParameter(
+            "requestTables",
+            Types.Kotlin.list(MapperTypes.Operations.BatchWriteItemRequestTable),
+            "ctx.highLevelRequest.tables",
+        ),
+    )
+
     else -> listOf()
 }
 
