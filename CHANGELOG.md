@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.44] - 03/25/2026
+
+### Features
+* (**apigatewayv2**) Added DISABLE IN PROGRESS and DISABLE FAILED Portal statuses.
+* (**applicationsignals**) This release adds support for creating SLOs on RUM appMonitors, Synthetics canaries and services.
+* (**marketplaceagreement**) The Variable Payments APIs enable AWS Marketplace Sellers to perform manage their payment requests (send, get, list, cancel).
+* (**polly**) Add support for Mu-law and A-law codecs for output format
+* (**uxc**) GA release of AccountCustomizations, used to manage account color, visible services, and visible regions settings in the AWS Management Console.
+
+### Documentation
+* (**batch**) Documentation-only update for AWS Batch.
+
 ## [1.6.43] - 03/24/2026
 
 ### Features
