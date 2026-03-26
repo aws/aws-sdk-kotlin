@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.45] - 03/26/2026
+
+### Features
+* (**bcmdataexports**) With this release we are providing an option to accounts to have their export delivered to an S3 bucket that is not owned by the account.
+* (**cloudwatchlogs**) This release adds parameter support to saved queries in CloudWatch Logs Insights. Define reusable query templates with named placeholders, invoke them using start query. Available in Console, CLI and SDK
+* (**emr**) Add StepExecutionRoleArn to RunJobFlow API
+* (**sagemaker**) Release support for ml.r5d.16xlarge instance types for SageMaker HyperPod
+* (**timestreaminfluxdb**) Timestream for InfluxDB adds support for customer defined maintenance windows. This allows customers to define maintenance schedule during resource creation and updates
+
 ## [1.6.44] - 03/25/2026
 
 ### Features
