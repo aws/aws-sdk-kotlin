@@ -8,13 +8,12 @@ import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
 import aws.sdk.kotlin.hll.dynamodbmapper.items.Key
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Table
+import aws.sdk.kotlin.services.dynamodb.model.DynamoDbException
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
-
-class BatchGetItemTest : CrossTableGetItemsTestBase() {
+class TransactGetItemsTest : CrossTableGetItemsTestBase() {
     override suspend fun executeGetItem(
         mapper: DynamoDbMapper,
         shuttlesTable: Table.PartitionKey<Shuttle, KeyType.Key1<String>>,
@@ -22,7 +21,7 @@ class BatchGetItemTest : CrossTableGetItemsTestBase() {
         hyperCarsTable: Table.CompositeKey<HyperCar, KeyType.Key1<String>, KeyType.Key1<String>>,
         hyperCarKeys: List<Pair<KeyType.Key1<String>, KeyType.Key1<String>>>
     ): Pair<Set<Shuttle?>, Set<HyperCar?>> {
-        val resp = mapper.batchGetItem {
+        val resp = mapper.transactGetItems {
             table(shuttlesTable) { keys(shuttleKeys) }
             table(hyperCarsTable) { keys(hyperCarKeys) }
         }
@@ -33,24 +32,16 @@ class BatchGetItemTest : CrossTableGetItemsTestBase() {
     }
 
     @Test
-    fun testBatchGetReallyBigItems() = runTest {
+    fun testTransactGetReallyBigItems() = runTest {
         val mapper = mapper()
         val bigDataTable = mapper.getTable(bigDataTableName, bigDataSchema)
-        val resp = mapper.batchGetItem {
-            table(bigDataTable) {
-                keys = bigDataIds.map(::Key)
+
+        assertFailsWith<DynamoDbException> {
+            mapper.transactGetItems {
+                table(bigDataTable) {
+                    keys = bigDataIds.map(::Key)
+                }
             }
         }
-
-        val bigDataResp = resp.table(bigDataTable)
-
-        val processedIds = bigDataResp.items.map { it.id }
-        assertEquals(54, processedIds.size) // only 54 items fit in the 16MB maximum response size
-
-        val unprocessedIds = bigDataResp.unprocessedKeys.map { it.value1 }
-        assertEquals(46, unprocessedIds.size) // the remaining items are returned as "unprocessed"
-
-        val actualIds = (processedIds + unprocessedIds).sorted()
-        assertContentEquals(bigDataIds, actualIds)
     }
 }
