@@ -5,6 +5,7 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject
 
+import aws.sdk.kotlin.hll.s3transfermanager.S3TransferManager
 import aws.sdk.kotlin.hll.s3transfermanager.interceptors.MutableTransferContext
 import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferInterceptor
 import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectRequest
@@ -17,6 +18,7 @@ import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.GetObjectResponse
 import aws.smithy.kotlin.runtime.telemetry.TelemetryProviderContext
+import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
 
@@ -35,6 +37,7 @@ internal suspend fun <T> downloadObjectImplementation(
         throw S3TransferManagerException("Please specify what to do with the downloaded object by setting a download path or an object handler")
     }
 
+    val logger = coroutineContext.logger<S3TransferManager>()
     val transferContext = MutableTransferContext(
         tmRequest = downloadObjectRequest,
     )
@@ -54,6 +57,7 @@ internal suspend fun <T> downloadObjectImplementation(
         downloadPath,
         interceptors,
         objectHandler,
+        logger,
     )
 
     completeTransfer()

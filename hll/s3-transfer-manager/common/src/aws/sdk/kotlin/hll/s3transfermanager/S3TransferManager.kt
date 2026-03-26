@@ -173,4 +173,6 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         downloadPath: String? = null,
         noinline objectHandler: (suspend (GetObjectResponse) -> T)? = null,
     ): DownloadObjectResponse = downloadObject(DownloadObjectRequest.Builder().apply(downloadObjectRequest).build(), downloadPath, objectHandler)
+
+    // TODO: Test 50GB (or TB?) transfers
 }

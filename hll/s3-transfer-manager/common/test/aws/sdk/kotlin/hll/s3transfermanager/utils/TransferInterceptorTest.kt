@@ -17,12 +17,13 @@ import aws.sdk.kotlin.services.s3.model.PutObjectResponse
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.httptest.TestEngine
+import aws.smithy.kotlin.runtime.io.use
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.assertThrows
 import kotlin.collections.plusAssign
-import kotlin.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class TransferInterceptorTest {
     @Test
@@ -38,12 +39,12 @@ class TransferInterceptorTest {
                 interceptors += object : TransferInterceptor {
                     // Test reads
                     override fun readBeforeTransferInitiated(context: TransferContext) {
-                        assert(context.transferredBytes == 0L)
-                        assert(context.s3Request is PutObjectRequest)
+                        assertEquals(context.transferredBytes, 0L)
+                        assertTrue(context.s3Request is PutObjectRequest)
                     }
                     override fun readBeforeTransferCompleted(context: TransferContext) {
-                        assert(context.transferredBytes == message.length.toLong())
-                        assert(context.s3Response is PutObjectResponse)
+                        assertEquals(context.transferredBytes, message.length.toLong())
+                        assertTrue(context.s3Response is PutObjectResponse)
                     }
 
                     // Test modifications
@@ -52,8 +53,8 @@ class TransferInterceptorTest {
                         context.transferredBytes = message.length.toLong() * 10
                     }
                     override fun readAfterTransferCompleted(context: TransferContext) {
-                        assert(context.s3Request is CompleteMultipartUploadRequest)
-                        assert(context.transferredBytes == message.length.toLong() * 10)
+                        assertTrue(context.s3Request is CompleteMultipartUploadRequest)
+                        assertEquals(context.transferredBytes, message.length.toLong() * 10)
                     }
                 }
             }.uploadObject {
@@ -68,7 +69,7 @@ class TransferInterceptorTest {
     fun interceptorsExceptionsAreSuppressed(): Unit = runBlocking {
         val message = "Hello World"
 
-        val exception = assertThrows<Exception> {
+        val exception = assertFailsWith<Exception> {
             S3Client {
                 region = "us-west-2"
                 httpClient = TestEngine()
@@ -95,7 +96,10 @@ class TransferInterceptorTest {
         }
 
         assertEquals(exception.message, "1")
-        assertEquals(exception.cause!!.suppressed[0].message, "2")
-        assertEquals(exception.cause!!.suppressed[1].message, "3")
+
+        // On JVM, suppressed exceptions are attached to the cause instead of the main exception.
+        // https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/add-suppressed.html
+        assertEquals(exception.cause?.suppressedExceptions[0]?.message ?: exception.suppressedExceptions[0].message, "2")
+        assertEquals(exception.cause?.suppressedExceptions[1]?.message ?: exception.suppressedExceptions[1].message, "3")
     }
 }

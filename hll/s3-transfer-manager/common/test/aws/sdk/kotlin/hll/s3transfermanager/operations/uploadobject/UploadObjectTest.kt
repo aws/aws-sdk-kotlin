@@ -8,6 +8,7 @@ package aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject
 import aws.sdk.kotlin.hll.s3transfermanager.S3TransferManager
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.smithy.kotlin.runtime.content.ByteStream
+import aws.smithy.kotlin.runtime.io.use
 import kotlinx.coroutines.runBlocking
 import kotlin.invoke
 import kotlin.random.Random

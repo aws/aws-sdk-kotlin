@@ -17,9 +17,10 @@ import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.httptest.TestEngine
+import aws.smithy.kotlin.runtime.io.use
 import kotlinx.coroutines.runBlocking
-import kotlin.invoke
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class S3TransferManagerBusinessMetricsInterceptorTest {
     @Test
@@ -27,7 +28,7 @@ class S3TransferManagerBusinessMetricsInterceptorTest {
         val message = "Hello World"
         val testInterceptor = object : HttpInterceptor {
             override fun readAfterTransmit(context: ProtocolResponseInterceptorContext<Any, HttpRequest, HttpResponse>) {
-                assert(context.executionContext.containsBusinessMetric(AwsBusinessMetric.S3_TRANSFER))
+                assertTrue(context.executionContext.containsBusinessMetric(AwsBusinessMetric.S3_TRANSFER))
             }
         }
 

@@ -11,6 +11,7 @@ import aws.sdk.kotlin.services.s3.withConfig
 import aws.smithy.kotlin.runtime.businessmetrics.emitBusinessMetric
 import aws.smithy.kotlin.runtime.client.RequestInterceptorContext
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
+import aws.smithy.kotlin.runtime.io.use
 
 /**
  * An interceptor that emits the S3 Transfer Manager business metric

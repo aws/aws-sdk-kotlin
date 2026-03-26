@@ -10,11 +10,13 @@ import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferInterceptor
 import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferPhase
 import aws.sdk.kotlin.hll.s3transfermanager.interceptors.executePhase
 import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
+import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.writeObject
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
 import aws.sdk.kotlin.hll.s3transfermanager.utils.withTmBusinessMetric
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.model.GetObjectResponse
+import aws.smithy.kotlin.runtime.telemetry.logging.Logger
 
 internal suspend fun <T> transferBytes(
     multipartDownloadType: MultipartDownloadType,
@@ -23,6 +25,7 @@ internal suspend fun <T> transferBytes(
     downloadPath: String?,
     interceptors: List<TransferInterceptor>,
     objectHandler: (suspend (GetObjectResponse) -> T)?,
+    logger: Logger,
 ) {
     var done = false
 
@@ -45,9 +48,10 @@ internal suspend fun <T> transferBytes(
                 if (getObjectResponse.partsCount == 1 || getObjectResponse.contentLength == context.transferableBytes) {
                     done = true
 
+                    // TODO: Call these multiple times for each part (for file, add logic to write in parts)
                     objectHandler?.invoke(getObjectResponse)
                     downloadPath?.let {
-                        // TODO: Write to file (use a helper function)
+                        writeObject(downloadPath, getObjectResponse, logger)
                     }
                 }
             }
@@ -56,12 +60,15 @@ internal suspend fun <T> transferBytes(
 
     if (done) {
         return
+        // TODO: Build S3 TM response in complete transfer phase
     }
 
     when (multipartDownloadType) {
         MultipartDownloadType.Part -> {
+
         }
         MultipartDownloadType.Range -> {
+
         }
     }
 }
