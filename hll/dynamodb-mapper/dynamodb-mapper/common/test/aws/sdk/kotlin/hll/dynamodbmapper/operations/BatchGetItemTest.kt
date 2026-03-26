@@ -13,14 +13,13 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
-
 class BatchGetItemTest : CrossTableGetItemsTestBase() {
     override suspend fun executeGetItem(
         mapper: DynamoDbMapper,
         shuttlesTable: Table.PartitionKey<Shuttle, KeyType.Key1<String>>,
         shuttleKeys: List<KeyType.Key1<String>>,
         hyperCarsTable: Table.CompositeKey<HyperCar, KeyType.Key1<String>, KeyType.Key1<String>>,
-        hyperCarKeys: List<Pair<KeyType.Key1<String>, KeyType.Key1<String>>>
+        hyperCarKeys: List<Pair<KeyType.Key1<String>, KeyType.Key1<String>>>,
     ): Pair<Set<Shuttle?>, Set<HyperCar?>> {
         val resp = mapper.batchGetItem {
             table(shuttlesTable) { keys(shuttleKeys) }

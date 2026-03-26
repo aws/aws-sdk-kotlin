@@ -37,7 +37,7 @@ private fun deriveParams(struct: Structure) = when (struct.type.shortName) {
             "requestTables",
             Types.Kotlin.list(MapperTypes.Operations.TransactGetItemsRequestTable),
             "ctx.highLevelRequest.tables",
-        )
+        ),
     )
 
     else -> listOf()

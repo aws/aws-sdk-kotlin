@@ -19,7 +19,7 @@ class TransactGetItemsTest : CrossTableGetItemsTestBase() {
         shuttlesTable: Table.PartitionKey<Shuttle, KeyType.Key1<String>>,
         shuttleKeys: List<KeyType.Key1<String>>,
         hyperCarsTable: Table.CompositeKey<HyperCar, KeyType.Key1<String>, KeyType.Key1<String>>,
-        hyperCarKeys: List<Pair<KeyType.Key1<String>, KeyType.Key1<String>>>
+        hyperCarKeys: List<Pair<KeyType.Key1<String>, KeyType.Key1<String>>>,
     ): Pair<Set<Shuttle?>, Set<HyperCar?>> {
         val resp = mapper.transactGetItems {
             table(shuttlesTable) { keys(shuttleKeys) }

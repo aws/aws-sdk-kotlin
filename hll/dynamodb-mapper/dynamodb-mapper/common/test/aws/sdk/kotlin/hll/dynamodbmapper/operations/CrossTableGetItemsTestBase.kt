@@ -58,7 +58,6 @@ abstract class CrossTableGetItemsTestBase : DdbLocalTest() {
     protected val bigDataIds = (0..<100).map { "id-${it.toString().padStart(2, '0')}" } // 100 items
     protected val bigPayload = ByteArray(300 * 1024) { it.toByte() } // 300KB each
 
-
     @BeforeAll
     fun setUp() = runTest {
         createTable(
