@@ -1682,11 +1682,13 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRespon
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations {
 	public abstract fun batchGetItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun batchWriteItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchWriteItemRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun transactGetItems (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperationsKt {
 	public static final fun batchGetItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun batchWriteItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun transactGetItems (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemRequest {
@@ -2224,6 +2226,112 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperationsK
 	public static final fun scanPaginated (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations$PartitionKey;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun updateItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations$CompositeKey;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun updateItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations$PartitionKey;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequest {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequest$Companion;
+	public abstract fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
+	public abstract fun getTables ()Ljava/util/List;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequest$Companion {
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestBuilder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequest;
+	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
+	public final fun getTables ()Ljava/util/List;
+	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
+	public final fun setTables (Ljava/util/List;)V
+	public final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$CompositeKey;Lkotlin/jvm/functions/Function1;)V
+	public final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$PartitionKey;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestKt {
+	public static final fun TransactGetItemsRequest (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequest;
+	public static final fun copy (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequest;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequest;
+	public static final fun toBuilder (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequest;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestBuilder;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTable {
+	public abstract fun getTableName ()Ljava/lang/String;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTable$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTable {
+	public abstract fun getKeys ()Ljava/util/List;
+	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTable$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTable {
+	public abstract fun getKeys ()Ljava/util/List;
+	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTableDsl {
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTableDsl$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTableDsl {
+	public abstract fun getKeys ()Ljava/util/List;
+	public abstract fun key (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
+	public abstract fun keys (Ljava/lang/Iterable;)V
+	public abstract fun setKeys (Ljava/util/List;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTableDsl$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTableDsl {
+	public abstract fun getKeys ()Ljava/util/List;
+	public abstract fun key (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
+	public abstract fun keys (Ljava/lang/Iterable;)V
+	public abstract fun setKeys (Ljava/util/List;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTableKt {
+	public static final fun TransactGetItemsRequestTable (Ljava/lang/String;Ljava/util/List;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTable$CompositeKey;
+	public static final fun TransactGetItemsRequestTable (Ljava/lang/String;Ljava/util/List;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequestTable$PartitionKey;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse$Companion;
+	public abstract fun getConsumedCapacity ()Ljava/util/List;
+	public abstract fun getTables ()Ljava/util/List;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse$Companion {
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseBuilder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse;
+	public final fun getConsumedCapacity ()Ljava/util/List;
+	public final fun getTables ()Ljava/util/List;
+	public final fun setConsumedCapacity (Ljava/util/List;)V
+	public final fun setTables (Ljava/util/List;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseKt {
+	public static final fun TransactGetItemsResponse (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse;
+	public static final fun copy (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse;
+	public static final fun toBuilder (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseBuilder;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable {
+	public abstract fun getItems ()Ljava/util/List;
+	public abstract fun getTableName ()Ljava/lang/String;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable {
+	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable {
+	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTableKt {
+	public static final fun TransactGetItemsResponseTable (Ljava/util/List;Ljava/lang/String;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable$CompositeKey;
+	public static final fun TransactGetItemsResponseTable (Ljava/util/List;Ljava/lang/String;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable$PartitionKey;
+	public static final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse;Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$CompositeKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable$CompositeKey;
+	public static final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse;Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$PartitionKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable$PartitionKey;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest {
