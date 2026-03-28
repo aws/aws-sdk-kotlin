@@ -65,10 +65,8 @@ internal suspend fun <T> transferBytes(
 
     when (multipartDownloadType) {
         MultipartDownloadType.Part -> {
-
         }
         MultipartDownloadType.Range -> {
-
         }
     }
 }

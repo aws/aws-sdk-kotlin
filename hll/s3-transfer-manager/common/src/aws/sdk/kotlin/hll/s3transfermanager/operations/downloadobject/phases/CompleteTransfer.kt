@@ -5,8 +5,6 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.phases
 
-internal suspend fun completeTransfer(
-
-) {
+internal suspend fun completeTransfer() {
     // TODO: Update S3TM response in context
 }
