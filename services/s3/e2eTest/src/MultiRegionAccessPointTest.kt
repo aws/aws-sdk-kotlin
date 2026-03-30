@@ -31,12 +31,13 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
+import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 private const val MRAP_BUCKET_PREFIX = "s3-mrap-test-bucket-"
-private const val MULTI_REGION_ACCESS_POINT_NAME = "aws-sdk-for-kotlin-test-multi-region-access-point"
+private val MULTI_REGION_ACCESS_POINT_NAME = "aws-sdk-for-kotlin-mrap-${Random.nextInt(0, 9999)}"
 private const val TEST_OBJECT_KEY = "test.txt"
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -171,17 +172,20 @@ private suspend fun S3ControlClient.waitUntilOperationCompletes(
     var status: String? = null
 
     while (true) {
-        val latestStatus = describeMultiRegionAccessPointOperation {
+        val response = describeMultiRegionAccessPointOperation {
             this.accountId = accountId
             this.requestTokenArn = requestTokenArn
-        }.asyncOperation?.requestStatus
-
-        when (latestStatus) {
+        }
+        when (val latestStatus = response.asyncOperation?.requestStatus) {
             "SUCCEEDED" -> {
                 println("$operation operation succeeded.")
                 return@withTimeout
             }
-            "FAILED" -> throw IllegalStateException("$operation operation failed")
+            "FAILED" -> {
+                val code = response.asyncOperation?.responseDetails?.errorDetails?.code
+                val message = response.asyncOperation?.responseDetails?.errorDetails?.message
+                throw IllegalStateException("$operation operation failed. Code: $code. Message: $message")
+            }
             else -> {
                 if (status == null || latestStatus != status) {
                     println("Waiting for $operation to complete. Status: $latestStatus ")

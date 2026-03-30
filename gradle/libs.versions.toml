@@ -4,7 +4,7 @@ ksp-version = "2.3.4"
 
 dokka-version = "2.0.0"
 
-aws-kotlin-repo-tools-version = "0.5.5"
+aws-kotlin-repo-tools-version = "0.5.8"
 
 # libs
 coroutines-version = "1.10.2"
@@ -141,7 +141,6 @@ smithy-kotlin-service-client = [
 ]
 
 [plugins]
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version"}
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-version" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator-version" }

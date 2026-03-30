@@ -2501,6 +2501,12 @@
             "namespace": "aws.sdk.kotlin.services.tnb",
             "artifactName": "tnb",
             "brazilName": "AwsSdkKotlinTnb"
+        },
+        {
+            "sdkId": "uxc",
+            "namespace": "aws.sdk.kotlin.services.uxc",
+            "artifactName": "uxc",
+            "brazilName": "AwsSdkKotlinUxc"
         }
     ]
 }
