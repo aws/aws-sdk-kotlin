@@ -5007,6 +5007,26 @@
                 "smithy.api#pattern": "^[a-z]+\\-[0-9a-z\\-]+$"
             }
         },
+        "com.amazonaws.sagemaker#AvailabilityZoneBalanceEnforcementMode": {
+            "type": "enum",
+            "members": {
+                "PERMISSIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PERMISSIVE"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.sagemaker#AvailabilityZoneBalanceMaxImbalance": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 0,
+                    "max": 100
+                }
+            }
+        },
         "com.amazonaws.sagemaker#AvailabilityZoneId": {
             "type": "string",
             "traits": {
@@ -39950,6 +39970,28 @@
                 }
             }
         },
+        "com.amazonaws.sagemaker#InferenceComponentAvailabilityZoneBalance": {
+            "type": "structure",
+            "members": {
+                "EnforcementMode": {
+                    "target": "com.amazonaws.sagemaker#AvailabilityZoneBalanceEnforcementMode",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>Determines how strictly the Availability Zone balance constraint is enforced.</p> <dl> <dt>PERMISSIVE</dt> <dd> <p>The endpoint attempts to balance copies across Availability Zones but proceeds with scheduling even if balance can't be achieved due to available capacity or instance distribution across Availability Zones.</p> </dd> </dl>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MaxImbalance": {
+                    "target": "com.amazonaws.sagemaker#AvailabilityZoneBalanceMaxImbalance",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum allowed difference in the number of inference component copies between any two Availability Zones. This parameter applies only when the endpoint has instances across two or more Availability Zones. A copy placement is allowed if it reduces imbalance or the resulting imbalance is within this value.</p> <p>Default value: <code>0</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for balancing inference component copies across Availability Zones.</p>"
+            }
+        },
         "com.amazonaws.sagemaker#InferenceComponentCapacitySize": {
             "type": "structure",
             "members": {
@@ -40167,6 +40209,23 @@
                 "smithy.api#pattern": "^[a-zA-Z0-9-]+$"
             }
         },
+        "com.amazonaws.sagemaker#InferenceComponentPlacementStrategy": {
+            "type": "enum",
+            "members": {
+                "SPREAD": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SPREAD"
+                    }
+                },
+                "BINPACK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BINPACK"
+                    }
+                }
+            }
+        },
         "com.amazonaws.sagemaker#InferenceComponentRollingUpdatePolicy": {
             "type": "structure",
             "members": {
@@ -40239,6 +40298,28 @@
                 "smithy.api#documentation": "<p>Details about the runtime settings for the model that is deployed with the inference component.</p>"
             }
         },
+        "com.amazonaws.sagemaker#InferenceComponentSchedulingConfig": {
+            "type": "structure",
+            "members": {
+                "PlacementStrategy": {
+                    "target": "com.amazonaws.sagemaker#InferenceComponentPlacementStrategy",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The strategy for placing inference component copies across available instances. If you also set <code>AvailabilityZoneBalance</code>, this strategy applies to placement within each Availability Zone.</p> <dl> <dt>SPREAD</dt> <dd> <p>Distributes copies evenly across available instances for better resilience.</p> </dd> <dt>BINPACK</dt> <dd> <p>Packs copies onto fewer instances to optimize resource utilization.</p> </dd> </dl>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "AvailabilityZoneBalance": {
+                    "target": "com.amazonaws.sagemaker#InferenceComponentAvailabilityZoneBalance",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configuration for balancing inference component copies across Availability Zones.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The scheduling configuration that determines how inference component copies are placed across available instances when copies are added or removed.</p>"
+            }
+        },
         "com.amazonaws.sagemaker#InferenceComponentSortKey": {
             "type": "enum",
             "members": {
@@ -40300,6 +40381,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Settings that affect how the inference component caches data.</p>"
                     }
+                },
+                "SchedulingConfig": {
+                    "target": "com.amazonaws.sagemaker#InferenceComponentSchedulingConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scheduling configuration that determines how inference component copies are placed across available instances when copies are added or removed.</p>"
+                    }
                 }
             },
             "traits": {
@@ -40343,6 +40430,12 @@
                     "target": "com.amazonaws.sagemaker#InferenceComponentDataCacheConfigSummary",
                     "traits": {
                         "smithy.api#documentation": "<p>Settings that affect how the inference component caches data.</p>"
+                    }
+                },
+                "SchedulingConfig": {
+                    "target": "com.amazonaws.sagemaker#InferenceComponentSchedulingConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scheduling configuration that determines how inference component copies are placed across available instances when copies are added or removed.</p>"
                     }
                 }
             },
@@ -52437,6 +52530,15 @@
                 "smithy.api#pattern": "^\\d+\\.\\d+$"
             }
         },
+        "com.amazonaws.sagemaker#ManagedInstanceScalingCooldownInMinutes": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 5,
+                    "max": 1440
+                }
+            }
+        },
         "com.amazonaws.sagemaker#ManagedInstanceScalingMaxInstanceCount": {
             "type": "integer",
             "traits": {
@@ -52445,11 +52547,37 @@
                 }
             }
         },
+        "com.amazonaws.sagemaker#ManagedInstanceScalingMaximumStepSize": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1,
+                    "max": 100
+                }
+            }
+        },
         "com.amazonaws.sagemaker#ManagedInstanceScalingMinInstanceCount": {
             "type": "integer",
             "traits": {
                 "smithy.api#range": {
                     "min": 0
+                }
+            }
+        },
+        "com.amazonaws.sagemaker#ManagedInstanceScalingScaleInStrategy": {
+            "type": "enum",
+            "members": {
+                "IDLE_RELEASE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IDLE_RELEASE"
+                    }
+                },
+                "CONSOLIDATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CONSOLIDATION"
+                    }
                 }
             }
         },
@@ -64690,10 +64818,44 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The maximum number of instances that the endpoint can provision when it scales up to accommodate an increase in traffic.</p>"
                     }
+                },
+                "ScaleInPolicy": {
+                    "target": "com.amazonaws.sagemaker#ProductionVariantManagedInstanceScalingScaleInPolicy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configures the scale-in behavior for managed instance scaling.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Settings that control the range in the number of instances that the endpoint provisions as it scales up or down to accommodate traffic. </p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ProductionVariantManagedInstanceScalingScaleInPolicy": {
+            "type": "structure",
+            "members": {
+                "Strategy": {
+                    "target": "com.amazonaws.sagemaker#ManagedInstanceScalingScaleInStrategy",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The strategy for scaling in instances.</p> <dl> <dt>IDLE_RELEASE</dt> <dd> <p>Releases instances that have no hosted inference component copies.</p> </dd> <dt>CONSOLIDATION</dt> <dd> <p>Consolidates inference component copies onto fewer instances to release more instances. Consolidation honors the scheduling configuration of each inference component. For example, if an inference component specifies Availability Zone balance, consolidation only proceeds when the resulting distribution does not increase the imbalance.</p> </dd> </dl>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MaximumStepSize": {
+                    "target": "com.amazonaws.sagemaker#ManagedInstanceScalingMaximumStepSize",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of instances that the endpoint can terminate at a time during a consolidation scale-in operation.</p> <p>Default value: <code>1</code>.</p>"
+                    }
+                },
+                "CooldownInMinutes": {
+                    "target": "com.amazonaws.sagemaker#ManagedInstanceScalingCooldownInMinutes",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The cooldown period, in minutes, after the last endpoint operation before the endpoint evaluates consolidation scale-in opportunities.</p> <p>Default value: <code>20</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configures the scale-in behavior for managed instance scaling.</p>"
             }
         },
         "com.amazonaws.sagemaker#ProductionVariantModelDataDownloadTimeoutInSeconds": {
