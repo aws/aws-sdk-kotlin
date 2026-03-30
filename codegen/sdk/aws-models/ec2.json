@@ -18380,7 +18380,7 @@
                     "target": "com.amazonaws.ec2#InstanceLifecycle",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Lifecycle",
-                        "smithy.api#documentation": "<p>Indicates if the instance that could not be launched was a Spot Instance or On-Demand Instance.</p>",
+                        "smithy.api#documentation": "<p>Indicates if the instance that could not be launched was a Spot, On-Demand, Capacity Block,\n         or Interruptible Capacity Reservation instance.</p>",
                         "smithy.api#xmlName": "lifecycle"
                     }
                 },
@@ -18429,7 +18429,7 @@
                     "target": "com.amazonaws.ec2#InstanceLifecycle",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Lifecycle",
-                        "smithy.api#documentation": "<p>Indicates if the instance that was launched is a Spot Instance or On-Demand Instance.</p>",
+                        "smithy.api#documentation": "<p>Indicates if the instance that was launched is a Spot, On-Demand, Capacity Block,\n         or Interruptible Capacity Reservation instance.</p>",
                         "smithy.api#xmlName": "lifecycle"
                     }
                 },
@@ -18497,6 +18497,12 @@
                     "target": "com.amazonaws.ec2#OnDemandOptionsRequest",
                     "traits": {
                         "smithy.api#documentation": "<p>Describes the configuration of On-Demand Instances in an EC2 Fleet.</p>"
+                    }
+                },
+                "ReservedCapacityOptions": {
+                    "target": "com.amazonaws.ec2#ReservedCapacityOptionsRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Defines EC2 Fleet preferences for utilizing reserved capacity when DefaultTargetCapacityType is set to <code>reserved-capacity</code>.</p>\n         <p>Supported only for fleets of type <code>instant</code>.</p>"
                     }
                 },
                 "ExcessCapacityTerminationPolicy": {
@@ -27533,6 +27539,38 @@
                 }
             }
         },
+        "com.amazonaws.ec2#DefaultConnectionTrackingConfiguration": {
+            "type": "structure",
+            "members": {
+                "DefaultTcpEstablishedTimeout": {
+                    "target": "com.amazonaws.ec2#DefaultTcpEstablishedTimeout",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DefaultTcpEstablishedTimeout",
+                        "smithy.api#documentation": "<p>Default timeout (in seconds) for idle TCP connections in an established state.</p>",
+                        "smithy.api#xmlName": "defaultTcpEstablishedTimeout"
+                    }
+                },
+                "DefaultUdpTimeout": {
+                    "target": "com.amazonaws.ec2#DefaultUdpTimeout",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DefaultUdpTimeout",
+                        "smithy.api#documentation": "<p>Default timeout (in seconds) for idle UDP flows that have seen traffic only in a single direction or a single request-response transaction.</p>",
+                        "smithy.api#xmlName": "defaultUdpTimeout"
+                    }
+                },
+                "DefaultUdpStreamTimeout": {
+                    "target": "com.amazonaws.ec2#DefaultUdpStreamTimeout",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DefaultUdpStreamTimeout",
+                        "smithy.api#documentation": "<p>Default timeout (in seconds) for idle UDP flows classified as streams which have seen more than one request-response transaction.</p>",
+                        "smithy.api#xmlName": "defaultUdpStreamTimeout"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Indicates default conntrack information for the instance type. For more\n  information, see\n  <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html#connection-tracking-timeouts\"> Connection tracking timeouts\n  </a> in the Amazon EC2 User Guide.\n </p>"
+            }
+        },
         "com.amazonaws.ec2#DefaultEnaQueueCountPerInterface": {
             "type": "integer"
         },
@@ -27662,8 +27700,23 @@
                     "traits": {
                         "smithy.api#enumValue": "capacity-block"
                     }
+                },
+                "RESERVED_CAPACITY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "reserved-capacity"
+                    }
                 }
             }
+        },
+        "com.amazonaws.ec2#DefaultTcpEstablishedTimeout": {
+            "type": "integer"
+        },
+        "com.amazonaws.ec2#DefaultUdpStreamTimeout": {
+            "type": "integer"
+        },
+        "com.amazonaws.ec2#DefaultUdpTimeout": {
+            "type": "integer"
         },
         "com.amazonaws.ec2#DefaultingDhcpOptionsId": {
             "type": "string"
@@ -37086,7 +37139,7 @@
                     "target": "com.amazonaws.ec2#InstanceLifecycle",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Lifecycle",
-                        "smithy.api#documentation": "<p>Indicates if the instance that could not be launched was a Spot Instance or On-Demand Instance.</p>",
+                        "smithy.api#documentation": "<p>Indicates if the instance that could not be launched was a Spot, On-Demand, Capacity Block,\n         or Interruptible Capacity Reservation instance.</p>",
                         "smithy.api#xmlName": "lifecycle"
                     }
                 },
@@ -37346,7 +37399,7 @@
                     "target": "com.amazonaws.ec2#InstanceLifecycle",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Lifecycle",
-                        "smithy.api#documentation": "<p>Indicates if the instance that was launched is a Spot Instance or On-Demand Instance.</p>",
+                        "smithy.api#documentation": "<p>Indicates if the instance that was launched is a Spot, On-Demand, Capacity Block,\n         or Interruptible Capacity Reservation instance.</p>",
                         "smithy.api#xmlName": "lifecycle"
                     }
                 },
@@ -61295,6 +61348,14 @@
                         "smithy.api#xmlName": "onDemandOptions"
                     }
                 },
+                "ReservedCapacityOptions": {
+                    "target": "com.amazonaws.ec2#ReservedCapacityOptions",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservedCapacityOptions",
+                        "smithy.api#documentation": "<p>Defines EC2 Fleet preferences for utilizing reserved capacity when DefaultTargetCapacityType is set to <code>reserved-capacity</code>.</p>",
+                        "smithy.api#xmlName": "reservedCapacityOptions"
+                    }
+                },
                 "Tags": {
                     "target": "com.amazonaws.ec2#TagList",
                     "traits": {
@@ -61793,6 +61854,17 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "launch-before-terminate"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#FleetReservationType": {
+            "type": "enum",
+            "members": {
+                "INTERRUPTIBLE_CAPACITY_RESERVATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "interruptible-capacity-reservation"
                     }
                 }
             }
@@ -74114,6 +74186,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "on-demand"
+                    }
+                },
+                "INTERRUPTIBLE_CAPACITY_RESERVATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "interruptible-capacity-reservation"
                     }
                 }
             }
@@ -102501,6 +102579,14 @@
                         "smithy.api#xmlName": "flexibleEnaQueuesSupport"
                     }
                 },
+                "ConnectionTrackingConfiguration": {
+                    "target": "com.amazonaws.ec2#DefaultConnectionTrackingConfiguration",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ConnectionTrackingConfiguration",
+                        "smithy.api#documentation": "<p>Indicates conntrack information for the instance type</p>",
+                        "smithy.api#xmlName": "connectionTrackingConfiguration"
+                    }
+                },
                 "SecondaryNetworkSupported": {
                     "target": "com.amazonaws.ec2#SecondaryNetworkSupportedFlag",
                     "traits": {
@@ -111637,6 +111723,24 @@
                 }
             }
         },
+        "com.amazonaws.ec2#ReservationTypeList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#FleetReservationType",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#ReservationTypeListRequest": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#FleetReservationType",
+                "traits": {
+                    "smithy.api#xmlName": "ReservationType"
+                }
+            }
+        },
         "com.amazonaws.ec2#ReservationValue": {
             "type": "structure",
             "members": {
@@ -111667,6 +111771,37 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The cost associated with the Reserved Instance.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ReservedCapacityOptions": {
+            "type": "structure",
+            "members": {
+                "ReservationTypes": {
+                    "target": "com.amazonaws.ec2#ReservationTypeList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "ReservationTypeSet",
+                        "smithy.api#documentation": "<p>The types of Capacity Reservations used for fulfilling the EC2 Fleet request.</p>",
+                        "smithy.api#xmlName": "reservationTypeSet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Defines EC2 Fleet preferences for utilizing reserved capacity when DefaultTargetCapacityType is set to <code>reserved-capacity</code>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ReservedCapacityOptionsRequest": {
+            "type": "structure",
+            "members": {
+                "ReservationTypes": {
+                    "target": "com.amazonaws.ec2#ReservationTypeListRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The types of Capacity Reservations to use for fulfilling the EC2 Fleet request.</p>",
+                        "smithy.api#xmlName": "ReservationType"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Defines EC2 Fleet preferences for utilizing reserved capacity when DefaultTargetCapacityType is set to <code>reserved-capacity</code>.</p>\n         <note>\n            <p>This configuration can only be used if the EC2 Fleet is of type\n              <code>instant</code>.</p>\n         </note>\n         <p>When you specify <code>ReservedCapacityOptions</code>, you must also set\n           <code>DefaultTargetCapacityType</code> to <code>reserved-capacity</code> in the\n           <code>TargetCapacitySpecification</code>.</p>\n         <p>For more information about Interruptible Capacity Reservations, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-launch-instances-interruptible-cr-walkthrough.html\">Launch\n              instances into an Interruptible Capacity Reservation</a> in the <i>Amazon EC2 User Guide</i>.</p>"
             }
         },
         "com.amazonaws.ec2#ReservedInstanceIdSet": {

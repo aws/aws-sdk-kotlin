@@ -1,5 +1,113 @@
 # Changelog
 
+## [1.6.46] - 03/27/2026
+
+### Features
+* (**bedrockagentcore**) Adding AgentCore Code Interpreter Node.js Runtime Support with an optional runtime field
+* (**bedrockagentcorecontrol**) Adds support for custom code-based evaluators using customer-managed Lambda functions.
+* (**omics**) AWS HealthOmics now supports VPC networking, allowing users to connect runs to external resources with NAT gateway, AWS VPC resources, and more. New Configuration APIs support configuring VPC settings. StartRun API now accepts networkingMode and configurationName parameters to enable VPC networking.
+
+### Documentation
+* (**neptunedata**) Minor formatting changes to remove unnecessary symbols.
+
+## [1.6.45] - 03/26/2026
+
+### Features
+* (**bcmdataexports**) With this release we are providing an option to accounts to have their export delivered to an S3 bucket that is not owned by the account.
+* (**cloudwatchlogs**) This release adds parameter support to saved queries in CloudWatch Logs Insights. Define reusable query templates with named placeholders, invoke them using start query. Available in Console, CLI and SDK
+* (**emr**) Add StepExecutionRoleArn to RunJobFlow API
+* (**sagemaker**) Release support for ml.r5d.16xlarge instance types for SageMaker HyperPod
+* (**timestreaminfluxdb**) Timestream for InfluxDB adds support for customer defined maintenance windows. This allows customers to define maintenance schedule during resource creation and updates
+
+## [1.6.44] - 03/25/2026
+
+### Features
+* (**apigatewayv2**) Added DISABLE IN PROGRESS and DISABLE FAILED Portal statuses.
+* (**applicationsignals**) This release adds support for creating SLOs on RUM appMonitors, Synthetics canaries and services.
+* (**marketplaceagreement**) The Variable Payments APIs enable AWS Marketplace Sellers to perform manage their payment requests (send, get, list, cancel).
+* (**polly**) Add support for Mu-law and A-law codecs for output format
+* (**uxc**) GA release of AccountCustomizations, used to manage account color, visible services, and visible regions settings in the AWS Management Console.
+
+### Documentation
+* (**batch**) Documentation-only update for AWS Batch.
+
+## [1.6.43] - 03/24/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Adds SDK support for 1) Persist session state in AgentCore Runtime via filesystemConfigurations in CreateAgentRuntime, UpdateAgentRuntime, and GetAgentRuntime APIs, 2) Optional name-based filtering on AgentCore ListBrowserProfiles API.
+* (**mediapackagev2**) Reduces the minimum allowed value for startOverWindowSeconds from 60 to 0, allowing customers to effectively disable the start-over window.
+* (**opensearchserverless**) Adds support for updating the vector options field for existing collections.
+* (**pcs**) This release adds support for custom slurmdbd and cgroup configuration in AWS PCS. Customers can now specify slurmdbd and cgroup settings to configure database accounting and reporting for their HPC workloads, and control resource allocation and limits for compute jobs.
+* (**rds**) Adds support in Aurora PostgreSQL serverless databases for express configuration based creation through WithExpressConfiguration in CreateDbCluster API, and for restoring clusters using RestoreDBClusterToPointInTime and RestoreDBClusterFromSnapshot APIs.
+
+### Documentation
+* (**gamelift**) Amazon GameLift Servers launches UDP ping beacons in the Beijing and Ningxia (China) Regions to help measure real-time network latency for multiplayer games. The ListLocations API is now available in these regions to provide endpoint domain and port information as part of the locations list.
+
+## [1.6.42] - 03/23/2026
+
+### Features
+* (**batch**) AWS Batch AMI Visibility feature support. Adds read-only batchImageStatus to Ec2Configuration to provide visibility on the status of Batch-vended AMIs used by Compute Environments.
+* (**connectcases**) You can now use the UpdateRelatedItem API to update the content of comments and custom related items associated with a case.
+* (**lightsail**) Add support for tagging of ContactMethod resource type
+* (**omics**) Adds support for batch workflow runs in Amazon Omics, enabling users to submit, manage, and monitor multiple runs as a single batch. Includes APIs to create, cancel, and delete batches, track submission statuses and counts, list runs within a batch, and configure default settings.
+
+## [1.6.41] - 03/20/2026
+
+### Features
+* (**dynamodb**) Adding ReplicaArn to ReplicaDescription of a global table replica
+* (**opensearch**) Added support for Amazon Managed Service for Prometheus (AMP) as a connected data source in OpenSearch UI. Now users can analyze Prometheus metrics in OpenSearch UI without data copy.
+* (**verifiedpermissions**) Adds support for Policy Store Aliases, Policy Names, and Policy Template Names. These are customizable identifiers that can be used in place of Policy Store ids, Policy ids, and Policy Template ids respectively in Amazon Verified Permissions APIs.
+
+### Documentation
+* (**backup**) Fix Typo for S3Backup Options ( S3BackupACLs to BackupACLs)
+
+## [1.6.40] - 03/19/2026
+
+### Features
+* (**batch**) AWS Batch now supports quota management, enabling administrators to allocate shared compute resources across teams and projects through quota shares with capacity limits, resource-sharing strategies, and priority-based preemption - currently available for SageMaker Training job queues.
+* (**bedrockagentcore**) This release includes SDK support for the following new features on AgentCore Built In Tools.  1. Enterprise Policies for AgentCore Browser Tool. 2. Root CA Configuration Support for AgentCore Browser Tool and Code Interpreter. 3. API changes to AgentCore Browser Profile APIs
+* (**bedrockagentcorecontrol**) Adds support for the following new features. 1. Enterprise Policies support for AgentCore Browser Tool. 2. Root CA Configuration support for AgentCore Browser Tool and Code Interpreter.
+* (**ec2**) Amazon EC2 Fleet instant mode now supports launching instances into Interruptible Capacity Reservations, enabling customers to use spare capacity shared by Capacity Reservation owners within their AWS Organization.
+* (**observabilityadmin**) Adding a new field in the CreateCentralizationRuleForOrganization, UpdateCentralizationRuleForOrganization API and updating the GetCentralizationRuleForOrganization API response to include the new field
+* (**polly**) Added bi-directional streaming functionality through a new API, StartSpeechSynthesisStream. This API allows streaming input text through inbound events and receiving audio as part of an output stream simultaneously.
+
+## [1.6.39] - 03/18/2026
+
+### Features
+* (**ec2**) The DescribeInstanceTypes API now returns default connection tracking timeout values for TCP, UDP, and UDP stream via the new connectionTrackingConfiguration field on NetworkInfo.
+* (**mediaconvert**) This update adds additional bitrate options for Dolby AC-4 audio outputs.
+
+## [1.6.38] - 03/17/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Deprecating namespaces field and adding namespaceTemplates.
+* (**emr**) Add S3LoggingConfiguration to Control LogUploads
+* (**glue**) Provide approval to overwrite existing Lake Formation permissions on all child resources with the default permissions specified in 'CreateTableDefaultPermissions' and 'CreateDatabaseDefaultPermissions' when updating catalog. Allowed values are ["Accept","Deny"] .
+
+## [1.6.37] - 03/16/2026
+
+### Features
+* (**bedrock**) You can now generate policy scenarios on demand using the new GENERATE POLICY SCENARIOS build workflow type. Scenarios will no longer be automatically generated during INGEST CONTENT, REFINE POLICY, and IMPORT POLICY workflows, resulting in faster completion times for these operations.
+* (**bedrockagentcore**) Provide support to perform deterministic operations on agent runtime through shell command executions via the new InvokeAgentRuntimeCommand API
+* (**bedrockagentcorecontrol**) Supporting hosting of public ECR Container Images in AgentCore Runtime
+* (**ecs**) Amazon ECS now supports configuring whether tags are propagated to the EC2 Instance Metadata Service (IMDS) for instances launched by the Managed Instances capacity provider. This gives customers control over tag visibility in IMDS when using ECS Managed Instances.
+
+## [1.6.36] - 03/13/2026
+
+### Features
+* (**apigateway**) API Gateway now supports an additional security policy "SecurityPolicy-TLS13-1-2-FIPS-PFS-PQ-2025-09" for REST APIs and custom domain names. The new policy is compliant with TLS 1.3, Federal Information Processing Standards (FIPS), Perfect Forward Secrecy (PFS), and post-quantum (PQ) cryptography
+* (**configservice**) Fix pagination support for DescribeConformancePackCompliance, and update OrganizationConfigRule InputParameters max length to match ConfigRule.
+* (**connect**) Deprecating PredefinedNotificationID field
+* (**gameliftstreams**) Feature launch that enables customers to connect streaming sessions to their own VPCs running in AWS.
+* (**glue**) Add QuerySessionContext to BatchGetPartitionRequest
+* (**ivsrealtime**) Updates maximum reconnect window seconds from 60 to 300 for participant replication
+* (**mediaconvert**) This update adds support for Dolby AC-4 audio output, frame rate conversion between non-Dolby Vision inputs to Dolby Vision outputs, and clear lead CMAF HLS output.
+* (**mgn**) Network Migration APIs are now publicly available for direct programmatic access. Customers can now call Network Migration APIs directly without going through AWS Transform (ATX), enabling automation, integration with existing tools, and self-service migration workflows.
+* (**quicksight**) The change adds a new capability named ManageSharedFolders in Custom Permissions
+
+### Documentation
+* (**medialive**) Documents the VideoDescription.ScalingBehavior.SMART(underscore)CROP enum value.
+
 ## [1.6.35] - 03/12/2026
 
 ### Features
