@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.6.47] - 03/30/2026
+
+### Features
+* (**appstream**) Add support for URL Redirection
+* (**autoscaling**) Adds support for new instance lifecycle states introduced by the instance lifecycle policy and replace root volume features.
+* (**bedrockagentcore**) Adds Ground Truth support for AgentCore Evaluations (Evaluate)
+* (**cloudwatchlogs**) Adds Lookup Tables to CloudWatch Logs for log enrichment using CSV key-value data with KMS encryption support.
+* (**deadline**) AWS Deadline Cloud now supports three new fleet auto scaling settings. With scale out rate, you can configure how quickly workers launch. With worker idle duration, you can set how long workers wait before shutting down. With standby worker count, you can keep idle workers ready for fast job start.
+* (**devopsagent**) AWS DevOps Agent General Availability.
+* (**ecs**) Adding Local Storage support for ECS Managed Instances by introducing a new field "localStorageConfiguration" for CreateCapacityProvider and UpdateCapacityProvider APIs.
+* (**opensearch**) Added Cluster Insights API's In OpenSearch Service SDK.
+* (**partnercentralaccount**) KYB Supplemental Form enables partners who fail business verification to submit additional details and supporting documentation through a self-service form, triggering an automated re-verification without requiring manual intervention from support teams.
+* (**sagemaker**) Added support for placement strategy and consolidation for SageMaker inference component endpoints. Customers can now configure how inference component copies are distributed across instances and availability zones (AZs), and enable automatic consolidation to optimizes resource utilization.
+
+### Documentation
+* (**gamelift**) Update CreateScript API documentation.
+* (**lakeformation**) Add setSourceIdentity to DataLakeSettings Parameters
+
 ## [1.6.46] - 03/27/2026
 
 ### Features

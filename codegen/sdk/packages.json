@@ -691,6 +691,12 @@
             "brazilName": "AwsSdkKotlinDetective"
         },
         {
+            "sdkId": "DevOps Agent",
+            "namespace": "aws.sdk.kotlin.services.devopsagent",
+            "artifactName": "devopsagent",
+            "brazilName": "AwsSdkKotlinDevopsAgent"
+        },
+        {
             "sdkId": "DevOps Guru",
             "namespace": "aws.sdk.kotlin.services.devopsguru",
             "artifactName": "devopsguru",
