@@ -8,7 +8,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.*
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
-import aws.sdk.kotlin.services.dynamodb.scan
 import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -100,9 +99,5 @@ class BatchWriteItemTest : DdbLocalTest() {
         val updatedTeamNames = teamsTable.scanPaginated { }.items().map { it.teamName }.toList()
         assertFalse("Astroids" in updatedTeamNames)
         assertTrue("Astros" in updatedTeamNames)
-    }
-
-    private suspend fun tableSize(tableName: String): Int = lowLevelAccess {
-        scan { this.tableName = tableName }.items.orEmpty().size
     }
 }

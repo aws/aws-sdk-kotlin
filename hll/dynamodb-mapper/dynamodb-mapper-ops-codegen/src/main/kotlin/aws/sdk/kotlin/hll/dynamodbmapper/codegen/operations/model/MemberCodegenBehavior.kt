@@ -270,6 +270,34 @@ private val transactGetItemsResponseTables = CustomTransformation(
     renderConversion = { _ -> "TransactGetItemsResponseTables(responses, requestTables)" },
 )
 
+private val transactWriteItemsRequestTables = CustomTransformation(
+    replacementMember = Member(
+        name = "tables",
+        type = Types.Kotlin.list(MapperTypes.Operations.TransactWriteItemsRequestTable),
+        attributes = mutableAttributes().apply {
+            dsls += listOf(
+                DslInfo(
+                    interfaceType = MapperTypes.Operations.TransactWriteItemsRequestTableDslPartitionKey,
+                    implType = MapperTypes.Operations.Internal.TransactWriteItemsRequestTableDslPartitionKeyImpl,
+                    implInvocationStyle = DslInvocationStyle.Constructor("tables", "table"),
+                    implFinalizer = ".toTables()",
+                    nameOverride = "table",
+                    dslMethodParams = listOf(Member("table", MapperTypes.Model.TablePartitionKeyGeneric)),
+                ),
+                DslInfo(
+                    interfaceType = MapperTypes.Operations.TransactWriteItemsRequestTableDslCompositeKey,
+                    implType = MapperTypes.Operations.Internal.TransactWriteItemsRequestTableDslCompositeKeyImpl,
+                    implInvocationStyle = DslInvocationStyle.Constructor("tables", "table"),
+                    implFinalizer = ".toTables()",
+                    nameOverride = "table",
+                    dslMethodParams = listOf(Member("table", MapperTypes.Model.TableCompositeKeyGeneric)),
+                ),
+            )
+        },
+    ),
+    renderConversion = { fromMemberName -> format("#L.convert()", fromMemberName) },
+)
+
 /**
  * Priority-ordered list of dispositions to apply to members found in structures. The first element from this list that
  * successfully matches with a member will be chosen.
@@ -296,6 +324,7 @@ private val rules = listOf(
     Rule("unprocessedItems", Types.Kotlin.stringMap(Types.Kotlin.list(MapperTypes.WriteRequest)), batchWriteItemResponseTables),
     Rule("transactItems", Types.Kotlin.list(MapperTypes.TransactGetItem), transactGetItemsRequestTables),
     Rule("responses", Types.Kotlin.list(MapperTypes.ItemResponse), transactGetItemsResponseTables),
+    Rule("transactItems", Types.Kotlin.list(MapperTypes.TransactWriteItem), transactWriteItemsRequestTables),
 
     // Expression literals
     Rule("keyConditionExpression", Types.Kotlin.String, ExpressionLiteral(KeyCondition)),

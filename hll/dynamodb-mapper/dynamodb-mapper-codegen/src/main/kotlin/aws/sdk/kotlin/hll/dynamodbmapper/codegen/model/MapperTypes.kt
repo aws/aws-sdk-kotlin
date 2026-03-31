@@ -19,6 +19,7 @@ public object MapperTypes {
     public val ItemResponse: TypeRef = TypeRef(MapperPkg.Ll.Model, "ItemResponse")
     public val KeysAndAttributes: TypeRef = TypeRef(MapperPkg.Ll.Model, "KeysAndAttributes")
     public val TransactGetItem: TypeRef = TypeRef(MapperPkg.Ll.Model, "TransactGetItem")
+    public val TransactWriteItem: TypeRef = TypeRef(MapperPkg.Ll.Model, "TransactWriteItem")
     public val WriteRequest: TypeRef = TypeRef(MapperPkg.Ll.Model, "WriteRequest")
 
     // High-level types
@@ -244,6 +245,24 @@ public object MapperTypes {
             genericArgs = listOf(StarProjection),
         )
 
+        public val TransactWriteItemsRequestTable: TypeRef = TypeRef(
+            MapperPkg.Hl.Ops.Base,
+            "TransactWriteItemsRequestTable",
+            genericArgs = listOf(StarProjection),
+        )
+
+        public val TransactWriteItemsRequestTableDslPartitionKey: TypeRef = TypeRef(
+            MapperPkg.Hl.Ops.Base,
+            "TransactWriteItemsRequestTableDsl.PartitionKey",
+            genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK),
+        )
+
+        public val TransactWriteItemsRequestTableDslCompositeKey: TypeRef = TypeRef(
+            MapperPkg.Hl.Ops.Base,
+            "TransactWriteItemsRequestTableDsl.CompositeKey",
+            genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK, Items.KeyTypeAsSK),
+        )
+
         public object Internal {
             public val BatchGetItemRequestTableDslPartitionKeyImpl: TypeRef = TypeRef(
                 MapperPkg.Hl.Ops.Internal,
@@ -278,6 +297,18 @@ public object MapperTypes {
             public val TransactGetItemsRequestTableDslCompositeKeyImpl: TypeRef = TypeRef(
                 MapperPkg.Hl.Ops.Internal,
                 "TransactGetItemsRequestTableDslCompositeKeyImpl",
+                genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK, Items.KeyTypeAsSK),
+            )
+
+            public val TransactWriteItemsRequestTableDslPartitionKeyImpl: TypeRef = TypeRef(
+                MapperPkg.Hl.Ops.Internal,
+                "TransactWriteItemsRequestTableDslPartitionKeyImpl",
+                genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK),
+            )
+
+            public val TransactWriteItemsRequestTableDslCompositeKeyImpl: TypeRef = TypeRef(
+                MapperPkg.Hl.Ops.Internal,
+                "TransactWriteItemsRequestTableDslCompositeKeyImpl",
                 genericArgs = listOf(TypeVar.T, Items.KeyTypeAsPK, Items.KeyTypeAsSK),
             )
         }
