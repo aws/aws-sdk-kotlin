@@ -42,20 +42,15 @@ jobs:
       - name: Setup kat
         uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
       - name: Get deploy key
-        id: deploy-key
-        run: |
-          secret=$(aws secretsmanager get-secret-value --secret-id "arn:aws:secretsmanager:us-west-2:971649473629:secret:sdkdeploykeyF11751F3-1eoTR5KeDXeH-r9gTUX" --query SecretString --output text)
-          # Mask the value so it doesn't appear in logs
-          echo "::add-mask::$secret"
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "ssh-key<<$EOF" >> "$GITHUB_OUTPUT"
-          echo "$secret" >> "$GITHUB_OUTPUT"
-          echo "$EOF" >> "$GITHUB_OUTPUT"
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            DEPLOY_KEY, arn:aws:secretsmanager:us-west-2:971649473629:secret:sdkdeploykeyF11751F3-1eoTR5KeDXeH-r9gTUX
       - uses: actions/checkout@v4
         with:
           ref: 'main'
           fetch-depth: 0
-          ssh-key: ${{ steps.deploy-key.outputs.ssh-key }}
+          ssh-key: ${{ env.DEPLOY_KEY }}
       - name: Configure Git
         shell: bash
         run: |
