@@ -12,7 +12,7 @@ atomicfu-version = "0.29.0"
 binary-compatibility-validator-version = "0.18.0"
 
 # smithy-kotlin
-smithy-kotlin-version = "1.6.4"
+smithy-kotlin-version = "1.6.9"
 
 # codegen
 smithy-version = "1.67.0"
