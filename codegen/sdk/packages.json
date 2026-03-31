@@ -2029,6 +2029,12 @@
             "brazilName": "AwsSdkKotlinSecurityIr"
         },
         {
+            "sdkId": "SecurityAgent",
+            "namespace": "aws.sdk.kotlin.services.securityagent",
+            "artifactName": "securityagent",
+            "brazilName": "AwsSdkKotlinSecurityagent"
+        },
+        {
             "sdkId": "SecurityHub",
             "namespace": "aws.sdk.kotlin.services.securityhub",
             "artifactName": "securityhub",
@@ -2147,6 +2153,12 @@
             "namespace": "aws.sdk.kotlin.services.supportapp",
             "artifactName": "supportapp",
             "brazilName": "AwsSdkKotlinSupportApp"
+        },
+        {
+            "sdkId": "Sustainability",
+            "namespace": "aws.sdk.kotlin.services.sustainability",
+            "artifactName": "sustainability",
+            "brazilName": "AwsSdkKotlinSustainability"
         },
         {
             "sdkId": "TaxSettings",

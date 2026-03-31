@@ -10504,7 +10504,7 @@
                 "target": "com.amazonaws.ec2#BundleInstanceResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Bundles an Amazon instance store-backed Windows instance.</p>\n         <p>During bundling, only the root device volume (C:\\) is bundled. Data on other instance\n      store volumes is not preserved.</p>\n         <note>\n            <p>This action is not applicable for Linux/Unix instances or Windows instances that are\n        backed by Amazon EBS.</p>\n         </note>"
+                "smithy.api#documentation": "<p>Bundles an Amazon instance store-backed Windows instance.</p>\n         <p>During bundling, only the root device volume (C:\\) is bundled. Data on other instance\n      store volumes is not preserved.</p>\n         <note>\n            <p>This action is no longer supported. To create an AMI, use\n        <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.\n        For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\">\n        Create an Amazon EBS-backed AMI</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         </note>"
             }
         },
         "com.amazonaws.ec2#BundleInstanceRequest": {
