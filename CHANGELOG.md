@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.49] - 04/01/2026
+
+### Features
+* (**bedrock**) Adds support for Bedrock Batch Inference Job Progress Monitoring
+* (**bedrockagentcore**) Added the ability to filter out empty sessions when listing sessions. Customers can now retrieve only sessions that still contain events, eliminating the need to check each session individually. No changes required for existing integrations.
+* (**bedrockagentcorecontrol**) Adds support for VPC egress private endpoints for Amazon Bedrock AgentCore gateway targets, enabling private connectivity through managed VPC Lattice resources. Also adds IAM credential provider for gateway targets, enabling IAM-based authentication to target endpoints
+* (**ecs**) Amazon ECS now supports Managed Daemons with dedicated APIs for registering daemon task definitions, creating daemons, and managing daemon deployments.
+* (**elasticache**) Updated SnapshotRetentionLimit documentation for ServerlessCache to correctly describe the parameter as number of days (max 35) instead of number of snapshots.
+* (**elasticsearchservice**) Adding Policy-Min-TLS-1-2-RFC9151-FIPS-2024-08 as TLS Policy in Supported Regions
+* (**georoutes**) This release makes RoutingBoundary optional in CalculateRouteMatrix, set StopDuration with a maximum value of 49999 for CalculateRoutes, set TrailerCount with a maximum value of 4, and introduces region restrictions for Grab Maps users.
+* (**medicalimaging**) Added new boolean flag to persist metadata updates to all primary image sets in the same study as the requested image set.
+* (**opensearch**) Adding Policy-Min-TLS-1-2-RFC9151-FIPS-2024-08 as TLS Policy in Supported Regions
+
 ## [1.6.48] - 03/31/2026
 
 ### Features
