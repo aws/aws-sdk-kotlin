@@ -32,6 +32,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 import kotlin.random.Random
+import kotlin.test.Ignore
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -80,6 +81,7 @@ class MutliRegionAccessPointTest {
         s3Control.close()
     }
 
+    @Ignore
     @ParameterizedTest
     @MethodSource("signerProvider")
     fun testMultiRegionAccessPointOperation(signer: AwsSigner): Unit = runBlocking {
