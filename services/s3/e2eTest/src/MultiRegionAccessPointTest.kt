@@ -33,7 +33,7 @@ import kotlin.time.Duration.Companion.seconds
 private const val TEST_OBJECT_KEY = "test.txt"
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class MutliRegionAccessPointTest {
+class MultiRegionAccessPointTest {
     private lateinit var s3West: S3Client
     private lateinit var s3East: S3Client
     private lateinit var s3Control: S3ControlClient
@@ -67,7 +67,7 @@ class MutliRegionAccessPointTest {
         s3Control.deleteMultiRegionAccessPoint(multiRegionAccessPointName, accountId)
 
         val resp = s3Control.listMultiRegionAccessPointsPaginated {
-            accountId = this@MutliRegionAccessPointTest.accountId
+            accountId = this@MultiRegionAccessPointTest.accountId
         }.toList().flatMap { it.accessPoints.orEmpty() }
 
         val mrapManifest = buildString {
