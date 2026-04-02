@@ -4,6 +4,14 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: e2e-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   e2e-tests:
     runs-on: ubuntu-latest
@@ -30,12 +38,3 @@ jobs:
             echo "Cancelling in-progress build: $BUILD_ID"
             aws codebuild stop-build --id $BUILD_ID
           fi
-
-concurrency:
-  group: e2e-tests-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  id-token: write
-  contents: read
-

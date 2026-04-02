@@ -7,7 +7,8 @@ on:
       - main
       - '*-main'
 
-permissions: { }
+permissions:
+  contents: read
 
 jobs:
   api-compat-verification:
@@ -15,7 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.CI_USER_PAT }}
           fetch-depth: 0
       - name: Check for API compatibility
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'acknowledge-api-break') }}
