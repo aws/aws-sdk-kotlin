@@ -23,7 +23,7 @@ junit-version = "5.14.1"
 kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.15"
 kotlinx-serialization-version = "1.9.0"
-mockk-version = "1.14.7"
+mockk-version = "1.14.9"
 slf4j-version = "2.0.17"
 jsoup-version = "1.21.2"
 
