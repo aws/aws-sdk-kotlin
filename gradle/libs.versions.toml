@@ -19,7 +19,7 @@ smithy-version = "1.67.0"
 
 # testing
 ddb-local-version = "2.5.2"
-junit-version = "5.14.1"
+junit-version = "6.0.3"
 kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.15"
 kotlinx-serialization-version = "1.9.0"
