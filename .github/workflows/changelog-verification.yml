@@ -1,6 +1,7 @@
 name: Changelog verification
 
 permissions:
+  contents: read
   id-token: write
 
 on:
