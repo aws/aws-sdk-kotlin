@@ -8,7 +8,8 @@ on:
     types: [ opened, synchronize, reopened, labeled, unlabeled ]
     branches: [ main ]
 
-permissions: { }
+permissions:
+  contents: read
 
 jobs:
   release-readiness:
