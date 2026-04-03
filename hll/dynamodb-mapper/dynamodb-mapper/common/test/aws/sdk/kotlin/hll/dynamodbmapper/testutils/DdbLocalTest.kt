@@ -7,10 +7,15 @@ package aws.sdk.kotlin.hll.dynamodbmapper.testutils
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapper
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
+import aws.sdk.kotlin.hll.dynamodbmapper.model.toItem
 import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
+import aws.sdk.kotlin.services.dynamodb.deleteItem
 import aws.sdk.kotlin.services.dynamodb.deleteTable
+import aws.sdk.kotlin.services.dynamodb.describeTable
+import aws.sdk.kotlin.services.dynamodb.paginators.items
+import aws.sdk.kotlin.services.dynamodb.paginators.scanPaginated
 import aws.sdk.kotlin.services.dynamodb.waiters.waitUntilTableNotExists
 import aws.smithy.kotlin.runtime.client.ProtocolRequestInterceptorContext
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
@@ -20,6 +25,7 @@ import aws.smithy.kotlin.runtime.net.Scheme
 import aws.smithy.kotlin.runtime.net.url.Url
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.util.PlatformProvider
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.TestInstance
 import kotlin.test.*
@@ -160,6 +166,30 @@ abstract class DdbLocalTest {
     protected suspend fun <T> lowLevelAccess(block: suspend DynamoDbClient.() -> T): T {
         requestInterceptor.enabled = false
         return block(ddb).also { requestInterceptor.enabled = true }
+    }
+
+    protected suspend fun tableItems(tableName: String): List<Item> = lowLevelAccess {
+        scanPaginated { this.tableName = tableName }.items().toList().map { it.toItem() }
+    }
+
+    protected suspend fun tableSize(tableName: String): Int = tableItems(tableName).size
+
+    protected suspend fun truncateTable(tableName: String) {
+        val items = tableItems(tableName)
+        lowLevelAccess {
+            val keyNames = describeTable { this.tableName = tableName }
+                .table
+                ?.keySchema
+                .orEmpty()
+                .map { it.attributeName }
+
+            items.forEach { item ->
+                deleteItem {
+                    key = item.filterKeys { it in keyNames }
+                    this.tableName = tableName
+                }
+            }
+        }
     }
 
     @AfterTest

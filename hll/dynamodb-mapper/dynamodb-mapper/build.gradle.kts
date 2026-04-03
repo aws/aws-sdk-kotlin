@@ -58,6 +58,7 @@ ksp {
         "query",
         "scan",
         "transactGetItems",
+        "transactWriteItems",
         "updateItem",
     )
     arg("op-allowlist", allowlist.joinToString(";"))

@@ -1683,12 +1683,14 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/Dyn
 	public abstract fun batchGetItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchGetItemRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun batchWriteItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/BatchWriteItemRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun transactGetItems (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun transactWriteItems (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperationsKt {
 	public static final fun batchGetItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun batchWriteItem (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun transactGetItems (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun transactWriteItems (Laws/sdk/kotlin/hll/dynamodbmapper/operations/DynamoDbMapperOperations;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/GetItemRequest {
@@ -2332,6 +2334,192 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItems
 	public static final fun TransactGetItemsResponseTable (Ljava/util/List;Ljava/lang/String;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable$PartitionKey;
 	public static final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse;Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$CompositeKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable$CompositeKey;
 	public static final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponse;Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$PartitionKey;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactGetItemsResponseTable$PartitionKey;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Companion;
+	public abstract fun getCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
+	public abstract fun getEntity ()Ljava/lang/Object;
+	public abstract fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Companion {
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$ConditionCheck : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction {
+	public abstract fun getCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Delete : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction {
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Put : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction {
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Update : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction {
+	public abstract fun getUpdate ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequest {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequest$Companion;
+	public abstract fun getClientRequestToken ()Ljava/lang/String;
+	public abstract fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
+	public abstract fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
+	public abstract fun getTables ()Ljava/util/List;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequest$Companion {
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestBuilder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequest;
+	public final fun getClientRequestToken ()Ljava/lang/String;
+	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
+	public final fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
+	public final fun getTables ()Ljava/util/List;
+	public final fun setClientRequestToken (Ljava/lang/String;)V
+	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
+	public final fun setReturnItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;)V
+	public final fun setTables (Ljava/util/List;)V
+	public final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$CompositeKey;Lkotlin/jvm/functions/Function1;)V
+	public final fun table (Laws/sdk/kotlin/hll/dynamodbmapper/model/Table$PartitionKey;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestKt {
+	public static final fun TransactWriteItemsRequest (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequest;
+	public static final fun copy (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequest;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequest;
+	public static final fun toBuilder (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequest;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestBuilder;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTable {
+	public abstract fun getPuts ()Ljava/util/List;
+	public abstract fun getTableName ()Ljava/lang/String;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTable$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTable {
+	public abstract fun getConditionChecks ()Ljava/util/List;
+	public abstract fun getDeletes ()Ljava/util/List;
+	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
+	public abstract fun getUpdates ()Ljava/util/List;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTable$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTable {
+	public abstract fun getConditionChecks ()Ljava/util/List;
+	public abstract fun getDeletes ()Ljava/util/List;
+	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+	public abstract fun getUpdates ()Ljava/util/List;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl {
+	public abstract fun getPuts ()Ljava/util/List;
+	public abstract fun put (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun put$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun setPuts (Ljava/util/List;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl {
+	public abstract fun conditionCheck (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun conditionCheck$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$CompositeKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun delete (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun delete$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$CompositeKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun getConditionChecks ()Ljava/util/List;
+	public abstract fun getDeletes ()Ljava/util/List;
+	public abstract fun getUpdates ()Ljava/util/List;
+	public abstract fun setConditionChecks (Ljava/util/List;)V
+	public abstract fun setDeletes (Ljava/util/List;)V
+	public abstract fun setUpdates (Ljava/util/List;)V
+	public abstract fun update (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun update$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$CompositeKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$CompositeKey$DefaultImpls {
+	public static synthetic fun conditionCheck$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$CompositeKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun delete$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$CompositeKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun update$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$CompositeKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$ConditionCheck {
+	public abstract fun condition (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
+	public abstract fun setReturnValuesOnConditionCheckFailure (Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$DefaultImpls {
+	public static synthetic fun put$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$Delete {
+	public abstract fun condition (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
+	public abstract fun setReturnValuesOnConditionCheckFailure (Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl {
+	public abstract fun conditionCheck (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun conditionCheck$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$PartitionKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun delete (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun delete$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$PartitionKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun getConditionChecks ()Ljava/util/List;
+	public abstract fun getDeletes ()Ljava/util/List;
+	public abstract fun getUpdates ()Ljava/util/List;
+	public abstract fun setConditionChecks (Ljava/util/List;)V
+	public abstract fun setDeletes (Ljava/util/List;)V
+	public abstract fun setUpdates (Ljava/util/List;)V
+	public abstract fun update (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun update$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$PartitionKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$PartitionKey$DefaultImpls {
+	public static synthetic fun conditionCheck$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$PartitionKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun delete$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$PartitionKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun update$default (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$PartitionKey;Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$Put {
+	public abstract fun condition (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
+	public abstract fun setReturnValuesOnConditionCheckFailure (Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)V
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableDsl$Update {
+	public abstract fun condition (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
+	public abstract fun setReturnValuesOnConditionCheckFailure (Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)V
+	public abstract fun update (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTableKt {
+	public static final fun ConditionCheck (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Companion;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;Ljava/lang/Object;Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$ConditionCheck;
+	public static final fun Delete (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Companion;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;Ljava/lang/Object;Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Delete;
+	public static final fun Put (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Companion;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;Ljava/lang/Object;Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Put;
+	public static final fun TransactWriteItemsRequestTable (Ljava/util/List;Ljava/util/List;Ljava/util/List;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;Ljava/lang/String;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTable$CompositeKey;
+	public static final fun TransactWriteItemsRequestTable (Ljava/util/List;Ljava/util/List;Ljava/util/List;Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;Ljava/lang/String;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsRequestTable$PartitionKey;
+	public static final fun Update (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Companion;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;Ljava/lang/Object;Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsAction$Update;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponse {
+	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponse$Companion;
+	public abstract fun getConsumedCapacity ()Ljava/util/List;
+	public abstract fun getItemCollectionMetrics ()Ljava/util/Map;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponse$Companion {
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponseBuilder {
+	public fun <init> ()V
+	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponse;
+	public final fun getConsumedCapacity ()Ljava/util/List;
+	public final fun getItemCollectionMetrics ()Ljava/util/Map;
+	public final fun setConsumedCapacity (Ljava/util/List;)V
+	public final fun setItemCollectionMetrics (Ljava/util/Map;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponseKt {
+	public static final fun TransactWriteItemsResponse (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponse;
+	public static final fun copy (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponse;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponse;
+	public static final fun toBuilder (Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponse;)Laws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteItemsResponseBuilder;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest {
