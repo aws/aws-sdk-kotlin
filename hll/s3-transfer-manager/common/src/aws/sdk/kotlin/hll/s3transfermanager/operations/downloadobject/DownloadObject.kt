@@ -20,10 +20,11 @@ import aws.sdk.kotlin.services.s3.model.GetObjectResponse
 import aws.smithy.kotlin.runtime.telemetry.TelemetryProviderContext
 import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withContext
 
 // TODO: Must be cancellable (add tests). Why isn't there a cancel fun for uploads?
-// TODO: Each operation is a class/interface to commonize?
+// TODO: Covert each operation to a class/interface?
 internal suspend fun <T> downloadObjectImplementation(
     downloadObjectRequest: DownloadObjectRequest,
     objectHandler: (suspend (GetObjectResponse) -> T)?,
@@ -32,9 +33,13 @@ internal suspend fun <T> downloadObjectImplementation(
     targetPartSizeBytes: Long,
     interceptors: List<TransferInterceptor>,
     downloadPath: String?,
+    networkSemaphore: Semaphore,
+    diskSemaphore: Semaphore,
+    maxInMemoryParts: Int,
+    bufferSemaphore: Semaphore,
 ): DownloadObjectResponse = withContext(currentCoroutineContext() + TelemetryProviderContext(s3Client.config.telemetryProvider)) {
     if (objectHandler == null && downloadPath == null) {
-        throw S3TransferManagerException("Please specify what to do with the downloaded object by setting a download path or an object handler")
+        throw S3TransferManagerException("Please specify what to do with the downloaded object by setting a download path or an object handler.")
     }
 
     val logger = coroutineContext.logger<S3TransferManager>()
@@ -58,6 +63,11 @@ internal suspend fun <T> downloadObjectImplementation(
         interceptors,
         objectHandler,
         logger,
+        networkSemaphore,
+        diskSemaphore,
+        maxInMemoryParts,
+        targetPartSizeBytes,
+        bufferSemaphore,
     )
 
     completeTransfer()

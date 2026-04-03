@@ -54,7 +54,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
     public val interceptors: MutableList<TransferInterceptor> = builder.interceptors
 
     /**
-     * The maximum amount of parts to buffer in memory while waiting for uploads to complete.
+     * The maximum amount of parts to buffer in memory while waiting for operations to complete.
      * The actual number of parts buffered at any given time may be less than or equal but never greater.
      *
      * Defaults to 5.
@@ -62,12 +62,20 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
     public val maxInMemoryParts: Int = builder.maxInMemoryParts
 
     /**
-     * Maximum number of concurrent part uploads for an object.
-     * The actual number of uploads at any given time may be less than or equal but never greater.
+     * The maximum number of concurrent upload/download operations.
+     * The actual number of operations executing at any given time may be less than or equal but never greater.
      *
      * Defaults to 5.
      */
-    public val maxConcurrentPartUploads: Int = builder.maxConcurrentPartUploads
+    public val maxConcurrentNetworkOperations: Int = builder.maxConcurrentNetworkOperations
+
+    /**
+     * The maximum number of concurrent file read/write operations.
+     * The actual number of operations executing at any given time may be less than or equal but never greater.
+     *
+     * Defaults to 5.
+     */
+    public val maxConcurrentDiskOperations: Int = builder.maxConcurrentDiskOperations
 
     public companion object {
         public operator fun invoke(client: S3Client, block: Builder.() -> Unit = {}): S3TransferManager = Builder().apply(block).build(client)
@@ -106,7 +114,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         public var interceptors: MutableList<TransferInterceptor> = mutableListOf()
 
         /**
-         * The maximum amount of parts to buffer in memory while waiting for uploads to complete.
+         * The maximum amount of parts to buffer in memory while waiting for operations to complete.
          * The actual number of parts buffered at any given time may be less than or equal but never greater.
          *
          * Defaults to 5.
@@ -114,21 +122,31 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         public var maxInMemoryParts: Int = 5
 
         /**
-         * Maximum number of concurrent part uploads for an object.
-         * The actual number of uploads at any given time may be less than or equal but never greater.
+         * The maximum number of concurrent upload/download operations.
+         * The actual number of operations executing at any given time may be less than or equal but never greater.
          *
          * Defaults to 5.
          */
-        public var maxConcurrentPartUploads: Int = 5
+        public var maxConcurrentNetworkOperations: Int = 5
+
+        /**
+         * The maximum number of concurrent file read/write operations.
+         * The actual number of operations executing at any given time may be less than or equal but never greater.
+         *
+         * Defaults to 5.
+         */
+        public var maxConcurrentDiskOperations: Int = 5
 
         internal fun build(client: S3Client): S3TransferManager = S3TransferManager(client, this)
     }
 
-    // Keeps track of how many parts are in memory for this S3 TM via permits
+    // Keep track of concurrency limits via semaphore permits
     internal val bufferSemaphore = Semaphore(maxInMemoryParts)
+    internal val networkSemaphore = Semaphore(maxConcurrentNetworkOperations)
+    internal val diskSemaphore = Semaphore(maxConcurrentDiskOperations)
 
     /**
-     * Uploads an object to S3 via [aws.smithy.kotlin.runtime.content.ByteStream].
+     * Uploads an object to S3.
      * Uses multipart uploads with concurrent uploads if the object size is more than the configured [multipartUploadThresholdBytes].
      */
     public suspend fun uploadObject(
@@ -140,12 +158,13 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         targetPartSizeBytes,
         interceptors,
         maxInMemoryParts,
-        maxConcurrentPartUploads,
+        maxConcurrentNetworkOperations,
         bufferSemaphore,
     )
+    // TODO: Control concurrency for disk IO
 
     /**
-     * Uploads an object to S3 via [aws.smithy.kotlin.runtime.content.ByteStream].
+     * Uploads an object to S3.
      * Uses multipart uploads with concurrent uploads if the object size is more than the configured [multipartUploadThresholdBytes].
      */
     public suspend inline fun uploadObject(
@@ -165,6 +184,10 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         targetPartSizeBytes,
         interceptors,
         downloadPath,
+        networkSemaphore,
+        diskSemaphore,
+        maxInMemoryParts,
+        bufferSemaphore,
     )
 
     // TODO: KDocs

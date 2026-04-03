@@ -13,21 +13,19 @@ import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
 
 // TODO: Run a download test in windows/mac/linux...that means we need common file functions
+// TODO: Implement this the right way
 internal fun writeObject(
     path: String,
     response: GetObjectResponse,
     logger: Logger,
 ) {
+    // TODO: Don't create it if it doesn't exist?
+    val tempFile = "$path.s3tmp.${Random.nextInt(0, 10_000_000)}" // e.g. Users/bob/downloads/object.s3tmp.314
     val system = PlatformProvider.System
-
-    val name = path.substringAfterLast("/")
-    val dir = path.substringBeforeLast("/")
-
-    val temp = "$dir$name.s3tmp.${Random.nextInt(0, 10_000_000)}" // e.g. Users/bob/downloads/object.s3tmp.314
 
     try {
         runBlocking {
-            system.writeFile(temp, response.body?.toByteArray() ?: byteArrayOf())
+            system.writeFile(tempFile, response.body?.toByteArray() ?: byteArrayOf()) // TODO: This needs to include offsets
             // TODO: Append file implementation
 
             if (system.fileExists(path)) {
@@ -37,8 +35,25 @@ internal fun writeObject(
             // TODO: Rename file implementation
         }
     } finally {
-        if (system.fileExists(temp)) {
+        if (system.fileExists(tempFile)) {
             // TODO: Delete file implementation
         }
+    }
+}
+
+// TODO: Share between operations (this is duplicated from upload object)
+/**
+ * Returns the ceiling of the division
+ *
+ * This means the result is rounded up to the nearest integer if the dividend is not
+ * evenly divisible by the divisor
+ */
+internal fun ceilDiv(dividend: Long, divisor: Long): Long {
+    val div = dividend / divisor
+    val remainder = dividend % divisor
+    return if (remainder != 0L) {
+        div + 1
+    } else {
+        div
     }
 }
