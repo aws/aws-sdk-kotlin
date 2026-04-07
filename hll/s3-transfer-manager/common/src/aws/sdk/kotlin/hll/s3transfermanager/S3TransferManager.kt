@@ -161,7 +161,6 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         maxConcurrentNetworkOperations,
         bufferSemaphore,
     )
-    // TODO: Control concurrency for disk IO
 
     /**
      * Uploads an object to S3.
@@ -197,5 +196,6 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         noinline objectHandler: (suspend (GetObjectResponse) -> T)? = null,
     ): DownloadObjectResponse = downloadObject(DownloadObjectRequest.Builder().apply(downloadObjectRequest).build(), downloadPath, objectHandler)
 
+    // TODO: Test in common
     // TODO: Test 50GB (or TB?) transfers
 }

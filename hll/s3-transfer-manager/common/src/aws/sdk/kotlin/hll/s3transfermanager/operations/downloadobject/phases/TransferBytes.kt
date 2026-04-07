@@ -11,13 +11,15 @@ import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferPhase
 import aws.sdk.kotlin.hll.s3transfermanager.interceptors.executePhase
 import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
 import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.ceilDiv
-import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.writeObject
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
 import aws.sdk.kotlin.hll.s3transfermanager.utils.withTmBusinessMetric
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.model.GetObjectResponse
+import aws.smithy.kotlin.runtime.content.toByteArray
 import aws.smithy.kotlin.runtime.telemetry.logging.Logger
+import aws.smithy.kotlin.runtime.util.PlatformProvider
+import aws.smithy.kotlin.runtime.util.WriteType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -27,7 +29,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
+import kotlin.random.Random
 
+// TODO: Break down into functions
 internal suspend fun <T> transferBytes(
     multipartDownloadType: MultipartDownloadType,
     context: MutableTransferContext,
@@ -46,6 +50,10 @@ internal suspend fun <T> transferBytes(
     var etag: String? = null
     var partsCount: Int? = null
 
+    val system = PlatformProvider.System
+    val tempFilePath = "$downloadPath.s3tmp.${Random.nextInt(0, 10_000_000)}" // e.g. Users/bob/downloads/object.s3tmp.314
+
+    // TODO: Full download function
     executePhase(
         TransferPhase.BytesTransferred,
         context,
@@ -70,20 +78,34 @@ internal suspend fun <T> transferBytes(
                         singleRequest = true
                         objectHandler?.invoke(getObjectResponse)
                         downloadPath?.let {
-                            writeObject(downloadPath, getObjectResponse, logger)
+                            system.write(
+                                tempFilePath,
+                                getObjectResponse.body?.toByteArray() ?: byteArrayOf(),
+                                WriteType.OVERWRITE,
+                                mustExist = true
+                            )
                         }
                     }
                 }
             }
+        } catch (_: Throwable) {
+            system.delete(tempFilePath)
         } finally {
             networkOperation.release()
+            // Rename temp file
+            downloadPath?.let {
+                system.atomicMove(
+                    tempFilePath,
+                    downloadPath,
+                )
+            }
         }
     }
-
     if (singleRequest) return
-    partsCount = partsCount ?: ceilDiv(context.transferableBytes!!, targetPartSizeBytes).toInt()
 
-    val buffer = Channel<GetObjectResponse>(capacity = maxInMemoryParts)
+    // TODO: Multiple downloads function
+    partsCount = partsCount ?: ceilDiv(context.transferableBytes!!, targetPartSizeBytes).toInt()
+    val buffer = Channel<Part>(capacity = maxInMemoryParts)
     val contextMutex = Mutex()
     try {
         coroutineScope {
@@ -101,11 +123,12 @@ internal suspend fun <T> transferBytes(
                                 ifMatch = etag
                             }
                             MultipartDownloadType.Range -> (localContext.s3Request as GetObjectRequest).copy {
-                                range = "bytes=${targetPartSizeBytes * part}-${targetPartSizeBytes * (part + 1) - 1}"
+                                // TODO: Turn this into a helper function
+                                range = "bytes=${targetPartSizeBytes * part}-${(targetPartSizeBytes * (part + 1)) - 1}"
                                 ifMatch = etag
                             }
                         }
-                        try {
+                        try { // TODO: Fix this nesting
                             executePhase(
                                 TransferPhase.BytesTransferred,
                                 context,
@@ -114,16 +137,21 @@ internal suspend fun <T> transferBytes(
                                 networkOperation.acquire()
                                 s3Client.withTmBusinessMetric {
                                     it.getObject(localContext.s3Request as GetObjectRequest) { getObjectResponse ->
-                                        val partSize = (getObjectResponse.contentLength ?: throw S3TransferManagerException("Content length not found in GetObjectResponse"))
-
                                         localContext.s3Response = getObjectResponse
-                                        // TODO: These aren't transferred yet until we finish processing them ?
+
+                                        val partSize = (getObjectResponse.contentLength ?: throw S3TransferManagerException("Content length not found in GetObjectResponse"))
                                         localContext.transferredBytes = localContext.transferredBytes!! + partSize
 
                                         bufferCount.acquire()
-                                        buffer.send(getObjectResponse)
+                                        buffer.send(
+                                            Part(
+                                                getObjectResponse,
+                                                part
+                                            )
+                                        )
 
                                         // Update shared state between coroutines
+                                        // TODO: Update global context helper function
                                         contextMutex.withLock {
                                             context.s3Request = localContext.s3Request
                                             context.s3Response = localContext.s3Response
@@ -149,12 +177,15 @@ internal suspend fun <T> transferBytes(
                 val processors = mutableSetOf<Job>()
                 for (part in buffer) {
                     processors += launch {
-                        objectHandler?.invoke(part)
+                        objectHandler?.invoke(part.response)
                         try {
                             diskOperation.acquire()
-                            // TODO: Need a way to track which offset to write to...
                             downloadPath?.let {
-                                writeObject(downloadPath, part, logger)
+                                system.write(
+                                    tempFilePath,
+                                    part.response.body?.toByteArray() ?: byteArrayOf(),
+                                    WriteType.OFFSET(targetPartSizeBytes * part.part),
+                                )
                             }
                             bufferCount.release()
                         } finally {
@@ -165,13 +196,21 @@ internal suspend fun <T> transferBytes(
                 processors.joinAll()
             }
         }
+    } catch (_:Throwable) {
+        system.delete(tempFilePath, mustExist = false)
     } finally {
         // Clear buffer (and reduce buffer count) in case of exception
         buffer.consumeEach {
             bufferCount.release()
         }
-
-        // TODO: Delete temp file
-        // TODO: Rename temp file
+        // Rename temp file
+        downloadPath?.let {
+            system.atomicMove(tempFilePath, downloadPath, overwrite = true)
+        }
     }
 }
+
+private data class Part(
+    val response: GetObjectResponse,
+    val part: Int
+)

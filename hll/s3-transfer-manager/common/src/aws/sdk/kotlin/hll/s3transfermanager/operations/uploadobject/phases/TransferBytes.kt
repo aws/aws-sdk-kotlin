@@ -62,7 +62,6 @@ internal suspend fun transferBytes(
             val numberOfParts = ceilDiv(contentLength, partSize).toInt()
             val partSource = resolveSource(uploadObjectRequest.body!!)
 
-            // TODO: Add concurrency controlled by maxConcurrentDiskOperations
             val producer = produceParts(
                 context.transferableBytes!!,
                 partSource,
@@ -74,7 +73,6 @@ internal suspend fun transferBytes(
 
             try {
                 val mutex = Mutex()
-                // TODO: Change concurrency to use global maxConcurrentPartUploads semaphore
                 repeat(maxConcurrentPartUploads) {
                     consumer(
                         producer,
