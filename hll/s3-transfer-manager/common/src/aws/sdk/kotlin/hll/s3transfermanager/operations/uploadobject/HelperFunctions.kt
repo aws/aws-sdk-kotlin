@@ -6,13 +6,13 @@
 package aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject
 
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
+import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.io.SdkBuffer
 import aws.smithy.kotlin.runtime.io.SdkByteReadChannel
 import aws.smithy.kotlin.runtime.io.SdkSource
 import aws.smithy.kotlin.runtime.io.readFully
 import aws.smithy.kotlin.runtime.io.readRemaining
-import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
 import aws.smithy.kotlin.runtime.telemetry.logging.Logger
 
 // S3 imposed limit for parts in a multipart upload
@@ -109,5 +109,3 @@ internal suspend fun nextPartBytes(
 
     return buffer
 }
-
-

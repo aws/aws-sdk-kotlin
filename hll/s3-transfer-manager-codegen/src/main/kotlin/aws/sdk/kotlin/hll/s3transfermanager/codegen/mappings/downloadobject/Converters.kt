@@ -104,5 +104,5 @@ internal val downloadObjectConversions = listOf(
             _contentLength?.let { contentLength = _contentLength }
             _contentRange?.let { contentRange = _contentRange }
         """.trimIndent(),
-    )
+    ),
 )

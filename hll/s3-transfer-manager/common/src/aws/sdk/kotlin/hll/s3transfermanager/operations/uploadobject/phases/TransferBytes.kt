@@ -12,11 +12,11 @@ import aws.sdk.kotlin.hll.s3transfermanager.interceptors.executePhase
 import aws.sdk.kotlin.hll.s3transfermanager.model.Part
 import aws.sdk.kotlin.hll.s3transfermanager.model.UploadObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.model.utils.toUploadPartRequest
-import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject.nextPartBytes
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject.resolvePartSize
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject.resolveSource
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
+import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
 import aws.sdk.kotlin.hll.s3transfermanager.utils.withTmBusinessMetric
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.abortMultipartUpload

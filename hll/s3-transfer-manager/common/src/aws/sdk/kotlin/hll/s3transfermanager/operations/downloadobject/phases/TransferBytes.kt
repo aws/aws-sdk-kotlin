@@ -11,8 +11,8 @@ import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferPhase
 import aws.sdk.kotlin.hll.s3transfermanager.interceptors.executePhase
 import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
 import aws.sdk.kotlin.hll.s3transfermanager.model.utils.toDownloadObjectResponse
-import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
+import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
 import aws.sdk.kotlin.hll.s3transfermanager.utils.withTmBusinessMetric
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
@@ -33,338 +33,178 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
 import kotlin.random.Random
 
-internal suspend fun <T> transferBytes(
-    multipartDownloadType: MultipartDownloadType,
-    globalContext: MutableTransferContext,
-    s3Client: S3Client,
-    downloadPath: String?,
-    interceptors: List<TransferInterceptor>,
-    objectHandler: (suspend (GetObjectResponse) -> T)?,
-    logger: Logger,
-    networkOperation: Semaphore,
-    diskOperation: Semaphore,
-    maxInMemoryParts: Int,
-    targetPartSizeBytes: Long,
-    bufferCount: Semaphore,
+/**
+ * Orchestrates downloading an S3 object, potentially in multiple parts, to a local file **and/or to a handler function**.
+ */
+internal class TransferBytes<T>(
+    private val multipartDownloadType: MultipartDownloadType,
+    private val context: MutableTransferContext,
+    private val s3Client: S3Client,
+    private val downloadPath: String?,
+    private val interceptors: List<TransferInterceptor>,
+    private val objectHandler: (suspend (GetObjectResponse) -> T)?,
+    private val networkOperation: Semaphore,
+    private val diskOperation: Semaphore,
+    private val maxInMemoryParts: Int,
+    private val targetPartSizeBytes: Long,
+    private val bufferCount: Semaphore,
 ) {
-    val system = PlatformProvider.System
-    val tempDownloadPath = "$downloadPath.s3tmp.${Random.nextInt(0, 10_000_000)}"
+    /**
+     * Used to interact with the underlying systems files.
+     */
+    private val system: Filesystem = PlatformProvider.System
 
-    val result = downloadFirstPart(
-        globalContext,
-        s3Client,
-        interceptors,
-        networkOperation,
-        objectHandler,
-        downloadPath,
-        tempDownloadPath,
-        system,
-        logger,
-    )
-    if (!result.singleRequest) {
-        downloadRemainingParts(
-            // Use S3 provided parts count if download type is part otherwise calculate part numbers if transfer is range
-            result.partsCount ?: ceilDiv(globalContext.transferableBytes!!, targetPartSizeBytes).toInt(),
-            multipartDownloadType,
-            globalContext,
-            s3Client,
-            interceptors,
-            networkOperation,
-            diskOperation,
-            bufferCount,
-            maxInMemoryParts,
-            targetPartSizeBytes,
-            result.etag,
-            objectHandler,
-            downloadPath,
-            tempDownloadPath,
-            system,
-            logger,
-        )
+    /**
+     * Concurrent coroutines will be updating a shared context using this mutex.
+     */
+    private val contextMutex = Mutex()
+
+    /**
+     * In case a download path is provided, the object will be downloaded to a temporary file and then renamed to the
+     * provided path at the end.
+     */
+    private val tempDownloadPath = "$downloadPath.s3tmp.${Random.nextInt(0, 10_000_000)}"
+
+    /**
+     * Will be used to verify we're receiving the same version of the object for each part.
+     */
+    private lateinit var etag: String
+
+    /**
+     * The part count is provided by S3 if the download type is PART, but it needs to be calculated if the download type is RANGE.
+     *
+     * Defaults to null since we don't know how many parts are needed until after we receive the first part and a number
+     * is provided, or we can calculate one using the object's length.
+     */
+    private var partCount: Int? = null
+
+    /**
+     * The total length of the object to download
+     *
+     * Defaults to null since we don't know until after we receive the first part, and we can parse the object's length.
+     */
+    private var contentLength: Long? = null
+
+    /**
+     * Whether the download will require more than 1 part
+     */
+    private var needMoreParts: Boolean = true
+
+    suspend fun transfer() {
+        transferFirstPart()
+        if (needMoreParts) {
+            transferRemainingParts()
+        }
+        buildResponse()
     }
 
-    buildTransferManagerResponse(globalContext, result.contentLength)
-}
+    private suspend fun transferFirstPart() {
+        executePhase(TransferPhase.BytesTransferred, context, interceptors) {
+            try {
+                networkOperation.acquire()
+                s3Client.withTmBusinessMetric { client ->
+                    client.getObject(context.s3Request as GetObjectRequest) { getObjectResponse ->
+                        context.s3Response = getObjectResponse
+                        context.transferredBytes = getObjectResponse.contentLength
 
-/**
- * Result of the initial (first-part) download, used to decide whether multipart is needed.
- */
-private data class InitialDownloadResult(
-    val singleRequest: Boolean,
-    val etag: String,
-    val partsCount: Int?,
-    val contentLength: Long,
-    val request: GetObjectResponse,
-)
+                        context.transferableBytes = parseTransferableBytes(getObjectResponse)
+                        contentLength = context.transferableBytes
+                        etag = getObjectResponse.eTag ?: throw S3TransferManagerException("etag is null in initial get object response")
+                        partCount = getObjectResponse.partsCount
 
-/**
- * A downloaded part and its index, buffered between downloader and writer coroutines.
- */
-private data class Part(
-    val response: GetObjectResponse,
-    val part: Int,
-)
-
-/**
- * Download the first part to determine total size, etag, and whether a single request suffices.
- */
-private suspend fun <T> downloadFirstPart(
-    context: MutableTransferContext,
-    s3Client: S3Client,
-    interceptors: List<TransferInterceptor>,
-    networkOperation: Semaphore,
-    objectHandler: (suspend (GetObjectResponse) -> T)?,
-    downloadPath: String?,
-    tempDownloadPath: String,
-    system: Filesystem,
-    logger: Logger,
-): InitialDownloadResult {
-    var singleRequest = false
-    var partsCount: Int? = null
-    lateinit var etag: String
-
-    executePhase(TransferPhase.BytesTransferred, context, interceptors) {
-        try {
-            networkOperation.acquire()
-            s3Client.withTmBusinessMetric { client ->
-                client.getObject(context.s3Request as GetObjectRequest) { getObjectResponse ->
-                    // TODO: Commonize these sets ?
-                    context.s3Response = getObjectResponse
-                    context.transferredBytes = getObjectResponse.contentLength
-                    context.transferableBytes = parseTransferableBytes(getObjectResponse)
-
-                    etag = getObjectResponse.eTag ?: throw S3TransferManagerException("ETag not found in GetObjectResponse")
-                    partsCount = getObjectResponse.partsCount
-
-                    // TODO: Disk operation semaphore
-                    objectHandler?.invoke(getObjectResponse)
-                    downloadPath?.let {
-                        system.write(
-                            tempDownloadPath,
-                            getObjectResponse.body?.toByteArray() ?: byteArrayOf(), // TODO: Stream body
-                            WriteType.OVERWRITE,
-                        )
-                    }
-
-                    if (partsCount == 1 || context.transferredBytes == context.transferableBytes) {
-                        singleRequest = true
-                        downloadPath?.let {
-                            if (system.fileExists(downloadPath)) {
-                                logger.warn { "File $downloadPath already exists and will be overwritten." }
+                        objectHandler?.invoke(getObjectResponse)
+                        try {
+                            diskOperation.acquire()
+                            downloadPath?.let {
+                                system.write(
+                                    tempDownloadPath,
+                                    getObjectResponse.body?.toByteArray() ?: byteArrayOf(),
+                                    WriteType.OVERWRITE,
+                                )
                             }
-                            system.atomicMove(tempDownloadPath, downloadPath, overwrite = true)
+                        } finally {
+                            diskOperation.release()
+                        }
+
+                        if (partCount == 1 || context.transferredBytes == context.transferableBytes) {
+                            needMoreParts = false
+                            renameTempFile()
                         }
                     }
                 }
+            } catch (t: Throwable) {
+                system.delete(tempDownloadPath, mustExist = false)
+                throw t
+            } finally {
+                networkOperation.release()
             }
-        } catch (t: Throwable) {
-            system.delete(tempDownloadPath, mustExist = false)
-            throw t
+        }
+    }
+
+    private suspend fun transferRemainingParts() {
+        val buffer = Channel<Part>(capacity = maxInMemoryParts)
+        partCount = partCount ?: ceilDiv(context.transferableBytes!!, targetPartSizeBytes).toInt()
+
+        try {
+            coroutineScope {
+                launch { downloadParts(buffer) }
+                launch { processParts(buffer) }
+            }
+            renameTempFile()
         } finally {
-            networkOperation.release()
+            system.delete(tempDownloadPath, mustExist = false) // Deletes half downloaded object if something went wrong, or we finished
+            buffer.consumeEach { bufferCount.release() } // Clears buffer and resets count if something went wrong, or no op if finished
         }
     }
 
-    return InitialDownloadResult(singleRequest, etag, partsCount, context.transferableBytes!!, context.s3Response as GetObjectResponse)
-}
+    private suspend fun downloadParts(
+        buffer: Channel<Part>,
+    ) = coroutineScope {
+        val jobs = mutableSetOf<Job>()
 
-/**
- * Parse the total transferable bytes from the Content-Range header.
- *
- * e.g. ContentRange=bytes 0-1/5  where 5 is the total content length
- */
-private fun parseTransferableBytes(response: GetObjectResponse): Long = response.contentRange
-    ?.split("/")
-    ?.last()
-    ?.toLong()
-    ?: throw S3TransferManagerException("Content range not found in GetObjectResponse")
-
-/**
- * Set the transfer manager response on the global context from the final [GetObjectResponse].
- */
-private fun buildTransferManagerResponse(context: MutableTransferContext, contentLength: Long) {
-    context.tmResponse = (context.s3Response as GetObjectResponse)
-        .toDownloadObjectResponse(
-            contentLength,
-            "bytes=0-${contentLength - 1}/$contentLength",
-        )
-}
-
-/**
- * Build the per-part [GetObjectRequest] for a multipart download.
- */
-private fun buildPartRequest(
-    baseRequest: GetObjectRequest,
-    multipartDownloadType: MultipartDownloadType,
-    partIndex: Int,
-    targetPartSizeBytes: Long,
-    etag: String?,
-): GetObjectRequest = when (multipartDownloadType) {
-    MultipartDownloadType.Part -> baseRequest.copy {
-        partNumber = partNumber!! + 1
-        ifMatch = etag
-    }
-    MultipartDownloadType.Range -> baseRequest.copy {
-        range = "bytes=${targetPartSizeBytes * partIndex}-${(targetPartSizeBytes * (partIndex + 1)) - 1}"
-        ifMatch = etag
-    }
-}
-
-/**
- * Download remaining parts concurrently, buffer them, and write to disk.
- */
-private suspend fun <T> downloadRemainingParts(
-    partsCount: Int,
-    multipartDownloadType: MultipartDownloadType,
-    context: MutableTransferContext,
-    s3Client: S3Client,
-    interceptors: List<TransferInterceptor>,
-    networkOperation: Semaphore,
-    diskOperation: Semaphore,
-    bufferCount: Semaphore,
-    maxInMemoryParts: Int,
-    targetPartSizeBytes: Long,
-    etag: String?,
-    objectHandler: (suspend (GetObjectResponse) -> T)?,
-    downloadPath: String?,
-    tempDownloadPath: String,
-    system: Filesystem,
-    logger: Logger,
-) {
-    val buffer = Channel<Part>(capacity = maxInMemoryParts)
-    val contextMutex = Mutex()
-
-    try {
-        coroutineScope {
-            launch {
-                downloadParts(
-                    partsCount,
-                    multipartDownloadType,
-                    context,
-                    s3Client,
-                    interceptors,
-                    networkOperation,
-                    bufferCount,
-                    targetPartSizeBytes,
-                    etag,
-                    contextMutex,
-                    buffer,
-                )
-            }
-            launch {
-                processParts(
-                    buffer,
-                    objectHandler,
-                    diskOperation,
-                    bufferCount,
-                    downloadPath,
-                    tempDownloadPath,
-                    targetPartSizeBytes,
-                    system,
-                )
-            }
-        }
-
-        downloadPath?.let {
-            if (system.fileExists(downloadPath)) {
-                logger.warn { "File $downloadPath already exists and will be overwritten." }
-            }
-            system.atomicMove(tempDownloadPath, downloadPath, overwrite = true)
-        }
-    } finally {
-        system.delete(tempDownloadPath, mustExist = false)
-        buffer.consumeEach { bufferCount.release() }
-    }
-}
-
-/**
- * Launch concurrent downloaders for each part, sending results to [buffer].
- */
-private suspend fun downloadParts(
-    partsCount: Int,
-    multipartDownloadType: MultipartDownloadType,
-    context: MutableTransferContext,
-    s3Client: S3Client,
-    interceptors: List<TransferInterceptor>,
-    networkOperation: Semaphore,
-    bufferCount: Semaphore,
-    targetPartSizeBytes: Long,
-    etag: String?,
-    contextMutex: Mutex,
-    buffer: Channel<Part>,
-) {
-    val downloaders = mutableSetOf<Job>()
-    coroutineScope {
-        repeat(partsCount) { part ->
-            downloaders += launch {
+        repeat(partCount!!) { i ->
+            jobs += launch {
+                // Other jobs will be updating the global context so make a copy that won't change and we can modify safely
                 val localContext = context.copy()
-                localContext.s3Request = buildPartRequest(
-                    localContext.s3Request as GetObjectRequest,
-                    multipartDownloadType,
-                    part,
-                    targetPartSizeBytes,
-                    etag,
-                )
+
+                val previousRequest = localContext.s3Request as GetObjectRequest
+                localContext.s3Request = buildNextRequest(previousRequest, i)
 
                 try {
                     networkOperation.acquire()
+                    var downloadedBytes = 0L
+
                     executePhase(TransferPhase.BytesTransferred, localContext, interceptors) {
                         s3Client.withTmBusinessMetric {
                             it.getObject(localContext.s3Request as GetObjectRequest) { getObjectResponse ->
+                                downloadedBytes = getObjectResponse.contentLength!!
+
                                 localContext.s3Response = getObjectResponse
-                                val contentLength = getObjectResponse.contentLength
-                                    ?: throw S3TransferManagerException("Content length not found in GetObjectResponse")
-                                localContext.transferredBytes = localContext.transferredBytes!! + contentLength
+                                localContext.transferredBytes = localContext.transferredBytes!! + downloadedBytes
 
                                 bufferCount.acquire()
-                                buffer.send(Part(getObjectResponse, part))
-
-                                mergeContext(context, localContext, contentLength, contextMutex)
+                                buffer.send(
+                                    Part(getObjectResponse, i),
+                                )
                             }
                         }
                     }
+
+                    // Merge the local context back into the global context
+                    updateContext(localContext, downloadedBytes)
                 } finally {
                     networkOperation.release()
                 }
             }
         }
-        downloaders.joinAll()
+
         buffer.close()
+        jobs.joinAll()
     }
-}
 
-/**
- * Merge a completed part's local context back into the shared [context].
- */
-private suspend fun mergeContext(
-    context: MutableTransferContext,
-    localContext: MutableTransferContext,
-    contentLength: Long,
-    mutex: Mutex,
-) {
-    mutex.withLock {
-        context.s3Request = localContext.s3Request
-        context.s3Response = localContext.s3Response
-        context.transferableBytes = localContext.transferableBytes
-        context.transferredBytes = context.transferredBytes!! + contentLength
-    }
-}
+    private suspend fun processParts(buffer: Channel<Part>) = coroutineScope {
+        val processors = mutableSetOf<Job>()
 
-/**
- * Consume buffered parts, invoke the handler, and write bytes to disk at the correct offset.
- */
-private suspend fun <T> processParts(
-    buffer: Channel<Part>,
-    objectHandler: (suspend (GetObjectResponse) -> T)?,
-    diskOperation: Semaphore,
-    bufferCount: Semaphore,
-    downloadPath: String?,
-    tempDownloadPath: String,
-    targetPartSizeBytes: Long,
-    system: Filesystem,
-) {
-    val processors = mutableSetOf<Job>()
-    coroutineScope {
         for (part in buffer) {
             processors += launch {
                 objectHandler?.invoke(part.response)
@@ -385,4 +225,61 @@ private suspend fun <T> processParts(
         }
         processors.joinAll()
     }
+
+    private suspend fun updateContext(localContext: MutableTransferContext, downloadedBytes: Long) {
+        // Note: coroutines will update the context as they complete, not sequentially based on part number
+        contextMutex.withLock {
+            // It doesn't matter what part the latest req/resp corresponds to
+            context.s3Request = localContext.s3Request
+            context.s3Response = localContext.s3Response
+
+            // This value should remain the same throughout the transfer unless a user changes it using an interceptor
+            context.transferableBytes = localContext.transferableBytes
+
+            // Add rather than overwrite since updates are unordered
+            // Note: Sending parts to the buffer is considered "transferred"
+            context.transferredBytes = context.transferredBytes!! + downloadedBytes
+        }
+    }
+
+    private fun renameTempFile() {
+        if (system.fileExists(tempDownloadPath) && downloadPath != null) {
+            system.atomicMove(tempDownloadPath, downloadPath, overwrite = true)
+        }
+    }
+
+    private fun buildNextRequest(
+        previousRequest: GetObjectRequest,
+        i: Int,
+    ): GetObjectRequest = when (multipartDownloadType) {
+        MultipartDownloadType.Part ->
+            previousRequest.copy {
+                partNumber = i
+                ifMatch = etag
+            }
+        MultipartDownloadType.Range ->
+            previousRequest.copy {
+                range = "bytes=${targetPartSizeBytes * i}-${(targetPartSizeBytes * (i + 1)) - 1}"
+                ifMatch = etag
+            }
+    }
+
+    private fun buildResponse() {
+        checkNotNull(contentLength)
+        context.tmResponse = (context.s3Response as GetObjectResponse).toDownloadObjectResponse(
+            _contentLength = contentLength,
+            _contentRange = "bytes=0-${contentLength!! - 1}/$contentLength",
+        )
+    }
 }
+
+private data class Part(
+    val response: GetObjectResponse,
+    val part: Int,
+)
+
+private fun parseTransferableBytes(response: GetObjectResponse): Long = response.contentRange
+    ?.split("/")
+    ?.last()
+    ?.toLong()
+    ?: throw S3TransferManagerException("Content range not found in GetObjectResponse")
