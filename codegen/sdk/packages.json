@@ -1855,6 +1855,12 @@
             "brazilName": "AwsSdkKotlinS3Control"
         },
         {
+            "sdkId": "S3Files",
+            "namespace": "aws.sdk.kotlin.services.s3files",
+            "artifactName": "s3files",
+            "brazilName": "AwsSdkKotlinS3files"
+        },
+        {
             "sdkId": "S3Outposts",
             "namespace": "aws.sdk.kotlin.services.s3outposts",
             "artifactName": "s3outposts",
