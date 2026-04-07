@@ -11,6 +11,7 @@ import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferInterceptor
 import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectResponse
 import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
+import aws.sdk.kotlin.hll.s3transfermanager.model.utils.toGetObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.phases.completeTransfer
 import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.phases.initiateTransfer
 import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.phases.transferBytes
@@ -45,6 +46,11 @@ internal suspend fun <T> downloadObjectImplementation(
     val logger = coroutineContext.logger<S3TransferManager>()
     val transferContext = MutableTransferContext(
         tmRequest = downloadObjectRequest,
+        transferredBytes = 0L,
+        s3Request = when (multipartDownloadType) {
+            MultipartDownloadType.Part -> downloadObjectRequest.toGetObjectRequest(partNumber = 1)
+            MultipartDownloadType.Range -> downloadObjectRequest.toGetObjectRequest(range = "bytes=0-${targetPartSizeBytes - 1}")
+        }
     )
 
     initiateTransfer(
@@ -55,7 +61,7 @@ internal suspend fun <T> downloadObjectImplementation(
         interceptors,
     )
 
-    transferBytes(
+    val result = transferBytes(
         multipartDownloadType,
         transferContext,
         s3Client,
@@ -70,7 +76,17 @@ internal suspend fun <T> downloadObjectImplementation(
         bufferSemaphore,
     )
 
-    completeTransfer()
+    completeTransfer(
+        transferContext,
+        interceptors,
+        result,
+    )
 
     return@withContext transferContext.tmResponse as DownloadObjectResponse
 }
+
+internal data class DownloadBytesResult(
+    val contentLength: Long,
+    val contentRange: String,
+    val response: GetObjectResponse,
+)

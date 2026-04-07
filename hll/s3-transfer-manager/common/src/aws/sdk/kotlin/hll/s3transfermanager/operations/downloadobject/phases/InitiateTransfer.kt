@@ -20,12 +20,6 @@ internal suspend fun initiateTransfer(
     targetPartSizeBytes: Long,
     interceptors: List<TransferInterceptor>,
 ) {
-    context.transferredBytes = 0L
-    context.s3Request = when (multipartDownloadType) {
-        MultipartDownloadType.Part -> downloadObjectRequest.toGetObjectRequest(partNumber = 1)
-        MultipartDownloadType.Range -> downloadObjectRequest.toGetObjectRequest(range = "bytes=0-${targetPartSizeBytes - 1}")
-    }
-
     // No-op for initialization phase
     executePhase(
         TransferPhase.TransferInitiated,

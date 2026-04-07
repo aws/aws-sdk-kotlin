@@ -12,6 +12,7 @@ import aws.smithy.kotlin.runtime.io.SdkByteReadChannel
 import aws.smithy.kotlin.runtime.io.SdkSource
 import aws.smithy.kotlin.runtime.io.readFully
 import aws.smithy.kotlin.runtime.io.readRemaining
+import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
 import aws.smithy.kotlin.runtime.telemetry.logging.Logger
 
 // S3 imposed limit for parts in a multipart upload
@@ -109,18 +110,4 @@ internal suspend fun nextPartBytes(
     return buffer
 }
 
-/**
- * Returns the ceiling of the division
- *
- * This means the result is rounded up to the nearest integer if the dividend is not
- * evenly divisible by the divisor
- */
-internal fun ceilDiv(dividend: Long, divisor: Long): Long {
-    val div = dividend / divisor
-    val remainder = dividend % divisor
-    return if (remainder != 0L) {
-        div + 1
-    } else {
-        div
-    }
-}
+

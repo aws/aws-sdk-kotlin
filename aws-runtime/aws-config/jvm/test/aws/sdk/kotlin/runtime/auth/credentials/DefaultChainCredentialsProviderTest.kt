@@ -16,6 +16,7 @@ import aws.smithy.kotlin.runtime.util.Filesystem
 import aws.smithy.kotlin.runtime.util.OperatingSystem
 import aws.smithy.kotlin.runtime.util.OsFamily
 import aws.smithy.kotlin.runtime.util.PlatformProvider
+import aws.smithy.kotlin.runtime.util.WriteType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
@@ -47,6 +48,15 @@ class DefaultChainCredentialsProviderTest {
         }
 
         override fun fileExists(path: String): Boolean {
+            error("not needed for test")
+        }
+
+        override fun write(
+            path: String,
+            data: ByteArray,
+            writeType: WriteType,
+            mustExist: Boolean,
+        ) {
             error("not needed for test")
         }
     }
