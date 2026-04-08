@@ -1345,6 +1345,12 @@
             "brazilName": "AwsSdkKotlinMarketplaceDeployment"
         },
         {
+            "sdkId": "Marketplace Discovery",
+            "namespace": "aws.sdk.kotlin.services.marketplacediscovery",
+            "artifactName": "marketplacediscovery",
+            "brazilName": "AwsSdkKotlinMarketplaceDiscovery"
+        },
+        {
             "sdkId": "Marketplace Entitlement Service",
             "namespace": "aws.sdk.kotlin.services.marketplaceentitlementservice",
             "artifactName": "marketplaceentitlementservice",
