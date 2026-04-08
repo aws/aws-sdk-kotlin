@@ -60,7 +60,7 @@ internal class TransferBytes<T>(
     private val contextMutex = Mutex()
 
     /**
-     * In case a download path is provided, the object will be downloaded to a temporary file and then renamed to the
+     * If a download path is provided, the object will be downloaded to a temporary file and then renamed to the
      * provided path at the end.
      */
     private val tempDownloadPath = "$downloadPath.s3tmp.${Random.nextInt(0, 10_000_000)}"
@@ -81,7 +81,7 @@ internal class TransferBytes<T>(
     /**
      * The total length of the object to download
      *
-     * Defaults to null since we don't know until after we receive the first part, and we can parse the object's length.
+     * Defaults to null since we don't know it until after we receive the first part, and we can parse the object's length.
      */
     private var contentLength: Long? = null
 
@@ -106,8 +106,8 @@ internal class TransferBytes<T>(
                     client.getObject(context.s3Request as GetObjectRequest) { getObjectResponse ->
                         context.s3Response = getObjectResponse
                         context.transferredBytes = getObjectResponse.contentLength
-
                         context.transferableBytes = parseTransferableBytes(getObjectResponse)
+
                         contentLength = context.transferableBytes
                         etag = getObjectResponse.eTag ?: throw S3TransferManagerException("etag is null in initial get object response")
                         partCount = getObjectResponse.partsCount
@@ -152,7 +152,7 @@ internal class TransferBytes<T>(
             }
             renameTempFile()
         } finally {
-            system.delete(tempDownloadPath, mustExist = false) // Deletes half downloaded object if something went wrong, or we finished
+            system.delete(tempDownloadPath, mustExist = false) // Deletes half downloaded object if something went wrong, or no op if we finished
             buffer.consumeEach { bufferCount.release() } // Clears buffer and resets count if something went wrong, or no op if finished
         }
     }
@@ -162,7 +162,7 @@ internal class TransferBytes<T>(
     ) = coroutineScope {
         val jobs = mutableSetOf<Job>()
 
-        repeat(partCount!!) { i ->
+        repeat(partCount!! - 1) { i -> // -1 since first part is already downloaded
             jobs += launch {
                 // Other jobs will be updating the global context so make a copy that won't change and we can modify safely
                 val localContext = context.copy()
@@ -198,8 +198,8 @@ internal class TransferBytes<T>(
             }
         }
 
-        buffer.close()
         jobs.joinAll()
+        buffer.close()
     }
 
     private suspend fun processParts(buffer: Channel<Part>) = coroutineScope {
@@ -214,7 +214,7 @@ internal class TransferBytes<T>(
                         system.write(
                             tempDownloadPath,
                             part.response.body?.toByteArray() ?: byteArrayOf(),
-                            WriteType.OFFSET(targetPartSizeBytes * part.part),
+                            WriteType.OFFSET(targetPartSizeBytes * (part.part + 1)), // +1 since first part is already written
                         )
                     }
                     bufferCount.release()
@@ -237,7 +237,7 @@ internal class TransferBytes<T>(
             context.transferableBytes = localContext.transferableBytes
 
             // Add rather than overwrite since updates are unordered
-            // Note: Sending parts to the buffer is considered "transferred"
+            // Note: Sending bytes to the buffer is considered "transferred"
             context.transferredBytes = context.transferredBytes!! + downloadedBytes
         }
     }
@@ -254,12 +254,12 @@ internal class TransferBytes<T>(
     ): GetObjectRequest = when (multipartDownloadType) {
         MultipartDownloadType.Part ->
             previousRequest.copy {
-                partNumber = i
+                partNumber = i + 2 // i is zero based while parts are 1 based, and first part was already downloaded
                 ifMatch = etag
             }
         MultipartDownloadType.Range ->
             previousRequest.copy {
-                range = "bytes=${targetPartSizeBytes * i}-${(targetPartSizeBytes * (i + 1)) - 1}"
+                range = "bytes=${targetPartSizeBytes * (i + 1)}-${(targetPartSizeBytes * (i + 2)) - 1}"
                 ifMatch = etag
             }
     }
@@ -279,7 +279,7 @@ private data class Part(
 )
 
 private fun parseTransferableBytes(response: GetObjectResponse): Long = response.contentRange
-    ?.split("/")
+    ?.split("/") // e.g. ContentRange=bytes0-50/100 where 100 is the total length of an object
     ?.last()
     ?.toLong()
     ?: throw S3TransferManagerException("Content range not found in GetObjectResponse")

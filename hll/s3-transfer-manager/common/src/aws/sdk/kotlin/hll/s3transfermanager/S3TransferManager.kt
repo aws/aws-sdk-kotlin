@@ -170,7 +170,13 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         crossinline block: UploadObjectRequest.Builder.() -> Unit,
     ): UploadObjectResponse = uploadObject(UploadObjectRequest.Builder().apply(block).build())
 
-    // TODO: KDocs
+    /**
+     * Downloads an object from S3, optionally using multipart transfer for large objects.
+     *
+     * At least one of [downloadPath] or [objectHandler] must be provided. If [downloadPath] is specified, the object
+     * is written to a local file at that path. If [objectHandler] is specified, each part's [GetObjectResponse] is
+     * passed to the handler for custom processing. Both may be used together.
+     */
     public suspend fun <T> downloadObject(
         downloadObjectRequest: DownloadObjectRequest,
         downloadPath: String? = null,
@@ -189,7 +195,13 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         bufferSemaphore,
     )
 
-    // TODO: KDocs
+    /**
+     * Downloads an object from S3, optionally using multipart transfer for large objects.
+     *
+     * At least one of [downloadPath] or [objectHandler] must be provided. If [downloadPath] is specified, the object
+     * is written to a local file at that path. If [objectHandler] is specified, each part's [GetObjectResponse] is
+     * passed to the handler for custom processing. Both may be used together.
+     */
     public suspend inline fun <T> downloadObject(
         crossinline downloadObjectRequest: DownloadObjectRequest.Builder.() -> Unit,
         downloadPath: String? = null,

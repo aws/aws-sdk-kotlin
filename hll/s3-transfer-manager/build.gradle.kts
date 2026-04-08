@@ -28,6 +28,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.smithy.kotlin.http.test)
+                implementation(libs.smithy.kotlin.testing)
             }
         }
     }
