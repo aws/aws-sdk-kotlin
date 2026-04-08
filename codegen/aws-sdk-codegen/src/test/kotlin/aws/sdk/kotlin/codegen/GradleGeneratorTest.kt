@@ -11,7 +11,7 @@ import aws.smithy.kotlin.codegen.rendering.writeGradleBuild
 import aws.smithy.kotlin.codegen.test.defaultSettings
 import aws.smithy.kotlin.codegen.test.shouldContainOnlyOnceWithDiff
 import aws.smithy.kotlin.codegen.test.shouldNotContainWithDiff
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import software.amazon.smithy.build.MockManifest
 
 class GradleGeneratorTest {

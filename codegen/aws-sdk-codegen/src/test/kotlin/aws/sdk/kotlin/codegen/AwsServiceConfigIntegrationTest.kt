@@ -12,7 +12,7 @@ import aws.smithy.kotlin.codegen.test.newTestContext
 import aws.smithy.kotlin.codegen.test.shouldContainOnlyOnceWithDiff
 import aws.smithy.kotlin.codegen.test.toRenderingContext
 import aws.smithy.kotlin.codegen.test.toSmithyModel
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import software.amazon.smithy.model.shapes.ServiceShape
 
 class AwsServiceConfigIntegrationTest {

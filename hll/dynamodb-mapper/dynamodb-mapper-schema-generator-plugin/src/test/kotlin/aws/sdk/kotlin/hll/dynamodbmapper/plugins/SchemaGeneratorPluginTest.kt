@@ -8,11 +8,11 @@ package aws.sdk.kotlin.hll.dynamodbmapper.plugins
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.jetbrains.kotlin.gradle.internal.ensureParentDirsCreated
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -30,7 +30,7 @@ class SchemaGeneratorPluginTest {
     private val sdkVersion = getResource("sdk-version.txt")
     private val smithyKotlinVersion = getResource("smithy-kotlin-version.txt")
 
-    @BeforeEach
+    @BeforeTest
     fun setup() {
         settingsFile = File(testProjectDir, "settings.gradle.kts").also { it.writeText("") }
 
