@@ -14,7 +14,6 @@ import aws.sdk.kotlin.hll.s3transfermanager.model.UploadObjectResponse
 import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.downloadObjectImplementation
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject.uploadObjectImplementation
 import aws.sdk.kotlin.services.s3.S3Client
-import aws.sdk.kotlin.services.s3.model.GetObjectResponse
 import kotlinx.coroutines.sync.Semaphore
 
 /**
@@ -174,13 +173,13 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
      * Downloads an object from S3, optionally using multipart transfer for large objects.
      *
      * At least one of [downloadPath] or [objectHandler] must be provided. If [downloadPath] is specified, the object
-     * is written to a local file at that path. If [objectHandler] is specified, each part's [GetObjectResponse] is
+     * is written to a local file at that path. If [objectHandler] is specified, each part's bytes are
      * passed to the handler for custom processing. Both may be used together.
      */
     public suspend fun <T> downloadObject(
         downloadObjectRequest: DownloadObjectRequest,
         downloadPath: String? = null,
-        objectHandler: (suspend (GetObjectResponse) -> T)? = null,
+        objectHandler: (suspend (ByteArray) -> T)? = null,
     ): DownloadObjectResponse = downloadObjectImplementation(
         downloadObjectRequest,
         objectHandler,
@@ -199,13 +198,13 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
      * Downloads an object from S3, optionally using multipart transfer for large objects.
      *
      * At least one of [downloadPath] or [objectHandler] must be provided. If [downloadPath] is specified, the object
-     * is written to a local file at that path. If [objectHandler] is specified, each part's [GetObjectResponse] is
+     * is written to a local file at that path. If [objectHandler] is specified, each part's bytes are
      * passed to the handler for custom processing. Both may be used together.
      */
     public suspend inline fun <T> downloadObject(
         crossinline downloadObjectRequest: DownloadObjectRequest.Builder.() -> Unit,
         downloadPath: String? = null,
-        noinline objectHandler: (suspend (GetObjectResponse) -> T)? = null,
+        noinline objectHandler: (suspend (ByteArray) -> T)? = null,
     ): DownloadObjectResponse = downloadObject(DownloadObjectRequest.Builder().apply(downloadObjectRequest).build(), downloadPath, objectHandler)
 
     // TODO: Test in common

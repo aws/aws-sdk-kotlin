@@ -30,6 +30,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
@@ -73,7 +74,7 @@ internal suspend fun transferBytes(
 
             try {
                 val mutex = Mutex()
-                repeat(maxConcurrentPartUploads) {
+                val jobs = (0 until maxConcurrentPartUploads).map {
                     consumer(
                         producer,
                         uploadObjectRequest,
@@ -86,6 +87,7 @@ internal suspend fun transferBytes(
                         bufferSemaphore,
                     )
                 }
+                jobs.joinAll()
             } catch (e: Exception) {
                 // Consume remaining in memory parts and reduce part count
                 producer.consumeEach {
@@ -97,6 +99,8 @@ internal suspend fun transferBytes(
             if (uploadedParts.size != numberOfParts) {
                 throw S3TransferManagerException("The number of uploaded parts does not match the expected count. Expected $numberOfParts, actual: ${uploadedParts.size}")
             }
+
+            uploadedParts.sortBy { it.partNumber }
         } catch (uploadPartException: Exception) {
             logger.warn {
                 buildString {

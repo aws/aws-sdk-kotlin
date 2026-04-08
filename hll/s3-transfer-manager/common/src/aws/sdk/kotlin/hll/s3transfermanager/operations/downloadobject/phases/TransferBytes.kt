@@ -42,7 +42,7 @@ internal class TransferBytes<T>(
     private val s3Client: S3Client,
     private val downloadPath: String?,
     private val interceptors: List<TransferInterceptor>,
-    private val objectHandler: (suspend (GetObjectResponse) -> T)?,
+    private val objectHandler: (suspend (ByteArray) -> T)?,
     private val networkOperation: Semaphore,
     private val diskOperation: Semaphore,
     private val maxInMemoryParts: Int,
@@ -112,13 +112,14 @@ internal class TransferBytes<T>(
                         etag = getObjectResponse.eTag ?: throw S3TransferManagerException("etag is null in initial get object response")
                         partCount = getObjectResponse.partsCount
 
-                        objectHandler?.invoke(getObjectResponse)
+                        val bytes = getObjectResponse.body?.toByteArray() ?: byteArrayOf()
+                        objectHandler?.invoke(bytes)
                         try {
                             diskOperation.acquire()
                             downloadPath?.let {
                                 system.write(
                                     tempDownloadPath,
-                                    getObjectResponse.body?.toByteArray() ?: byteArrayOf(),
+                                    bytes,
                                     WriteType.OVERWRITE,
                                 )
                             }
@@ -162,7 +163,8 @@ internal class TransferBytes<T>(
     ) = coroutineScope {
         val jobs = mutableSetOf<Job>()
 
-        repeat(partCount!! - 1) { i -> // -1 since first part is already downloaded
+        repeat(partCount!! - 1) { i ->
+            // -1 since first part is already downloaded
             jobs += launch {
                 // Other jobs will be updating the global context so make a copy that won't change and we can modify safely
                 val localContext = context.copy()
@@ -182,9 +184,10 @@ internal class TransferBytes<T>(
                                 localContext.s3Response = getObjectResponse
                                 localContext.transferredBytes = localContext.transferredBytes!! + downloadedBytes
 
+                                val bytes = getObjectResponse.body?.toByteArray() ?: byteArrayOf()
                                 bufferCount.acquire()
                                 buffer.send(
-                                    Part(getObjectResponse, i),
+                                    Part(bytes, i),
                                 )
                             }
                         }
@@ -207,13 +210,13 @@ internal class TransferBytes<T>(
 
         for (part in buffer) {
             processors += launch {
-                objectHandler?.invoke(part.response)
+                objectHandler?.invoke(part.bytes)
                 try {
                     diskOperation.acquire()
                     downloadPath?.let {
                         system.write(
                             tempDownloadPath,
-                            part.response.body?.toByteArray() ?: byteArrayOf(),
+                            part.bytes,
                             WriteType.OFFSET(targetPartSizeBytes * (part.part + 1)), // +1 since first part is already written
                         )
                     }
@@ -274,7 +277,7 @@ internal class TransferBytes<T>(
 }
 
 private data class Part(
-    val response: GetObjectResponse,
+    val bytes: ByteArray,
     val part: Int,
 )
 

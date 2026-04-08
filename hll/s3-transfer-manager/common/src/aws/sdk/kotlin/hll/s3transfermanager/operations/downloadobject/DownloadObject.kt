@@ -17,12 +17,11 @@ import aws.sdk.kotlin.hll.s3transfermanager.model.utils.toGetObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.phases.TransferBytes
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
 import aws.sdk.kotlin.services.s3.S3Client
-import aws.sdk.kotlin.services.s3.model.GetObjectResponse
 import kotlinx.coroutines.sync.Semaphore
 
 internal suspend fun <T> downloadObjectImplementation(
     downloadObjectRequest: DownloadObjectRequest,
-    objectHandler: (suspend (GetObjectResponse) -> T)?,
+    objectHandler: (suspend (ByteArray) -> T)?,
     s3Client: S3Client,
     multipartDownloadType: MultipartDownloadType,
     targetPartSizeBytes: Long,
