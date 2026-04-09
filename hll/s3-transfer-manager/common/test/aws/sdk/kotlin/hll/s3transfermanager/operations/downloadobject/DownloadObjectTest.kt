@@ -28,6 +28,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 // TODO: Use account regional namespace bucket when ready to merge to main
+// https://aws.amazon.com/blogs/aws/introducing-account-regional-namespaces-for-amazon-s3-general-purpose-buckets/
 private const val TEST_BUCKET = "aoperez"
 private const val TEST_REGION = "us-west-2"
 private const val SMALL_CONTENT = "Hello World"
