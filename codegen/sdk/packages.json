@@ -1345,6 +1345,12 @@
             "brazilName": "AwsSdkKotlinMarketplaceDeployment"
         },
         {
+            "sdkId": "Marketplace Discovery",
+            "namespace": "aws.sdk.kotlin.services.marketplacediscovery",
+            "artifactName": "marketplacediscovery",
+            "brazilName": "AwsSdkKotlinMarketplaceDiscovery"
+        },
+        {
             "sdkId": "Marketplace Entitlement Service",
             "namespace": "aws.sdk.kotlin.services.marketplaceentitlementservice",
             "artifactName": "marketplaceentitlementservice",
@@ -1853,6 +1859,12 @@
             "namespace": "aws.sdk.kotlin.services.s3control",
             "artifactName": "s3control",
             "brazilName": "AwsSdkKotlinS3Control"
+        },
+        {
+            "sdkId": "S3Files",
+            "namespace": "aws.sdk.kotlin.services.s3files",
+            "artifactName": "s3files",
+            "brazilName": "AwsSdkKotlinS3files"
         },
         {
             "sdkId": "S3Outposts",
