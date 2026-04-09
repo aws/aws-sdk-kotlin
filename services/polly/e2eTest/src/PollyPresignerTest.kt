@@ -33,13 +33,13 @@ class PollyPresignerTest {
         val client = PollyClient { region = "us-east-1" }
         val presignedRequest = client.presignSynthesizeSpeech(unsignedRequest, 10.seconds)
 
-        withAllEngines { engine ->
-            val httpClient = SdkHttpClient(engine)
+        withAllEngines { context ->
+            val httpClient = SdkHttpClient(context.engine)
 
             val call = httpClient.call(presignedRequest)
             call.complete()
 
-            assertEquals(200, call.response.status.value, "presigned polly request failed for engine: $engine")
+            assertEquals(200, call.response.status.value, "presigned Polly request failed for ${context.name} engine")
         }
     }
 }
