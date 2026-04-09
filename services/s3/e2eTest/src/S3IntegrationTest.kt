@@ -9,26 +9,23 @@ import aws.sdk.kotlin.services.s3.model.*
 import aws.sdk.kotlin.testing.PRINTABLE_CHARS
 import aws.sdk.kotlin.testing.withAllEngines
 import aws.smithy.kotlin.runtime.client.ProtocolRequestInterceptorContext
-import aws.smithy.kotlin.runtime.content.ByteStream
-import aws.smithy.kotlin.runtime.content.asByteStream
-import aws.smithy.kotlin.runtime.content.decodeToString
-import aws.smithy.kotlin.runtime.content.fromFile
-import aws.smithy.kotlin.runtime.content.toByteArray
-import aws.smithy.kotlin.runtime.content.toByteStream
+import aws.smithy.kotlin.runtime.content.*
 import aws.smithy.kotlin.runtime.hashing.sha256
 import aws.smithy.kotlin.runtime.http.HttpException
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.testing.RandomTempFile
 import aws.smithy.kotlin.runtime.text.encoding.encodeToHex
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import java.io.File
-import java.util.UUID
+import java.util.*
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
@@ -37,20 +34,18 @@ import kotlin.time.Duration.Companion.seconds
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class S3BucketOpsIntegrationTest {
-    private val client = S3Client {
-        region = S3TestUtils.DEFAULT_REGION
-    }
+    private val client = S3TestUtils.createClient()
 
     private lateinit var testBucket: String
 
     @BeforeAll
     fun createResources(): Unit = runBlocking {
-        testBucket = S3TestUtils.getTestBucket(client)
+        testBucket = S3TestUtils.createTestBucket(client, "integ-ops")
     }
 
     @AfterAll
     fun cleanup() = runBlocking {
-        S3TestUtils.deleteBucketAndAllContents(client, testBucket)
+        S3TestUtils.deleteBucket(client, testBucket)
     }
 
     @Test
@@ -146,7 +141,7 @@ class S3BucketOpsIntegrationTest {
         // delimiter is bound via @httpQuery) and the ability of an HTTP engine to keep
         // the same encoding going out on the wire (e.g. not double percent encoding)
 
-        s3WithAllEngines { s3 ->
+        s3WithAllEngines { _, s3 ->
             s3.listObjects {
                 bucket = testBucket
                 delimiter = PRINTABLE_CHARS
@@ -166,8 +161,8 @@ class S3BucketOpsIntegrationTest {
         // This test includes all printable chars (including ones S3 recommends avoiding). Users should
         // strive to fall within the guidelines given by S3 though
 
-        s3WithAllEngines { s3 ->
-            val objKey = "foo$PRINTABLE_CHARS"
+        s3WithAllEngines { engineName, s3 ->
+            val objKey = "test-printable-$engineName-$PRINTABLE_CHARS"
             val content = "hello rfc3986"
 
             s3.putObject {
@@ -190,8 +185,8 @@ class S3BucketOpsIntegrationTest {
 
     @Test
     fun testMultipartUpload(): Unit = runBlocking {
-        s3WithAllEngines { s3 ->
-            val objKey = "test-multipart-${UUID.randomUUID()}"
+        s3WithAllEngines { engineName, s3 ->
+            val objKey = "test-multipart-$engineName"
             val contentSize: Long = 8 * 1024 * 1024 // 2 parts
             val file = RandomTempFile(sizeInBytes = contentSize)
             val partSize = 5 * 1024 * 1024 // 5 MB - min part size
@@ -203,7 +198,9 @@ class S3BucketOpsIntegrationTest {
                 key = objKey
             }
 
-            val completedParts = file.chunk(partSize)
+            val completedParts = file
+                .chunk(partSize)
+                .toList()
                 .mapIndexed { idx, chunk ->
                     async {
                         val uploadResp = s3.uploadPart {
@@ -220,7 +217,6 @@ class S3BucketOpsIntegrationTest {
                         }
                     }
                 }
-                .toList()
                 .awaitAll()
 
             s3.completeMultipartUpload {
@@ -336,18 +332,23 @@ internal fun File.chunk(partSize: Int): Sequence<LongRange> = (0 until length() 
     it until minOf(it + partSize, length())
 }
 
-internal suspend fun s3WithAllEngines(block: suspend (S3Client) -> Unit) {
-    withAllEngines { engine ->
-        S3Client {
-            region = S3TestUtils.DEFAULT_REGION
-            httpClient = engine
-        }.use {
+internal suspend fun s3WithAllEngines(block: suspend (String, S3Client) -> Unit) {
+    withAllEngines { context ->
+        S3TestUtils.createClient {
+            httpClient = context.engine
+        }.use { engine ->
             try {
-                block(it)
+                block(s3SafeName(context.name), engine)
             } catch (ex: Exception) {
-                println("test failed for engine $engine")
+                println("test failed for ${context.name} engine")
                 throw ex
             }
         }
     }
 }
+
+private val s3SafeNameReplacementPattern = "[^a-z0-9-]".toRegex()
+
+private fun s3SafeName(originalName: String): String = originalName
+    .lowercase()
+    .replace(s3SafeNameReplacementPattern, "-")
