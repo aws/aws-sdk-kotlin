@@ -4,7 +4,6 @@
  */
 package aws.sdk.kotlin.e2etest
 
-import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.abortMultipartUpload
 import aws.sdk.kotlin.services.s3.createMultipartUpload
 import aws.sdk.kotlin.services.s3.model.CompletedPart
@@ -24,20 +23,19 @@ import kotlin.time.Duration.Companion.seconds
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PaginatorTest {
-    private val client = S3Client {
-        region = S3TestUtils.DEFAULT_REGION
-    }
+    private val client = S3TestUtils.createClient()
 
     private lateinit var testBucket: String
 
     @BeforeAll
     fun createResources(): Unit = runBlocking {
-        testBucket = S3TestUtils.getTestBucket(client)
+        testBucket = S3TestUtils.createTestBucket(client, "pagination")
     }
 
     @AfterAll
     fun cleanup() = runBlocking {
-        S3TestUtils.deleteBucketAndAllContents(client, testBucket)
+        S3TestUtils.deleteBucket(client, testBucket)
+        client.close()
     }
 
     // ListParts has a strange pagination termination condition via [IsTerminated]. Verify it actually works correctly.
