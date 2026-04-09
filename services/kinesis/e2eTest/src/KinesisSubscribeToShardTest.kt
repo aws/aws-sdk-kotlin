@@ -70,9 +70,9 @@ class KinesisSubscribeToShardTest {
             streamArn = dataStreamArn
         }.shards?.single()!!.shardId
 
-        withAllEngines { engine ->
+        withAllEngines { context ->
             client.withConfig {
-                httpClient = engine
+                httpClient = context.engine
             }.use { clientWithTestEngine ->
                 clientWithTestEngine.subscribeToShard(
                     SubscribeToShardRequest {

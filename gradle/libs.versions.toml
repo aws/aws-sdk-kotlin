@@ -9,7 +9,7 @@ aws-kotlin-repo-tools-version = "0.5.8"
 # libs
 coroutines-version = "1.10.2"
 atomicfu-version = "0.29.0"
-binary-compatibility-validator-version = "0.18.0"
+binary-compatibility-validator-version = "0.18.1"
 
 # smithy-kotlin
 smithy-kotlin-version = "1.6.9"
