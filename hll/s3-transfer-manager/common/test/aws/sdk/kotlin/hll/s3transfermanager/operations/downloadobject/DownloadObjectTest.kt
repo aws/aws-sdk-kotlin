@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-// TODO: Setup e2e test environment - can't run these every build and in CI
+// TODO: Use account regional namespace bucket when ready to merge to main
 private const val TEST_BUCKET = "aoperez"
 private const val TEST_REGION = "us-west-2"
 private const val SMALL_CONTENT = "Hello World"
@@ -35,7 +35,7 @@ private const val MULTIPART_SIZE = 10 * 1024 * 1024 // 10 MB
 private const val UNEVEN_SIZE = 12 * 1024 * 1024 // 12 MB
 private const val TARGET_PART_SIZE = 5L * 1024L * 1024L // 5 MB
 
-// @Ignore // TODO: Setup e2e test environment
+@Ignore // TODO: Setup e2e test environment
 @TestInstance(TestLifecycle.PER_CLASS)
 class DownloadObjectTest {
     private val testSuffix = Random.nextInt(0, 10_000_000)
@@ -53,6 +53,7 @@ class DownloadObjectTest {
     fun setup(): Unit = runBlocking {
         s3Client = S3Client {
             region = TEST_REGION
+            // TODO: Remove this credentials provider when ready to merge to main
             credentialsProvider = ProcessCredentialsProvider("isengardcli credentials --awscli aoperez@amazon.com --role Admin")
         }
         multipartBody = Random.nextBytes(MULTIPART_SIZE)

@@ -139,14 +139,19 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         internal fun build(client: S3Client): S3TransferManager = S3TransferManager(client, this)
     }
 
-    // Keep track of concurrency limits via semaphore permits
+    // Keep track of concurrency and buffer limits via semaphore permits
     internal val bufferSemaphore = Semaphore(maxInMemoryParts)
     internal val networkSemaphore = Semaphore(maxConcurrentNetworkOperations)
     internal val diskSemaphore = Semaphore(maxConcurrentDiskOperations)
 
     /**
-     * Uploads an object to S3.
-     * Uses multipart uploads with concurrent uploads if the object size is more than the configured [multipartUploadThresholdBytes].
+     * Uploads an object to S3, automatically using multipart upload for large objects.
+     *
+     * If the object size exceeds [multipartUploadThresholdBytes], the upload is split into parts of
+     * [targetPartSizeBytes] and uploaded concurrently. Otherwise, a single `PutObject` request is used.
+     *
+     * The content length of the request body must be known. Set it explicitly via
+     * [UploadObjectRequest.contentLength] or use a [ByteStream] with a known length.
      */
     public suspend fun uploadObject(
         uploadObjectRequest: UploadObjectRequest,
@@ -162,8 +167,13 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
     )
 
     /**
-     * Uploads an object to S3.
-     * Uses multipart uploads with concurrent uploads if the object size is more than the configured [multipartUploadThresholdBytes].
+     * Uploads an object to S3, automatically using multipart upload for large objects.
+     *
+     * If the object size exceeds [multipartUploadThresholdBytes], the upload is split into parts of
+     * [targetPartSizeBytes] and uploaded concurrently. Otherwise, a single `PutObject` request is used.
+     *
+     * The content length of the request body must be known. Set it explicitly via
+     * [UploadObjectRequest.contentLength] or use a [ByteStream] with a known length.
      */
     public suspend inline fun uploadObject(
         crossinline block: UploadObjectRequest.Builder.() -> Unit,
@@ -206,7 +216,4 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         downloadPath: String? = null,
         noinline objectHandler: (suspend (ByteArray) -> T)? = null,
     ): DownloadObjectResponse = downloadObject(DownloadObjectRequest.Builder().apply(downloadObjectRequest).build(), downloadPath, objectHandler)
-
-    // TODO: Test in common
-    // TODO: Test 50GB (or TB?) transfers
 }

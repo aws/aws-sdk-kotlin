@@ -153,8 +153,8 @@ internal class TransferBytes<T>(
             }
             renameTempFile()
         } finally {
-            system.delete(tempDownloadPath, mustExist = false) // Deletes half downloaded object if something went wrong, or no op if we finished
-            buffer.consumeEach { bufferCount.release() } // Clears buffer and resets count if something went wrong, or no op if finished
+            system.delete(tempDownloadPath, mustExist = false) // Deletes downloaded bytes if something went wrong, or no op if success
+            buffer.consumeEach { bufferCount.release() } // Clears buffer and resets count if something went wrong, or no op if success
         }
     }
 

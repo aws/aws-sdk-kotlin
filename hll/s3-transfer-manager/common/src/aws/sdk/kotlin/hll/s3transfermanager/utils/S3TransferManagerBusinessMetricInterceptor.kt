@@ -23,5 +23,5 @@ internal object S3TransferManagerBusinessMetricInterceptor : HttpInterceptor {
     }
 }
 
-// TODO: Consider passing semaphore for better control of network operations
+// TODO: Consider passing semaphore for better control of network semaphore
 internal inline fun <T> S3Client.withTmBusinessMetric(block: (S3Client) -> T): T = withConfig { interceptors += S3TransferManagerBusinessMetricInterceptor }.use(block)
