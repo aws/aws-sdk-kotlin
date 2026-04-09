@@ -4006,6 +4006,9 @@
                     "target": "com.amazonaws.ec2#GetCapacityManagerMetricDimensions"
                 },
                 {
+                    "target": "com.amazonaws.ec2#GetCapacityManagerMonitoredTagKeys"
+                },
+                {
                     "target": "com.amazonaws.ec2#GetCapacityReservationUsage"
                 },
                 {
@@ -4664,6 +4667,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#UnmonitorInstances"
+                },
+                {
+                    "target": "com.amazonaws.ec2#UpdateCapacityManagerMonitoredTagKeys"
                 },
                 {
                     "target": "com.amazonaws.ec2#UpdateCapacityManagerOrganizationsAccess"
@@ -12737,6 +12743,14 @@
                         "smithy.api#xmlName": "accountId"
                     }
                 },
+                "AccountName": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AccountName",
+                        "smithy.api#documentation": "<p>\n    The name of the Amazon Web Services account that owns the capacity resource. This dimension is only available when Organizations access is enabled for Capacity Manager.\n</p>",
+                        "smithy.api#xmlName": "accountName"
+                    }
+                },
                 "InstanceFamily": {
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
@@ -12848,10 +12862,104 @@
                         "smithy.api#documentation": "<p>\n        The Amazon Web Services account ID that is financially responsible for unused capacity reservation costs. \n    </p>",
                         "smithy.api#xmlName": "reservationUnusedFinancialOwner"
                     }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.ec2#CapacityManagerTagDimensionSet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>\nThe tags associated with the capacity resource, represented as key-value pairs. Only tags that have been activated for monitoring via <code>UpdateCapacityManagerMonitoredTagKeys</code> are included.\n</p>",
+                        "smithy.api#xmlName": "tagSet"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>\nRepresents dimension values for capacity metrics, including resource identifiers, geographic information, and reservation details used for grouping and filtering capacity data.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerMonitoredTagKey": {
+            "type": "structure",
+            "members": {
+                "TagKey": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagKey",
+                        "smithy.api#documentation": "<p>\nThe tag key being monitored.\n</p>",
+                        "smithy.api#xmlName": "tagKey"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.ec2#CapacityManagerMonitoredTagKeyStatus",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Status",
+                        "smithy.api#documentation": "<p>\nThe current status of the monitored tag key. Valid values are <code>activating</code>, <code>activated</code>, <code>deactivating</code>, and <code>suspended</code>.\n</p>",
+                        "smithy.api#xmlName": "status"
+                    }
+                },
+                "StatusMessage": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "StatusMessage",
+                        "smithy.api#documentation": "<p>\nA message providing additional details about the current status of the monitored tag key.\n</p>",
+                        "smithy.api#xmlName": "statusMessage"
+                    }
+                },
+                "CapacityManagerProvided": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerProvided",
+                        "smithy.api#documentation": "<p>\nIndicates whether this tag key is provided by Capacity Manager by default, rather than being user-activated.\n</p>",
+                        "smithy.api#xmlName": "capacityManagerProvided"
+                    }
+                },
+                "EarliestDatapointTimestamp": {
+                    "target": "com.amazonaws.ec2#MillisecondDateTime",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "EarliestDatapointTimestamp",
+                        "smithy.api#documentation": "<p>\nThe earliest timestamp from which tag data is available for queries, in UTC ISO 8601 format.\n</p>",
+                        "smithy.api#xmlName": "earliestDatapointTimestamp"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nDescribes a tag key that is being monitored by Capacity Manager, including its activation status and the earliest available data point.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerMonitoredTagKeyList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#CapacityManagerMonitoredTagKey",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerMonitoredTagKeyStatus": {
+            "type": "enum",
+            "members": {
+                "ACTIVATING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "activating"
+                    }
+                },
+                "ACTIVATED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "activated"
+                    }
+                },
+                "DEACTIVATING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "deactivating"
+                    }
+                },
+                "SUSPENDED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "suspended"
+                    }
+                }
             }
         },
         "com.amazonaws.ec2#CapacityManagerStatus": {
@@ -12868,6 +12976,39 @@
                     "traits": {
                         "smithy.api#enumValue": "disabled"
                     }
+                }
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerTagDimension": {
+            "type": "structure",
+            "members": {
+                "Key": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Key",
+                        "smithy.api#documentation": "<p>\nThe tag key.\n</p>",
+                        "smithy.api#xmlName": "key"
+                    }
+                },
+                "Value": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Value",
+                        "smithy.api#documentation": "<p>\nThe tag value.\n</p>",
+                        "smithy.api#xmlName": "value"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nA key-value pair representing a tag associated with a capacity resource in Capacity Manager.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#CapacityManagerTagDimensionSet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#CapacityManagerTagDimension",
+                "traits": {
+                    "smithy.api#xmlName": "item"
                 }
             }
         },
@@ -15757,10 +15898,19 @@
                 "smithy.api#pattern": "^[a-z]{2}-[a-z]+-[1-9]+$"
             }
         },
+        "com.amazonaws.ec2#ConditionValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 300
+                }
+            }
+        },
         "com.amazonaws.ec2#ConditionValueList": {
             "type": "list",
             "member": {
-                "target": "com.amazonaws.ec2#String",
+                "target": "com.amazonaws.ec2#ConditionValue",
                 "traits": {
                     "smithy.api#xmlName": "item"
                 }
@@ -60726,6 +60876,12 @@
                         "smithy.api#enumValue": "account-id"
                     }
                 },
+                "ACCOUNT_NAME": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "account-name"
+                    }
+                },
                 "INSTANCE_FAMILY": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -60809,6 +60965,12 @@
                     "traits": {
                         "smithy.api#enumValue": "reservation-unused-financial-owner"
                     }
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 300
                 }
             }
         },
@@ -63319,6 +63481,83 @@
                 },
                 "NextToken": {
                     "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>\nThe token to use to retrieve the next page of results. This value is null when there are no more results to return.\n</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerMonitoredTagKeys": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetCapacityManagerMonitoredTagKeysRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetCapacityManagerMonitoredTagKeysResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nRetrieves the tag keys that are currently being monitored by EC2 Capacity Manager. Monitored tag keys are included as dimensions in capacity metric data, enabling you to group and filter metrics by tag values.\n</p>",
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "CapacityManagerTagKeys",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerMonitoredTagKeysRequest": {
+            "type": "structure",
+            "members": {
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#GetCapacityManagerMonitoredTagKeysRequestMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value. If not specified, up to 1000 results are returned.\n</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe token for the next page of results. Use the value returned from a previous call to retrieve additional results.\n</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides an error response.\nIf you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerMonitoredTagKeysRequestMaxResults": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1,
+                    "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.ec2#GetCapacityManagerMonitoredTagKeysResult": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerTagKeys": {
+                    "target": "com.amazonaws.ec2#CapacityManagerMonitoredTagKeyList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerTagKeySet",
+                        "smithy.api#documentation": "<p>\nThe list of tag keys being monitored by Capacity Manager, including their current status and metadata.\n</p>",
+                        "smithy.api#xmlName": "capacityManagerTagKeySet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "aws.protocols#ec2QueryName": "NextToken",
                         "smithy.api#documentation": "<p>\nThe token to use to retrieve the next page of results. This value is null when there are no more results to return.\n</p>",
@@ -68271,6 +68510,12 @@
                         "smithy.api#enumValue": "account-id"
                     }
                 },
+                "ACCOUNT_NAME": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "account-name"
+                    }
+                },
                 "INSTANCE_FAMILY": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -68354,6 +68599,12 @@
                     "traits": {
                         "smithy.api#enumValue": "reservation-unused-financial-owner"
                     }
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 300
                 }
             }
         },
@@ -129729,6 +129980,69 @@
                 "traits": {
                     "smithy.api#xmlName": "item"
                 }
+            }
+        },
+        "com.amazonaws.ec2#UpdateCapacityManagerMonitoredTagKeys": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#UpdateCapacityManagerMonitoredTagKeysRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#UpdateCapacityManagerMonitoredTagKeysResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\nActivates or deactivates tag keys for monitoring by EC2 Capacity Manager. Activated tag keys are included as dimensions in capacity metric data, enabling you to group and filter metrics by tag values.\n</p>"
+            }
+        },
+        "com.amazonaws.ec2#UpdateCapacityManagerMonitoredTagKeysRequest": {
+            "type": "structure",
+            "members": {
+                "ActivateTagKeys": {
+                    "target": "com.amazonaws.ec2#ValueStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe tag keys to activate for monitoring. Once activated, these tag keys will be included as dimensions in capacity metric data.\n</p>",
+                        "smithy.api#xmlName": "ActivateTagKey"
+                    }
+                },
+                "DeactivateTagKeys": {
+                    "target": "com.amazonaws.ec2#ValueStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nThe tag keys to deactivate. Deactivated tag keys will no longer be included as dimensions in capacity metric data.\n</p>",
+                        "smithy.api#xmlName": "DeactivateTagKey"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nChecks whether you have the required permissions for the action, without actually making the request, and provides an error response.\nIf you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.\n</p>"
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\nUnique, case-sensitive identifier that you provide to ensure the idempotency of the request.\n</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#UpdateCapacityManagerMonitoredTagKeysResult": {
+            "type": "structure",
+            "members": {
+                "CapacityManagerTagKeys": {
+                    "target": "com.amazonaws.ec2#CapacityManagerMonitoredTagKeyList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "CapacityManagerTagKeySet",
+                        "smithy.api#documentation": "<p>\nThe list of tag keys affected by the update, including their current status and metadata.\n</p>",
+                        "smithy.api#xmlName": "capacityManagerTagKeySet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.ec2#UpdateCapacityManagerOrganizationsAccess": {
