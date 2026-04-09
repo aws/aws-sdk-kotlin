@@ -5,8 +5,8 @@
 
 package aws.sdk.kotlin.testing
 
+import aws.smithy.kotlin.runtime.http.engine.CloseableHttpClientEngine
 import aws.smithy.kotlin.runtime.http.engine.DefaultHttpEngine
-import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
 import aws.smithy.kotlin.runtime.http.engine.crt.CrtHttpEngine
 
 /**
@@ -14,18 +14,20 @@ import aws.smithy.kotlin.runtime.http.engine.crt.CrtHttpEngine
  */
 val PRINTABLE_CHARS = (32 until 127).map(Int::toChar).joinToString("")
 
+data class HttpEngineContext(val name: String, val engine: CloseableHttpClientEngine)
+
 /**
  * Run the [block] with each supported engine
  */
-suspend fun withAllEngines(block: suspend (HttpClientEngine) -> Unit) {
-    val engines = listOf(
-        DefaultHttpEngine(),
-        CrtHttpEngine(),
+suspend fun withAllEngines(block: suspend (HttpEngineContext) -> Unit) {
+    val contexts = listOf(
+        HttpEngineContext("Platform default", DefaultHttpEngine()),
+        HttpEngineContext("CRT", CrtHttpEngine()),
     )
 
-    engines.forEach { engine ->
-        engine.use {
-            block(engine)
+    contexts.forEach { context ->
+        context.engine.use {
+            block(context)
         }
     }
 }
