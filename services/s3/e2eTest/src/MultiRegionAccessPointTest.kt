@@ -11,28 +11,26 @@ import aws.sdk.kotlin.services.s3.withConfig
 import aws.sdk.kotlin.services.s3control.*
 import aws.sdk.kotlin.services.s3control.model.Region
 import aws.sdk.kotlin.services.s3control.paginators.listMultiRegionAccessPointsPaginated
-import aws.smithy.kotlin.runtime.auth.awssigning.AwsSigner
 import aws.smithy.kotlin.runtime.auth.awssigning.DefaultAwsSigner
 import aws.smithy.kotlin.runtime.auth.awssigning.crt.CrtAwsSigner
 import aws.smithy.kotlin.runtime.http.auth.SigV4AsymmetricAuthScheme
+import aws.smithy.kotlin.runtime.testing.BeforeAll
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
+import aws.smithy.kotlin.runtime.testing.parameterized
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
-import java.util.stream.Stream
+import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 private const val TEST_OBJECT_KEY = "test.txt"
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestLifecycle.PER_CLASS)
 class MultiRegionAccessPointTest {
     private lateinit var s3West: S3Client
     private lateinit var s3East: S3Client
@@ -96,30 +94,28 @@ class MultiRegionAccessPointTest {
         s3Control.close()
     }
 
-    @ParameterizedTest
-    @MethodSource("signerProvider")
-    fun testMultiRegionAccessPointOperation(signer: AwsSigner): Unit = runBlocking {
-        println("Testing multi-region access point operations with $signer")
+    @Test
+    fun testMultiRegionAccessPointOperation(): Unit = parameterized(
+        listOf(DefaultAwsSigner, CrtAwsSigner),
+    ) { signer ->
+        runBlocking {
+            println("Testing multi-region access point operations with $signer")
 
-        val s3SigV4a = s3West.withConfig {
-            authSchemes = listOf(SigV4AsymmetricAuthScheme(signer))
-        }
+            val s3SigV4a = s3West.withConfig {
+                authSchemes = listOf(SigV4AsymmetricAuthScheme(signer))
+            }
 
-        s3SigV4a.putObject {
-            bucket = multiRegionAccessPointArn
-            key = TEST_OBJECT_KEY
-        }
+            s3SigV4a.putObject {
+                bucket = multiRegionAccessPointArn
+                key = TEST_OBJECT_KEY
+            }
 
-        s3SigV4a.deleteObject {
-            bucket = multiRegionAccessPointArn
-            key = TEST_OBJECT_KEY
+            s3SigV4a.deleteObject {
+                bucket = multiRegionAccessPointArn
+                key = TEST_OBJECT_KEY
+            }
         }
     }
-
-    fun signerProvider(): Stream<Arguments> = Stream.of(
-        Arguments.of(DefaultAwsSigner),
-        Arguments.of(CrtAwsSigner),
-    )
 }
 
 /**

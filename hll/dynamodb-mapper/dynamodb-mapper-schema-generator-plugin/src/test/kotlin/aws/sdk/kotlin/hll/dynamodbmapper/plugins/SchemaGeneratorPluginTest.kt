@@ -5,38 +5,31 @@
 
 package aws.sdk.kotlin.hll.dynamodbmapper.plugins
 
+import aws.smithy.kotlin.runtime.testing.TempDirCleanupMode
+import aws.smithy.kotlin.runtime.testing.withTempDir
+import kotlinx.coroutines.runBlocking
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.jetbrains.kotlin.gradle.internal.ensureParentDirsCreated
-import org.junit.jupiter.api.io.CleanupMode
-import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class SchemaGeneratorPluginTest {
-    @TempDir(cleanup = CleanupMode.ON_SUCCESS)
-    lateinit var testProjectDir: File
-
-    private lateinit var settingsFile: File
-    private lateinit var buildFile: File
-    private lateinit var runner: GradleRunner
 
     private fun getResource(resourceName: String): String = checkNotNull(this::class.java.getResource(resourceName)?.readText()) { "Could not read $resourceName" }
     private val kotlinVersion = getResource("kotlin-version.txt")
     private val sdkVersion = getResource("sdk-version.txt")
     private val smithyKotlinVersion = getResource("smithy-kotlin-version.txt")
 
-    @BeforeTest
-    fun setup() {
-        settingsFile = File(testProjectDir, "settings.gradle.kts").also { it.writeText("") }
+    private fun withTestProject(block: TestProject.() -> Unit) = runBlocking {
+        withTempDir(TempDirCleanupMode.ON_SUCCESS) { dir ->
+        val testProjectDir = File(dir.toString())
+        val settingsFile = File(testProjectDir, "settings.gradle.kts").also { it.writeText("") }
+        val buildFile = File(testProjectDir, "build.gradle.kts").also { it.writeText("") }
 
-        buildFile = File(testProjectDir, "build.gradle.kts").also { it.writeText("") }
-
-        // Apply the plugin and necessary dependencies
         val buildFileContent = """
         repositories {
             mavenCentral()
@@ -57,29 +50,39 @@ class SchemaGeneratorPluginTest {
         """.trimIndent()
         buildFile.writeText(buildFileContent)
 
-        runner = GradleRunner
+        val runner = GradleRunner
             .create()
             .withProjectDir(testProjectDir)
             .withPluginClasspath()
             .forwardOutput()
             .withArguments("--info", "build")
+
+        TestProject(testProjectDir, settingsFile, buildFile, runner).block()
+        }
     }
 
-    private fun File.prependText(text: String) {
-        val existingContent = readText()
-        writeText(text)
-        appendText(existingContent)
-    }
+    private inner class TestProject(
+        val testProjectDir: File,
+        val settingsFile: File,
+        val buildFile: File,
+        val runner: GradleRunner,
+    ) {
+        fun File.prependText(text: String) {
+            val existingContent = readText()
+            writeText(text)
+            appendText(existingContent)
+        }
 
-    private fun createClassFile(className: String, path: String = "src/main/kotlin/org/example") {
-        val classFile = File(testProjectDir, "$path/$className.kt")
-        classFile.ensureParentDirsCreated()
-        classFile.createNewFile()
-        classFile.writeText(getResource("/$className.kt"))
+        fun createClassFile(className: String, path: String = "src/main/kotlin/org/example") {
+            val classFile = File(testProjectDir, "$path/$className.kt")
+            classFile.ensureParentDirsCreated()
+            classFile.createNewFile()
+            classFile.writeText(getResource("/$className.kt"))
+        }
     }
 
     @Test
-    fun testDefaultOptions() {
+    fun testDefaultOptions() = withTestProject {
         createClassFile("User")
 
         val result = runner.build()
@@ -151,7 +154,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testBuilderNotRequired() {
+    fun testBuilderNotRequired() = withTestProject {
         createClassFile("BuilderNotRequired")
 
         val result = runner.build()
@@ -204,7 +207,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testGenerateBuilderOption() {
+    fun testGenerateBuilderOption() = withTestProject {
         val pluginConfiguration = """
         import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.GenerateBuilderClasses
         import aws.smithy.kotlin.runtime.ExperimentalApi
@@ -237,7 +240,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testVisibilityOption() {
+    fun testVisibilityOption() = withTestProject {
         val pluginConfiguration = """
         import aws.sdk.kotlin.hll.codegen.rendering.Visibility
         import aws.smithy.kotlin.runtime.ExperimentalApi
@@ -268,7 +271,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testGenerateGetTableFunctionOption() {
+    fun testGenerateGetTableFunctionOption() = withTestProject {
         val pluginConfiguration = """
         import aws.smithy.kotlin.runtime.ExperimentalApi
         
@@ -298,7 +301,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testRelativeDestinationPackage() {
+    fun testRelativeDestinationPackage() = withTestProject {
         val pluginConfiguration = """
         import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
         import aws.smithy.kotlin.runtime.ExperimentalApi
@@ -325,7 +328,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testAbsoluteDestinationPackage() {
+    fun testAbsoluteDestinationPackage() = withTestProject {
         val pluginConfiguration = """
         import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
         import aws.smithy.kotlin.runtime.ExperimentalApi
@@ -352,7 +355,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testGeneratedItemConverter() {
+    fun testGeneratedItemConverter() = withTestProject {
         buildFile.appendText(
             """
             dependencies {
@@ -379,7 +382,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testDynamoDbIgnore() {
+    fun testDynamoDbIgnore() = withTestProject {
         createClassFile("IgnoredProperty")
 
         val result = runner.build()
@@ -402,7 +405,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testDynamoDbItemConverter() {
+    fun testDynamoDbItemConverter() = withTestProject {
         createClassFile("custom-item-converter/CustomUser")
         createClassFile("custom-item-converter/CustomItemConverter", "src/main/kotlin/my/custom/item/converter")
 
@@ -426,7 +429,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testPrimitives() {
+    fun testPrimitives() = withTestProject {
         buildFile.appendText(
             """
             dependencies {
@@ -453,7 +456,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testNullableTypes() {
+    fun testNullableTypes() = withTestProject {
         buildFile.appendText(
             """
             dependencies {
@@ -480,7 +483,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testLists() {
+    fun testLists() = withTestProject {
         buildFile.appendText(
             """
             dependencies {
@@ -506,7 +509,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testSets() {
+    fun testSets() = withTestProject {
         buildFile.appendText(
             """
             dependencies {
@@ -532,7 +535,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testMaps() {
+    fun testMaps() = withTestProject {
         buildFile.appendText(
             """
             dependencies {
@@ -558,7 +561,7 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
-    fun testRenamedPartitionKey() {
+    fun testRenamedPartitionKey() = withTestProject {
         createClassFile("RenamedPartitionKey")
 
         val result = runner.build()

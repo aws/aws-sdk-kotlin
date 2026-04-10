@@ -19,7 +19,6 @@ smithy-version = "1.67.0"
 
 # testing
 ddb-local-version = "2.5.2"
-junit-version = "5.14.1"
 kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.15"
 kotlinx-serialization-version = "1.9.0"
@@ -105,9 +104,6 @@ smithy-model = { module = "software.amazon.smithy:smithy-model", version.ref = "
 smithy-protocol-test-traits = { module = "software.amazon.smithy:smithy-protocol-test-traits", version.ref = "smithy-version" }
 smithy-smoke-test-traits = { module = "software.amazon.smithy:smithy-smoke-test-traits", version.ref = "smithy-version" }
 smithy-aws-smoke-test-model = { module = "software.amazon.smithy:smithy-aws-smoke-test-model", version.ref = "smithy-version" }
-
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-version" }
-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-version" }
 
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup-version" }
 
