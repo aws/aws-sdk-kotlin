@@ -1,6 +1,21 @@
 {
     "smithy": "2.0",
     "shapes": {
+        "com.amazonaws.bedrockagentcore#A2aDescriptor": {
+            "type": "structure",
+            "members": {
+                "agentCard": {
+                    "target": "com.amazonaws.bedrockagentcore#AgentCardDefinition",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The agent card definition that describes the agent's capabilities and interface.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The A2A (Agent-to-Agent) descriptor configuration for a registry record.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcore#AccessDeniedException": {
             "type": "structure",
             "members": {
@@ -57,6 +72,47 @@
         },
         "com.amazonaws.bedrockagentcore#AgentCard": {
             "type": "document"
+        },
+        "com.amazonaws.bedrockagentcore#AgentCardDefinition": {
+            "type": "structure",
+            "members": {
+                "schemaVersion": {
+                    "target": "com.amazonaws.bedrockagentcore#SchemaVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The schema version of the agent card definition.</p>"
+                    }
+                },
+                "inlineContent": {
+                    "target": "com.amazonaws.bedrockagentcore#InlineContent",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The inline content of the agent card definition.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The agent card definition for A2A descriptors, including the schema version and inline content that describes the agent's capabilities.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#AgentSkillsDescriptor": {
+            "type": "structure",
+            "members": {
+                "skillMd": {
+                    "target": "com.amazonaws.bedrockagentcore#SkillMdDefinition",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The skill description in markdown format.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "skillDefinition": {
+                    "target": "com.amazonaws.bedrockagentcore#SkillDefinition",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The structured skill definition with a schema version and content.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The agent skills descriptor configuration for a registry record.</p>"
+            }
         },
         "com.amazonaws.bedrockagentcore#AgenticResource": {
             "type": "resource",
@@ -119,6 +175,9 @@
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcore#MemoryResource"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#RegistryRecordResource"
                 }
             ],
             "traits": {
@@ -1163,6 +1222,138 @@
                 "smithy.api#pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_]*$"
             }
         },
+        "com.amazonaws.bedrockagentcore#BrowserAction": {
+            "type": "union",
+            "members": {
+                "mouseClick": {
+                    "target": "com.amazonaws.bedrockagentcore#MouseClickArguments",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Click at the specified coordinates.</p>"
+                    }
+                },
+                "mouseMove": {
+                    "target": "com.amazonaws.bedrockagentcore#MouseMoveArguments",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Move the cursor to the specified coordinates.</p>"
+                    }
+                },
+                "mouseDrag": {
+                    "target": "com.amazonaws.bedrockagentcore#MouseDragArguments",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Drag from a start position to an end position.</p>"
+                    }
+                },
+                "mouseScroll": {
+                    "target": "com.amazonaws.bedrockagentcore#MouseScrollArguments",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Scroll at the specified position.</p>"
+                    }
+                },
+                "keyType": {
+                    "target": "com.amazonaws.bedrockagentcore#KeyTypeArguments",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Type a string of text.</p>"
+                    }
+                },
+                "keyPress": {
+                    "target": "com.amazonaws.bedrockagentcore#KeyPressArguments",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Press a key one or more times.</p>"
+                    }
+                },
+                "keyShortcut": {
+                    "target": "com.amazonaws.bedrockagentcore#KeyShortcutArguments",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Press a key combination.</p>"
+                    }
+                },
+                "screenshot": {
+                    "target": "com.amazonaws.bedrockagentcore#ScreenshotArguments",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Capture a full-screen screenshot.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The browser action to perform. Exactly one member must be set per request.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#BrowserActionResult": {
+            "type": "union",
+            "members": {
+                "mouseClick": {
+                    "target": "com.amazonaws.bedrockagentcore#MouseClickResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The result of a mouse click action.</p>"
+                    }
+                },
+                "mouseMove": {
+                    "target": "com.amazonaws.bedrockagentcore#MouseMoveResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The result of a mouse move action.</p>"
+                    }
+                },
+                "mouseDrag": {
+                    "target": "com.amazonaws.bedrockagentcore#MouseDragResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The result of a mouse drag action.</p>"
+                    }
+                },
+                "mouseScroll": {
+                    "target": "com.amazonaws.bedrockagentcore#MouseScrollResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The result of a mouse scroll action.</p>"
+                    }
+                },
+                "keyType": {
+                    "target": "com.amazonaws.bedrockagentcore#KeyTypeResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The result of a key type action.</p>"
+                    }
+                },
+                "keyPress": {
+                    "target": "com.amazonaws.bedrockagentcore#KeyPressResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The result of a key press action.</p>"
+                    }
+                },
+                "keyShortcut": {
+                    "target": "com.amazonaws.bedrockagentcore#KeyShortcutResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The result of a key shortcut action.</p>"
+                    }
+                },
+                "screenshot": {
+                    "target": "com.amazonaws.bedrockagentcore#ScreenshotResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The result of a screenshot action.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The result of a browser action execution. Exactly one member is set, matching the action that was performed.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#BrowserActionStatus": {
+            "type": "enum",
+            "members": {
+                "SUCCESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SUCCESS"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FAILED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The status of a browser action execution.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcore#BrowserEnterprisePolicies": {
             "type": "list",
             "member": {
@@ -1294,6 +1485,9 @@
                 "target": "com.amazonaws.bedrockagentcore#GetBrowserSession"
             },
             "operations": [
+                {
+                    "target": "com.amazonaws.bedrockagentcore#InvokeBrowser"
+                },
                 {
                     "target": "com.amazonaws.bedrockagentcore#ListBrowserSessions"
                 },
@@ -2065,6 +2259,20 @@
                 "smithy.api#pattern": "^[a-zA-Z0-9\\-_]+$"
             }
         },
+        "com.amazonaws.bedrockagentcore#CustomDescriptor": {
+            "type": "structure",
+            "members": {
+                "inlineContent": {
+                    "target": "com.amazonaws.bedrockagentcore#InlineContent",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The inline content of the custom descriptor.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> A custom descriptor configuration for a registry record.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcore#CustomRequestKeyType": {
             "type": "string",
             "traits": {
@@ -2270,6 +2478,80 @@
             },
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#Description": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 4096
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#DescriptorType": {
+            "type": "enum",
+            "members": {
+                "MCP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MCP"
+                    }
+                },
+                "A2A": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "A2A"
+                    }
+                },
+                "CUSTOM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CUSTOM"
+                    }
+                },
+                "AGENT_SKILLS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AGENT_SKILLS"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The type of descriptor associated with a registry record.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#Descriptors": {
+            "type": "structure",
+            "members": {
+                "mcp": {
+                    "target": "com.amazonaws.bedrockagentcore#McpDescriptor",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The MCP (Model Context Protocol) descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>MCP</code>.</p>"
+                    }
+                },
+                "a2a": {
+                    "target": "com.amazonaws.bedrockagentcore#A2aDescriptor",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The A2A (Agent-to-Agent) descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>A2A</code>.</p>"
+                    }
+                },
+                "custom": {
+                    "target": "com.amazonaws.bedrockagentcore#CustomDescriptor",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The custom descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>CUSTOM</code>.</p>"
+                    }
+                },
+                "agentSkills": {
+                    "target": "com.amazonaws.bedrockagentcore#AgentSkillsDescriptor",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The agent skills descriptor configuration. Populated when the record's <code>descriptorType</code> is <code>AGENT_SKILLS</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> Contains the descriptor configuration for a registry record. Only the field that matches the record's <code>descriptorType</code> is populated.</p>"
             }
         },
         "com.amazonaws.bedrockagentcore#Document": {
@@ -4009,6 +4291,15 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcore#InlineContent": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 409600
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcore#InputContentBlock": {
             "type": "structure",
             "members": {
@@ -4594,6 +4885,99 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.bedrockagentcore#InvokeBrowser": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcore#InvokeBrowserRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcore#InvokeBrowserResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcore#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Invokes an operating system-level action on a browser session in Amazon Bedrock AgentCore. This operation provides direct OS-level control over browser sessions, enabling mouse actions, keyboard input, and screenshots that the WebSocket-based Chrome DevTools Protocol (CDP) cannot handle — such as interacting with print dialogs, context menus, and JavaScript alerts.</p> <p>You send a request with exactly one action in the <code>BrowserAction</code> union, and receive a corresponding result in the <code>BrowserActionResult</code> union.</p> <p>The following operations are related to <code>InvokeBrowser</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartBrowserSession.html\">StartBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> </ul>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/browsers/{browserIdentifier}/sessions/invoke",
+                    "code": 200
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#InvokeBrowserRequest": {
+            "type": "structure",
+            "members": {
+                "browserIdentifier": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the browser associated with the session. This must match the identifier used when creating the session with <code>StartBrowserSession</code>.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "sessionId": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserSessionId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the browser session on which to perform the action. This must be an active session created with <code>StartBrowserSession</code>.</p>",
+                        "smithy.api#httpHeader": "x-amzn-browser-session-id",
+                        "smithy.api#required": {}
+                    }
+                },
+                "action": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The browser action to perform. Exactly one member of the <code>BrowserAction</code> union must be set per request.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Request for the InvokeBrowser operation.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#InvokeBrowserResponse": {
+            "type": "structure",
+            "members": {
+                "result": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserActionResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The result of the browser action. The member set in the result corresponds to the action that was performed.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "sessionId": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserSessionId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the browser session on which the action was performed.</p>",
+                        "smithy.api#httpHeader": "x-amzn-browser-session-id",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Response for the InvokeBrowser operation.</p>",
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.bedrockagentcore#InvokeCodeInterpreter": {
             "type": "operation",
             "input": {
@@ -4713,6 +5097,140 @@
             },
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#KeyList": {
+            "type": "list",
+            "member": {
+                "target": "smithy.api#String"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A list of key names for keyboard shortcuts.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 5
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#KeyPressArguments": {
+            "type": "structure",
+            "members": {
+                "key": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key name to press (for example, <code>enter</code>, <code>tab</code>, <code>escape</code>).</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "presses": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of times to press the key. Valid range: 1–100. Defaults to 1.</p>",
+                        "smithy.api#range": {
+                            "min": 1,
+                            "max": 100
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Arguments for a key press action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#KeyPressResult": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserActionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the action execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "error": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message. Present only when the action failed.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The result of a key press action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#KeyShortcutArguments": {
+            "type": "structure",
+            "members": {
+                "keys": {
+                    "target": "com.amazonaws.bedrockagentcore#KeyList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key combination to press (for example, <code>[\"ctrl\", \"s\"]</code>). Maximum 5 keys.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Arguments for a key shortcut action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#KeyShortcutResult": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserActionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the action execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "error": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message. Present only when the action failed.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The result of a key shortcut action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#KeyTypeArguments": {
+            "type": "structure",
+            "members": {
+                "text": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The text string to type. Maximum length: 10,000 characters.</p>",
+                        "smithy.api#length": {
+                            "max": 10000
+                        },
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Arguments for a key type action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#KeyTypeResult": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserActionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the action execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "error": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message. Present only when the action failed.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The result of a key type action.</p>"
             }
         },
         "com.amazonaws.bedrockagentcore#LanguageRuntime": {
@@ -5396,7 +5914,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Lists sessions in an AgentCore Memory resource based on specified criteria. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:ListSessions</code> permission.</p>",
+                "smithy.api#documentation": "<p>Lists sessions in an AgentCore Memory resource based on specified criteria. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>Empty sessions are automatically deleted after one day.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:ListSessions</code> permission.</p>",
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/memories/{memoryId}/actor/{actorId}/sessions"
@@ -5503,6 +6021,28 @@
                     "min": 1,
                     "max": 100
                 }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#McpDescriptor": {
+            "type": "structure",
+            "members": {
+                "server": {
+                    "target": "com.amazonaws.bedrockagentcore#ServerDefinition",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The MCP server definition that describes the server configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "tools": {
+                    "target": "com.amazonaws.bedrockagentcore#ToolsDefinition",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The MCP tools definition that describes the available tools.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The MCP (Model Context Protocol) descriptor configuration for a registry record. Contains the server definition and tools definition.</p>"
             }
         },
         "com.amazonaws.bedrockagentcore#MemoryContent": {
@@ -5969,6 +6509,12 @@
                 "target": "com.amazonaws.bedrockagentcore#MessageMetadata"
             }
         },
+        "com.amazonaws.bedrockagentcore#MetadataFilterExpression": {
+            "type": "document",
+            "traits": {
+                "smithy.api#documentation": "<p> A JSON document that represents a structured metadata filter expression. Supports field-level operators (<code>$eq</code>, <code>$ne</code>, <code>$in</code>) and logical operators (<code>$and</code>, <code>$or</code>) on filterable fields (<code>name</code>, <code>descriptorType</code>, <code>version</code>).</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcore#MetadataKey": {
             "type": "string",
             "traits": {
@@ -6020,6 +6566,260 @@
                     "min": 1,
                     "max": 256
                 }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MouseButton": {
+            "type": "enum",
+            "members": {
+                "LEFT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LEFT"
+                    }
+                },
+                "RIGHT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RIGHT"
+                    }
+                },
+                "MIDDLE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MIDDLE"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The mouse button to use for a browser mouse action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MouseClickArguments": {
+            "type": "structure",
+            "members": {
+                "x": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The X coordinate on screen where the click occurs.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "y": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Y coordinate on screen where the click occurs.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "button": {
+                    "target": "com.amazonaws.bedrockagentcore#MouseButton",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The mouse button to use. Defaults to <code>LEFT</code>.</p>"
+                    }
+                },
+                "clickCount": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of clicks to perform. Valid range: 1–10. Defaults to 1.</p>",
+                        "smithy.api#range": {
+                            "min": 1,
+                            "max": 10
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Arguments for a mouse click action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MouseClickResult": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserActionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the action execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "error": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message. Present only when the action failed.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The result of a mouse click action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MouseDragArguments": {
+            "type": "structure",
+            "members": {
+                "endX": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ending X coordinate for the drag.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "endY": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ending Y coordinate for the drag.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "startX": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The starting X coordinate for the drag.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "startY": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The starting Y coordinate for the drag.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "button": {
+                    "target": "com.amazonaws.bedrockagentcore#MouseButton",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The mouse button to use for the drag. Defaults to <code>LEFT</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Arguments for a mouse drag action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MouseDragResult": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserActionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the action execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "error": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message. Present only when the action failed.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The result of a mouse drag action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MouseMoveArguments": {
+            "type": "structure",
+            "members": {
+                "x": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The target X coordinate on screen.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "y": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The target Y coordinate on screen.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Arguments for a mouse move action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MouseMoveResult": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserActionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the action execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "error": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message. Present only when the action failed.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The result of a mouse move action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MouseScrollArguments": {
+            "type": "structure",
+            "members": {
+                "x": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The X coordinate on screen where the scroll occurs.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "y": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Y coordinate on screen where the scroll occurs.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "deltaX": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The horizontal scroll delta. Valid range: -1000 to 1000.</p>",
+                        "smithy.api#range": {
+                            "min": -1000,
+                            "max": 1000
+                        }
+                    }
+                },
+                "deltaY": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The vertical scroll delta. Valid range: -1000 to 1000. Negative values scroll down.</p>",
+                        "smithy.api#range": {
+                            "min": -1000,
+                            "max": 1000
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Arguments for a mouse scroll action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MouseScrollResult": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserActionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the action execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "error": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message. Present only when the action failed.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The result of a mouse scroll action.</p>"
             }
         },
         "com.amazonaws.bedrockagentcore#Name": {
@@ -6236,6 +7036,208 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Union type representing different proxy authentication methods. Currently supports HTTP Basic Authentication (username and password).</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#RegistryArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/[a-zA-Z0-9]{12,16}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#RegistryIdList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcore#RegistryIdentifier"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#RegistryIdentifier": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^(arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/)?[a-zA-Z0-9]{12,16}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#RegistryRecordArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:registry/[a-zA-Z0-9]{12,16}/record/[a-zA-Z0-9]{12}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#RegistryRecordId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 12,
+                    "max": 12
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9]{12}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#RegistryRecordName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9][a-zA-Z0-9_\\-\\.\\/]*$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#RegistryRecordResource": {
+            "type": "resource",
+            "operations": [
+                {
+                    "target": "com.amazonaws.bedrockagentcore#SearchRegistryRecords"
+                }
+            ]
+        },
+        "com.amazonaws.bedrockagentcore#RegistryRecordStatus": {
+            "type": "enum",
+            "members": {
+                "DRAFT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DRAFT"
+                    }
+                },
+                "PENDING_APPROVAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PENDING_APPROVAL"
+                    }
+                },
+                "APPROVED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "APPROVED"
+                    }
+                },
+                "REJECTED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REJECTED"
+                    }
+                },
+                "DEPRECATED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DEPRECATED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The status of a registry record in its lifecycle.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#RegistryRecordSummary": {
+            "type": "structure",
+            "members": {
+                "registryArn": {
+                    "target": "com.amazonaws.bedrockagentcore#RegistryArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the registry that this record belongs to.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "recordArn": {
+                    "target": "com.amazonaws.bedrockagentcore#RegistryRecordArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the registry record.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "recordId": {
+                    "target": "com.amazonaws.bedrockagentcore#RegistryRecordId",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The unique identifier of the registry record.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcore#RegistryRecordName",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The name of the registry record.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcore#Description",
+                    "traits": {
+                        "smithy.api#documentation": "<p> A description of the registry record.</p>"
+                    }
+                },
+                "descriptorType": {
+                    "target": "com.amazonaws.bedrockagentcore#DescriptorType",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The type of descriptor associated with this registry record.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "descriptors": {
+                    "target": "com.amazonaws.bedrockagentcore#Descriptors",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The descriptor configurations for this registry record.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "version": {
+                    "target": "com.amazonaws.bedrockagentcore#RegistryRecordVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The version of the registry record.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcore#RegistryRecordStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The current status of the registry record.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "createdAt": {
+                    "target": "com.amazonaws.bedrockagentcore#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The date and time when the registry record was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "updatedAt": {
+                    "target": "com.amazonaws.bedrockagentcore#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The date and time when the registry record was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> Summary information about a registry record.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#RegistryRecordSummaryList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcore#RegistryRecordSummary"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#RegistryRecordVersion": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9.-]+$"
             }
         },
         "com.amazonaws.bedrockagentcore#RequestIdentifier": {
@@ -6740,6 +7742,15 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.bedrockagentcore#SchemaVersion": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcore#ScopeType": {
             "type": "string",
             "traits": {
@@ -6753,6 +7764,61 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.bedrockagentcore#ScopeType"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#ScreenshotArguments": {
+            "type": "structure",
+            "members": {
+                "format": {
+                    "target": "com.amazonaws.bedrockagentcore#ScreenshotFormat",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The image format for the screenshot. Defaults to <code>PNG</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Arguments for a screenshot action.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#ScreenshotFormat": {
+            "type": "enum",
+            "members": {
+                "PNG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PNG"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The image format for a browser screenshot.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#ScreenshotResult": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcore#BrowserActionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the action execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "error": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message. Present only when the action failed.</p>"
+                    }
+                },
+                "data": {
+                    "target": "smithy.api#Blob",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The base64-encoded image data. Present only when the action succeeded.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The result of a screenshot action.</p>"
             }
         },
         "com.amazonaws.bedrockagentcore#SearchCriteria": {
@@ -6797,6 +7863,105 @@
                 "smithy.api#documentation": "<p>Contains search criteria for retrieving memory records.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcore#SearchRegistryRecords": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcore#SearchRegistryRecordsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcore#SearchRegistryRecordsResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcore#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p> Searches for registry records using semantic, lexical, or hybrid queries. Returns metadata for matching records ordered by relevance within the specified registry.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/registry-records/search",
+                    "code": 200
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#SearchRegistryRecordsRequest": {
+            "type": "structure",
+            "members": {
+                "searchQuery": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The search query to find matching registry records.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 256
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "registryIds": {
+                    "target": "com.amazonaws.bedrockagentcore#RegistryIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The list of registry identifiers to search within. Currently, you can specify exactly one registry identifier. You can provide either the full Amazon Web Services Resource Name (ARN) or the 12-character alphanumeric registry ID.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 1
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "maxResults": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#default": 10,
+                        "smithy.api#documentation": "<p> The maximum number of records to return in a single call. Valid values are 1 through 20. The default value is 10.</p>",
+                        "smithy.api#range": {
+                            "min": 1,
+                            "max": 20
+                        }
+                    }
+                },
+                "filters": {
+                    "target": "com.amazonaws.bedrockagentcore#MetadataFilterExpression",
+                    "traits": {
+                        "smithy.api#documentation": "<p> A metadata filter expression to narrow search results. Uses structured JSON operators including field-level operators (<code>$eq</code>, <code>$ne</code>, <code>$in</code>) and logical operators (<code>$and</code>, <code>$or</code>) on filterable fields (<code>name</code>, <code>descriptorType</code>, <code>version</code>). For example, to filter by descriptor type: <code>{\"descriptorType\": {\"$eq\": \"MCP\"}}</code>. To combine filters: <code>{\"$and\": [{\"descriptorType\": {\"$eq\": \"MCP\"}}, {\"name\": {\"$eq\": \"my-tool\"}}]}</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#SearchRegistryRecordsResponse": {
+            "type": "structure",
+            "members": {
+                "registryRecords": {
+                    "target": "com.amazonaws.bedrockagentcore#RegistryRecordSummaryList",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The list of registry records that match the search query, ordered by relevance.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.bedrockagentcore#SecretArn": {
             "type": "string",
             "traits": {
@@ -6822,6 +7987,26 @@
             "type": "string",
             "traits": {
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#ServerDefinition": {
+            "type": "structure",
+            "members": {
+                "schemaVersion": {
+                    "target": "com.amazonaws.bedrockagentcore#SchemaVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The schema version of the MCP server configuration. The schema version identifies the format of the server definition content.</p>"
+                    }
+                },
+                "inlineContent": {
+                    "target": "com.amazonaws.bedrockagentcore#InlineContent",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The inline content of the server definition.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The MCP server definition with a schema version and inline content. The <code>schemaVersion</code> identifies the version of the MCP server configuration schema.</p>"
             }
         },
         "com.amazonaws.bedrockagentcore#ServiceException": {
@@ -6938,6 +8123,40 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcore#SkillDefinition": {
+            "type": "structure",
+            "members": {
+                "schemaVersion": {
+                    "target": "com.amazonaws.bedrockagentcore#SchemaVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The schema version of the skill definition. If you don't specify a version, the service detects it automatically.</p>"
+                    }
+                },
+                "inlineContent": {
+                    "target": "com.amazonaws.bedrockagentcore#InlineContent",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The inline content of the skill definition.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The structured skill definition with a schema version and inline content.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#SkillMdDefinition": {
+            "type": "structure",
+            "members": {
+                "inlineContent": {
+                    "target": "com.amazonaws.bedrockagentcore#InlineContent",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The inline markdown content of the skill definition.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The skill markdown definition for agent skills descriptors.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcore#Span": {
             "type": "document"
         },
@@ -7034,7 +8253,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Creates and initializes a browser session in Amazon Bedrock AgentCore. The session enables agents to navigate and interact with web content, extract information from websites, and perform web-based tasks as part of their response generation.</p> <p>To create a session, you must specify a browser identifier and a name. You can also configure the viewport dimensions to control the visible area of web content. The session remains active until it times out or you explicitly stop it using the <code>StopBrowserSession</code> operation.</p> <p>The following operations are related to <code>StartBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UpdateBrowserStream.html\">UpdateBrowserStream</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SaveBrowserSessionProfile.html\">SaveBrowserSessionProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> </ul>",
+                "smithy.api#documentation": "<p>Creates and initializes a browser session in Amazon Bedrock AgentCore. The session enables agents to navigate and interact with web content, extract information from websites, and perform web-based tasks as part of their response generation.</p> <p>To create a session, you must specify a browser identifier and a name. You can also configure the viewport dimensions to control the visible area of web content. The session remains active until it times out or you explicitly stop it using the <code>StopBrowserSession</code> operation.</p> <p>The following operations are related to <code>StartBrowserSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetBrowserSession.html\">GetBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_UpdateBrowserStream.html\">UpdateBrowserStream</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_SaveBrowserSessionProfile.html\">SaveBrowserSessionProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopBrowserSession.html\">StopBrowserSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeBrowser.html\">InvokeBrowser</a> </p> </li> </ul>",
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/browsers/{browserIdentifier}/sessions/start",
@@ -8039,6 +9258,26 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Contains structured content from a tool result.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#ToolsDefinition": {
+            "type": "structure",
+            "members": {
+                "protocolVersion": {
+                    "target": "com.amazonaws.bedrockagentcore#SchemaVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The MCP protocol version that the tools conform to. This differs from the <code>schemaVersion</code> field in the server definition, which identifies the server configuration schema format.</p>"
+                    }
+                },
+                "inlineContent": {
+                    "target": "com.amazonaws.bedrockagentcore#InlineContent",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The inline content of the tools definition.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> The MCP tools definition with a protocol version and inline content. The <code>protocolVersion</code> identifies the MCP protocol version that the tools conform to. This differs from <code>schemaVersion</code> in the server definition, which identifies the server configuration schema format.</p>"
             }
         },
         "com.amazonaws.bedrockagentcore#TraceId": {
