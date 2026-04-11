@@ -26,11 +26,11 @@ class SchemaGeneratorPluginTest {
 
     private fun withTestProject(block: TestProject.() -> Unit) = runBlocking {
         withTempDir(TempDirCleanupMode.ON_SUCCESS) { dir ->
-        val testProjectDir = File(dir.toString())
-        val settingsFile = File(testProjectDir, "settings.gradle.kts").also { it.writeText("") }
-        val buildFile = File(testProjectDir, "build.gradle.kts").also { it.writeText("") }
+            val testProjectDir = File(dir.toString())
+            val settingsFile = File(testProjectDir, "settings.gradle.kts").also { it.writeText("") }
+            val buildFile = File(testProjectDir, "build.gradle.kts").also { it.writeText("") }
 
-        val buildFileContent = """
+            val buildFileContent = """
         repositories {
             mavenCentral()
             mavenLocal()
@@ -47,17 +47,17 @@ class SchemaGeneratorPluginTest {
             implementation("aws.sdk.kotlin:dynamodb-mapper-schema-generator-plugin:$sdkVersion")
         }
         
-        """.trimIndent()
-        buildFile.writeText(buildFileContent)
+            """.trimIndent()
+            buildFile.writeText(buildFileContent)
 
-        val runner = GradleRunner
-            .create()
-            .withProjectDir(testProjectDir)
-            .withPluginClasspath()
-            .forwardOutput()
-            .withArguments("--info", "build")
+            val runner = GradleRunner
+                .create()
+                .withProjectDir(testProjectDir)
+                .withPluginClasspath()
+                .forwardOutput()
+                .withArguments("--info", "build")
 
-        TestProject(testProjectDir, settingsFile, buildFile, runner).block()
+            TestProject(testProjectDir, settingsFile, buildFile, runner).block()
         }
     }
 
