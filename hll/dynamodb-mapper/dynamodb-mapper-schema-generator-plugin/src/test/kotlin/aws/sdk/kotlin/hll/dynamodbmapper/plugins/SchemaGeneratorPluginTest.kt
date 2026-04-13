@@ -31,22 +31,21 @@ class SchemaGeneratorPluginTest {
             val buildFile = File(testProjectDir, "build.gradle.kts").also { it.writeText("") }
 
             val buildFileContent = """
-        repositories {
-            mavenCentral()
-            mavenLocal()
-        }
-        
-        plugins {
-            id("org.jetbrains.kotlin.jvm") version "$kotlinVersion"
-            id("aws.sdk.kotlin.hll.dynamodbmapper.schema.generator")
-        }
-        
-        dependencies {
-            implementation("aws.sdk.kotlin:dynamodb-mapper:$sdkVersion")
-            implementation("aws.sdk.kotlin:dynamodb-mapper-annotations:$sdkVersion")
-            implementation("aws.sdk.kotlin:dynamodb-mapper-schema-generator-plugin:$sdkVersion")
-        }
-        
+                repositories {
+                    mavenCentral()
+                    mavenLocal()
+                }
+                
+                plugins {
+                    id("org.jetbrains.kotlin.jvm") version "$kotlinVersion"
+                    id("aws.sdk.kotlin.hll.dynamodbmapper.schema.generator")
+                }
+                
+                dependencies {
+                    implementation("aws.sdk.kotlin:dynamodb-mapper:$sdkVersion")
+                    implementation("aws.sdk.kotlin:dynamodb-mapper-annotations:$sdkVersion")
+                    implementation("aws.sdk.kotlin:dynamodb-mapper-schema-generator-plugin:$sdkVersion")
+                }
             """.trimIndent()
             buildFile.writeText(buildFileContent)
 
