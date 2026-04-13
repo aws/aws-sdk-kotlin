@@ -46,6 +46,7 @@ class SchemaGeneratorPluginTest {
                     implementation("aws.sdk.kotlin:dynamodb-mapper-annotations:$sdkVersion")
                     implementation("aws.sdk.kotlin:dynamodb-mapper-schema-generator-plugin:$sdkVersion")
                 }
+                
             """.trimIndent()
             buildFile.writeText(buildFileContent)
 
