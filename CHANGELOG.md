@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.6.58] - 04/16/2026
+
+### Features
+* (**appstream**) Add content redirection to Update Stack
+* (**autoscaling**) This release adds support for specifying Availability Zone IDs as an alternative to Availability Zone names when creating or updating Auto Scaling groups.
+* (**bedrockagentcore**) Introducing NamespacePath in AgentCore Memory to support hierarchical prefix based memory record retrieval.
+* (**cloudwatchlogs**) Endpoint update for CloudWatch Logs Streaming APIs.
+* (**cognitoidentityprovider**) Adds support for passkey-based multi-factor authentication in Cognito User Pools. Users can authenticate securely using FIDO2-compliant passkeys with user verification, enabling passwordless MFA flows while maintaining backward compatibility with password-based authentication
+* (**connect**) This release updates the Amazon Connect Rules CRUD APIs to support a new EventSourceName - OnEmailAnalysisAvailable. Use this event source to trigger rules when conversational analytics results are available for email contacts.
+* (**connectcases**) Added error handling for service quota limits
+* (**customerprofiles**) Amazon Connect Customer Profiles adds RecommenderSchema CRUD APIs for custom ML training columns. CreateRecommender and CreateRecommenderFilter now accept optional RecommenderSchemaName.
+* (**datazone**) Launching SMUS IAM domain SDK support
+* (**devopsagent**) Deprecate the userId from the Chat operations. This update also removes  support of AllowVendedLogDeliveryForResource API from AWS SDKs.
+* (**drs**) Updating regex for identification of AWS Regions.
+* (**mediaconvert**) Adds support for Elemental Inference powered smart crop feature, enabling video verticalization
+* (**rds**) Adds a new DescribeServerlessV2PlatformVersions API to describe platform version properties for Aurora Serverless v2. Also introduces a new valid maintenance action value for serverless platform version updates.
+
+### Documentation
+* (**cloudwatch**) Update documentation of alarm mute rules start and end date fields
+
 ## [1.6.57] - 04/13/2026
 
 ### Features
