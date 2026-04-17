@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.6.59] - 04/17/2026
+
+### Features
+* (**cleanrooms**) This release adds support for configurable spark properties for Cleanrooms PySpark workloads.
+* (**connect**) Fixes in SDK for customers using TestCase APIs
+* (**connectcampaignsv2**) This release adds support for campaign entry limits configuration and hourly refresh frequency in Amazon Connect Outbound Campaigns.
+* (**groundstation**) Adds support for updating contacts, listing antennas, and listing ground station reservations. New API operations - UpdateContact, ListContactVersions, DescribeContactVersion, ListAntennas, and ListGroundStationReservations.
+* (**imagebuilder**) ImportDiskImage API adds registerImageOptions for Secure Boot control and custom UEFI data. It adds windowsConfiguration for selecting a specific edition from multi-image .wim files during ISO import.
+* (**quicksight**) Public release of dashboard customization summary, S3 Tables data source type, Athena cross-account connector, custom sorting for controls, and AI-powered analysis generation.
+* (**sagemaker**) Adds support for providing NetworkInterface for efa enabled instances and Simplified cluster creation for Slurm-orchestrated clusters with optional Lifecycle Script (LCS) configuration.
+* (**sts**) The STS client now supports configuring SigV4a through the auth scheme preference setting. SigV4a uses asymmetric cryptography, enabling customers using long-term IAM credentials to continue making STS API calls even when a region is isolated from the partition leader.
+
+### Documentation
+* (**neptune**) Improving Documentation for Neptune
+
 ## [1.6.58] - 04/16/2026
 
 ### Features
