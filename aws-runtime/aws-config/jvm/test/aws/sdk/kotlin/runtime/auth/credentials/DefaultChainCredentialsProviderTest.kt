@@ -56,7 +56,7 @@ class DefaultChainCredentialsProviderTest {
             data: ByteArray,
             writeType: WriteType,
             mustExist: Boolean,
-            permissions: String?
+            permissions: String?,
         ) {
             error("not needed for test")
         }
