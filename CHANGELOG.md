@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.6.59] - 04/17/2026
+
+### Features
+* (**cleanrooms**) This release adds support for configurable spark properties for Cleanrooms PySpark workloads.
+* (**connect**) Fixes in SDK for customers using TestCase APIs
+* (**connectcampaignsv2**) This release adds support for campaign entry limits configuration and hourly refresh frequency in Amazon Connect Outbound Campaigns.
+* (**groundstation**) Adds support for updating contacts, listing antennas, and listing ground station reservations. New API operations - UpdateContact, ListContactVersions, DescribeContactVersion, ListAntennas, and ListGroundStationReservations.
+* (**imagebuilder**) ImportDiskImage API adds registerImageOptions for Secure Boot control and custom UEFI data. It adds windowsConfiguration for selecting a specific edition from multi-image .wim files during ISO import.
+* (**quicksight**) Public release of dashboard customization summary, S3 Tables data source type, Athena cross-account connector, custom sorting for controls, and AI-powered analysis generation.
+* (**sagemaker**) Adds support for providing NetworkInterface for efa enabled instances and Simplified cluster creation for Slurm-orchestrated clusters with optional Lifecycle Script (LCS) configuration.
+* (**sts**) The STS client now supports configuring SigV4a through the auth scheme preference setting. SigV4a uses asymmetric cryptography, enabling customers using long-term IAM credentials to continue making STS API calls even when a region is isolated from the partition leader.
+
+### Documentation
+* (**neptune**) Improving Documentation for Neptune
+
+## [1.6.58] - 04/16/2026
+
+### Features
+* (**appstream**) Add content redirection to Update Stack
+* (**autoscaling**) This release adds support for specifying Availability Zone IDs as an alternative to Availability Zone names when creating or updating Auto Scaling groups.
+* (**bedrockagentcore**) Introducing NamespacePath in AgentCore Memory to support hierarchical prefix based memory record retrieval.
+* (**cloudwatchlogs**) Endpoint update for CloudWatch Logs Streaming APIs.
+* (**cognitoidentityprovider**) Adds support for passkey-based multi-factor authentication in Cognito User Pools. Users can authenticate securely using FIDO2-compliant passkeys with user verification, enabling passwordless MFA flows while maintaining backward compatibility with password-based authentication
+* (**connect**) This release updates the Amazon Connect Rules CRUD APIs to support a new EventSourceName - OnEmailAnalysisAvailable. Use this event source to trigger rules when conversational analytics results are available for email contacts.
+* (**connectcases**) Added error handling for service quota limits
+* (**customerprofiles**) Amazon Connect Customer Profiles adds RecommenderSchema CRUD APIs for custom ML training columns. CreateRecommender and CreateRecommenderFilter now accept optional RecommenderSchemaName.
+* (**datazone**) Launching SMUS IAM domain SDK support
+* (**devopsagent**) Deprecate the userId from the Chat operations. This update also removes  support of AllowVendedLogDeliveryForResource API from AWS SDKs.
+* (**drs**) Updating regex for identification of AWS Regions.
+* (**mediaconvert**) Adds support for Elemental Inference powered smart crop feature, enabling video verticalization
+* (**rds**) Adds a new DescribeServerlessV2PlatformVersions API to describe platform version properties for Aurora Serverless v2. Also introduces a new valid maintenance action value for serverless platform version updates.
+
+### Documentation
+* (**cloudwatch**) Update documentation of alarm mute rules start and end date fields
+
 ## [1.6.57] - 04/13/2026
 
 ### Features
