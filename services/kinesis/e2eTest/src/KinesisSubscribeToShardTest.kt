@@ -8,11 +8,12 @@ import aws.sdk.kotlin.services.kinesis.model.*
 import aws.sdk.kotlin.services.kinesis.waiters.waitUntilStreamExists
 import aws.sdk.kotlin.testing.withAllEngines
 import aws.smithy.kotlin.runtime.retries.getOrThrow
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,7 +30,7 @@ private val TEST_DATA = "Bees, bees, bees, bees!"
 /**
  * Tests for Kinesis SubscribeToShard (an RPC-bound protocol)
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestLifecycle.PER_CLASS)
 class KinesisSubscribeToShardTest {
     private val client = KinesisClient { region = "us-east-1" }
 
