@@ -6,19 +6,20 @@ package aws.sdk.kotlin.e2etest
 
 import aws.sdk.kotlin.services.transcribestreaming.TranscribeStreamingClient
 import aws.sdk.kotlin.services.transcribestreaming.model.*
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import java.io.File
 import java.nio.file.Paths
 import javax.sound.sampled.AudioSystem
+import kotlin.test.Test
 import kotlin.test.assertTrue
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestLifecycle.PER_CLASS)
 class TranscribeStreamingIntegrationTest {
 
     @Test
