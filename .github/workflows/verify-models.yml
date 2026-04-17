@@ -1,0 +1,89 @@
+name: Verify models up to date
+
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-models:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout SDK
+        uses: actions/checkout@v4
+
+      - name: Checkout api-models-aws
+        uses: actions/checkout@v4
+        with:
+          repository: aws/api-models-aws
+          path: __api-models-aws
+          sparse-checkout: models
+
+      - name: Check for model drift
+        shell: bash
+        run: |
+          SDK_MODELS_DIR="codegen/sdk/aws-models"
+          API_MODELS_DIR="__api-models-aws"
+          DRIFT_FOUND=0
+          DRIFTED=()
+          MISSING_CANONICAL=()
+          MISSING_SDK=()
+
+          # Check SDK models against canonical (SDK → canonical)
+          for sdk_model in "$SDK_MODELS_DIR"/*.json; do
+            filename=$(basename "$sdk_model" .json)
+            canonical=$(find "$API_MODELS_DIR/models/$filename" -name "*.json" 2>/dev/null | sort -r | head -1)
+
+            if [ -z "$canonical" ]; then
+              MISSING_CANONICAL+=("$filename")
+              continue
+            fi
+
+            if ! diff <(jq -S . "$sdk_model") <(jq -S . "$canonical") > /dev/null 2>&1; then
+              DRIFTED+=("$filename")
+            fi
+          done
+
+          # Check canonical models not in SDK (canonical → SDK)
+          for canonical_dir in "$API_MODELS_DIR"/models/*/; do
+            svc_name=$(basename "$canonical_dir")
+            if [ ! -f "$SDK_MODELS_DIR/$svc_name.json" ]; then
+              MISSING_SDK+=("$svc_name")
+            fi
+          done
+
+          echo ""
+          echo "=== Model Drift Report ==="
+          echo "Drifted: ${#DRIFTED[@]}"
+          echo "In SDK but not in api-models-aws: ${#MISSING_CANONICAL[@]}"
+          echo "In api-models-aws but not in SDK: ${#MISSING_SDK[@]}"
+
+          if [ ${#DRIFTED[@]} -gt 0 ]; then
+            echo ""
+            echo "Drifted services:"
+            printf '  - %s\n' "${DRIFTED[@]}"
+            DRIFT_FOUND=1
+          fi
+
+          if [ ${#MISSING_CANONICAL[@]} -gt 0 ]; then
+            echo ""
+            echo "In SDK but not in api-models-aws:"
+            printf '  - %s\n' "${MISSING_CANONICAL[@]}"
+            DRIFT_FOUND=1
+          fi
+
+          if [ ${#MISSING_SDK[@]} -gt 0 ]; then
+            echo ""
+            echo "In api-models-aws but not in SDK:"
+            printf '  - %s\n' "${MISSING_SDK[@]}"
+            DRIFT_FOUND=1
+          fi
+
+          exit $DRIFT_FOUND
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf __api-models-aws
