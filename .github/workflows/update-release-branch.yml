@@ -41,11 +41,16 @@ jobs:
           aws-region: us-west-2
       - name: Setup kat
         uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
+      - name: Get deploy key
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            DEPLOY_KEY, arn:aws:secretsmanager:us-west-2:971649473629:secret:sdkdeploykeyF11751F3-1eoTR5KeDXeH-r9gTUX
       - uses: actions/checkout@v4
         with:
           ref: 'main'
           fetch-depth: 0
-          token: ${{ secrets.CI_USER_PAT }}
+          ssh-key: ${{ env.DEPLOY_KEY }}
       - name: Configure Git
         shell: bash
         run: |

@@ -120,6 +120,12 @@
                         "smithy.api#documentation": "<p>Settings for the application logs.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "timeoutInMillis": {
+                    "target": "com.amazonaws.rtbfabric#LinkTimeoutInMillis",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timeout value in milliseconds.</p>"
+                    }
                 }
             },
             "traits": {
@@ -188,6 +194,15 @@
                         "smithy.api#documentation": "<p>Attributes of the link.</p>"
                     }
                 },
+                "logSettings": {
+                    "target": "com.amazonaws.rtbfabric#LinkLogSettings"
+                },
+                "connectivityType": {
+                    "target": "com.amazonaws.rtbfabric#ConnectivityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectivity type of the link.</p>"
+                    }
+                },
                 "linkId": {
                     "target": "com.amazonaws.rtbfabric#LinkId",
                     "traits": {
@@ -237,7 +252,13 @@
             }
         },
         "com.amazonaws.rtbfabric#AutoScalingGroupName": {
-            "type": "string"
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                }
+            }
         },
         "com.amazonaws.rtbfabric#AutoScalingGroupNameList": {
             "type": "list",
@@ -259,7 +280,14 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p>The role ARN of the auto scaling group.</p>",
+                        "smithy.api#pattern": "^arn:aws:iam::[0-9]{12}:role/.{1,2048}$",
                         "smithy.api#required": {}
+                    }
+                },
+                "healthCheckConfig": {
+                    "target": "com.amazonaws.rtbfabric#HealthCheckConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The health check configuration for the Auto Scaling group managed endpoint.</p>"
                     }
                 }
             },
@@ -303,6 +331,38 @@
                 "smithy.api#documentation": "<p>The request could not be completed because of a conflict in the current state of the resource.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 409
+            }
+        },
+        "com.amazonaws.rtbfabric#ConnectivityType": {
+            "type": "enum",
+            "members": {
+                "DEFAULT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DEFAULT"
+                    }
+                },
+                "PUBLIC_INGRESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PUBLIC_INGRESS"
+                    }
+                },
+                "PUBLIC_EGRESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PUBLIC_EGRESS"
+                    }
+                },
+                "EXTERNAL_INBOUND": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "EXTERNAL_INBOUND"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The connectivity type for a link or gateway.</p>"
             }
         },
         "com.amazonaws.rtbfabric#CreateInboundExternalLink": {
@@ -422,6 +482,7 @@
                 "logSettings": {
                     "target": "com.amazonaws.rtbfabric#LinkLogSettings",
                     "traits": {
+                        "smithy.api#documentation": "<p>Settings for the application logs.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -507,8 +568,8 @@
                 "smithy.api#documentation": "<p>Creates a new link between gateways.</p> <p>Establishes a connection that allows gateways to communicate and exchange bid requests and responses.</p>",
                 "smithy.api#examples": [
                     {
-                        "title": "Create a new link",
-                        "documentation": "Creates a new link between RTB applications",
+                        "title": "Create a standard link between gateways",
+                        "documentation": "Creates a new link between two RTB applications. Requires peerGatewayId to specify the target gateway.",
                         "input": {
                             "gatewayId": "rtb-gw-12345678",
                             "peerGatewayId": "rtb-gw-87654321",
@@ -605,6 +666,12 @@
                         "smithy.api#documentation": "<p>Settings for the application logs.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "timeoutInMillis": {
+                    "target": "com.amazonaws.rtbfabric#LinkTimeoutInMillis",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timeout value in milliseconds.</p>"
+                    }
                 }
             },
             "traits": {
@@ -671,6 +738,15 @@
                     "target": "com.amazonaws.rtbfabric#LinkAttributes",
                     "traits": {
                         "smithy.api#documentation": "<p>Attributes of the link.</p>"
+                    }
+                },
+                "logSettings": {
+                    "target": "com.amazonaws.rtbfabric#LinkLogSettings"
+                },
+                "connectivityType": {
+                    "target": "com.amazonaws.rtbfabric#ConnectivityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectivity type of the link.</p>"
                     }
                 },
                 "linkId": {
@@ -799,7 +875,10 @@
                     }
                 },
                 "attributes": {
-                    "target": "com.amazonaws.rtbfabric#LinkAttributes"
+                    "target": "com.amazonaws.rtbfabric#LinkAttributes",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Attributes of the link.</p>"
+                    }
                 },
                 "publicEndpoint": {
                     "target": "com.amazonaws.rtbfabric#URL",
@@ -811,6 +890,7 @@
                 "logSettings": {
                     "target": "com.amazonaws.rtbfabric#LinkLogSettings",
                     "traits": {
+                        "smithy.api#documentation": "<p>Settings for the application logs.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -980,7 +1060,11 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p>An optional description for the requester gateway.</p>",
-                        "smithy.api#pattern": "^[A-Za-z0-9 ]+$"
+                        "smithy.api#length": {
+                            "min": 0,
+                            "max": 255
+                        },
+                        "smithy.api#pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
                     }
                 },
                 "tags": {
@@ -1164,6 +1248,9 @@
                         "smithy.api#required": {}
                     }
                 },
+                "listenerConfig": {
+                    "target": "com.amazonaws.rtbfabric#ListenerConfig"
+                },
                 "trustStoreConfiguration": {
                     "target": "com.amazonaws.rtbfabric#TrustStoreConfiguration",
                     "traits": {
@@ -1188,13 +1275,23 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p>An optional description for the responder gateway.</p>",
-                        "smithy.api#pattern": "^[A-Za-z0-9 ]+$"
+                        "smithy.api#length": {
+                            "min": 0,
+                            "max": 255
+                        },
+                        "smithy.api#pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
                     }
                 },
                 "tags": {
                     "target": "com.amazonaws.rtbfabric#TagsMap",
                     "traits": {
                         "smithy.api#documentation": "<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+                    }
+                },
+                "gatewayType": {
+                    "target": "com.amazonaws.rtbfabric#GatewayType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of gateway. Valid values are <code>EXTERNAL</code> or <code>INTERNAL</code>.</p>"
                     }
                 }
             },
@@ -1217,6 +1314,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The status of the request.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "listenerConfig": {
+                    "target": "com.amazonaws.rtbfabric#ListenerConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The listener configuration for the responder gateway.</p>"
+                    }
+                },
+                "externalInboundEndpoint": {
+                    "target": "com.amazonaws.rtbfabric#DomainName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The external inbound endpoint for the responder gateway.</p>"
                     }
                 }
             },
@@ -1785,7 +1894,7 @@
                     "min": 1,
                     "max": 255
                 },
-                "smithy.api#pattern": "^(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))+$"
+                "smithy.api#pattern": "^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$"
             }
         },
         "com.amazonaws.rtbfabric#EksEndpointsConfiguration": {
@@ -1830,6 +1939,7 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p>The role ARN for the cluster.</p>",
+                        "smithy.api#pattern": "^arn:aws:iam::[0-9]{12}:role/.{1,2048}$",
                         "smithy.api#required": {}
                     }
                 }
@@ -1944,6 +2054,10 @@
         "com.amazonaws.rtbfabric#GatewayId": {
             "type": "string",
             "traits": {
+                "smithy.api#length": {
+                    "min": 8,
+                    "max": 32
+                },
                 "smithy.api#pattern": "^rtb-gw-[a-z0-9-]{1,25}$"
             }
         },
@@ -1951,6 +2065,26 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.rtbfabric#GatewayId"
+            }
+        },
+        "com.amazonaws.rtbfabric#GatewayType": {
+            "type": "enum",
+            "members": {
+                "EXTERNAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "EXTERNAL"
+                    }
+                },
+                "INTERNAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INTERNAL"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The type of gateway.</p>"
             }
         },
         "com.amazonaws.rtbfabric#GetInboundExternalLink": {
@@ -1992,7 +2126,7 @@
                             "gatewayId": "rtb-gw-12345678",
                             "linkId": "link-87654321",
                             "status": "ACTIVE",
-                            "domainName": "rtb-gw-12345678.example.com",
+                            "domainName": "rtb-gw-12345678.123456789012.gateway.rtbfabric.us-east-1.amazonaws.com",
                             "createdAt": "2024-01-15T10:30:00Z",
                             "updatedAt": "2024-01-15T10:35:00Z"
                         }
@@ -2070,6 +2204,41 @@
                                     "output": {
                                         "path": "status",
                                         "expected": "ISOLATED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "InboundExternalLinkDeleted": {
+                        "minDelay": 30,
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "status",
+                                        "expected": "DELETED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "status",
+                                        "expected": "FAILED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "status",
+                                        "expected": "REJECTED",
                                         "comparator": "stringEquals"
                                     }
                                 }
@@ -2172,7 +2341,16 @@
                     }
                 },
                 "logSettings": {
-                    "target": "com.amazonaws.rtbfabric#LinkLogSettings"
+                    "target": "com.amazonaws.rtbfabric#LinkLogSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Settings for the application logs.</p>"
+                    }
+                },
+                "connectivityType": {
+                    "target": "com.amazonaws.rtbfabric#ConnectivityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectivity type of the link.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2339,6 +2517,41 @@
                                 }
                             }
                         ]
+                    },
+                    "LinkDeleted": {
+                        "minDelay": 30,
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "status",
+                                        "expected": "DELETED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "status",
+                                        "expected": "FAILED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "status",
+                                        "expected": "REJECTED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            }
+                        ]
                     }
                 }
             }
@@ -2429,6 +2642,18 @@
                         "smithy.api#documentation": "<p>Attributes of the link.</p>"
                     }
                 },
+                "logSettings": {
+                    "target": "com.amazonaws.rtbfabric#LinkLogSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Settings for the application logs.</p>"
+                    }
+                },
+                "connectivityType": {
+                    "target": "com.amazonaws.rtbfabric#ConnectivityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectivity type of the link.</p>"
+                    }
+                },
                 "linkId": {
                     "target": "com.amazonaws.rtbfabric#LinkId",
                     "traits": {
@@ -2442,10 +2667,16 @@
                         "smithy.api#documentation": "<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
                     }
                 },
-                "logSettings": {
-                    "target": "com.amazonaws.rtbfabric#LinkLogSettings",
+                "httpResponderAllowed": {
+                    "target": "smithy.api#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "<p>Settings for the application logs.</p>"
+                        "smithy.api#documentation": "<p>Boolean to specify if an HTTP responder is allowed.</p>"
+                    }
+                },
+                "timeoutInMillis": {
+                    "target": "com.amazonaws.rtbfabric#LinkTimeoutInMillis",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timeout value in milliseconds.</p>"
                     }
                 }
             },
@@ -2575,6 +2806,41 @@
                                 }
                             }
                         ]
+                    },
+                    "OutboundExternalLinkDeleted": {
+                        "minDelay": 30,
+                        "acceptors": [
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "status",
+                                        "expected": "DELETED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "status",
+                                        "expected": "FAILED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "output": {
+                                        "path": "status",
+                                        "expected": "REJECTED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            }
+                        ]
                     }
                 }
             }
@@ -2634,6 +2900,21 @@
                         "smithy.api#required": {}
                     }
                 },
+                "flowModules": {
+                    "target": "com.amazonaws.rtbfabric#ModuleConfigurationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration of flow modules.</p>"
+                    }
+                },
+                "pendingFlowModules": {
+                    "target": "com.amazonaws.rtbfabric#ModuleConfigurationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration of pending flow modules.</p>"
+                    }
+                },
+                "attributes": {
+                    "target": "com.amazonaws.rtbfabric#LinkAttributes"
+                },
                 "createdAt": {
                     "target": "smithy.api#Timestamp",
                     "traits": {
@@ -2654,7 +2935,16 @@
                     }
                 },
                 "logSettings": {
-                    "target": "com.amazonaws.rtbfabric#LinkLogSettings"
+                    "target": "com.amazonaws.rtbfabric#LinkLogSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Settings for the application logs.</p>"
+                    }
+                },
+                "connectivityType": {
+                    "target": "com.amazonaws.rtbfabric#ConnectivityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectivity type of the link.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2785,6 +3075,12 @@
                                         "expected": "DELETED",
                                         "comparator": "stringEquals"
                                     }
+                                }
+                            },
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "errorType": "ResourceNotFoundException"
                                 }
                             },
                             {
@@ -3040,6 +3336,12 @@
                                 }
                             },
                             {
+                                "state": "success",
+                                "matcher": {
+                                    "errorType": "ResourceNotFoundException"
+                                }
+                            },
+                            {
                                 "state": "failure",
                                 "matcher": {
                                     "output": {
@@ -3150,6 +3452,12 @@
                         "smithy.api#required": {}
                     }
                 },
+                "listenerConfig": {
+                    "target": "com.amazonaws.rtbfabric#ListenerConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The listener configuration for the responder gateway.</p>"
+                    }
+                },
                 "trustStoreConfiguration": {
                     "target": "com.amazonaws.rtbfabric#TrustStoreConfiguration",
                     "traits": {
@@ -3192,6 +3500,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The count of inbound links for the responder gateway.</p>"
                     }
+                },
+                "gatewayType": {
+                    "target": "com.amazonaws.rtbfabric#GatewayType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of gateway. Valid values are <code>EXTERNAL</code> or <code>INTERNAL</code>.</p>"
+                    }
+                },
+                "externalInboundEndpoint": {
+                    "target": "com.amazonaws.rtbfabric#DomainName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The external inbound endpoint for the responder gateway.</p>"
+                    }
                 }
             },
             "traits": {
@@ -3218,6 +3538,89 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Describes the header tag for a bid action.</p>"
+            }
+        },
+        "com.amazonaws.rtbfabric#HealthCheckConfig": {
+            "type": "structure",
+            "members": {
+                "port": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The port to use for health check probes. Valid range is 80 to 65535.</p>",
+                        "smithy.api#range": {
+                            "min": 80,
+                            "max": 65535
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "path": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The destination path for the health check request. Must start with <code>/</code>.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 128
+                        },
+                        "smithy.api#pattern": "^/.*$",
+                        "smithy.api#required": {}
+                    }
+                },
+                "protocol": {
+                    "target": "com.amazonaws.rtbfabric#Protocol",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The protocol to use for health check probes.</p>"
+                    }
+                },
+                "timeoutMs": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timeout for each health check probe, in milliseconds. Valid range is 100 to 5000.</p>",
+                        "smithy.api#range": {
+                            "min": 100,
+                            "max": 5000
+                        }
+                    }
+                },
+                "intervalSeconds": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The interval between health check probes, in seconds. Valid range is 5 to 60.</p>",
+                        "smithy.api#range": {
+                            "min": 5,
+                            "max": 60
+                        }
+                    }
+                },
+                "statusCodeMatcher": {
+                    "target": "com.amazonaws.rtbfabric#StatusCodeMatcher",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The expected HTTP status code or status code pattern from healthy instances. Supports a single code (for example, <code>200</code>), a range (for example, <code>200-299</code>), or a comma-separated list (for example, <code>200,204</code>).</p>"
+                    }
+                },
+                "healthyThresholdCount": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of consecutive successful health checks required before an instance is considered healthy. Valid range is 2 to 10.</p>",
+                        "smithy.api#range": {
+                            "min": 2,
+                            "max": 10
+                        }
+                    }
+                },
+                "unhealthyThresholdCount": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of consecutive failed health checks required before an instance is considered unhealthy. Valid range is 2 to 10.</p>",
+                        "smithy.api#range": {
+                            "min": 2,
+                            "max": 10
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The health check configuration for a managed endpoint. Defines how the service probes instances in the Auto Scaling group to determine their health status.</p>"
             }
         },
         "com.amazonaws.rtbfabric#InboundExternalLink": {
@@ -3267,18 +3670,30 @@
         "com.amazonaws.rtbfabric#KubernetesClusterName": {
             "type": "string",
             "traits": {
+                "smithy.api#length": {
+                    "min": 2,
+                    "max": 63
+                },
                 "smithy.api#pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]$"
             }
         },
         "com.amazonaws.rtbfabric#KubernetesEndpointsResourceName": {
             "type": "string",
             "traits": {
+                "smithy.api#length": {
+                    "min": 2,
+                    "max": 63
+                },
                 "smithy.api#pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]$"
             }
         },
         "com.amazonaws.rtbfabric#KubernetesNamespace": {
             "type": "string",
             "traits": {
+                "smithy.api#length": {
+                    "min": 2,
+                    "max": 63
+                },
                 "smithy.api#pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]$"
             }
         },
@@ -3409,6 +3824,10 @@
         "com.amazonaws.rtbfabric#LinkId": {
             "type": "string",
             "traits": {
+                "smithy.api#length": {
+                    "min": 6,
+                    "max": 30
+                },
                 "smithy.api#pattern": "^link-[a-z0-9-]{1,25}$"
             }
         },
@@ -3513,6 +3932,15 @@
                     "traits": {
                         "smithy.api#enumValue": "PENDING_RESTORATION"
                     }
+                }
+            }
+        },
+        "com.amazonaws.rtbfabric#LinkTimeoutInMillis": {
+            "type": "long",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 100,
+                    "max": 5000
                 }
             }
         },
@@ -3706,6 +4134,15 @@
                         "smithy.api#documentation": "<p>Describes attributes of a link.</p>"
                     }
                 },
+                "logSettings": {
+                    "target": "com.amazonaws.rtbfabric#LinkLogSettings"
+                },
+                "connectivityType": {
+                    "target": "com.amazonaws.rtbfabric#ConnectivityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectivity type of the link.</p>"
+                    }
+                },
                 "linkId": {
                     "target": "com.amazonaws.rtbfabric#LinkId",
                     "traits": {
@@ -3717,6 +4154,12 @@
                     "target": "com.amazonaws.rtbfabric#TagsMap",
                     "traits": {
                         "smithy.api#documentation": "<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+                    }
+                },
+                "publicEndpoint": {
+                    "target": "com.amazonaws.rtbfabric#URL",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The public endpoint of the outbound link.</p>"
                     }
                 }
             },
@@ -4050,6 +4493,21 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.rtbfabric#ListenerConfig": {
+            "type": "structure",
+            "members": {
+                "protocols": {
+                    "target": "com.amazonaws.rtbfabric#ProtocolList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The protocol for connections from clients to the gateway</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Listener configuration for the protocols (HTTP, HTTPS, or both) accepted by the gateway.</p>"
+            }
+        },
         "com.amazonaws.rtbfabric#ManagedEndpointConfiguration": {
             "type": "union",
             "members": {
@@ -4272,6 +4730,18 @@
                     "traits": {
                         "smithy.api#enumValue": "HTTPS"
                     }
+                }
+            }
+        },
+        "com.amazonaws.rtbfabric#ProtocolList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.rtbfabric#Protocol"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2
                 }
             }
         },
@@ -5183,6 +5653,15 @@
                         "smithy.api#documentation": "<p>Attributes of the link.</p>"
                     }
                 },
+                "logSettings": {
+                    "target": "com.amazonaws.rtbfabric#LinkLogSettings"
+                },
+                "connectivityType": {
+                    "target": "com.amazonaws.rtbfabric#ConnectivityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectivity type of the link.</p>"
+                    }
+                },
                 "linkId": {
                     "target": "com.amazonaws.rtbfabric#LinkId",
                     "traits": {
@@ -5508,12 +5987,16 @@
                     "min": 1,
                     "max": 1600
                 },
-                "smithy.api#pattern": "^arn:aws:rtbfabric:[a-zA-Z0-9_-]+:[0-9]{12}:gateway/[a-zA-Z0-9-]+(/link/[a-zA-Z0-9-]+)?$"
+                "smithy.api#pattern": "^arn:aws:rtbfabric:[a-zA-Z0-9_-]+:[0-9]{12}:gateway/[a-zA-Z0-9-]+(/link/[a-zA-Z0-9-]+(/routing-rule/[a-zA-Z0-9-]+)?)?$"
             }
         },
         "com.amazonaws.rtbfabric#SecurityGroupId": {
             "type": "string",
             "traits": {
+                "smithy.api#length": {
+                    "min": 11,
+                    "max": 43
+                },
                 "smithy.api#pattern": "^sg-[0-9a-f]{8,40}$"
             }
         },
@@ -5539,9 +6022,22 @@
                 "smithy.api#httpError": 402
             }
         },
+        "com.amazonaws.rtbfabric#StatusCodeMatcher": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                }
+            }
+        },
         "com.amazonaws.rtbfabric#SubnetId": {
             "type": "string",
             "traits": {
+                "smithy.api#length": {
+                    "min": 15,
+                    "max": 24
+                },
                 "smithy.api#pattern": "^subnet-\\w{8,17}$"
             }
         },
@@ -6134,6 +6630,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Settings for the application logs.</p>"
                     }
+                },
+                "timeoutInMillis": {
+                    "target": "com.amazonaws.rtbfabric#LinkTimeoutInMillis",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timeout value in milliseconds.</p>"
+                    }
                 }
             },
             "traits": {
@@ -6386,6 +6888,12 @@
                         "smithy.api#required": {}
                     }
                 },
+                "listenerConfig": {
+                    "target": "com.amazonaws.rtbfabric#ListenerConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The listener configuration for the responder gateway.</p>"
+                    }
+                },
                 "trustStoreConfiguration": {
                     "target": "com.amazonaws.rtbfabric#TrustStoreConfiguration",
                     "traits": {
@@ -6473,12 +6981,20 @@
         "com.amazonaws.rtbfabric#Version": {
             "type": "string",
             "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 25
+                },
                 "smithy.api#pattern": "^[a-z0-9-]{1,25}$"
             }
         },
         "com.amazonaws.rtbfabric#VpcId": {
             "type": "string",
             "traits": {
+                "smithy.api#length": {
+                    "min": 12,
+                    "max": 21
+                },
                 "smithy.api#pattern": "^vpc-[a-f0-9]{8,17}$"
             }
         }
