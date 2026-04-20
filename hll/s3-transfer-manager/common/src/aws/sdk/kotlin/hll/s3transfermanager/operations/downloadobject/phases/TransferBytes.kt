@@ -10,6 +10,7 @@ import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferInterceptor
 import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferPhase
 import aws.sdk.kotlin.hll.s3transfermanager.interceptors.executePhase
 import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
+import aws.sdk.kotlin.hll.s3transfermanager.model.PartContext
 import aws.sdk.kotlin.hll.s3transfermanager.model.utils.toDownloadObjectResponse
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
 import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
@@ -18,7 +19,6 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.model.GetObjectResponse
 import aws.smithy.kotlin.runtime.content.toByteArray
-import aws.smithy.kotlin.runtime.telemetry.logging.Logger
 import aws.smithy.kotlin.runtime.util.Filesystem
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.WriteType
@@ -31,23 +31,25 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.sync.withPermit
 import kotlin.random.Random
 
 /**
  * Orchestrates downloading an S3 object, potentially in multiple parts, to a local file **and/or to a handler function**.
  */
+// TODO: Refactor to reduce parameter count — defer until remaining TM operations reveal common patterns to extract
 internal class TransferBytes<T>(
     private val multipartDownloadType: MultipartDownloadType,
     private val context: MutableTransferContext,
     private val s3Client: S3Client,
     private val downloadPath: String?,
     private val interceptors: List<TransferInterceptor>,
-    private val objectHandler: (suspend (ByteArray) -> T)?,
+    private val objectHandler: (suspend (PartContext) -> T)?,
     private val networkOperation: Semaphore,
-    private val diskOperation: Semaphore,
+    private val fileSystemSemaphore: Semaphore,
     private val maxInMemoryParts: Int,
     private val targetPartSizeBytes: Long,
-    private val bufferCount: Semaphore,
+    private val bufferSemaphore: Semaphore,
 ) {
     /**
      * Used to interact with the underlying systems files.
@@ -68,7 +70,7 @@ internal class TransferBytes<T>(
     /**
      * Will be used to verify we're receiving the same version of the object for each part.
      */
-    private lateinit var etag: String
+    private lateinit var eTag: String
 
     /**
      * The part count is provided by S3 if the download type is PART, but it needs to be calculated if the download type is RANGE.
@@ -85,65 +87,54 @@ internal class TransferBytes<T>(
      */
     private var contentLength: Long? = null
 
-    /**
-     * Whether the download will require more than 1 part
-     */
-    private var needMoreParts: Boolean = true
-
     suspend fun transfer() {
-        transferFirstPart()
-        if (needMoreParts) {
-            transferRemainingParts()
+        try {
+            val needMoreParts = transferFirstPart()
+            if (needMoreParts) {
+                transferRemainingParts()
+            }
+            renameTempFile()
+        } catch (t: Throwable) {
+            system.delete(tempDownloadPath, mustExist = false)
+            throw t
         }
         buildResponse()
     }
 
-    private suspend fun transferFirstPart() {
-        executePhase(TransferPhase.BytesTransferred, context, interceptors) {
-            try {
-                networkOperation.acquire()
-                s3Client.withTmBusinessMetric { client ->
-                    client.getObject(context.s3Request as GetObjectRequest) { getObjectResponse ->
-                        context.s3Response = getObjectResponse
-                        context.transferredBytes = getObjectResponse.contentLength
-                        context.transferableBytes = parseTransferableBytes(getObjectResponse)
+    private suspend fun transferFirstPart(): Boolean = executePhase(TransferPhase.BytesTransferred, context, interceptors) {
+        networkOperation.withPermit {
+            s3Client.withTmBusinessMetric { client ->
+                client.getObject(context.s3Request as GetObjectRequest) { getObjectResponse ->
+                    context.s3Response = getObjectResponse
+                    context.transferredBytes = getObjectResponse.contentLength
+                    context.transferableBytes = parseTransferableBytes(getObjectResponse)
 
-                        contentLength = context.transferableBytes
-                        etag = getObjectResponse.eTag ?: throw S3TransferManagerException("etag is null in initial get object response")
-                        partCount = getObjectResponse.partsCount
+                    contentLength = context.transferableBytes
+                    eTag = getObjectResponse.eTag ?: throw S3TransferManagerException("etag is null in initial get object response")
+                    partCount = getObjectResponse.partsCount
 
+                    bufferSemaphore.withPermit {
                         val bytes = getObjectResponse.body?.toByteArray() ?: byteArrayOf()
-                        objectHandler?.invoke(bytes)
-                        try {
-                            diskOperation.acquire()
-                            downloadPath?.let {
+                        objectHandler?.invoke(PartContext(1, bytes, 0L))
+                        downloadPath?.let {
+                            fileSystemSemaphore.withPermit {
                                 system.write(
                                     tempDownloadPath,
                                     bytes,
                                     WriteType.OVERWRITE,
                                 )
                             }
-                        } finally {
-                            diskOperation.release()
-                        }
-
-                        if (partCount == 1 || context.transferredBytes == context.transferableBytes) {
-                            needMoreParts = false
-                            renameTempFile()
                         }
                     }
+
+                    context.transferredBytes != context.transferableBytes
                 }
-            } catch (t: Throwable) {
-                system.delete(tempDownloadPath, mustExist = false)
-                throw t
-            } finally {
-                networkOperation.release()
             }
         }
     }
 
     private suspend fun transferRemainingParts() {
-        val buffer = Channel<Part>(capacity = maxInMemoryParts)
+        val buffer = Channel<PartContext>(capacity = maxInMemoryParts)
         partCount = partCount ?: ceilDiv(context.transferableBytes!!, targetPartSizeBytes).toInt()
 
         try {
@@ -151,52 +142,46 @@ internal class TransferBytes<T>(
                 launch { downloadParts(buffer) }
                 launch { processParts(buffer) }
             }
-            renameTempFile()
-        } finally {
-            system.delete(tempDownloadPath, mustExist = false) // Deletes downloaded bytes if something went wrong, or no op if success
-            buffer.consumeEach { bufferCount.release() } // Clears buffer and resets count if something went wrong, or no op if success
+        } catch (t: Throwable) {
+            buffer.consumeEach { bufferSemaphore.release() } // Clears buffer and resets count if something went wrong, or no op if success
+            throw t
         }
     }
 
     private suspend fun downloadParts(
-        buffer: Channel<Part>,
+        buffer: Channel<PartContext>,
     ) = coroutineScope {
-        val jobs = mutableSetOf<Job>()
-
-        repeat(partCount!! - 1) { i ->
-            // -1 since first part is already downloaded
-            jobs += launch {
+        val jobs = (2..partCount!!).map { partNumber ->
+            launch {
                 // Other jobs will be updating the global context so make a copy that won't change and we can modify safely
                 val localContext = context.copy()
 
                 val previousRequest = localContext.s3Request as GetObjectRequest
-                localContext.s3Request = buildNextRequest(previousRequest, i)
-
-                try {
-                    networkOperation.acquire()
-                    var downloadedBytes = 0L
-
-                    executePhase(TransferPhase.BytesTransferred, localContext, interceptors) {
+                localContext.s3Request = buildNextRequest(previousRequest, partNumber)
+                networkOperation.withPermit {
+                    val downloadedBytes = executePhase(TransferPhase.BytesTransferred, localContext, interceptors) {
                         s3Client.withTmBusinessMetric {
                             it.getObject(localContext.s3Request as GetObjectRequest) { getObjectResponse ->
-                                downloadedBytes = getObjectResponse.contentLength!!
-
                                 localContext.s3Response = getObjectResponse
-                                localContext.transferredBytes = localContext.transferredBytes!! + downloadedBytes
+                                localContext.transferredBytes = localContext.transferredBytes!! + getObjectResponse.contentLength!!
 
+                                val offset = when (multipartDownloadType) {
+                                    MultipartDownloadType.Range -> targetPartSizeBytes * (partNumber - 1)
+                                    MultipartDownloadType.Part -> parseOffset(getObjectResponse)
+                                }
+
+                                bufferSemaphore.acquire()
                                 val bytes = getObjectResponse.body?.toByteArray() ?: byteArrayOf()
-                                bufferCount.acquire()
                                 buffer.send(
-                                    Part(bytes, i),
+                                    PartContext(partNumber, bytes, offset),
                                 )
+                                getObjectResponse.contentLength!!
                             }
                         }
                     }
 
                     // Merge the local context back into the global context
                     updateContext(localContext, downloadedBytes)
-                } finally {
-                    networkOperation.release()
                 }
             }
         }
@@ -205,27 +190,24 @@ internal class TransferBytes<T>(
         buffer.close()
     }
 
-    private suspend fun processParts(buffer: Channel<Part>) = coroutineScope {
+    private suspend fun processParts(buffer: Channel<PartContext>) = coroutineScope {
         val processors = mutableSetOf<Job>()
 
         for (part in buffer) {
             processors += launch {
-                objectHandler?.invoke(part.bytes)
-                try {
-                    diskOperation.acquire()
-                    downloadPath?.let {
+                objectHandler?.invoke(part)
+                downloadPath?.let {
+                    fileSystemSemaphore.withPermit {
                         system.write(
                             tempDownloadPath,
                             part.bytes,
-                            WriteType.OFFSET(targetPartSizeBytes * (part.part + 1)), // +1 since first part is already written
+                            WriteType.OFFSET(part.offset),
                         )
                     }
-                    bufferCount.release()
-                } finally {
-                    diskOperation.release()
                 }
             }
         }
+        bufferSemaphore.release()
         processors.joinAll()
     }
 
@@ -253,17 +235,17 @@ internal class TransferBytes<T>(
 
     private fun buildNextRequest(
         previousRequest: GetObjectRequest,
-        i: Int,
+        partNumber: Int,
     ): GetObjectRequest = when (multipartDownloadType) {
         MultipartDownloadType.Part ->
             previousRequest.copy {
-                partNumber = i + 2 // i is zero based while parts are 1 based, and first part was already downloaded
-                ifMatch = etag
+                this.partNumber = partNumber
+                ifMatch = eTag
             }
         MultipartDownloadType.Range ->
             previousRequest.copy {
-                range = "bytes=${targetPartSizeBytes * (i + 1)}-${(targetPartSizeBytes * (i + 2)) - 1}"
-                ifMatch = etag
+                range = "bytes=${targetPartSizeBytes * (partNumber - 1)}-${(targetPartSizeBytes * partNumber) - 1}"
+                ifMatch = eTag
             }
     }
 
@@ -276,13 +258,14 @@ internal class TransferBytes<T>(
     }
 }
 
-private data class Part(
-    val bytes: ByteArray,
-    val part: Int,
-)
-
 private fun parseTransferableBytes(response: GetObjectResponse): Long = response.contentRange
     ?.split("/") // e.g. ContentRange=bytes0-50/100 where 100 is the total length of an object
     ?.last()
+    ?.toLong()
+    ?: throw S3TransferManagerException("Content range not found in GetObjectResponse")
+
+private fun parseOffset(response: GetObjectResponse): Long = response.contentRange
+    ?.removePrefix("bytes ")
+    ?.substringBefore("-")
     ?.toLong()
     ?: throw S3TransferManagerException("Content range not found in GetObjectResponse")

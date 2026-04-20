@@ -9,6 +9,7 @@ import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferInterceptor
 import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectResponse
 import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
+import aws.sdk.kotlin.hll.s3transfermanager.model.PartContext
 import aws.sdk.kotlin.hll.s3transfermanager.model.UploadObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.model.UploadObjectResponse
 import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.downloadObjectImplementation
@@ -74,7 +75,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
      *
      * Defaults to 5.
      */
-    public val maxConcurrentDiskOperations: Int = builder.maxConcurrentDiskOperations
+    public val maxConcurrentFileSystemOperations: Int = builder.maxConcurrentFileSystemOperations
 
     public companion object {
         public operator fun invoke(client: S3Client, block: Builder.() -> Unit = {}): S3TransferManager = Builder().apply(block).build(client)
@@ -134,7 +135,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
          *
          * Defaults to 5.
          */
-        public var maxConcurrentDiskOperations: Int = 5
+        public var maxConcurrentFileSystemOperations: Int = 5
 
         internal fun build(client: S3Client): S3TransferManager = S3TransferManager(client, this)
     }
@@ -142,7 +143,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
     // Keep track of concurrency and buffer limits via semaphore permits
     internal val bufferSemaphore = Semaphore(maxInMemoryParts)
     internal val networkSemaphore = Semaphore(maxConcurrentNetworkOperations)
-    internal val diskSemaphore = Semaphore(maxConcurrentDiskOperations)
+    internal val fileSystemSemaphore = Semaphore(maxConcurrentFileSystemOperations)
 
     /**
      * Uploads an object to S3, automatically using multipart upload for large objects.
@@ -183,13 +184,13 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
      * Downloads an object from S3, optionally using multipart transfer for large objects.
      *
      * At least one of [downloadPath] or [objectHandler] must be provided. If [downloadPath] is specified, the object
-     * is written to a local file at that path. If [objectHandler] is specified, each part's bytes are
+     * is written to a local file at that path. If [objectHandler] is specified, each part's context and bytes are
      * passed to the handler for custom processing. Both may be used together.
      */
     public suspend fun <T> downloadObject(
         downloadObjectRequest: DownloadObjectRequest,
         downloadPath: String? = null,
-        objectHandler: (suspend (ByteArray) -> T)? = null,
+        objectHandler: (suspend (PartContext) -> T)? = null,
     ): DownloadObjectResponse = downloadObjectImplementation(
         downloadObjectRequest,
         objectHandler,
@@ -199,7 +200,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         interceptors,
         downloadPath,
         networkSemaphore,
-        diskSemaphore,
+        fileSystemSemaphore,
         maxInMemoryParts,
         bufferSemaphore,
     )
@@ -208,12 +209,12 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
      * Downloads an object from S3, optionally using multipart transfer for large objects.
      *
      * At least one of [downloadPath] or [objectHandler] must be provided. If [downloadPath] is specified, the object
-     * is written to a local file at that path. If [objectHandler] is specified, each part's bytes are
+     * is written to a local file at that path. If [objectHandler] is specified, each part's context and bytes are
      * passed to the handler for custom processing. Both may be used together.
      */
     public suspend inline fun <T> downloadObject(
         crossinline downloadObjectRequest: DownloadObjectRequest.Builder.() -> Unit,
         downloadPath: String? = null,
-        noinline objectHandler: (suspend (ByteArray) -> T)? = null,
+        noinline objectHandler: (suspend (PartContext) -> T)? = null,
     ): DownloadObjectResponse = downloadObject(DownloadObjectRequest.Builder().apply(downloadObjectRequest).build(), downloadPath, objectHandler)
 }

@@ -7,6 +7,7 @@ package aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject
 
 import aws.sdk.kotlin.hll.s3transfermanager.S3TransferManager
 import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
+import aws.sdk.kotlin.hll.s3transfermanager.model.PartContext
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
 import aws.sdk.kotlin.runtime.auth.credentials.ProcessCredentialsProvider
 import aws.sdk.kotlin.services.s3.S3Client
@@ -111,8 +112,8 @@ class DownloadObjectTest {
         S3TransferManager(s3Client).downloadObject({
             bucket = TEST_BUCKET
             key = smallKey
-        }) { bytes: ByteArray ->
-            receivedParts.add(bytes)
+        }) { part: PartContext ->
+            receivedParts.add(part.bytes)
         }
 
         assertEquals(1, receivedParts.size)
@@ -124,7 +125,7 @@ class DownloadObjectTest {
         val response = S3TransferManager(s3Client).downloadObject({
             bucket = TEST_BUCKET
             key = smallKey
-        }) { _: ByteArray -> }
+        }) { _: PartContext -> }
 
         assertEquals(SMALL_CONTENT.length.toLong(), response.contentLength)
         assertEquals("bytes=0-${SMALL_CONTENT.length - 1}/${SMALL_CONTENT.length}", response.contentRange)
@@ -156,8 +157,8 @@ class DownloadObjectTest {
         }.downloadObject({
             bucket = TEST_BUCKET
             key = multipartKey
-        }) { bytes: ByteArray ->
-            receivedParts.add(bytes)
+        }) { part: PartContext ->
+            receivedParts.add(part.bytes)
         }
 
         assertEquals(2, receivedParts.size)
@@ -174,8 +175,8 @@ class DownloadObjectTest {
         }.downloadObject({
             bucket = TEST_BUCKET
             key = multipartKey
-        }) { bytes: ByteArray ->
-            receivedParts.add(bytes)
+        }) { part: PartContext ->
+            receivedParts.add(part.bytes)
         }
 
         assertEquals(2, receivedParts.size)
@@ -189,7 +190,7 @@ class DownloadObjectTest {
         }.downloadObject({
             bucket = TEST_BUCKET
             key = multipartKey
-        }) { _: ByteArray -> }
+        }) { _: PartContext -> }
 
         assertEquals(MULTIPART_SIZE.toLong(), response.contentLength)
         assertEquals("bytes=0-${MULTIPART_SIZE - 1}/$MULTIPART_SIZE", response.contentRange)
@@ -225,8 +226,8 @@ class DownloadObjectTest {
         }.downloadObject({
             bucket = TEST_BUCKET
             key = unevenKey
-        }) { bytes: ByteArray ->
-            receivedParts.add(bytes)
+        }) { part: PartContext ->
+            receivedParts.add(part.bytes)
         }
 
         assertEquals(3, receivedParts.size)
@@ -263,8 +264,8 @@ class DownloadObjectTest {
                 key = smallKey
             },
             downloadPath = downloadPath,
-        ) { bytes: ByteArray ->
-            receivedParts.add(bytes)
+        ) { part: PartContext ->
+            receivedParts.add(part.bytes)
         }
 
         assertEquals(1, receivedParts.size)

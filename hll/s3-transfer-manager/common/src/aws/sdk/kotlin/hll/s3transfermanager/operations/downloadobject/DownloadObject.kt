@@ -13,6 +13,7 @@ import aws.sdk.kotlin.hll.s3transfermanager.interceptors.executePhase
 import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectResponse
 import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
+import aws.sdk.kotlin.hll.s3transfermanager.model.PartContext
 import aws.sdk.kotlin.hll.s3transfermanager.model.utils.toGetObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.phases.TransferBytes
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
@@ -21,14 +22,14 @@ import kotlinx.coroutines.sync.Semaphore
 
 internal suspend fun <T> downloadObjectImplementation(
     downloadObjectRequest: DownloadObjectRequest,
-    objectHandler: (suspend (ByteArray) -> T)?,
+    objectHandler: (suspend (PartContext) -> T)?,
     s3Client: S3Client,
     multipartDownloadType: MultipartDownloadType,
     targetPartSizeBytes: Long,
     interceptors: List<TransferInterceptor>,
     downloadPath: String?,
     networkSemaphore: Semaphore,
-    diskSemaphore: Semaphore,
+    fileSystemSemaphore: Semaphore,
     maxInMemoryParts: Int,
     bufferSemaphore: Semaphore,
 ): DownloadObjectResponse {
@@ -60,7 +61,7 @@ internal suspend fun <T> downloadObjectImplementation(
         interceptors,
         objectHandler,
         networkSemaphore,
-        diskSemaphore,
+        fileSystemSemaphore,
         maxInMemoryParts,
         targetPartSizeBytes,
         bufferSemaphore,

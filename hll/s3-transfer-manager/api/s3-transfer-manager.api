@@ -6,7 +6,7 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager {
 	public static synthetic fun downloadObject$default (Laws/sdk/kotlin/hll/s3transfermanager/S3TransferManager;Laws/sdk/kotlin/hll/s3transfermanager/model/DownloadObjectRequest;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun downloadObject$default (Laws/sdk/kotlin/hll/s3transfermanager/S3TransferManager;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun getInterceptors ()Ljava/util/List;
-	public final fun getMaxConcurrentDiskOperations ()I
+	public final fun getMaxConcurrentFileSystemOperations ()I
 	public final fun getMaxConcurrentNetworkOperations ()I
 	public final fun getMaxInMemoryParts ()I
 	public final fun getMultipartDownloadType ()Laws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType;
@@ -20,14 +20,14 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager {
 public final class aws/sdk/kotlin/hll/s3transfermanager/S3TransferManager$Builder {
 	public fun <init> ()V
 	public final fun getInterceptors ()Ljava/util/List;
-	public final fun getMaxConcurrentDiskOperations ()I
+	public final fun getMaxConcurrentFileSystemOperations ()I
 	public final fun getMaxConcurrentNetworkOperations ()I
 	public final fun getMaxInMemoryParts ()I
 	public final fun getMultipartDownloadType ()Laws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType;
 	public final fun getMultipartUploadThresholdBytes ()J
 	public final fun getTargetPartSizeBytes ()J
 	public final fun setInterceptors (Ljava/util/List;)V
-	public final fun setMaxConcurrentDiskOperations (I)V
+	public final fun setMaxConcurrentFileSystemOperations (I)V
 	public final fun setMaxConcurrentNetworkOperations (I)V
 	public final fun setMaxInMemoryParts (I)V
 	public final fun setMultipartDownloadType (Laws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType;)V
@@ -330,6 +330,21 @@ public final class aws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadT
 
 public final class aws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType$Range : aws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType {
 	public static final field INSTANCE Laws/sdk/kotlin/hll/s3transfermanager/model/MultipartDownloadType$Range;
+}
+
+public final class aws/sdk/kotlin/hll/s3transfermanager/model/PartContext {
+	public fun <init> (I[BJ)V
+	public final fun component1 ()I
+	public final fun component2 ()[B
+	public final fun component3 ()J
+	public final fun copy (I[BJ)Laws/sdk/kotlin/hll/s3transfermanager/model/PartContext;
+	public static synthetic fun copy$default (Laws/sdk/kotlin/hll/s3transfermanager/model/PartContext;I[BJILjava/lang/Object;)Laws/sdk/kotlin/hll/s3transfermanager/model/PartContext;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBytes ()[B
+	public final fun getOffset ()J
+	public final fun getPartNumber ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class aws/sdk/kotlin/hll/s3transfermanager/model/UploadObjectRequest {
