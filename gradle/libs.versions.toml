@@ -8,23 +8,23 @@ aws-kotlin-repo-tools-version = "0.5.8"
 
 # libs
 coroutines-version = "1.10.2"
-atomicfu-version = "0.29.0"
+atomicfu-version = "0.32.1"
 binary-compatibility-validator-version = "0.18.1"
 
 # smithy-kotlin
-smithy-kotlin-version = "1.6.10"
+smithy-kotlin-version = "1.6.11"
 
 # codegen
-smithy-version = "1.67.0"
+smithy-version = "1.69.0"
 
 # testing
 ddb-local-version = "2.5.2"
 kotest-version = "5.9.1"
-kotlinx-benchmark-version = "0.4.15"
-kotlinx-serialization-version = "1.9.0"
+kotlinx-benchmark-version = "0.4.16"
+kotlinx-serialization-version = "1.10.0"
 mockk-version = "1.14.9"
 slf4j-version = "2.0.17"
-jsoup-version = "1.21.2"
+jsoup-version = "1.22.1"
 
 [libraries]
 aws-kotlin-repo-tools-build-support = { module="aws.sdk.kotlin.gradle:build-support", version.ref = "aws-kotlin-repo-tools-version" }
