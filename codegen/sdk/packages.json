@@ -1015,6 +1015,12 @@
             "brazilName": "AwsSdkKotlinInspector2"
         },
         {
+            "sdkId": "Interconnect",
+            "namespace": "aws.sdk.kotlin.services.interconnect",
+            "artifactName": "interconnect",
+            "brazilName": "AwsSdkKotlinInterconnect"
+        },
+        {
             "sdkId": "InternetMonitor",
             "namespace": "aws.sdk.kotlin.services.internetmonitor",
             "artifactName": "internetmonitor",
@@ -1343,6 +1349,12 @@
             "namespace": "aws.sdk.kotlin.services.marketplacedeployment",
             "artifactName": "marketplacedeployment",
             "brazilName": "AwsSdkKotlinMarketplaceDeployment"
+        },
+        {
+            "sdkId": "Marketplace Discovery",
+            "namespace": "aws.sdk.kotlin.services.marketplacediscovery",
+            "artifactName": "marketplacediscovery",
+            "brazilName": "AwsSdkKotlinMarketplaceDiscovery"
         },
         {
             "sdkId": "Marketplace Entitlement Service",
@@ -1855,6 +1867,12 @@
             "brazilName": "AwsSdkKotlinS3Control"
         },
         {
+            "sdkId": "S3Files",
+            "namespace": "aws.sdk.kotlin.services.s3files",
+            "artifactName": "s3files",
+            "brazilName": "AwsSdkKotlinS3files"
+        },
+        {
             "sdkId": "S3Outposts",
             "namespace": "aws.sdk.kotlin.services.s3outposts",
             "artifactName": "s3outposts",
@@ -2029,6 +2047,12 @@
             "brazilName": "AwsSdkKotlinSecurityIr"
         },
         {
+            "sdkId": "SecurityAgent",
+            "namespace": "aws.sdk.kotlin.services.securityagent",
+            "artifactName": "securityagent",
+            "brazilName": "AwsSdkKotlinSecurityagent"
+        },
+        {
             "sdkId": "SecurityHub",
             "namespace": "aws.sdk.kotlin.services.securityhub",
             "artifactName": "securityhub",
@@ -2147,6 +2171,12 @@
             "namespace": "aws.sdk.kotlin.services.supportapp",
             "artifactName": "supportapp",
             "brazilName": "AwsSdkKotlinSupportApp"
+        },
+        {
+            "sdkId": "Sustainability",
+            "namespace": "aws.sdk.kotlin.services.sustainability",
+            "artifactName": "sustainability",
+            "brazilName": "AwsSdkKotlinSustainability"
         },
         {
             "sdkId": "TaxSettings",

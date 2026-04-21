@@ -9,8 +9,9 @@ import aws.sdk.kotlin.services.sts.presigners.presignGetCallerIdentity
 import aws.sdk.kotlin.testing.withAllEngines
 import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.TestInstance
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
@@ -18,7 +19,7 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Tests for presigner
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestLifecycle.PER_CLASS)
 class StsPresignerTest {
     @Test
     fun testGetCallerIdentityPresigner() = runBlocking {
@@ -28,12 +29,12 @@ class StsPresignerTest {
             sts.presignGetCallerIdentity(req, 60.seconds)
         }
 
-        withAllEngines { engine ->
-            val httpClient = SdkHttpClient(engine)
+        withAllEngines { context ->
+            val httpClient = SdkHttpClient(context.engine)
             val call = httpClient.call(presignedRequest)
             call.complete()
 
-            assertEquals(200, call.response.status.value, "presigned sts request failed for engine: $engine")
+            assertEquals(200, call.response.status.value, "presigned sts request failed for ${context.name} engine")
         }
     }
 }

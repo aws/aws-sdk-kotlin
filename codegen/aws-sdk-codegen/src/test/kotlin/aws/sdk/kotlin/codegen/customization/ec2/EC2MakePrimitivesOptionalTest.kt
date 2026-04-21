@@ -9,8 +9,8 @@ import aws.smithy.kotlin.codegen.model.isNullable
 import aws.smithy.kotlin.codegen.test.newTestContext
 import aws.smithy.kotlin.codegen.test.prependNamespaceAndService
 import aws.smithy.kotlin.codegen.test.toSmithyModel
-import org.junit.jupiter.api.Test
 import software.amazon.smithy.model.shapes.StructureShape
+import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class EC2MakePrimitivesOptionalTest {

@@ -4,6 +4,10 @@ on:
   release:
     types: [ published ]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-sdk:
     runs-on: ubuntu-latest
@@ -25,7 +29,3 @@ jobs:
           project-name: aws-sdk-kotlin-service-build
           source-version-override: ${{ github.ref }}
           env-vars-for-codebuild: GITHUB_REPOSITORY, UPLOAD, RELEASE_METRICS, IDENTIFIER
-
-permissions:
-  id-token: write
-  contents: read

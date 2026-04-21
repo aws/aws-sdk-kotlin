@@ -4,19 +4,17 @@
  */
 package aws.sdk.kotlin.e2etest
 
-import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.PutObjectRequest
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.http.HttpException
-import aws.smithy.kotlin.runtime.util.Uuid
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.invoke
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
 import java.io.IOException
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.seconds
@@ -25,29 +23,32 @@ import kotlin.time.Duration.Companion.seconds
  * Reproduces "unexpected end of stream" errors as seen in https://github.com/aws/aws-sdk-kotlin/issues/1214
  * and ensures they are resolved by OkHttp's retryOnConnectionFailure option
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestLifecycle.PER_CLASS)
 class ConnectionResetTest {
-    private val client = S3Client {
-        region = S3TestUtils.DEFAULT_REGION
+    private val client = S3TestUtils.createClient()
+
+    companion object {
+        private const val CONN_TEST_CONCURRENCY = 10
     }
 
     private lateinit var testBucket: String
 
     @BeforeAll
     fun createResources(): Unit = runBlocking {
-        testBucket = S3TestUtils.getTestBucket(client)
+        testBucket = S3TestUtils.createTestBucket(client, "conn-reset")
     }
 
     @AfterAll
     fun cleanup() = runBlocking {
-        S3TestUtils.deleteBucketAndAllContents(client, testBucket)
+        S3TestUtils.deleteBucket(client, testBucket)
+        client.close()
     }
 
     @Test
     fun testConnectionResetDoesntThrow(): Unit = runBlocking {
         // Launch multiple coroutines to populate connection pool
-        val jobs = (1..10).map {
-            async { client.putTestObject() }
+        val jobs = (1..CONN_TEST_CONCURRENCY).map { index ->
+            async { putTestObject(index) }
         }
         jobs.awaitAll()
         // Connections are now idle in the pool
@@ -56,13 +57,13 @@ class ConnectionResetTest {
         delay(7.seconds)
 
         // Try to re-use a connection
-        client.putTestObject()
+        putTestObject(CONN_TEST_CONCURRENCY + 1)
     }
 
-    suspend fun S3Client.putTestObject() {
+    suspend fun putTestObject(index: Int) {
         val putObjectRequest = PutObjectRequest {
             bucket = testBucket
-            key = Uuid.random().toString()
+            key = "conn-reset-test-object-$index"
             body = ByteStream.fromString("Content")
         }
 
