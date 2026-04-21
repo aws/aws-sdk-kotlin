@@ -9,6 +9,7 @@ import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.smithy.kotlin.runtime.ClientException
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
+import aws.smithy.kotlin.runtime.retries.LegacyRetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlinx.coroutines.test.runTest
@@ -164,6 +165,22 @@ class ResolveRetryStrategyTest {
             ),
         )
 
+        val strategy = assertIs<LegacyRetryStrategy>(resolveRetryStrategy(platform))
+        assertEquals(expectedMaxAttempts, strategy.config.maxAttempts)
+    }
+
+    @Test
+    fun itResolvesStandardMaxAttemptsAndRetryModeFromEnvironmentVariables() = runTest {
+        val expectedMaxAttempts = 1
+        val retryMode = "standard"
+
+        val platform = TestPlatformProvider(
+            env = mapOf(
+                AwsSdkSetting.AwsMaxAttempts.envVar to expectedMaxAttempts.toString(),
+                AwsSdkSetting.AwsRetryMode.envVar to retryMode,
+            ),
+        )
+
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
         assertEquals(expectedMaxAttempts, strategy.config.maxAttempts)
     }
@@ -172,6 +189,24 @@ class ResolveRetryStrategyTest {
     fun itResolvesMaxAttemptsAndRetryModeFromEnvironmentVariablesAndSystemProperty() = runTest {
         val expectedMaxAttempts = 90
         val retryMode = "legacy"
+
+        val platform = TestPlatformProvider(
+            env = mapOf(
+                AwsSdkSetting.AwsRetryMode.envVar to retryMode,
+            ),
+            props = mapOf(
+                AwsSdkSetting.AwsMaxAttempts.sysProp to expectedMaxAttempts.toString(),
+            ),
+        )
+
+        val strategy = assertIs<LegacyRetryStrategy>(resolveRetryStrategy(platform))
+        assertEquals(expectedMaxAttempts, strategy.config.maxAttempts)
+    }
+
+    @Test
+    fun itResolvesStandardMaxAttemptsAndRetryModeFromEnvironmentVariablesAndSystemProperty() = runTest {
+        val expectedMaxAttempts = 90
+        val retryMode = "standard"
 
         val platform = TestPlatformProvider(
             env = mapOf(
