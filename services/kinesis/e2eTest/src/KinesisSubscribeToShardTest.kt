@@ -50,43 +50,46 @@ class KinesisSubscribeToShardTest {
     @Test
     fun testSubscribeToShard(): Unit = runBlocking {
         val dataStreamArn = client.createStream(testStreamName)
-        val dataStreamConsumerArn = client.registerStreamConsumerAndWait(testConsumerName, dataStreamArn)
 
         try {
-            val dataStreamShardId = client.listShards {
-                streamArn = dataStreamArn
-            }.shards?.single()!!.shardId
+            val dataStreamConsumerArn = client.registerStreamConsumerAndWait(testConsumerName, dataStreamArn)
 
-            withAllEngines { context ->
-                client.withConfig {
-                    httpClient = context.engine
-                }.use { clientWithTestEngine ->
-                    clientWithTestEngine.subscribeToShard(
-                        SubscribeToShardRequest {
-                            consumerArn = dataStreamConsumerArn
-                            shardId = dataStreamShardId
-                            startingPosition = StartingPosition {
-                                type = ShardIteratorType.TrimHorizon
-                            }
-                        },
-                    ) {
-                        val event = it.eventStream?.first()
-                        val record = event?.asSubscribeToShardEvent()?.records?.single()
-                        assertEquals(TEST_DATA, record?.data?.decodeToString())
+            try {
+                val dataStreamShardId = client.listShards {
+                    streamArn = dataStreamArn
+                }.shards?.single()!!.shardId
+
+                withAllEngines { context ->
+                    client.withConfig {
+                        httpClient = context.engine
+                    }.use { clientWithTestEngine ->
+                        clientWithTestEngine.subscribeToShard(
+                            SubscribeToShardRequest {
+                                consumerArn = dataStreamConsumerArn
+                                shardId = dataStreamShardId
+                                startingPosition = StartingPosition {
+                                    type = ShardIteratorType.TrimHorizon
+                                }
+                            },
+                        ) {
+                            val event = it.eventStream?.first()
+                            val record = event?.asSubscribeToShardEvent()?.records?.single()
+                            assertEquals(TEST_DATA, record?.data?.decodeToString())
+                        }
+
+                        // Wait 5 seconds, otherwise a ResourceInUseException gets thrown. Source:
+                        // https://docs.aws.amazon.com/kinesis/latest/APIReference/API_SubscribeToShard.html
+                        // > If you call SubscribeToShard 5 seconds or more after a successful call, the second call takes over the subscription
+                        delay(5.seconds)
                     }
-
-                    // Wait 5 seconds, otherwise a ResourceInUseException gets thrown. Source:
-                    // https://docs.aws.amazon.com/kinesis/latest/APIReference/API_SubscribeToShard.html
-                    // > If you call SubscribeToShard 5 seconds or more after a successful call, the second call takes over the subscription
-                    delay(5.seconds)
+                }
+            } finally {
+                client.deregisterStreamConsumer {
+                    streamArn = dataStreamArn
+                    consumerArn = dataStreamConsumerArn
                 }
             }
         } finally {
-            client.deregisterStreamConsumer {
-                streamArn = dataStreamArn
-                consumerArn = dataStreamConsumerArn
-            }
-
             client.deleteStream { streamArn = dataStreamArn }
             client.waitUntilStreamNotExists { streamArn = dataStreamArn }
         }
