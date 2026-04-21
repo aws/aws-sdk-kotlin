@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.61] - 04/21/2026
+
+### Features
+* (**cognitoidentityprovider**) Adding dutch language support for Cognito Managed Login and Terms on Console
+* (**comprehendmedical**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* (**computeoptimizer**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* (**computeoptimizerautomation**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* (**gamelift**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* (**marketplaceentitlementservice**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* (**networkfirewall**) Support for new types of partner managed rulegroups for Network Firewall Service
+* (**sagemaker**) SageMaker AI now supports generative AI inference recommendations. Provide your model and workload, and SageMaker AI optimizes configurations, benchmarks them on real GPUs, and returns deployment-ready recommendations with validated metrics, accelerating the path to production from weeks to hours.
+* (**snowball**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+
 ## [1.6.60] - 04/20/2026
 
 ### Features
