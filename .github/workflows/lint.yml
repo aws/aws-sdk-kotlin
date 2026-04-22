@@ -10,6 +10,8 @@ on:
     branches:
       - main
       - '*-main'
+  merge_group:
+    types: [checks_requested]
   workflow_dispatch:
 
 permissions:
