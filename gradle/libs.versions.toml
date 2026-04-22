@@ -1,5 +1,5 @@
 [versions]
-kotlin-version = "2.3.0"
+kotlin-version = "2.3.20"
 ksp-version = "2.3.6"
 
 dokka-version = "2.2.0"
