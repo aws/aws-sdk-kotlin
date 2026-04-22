@@ -2,7 +2,7 @@
 kotlin-version = "2.3.0"
 ksp-version = "2.3.4"
 
-dokka-version = "2.0.0"
+dokka-version = "2.2.0"
 
 aws-kotlin-repo-tools-version = "0.5.8"
 
