@@ -4164,6 +4164,9 @@
                     "target": "com.amazonaws.ec2#GetManagedPrefixListEntries"
                 },
                 {
+                    "target": "com.amazonaws.ec2#GetManagedResourceVisibility"
+                },
+                {
                     "target": "com.amazonaws.ec2#GetNetworkInsightsAccessScopeAnalysisFindings"
                 },
                 {
@@ -4381,6 +4384,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#ModifyManagedPrefixList"
+                },
+                {
+                    "target": "com.amazonaws.ec2#ModifyManagedResourceVisibility"
                 },
                 {
                     "target": "com.amazonaws.ec2#ModifyNetworkInterfaceAttribute"
@@ -40099,6 +40105,12 @@
                         "smithy.api#documentation": "<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
                     }
                 },
+                "IncludeManagedResources": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to include managed resources in the output. If this parameter is set\n            to <code>true</code>, the output includes resources that are managed by Amazon Web Services services,\n            even if managed resource visibility is set to hidden.</p>"
+                    }
+                },
                 "DryRun": {
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
@@ -40656,6 +40668,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The instance IDs.</p>\n         <p>Default: Describes all your instances.</p>",
                         "smithy.api#xmlName": "InstanceId"
+                    }
+                },
+                "IncludeManagedResources": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to include managed resources in the output. If this parameter is set\n            to <code>true</code>, the output includes resources that are managed by Amazon Web Services services,\n            even if managed resource visibility is set to hidden.</p>"
                     }
                 },
                 "DryRun": {
@@ -42011,6 +42029,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>If <code>true</code>, and if a Systems Manager parameter is specified for\n                <code>ImageId</code>, the AMI ID is displayed in the response for\n                <code>imageId</code>.</p>\n         <p>If <code>false</code>, and if a Systems Manager parameter is specified for\n                <code>ImageId</code>, the parameter is displayed in the response for\n                <code>imageId</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the\n                <i>Amazon EC2 User Guide</i>.</p>\n         <p>Default: <code>false</code>\n         </p>"
                     }
+                },
+                "IncludeManagedResources": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
+                    }
                 }
             },
             "traits": {
@@ -42131,6 +42155,12 @@
                     "target": "com.amazonaws.ec2#DescribeLaunchTemplatesMaxResults",
                     "traits": {
                         "smithy.api#documentation": "<p>The maximum number of results to return in a single call. To retrieve the remaining\n            results, make another call with the returned <code>NextToken</code> value. This value\n            can be between 1 and 200.</p>"
+                    }
+                },
+                "IncludeManagedResources": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
                     }
                 }
             },
@@ -44201,6 +44231,12 @@
                     "target": "com.amazonaws.ec2#DescribeNetworkInterfacesMaxResults",
                     "traits": {
                         "smithy.api#documentation": "<p>The maximum number of items to return for this request. To get the next page of items,\n            make another request with the token returned in the output. You cannot specify this\n            parameter and the network interface IDs parameter in the same request. For more\n            information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+                    }
+                },
+                "IncludeManagedResources": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to include managed resources in the output. If this parameter is set\n            to <code>true</code>, the output includes resources that are managed by Amazon Web Services services,\n            even if managed resource visibility is set to hidden.</p>"
                     }
                 },
                 "DryRun": {
@@ -50677,6 +50713,12 @@
                         "smithy.api#xmlName": "VolumeId"
                     }
                 },
+                "IncludeManagedResources": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
+                    }
+                },
                 "DryRun": {
                     "target": "com.amazonaws.ec2#Boolean",
                     "traits": {
@@ -50978,6 +51020,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The volume IDs. If not specified, then all volumes are included in the response.</p>",
                         "smithy.api#xmlName": "VolumeId"
+                    }
+                },
+                "IncludeManagedResources": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to include managed resources in the output. If this parameter is set to <code>true</code>, the output includes resources that are managed by Amazon Web Services services, even if managed resource visibility is set to hidden.</p>"
                     }
                 },
                 "DryRun": {
@@ -66417,6 +66465,48 @@
                         "aws.protocols#ec2QueryName": "NextToken",
                         "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
                         "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#GetManagedResourceVisibility": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#GetManagedResourceVisibilityRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#GetManagedResourceVisibilityResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves the managed resource visibility configuration for the account. The response\n            indicates whether managed resources are hidden or visible by default.</p>"
+            }
+        },
+        "com.amazonaws.ec2#GetManagedResourceVisibilityRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the operation, without actually making the \n  request, and provides an error response. If you have the required permissions, the error response is \n  <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#GetManagedResourceVisibilityResult": {
+            "type": "structure",
+            "members": {
+                "Visibility": {
+                    "target": "com.amazonaws.ec2#ManagedResourceVisibilitySettings",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Visibility",
+                        "smithy.api#documentation": "<p>The managed resource visibility settings for the account.</p>",
+                        "smithy.api#xmlName": "visibility"
                     }
                 }
             },
@@ -94140,6 +94230,39 @@
                 }
             }
         },
+        "com.amazonaws.ec2#ManagedResourceDefaultVisibility": {
+            "type": "enum",
+            "members": {
+                "hidden": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hidden"
+                    }
+                },
+                "visible": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "visible"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#ManagedResourceVisibilitySettings": {
+            "type": "structure",
+            "members": {
+                "DefaultVisibility": {
+                    "target": "com.amazonaws.ec2#ManagedResourceDefaultVisibility",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "DefaultVisibility",
+                        "smithy.api#documentation": "<p>The default visibility setting for managed resources. A value of\n            <code>hidden</code> indicates that managed resources are not included in Describe\n            operation responses by default. A value of <code>visible</code> indicates that managed\n            resources are included by default.</p>",
+                        "smithy.api#xmlName": "defaultVisibility"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the managed resource visibility settings for the account.</p>"
+            }
+        },
         "com.amazonaws.ec2#MarketType": {
             "type": "enum",
             "members": {
@@ -96074,7 +96197,7 @@
                     }
                 },
                 "Value": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#ModifyInstanceAttributeValue",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Value",
                         "smithy.api#documentation": "<p>A new value for the attribute. Use only with the <code>kernel</code>,\n                <code>ramdisk</code>, <code>userData</code>, <code>disableApiTermination</code>, or\n                <code>instanceInitiatedShutdownBehavior</code> attribute.</p>",
@@ -96171,6 +96294,12 @@
             },
             "traits": {
                 "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#ModifyInstanceAttributeValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.ec2#ModifyInstanceCapacityReservationAttributes": {
@@ -97866,6 +97995,54 @@
                         "aws.protocols#ec2QueryName": "PrefixList",
                         "smithy.api#documentation": "<p>Information about the prefix list.</p>",
                         "smithy.api#xmlName": "prefixList"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.ec2#ModifyManagedResourceVisibility": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#ModifyManagedResourceVisibilityRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#ModifyManagedResourceVisibilityResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Modifies the managed resource visibility configuration for the account. Use this\n            operation to control whether managed resources are hidden or visible by default.\n            Visibility settings are account-wide and affect all IAM principals uniformly. Hidden\n            resources remain fully operational and billable.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ModifyManagedResourceVisibilityRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the operation, without actually making the \n  request, and provides an error response. If you have the required permissions, the error response is \n  <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "DefaultVisibility": {
+                    "target": "com.amazonaws.ec2#ManagedResourceDefaultVisibility",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The default visibility setting for managed resources. Valid values:\n            <code>hidden</code> | <code>visible</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#ModifyManagedResourceVisibilityResult": {
+            "type": "structure",
+            "members": {
+                "Visibility": {
+                    "target": "com.amazonaws.ec2#ManagedResourceVisibilitySettings",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Visibility",
+                        "smithy.api#documentation": "<p>The updated managed resource visibility settings for the account.</p>",
+                        "smithy.api#xmlName": "visibility"
                     }
                 }
             },
@@ -105087,6 +105264,14 @@
                         "aws.protocols#ec2QueryName": "Principal",
                         "smithy.api#documentation": "<p>If <code>managed</code> is <code>true</code>, then the principal is returned. The\n            principal is the service provider that manages the resource.</p>",
                         "smithy.api#xmlName": "principal"
+                    }
+                },
+                "HiddenByDefault": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "HiddenByDefault",
+                        "smithy.api#documentation": "<p>If <code>true</code>, the resource is hidden by default based on the managed resource\n            visibility settings for the account.</p>",
+                        "smithy.api#xmlName": "hiddenByDefault"
                     }
                 }
             },
@@ -133348,6 +133533,13 @@
                         "smithy.api#documentation": "<p>The modification completion or failure time.</p>",
                         "smithy.api#xmlName": "endTime"
                     }
+                },
+                "Operator": {
+                    "target": "com.amazonaws.ec2#OperatorResponse",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Operator",
+                        "smithy.api#xmlName": "operator"
+                    }
                 }
             },
             "traits": {
@@ -133876,6 +134068,14 @@
                         "aws.protocols#ec2QueryName": "AvailabilityZoneId",
                         "smithy.api#documentation": "<p>The ID of the Availability Zone.</p>",
                         "smithy.api#xmlName": "availabilityZoneId"
+                    }
+                },
+                "Operator": {
+                    "target": "com.amazonaws.ec2#OperatorResponse",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Operator",
+                        "smithy.api#documentation": "<p>The service provider that manages the resource.</p>",
+                        "smithy.api#xmlName": "operator"
                     }
                 }
             },
