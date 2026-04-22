@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.6.61] - 04/21/2026
+
+### Features
+* (**cognitoidentityprovider**) Adding dutch language support for Cognito Managed Login and Terms on Console
+* (**comprehendmedical**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* (**computeoptimizer**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* (**computeoptimizerautomation**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* (**gamelift**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* (**marketplaceentitlementservice**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* (**networkfirewall**) Support for new types of partner managed rulegroups for Network Firewall Service
+* (**sagemaker**) SageMaker AI now supports generative AI inference recommendations. Provide your model and workload, and SageMaker AI optimizes configurations, benchmarks them on real GPUs, and returns deployment-ready recommendations with validated metrics, accelerating the path to production from weeks to hours.
+* (**snowball**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+
+## [1.6.60] - 04/20/2026
+
+### Features
+* (**applicationsignals**) Releasing Second phase of SLO Recommendations where you can create recommended SLOs out-of-the box using CreateSLO API
+* (**bedrockagentcorecontrol**) Supporting listingMode for AgentCore Gateway MCP server targets
+* (**ec2**) Added Transit Gateway Integration into AWS Client VPN.
+* (**evs**) Amazon EVS now allows you to create connectors to your vCenter appliances and create Windows Server entitlements for virtual machines running in your EVS environments
+* (**kafka**) Amazon MSK Replicator now supports data migration from external Apache Kafka clusters to Amazon MSK Express brokers. This release adds SaslScram authentication with TLS encryption, enhanced consumer offset synchronization, and customer log forwarding for troubleshooting.
+* (**location**) This release adds support for new Job APIs for bulk workloads. The initial job type supported is Address Validation. The new APIs added are StartJob, CancelJob, ListJobs, and GetJob.
+* (**observabilityadmin**) Enablement for Security Hub v2 via Observability Admin Telemetry Rule for account and organization level.
+
+### Documentation
+* (**guardduty**) Expanded support for new suppression rule fields.
+
 ## [1.6.59] - 04/17/2026
 
 ### Features
