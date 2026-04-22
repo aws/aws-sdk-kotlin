@@ -1,6 +1,6 @@
 [versions]
 kotlin-version = "2.3.20"
-ksp-version = "2.3.4"
+ksp-version = "2.3.6"
 
 dokka-version = "2.2.0"
 
@@ -22,7 +22,7 @@ ddb-local-version = "2.5.2"
 kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.16"
 kotlinx-serialization-version = "1.10.0"
-mockk-version = "1.14.7"
+mockk-version = "1.14.9"
 slf4j-version = "2.0.17"
 jsoup-version = "1.22.1"
 
