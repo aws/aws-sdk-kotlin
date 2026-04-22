@@ -10,11 +10,14 @@ on:
     branches:
       - main
       - '*-main'
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   changelog-verification:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login != 'dependabot[bot]' # no changelogs for Dependabot version bumps
+    # no changelogs for merge queues or Dependabot version bumps
+    if: ${{ github.event_name != 'merge_group' && github.event.pull_request.user.login != 'dependabot[bot]' }}
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4

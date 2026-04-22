@@ -1015,6 +1015,12 @@
             "brazilName": "AwsSdkKotlinInspector2"
         },
         {
+            "sdkId": "Interconnect",
+            "namespace": "aws.sdk.kotlin.services.interconnect",
+            "artifactName": "interconnect",
+            "brazilName": "AwsSdkKotlinInterconnect"
+        },
+        {
             "sdkId": "InternetMonitor",
             "namespace": "aws.sdk.kotlin.services.internetmonitor",
             "artifactName": "internetmonitor",
