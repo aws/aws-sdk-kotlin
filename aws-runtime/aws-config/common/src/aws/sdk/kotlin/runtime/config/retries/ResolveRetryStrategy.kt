@@ -17,19 +17,25 @@ import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.RetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
+import aws.smithy.kotlin.runtime.retries.delay.StandardExponentialBackoffWithJitter
+import aws.smithy.kotlin.runtime.retries.delay.StandardRetryTokenBucket
+import aws.smithy.kotlin.runtime.retries.newRetriesEnabled
 import aws.smithy.kotlin.runtime.util.LazyAsyncValue
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
 
 /**
- * Attempt to resolve the retry strategy used to make requests by fetching the max attempts and retry mode. Currently,
- * we only support the legacy and standard retry modes.
+ * Attempt to resolve the retry strategy used to make requests by fetching the max attempts and retry mode.
+ * If `AWS_NEW_RETRIES_2026` (or `aws.newRetries2026` system property) is set to `true`, the standard retry
+ * strategy behavior is enabled. Falls back to smithy-kotlin's `SMITHY_NEW_RETRIES_2026` / `smithy.newRetries2026`.
  */
 @InternalSdkApi
 public suspend fun resolveRetryStrategy(
     platformProvider: PlatformProvider = PlatformProvider.System,
     profile: LazyAsyncValue<AwsProfile> = asyncLazy { loadAwsSharedConfig(platformProvider).activeProfile },
+    serviceName: String? = null,
 ): RetryStrategy {
+    val useNewRetries = AwsSdkSetting.AwsNewRetries.resolve(platformProvider) ?: newRetriesEnabled()
     val maxAttempts = AwsSdkSetting.AwsMaxAttempts.resolve(platformProvider)
         ?: profile.get().maxAttempts
 
@@ -48,6 +54,17 @@ public suspend fun resolveRetryStrategy(
                 throw ConfigurationException("max attempts was $it, but should be at least 1")
             }
             this.maxAttempts = it
+        }
+        serviceName?.let { this.serviceName = it }
+
+        // Configure the standard retry strategy behavior when enabled via AWS or smithy-kotlin flag
+        if (useNewRetries) {
+            delayProvider(StandardExponentialBackoffWithJitter) {}
+            tokenBucket(StandardRetryTokenBucket) {
+                retryCost = 14
+                timeoutRetryCost = 5
+                initialTrySuccessIncrement = 1
+            }
         }
     }
 }

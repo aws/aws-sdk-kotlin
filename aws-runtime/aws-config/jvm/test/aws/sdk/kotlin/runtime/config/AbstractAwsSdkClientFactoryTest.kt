@@ -111,6 +111,7 @@ private interface TestClient : SdkClient {
 
     // refactored: mostly in an abstract base now
     companion object : AbstractAwsSdkClientFactory<Config, Config.Builder, TestClient, Builder>() {
+        override val serviceName: String = "Test"
         override fun builder(): Builder = Builder()
     }
 
