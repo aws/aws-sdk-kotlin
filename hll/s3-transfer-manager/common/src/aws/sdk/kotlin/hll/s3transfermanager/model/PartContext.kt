@@ -12,8 +12,8 @@ package aws.sdk.kotlin.hll.s3transfermanager.model
  * @param bytes The bytes of the part.
  * @param offset The byte offset of this part within the overall object.
  */
-public data class PartContext(
-    val partNumber: Int,
-    val bytes: ByteArray,
-    val offset: Long,
+public class PartContext(
+    public val partNumber: Int,
+    public val bytes: ByteArray,
+    public val offset: Long,
 )

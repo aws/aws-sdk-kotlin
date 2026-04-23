@@ -22,9 +22,6 @@ import aws.smithy.kotlin.runtime.content.toByteArray
 import aws.smithy.kotlin.runtime.util.Filesystem
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.WriteType
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -134,81 +131,62 @@ internal class TransferBytes<T>(
     }
 
     private suspend fun transferRemainingParts() {
-        val buffer = Channel<PartContext>(capacity = maxInMemoryParts)
         partCount = partCount ?: ceilDiv(context.transferableBytes!!, targetPartSizeBytes).toInt()
 
-        try {
-            coroutineScope {
-                launch { downloadParts(buffer) }
-                launch { processParts(buffer) }
-            }
-        } catch (t: Throwable) {
-            buffer.consumeEach { bufferSemaphore.release() } // Clears buffer and resets count if something went wrong, or no op if success
-            throw t
-        }
-    }
-
-    private suspend fun downloadParts(
-        buffer: Channel<PartContext>,
-    ) = coroutineScope {
-        val jobs = (2..partCount!!).map { partNumber ->
-            launch {
-                // Other jobs will be updating the global context so make a copy that won't change and we can modify safely
-                val localContext = context.copy()
-
-                val previousRequest = localContext.s3Request as GetObjectRequest
-                localContext.s3Request = buildNextRequest(previousRequest, partNumber)
-                networkOperation.withPermit {
-                    val downloadedBytes = executePhase(TransferPhase.BytesTransferred, localContext, interceptors) {
-                        s3Client.withTmBusinessMetric {
-                            it.getObject(localContext.s3Request as GetObjectRequest) { getObjectResponse ->
-                                localContext.s3Response = getObjectResponse
-                                localContext.transferredBytes = localContext.transferredBytes!! + getObjectResponse.contentLength!!
-
-                                val offset = when (multipartDownloadType) {
-                                    MultipartDownloadType.Range -> targetPartSizeBytes * (partNumber - 1)
-                                    MultipartDownloadType.Part -> parseOffset(getObjectResponse)
-                                }
-
-                                bufferSemaphore.acquire()
-                                val bytes = getObjectResponse.body?.toByteArray() ?: byteArrayOf()
-                                buffer.send(
-                                    PartContext(partNumber, bytes, offset),
-                                )
-                                getObjectResponse.contentLength!!
-                            }
+        coroutineScope {
+            val jobs = (2..partCount!!).map { partNumber ->
+                launch {
+                    bufferSemaphore.withPermit {
+                        val partContext = networkOperation.withPermit {
+                            downloadPart(partNumber)
+                        }
+                        fileSystemSemaphore.withPermit {
+                            processPart(partContext)
                         }
                     }
-
-                    // Merge the local context back into the global context
-                    updateContext(localContext, downloadedBytes)
                 }
             }
+            jobs.joinAll()
         }
-
-        jobs.joinAll()
-        buffer.close()
     }
 
-    private suspend fun processParts(buffer: Channel<PartContext>) = coroutineScope {
-        val processors = mutableSetOf<Job>()
+    private suspend fun downloadPart(partNumber: Int): PartContext {
+        // Other jobs will be updating the global context so make a copy that won't change and we can modify safely
+        val localContext = context.copy()
+        val previousRequest = localContext.s3Request as GetObjectRequest
+        localContext.s3Request = buildNextRequest(previousRequest, partNumber)
 
-        for (part in buffer) {
-            processors += launch {
-                objectHandler?.invoke(part)
-                downloadPath?.let {
-                    fileSystemSemaphore.withPermit {
-                        system.write(
-                            tempDownloadPath,
-                            part.bytes,
-                            WriteType.OFFSET(part.offset),
-                        )
+        val partContext = executePhase(TransferPhase.BytesTransferred, localContext, interceptors) {
+            s3Client.withTmBusinessMetric {
+                it.getObject(localContext.s3Request as GetObjectRequest) { getObjectResponse ->
+                    localContext.s3Response = getObjectResponse
+                    localContext.transferredBytes = localContext.transferredBytes!! + getObjectResponse.contentLength!!
+
+                    val offset = when (multipartDownloadType) {
+                        MultipartDownloadType.Range -> targetPartSizeBytes * (partNumber - 1)
+                        MultipartDownloadType.Part -> parseOffset(getObjectResponse)
                     }
+
+                    val bytes = getObjectResponse.body?.toByteArray() ?: byteArrayOf()
+                    PartContext(partNumber, bytes, offset)
                 }
             }
         }
-        bufferSemaphore.release()
-        processors.joinAll()
+
+        updateContext(localContext, partContext.bytes.size.toLong())
+
+        return partContext
+    }
+
+    private suspend fun processPart(part: PartContext) {
+        objectHandler?.invoke(part)
+        downloadPath?.let {
+            system.write(
+                tempDownloadPath,
+                part.bytes,
+                WriteType.OFFSET(part.offset),
+            )
+        }
     }
 
     private suspend fun updateContext(localContext: MutableTransferContext, downloadedBytes: Long) {
