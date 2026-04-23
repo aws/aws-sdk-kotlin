@@ -55,6 +55,11 @@ public abstract class AbstractAwsSdkClientFactory<
           TConfig : AwsSdkClientConfig,
           TConfigBuilder : SdkClientConfig.Builder<TConfig>,
           TConfigBuilder : AwsSdkClientConfig.Builder {
+
+    /**
+     * The service name (sdkId) used for service-specific retry behavior (e.g., DynamoDB backoff tuning).
+     */
+    protected abstract val serviceName: String
     /**
      * Construct a [TClient] by resolving the configuration from the current environment.
      */
@@ -75,7 +80,7 @@ public abstract class AbstractAwsSdkClientFactory<
             // As a DslBuilderProperty, the value of retryStrategy cannot be checked for nullability because it may have
             // been set using a DSL. Thus, set the resolved strategy _first_ to ensure it's used as the fallback.
             if (config is RetryStrategyClientConfig.Builder) {
-                config.retryStrategy = resolveRetryStrategy(profile = profile)
+                config.retryStrategy = resolveRetryStrategy(serviceName = serviceName, profile = profile)
             }
 
             block?.let(config::apply)

@@ -10,6 +10,8 @@ import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.smithy.kotlin.runtime.ClientException
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
+import aws.smithy.kotlin.runtime.retries.delay.ExponentialBackoffWithJitter
+import aws.smithy.kotlin.runtime.retries.delay.StandardExponentialBackoffWithJitter
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -242,5 +244,39 @@ class ResolveRetryStrategyTest {
 
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
         assertEquals(expectedMaxAttempts, strategy.config.maxAttempts)
+    }
+
+    @Test
+    fun itUsesLegacyDefaultsWhenNoFlagsSet() = runTest {
+        val platform = TestPlatformProvider()
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
+        assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
+    }
+
+    @Test
+    fun itUsesNewDefaultsWhenAwsFlagSet() = runTest {
+        val platform = TestPlatformProvider(
+            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
+        )
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
+        assertIs<StandardExponentialBackoffWithJitter>(strategy.config.delayProvider)
+    }
+
+    @Test
+    fun itUsesLegacyDefaultsWhenAwsFlagFalse() = runTest {
+        val platform = TestPlatformProvider(
+            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "false"),
+        )
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
+        assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
+    }
+
+    @Test
+    fun itPassesServiceNameToStrategy() = runTest {
+        val platform = TestPlatformProvider(
+            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
+        )
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "DynamoDB"))
+        assertEquals("DynamoDB", strategy.config.serviceName)
     }
 }

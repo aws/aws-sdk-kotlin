@@ -23,6 +23,8 @@ class ServiceClientCompanionObjectWriterTest {
         ServiceClientCompanionObjectWriter().write(writer, null)
 
         val expected = """
+            override val serviceName: String = ServiceId
+
             override suspend fun finalizeEnvironmentalConfig(builder: Builder, sharedConfig: LazyAsyncValue<AwsSharedConfig>, activeProfile: LazyAsyncValue<AwsProfile>) {
                 super.finalizeEnvironmentalConfig(builder, sharedConfig, activeProfile)
                 builder.config.endpointUrl = builder.config.endpointUrl ?: resolveEndpointUrl(
