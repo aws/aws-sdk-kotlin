@@ -60,6 +60,7 @@ public abstract class AbstractAwsSdkClientFactory<
      * The service name (sdkId) used for service-specific retry behavior (e.g., DynamoDB backoff tuning).
      */
     protected abstract val serviceName: String
+
     /**
      * Construct a [TClient] by resolving the configuration from the current environment.
      */
