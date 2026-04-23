@@ -23,49 +23,51 @@ internal sealed interface TransferPhase {
  * 2. Executes the phase logic.
  * 3. Runs all hooks scheduled to execute **after** the phase.
  */
-internal suspend fun executePhase(
+internal suspend fun <T> executePhase(
     phase: TransferPhase,
     context: MutableTransferContext,
     interceptors: List<TransferInterceptor>,
-    block: suspend () -> Unit,
-) {
-    when (phase) {
-        is TransferPhase.TransferInitiated -> {
-            var immutableContext = context.immutableCopy()
-            interceptors.forEachCatching { readBeforeTransferInitiated(immutableContext) }
-            interceptors.forEach { it.modifyBeforeTransferInitiated(context) }
-            block.invoke()
-            immutableContext = context.immutableCopy()
-            interceptors.forEachCatching { readAfterTransferInitiated(immutableContext) }
-            interceptors.forEach { it.modifyAfterTransferInitiated(context) }
-        }
-        is TransferPhase.BytesTransferred -> {
-            var immutableContext = context.immutableCopy()
-            interceptors.forEachCatching { readBeforeBytesTransferred(immutableContext) }
-            interceptors.forEach { it.modifyBeforeBytesTransferred(context) }
-            block.invoke()
-            immutableContext = context.immutableCopy()
-            interceptors.forEachCatching { readAfterBytesTransferred(immutableContext) }
-            interceptors.forEach { it.modifyAfterBytesTransferred(context) }
-        }
-        is TransferPhase.ObjectTransferred -> {
-            var immutableContext = context.immutableCopy()
-            interceptors.forEachCatching { readBeforeObjectTransferred(immutableContext) }
-            interceptors.forEach { it.modifyBeforeObjectTransferred(context) }
-            block.invoke()
-            immutableContext = context.immutableCopy()
-            interceptors.forEachCatching { readAfterObjectTransferred(immutableContext) }
-            interceptors.forEach { it.modifyAfterObjectTransferred(context) }
-        }
-        is TransferPhase.TransferCompleted -> {
-            var immutableContext = context.immutableCopy()
-            interceptors.forEachCatching { readBeforeTransferCompleted(immutableContext) }
-            interceptors.forEach { it.modifyBeforeTransferCompleted(context) }
-            block.invoke()
-            immutableContext = context.immutableCopy()
-            interceptors.forEachCatching { readAfterTransferCompleted(immutableContext) }
-            interceptors.forEach { it.modifyAfterTransferCompleted(context) }
-        }
+    block: suspend () -> T,
+): T = when (phase) {
+    is TransferPhase.TransferInitiated -> {
+        var immutableContext = context.immutableCopy()
+        interceptors.forEachCatching { readBeforeTransferInitiated(immutableContext) }
+        interceptors.forEach { it.modifyBeforeTransferInitiated(context) }
+        val result = block.invoke()
+        immutableContext = context.immutableCopy()
+        interceptors.forEachCatching { readAfterTransferInitiated(immutableContext) }
+        interceptors.forEach { it.modifyAfterTransferInitiated(context) }
+        result
+    }
+    is TransferPhase.BytesTransferred -> {
+        var immutableContext = context.immutableCopy()
+        interceptors.forEachCatching { readBeforeBytesTransferred(immutableContext) }
+        interceptors.forEach { it.modifyBeforeBytesTransferred(context) }
+        val result = block.invoke()
+        immutableContext = context.immutableCopy()
+        interceptors.forEachCatching { readAfterBytesTransferred(immutableContext) }
+        interceptors.forEach { it.modifyAfterBytesTransferred(context) }
+        result
+    }
+    is TransferPhase.ObjectTransferred -> {
+        var immutableContext = context.immutableCopy()
+        interceptors.forEachCatching { readBeforeObjectTransferred(immutableContext) }
+        interceptors.forEach { it.modifyBeforeObjectTransferred(context) }
+        val result = block.invoke()
+        immutableContext = context.immutableCopy()
+        interceptors.forEachCatching { readAfterObjectTransferred(immutableContext) }
+        interceptors.forEach { it.modifyAfterObjectTransferred(context) }
+        result
+    }
+    is TransferPhase.TransferCompleted -> {
+        var immutableContext = context.immutableCopy()
+        interceptors.forEachCatching { readBeforeTransferCompleted(immutableContext) }
+        interceptors.forEach { it.modifyBeforeTransferCompleted(context) }
+        val result = block.invoke()
+        immutableContext = context.immutableCopy()
+        interceptors.forEachCatching { readAfterTransferCompleted(immutableContext) }
+        interceptors.forEach { it.modifyAfterTransferCompleted(context) }
+        result
     }
 }
 

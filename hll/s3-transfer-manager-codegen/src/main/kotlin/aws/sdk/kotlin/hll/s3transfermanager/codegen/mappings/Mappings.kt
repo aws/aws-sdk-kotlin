@@ -5,9 +5,10 @@
 
 package aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings
 
+import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.downloadobject.downloadObjectConversions
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.downloadobject.downloadObjectIoMappings
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadobject.uploadObjectConversions
 import aws.sdk.kotlin.hll.s3transfermanager.codegen.mappings.uploadobject.uploadObjectIoMappings
 
 internal val ioMappings = uploadObjectIoMappings + downloadObjectIoMappings
-internal val conversionMappings = uploadObjectConversions
+internal val conversionMappings = uploadObjectConversions + downloadObjectConversions

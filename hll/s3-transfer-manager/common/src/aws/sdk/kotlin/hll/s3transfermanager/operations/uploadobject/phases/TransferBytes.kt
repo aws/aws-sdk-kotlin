@@ -12,11 +12,11 @@ import aws.sdk.kotlin.hll.s3transfermanager.interceptors.executePhase
 import aws.sdk.kotlin.hll.s3transfermanager.model.Part
 import aws.sdk.kotlin.hll.s3transfermanager.model.UploadObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.model.utils.toUploadPartRequest
-import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject.ceilDiv
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject.nextPartBytes
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject.resolvePartSize
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject.resolveSource
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
+import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
 import aws.sdk.kotlin.hll.s3transfermanager.utils.withTmBusinessMetric
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.abortMultipartUpload
@@ -30,6 +30,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
@@ -72,7 +73,8 @@ internal suspend fun transferBytes(
             )
 
             try {
-                repeat(maxConcurrentPartUploads) {
+                val mutex = Mutex()
+                val jobs = (0 until maxConcurrentPartUploads).map {
                     consumer(
                         producer,
                         uploadObjectRequest,
@@ -81,10 +83,11 @@ internal suspend fun transferBytes(
                         interceptors,
                         client,
                         uploadedParts,
-                        Mutex(),
+                        mutex,
                         bufferSemaphore,
                     )
                 }
+                jobs.joinAll()
             } catch (e: Exception) {
                 // Consume remaining in memory parts and reduce part count
                 producer.consumeEach {
@@ -96,6 +99,8 @@ internal suspend fun transferBytes(
             if (uploadedParts.size != numberOfParts) {
                 throw S3TransferManagerException("The number of uploaded parts does not match the expected count. Expected $numberOfParts, actual: ${uploadedParts.size}")
             }
+
+            uploadedParts.sortBy { it.partNumber }
         } catch (uploadPartException: Exception) {
             logger.warn {
                 buildString {
@@ -188,7 +193,7 @@ private fun CoroutineScope.produceParts(
  * intended for use in a [fan-out](https://kotlinlang.org/docs/channels.html#fan-out) pattern,
  * where multiple consumers concurrently upload different parts of the same object.
  */
-private suspend fun consumer(
+private fun CoroutineScope.consumer(
     channel: ReceiveChannel<Part>,
     uploadObjectRequest: UploadObjectRequest,
     mpuUploadId: String,
@@ -198,49 +203,47 @@ private suspend fun consumer(
     uploadedParts: MutableList<CompletedPart>,
     mutex: Mutex,
     semaphore: Semaphore,
-) = coroutineScope {
-    launch {
-        for (part in channel) {
-            val partSize = part.bytes.size // Store the original size, as it will shrink when bytes are read
-            val localContext = context.copy() // Create a separate copy to avoid concurrent modifications
+) = launch {
+    for (part in channel) {
+        val partSize = part.bytes.size // Store the original size, as it will shrink when bytes are read
+        val localContext = context.copy() // Create a separate copy to avoid concurrent modifications
 
-            localContext.s3Request = uploadObjectRequest.toUploadPartRequest(
-                part.bytes,
-                part.number,
-                mpuUploadId,
+        localContext.s3Request = uploadObjectRequest.toUploadPartRequest(
+            part.bytes,
+            part.number,
+            mpuUploadId,
+        )
+
+        executePhase(
+            TransferPhase.BytesTransferred,
+            localContext,
+            interceptors,
+        ) {
+            localContext.s3Response = client.withTmBusinessMetric {
+                it.uploadPart(localContext.s3Request as UploadPartRequest)
+            }
+
+            // -1 part in memory
+            semaphore.release()
+
+            localContext.transferredBytes = localContext.transferredBytes!! + partSize
+        }
+
+        // Update shared state between coroutines
+        mutex.withLock {
+            context.s3Request = localContext.s3Request
+            context.s3Response = localContext.s3Response
+            context.transferableBytes = localContext.transferableBytes
+            context.transferredBytes = context.transferredBytes!! + partSize // Don't use transferredBytes from local context as it might be out of date
+            context.transferableObjects = localContext.transferableObjects
+            context.transferredObjects = localContext.transferredObjects
+
+            uploadedParts.add(
+                CompletedPart {
+                    partNumber = part.number
+                    eTag = (localContext.s3Response as UploadPartResponse).eTag
+                },
             )
-
-            executePhase(
-                TransferPhase.BytesTransferred,
-                localContext,
-                interceptors,
-            ) {
-                localContext.s3Response = client.withTmBusinessMetric {
-                    it.uploadPart(localContext.s3Request as UploadPartRequest)
-                }
-
-                // -1 part in memory
-                semaphore.release()
-
-                localContext.transferredBytes = localContext.transferredBytes!! + partSize
-            }
-
-            // Update shared state between coroutines
-            mutex.withLock {
-                context.s3Request = localContext.s3Request
-                context.s3Response = localContext.s3Response
-                context.transferableBytes = localContext.transferableBytes
-                context.transferredBytes = context.transferredBytes!! + partSize // Don't use transferredBytes from local context as it might be out of date
-                context.transferableObjects = localContext.transferableObjects
-                context.transferredObjects = localContext.transferredObjects
-
-                uploadedParts.add(
-                    CompletedPart {
-                        partNumber = part.number
-                        eTag = (localContext.s3Response as UploadPartResponse).eTag
-                    },
-                )
-            }
         }
     }
 }

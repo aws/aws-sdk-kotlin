@@ -6,6 +6,7 @@
 package aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject
 
 import aws.sdk.kotlin.hll.s3transfermanager.utils.S3TransferManagerException
+import aws.sdk.kotlin.hll.s3transfermanager.utils.ceilDiv
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.io.SdkBuffer
 import aws.smithy.kotlin.runtime.io.SdkByteReadChannel
@@ -107,20 +108,4 @@ internal suspend fun nextPartBytes(
     }
 
     return buffer
-}
-
-/**
- * Returns the ceiling of the division
- *
- * This means the result is rounded up to the nearest integer if the dividend is not
- * evenly divisible by the divisor
- */
-internal fun ceilDiv(dividend: Long, divisor: Long): Long {
-    val div = dividend / divisor
-    val remainder = dividend % divisor
-    return if (remainder != 0L) {
-        div + 1
-    } else {
-        div
-    }
 }

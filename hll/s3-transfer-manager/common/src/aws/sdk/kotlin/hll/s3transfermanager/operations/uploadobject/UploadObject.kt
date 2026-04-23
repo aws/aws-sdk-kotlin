@@ -35,7 +35,7 @@ internal suspend fun uploadObjectImplementation(
     val contentLength = uploadObjectRequest.contentLength ?: uploadObjectRequest.body?.contentLength ?: throw S3TransferManagerException("Content length must be known. Please set it in the request parameters.")
     val multipartUpload = contentLength >= multipartUploadThresholdBytes
     val logger = coroutineContext.logger<S3TransferManager>()
-    var transferContext = MutableTransferContext(
+    val transferContext = MutableTransferContext(
         tmRequest = uploadObjectRequest,
     )
 

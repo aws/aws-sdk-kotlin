@@ -6,9 +6,13 @@
 package aws.sdk.kotlin.hll.s3transfermanager
 
 import aws.sdk.kotlin.hll.s3transfermanager.interceptors.TransferInterceptor
+import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectRequest
+import aws.sdk.kotlin.hll.s3transfermanager.model.DownloadObjectResponse
 import aws.sdk.kotlin.hll.s3transfermanager.model.MultipartDownloadType
+import aws.sdk.kotlin.hll.s3transfermanager.model.PartContext
 import aws.sdk.kotlin.hll.s3transfermanager.model.UploadObjectRequest
 import aws.sdk.kotlin.hll.s3transfermanager.model.UploadObjectResponse
+import aws.sdk.kotlin.hll.s3transfermanager.operations.downloadobject.downloadObjectImplementation
 import aws.sdk.kotlin.hll.s3transfermanager.operations.uploadobject.uploadObjectImplementation
 import aws.sdk.kotlin.services.s3.S3Client
 import kotlinx.coroutines.sync.Semaphore
@@ -50,7 +54,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
     public val interceptors: MutableList<TransferInterceptor> = builder.interceptors
 
     /**
-     * The maximum amount of parts to buffer in memory while waiting for uploads to complete.
+     * The maximum amount of parts to buffer in memory while waiting for operations to complete.
      * The actual number of parts buffered at any given time may be less than or equal but never greater.
      *
      * Defaults to 5.
@@ -58,12 +62,20 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
     public val maxInMemoryParts: Int = builder.maxInMemoryParts
 
     /**
-     * Maximum number of concurrent part uploads for an object.
-     * The actual number of uploads at any given time may be less than or equal but never greater.
+     * The maximum number of concurrent upload/download operations.
+     * The actual number of operations executing at any given time may be less than or equal but never greater.
      *
      * Defaults to 5.
      */
-    public val maxConcurrentPartUploads: Int = builder.maxConcurrentPartUploads
+    public val maxConcurrentNetworkOperations: Int = builder.maxConcurrentNetworkOperations
+
+    /**
+     * The maximum number of concurrent file read/write operations.
+     * The actual number of operations executing at any given time may be less than or equal but never greater.
+     *
+     * Defaults to 5.
+     */
+    public val maxConcurrentFileSystemOperations: Int = builder.maxConcurrentFileSystemOperations
 
     public companion object {
         public operator fun invoke(client: S3Client, block: Builder.() -> Unit = {}): S3TransferManager = Builder().apply(block).build(client)
@@ -102,7 +114,7 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         public var interceptors: MutableList<TransferInterceptor> = mutableListOf()
 
         /**
-         * The maximum amount of parts to buffer in memory while waiting for uploads to complete.
+         * The maximum amount of parts to buffer in memory while waiting for operations to complete.
          * The actual number of parts buffered at any given time may be less than or equal but never greater.
          *
          * Defaults to 5.
@@ -110,22 +122,37 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         public var maxInMemoryParts: Int = 5
 
         /**
-         * Maximum number of concurrent part uploads for an object.
-         * The actual number of uploads at any given time may be less than or equal but never greater.
+         * The maximum number of concurrent upload/download operations.
+         * The actual number of operations executing at any given time may be less than or equal but never greater.
          *
          * Defaults to 5.
          */
-        public var maxConcurrentPartUploads: Int = 5
+        public var maxConcurrentNetworkOperations: Int = 5
+
+        /**
+         * The maximum number of concurrent file read/write operations.
+         * The actual number of operations executing at any given time may be less than or equal but never greater.
+         *
+         * Defaults to 5.
+         */
+        public var maxConcurrentFileSystemOperations: Int = 5
 
         internal fun build(client: S3Client): S3TransferManager = S3TransferManager(client, this)
     }
 
-    // Keeps track of how many parts are in memory for this S3 TM via permits
+    // Keep track of concurrency and buffer limits via semaphore permits
     internal val bufferSemaphore = Semaphore(maxInMemoryParts)
+    internal val networkSemaphore = Semaphore(maxConcurrentNetworkOperations)
+    internal val fileSystemSemaphore = Semaphore(maxConcurrentFileSystemOperations)
 
     /**
-     * Uploads an object to S3 via [aws.smithy.kotlin.runtime.content.ByteStream].
-     * Uses multipart uploads with concurrent uploads if the object size is more than the configured [multipartUploadThresholdBytes].
+     * Uploads an object to S3, automatically using multipart upload for large objects.
+     *
+     * If the object size exceeds [multipartUploadThresholdBytes], the upload is split into parts of
+     * [targetPartSizeBytes] and uploaded concurrently. Otherwise, a single `PutObject` request is used.
+     *
+     * The content length of the request body must be known. Set it explicitly via
+     * [UploadObjectRequest.contentLength] or use a [ByteStream] with a known length.
      */
     public suspend fun uploadObject(
         uploadObjectRequest: UploadObjectRequest,
@@ -136,15 +163,58 @@ public class S3TransferManager private constructor(public val s3Client: S3Client
         targetPartSizeBytes,
         interceptors,
         maxInMemoryParts,
-        maxConcurrentPartUploads,
+        maxConcurrentNetworkOperations,
         bufferSemaphore,
     )
 
     /**
-     * Uploads an object to S3 via [aws.smithy.kotlin.runtime.content.ByteStream].
-     * Uses multipart uploads with concurrent uploads if the object size is more than the configured [multipartUploadThresholdBytes].
+     * Uploads an object to S3, automatically using multipart upload for large objects.
+     *
+     * If the object size exceeds [multipartUploadThresholdBytes], the upload is split into parts of
+     * [targetPartSizeBytes] and uploaded concurrently. Otherwise, a single `PutObject` request is used.
+     *
+     * The content length of the request body must be known. Set it explicitly via
+     * [UploadObjectRequest.contentLength] or use a [ByteStream] with a known length.
      */
     public suspend inline fun uploadObject(
         crossinline block: UploadObjectRequest.Builder.() -> Unit,
     ): UploadObjectResponse = uploadObject(UploadObjectRequest.Builder().apply(block).build())
+
+    /**
+     * Downloads an object from S3, optionally using multipart transfer for large objects.
+     *
+     * At least one of [downloadPath] or [objectHandler] must be provided. If [downloadPath] is specified, the object
+     * is written to a local file at that path. If [objectHandler] is specified, each part's context and bytes are
+     * passed to the handler for custom processing. Both may be used together.
+     */
+    public suspend fun <T> downloadObject(
+        downloadObjectRequest: DownloadObjectRequest,
+        downloadPath: String? = null,
+        objectHandler: (suspend (PartContext) -> T)? = null,
+    ): DownloadObjectResponse = downloadObjectImplementation(
+        downloadObjectRequest,
+        objectHandler,
+        s3Client,
+        multipartDownloadType,
+        targetPartSizeBytes,
+        interceptors,
+        downloadPath,
+        networkSemaphore,
+        fileSystemSemaphore,
+        maxInMemoryParts,
+        bufferSemaphore,
+    )
+
+    /**
+     * Downloads an object from S3, optionally using multipart transfer for large objects.
+     *
+     * At least one of [downloadPath] or [objectHandler] must be provided. If [downloadPath] is specified, the object
+     * is written to a local file at that path. If [objectHandler] is specified, each part's context and bytes are
+     * passed to the handler for custom processing. Both may be used together.
+     */
+    public suspend inline fun <T> downloadObject(
+        crossinline downloadObjectRequest: DownloadObjectRequest.Builder.() -> Unit,
+        downloadPath: String? = null,
+        noinline objectHandler: (suspend (PartContext) -> T)? = null,
+    ): DownloadObjectResponse = downloadObject(DownloadObjectRequest.Builder().apply(downloadObjectRequest).build(), downloadPath, objectHandler)
 }
