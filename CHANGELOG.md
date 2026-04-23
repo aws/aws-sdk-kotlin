@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.63] - 04/23/2026
+
+### Features
+* (**datazone**) Releasing For LakehouseProperties attributes in the Connections API's
+* (**iotmanagedintegrations**) Adds "Status" field to provisioning profile operation response types, giving users visibility into the readiness of a provisioning profile to be used for device provisioning.
+* (**opensearch**) Amazon OpenSearch UI applications now support cross-Region domain association, enabling you to connect OpenSearch Dashboards in one AWS Region to OpenSearch domains in other Regions within the same partition for centralized data visualization.
+
+### Documentation
+* (**pcs**) This release adds support for Slurm 25.11 with expedited requeue enabled by default for jobs failing due to node issues, configurable requeue delay, health checks at node startup only, and unauthenticated HTTP endpoints disabled by default for improved security.
+
 ## [1.6.62] - 04/22/2026
 
 ### Features
