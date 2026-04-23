@@ -17,8 +17,6 @@ import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.RetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
-import aws.smithy.kotlin.runtime.retries.delay.StandardExponentialBackoffWithJitter
-import aws.smithy.kotlin.runtime.retries.delay.StandardRetryTokenBucket
 import aws.smithy.kotlin.runtime.retries.newRetriesEnabled
 import aws.smithy.kotlin.runtime.util.LazyAsyncValue
 import aws.smithy.kotlin.runtime.util.PlatformProvider
@@ -56,15 +54,6 @@ public suspend fun resolveRetryStrategy(
             this.maxAttempts = it
         }
         serviceName?.let { this.serviceName = it }
-
-        // Configure the standard retry strategy behavior when enabled via AWS or smithy-kotlin flag
-        if (useNewRetries) {
-            delayProvider(StandardExponentialBackoffWithJitter) {}
-            tokenBucket(StandardRetryTokenBucket) {
-                retryCost = 14
-                timeoutRetryCost = 5
-                initialTrySuccessIncrement = 1
-            }
-        }
+        if (useNewRetries) enableStandardRetryDefaults()
     }
 }
