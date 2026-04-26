@@ -6,6 +6,10 @@
 package aws.sdk.kotlin.runtime.config
 
 import aws.sdk.kotlin.runtime.InternalSdkApi
+import aws.sdk.kotlin.runtime.auth.credentials.CachedAuthFilePermissions
+import aws.sdk.kotlin.runtime.config.AwsSdkSetting.AwsAccessKeyId
+import aws.sdk.kotlin.runtime.config.AwsSdkSetting.AwsContainerCredentialsRelativeUri
+import aws.sdk.kotlin.runtime.config.AwsSdkSetting.AwsSecretAccessKey
 import aws.sdk.kotlin.runtime.config.endpoints.AccountIdEndpointMode
 import aws.sdk.kotlin.runtime.http.AWS_APP_ID_ENV
 import aws.sdk.kotlin.runtime.http.AWS_APP_ID_PROP
@@ -237,6 +241,15 @@ public object AwsSdkSetting {
      * Configures an ordered preference of auth schemes
      */
     public val AwsAuthSchemePreference: EnvironmentSetting<String> = strEnvSetting("aws.authSchemePreference", "AWS_AUTH_SCHEME_PREFERENCE")
+
+    /**
+     * Configures the file permissions used when creating cached authentication token files (e.g., for the SSO token
+     * provider or Login token provider)
+     */
+    public val AwsCachedAuthFilePermissions: EnvironmentSetting<CachedAuthFilePermissions> = enumEnvSetting<CachedAuthFilePermissions>(
+        "aws.cachedAuthFilePermissions",
+        "AWS_CACHED_AUTH_FILE_PERMISSIONS",
+    )
 }
 
 /**

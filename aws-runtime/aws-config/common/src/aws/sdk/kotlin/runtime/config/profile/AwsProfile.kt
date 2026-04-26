@@ -7,6 +7,7 @@ package aws.sdk.kotlin.runtime.config.profile
 
 import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.InternalSdkApi
+import aws.sdk.kotlin.runtime.auth.credentials.CachedAuthFilePermissions
 import aws.sdk.kotlin.runtime.config.endpoints.AccountIdEndpointMode
 import aws.smithy.kotlin.runtime.client.config.RequestHttpChecksumConfig
 import aws.smithy.kotlin.runtime.client.config.ResponseHttpChecksumConfig
@@ -184,6 +185,14 @@ public val AwsProfile.responseChecksumValidation: ResponseHttpChecksumConfig?
 @InternalSdkApi
 public val AwsProfile.authSchemePreference: String?
     get() = getOrNull("auth_scheme_preference")
+
+/**
+ * The set of permissions to apply when writing cached auth files (e.g., during cache token refresh for SSO or AWS Login
+ * credentials). This property has no effect on Windows.
+ */
+@InternalSdkApi
+public val AwsProfile.cachedAuthFilePermissions: CachedAuthFilePermissions?
+    get() = getEnumOrNull<CachedAuthFilePermissions>("cached_auth_file_permissions")
 
 /**
  * Parse a config value as a boolean, ignoring case.

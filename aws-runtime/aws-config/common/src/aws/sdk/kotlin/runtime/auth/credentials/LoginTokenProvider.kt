@@ -39,6 +39,7 @@ import aws.smithy.kotlin.runtime.time.TimestampFormat
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.SingleFlightGroup
 import aws.smithy.kotlin.runtime.util.Uuid
+import aws.smithy.kotlin.runtime.util.WriteType
 import kotlin.coroutines.coroutineContext
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.Base64.Default.UrlSafe
@@ -149,7 +150,7 @@ internal class LoginTokenProvider(
         val filepath = normalizePath(platformProvider.filepath(cacheDirectory, cacheKey), platformProvider)
         val contents = serializeLoginToken(refreshed)
         try {
-            platformProvider.writeFile(filepath, contents)
+            platformProvider.write(filepath, contents, WriteType.OVERWRITE, permissions = "600")
         } catch (ex: Exception) {
             coroutineContext.debug<LoginTokenProvider>(ex) { "failed to write refreshed token back to disk at $filepath" }
             throw ex
