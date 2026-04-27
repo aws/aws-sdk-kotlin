@@ -23,7 +23,7 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
 import kotlin.time.Duration.Companion.milliseconds
 
-// Standard retry defaults (SEP Retry Behavior 2.1)
+// Standard retry defaults (New Retry Behavior)
 private val STANDARD_INITIAL_DELAY = 50.milliseconds
 private const val STANDARD_SCALE_FACTOR = 2.0
 private const val STANDARD_RETRY_COST = 14
@@ -70,10 +70,6 @@ public suspend fun resolveRetryStrategy(
 /**
  * Configures the retry strategy builder with the resolved max attempts and, when new retries are enabled,
  * all standard defaults as defined in the New Retry Behavior.
- *
- * When [useNewRetries] is `true`:
- * - Sets scaleFactor=2.0, retryCost=14, timeoutRetryCost=5, initialDelay=50ms
- * - For DynamoDB / DynamoDB Streams: initialDelay=25ms, maxAttempts=4
  */
 @InternalSdkApi
 public fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
@@ -99,6 +95,9 @@ public fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
     }
 
     maxAttempts = configuredMaxAttempts
-        ?: if (isDynamoDb) DYNAMODB_DEFAULT_MAX_ATTEMPTS
-        else StandardRetryStrategy.Config.DEFAULT_MAX_ATTEMPTS
+        ?: if (isDynamoDb) {
+            DYNAMODB_DEFAULT_MAX_ATTEMPTS
+        } else {
+            StandardRetryStrategy.Config.DEFAULT_MAX_ATTEMPTS
+        }
 }

@@ -247,31 +247,6 @@ class ResolveRetryStrategyTest {
     }
 
     @Test
-    fun itUsesLegacyDefaultsWhenNoFlagsSet() = runTest {
-        val platform = TestPlatformProvider()
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
-        assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
-    }
-
-    @Test
-    fun itUsesNewDefaultsWhenAwsFlagSet() = runTest {
-        val platform = TestPlatformProvider(
-            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
-        )
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
-        assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
-    }
-
-    @Test
-    fun itUsesLegacyDefaultsWhenAwsFlagFalse() = runTest {
-        val platform = TestPlatformProvider(
-            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "false"),
-        )
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
-        assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
-    }
-
-    @Test
     fun itUsesDynamoDbDefaultsWhenNewRetriesEnabled() = runTest {
         val platform = TestPlatformProvider(
             env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
@@ -280,6 +255,17 @@ class ResolveRetryStrategyTest {
         assertEquals(4, strategy.config.maxAttempts)
         val delayer = assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
         assertEquals(25.milliseconds, delayer.config.initialDelay)
+    }
+
+    @Test
+    fun itUsesDynamoDbDefaultsWhenNewRetriesDisabled() = runTest {
+        val platform = TestPlatformProvider(
+            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "false"),
+        )
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "DynamoDB"))
+        assertEquals(3, strategy.config.maxAttempts)
+        val delayer = assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
+        assertEquals(10.milliseconds, delayer.config.initialDelay)
     }
 
     @Test

@@ -70,7 +70,12 @@ data class AwsRetryExpectation(
 
 @Serializable
 enum class AwsRetryOutcome {
-    @SerialName("success") Success,
-    @SerialName("retry_request") RetryRequest,
-    @SerialName("max_attempts_exceeded") MaxAttemptsExceeded,
+    @SerialName("success")
+    Success,
+
+    @SerialName("retry_request")
+    RetryRequest,
+
+    @SerialName("max_attempts_exceeded")
+    MaxAttemptsExceeded,
 }
