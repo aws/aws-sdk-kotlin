@@ -11,13 +11,13 @@ import aws.smithy.kotlin.runtime.ClientException
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
 import aws.smithy.kotlin.runtime.retries.delay.ExponentialBackoffWithJitter
-import aws.smithy.kotlin.runtime.retries.delay.StandardExponentialBackoffWithJitter
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
+import kotlin.time.Duration.Companion.milliseconds
 
 class ResolveRetryStrategyTest {
     @Test
@@ -259,7 +259,7 @@ class ResolveRetryStrategyTest {
             env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
         )
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
-        assertIs<StandardExponentialBackoffWithJitter>(strategy.config.delayProvider)
+        assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
     }
 
     @Test
@@ -272,11 +272,22 @@ class ResolveRetryStrategyTest {
     }
 
     @Test
-    fun itPassesServiceNameToStrategy() = runTest {
+    fun itUsesDynamoDbDefaultsWhenNewRetriesEnabled() = runTest {
         val platform = TestPlatformProvider(
             env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
         )
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "DynamoDB"))
-        assertEquals("DynamoDB", strategy.config.serviceName)
+        assertEquals(4, strategy.config.maxAttempts)
+        val delayer = assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
+        assertEquals(25.milliseconds, delayer.config.initialDelay)
+    }
+
+    @Test
+    fun itUsesStandardDefaultsForNonDynamoDbWhenNewRetriesEnabled() = runTest {
+        val platform = TestPlatformProvider(
+            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
+        )
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "S3"))
+        assertEquals(3, strategy.config.maxAttempts)
     }
 }
