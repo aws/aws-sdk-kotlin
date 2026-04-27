@@ -48,5 +48,4 @@ public fun <K, V> MapConverter(
  */
 @ExperimentalApi
 @Suppress("ktlint:standard:function-naming")
-public fun <V> MapConverter(valueConverter: ValueConverter<V>): ValueConverter<Map<String, V>> =
-    MapConverter.mapValuesFrom(valueConverter)
+public fun <V> MapConverter(valueConverter: ValueConverter<V>): ValueConverter<Map<String, V>> = MapConverter.mapValuesFrom(valueConverter)

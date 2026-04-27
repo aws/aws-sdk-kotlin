@@ -7,6 +7,7 @@ import aws.sdk.kotlin.gradle.dsl.configureMinorVersionStrategyRules
 import aws.sdk.kotlin.gradle.kmp.configureIosSimulatorTasks
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalPublishTask
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalWaitForPublicationTask
+import aws.sdk.kotlin.gradle.publishing.configureJarReduction
 import aws.sdk.kotlin.gradle.util.typedProp
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -28,7 +29,7 @@ buildscript {
 
             FIXME: Figure out what broke our buildscript classpath, this is a temporary fix
              */
-            force("com.squareup.okhttp3:okhttp-coroutines:5.0.0-alpha.14")
+            force("com.squareup.okhttp3:okhttp-coroutines:5.3.2")
         }
     }
 }
@@ -107,3 +108,5 @@ tasks.register<SonatypeCentralPortalPublishTask>("publishToCentralPortal") {
     pollInterval.set(20.seconds)
 }
 tasks.register<SonatypeCentralPortalWaitForPublicationTask>("waitForCentralPortalPublication") { }
+
+configureJarReduction("aws/sdk/kotlin")

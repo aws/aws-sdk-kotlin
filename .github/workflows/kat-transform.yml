@@ -6,6 +6,8 @@ on:
     branches:
       - main
       - '*-main'
+  merge_group:
+    types: [checks_requested]
 
 # Allow one instance of this workflow per pull request, and cancel older runs when new changes are pushed
 concurrency:
@@ -52,8 +54,7 @@ jobs:
         run: |
           pwd
           ls -lsa
-          kat bump-version  # Bump from `vNext-SNAPSHOT` to `vNext`. kat transform only works on non-SNAPSHOT versions
-
+          kat bump-version  # Bump from `vNext-SNAPSHOT` to `vNext`. kat transform only works on non-SNAPSHOT versions 
           ./gradlew -Paws.kotlin.native=false build
           ./gradlew -Paws.kotlin.native=false publishAllPublicationsToTestLocalRepository
 

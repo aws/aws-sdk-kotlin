@@ -1,6 +1,8 @@
 name: Minor version bump check
 on:
   pull_request:
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   minor-version-bump-check:
@@ -8,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Minor version bump check
-        uses: awslabs/aws-kotlin-repo-tools/.github/actions/minor-version-bump@main
+        uses: aws/aws-kotlin-repo-tools/.github/actions/minor-version-bump@main

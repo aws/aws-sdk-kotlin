@@ -32,13 +32,12 @@ fun <T> java.util.Optional<T>.orNull(): T? = this.orElse(null)
 /**
  * Returns the trait name of the protocol of the service
  */
-fun ServiceShape.protocolName(): String =
-    listOf(
-        RestJson1Trait.ID,
-        RestXmlTrait.ID,
-        AwsJson1_0Trait.ID,
-        AwsJson1_1Trait.ID,
-        AwsQueryTrait.ID,
-        Ec2QueryTrait.ID,
-        Rpcv2CborTrait.ID,
-    ).first { hasTrait(it) }.name
+fun ServiceShape.protocolName(): String = listOf(
+    RestJson1Trait.ID,
+    RestXmlTrait.ID,
+    AwsJson1_0Trait.ID,
+    AwsJson1_1Trait.ID,
+    AwsQueryTrait.ID,
+    Ec2QueryTrait.ID,
+    Rpcv2CborTrait.ID,
+).first { hasTrait(it) }.name

@@ -84,6 +84,8 @@ public enum class AwsBusinessMetric(public override val identifier: String) : Bu
         CREDENTIALS_PROCESS("w"),
         CREDENTIALS_HTTP("z"),
         CREDENTIALS_IMDS("0"),
+        CREDENTIALS_PROFILE_LOGIN("AC"),
+        CREDENTIALS_LOGIN("AD"),
     }
 
     override fun toString(): String = identifier
@@ -94,18 +96,17 @@ public enum class AwsBusinessMetric(public override val identifier: String) : Bu
  * @param metric The [BusinessMetric] to be emitted.
  */
 @InternalApi
-public fun Credentials.withBusinessMetric(metric: BusinessMetric): Credentials =
-    when (val credentialsAttributes = this.attributes) {
-        is MutableAttributes -> {
-            credentialsAttributes.emitBusinessMetric(metric)
-            this
-        }
-        else -> {
-            val newCredentialsAttributes = credentialsAttributes.toMutableAttributes()
-            newCredentialsAttributes.emitBusinessMetric(metric)
-            this.copy(attributes = newCredentialsAttributes)
-        }
+public fun Credentials.withBusinessMetric(metric: BusinessMetric): Credentials = when (val credentialsAttributes = this.attributes) {
+    is MutableAttributes -> {
+        credentialsAttributes.emitBusinessMetric(metric)
+        this
     }
+    else -> {
+        val newCredentialsAttributes = credentialsAttributes.toMutableAttributes()
+        newCredentialsAttributes.emitBusinessMetric(metric)
+        this.copy(attributes = newCredentialsAttributes)
+    }
+}
 
 /**
  * Emits business metrics into [Credentials.attributes]

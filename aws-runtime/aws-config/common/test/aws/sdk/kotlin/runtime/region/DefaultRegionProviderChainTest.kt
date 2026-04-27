@@ -141,23 +141,6 @@ private data class RegionProviderChainTest(
  * }
  * ```
  */
-/**
- * Construct a [TestPlatformProvider] from a JSON node like:
- *
- * ```json
- * {
- *     "env": {
- *         "ENV_VAR": "value"
- *     },
- *     "props": {
- *         "aws.property": "value"
- *     },
- *     "fs": {
- *         "filename": "contents"
- *     }
- * }
- * ```
- */
 private fun TestPlatformProvider.Companion.fromJsonNode(obj: JsonObject): TestPlatformProvider {
     val env = obj["env"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
     val props = obj["props"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
@@ -165,9 +148,6 @@ private fun TestPlatformProvider.Companion.fromJsonNode(obj: JsonObject): TestPl
     return TestPlatformProvider(env, props, fs)
 }
 
-/**
- * Construct a [TestInstanceMetadataProvider] from a JSON object containing metadata as key-value pairs.
- */
 /**
  * Construct a [TestInstanceMetadataProvider] from a JSON object containing metadata as key-value pairs.
  */

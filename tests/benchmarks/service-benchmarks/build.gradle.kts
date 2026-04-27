@@ -2,15 +2,11 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import aws.sdk.kotlin.gradle.dsl.skipPublishing
+import aws.sdk.kotlin.gradle.publishing.skipPublishing
 
 plugins {
-    id(libs.plugins.kotlin.jvm.get().pluginId)
-    application
-}
-
-application {
-    mainClass.set("aws.sdk.kotlin.benchmarks.service.BenchmarkHarnessKt")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.aws.kotlin.repo.tools.kmp)
 }
 
 skipPublishing()
@@ -40,7 +36,7 @@ kotlin {
             optinAnnotations.forEach { languageSettings.optIn(it) }
         }
 
-        main {
+        jvmMain {
             dependencies {
                 api(libs.smithy.kotlin.runtime.core)
                 implementation(project(":aws-runtime:aws-core"))
@@ -51,11 +47,10 @@ kotlin {
             }
         }
     }
-}
 
-tasks.named<JavaExec>("run") {
-    classpath += objects.fileCollection().from(
-        tasks.named("compileKotlinJvm"),
-        configurations.named("jvmRuntimeClasspath"),
-    )
+    jvm {
+        mainRun {
+            mainClass.set("aws.sdk.kotlin.benchmarks.service.BenchmarkHarnessKt")
+        }
+    }
 }

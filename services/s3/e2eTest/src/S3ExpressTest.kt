@@ -13,46 +13,43 @@ import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
 import kotlin.test.*
 import kotlin.time.Duration.Companion.minutes
 
 /**
  * Tests for S3 Express operations
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestLifecycle.PER_CLASS)
 class S3ExpressTest {
-    private val client = S3Client {
-        region = S3TestUtils.DEFAULT_REGION
+    companion object {
+        private const val AVAILABILITY_ZONE = "usw2-az1" // us-west-2 availability zone 1
     }
 
-    private val testBuckets: MutableList<String> = mutableListOf()
+    private val client = S3TestUtils.createClient()
+
+    private lateinit var testBuckets: List<String>
 
     @BeforeAll
     fun setup(): Unit = runBlocking {
-        val suffix = "--usw2-az1--x-s3" // us-west-2 availability zone 1
-
         // create a few test buckets to test the credentials cache
-        testBuckets.add(S3TestUtils.getTestDirectoryBucket(client, suffix))
-        testBuckets.add(S3TestUtils.getTestDirectoryBucket(client, suffix))
-        testBuckets.add(S3TestUtils.getTestDirectoryBucket(client, suffix))
+        testBuckets = (1..3).map { index ->
+            S3TestUtils.createTestDirectoryBucket(client, AVAILABILITY_ZONE, index.toString())
+        }
     }
 
     @AfterAll
     fun cleanup(): Unit = runBlocking {
-        testBuckets.forEach { bucket ->
-            S3TestUtils.deleteMultiPartUploads(client, bucket)
-            S3TestUtils.deleteBucketAndAllContents(client, bucket)
-        }
+        testBuckets.forEach { bucket -> S3TestUtils.deleteBucket(client, bucket) }
         client.close()
     }
 
     @Test
-    fun testPutObject() = runTest {
+    fun testPutObject() = runBlocking {
         val content = "30 minutes, or it's free!"
         val keyName = "express.txt"
 
@@ -84,7 +81,7 @@ class S3ExpressTest {
 
     @Ignore
     @Test
-    fun testPresignedPutObject() = runTest {
+    fun testPresignedPutObject() = runBlocking {
         val content = "Presign this!"
         val keyName = "express-presigned.txt"
 
@@ -105,7 +102,7 @@ class S3ExpressTest {
     }
 
     @Test
-    fun testChecksums() = runTest {
+    fun testChecksums() = runBlocking {
         val bucketName = testBuckets.first() // only need one bucket for this test
 
         val keysToDelete = listOf("checksums.txt", "delete-me.txt", "dont-forget-about-me.txt")
@@ -136,7 +133,7 @@ class S3ExpressTest {
     }
 
     @Test
-    fun testUploadPartContainsCRC32Checksum() = runTest {
+    fun testUploadPartContainsCRC32Checksum() = runBlocking {
         val testBucket = testBuckets.first()
         val testObject = "I-will-be-uploaded-in-parts-!"
 

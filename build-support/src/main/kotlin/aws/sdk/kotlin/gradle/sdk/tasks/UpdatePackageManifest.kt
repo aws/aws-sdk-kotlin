@@ -92,15 +92,14 @@ abstract class UpdatePackageManifest : DefaultTask() {
         manifestFile.writeText(contents)
     }
 
-    private fun validatedPackages(manifest: PackageManifest, discovered: List<PackageMetadata>): List<PackageMetadata> =
-        if (modelDir.isPresent && discover.orNull == true) {
-            val bySdkId = manifest.packages.associateBy(PackageMetadata::sdkId)
-            discovered.filter { it.sdkId !in bySdkId }
-        } else {
-            discovered.forEach { pkg ->
-                val existing = manifest.packages.find { it.sdkId == pkg.sdkId }
-                check(existing == null) { "found existing package in manifest for sdkId `${pkg.sdkId}`: $existing" }
-            }
-            discovered
+    private fun validatedPackages(manifest: PackageManifest, discovered: List<PackageMetadata>): List<PackageMetadata> = if (modelDir.isPresent && discover.orNull == true) {
+        val bySdkId = manifest.packages.associateBy(PackageMetadata::sdkId)
+        discovered.filter { it.sdkId !in bySdkId }
+    } else {
+        discovered.forEach { pkg ->
+            val existing = manifest.packages.find { it.sdkId == pkg.sdkId }
+            check(existing == null) { "found existing package in manifest for sdkId `${pkg.sdkId}`: $existing" }
         }
+        discovered
+    }
 }

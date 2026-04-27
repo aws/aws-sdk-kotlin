@@ -11,7 +11,7 @@ import aws.smithy.kotlin.runtime.http.operation.SdkHttpOperation
 import aws.smithy.kotlin.runtime.http.operation.SdkHttpRequest
 import aws.smithy.kotlin.runtime.http.operation.setResolvedEndpoint
 import aws.smithy.kotlin.runtime.http.request.HttpRequestBuilder
-import aws.smithy.kotlin.runtime.telemetry.logging.trace
+import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import aws.smithy.kotlin.runtime.time.Clock
 import aws.smithy.kotlin.runtime.util.CachedValue
 import aws.smithy.kotlin.runtime.util.ExpiringValue
@@ -48,7 +48,8 @@ internal class TokenMiddleware(
     }
 
     private suspend fun getToken(clock: Clock, req: SdkHttpRequest): Token {
-        coroutineContext.trace<TokenMiddleware> { "refreshing IMDS token" }
+        val logger = coroutineContext.logger<TokenMiddleware>()
+        logger.trace { "refreshing IMDS token" }
 
         val tokenReq = HttpRequestBuilder().apply {
             method = HttpMethod.PUT
@@ -62,11 +63,12 @@ internal class TokenMiddleware(
         setResolvedEndpoint(SdkHttpRequest(tokenReq), endpoint)
 
         val call = httpClient.call(tokenReq)
+        logger.trace { call.toTraceString() }
         return try {
             when (val status = call.response.status) {
                 HttpStatusCode.OK -> {
-                    val ttl = call.response.headers[X_AWS_EC2_METADATA_TOKEN_TTL_SECONDS]?.toLong() ?: throw EC2MetadataError(status, "No TTL provided in IMDS response")
-                    val token = call.response.body.readAll() ?: throw EC2MetadataError(status, "No token provided in IMDS response")
+                    val ttl = call.response.headers[X_AWS_EC2_METADATA_TOKEN_TTL_SECONDS]?.toLong() ?: throw EC2MetadataError(HttpStatusCode.OK, "No TTL provided in IMDS response")
+                    val token = call.response.body.readAll() ?: throw EC2MetadataError(HttpStatusCode.OK, "No token provided in IMDS response")
                     val expires = clock.now() + ttl.seconds
                     Token(token, expires)
                 }

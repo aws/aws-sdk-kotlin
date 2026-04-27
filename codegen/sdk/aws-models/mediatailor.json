@@ -136,6 +136,20 @@
                 "smithy.api#documentation": "<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
             }
         },
+        "com.amazonaws.mediatailor#AdDecisionServerConfiguration": {
+            "type": "structure",
+            "members": {
+                "HttpRequest": {
+                    "target": "com.amazonaws.mediatailor#HttpRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The HTTP request configuration parameters for the ad decision server.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration parameters for customizing HTTP requests sent to the ad decision server (ADS). This allows you to specify the HTTP method, headers, request body, and compression settings for ADS requests.</p>"
+            }
+        },
         "com.amazonaws.mediatailor#AdMarkerPassthrough": {
             "type": "structure",
             "members": {
@@ -446,6 +460,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "RAW_ADS_RESPONSE"
+                    }
+                },
+                "RAW_ADS_REQUEST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RAW_ADS_REQUEST"
                     }
                 }
             }
@@ -910,6 +930,23 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Clip range configuration for the VOD source associated with the program.</p>"
+            }
+        },
+        "com.amazonaws.mediatailor#CompressionMethod": {
+            "type": "enum",
+            "members": {
+                "NONE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NONE"
+                    }
+                },
+                "GZIP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GZIP"
+                    }
+                }
             }
         },
         "com.amazonaws.mediatailor#ConfigurationAliasesRequest": {
@@ -1424,6 +1461,13 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An optional stream identifier that MediaTailor uses to prefetch ads for multiple streams that use the same playback configuration. If <code>StreamId</code> is specified, MediaTailor returns all of the prefetch schedules with an exact match on <code>StreamId</code>. If not specified, MediaTailor returns all of the prefetch schedules for the playback configuration, regardless of <code>StreamId</code>.</p>"
                     }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.mediatailor#__mapOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags to assign to the prefetch schedule. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+                        "smithy.api#jsonName": "tags"
+                    }
                 }
             }
         },
@@ -1476,6 +1520,13 @@
                     "target": "com.amazonaws.mediatailor#__string",
                     "traits": {
                         "smithy.api#documentation": "<p>An optional stream identifier that MediaTailor uses to prefetch ads for multiple streams that use the same playback configuration. If <code>StreamId</code> is specified, MediaTailor returns all of the prefetch schedules with an exact match on <code>StreamId</code>. If not specified, MediaTailor returns all of the prefetch schedules for the playback configuration, regardless of <code>StreamId</code>.</p>"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.mediatailor#__mapOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags to assign to the prefetch schedule. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+                        "smithy.api#jsonName": "tags"
                     }
                 }
             }
@@ -1554,6 +1605,13 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The list of AudienceMedia defined in program.</p>"
                     }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.mediatailor#__mapOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags to assign to the program. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+                        "smithy.api#jsonName": "tags"
+                    }
                 }
             }
         },
@@ -1630,6 +1688,13 @@
                     "target": "com.amazonaws.mediatailor#__listOfAudienceMedia",
                     "traits": {
                         "smithy.api#documentation": "<p>The list of AudienceMedia defined in program.</p>"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.mediatailor#__mapOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags to assign to the program. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+                        "smithy.api#jsonName": "tags"
                     }
                 }
             }
@@ -2584,6 +2649,13 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The list of AudienceMedia defined in program.</p>"
                     }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.mediatailor#__mapOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags assigned to the program. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+                        "smithy.api#jsonName": "tags"
+                    }
                 }
             }
         },
@@ -3073,6 +3145,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads. </p>"
                     }
+                },
+                "AdDecisionServerConfiguration": {
+                    "target": "com.amazonaws.mediatailor#AdDecisionServerConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration for customizing HTTP requests to the ad decision server (ADS). This includes settings for request method, headers, body content, and compression options.</p>"
+                    }
                 }
             }
         },
@@ -3165,6 +3243,13 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An optional stream identifier that you can specify in order to prefetch for multiple streams that use the same playback configuration.</p>"
                     }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.mediatailor#__mapOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags assigned to the prefetch schedule. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+                        "smithy.api#jsonName": "tags"
+                    }
                 }
             }
         },
@@ -3253,6 +3338,38 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The VOD source's HTTP package configuration settings.</p>"
+            }
+        },
+        "com.amazonaws.mediatailor#HttpRequest": {
+            "type": "structure",
+            "members": {
+                "Method": {
+                    "target": "com.amazonaws.mediatailor#Method",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The HTTP method to use when making requests to the ad decision server. Supported values are <code>GET</code> and <code>POST</code>.</p>"
+                    }
+                },
+                "Body": {
+                    "target": "com.amazonaws.mediatailor#__string",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The request body content to send with HTTP requests to the ad decision server. This value is only eligible for <code>POST</code> requests.</p>"
+                    }
+                },
+                "Headers": {
+                    "target": "com.amazonaws.mediatailor#StringMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Custom HTTP headers to include in requests to the ad decision server. Specify headers as key-value pairs. This value is only eligible for <code>POST</code> requests.</p>"
+                    }
+                },
+                "CompressRequest": {
+                    "target": "com.amazonaws.mediatailor#CompressionMethod",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The compression method to apply to requests sent to the ad decision server. Supported values are <code>NONE</code> and <code>GZIP</code>. This value is only eligible for <code>POST</code> requests.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>HTTP request configuration parameters that define how MediaTailor communicates with the ad decision server.</p>"
             }
         },
         "com.amazonaws.mediatailor#InsertionMode": {
@@ -4317,6 +4434,16 @@
                 "aws.auth#sigv4": {
                     "name": "mediatailor"
                 },
+                "aws.endpoints#standardRegionalEndpoints": {
+                    "partitionSpecialCases": {
+                        "aws": [
+                            {
+                                "endpoint": "https://mediatailor.{region}.{dualStackDnsSuffix}",
+                                "dualStack": true
+                            }
+                        ]
+                    }
+                },
                 "aws.protocols#restJson1": {},
                 "smithy.api#cors": {
                     "additionalAllowedHeaders": [
@@ -4347,12 +4474,6 @@
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
                     "parameters": {
-                        "Region": {
-                            "builtIn": "AWS::Region",
-                            "required": false,
-                            "documentation": "The AWS region used to dispatch the request.",
-                            "type": "string"
-                        },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
@@ -4371,6 +4492,12 @@
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
+                            "type": "string"
+                        },
+                        "Region": {
+                            "builtIn": "AWS::Region",
+                            "required": false,
+                            "documentation": "The AWS region used to dispatch the request.",
                             "type": "string"
                         }
                     },
@@ -4403,58 +4530,7 @@
                                     "type": "error"
                                 },
                                 {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseDualStack"
-                                                },
-                                                true
-                                            ]
-                                        }
-                                    ],
-                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                    "type": "error"
-                                },
-                                {
                                     "conditions": [],
-                                    "endpoint": {
-                                        "url": {
-                                            "ref": "Endpoint"
-                                        },
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ],
-                            "type": "tree"
-                        },
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "isSet",
-                                    "argv": [
-                                        {
-                                            "ref": "Region"
-                                        }
-                                    ]
-                                }
-                            ],
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "aws.partition",
-                                            "argv": [
-                                                {
-                                                    "ref": "Region"
-                                                }
-                                            ],
-                                            "assign": "PartitionResult"
-                                        }
-                                    ],
                                     "rules": [
                                         {
                                             "conditions": [
@@ -4462,184 +4538,21 @@
                                                     "fn": "booleanEquals",
                                                     "argv": [
                                                         {
-                                                            "ref": "UseFIPS"
-                                                        },
-                                                        true
-                                                    ]
-                                                },
-                                                {
-                                                    "fn": "booleanEquals",
-                                                    "argv": [
-                                                        {
                                                             "ref": "UseDualStack"
                                                         },
                                                         true
                                                     ]
                                                 }
                                             ],
-                                            "rules": [
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                true,
-                                                                {
-                                                                    "fn": "getAttr",
-                                                                    "argv": [
-                                                                        {
-                                                                            "ref": "PartitionResult"
-                                                                        },
-                                                                        "supportsFIPS"
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                true,
-                                                                {
-                                                                    "fn": "getAttr",
-                                                                    "argv": [
-                                                                        {
-                                                                            "ref": "PartitionResult"
-                                                                        },
-                                                                        "supportsDualStack"
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [],
-                                                            "endpoint": {
-                                                                "url": "https://api.mediatailor-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                "properties": {},
-                                                                "headers": {}
-                                                            },
-                                                            "type": "endpoint"
-                                                        }
-                                                    ],
-                                                    "type": "tree"
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                                                    "type": "error"
-                                                }
-                                            ],
-                                            "type": "tree"
-                                        },
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "booleanEquals",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "UseFIPS"
-                                                        },
-                                                        true
-                                                    ]
-                                                }
-                                            ],
-                                            "rules": [
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "fn": "getAttr",
-                                                                    "argv": [
-                                                                        {
-                                                                            "ref": "PartitionResult"
-                                                                        },
-                                                                        "supportsFIPS"
-                                                                    ]
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [],
-                                                            "endpoint": {
-                                                                "url": "https://api.mediatailor-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                                "properties": {},
-                                                                "headers": {}
-                                                            },
-                                                            "type": "endpoint"
-                                                        }
-                                                    ],
-                                                    "type": "tree"
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "error": "FIPS is enabled but this partition does not support FIPS",
-                                                    "type": "error"
-                                                }
-                                            ],
-                                            "type": "tree"
-                                        },
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "booleanEquals",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "UseDualStack"
-                                                        },
-                                                        true
-                                                    ]
-                                                }
-                                            ],
-                                            "rules": [
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                true,
-                                                                {
-                                                                    "fn": "getAttr",
-                                                                    "argv": [
-                                                                        {
-                                                                            "ref": "PartitionResult"
-                                                                        },
-                                                                        "supportsDualStack"
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [],
-                                                            "endpoint": {
-                                                                "url": "https://api.mediatailor.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                "properties": {},
-                                                                "headers": {}
-                                                            },
-                                                            "type": "endpoint"
-                                                        }
-                                                    ],
-                                                    "type": "tree"
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "error": "DualStack is enabled but this partition does not support DualStack",
-                                                    "type": "error"
-                                                }
-                                            ],
-                                            "type": "tree"
+                                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                                            "type": "error"
                                         },
                                         {
                                             "conditions": [],
                                             "endpoint": {
-                                                "url": "https://api.mediatailor.{Region}.{PartitionResult#dnsSuffix}",
+                                                "url": {
+                                                    "ref": "Endpoint"
+                                                },
                                                 "properties": {},
                                                 "headers": {}
                                             },
@@ -4653,102 +4566,331 @@
                         },
                         {
                             "conditions": [],
-                            "error": "Invalid Configuration: Missing Region",
-                            "type": "error"
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "isSet",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "aws.partition",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "Region"
+                                                        }
+                                                    ],
+                                                    "assign": "PartitionResult"
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "name"
+                                                                    ]
+                                                                },
+                                                                "aws"
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                false
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://mediatailor.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                true
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        true,
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsFIPS"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        true,
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsDualStack"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [],
+                                                                    "endpoint": {
+                                                                        "url": "https://api.mediatailor-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                        "properties": {},
+                                                                        "headers": {}
+                                                                    },
+                                                                    "type": "endpoint"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                                            "type": "error"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                true
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                false
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsFIPS"
+                                                                            ]
+                                                                        },
+                                                                        true
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [],
+                                                                    "endpoint": {
+                                                                        "url": "https://api.mediatailor-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                        "properties": {},
+                                                                        "headers": {}
+                                                                    },
+                                                                    "type": "endpoint"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "error": "FIPS is enabled but this partition does not support FIPS",
+                                                            "type": "error"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                false
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        true,
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsDualStack"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [],
+                                                                    "endpoint": {
+                                                                        "url": "https://api.mediatailor.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                        "properties": {},
+                                                                        "headers": {}
+                                                                    },
+                                                                    "type": "endpoint"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "error": "DualStack is enabled but this partition does not support DualStack",
+                                                            "type": "error"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://api.mediatailor.{Region}.{PartitionResult#dnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "Invalid Configuration: Missing Region",
+                                    "type": "error"
+                                }
+                            ],
+                            "type": "tree"
                         }
                     ]
                 },
                 "smithy.rules#endpointTests": {
                     "testCases": [
                         {
-                            "documentation": "For region ap-northeast-1 with FIPS disabled and DualStack disabled",
+                            "documentation": "For custom endpoint with region not set and fips disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://api.mediatailor.ap-northeast-1.amazonaws.com"
+                                    "url": "https://example.com"
                                 }
                             },
                             "params": {
-                                "Region": "ap-northeast-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
+                                "Endpoint": "https://example.com",
+                                "UseFIPS": false
                             }
                         },
                         {
-                            "documentation": "For region ap-southeast-1 with FIPS disabled and DualStack disabled",
+                            "documentation": "For custom endpoint with fips enabled",
                             "expect": {
-                                "endpoint": {
-                                    "url": "https://api.mediatailor.ap-southeast-1.amazonaws.com"
-                                }
+                                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
                             },
                             "params": {
-                                "Region": "ap-southeast-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
+                                "Endpoint": "https://example.com",
+                                "UseFIPS": true
                             }
                         },
                         {
-                            "documentation": "For region ap-southeast-2 with FIPS disabled and DualStack disabled",
+                            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
                             "expect": {
-                                "endpoint": {
-                                    "url": "https://api.mediatailor.ap-southeast-2.amazonaws.com"
-                                }
+                                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
                             },
                             "params": {
-                                "Region": "ap-southeast-2",
+                                "Endpoint": "https://example.com",
                                 "UseFIPS": false,
-                                "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region eu-central-1 with FIPS disabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://api.mediatailor.eu-central-1.amazonaws.com"
-                                }
-                            },
-                            "params": {
-                                "Region": "eu-central-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region eu-west-1 with FIPS disabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://api.mediatailor.eu-west-1.amazonaws.com"
-                                }
-                            },
-                            "params": {
-                                "Region": "eu-west-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-east-1 with FIPS disabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://api.mediatailor.us-east-1.amazonaws.com"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-west-2 with FIPS disabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://api.mediatailor.us-west-2.amazonaws.com"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-west-2",
-                                "UseFIPS": false,
-                                "UseDualStack": false
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -4781,7 +4923,7 @@
                             "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://api.mediatailor.us-east-1.api.aws"
+                                    "url": "https://mediatailor.us-east-1.api.aws"
                                 }
                             },
                             "params": {
@@ -4791,105 +4933,92 @@
                             }
                         },
                         {
-                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
+                            "documentation": "For region us-east-1 with FIPS disabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://api.mediatailor-fips.cn-north-1.api.amazonwebservices.com.cn"
+                                    "url": "https://api.mediatailor.us-east-1.amazonaws.com"
                                 }
                             },
                             "params": {
-                                "Region": "cn-north-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
-                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://api.mediatailor-fips.cn-north-1.amazonaws.com.cn"
-                                }
-                            },
-                            "params": {
-                                "Region": "cn-north-1",
-                                "UseFIPS": true,
-                                "UseDualStack": false
-                            }
-                        },
-                        {
-                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://api.mediatailor.cn-north-1.api.amazonwebservices.com.cn"
-                                }
-                            },
-                            "params": {
-                                "Region": "cn-north-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
-                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://api.mediatailor.cn-north-1.amazonaws.com.cn"
-                                }
-                            },
-                            "params": {
-                                "Region": "cn-north-1",
+                                "Region": "us-east-1",
                                 "UseFIPS": false,
                                 "UseDualStack": false
                             }
                         },
                         {
-                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
+                            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack enabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://api.mediatailor-fips.us-gov-east-1.api.aws"
+                                    "url": "https://api.mediatailor-fips.cn-northwest-1.api.amazonwebservices.com.cn"
                                 }
                             },
                             "params": {
-                                "Region": "us-gov-east-1",
+                                "Region": "cn-northwest-1",
                                 "UseFIPS": true,
                                 "UseDualStack": true
                             }
                         },
                         {
-                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
+                            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://api.mediatailor-fips.us-gov-east-1.amazonaws.com"
+                                    "url": "https://api.mediatailor-fips.cn-northwest-1.amazonaws.com.cn"
                                 }
                             },
                             "params": {
-                                "Region": "us-gov-east-1",
+                                "Region": "cn-northwest-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
                             }
                         },
                         {
-                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack enabled",
+                            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack enabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://api.mediatailor.us-gov-east-1.api.aws"
+                                    "url": "https://api.mediatailor.cn-northwest-1.api.amazonwebservices.com.cn"
                                 }
                             },
                             "params": {
-                                "Region": "us-gov-east-1",
+                                "Region": "cn-northwest-1",
                                 "UseFIPS": false,
                                 "UseDualStack": true
                             }
                         },
                         {
-                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack disabled",
+                            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://api.mediatailor.us-gov-east-1.amazonaws.com"
+                                    "url": "https://api.mediatailor.cn-northwest-1.amazonaws.com.cn"
                                 }
                             },
                             "params": {
-                                "Region": "us-gov-east-1",
+                                "Region": "cn-northwest-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region eusc-de-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://api.mediatailor-fips.eusc-de-east-1.amazonaws.eu"
+                                }
+                            },
+                            "params": {
+                                "Region": "eusc-de-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region eusc-de-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://api.mediatailor.eusc-de-east-1.amazonaws.eu"
+                                }
+                            },
+                            "params": {
+                                "Region": "eusc-de-east-1",
                                 "UseFIPS": false,
                                 "UseDualStack": false
                             }
@@ -4947,54 +5076,107 @@
                             }
                         },
                         {
-                            "documentation": "For custom endpoint with region set and fips disabled and dualstack disabled",
+                            "documentation": "For region eu-isoe-west-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://example.com"
+                                    "url": "https://api.mediatailor-fips.eu-isoe-west-1.cloud.adc-e.uk"
                                 }
                             },
                             "params": {
-                                "Region": "us-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false,
-                                "Endpoint": "https://example.com"
-                            }
-                        },
-                        {
-                            "documentation": "For custom endpoint with region not set and fips disabled and dualstack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://example.com"
-                                }
-                            },
-                            "params": {
-                                "UseFIPS": false,
-                                "UseDualStack": false,
-                                "Endpoint": "https://example.com"
-                            }
-                        },
-                        {
-                            "documentation": "For custom endpoint with fips enabled and dualstack disabled",
-                            "expect": {
-                                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
-                            },
-                            "params": {
-                                "Region": "us-east-1",
+                                "Region": "eu-isoe-west-1",
                                 "UseFIPS": true,
-                                "UseDualStack": false,
-                                "Endpoint": "https://example.com"
+                                "UseDualStack": false
                             }
                         },
                         {
-                            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
+                            "documentation": "For region eu-isoe-west-1 with FIPS disabled and DualStack disabled",
                             "expect": {
-                                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+                                "endpoint": {
+                                    "url": "https://api.mediatailor.eu-isoe-west-1.cloud.adc-e.uk"
+                                }
                             },
                             "params": {
-                                "Region": "us-east-1",
+                                "Region": "eu-isoe-west-1",
                                 "UseFIPS": false,
-                                "UseDualStack": true,
-                                "Endpoint": "https://example.com"
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isof-south-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://api.mediatailor-fips.us-isof-south-1.csp.hci.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isof-south-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isof-south-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://api.mediatailor.us-isof-south-1.csp.hci.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isof-south-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://api.mediatailor-fips.us-gov-west-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://api.mediatailor-fips.us-gov-west-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://api.mediatailor.us-gov-west-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://api.mediatailor.us-gov-west-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -5021,6 +5203,23 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "TIME_SIGNAL"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.mediatailor#Method": {
+            "type": "enum",
+            "members": {
+                "GET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GET"
+                    }
+                },
+                "POST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "POST"
                     }
                 }
             }
@@ -5206,6 +5405,9 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads.</p>"
                     }
+                },
+                "AdDecisionServerConfiguration": {
+                    "target": "com.amazonaws.mediatailor#AdDecisionServerConfiguration"
                 }
             },
             "traits": {
@@ -5311,19 +5513,19 @@
                 "TrafficShapingType": {
                     "target": "com.amazonaws.mediatailor#TrafficShapingType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Indicates the type of traffic shaping used for prefetch traffic shaping and limiting the number of requests to the ADS at one time.</p>"
+                        "smithy.api#documentation": "<p>Indicates the type of traffic shaping used to limit the number of requests to the ADS at one time.</p>"
                     }
                 },
                 "TrafficShapingRetrievalWindow": {
                     "target": "com.amazonaws.mediatailor#TrafficShapingRetrievalWindow",
                     "traits": {
-                        "smithy.api#documentation": "<p>Configuration for spreading ADS traffic across a set window instead of sending ADS requests for all sessions at the same time.</p>"
+                        "smithy.api#documentation": "<p>The configuration that tells Elemental MediaTailor how many seconds to spread out requests to the ad decision server (ADS). Instead of sending ADS requests for all sessions at the same time, MediaTailor spreads the requests across the amount of time specified in the retrieval window.</p>"
                     }
                 },
                 "TrafficShapingTpsConfiguration": {
                     "target": "com.amazonaws.mediatailor#TrafficShapingTpsConfiguration",
                     "traits": {
-                        "smithy.api#documentation": "<p>The configuration for TPS-based traffic shaping that limits the number of requests to the ad decision server (ADS) based on transactions per second instead of time windows.</p>"
+                        "smithy.api#documentation": "<p>The configuration for TPS-based traffic shaping. This approach limits requests to the ad decision server (ADS) based on transactions per second and concurrent users.</p>"
                     }
                 }
             },
@@ -5383,6 +5585,13 @@
                     "target": "com.amazonaws.mediatailor#__string",
                     "traits": {
                         "smithy.api#documentation": "<p>An optional stream identifier that you can specify in order to prefetch for multiple streams that use the same playback configuration.</p>"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.mediatailor#__mapOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags assigned to the prefetch schedule. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+                        "smithy.api#jsonName": "tags"
                     }
                 }
             },
@@ -5631,6 +5840,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads. </p>"
                     }
+                },
+                "AdDecisionServerConfiguration": {
+                    "target": "com.amazonaws.mediatailor#AdDecisionServerConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration for customizing HTTP requests to the ad decision server (ADS). This includes settings for request method, headers, body content, and compression options.</p>"
+                    }
                 }
             }
         },
@@ -5764,6 +5979,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads. </p>"
                     }
+                },
+                "AdDecisionServerConfiguration": {
+                    "target": "com.amazonaws.mediatailor#AdDecisionServerConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration for customizing HTTP requests to the ad decision server (ADS). This includes settings for request method, headers, body content, and compression options.</p>"
+                    }
                 }
             }
         },
@@ -5840,19 +6061,19 @@
                 "TrafficShapingType": {
                     "target": "com.amazonaws.mediatailor#TrafficShapingType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Indicates the type of traffic shaping used for traffic shaping and limiting the number of requests to the ADS at one time.</p>"
+                        "smithy.api#documentation": "<p>Indicates the type of traffic shaping used to limit the number of requests to the ADS at one time.</p>"
                     }
                 },
                 "TrafficShapingRetrievalWindow": {
                     "target": "com.amazonaws.mediatailor#TrafficShapingRetrievalWindow",
                     "traits": {
-                        "smithy.api#documentation": "<p>Configuration for spreading ADS traffic across a set window instead of sending ADS requests for all sessions at the same time.</p>"
+                        "smithy.api#documentation": "<p>The configuration that tells Elemental MediaTailor how many seconds to spread out requests to the ad decision server (ADS). Instead of sending ADS requests for all sessions at the same time, MediaTailor spreads the requests across the amount of time specified in the retrieval window.</p>"
                     }
                 },
                 "TrafficShapingTpsConfiguration": {
                     "target": "com.amazonaws.mediatailor#TrafficShapingTpsConfiguration",
                     "traits": {
-                        "smithy.api#documentation": "<p>The configuration for TPS-based traffic shaping that limits the number of requests to the ad decision server (ADS) based on transactions per second instead of time windows.</p>"
+                        "smithy.api#documentation": "<p>The configuration for TPS-based traffic shaping. This approach limits requests to the ad decision server (ADS) based on transactions per second and concurrent users.</p>"
                     }
                 }
             },
@@ -6472,6 +6693,15 @@
                 }
             }
         },
+        "com.amazonaws.mediatailor#StringMap": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.mediatailor#__string"
+            },
+            "value": {
+                "target": "com.amazonaws.mediatailor#__string"
+            }
+        },
         "com.amazonaws.mediatailor#TagResource": {
             "type": "operation",
             "input": {
@@ -6572,7 +6802,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The configuration that tells Elemental MediaTailor how to spread out requests to the ad decision server (ADS). Instead of sending ADS requests for all sessions at the same time, MediaTailor spreads the requests across the amount of time specified in the retrieval window.</p>"
+                "smithy.api#documentation": "<p>The configuration that tells Elemental MediaTailor how many seconds to spread out requests to the ad decision server (ADS). Instead of sending ADS requests for all sessions at the same time, MediaTailor spreads the requests across the amount of time specified in the retrieval window.</p>"
             }
         },
         "com.amazonaws.mediatailor#TrafficShapingTpsConfiguration": {
@@ -6592,7 +6822,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The configuration for TPS-based traffic shaping. This approach limits requests to the ad decision server (ADS) based on transactions per second and concurrent users, providing more intuitive capacity management compared to time-window based traffic shaping.</p>"
+                "smithy.api#documentation": "<p>The configuration for TPS-based traffic shaping. This approach limits requests to the ad decision server (ADS) based on transactions per second and concurrent users.</p>"
             }
         },
         "com.amazonaws.mediatailor#TrafficShapingType": {
@@ -7078,6 +7308,13 @@
                     "target": "com.amazonaws.mediatailor#__listOfAudienceMedia",
                     "traits": {
                         "smithy.api#documentation": "<p>The list of AudienceMedia defined in program.</p>"
+                    }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.mediatailor#__mapOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags assigned to the program. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html\">Tagging AWS Elemental MediaTailor Resources</a>.</p>",
+                        "smithy.api#jsonName": "tags"
                     }
                 }
             }

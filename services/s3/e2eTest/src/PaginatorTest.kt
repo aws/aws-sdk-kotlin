@@ -4,35 +4,33 @@
  */
 package aws.sdk.kotlin.e2etest
 
-import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.abortMultipartUpload
 import aws.sdk.kotlin.services.s3.createMultipartUpload
 import aws.sdk.kotlin.services.s3.model.CompletedPart
 import aws.sdk.kotlin.services.s3.paginators.listPartsPaginated
 import aws.sdk.kotlin.services.s3.uploadPart
 import aws.smithy.kotlin.runtime.content.ByteStream
+import aws.smithy.kotlin.runtime.testing.AfterAll
+import aws.smithy.kotlin.runtime.testing.BeforeAll
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.time.Duration.Companion.seconds
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestLifecycle.PER_CLASS)
 class PaginatorTest {
-    private val client = S3Client {
-        region = S3TestUtils.DEFAULT_REGION
-    }
+    private val client = S3TestUtils.createClient()
 
     private lateinit var testBucket: String
 
     @BeforeAll
     fun createResources(): Unit = runBlocking {
-        testBucket = S3TestUtils.getTestBucket(client)
+        testBucket = S3TestUtils.createTestBucket(client, "pagination")
     }
 
     @AfterAll

@@ -27,9 +27,10 @@ dependencies {
     implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-schema-codegen")) // for AnnotationsProcessorOptions
     implementation(libs.smithy.kotlin.runtime.core) // for AttributeKey
 
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.smithy.kotlin.testing)
+    testImplementation(libs.kotlinx.coroutines.core)
 }
 
 gradlePlugin {
@@ -54,7 +55,7 @@ publishing {
     }
 }
 
-/**
+/*
  * The `java-gradle-plugin` plugin creates a javadoc jar by default, conflicting with the empty javadoc jar (emptyJar)
  * created in aws-kotlin-repo-tools. Configure dependencies and disable the emptyJar task to avoid conflicts.
  */
@@ -159,7 +160,7 @@ tasks.withType<Test> {
     dependsOn(generateSmithyKotlinVersionFile)
 }
 
-/**
+/*
  * Set up Maven Local dependencies to be used in the Gradle TestKit
  */
 tasks.register("publishSmithyKotlinToMavenLocal") {

@@ -160,14 +160,13 @@ class Route53UriTest {
             assertEquals(parsedExpectedUrl, parsedActualUrl)
         }
 
-        private fun removeModelVersion(url: String) =
-            try {
-                url.replaceFirst(
-                    Regex("^/\\d{4}-\\d{2}-\\d{2}/"),
-                    "//",
-                )
-            } catch (e: Exception) {
-                fail("The URL '$url' is not in the expected format", e)
-            }
+        private fun removeModelVersion(url: String) = try {
+            url.replaceFirst(
+                Regex("^/\\d{4}-\\d{2}-\\d{2}/"),
+                "//",
+            )
+        } catch (e: Exception) {
+            fail("The URL '$url' is not in the expected format", e)
+        }
     }
 }

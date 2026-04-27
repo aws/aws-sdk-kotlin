@@ -733,6 +733,32 @@
                 "smithy.api#pattern": "^[^_\"][^\"]*$"
             }
         },
+        "com.amazonaws.timestreaminfluxdb#ClusterConfiguration": {
+            "type": "structure",
+            "members": {
+                "ingestQueryInstances": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of instances in the DbCluster which can both ingest and query.</p>"
+                    }
+                },
+                "queryOnlyInstances": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of instances in the DbCluster which can only query.</p>"
+                    }
+                },
+                "dedicatedCompactor": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates if the compactor instance is a standalone instance or not.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for node modes in the DbCluster.</p>"
+            }
+        },
         "com.amazonaws.timestreaminfluxdb#ClusterDeploymentType": {
             "type": "enum",
             "members": {
@@ -787,6 +813,30 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "MAINTENANCE"
+                    }
+                },
+                "UPDATING_INSTANCE_TYPE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPDATING_INSTANCE_TYPE"
+                    }
+                },
+                "REBOOTING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REBOOTING"
+                    }
+                },
+                "REBOOT_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REBOOT_FAILED"
+                    }
+                },
+                "PARTIALLY_AVAILABLE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PARTIALLY_AVAILABLE"
                     }
                 }
             }
@@ -973,6 +1023,12 @@
                         "smithy.api#documentation": "<p>Configuration for sending InfluxDB engine logs to a specified S3 bucket.</p>"
                     }
                 },
+                "maintenanceSchedule": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the maintenance schedule for the DB cluster, including the preferred maintenance window and timezone.</p>"
+                    }
+                },
                 "tags": {
                     "target": "com.amazonaws.timestreaminfluxdb#RequestTagMap",
                     "traits": {
@@ -1148,6 +1204,12 @@
                         "smithy.api#documentation": "<p>Configuration for sending InfluxDB engine logs to a specified S3 bucket.</p>"
                     }
                 },
+                "maintenanceSchedule": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the maintenance schedule for the DB instance, including the preferred maintenance window and timezone.</p>"
+                    }
+                },
                 "tags": {
                     "target": "com.amazonaws.timestreaminfluxdb#RequestTagMap",
                     "traits": {
@@ -1314,6 +1376,26 @@
                     "target": "com.amazonaws.timestreaminfluxdb#InstanceModeList",
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the DbInstance's roles in the cluster.</p>"
+                    }
+                },
+                "maintenanceSchedule": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maintenance schedule for the DB instance.</p>"
+                    }
+                },
+                "lastMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the last completed maintenance operation on the DB instance.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "nextMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>",
+                        "smithy.api#timestampFormat": "date-time"
                     }
                 }
             },
@@ -1507,6 +1589,9 @@
             "operations": [
                 {
                     "target": "com.amazonaws.timestreaminfluxdb#ListDbInstancesForCluster"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#RebootDbCluster"
                 }
             ],
             "traits": {
@@ -1723,6 +1808,12 @@
                 "smithy.api#pattern": "^[a-zA-Z0-9]+$"
             }
         },
+        "com.amazonaws.timestreaminfluxdb#DbInstanceIdList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.timestreaminfluxdb#DbInstanceId"
+            }
+        },
         "com.amazonaws.timestreaminfluxdb#DbInstanceIdentifier": {
             "type": "string",
             "traits": {
@@ -1765,6 +1856,11 @@
             "list": {
                 "target": "com.amazonaws.timestreaminfluxdb#ListDbInstances"
             },
+            "operations": [
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#RebootDbInstance"
+                }
+            ],
             "traits": {
                 "aws.api#arn": {
                     "template": "db-instance/{dbInstanceIdentifier}"
@@ -2303,6 +2399,26 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the DbInstance's roles in the cluster.</p>"
                     }
+                },
+                "maintenanceSchedule": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maintenance schedule for the DB instance.</p>"
+                    }
+                },
+                "lastMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the last completed maintenance operation on the DB instance.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "nextMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
                 }
             },
             "traits": {
@@ -2579,6 +2695,26 @@
                         "smithy.api#documentation": "<p>Configuration for sending InfluxDB engine logs to send to specified S3 bucket.</p>"
                     }
                 },
+                "maintenanceSchedule": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maintenance schedule for the DB cluster.</p>"
+                    }
+                },
+                "lastMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the last completed maintenance operation on the DB cluster.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "nextMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the next scheduled maintenance operation on the DB cluster.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
                 "influxAuthParametersSecretArn": {
                     "target": "smithy.api#String",
                     "traits": {
@@ -2601,6 +2737,12 @@
                     "target": "com.amazonaws.timestreaminfluxdb#FailoverMode",
                     "traits": {
                         "smithy.api#documentation": "<p>The configured failover mode for the DB cluster.</p>"
+                    }
+                },
+                "clusterConfiguration": {
+                    "target": "com.amazonaws.timestreaminfluxdb#ClusterConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configuration for node modes in the DbCluster.</p>"
                     }
                 }
             },
@@ -2798,6 +2940,26 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the DbInstance's roles in the cluster.</p>"
                     }
+                },
+                "maintenanceSchedule": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maintenance schedule for the DB instance.</p>"
+                    }
+                },
+                "lastMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the last completed maintenance operation on the DB instance.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "nextMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
                 }
             },
             "traits": {
@@ -2895,6 +3057,17 @@
             },
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.timestreaminfluxdb#IanaTimezone": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "IANA timezone identifier.\n\nFormat: Region/City or UTC\nSee: https://www.iana.org/time-zones",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                },
+                "smithy.api#pattern": "^(UTC|[A-Za-z_]+/[A-Za-z0-9_]+(/[A-Za-z0-9_]+)?)$"
             }
         },
         "com.amazonaws.timestreaminfluxdb#InfluxDBv2Parameters": {
@@ -3314,7 +3487,7 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p>Provides custom configuration to DataFusion as a comma-separated list of key:value pairs.</p>",
-                        "smithy.api#pattern": "^[a-zA-Z0-9_]+=[^,\\s]+(?:,[a-zA-Z0-9_]+=[^,\\s]+)*$"
+                        "smithy.api#pattern": "^[a-zA-Z0-9_.]+:[^,\\s]+(?:,[a-zA-Z0-9_.]+:[^,\\s]+)*$"
                     }
                 },
                 "maxHttpRequestSize": {
@@ -3629,7 +3802,7 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p>Provides custom configuration to DataFusion as a comma-separated list of key:value pairs.</p>",
-                        "smithy.api#pattern": "^[a-zA-Z0-9_]+=[^,\\s]+(?:,[a-zA-Z0-9_]+=[^,\\s]+)*$"
+                        "smithy.api#pattern": "^[a-zA-Z0-9_.]+:[^,\\s]+(?:,[a-zA-Z0-9_.]+:[^,\\s]+)*$"
                     }
                 },
                 "maxHttpRequestSize": {
@@ -4437,6 +4610,39 @@
                 }
             }
         },
+        "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule": {
+            "type": "structure",
+            "members": {
+                "timezone": {
+                    "target": "com.amazonaws.timestreaminfluxdb#IanaTimezone",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IANA timezone identifier for the maintenance window. Format: Region/City or UTC. For example, America/New_York or UTC.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "preferredMaintenanceWindow": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceWindow",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The preferred maintenance window in the format ddd:HH:MM-ddd:HH:MM (UTC). Day must be one of: Mon, Tue, Wed, Thu, Fri, Sat, Sun. For example, Sun:02:00-Sun:06:00. Provide an empty string to let the system choose a window.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Specifies the maintenance schedule for a DB instance or cluster, defining when maintenance operations such as patching can be performed.</p>"
+            }
+        },
+        "com.amazonaws.timestreaminfluxdb#MaintenanceWindow": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "Preferred maintenance window in format \"ddd:HH:MM-ddd:HH:MM\"\n\nFormat requirements:\n  - Day: Mon, Tue, Wed, Thu, Fri, Sat, Sun\n  - Hour: 00-23 (24-hour format, 2 digits)\n  - Minute: 00-59 (2 digits)\n\nProvide empty string to let the system choose a window.\n\nExamples:\n  - \"Sun:02:00-Sun:06:00\" (4-hour window Sunday morning)\n  - \"Sat:23:00-Sun:03:00\" (cross-midnight window)\n  - \"\" or (system chooses)",
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 19
+                },
+                "smithy.api#pattern": "^$|^(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):[0-5]\\d-(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):[0-5]\\d$"
+            }
+        },
         "com.amazonaws.timestreaminfluxdb#MaxResults": {
             "type": "integer",
             "traits": {
@@ -4553,6 +4759,300 @@
                     "min": 1024,
                     "max": 65535
                 }
+            }
+        },
+        "com.amazonaws.timestreaminfluxdb#RebootDbCluster": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.timestreaminfluxdb#RebootDbClusterInput"
+            },
+            "output": {
+                "target": "com.amazonaws.timestreaminfluxdb#RebootDbClusterOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Reboots a Timestream for InfluxDB cluster.</p>",
+                "smithy.api#idempotent": {},
+                "smithy.api#tags": [
+                    "DbCluster"
+                ]
+            }
+        },
+        "com.amazonaws.timestreaminfluxdb#RebootDbClusterInput": {
+            "type": "structure",
+            "members": {
+                "dbClusterId": {
+                    "target": "com.amazonaws.timestreaminfluxdb#DbClusterId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Service-generated unique identifier of the DB cluster to reboot.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "instanceIds": {
+                    "target": "com.amazonaws.timestreaminfluxdb#DbInstanceIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of service-generated unique DB Instance Ids belonging to the DB Cluster to reboot.</p>",
+                        "smithy.api#length": {
+                            "min": 0,
+                            "max": 3
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.timestreaminfluxdb#RebootDbClusterOutput": {
+            "type": "structure",
+            "members": {
+                "dbClusterStatus": {
+                    "target": "com.amazonaws.timestreaminfluxdb#ClusterStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the DB Cluster.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.timestreaminfluxdb#RebootDbInstance": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.timestreaminfluxdb#RebootDbInstanceInput"
+            },
+            "output": {
+                "target": "com.amazonaws.timestreaminfluxdb#RebootDbInstanceOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.timestreaminfluxdb#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.iam#iamAction": {
+                    "documentation": "Grants permission to reboot a Timestream InfluxDB instance"
+                },
+                "smithy.api#documentation": "<p>Reboots a Timestream for InfluxDB instance.</p>",
+                "smithy.api#idempotent": {},
+                "smithy.api#tags": [
+                    "DbInstance"
+                ]
+            }
+        },
+        "com.amazonaws.timestreaminfluxdb#RebootDbInstanceInput": {
+            "type": "structure",
+            "members": {
+                "identifier": {
+                    "target": "com.amazonaws.timestreaminfluxdb#DbInstanceIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The id of the DB instance to reboot.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "dbInstanceIdentifier"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.timestreaminfluxdb#RebootDbInstanceOutput": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.timestreaminfluxdb#DbInstanceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A service-generated unique identifier.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.timestreaminfluxdb#DbInstanceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer-supplied name that uniquely identifies the DB instance when interacting with the Amazon Timestream for InfluxDB API and CLI commands.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "arn": {
+                    "target": "com.amazonaws.timestreaminfluxdb#Arn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the DB instance.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.timestreaminfluxdb#Status",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the DB instance.</p>"
+                    }
+                },
+                "endpoint": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.</p>"
+                    }
+                },
+                "port": {
+                    "target": "com.amazonaws.timestreaminfluxdb#Port",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The port number on which InfluxDB accepts connections.</p>"
+                    }
+                },
+                "networkType": {
+                    "target": "com.amazonaws.timestreaminfluxdb#NetworkType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether the networkType of the Timestream for InfluxDB instance is IPV4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
+                    }
+                },
+                "dbInstanceType": {
+                    "target": "com.amazonaws.timestreaminfluxdb#DbInstanceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Timestream for InfluxDB instance type that InfluxDB runs on.</p>"
+                    }
+                },
+                "dbStorageType": {
+                    "target": "com.amazonaws.timestreaminfluxdb#DbStorageType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Timestream for InfluxDB DB storage type that InfluxDB stores data on.</p>"
+                    }
+                },
+                "allocatedStorage": {
+                    "target": "com.amazonaws.timestreaminfluxdb#AllocatedStorage",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The amount of storage allocated for your DB storage type (in gibibytes).</p>"
+                    }
+                },
+                "deploymentType": {
+                    "target": "com.amazonaws.timestreaminfluxdb#DeploymentType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether the Timestream for InfluxDB is deployed as Single-AZ or with a MultiAZ Standby for High availability.</p>"
+                    }
+                },
+                "vpcSubnetIds": {
+                    "target": "com.amazonaws.timestreaminfluxdb#VpcSubnetIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of VPC subnet IDs associated with the DB instance.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "publiclyAccessible": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates if the DB instance has a public IP to facilitate access.</p>"
+                    }
+                },
+                "vpcSecurityGroupIds": {
+                    "target": "com.amazonaws.timestreaminfluxdb#VpcSecurityGroupIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of VPC security group IDs associated with the DB instance.</p>"
+                    }
+                },
+                "dbParameterGroupIdentifier": {
+                    "target": "com.amazonaws.timestreaminfluxdb#DbParameterGroupIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The id of the DB parameter group assigned to your DB instance.</p>"
+                    }
+                },
+                "availabilityZone": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Availability Zone in which the DB instance resides.</p>"
+                    }
+                },
+                "secondaryAvailabilityZone": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Availability Zone in which the standby instance is located when deploying with a MultiAZ standby instance.</p>"
+                    }
+                },
+                "logDeliveryConfiguration": {
+                    "target": "com.amazonaws.timestreaminfluxdb#LogDeliveryConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configuration for sending InfluxDB engine logs to send to specified S3 bucket.</p>"
+                    }
+                },
+                "influxAuthParametersSecretArn": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+                    }
+                },
+                "dbClusterId": {
+                    "target": "com.amazonaws.timestreaminfluxdb#DbClusterId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the DbCluster to which this DbInstance belongs to.</p>"
+                    }
+                },
+                "instanceMode": {
+                    "target": "com.amazonaws.timestreaminfluxdb#InstanceMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the DbInstance's role in the cluster.</p>"
+                    }
+                },
+                "instanceModes": {
+                    "target": "com.amazonaws.timestreaminfluxdb#InstanceModeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the DbInstance's roles in the cluster.</p>"
+                    }
+                },
+                "maintenanceSchedule": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maintenance schedule for the DB instance.</p>"
+                    }
+                },
+                "lastMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the last completed maintenance operation on the DB instance.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "nextMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.timestreaminfluxdb#RequestTagMap": {
@@ -4718,6 +5218,18 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "MAINTENANCE"
+                    }
+                },
+                "REBOOTING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REBOOTING"
+                    }
+                },
+                "REBOOT_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REBOOT_FAILED"
                     }
                 }
             }
@@ -5016,6 +5528,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Update the DB cluster's failover behavior.</p>"
                     }
+                },
+                "maintenanceSchedule": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the maintenance schedule for the DB cluster, including the preferred maintenance window and timezone.</p>"
+                    }
                 }
             },
             "traits": {
@@ -5131,6 +5649,12 @@
                     "target": "com.amazonaws.timestreaminfluxdb#AllocatedStorage",
                     "traits": {
                         "smithy.api#documentation": "<p>The amount of storage to allocate for your DB storage type (in gibibytes).</p>"
+                    }
+                },
+                "maintenanceSchedule": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the maintenance schedule for the DB instance, including the preferred maintenance window and timezone.</p>"
                     }
                 }
             },
@@ -5281,6 +5805,26 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the DbInstance's roles in the cluster.</p>"
                     }
+                },
+                "maintenanceSchedule": {
+                    "target": "com.amazonaws.timestreaminfluxdb#MaintenanceSchedule",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maintenance schedule for the DB instance.</p>"
+                    }
+                },
+                "lastMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the last completed maintenance operation on the DB instance.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "nextMaintenanceTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
                 }
             },
             "traits": {
@@ -5375,7 +5919,7 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 1,
-                    "max": 3
+                    "max": 6
                 }
             }
         }

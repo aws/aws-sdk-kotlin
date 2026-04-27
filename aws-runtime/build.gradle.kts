@@ -2,9 +2,9 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import aws.sdk.kotlin.gradle.dsl.configurePublishing
 import aws.sdk.kotlin.gradle.kmp.kotlin
 import aws.sdk.kotlin.gradle.kmp.needsKmpConfigured
+import aws.sdk.kotlin.gradle.publishing.configurePublishing
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 description = "AWS client runtime support for generated service clients"
@@ -91,6 +91,7 @@ dependencies {
     }
 }
 val packagesToIgnore = listOf(
+    "aws.sdk.kotlin.runtime.auth.credentials.internal.signin",
     "aws.sdk.kotlin.runtime.auth.credentials.internal.sts",
     "aws.sdk.kotlin.runtime.auth.credentials.internal.sso",
     "aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc",

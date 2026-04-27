@@ -522,6 +522,7 @@
                 "aws.protocols#awsJson1_0": {},
                 "smithy.api#documentation": "<p>Compute Optimizer is a service that analyzes the configuration and utilization\n            metrics of your Amazon Web Services compute resources, such as Amazon EC2\n            instances, Amazon EC2 Auto Scaling groups, Lambda functions, Amazon EBS volumes, and Amazon ECS services on Fargate. \n            It reports whether your resources are optimal, and generates\n            optimization recommendations to reduce the cost and improve the performance of your\n            workloads. Compute Optimizer also provides recent utilization metric data, in addition\n            to projected utilization metric data for the recommendations, which you can use to\n            evaluate which recommendation provides the best price-performance trade-off. The\n            analysis of your usage patterns can help you decide when to move or resize your running\n            resources, and still meet your performance and capacity requirements. For more\n            information about Compute Optimizer, including the required permissions to use the\n            service, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/\">Compute Optimizer User Guide</a>.</p>",
                 "smithy.api#title": "AWS Compute Optimizer",
+                "smithy.protocols#rpcv2Cbor": {},
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
                     "parameters": {
@@ -4325,6 +4326,24 @@
                         "smithy.api#enumValue": "UtilizationMetricsVolumeWriteOpsPerSecondMaximum"
                     }
                 },
+                "UTILIZATION_METRICS_ACTIVE_CONNECTION_COUNT_MAXIMUM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UtilizationMetricsActiveConnectionCountMaximum"
+                    }
+                },
+                "UTILIZATION_METRICS_PACKETS_IN_FROM_SOURCE_MAXIMUM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UtilizationMetricsPacketsInFromSourceMaximum"
+                    }
+                },
+                "UTILIZATION_METRICS_PACKETS_IN_FROM_DESTINATION_MAXIMUM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UtilizationMetricsPacketsInFromDestinationMaximum"
+                    }
+                },
                 "FINDING": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -7831,6 +7850,12 @@
                     "traits": {
                         "smithy.api#enumValue": "Unattached"
                     }
+                },
+                "UNUSED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Unused"
+                    }
                 }
             }
         },
@@ -7901,6 +7926,24 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "VolumeWriteOpsPerSecond"
+                    }
+                },
+                "ACTIVE_CONNECTION_COUNT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ActiveConnectionCount"
+                    }
+                },
+                "PACKETS_IN_FROM_SOURCE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PacketsInFromSource"
+                    }
+                },
+                "PACKETS_IN_FROM_DESTINATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PacketsInFromDestination"
                     }
                 }
             }
@@ -8098,6 +8141,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "RDSDBInstance"
+                    }
+                },
+                "NAT_GATEWAY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NatGateway"
                     }
                 }
             }
@@ -11692,6 +11741,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "AuroraDBClusterStorage"
+                    }
+                },
+                "NAT_GATEWAY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NatGateway"
                     }
                 }
             }

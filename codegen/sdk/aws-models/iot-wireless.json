@@ -135,6 +135,20 @@
                 "smithy.api#default": false
             }
         },
+        "com.amazonaws.iotwireless#AdvancedConfiguration": {
+            "type": "structure",
+            "members": {
+                "WiFiCellular": {
+                    "target": "com.amazonaws.iotwireless#WiFiCellular",
+                    "traits": {
+                        "smithy.api#documentation": "Configuration for WiFi and cellular-based payloads for location estimates."
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Optional configuration to customize location estimates."
+            }
+        },
         "com.amazonaws.iotwireless#AggregationPeriod": {
             "type": "enum",
             "members": {
@@ -1239,6 +1253,15 @@
                 "smithy.api#pattern": "^[a-zA-Z0-9-_]+$"
             }
         },
+        "com.amazonaws.iotwireless#ConfidencePercent": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 50,
+                    "max": 99
+                }
+            }
+        },
         "com.amazonaws.iotwireless#ConflictException": {
             "type": "structure",
             "members": {
@@ -1993,7 +2016,7 @@
                 "Positioning": {
                     "target": "com.amazonaws.iotwireless#PositioningConfigStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>FPort values for the GNSS, stream, and ClockSync functions of the positioning\n            information.</p>"
+                        "smithy.api#documentation": "<p>The integration status of the Device Location feature for LoRaWAN and Sidewalk devices.</p>"
                     }
                 },
                 "Sidewalk": {
@@ -5633,7 +5656,7 @@
                 "smithy.api#deprecated": {
                     "message": "This operation is no longer supported."
                 },
-                "smithy.api#documentation": "<p>Get the position information for a given resource.</p>\n         <important>\n            <p>This action is no longer supported. Calls to retrieve the position information\n                should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/2020-11-22/apireference/API_GetResourcePosition.html\">GetResourcePosition</a> API operation instead.</p>\n         </important>",
+                "smithy.api#documentation": "<p>Get the position information for a given resource.</p>\n         <important>\n            <p>This action is no longer supported. Calls to retrieve the position information\n                should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/apireference/API_GetResourcePosition.html\">GetResourcePosition</a> API operation instead.</p>\n         </important>",
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/positions/{ResourceIdentifier}",
@@ -5670,7 +5693,7 @@
                 "smithy.api#deprecated": {
                     "message": "This operation is no longer supported."
                 },
-                "smithy.api#documentation": "<p>Get position configuration for a given resource.</p>\n         <important>\n            <p>This action is no longer supported. Calls to retrieve the position configuration\n                should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/2020-11-22/apireference/API_GetResourcePosition.html\">GetResourcePosition</a> API operation instead.</p>\n         </important>",
+                "smithy.api#documentation": "<p>Get position configuration for a given resource.</p>\n         <important>\n            <p>This action is no longer supported. Calls to retrieve the position configuration\n                should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/apireference/API_GetResourcePosition.html\">GetResourcePosition</a> API operation instead.</p>\n         </important>",
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/position-configurations/{ResourceIdentifier}",
@@ -5793,6 +5816,12 @@
                     "target": "com.amazonaws.iotwireless#CreationDate",
                     "traits": {
                         "smithy.api#documentation": "<p>Optional information that specifies the time when the position information will be\n            resolved. It uses the Unix timestamp format. If not specified, the time at which the\n            request was received will be used.</p>"
+                    }
+                },
+                "AdvancedConfiguration": {
+                    "target": "com.amazonaws.iotwireless#AdvancedConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "Optional configuration to customize position estimates.\n        If not provided, defaults are applied."
                     }
                 }
             },
@@ -6395,6 +6424,12 @@
                         "smithy.api#documentation": "<p>The name of the destination that's assigned to the wireless devices in the import\n            task.</p>"
                     }
                 },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#PositioningConfigStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The integration status of the Device Location feature for LoRaWAN and Sidewalk devices.</p>"
+                    }
+                },
                 "Sidewalk": {
                     "target": "com.amazonaws.iotwireless#SidewalkGetStartImportInfo",
                     "traits": {
@@ -6538,7 +6573,7 @@
                 "Positioning": {
                     "target": "com.amazonaws.iotwireless#PositioningConfigStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>FPort values for the GNSS, stream, and ClockSync functions of the positioning\n            information.</p>"
+                        "smithy.api#documentation": "<p>The integration status of the Device Location feature for LoRaWAN and Sidewalk devices.</p>"
                     }
                 }
             },
@@ -7908,6 +7943,18 @@
                         "smithy.api#documentation": "<p>The name of the Sidewalk destination that describes the IoT rule to route messages\n            received from devices in an import task that are onboarded to AWS IoT Wireless.</p>"
                     }
                 },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#PositioningConfigStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The integration status of the Device Location feature for Sidewalk devices.</p>"
+                    }
+                },
+                "Sidewalk": {
+                    "target": "com.amazonaws.iotwireless#SidewalkListDevicesForImportInfo",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Sidewalk object containing Sidewalk-related device information.</p>"
+                    }
+                },
                 "ImportedWirelessDeviceList": {
                     "target": "com.amazonaws.iotwireless#ImportedWirelessDeviceList",
                     "traits": {
@@ -8413,7 +8460,7 @@
                 "smithy.api#deprecated": {
                     "message": "This operation is no longer supported."
                 },
-                "smithy.api#documentation": "<p>List position configurations for a given resource, such as positioning solvers.</p>\n         <important>\n            <p>This action is no longer supported. Calls to retrieve position information should\n                use the <a href=\"https://docs.aws.amazon.com/iot-wireless/2020-11-22/apireference/API_GetResourcePosition.html\">GetResourcePosition</a> API operation instead.</p>\n         </important>",
+                "smithy.api#documentation": "<p>List position configurations for a given resource, such as positioning solvers.</p>\n         <important>\n            <p>This action is no longer supported. Calls to retrieve position information should\n                use the <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/apireference/API_GetResourcePosition.html\">GetResourcePosition</a> API operation instead.</p>\n         </important>",
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/position-configurations",
@@ -8750,7 +8797,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>List wireless devices that have been added to an import task.</p>",
+                "smithy.api#documentation": "<p>List of import tasks and summary information of onboarding status of devices in each\n            import task.</p>",
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/wireless_device_import_tasks",
@@ -8857,7 +8904,7 @@
                 "DestinationName": {
                     "target": "com.amazonaws.iotwireless#DestinationName",
                     "traits": {
-                        "smithy.api#documentation": "<p>A filter to list only the wireless devices that use this destination.</p>",
+                        "smithy.api#documentation": "<p>A filter to list only the wireless devices that use as uplink destination.</p>",
                         "smithy.api#httpQuery": "destinationName"
                     }
                 },
@@ -11496,7 +11543,7 @@
                 "smithy.api#deprecated": {
                     "message": "This operation is no longer supported."
                 },
-                "smithy.api#documentation": "<p>Put position configuration for a given resource.</p>\n         <important>\n            <p>This action is no longer supported. Calls to update the position configuration\n                should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/2020-11-22/apireference/API_UpdateResourcePosition.html\">UpdateResourcePosition</a> API operation instead.</p>\n         </important>",
+                "smithy.api#documentation": "<p>Put position configuration for a given resource.</p>\n         <important>\n            <p>This action is no longer supported. Calls to update the position configuration\n                should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/apireference/API_UpdateResourcePosition.html\">UpdateResourcePosition</a> API operation instead.</p>\n         </important>",
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/position-configurations/{ResourceIdentifier}",
@@ -12366,6 +12413,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Sidewalk device profile.</p>"
                     }
+                },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#SidewalkPositioning",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Positioning object of the Sidewalk device.</p>"
+                    }
+                },
+                "SidewalkManufacturingSn": {
+                    "target": "com.amazonaws.iotwireless#SidewalkManufacturingSn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Sidewalk manufacturing serial number.</p>"
+                    }
                 }
             },
             "traits": {
@@ -12418,6 +12477,12 @@
                     "target": "com.amazonaws.iotwireless#WirelessDeviceSidewalkStatus",
                     "traits": {
                         "smithy.api#documentation": "<p>The Sidewalk device status, such as provisioned or registered.</p>"
+                    }
+                },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#SidewalkPositioning",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Positioning object of the Sidewalk device.</p>"
                     }
                 }
             },
@@ -12511,6 +12576,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The IAM role that allows AWS IoT Wireless to access the CSV file in the S3\n            bucket.</p>"
                     }
+                },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#SidewalkPositioning",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Positioning object of the Sidewalk device.</p>"
+                    }
                 }
             },
             "traits": {
@@ -12565,10 +12636,30 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The status of the Sidewalk devices, such as provisioned or registered.</p>"
                     }
+                },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#SidewalkPositioning",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Positioning object of the Sidewalk device.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Sidewalk object used by list functions.</p>"
+            }
+        },
+        "com.amazonaws.iotwireless#SidewalkListDevicesForImportInfo": {
+            "type": "structure",
+            "members": {
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#SidewalkPositioning",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Positioning object of the Sidewalk device.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Sidewalk-related object containing positioning information used to configure Sidewalk devices during import.</p>"
             }
         },
         "com.amazonaws.iotwireless#SidewalkManufacturingSn": {
@@ -12578,6 +12669,20 @@
                     "min": 0,
                     "max": 64
                 }
+            }
+        },
+        "com.amazonaws.iotwireless#SidewalkPositioning": {
+            "type": "structure",
+            "members": {
+                "DestinationName": {
+                    "target": "com.amazonaws.iotwireless#DestinationName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The location destination name of the Sidewalk device.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Positioning object of the Sidewalk device.</p>"
             }
         },
         "com.amazonaws.iotwireless#SidewalkResourceTypeEventConfiguration": {
@@ -12625,6 +12730,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The Sidewalk manufacturing serial number (SMSN) of the device added to the import\n            task.</p>"
                     }
+                },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#SidewalkPositioning",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Positioning object of the Sidewalk device.</p>"
+                    }
                 }
             },
             "traits": {
@@ -12644,6 +12755,12 @@
                     "target": "com.amazonaws.iotwireless#Role",
                     "traits": {
                         "smithy.api#documentation": "<p>The IAM role that allows AWS IoT Wireless to access the CSV file in the S3\n            bucket.</p>"
+                    }
+                },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#SidewalkPositioning",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Positioning object of the Sidewalk device.</p>"
                     }
                 }
             },
@@ -12677,6 +12794,20 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Sidewalk object information for updating an import task.</p>"
+            }
+        },
+        "com.amazonaws.iotwireless#SidewalkUpdateWirelessDevice": {
+            "type": "structure",
+            "members": {
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#SidewalkPositioning",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Positioning object of the Sidewalk device.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Sidewalk object for updating a wireless device.</p>"
             }
         },
         "com.amazonaws.iotwireless#SigningAlg": {
@@ -13012,6 +13143,12 @@
                 "Tags": {
                     "target": "com.amazonaws.iotwireless#TagList"
                 },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#PositioningConfigStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The integration status of the Device Location feature for Sidewalk devices.</p>"
+                    }
+                },
                 "Sidewalk": {
                     "target": "com.amazonaws.iotwireless#SidewalkSingleStartImportInfo",
                     "traits": {
@@ -13106,6 +13243,12 @@
                 },
                 "Tags": {
                     "target": "com.amazonaws.iotwireless#TagList"
+                },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#PositioningConfigStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The integration status of the Device Location feature for Sidewalk devices.</p>"
+                    }
                 },
                 "Sidewalk": {
                     "target": "com.amazonaws.iotwireless#SidewalkStartImportInfo",
@@ -14726,7 +14869,7 @@
                 "smithy.api#deprecated": {
                     "message": "This operation is no longer supported."
                 },
-                "smithy.api#documentation": "<p>Update the position information of a resource.</p>\n         <important>\n            <p>This action is no longer supported. Calls to update the position information\n                should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/2020-11-22/apireference/API_UpdateResourcePosition.html\">UpdateResourcePosition</a> API operation instead.</p>\n         </important>",
+                "smithy.api#documentation": "<p>Update the position information of a resource.</p>\n         <important>\n            <p>This action is no longer supported. Calls to update the position information\n                should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/apireference/API_UpdateResourcePosition.html\">UpdateResourcePosition</a> API operation instead.</p>\n         </important>",
                 "smithy.api#http": {
                     "method": "PATCH",
                     "uri": "/positions/{ResourceIdentifier}",
@@ -15103,7 +15246,13 @@
                 "Positioning": {
                     "target": "com.amazonaws.iotwireless#PositioningConfigStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>FPort values for the GNSS, stream, and ClockSync functions of the positioning\n            information.</p>"
+                        "smithy.api#documentation": "<p>The integration status of the Device Location feature for LoRaWAN and Sidewalk devices.</p>"
+                    }
+                },
+                "Sidewalk": {
+                    "target": "com.amazonaws.iotwireless#SidewalkUpdateWirelessDevice",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated sidewalk properties.</p>"
                     }
                 }
             },
@@ -15461,6 +15610,21 @@
                 "target": "com.amazonaws.iotwireless#WiFiAccessPoint"
             }
         },
+        "com.amazonaws.iotwireless#WiFiCellular": {
+            "type": "structure",
+            "members": {
+                "ConfidencePercent": {
+                    "target": "com.amazonaws.iotwireless#ConfidencePercent",
+                    "traits": {
+                        "smithy.api#default": 68,
+                        "smithy.api#documentation": "Confidence level for WiFi and cellular position estimates, expressed as a\n        percentage. Valid range: 50–99 inclusive. Defaults to 68 if not specified."
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Configuration for WiFi and cellular location payloads."
+            }
+        },
         "com.amazonaws.iotwireless#WirelessDeviceArn": {
             "type": "string"
         },
@@ -15609,6 +15773,12 @@
                     "target": "com.amazonaws.iotwireless#DestinationName",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the Sidewalk destination that that describes the IoT rule to route\n            messages from the device in the import task that will be onboarded to AWS IoT\n            Wireless</p>"
+                    }
+                },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#PositioningConfigStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The integration status of the Device Location feature for Sidewalk devices.</p>"
                     }
                 },
                 "Sidewalk": {
@@ -15815,6 +15985,12 @@
                 },
                 "McGroupId": {
                     "target": "com.amazonaws.iotwireless#McGroupId"
+                },
+                "Positioning": {
+                    "target": "com.amazonaws.iotwireless#PositioningConfigStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The integration status of the Device Location feature for LoRaWAN and Amazon Sidewalk enabled devices.</p>"
+                    }
                 }
             },
             "traits": {
@@ -16510,7 +16686,7 @@
                     "name": "iotwireless"
                 },
                 "aws.protocols#restJson1": {},
-                "smithy.api#documentation": "<p>AWS IoT Wireless provides bi-directional communication between internet-connected\n            wireless devices and the AWS Cloud. To onboard both <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/developerguide/iot-lorawan.html\">LoRaWAN</a> and <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/developerguide/iot-sidewalk.html\">Sidewalk</a> devices to AWS IoT, use the IoT Wireless API. These wireless\n            devices use the Low Power Wide Area Networking (LPWAN) communication protocol to\n            communicate with AWS IoT. </p>\n         <p>Using the API, you can perform create, read, update, and delete operations for your\n            wireless devices, gateways, destinations, and profiles. After onboarding your devices,\n            you can use the API operations to set log levels and monitor your devices with\n            CloudWatch.</p>\n         <p>You can also use the API operations to create multicast groups and schedule a\n            multicast session for sending a downlink message to devices in the group. By using\n            Firmware Updates Over-The-Air (FUOTA) API operations, you can create a FUOTA task and\n            schedule a session to update the firmware of individual devices or an entire group of\n            devices in a multicast group.</p>\n         <p>To connect to the AWS IoT Wireless Service, use the Service endpoints as described in\n            <a href=\"https://docs.aws.amazon.com/general/latest/gr/iot-lorawan.html#iot-wireless_region\">IoT \n            Wireless Service endpoints</a>. You can use both IPv4 and IPv6 protocols to connect\n            to the endpoints and send requests to the AWS IoT Wireless service. For more information,\n            see <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/developerguide/wireless-ipv6-access.html\">Using\n\t\t\tIPv6 with AWS IoT Wireless</a>.</p>",
+                "smithy.api#documentation": "<p>AWS IoT Wireless provides bi-directional communication between internet-connected\n            wireless devices and the AWS Cloud. To onboard both <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/developerguide/iot-lorawan.html\">LoRaWAN</a> and <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/developerguide/iot-sidewalk.html\">Sidewalk</a> devices to AWS IoT, use the IoT Wireless API. These wireless\n            devices use the Low Power Wide Area Networking (LPWAN) communication protocol to\n            communicate with AWS IoT. </p>\n         <p>Using the API, you can perform create, read, update, and delete operations for your\n            wireless devices, gateways, destinations, and profiles. After onboarding your devices,\n            you can use the API operations to set log levels and monitor your devices with\n            CloudWatch.</p>\n         <p>You can also use the API operations to create multicast groups and schedule a\n            multicast session for sending a downlink message to devices in the group. By using\n            Firmware Updates Over-The-Air (FUOTA) API operations, you can create a FUOTA task and\n            schedule a session to update the firmware of individual devices or an entire group of\n            devices in a multicast group.</p>\n         <p>To connect to the AWS IoT Wireless Service, use the Service endpoints as described in\n            <a href=\"https://docs.aws.amazon.com/general/latest/gr/iot-lorawan.html#iot-wireless_region\">IoT\n            Wireless Service endpoints</a>. You can use both IPv4 and IPv6 protocols to connect\n            to the endpoints and send requests to the AWS IoT Wireless service. For more information,\n            see <a href=\"https://docs.aws.amazon.com/iot-wireless/latest/developerguide/wireless-ipv6-access.html\">Using\n\t\t\tIPv6 with AWS IoT Wireless</a>.</p>",
                 "smithy.api#title": "AWS IoT Wireless",
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",

@@ -4,11 +4,11 @@
  */
 package aws.sdk.kotlin.codegen
 
-import software.amazon.smithy.kotlin.codegen.core.*
-import software.amazon.smithy.kotlin.codegen.integration.AppendingSectionWriter
-import software.amazon.smithy.kotlin.codegen.integration.SectionId
-import software.amazon.smithy.kotlin.codegen.rendering.ServiceClientGenerator
-import software.amazon.smithy.kotlin.codegen.utils.toPascalCase
+import aws.smithy.kotlin.codegen.core.*
+import aws.smithy.kotlin.codegen.integration.AppendingSectionWriter
+import aws.smithy.kotlin.codegen.integration.SectionId
+import aws.smithy.kotlin.codegen.rendering.ServiceClientGenerator
+import aws.smithy.kotlin.codegen.utils.toPascalCase
 
 /**
  * Overrides the service client companion object for how a client is constructed.
@@ -73,6 +73,5 @@ internal fun String.toEndpointUrlConfigNames(): EndpointUrlConfigNames = Endpoin
 // for our client names
 // e.g. sdkId "Elasticsearch Service" -> client name "ElasticsearchClient", prop "aws.endpointUrlElasticsearch"
 private object JvmSystemPropertySuffix : StringTransformer {
-    override fun transform(id: String): String =
-        id.toPascalCase().removeSuffix("Service")
+    override fun transform(id: String): String = id.toPascalCase().removeSuffix("Service")
 }

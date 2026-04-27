@@ -1620,7 +1620,8 @@
                                             "CLEAR_KEY_AES_128"
                                         ],
                                         "RoleArn": "arn:aws:iam::123456789012:role/empRole",
-                                        "Url": "https://foo.com"
+                                        "Url": "https://foo.com",
+                                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/0c6a65f1-7bd3-48ac-be17-f38675def22e"
                                     }
                                 }
                             },
@@ -1715,7 +1716,8 @@
                                             "CLEAR_KEY_AES_128"
                                         ],
                                         "RoleArn": "arn:aws:iam::123456789012:role/empRole",
-                                        "Url": "https://foo.com"
+                                        "Url": "https://foo.com",
+                                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/0c6a65f1-7bd3-48ac-be17-f38675def22e"
                                     }
                                 }
                             },
@@ -1813,7 +1815,8 @@
                                             "WIDEVINE"
                                         ],
                                         "RoleArn": "arn:aws:iam::123456789012:role/empRole",
-                                        "Url": "https://foo.com"
+                                        "Url": "https://foo.com",
+                                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/0c6a65f1-7bd3-48ac-be17-f38675def22e"
                                     }
                                 }
                             },
@@ -2013,7 +2016,8 @@
                                             "WIDEVINE"
                                         ],
                                         "RoleArn": "arn:aws:iam::123456789012:role/empRole",
-                                        "Url": "https://foo.com"
+                                        "Url": "https://foo.com",
+                                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/0c6a65f1-7bd3-48ac-be17-f38675def22e"
                                     }
                                 }
                             },
@@ -2347,7 +2351,7 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The size of the window (in seconds) to create a window of the live stream that's available for on-demand viewing. Viewers can start-over or catch-up on content that falls within the window. The maximum startover window is 1,209,600 seconds (14 days).</p>",
                         "smithy.api#range": {
-                            "min": 60,
+                            "min": 0,
                             "max": 1209600
                         }
                     }
@@ -3554,6 +3558,16 @@
                         }
                     }
                 },
+                "DrmSettings": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Optionally specify one or more DRM settings for all of your manifest egress requests. When you include a DRM setting, note that you cannot use an identical DRM setting query parameter for this manifest's endpoint URL.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 1024
+                        }
+                    }
+                },
                 "Start": {
                     "target": "smithy.api#Timestamp",
                     "traits": {
@@ -4688,7 +4702,8 @@
                                             "CLEAR_KEY_AES_128"
                                         ],
                                         "RoleArn": "arn:aws:iam::123456789012:role/empRole",
-                                        "Url": "https://foo.com"
+                                        "Url": "https://foo.com",
+                                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/0c6a65f1-7bd3-48ac-be17-f38675def22e"
                                     }
                                 }
                             },
@@ -5440,7 +5455,7 @@
                 "MQCSInputSwitching": {
                     "target": "smithy.api#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "<p>When true, AWS Elemental MediaPackage performs input switching based on the MQCS. Default is true. This setting is valid only when <code>InputType</code> is <code>CMAF</code>.</p>"
+                        "smithy.api#documentation": "<p>When true, AWS Elemental MediaPackage performs input switching based on the MQCS. Default is false. This setting is valid only when <code>InputType</code> is <code>CMAF</code>.</p>"
                     }
                 },
                 "PreferredInput": {
@@ -7459,6 +7474,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The SCTE-35 message types that you want to be treated as ad markers in the output.</p>"
                     }
+                },
+                "ScteInSegments": {
+                    "target": "com.amazonaws.mediapackagev2#ScteInSegments",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Controls whether SCTE-35 messages are included in segment files.</p> <ul> <li> <p>None – SCTE-35 messages are not included in segments (default)</p> </li> <li> <p>All – SCTE-35 messages are embedded in segment data</p> </li> </ul> <p> For DASH manifests, when set to <code>All</code>, an <code>InbandEventStream</code> tag signals that SCTE messages are present in segments. This setting works independently of manifest ad markers.</p>"
+                    }
                 }
             },
             "traits": {
@@ -7556,12 +7577,29 @@
                 "AdMarkerHls": {
                     "target": "com.amazonaws.mediapackagev2#AdMarkerHls",
                     "traits": {
-                        "smithy.api#documentation": "<p>Ad markers indicate when ads should be inserted during playback. If you include ad markers in the content stream in your upstream encoders, then you need to inform MediaPackage what to do with the ad markers in the output. Choose what you want MediaPackage to do with the ad markers.</p> <p>Value description: </p> <ul> <li> <p>DATERANGE - Insert EXT-X-DATERANGE tags to signal ad and program transition events in TS and CMAF manifests. If you use DATERANGE, you must set a programDateTimeIntervalSeconds value of 1 or higher. To learn more about DATERANGE, see <a href=\"http://docs.aws.amazon.com/mediapackage/latest/ug/scte-35-ad-marker-ext-x-daterange.html\">SCTE-35 Ad Marker EXT-X-DATERANGE</a>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>Ad markers indicate when ads should be inserted during playback. If you include ad markers in the content stream in your upstream encoders, then you need to inform MediaPackage what to do with the ad markers in the output. Choose what you want MediaPackage to do with the ad markers.</p> <p>Value description: </p> <ul> <li> <p>SCTE35_ENHANCED - Generate industry-standard CUE tag ad markers in HLS manifests based on SCTE-35 input messages from the input stream.</p> </li> <li> <p>DATERANGE - Insert EXT-X-DATERANGE tags to signal ad and program transition events in TS and CMAF manifests. If you use DATERANGE, you must set a programDateTimeIntervalSeconds value of 1 or higher. To learn more about DATERANGE, see <a href=\"http://docs.aws.amazon.com/mediapackage/latest/ug/scte-35-ad-marker-ext-x-daterange.html\">SCTE-35 Ad Marker EXT-X-DATERANGE</a>.</p> </li> </ul>"
                     }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>The SCTE configuration.</p>"
+            }
+        },
+        "com.amazonaws.mediapackagev2#ScteInSegments": {
+            "type": "enum",
+            "members": {
+                "NONE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NONE"
+                    }
+                },
+                "ALL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALL"
+                    }
+                }
             }
         },
         "com.amazonaws.mediapackagev2#Segment": {
@@ -7686,6 +7724,17 @@
                             "max": 1024
                         },
                         "smithy.api#required": {}
+                    }
+                },
+                "CertificateArn": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN for the certificate that you imported to Amazon Web Services Certificate Manager to add content key encryption to this endpoint. For this feature to work, your DRM key provider must support content key encryption.</p>",
+                        "smithy.api#length": {
+                            "min": 20,
+                            "max": 2048
+                        },
+                        "smithy.api#pattern": "^arn:([^:\\n]+):acm:([^:\\n]+):([0-9]+):certificate/[a-zA-Z0-9-_]+$"
                     }
                 }
             },
@@ -8338,7 +8387,8 @@
                                             "CLEAR_KEY_AES_128"
                                         ],
                                         "RoleArn": "arn:aws:iam::123456789012:role/empRole",
-                                        "Url": "https://foo.com"
+                                        "Url": "https://foo.com",
+                                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/0c6a65f1-7bd3-48ac-be17-f38675def22e"
                                     }
                                 }
                             },
@@ -8428,7 +8478,8 @@
                                             "CLEAR_KEY_AES_128"
                                         ],
                                         "RoleArn": "arn:aws:iam::123456789012:role/empRole",
-                                        "Url": "https://foo.com"
+                                        "Url": "https://foo.com",
+                                        "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/0c6a65f1-7bd3-48ac-be17-f38675def22e"
                                     }
                                 }
                             },
@@ -8654,7 +8705,7 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The size of the window (in seconds) to create a window of the live stream that's available for on-demand viewing. Viewers can start-over or catch-up on content that falls within the window. The maximum startover window is 1,209,600 seconds (14 days).</p>",
                         "smithy.api#range": {
-                            "min": 60,
+                            "min": 0,
                             "max": 1209600
                         }
                     }
@@ -9070,6 +9121,12 @@
                         "smithy.api#enumValue": "INVALID_MANIFEST_FILTER"
                     }
                 },
+                "INVALID_DRM_SETTINGS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INVALID_DRM_SETTINGS"
+                    }
+                },
                 "INVALID_TIME_DELAY_SECONDS": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -9374,6 +9431,60 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "INVALID_SECRET"
+                    }
+                },
+                "RESOURCE_NOT_IN_SAME_REGION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RESOURCE_NOT_IN_SAME_REGION"
+                    }
+                },
+                "CERTIFICATE_RESOURCE_NOT_FOUND": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CERTIFICATE_RESOURCE_NOT_FOUND"
+                    }
+                },
+                "CERTIFICATE_ACCESS_DENIED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CERTIFICATE_ACCESS_DENIED"
+                    }
+                },
+                "DESCRIBE_CERTIFICATE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DESCRIBE_CERTIFICATE_FAILED"
+                    }
+                },
+                "INVALID_CERTIFICATE_STATUS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INVALID_CERTIFICATE_STATUS"
+                    }
+                },
+                "INVALID_CERTIFICATE_KEY_ALGORITHM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INVALID_CERTIFICATE_KEY_ALGORITHM"
+                    }
+                },
+                "INVALID_CERTIFICATE_SIGNATURE_ALGORITHM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INVALID_CERTIFICATE_SIGNATURE_ALGORITHM"
+                    }
+                },
+                "MISSING_CERTIFICATE_DOMAIN_NAME": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MISSING_CERTIFICATE_DOMAIN_NAME"
+                    }
+                },
+                "INVALID_ARN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INVALID_ARN"
                     }
                 }
             }

@@ -6,12 +6,11 @@ package aws.sdk.kotlin.codegen.customization.s3
 
 import aws.sdk.kotlin.codegen.testutil.lines
 import aws.sdk.kotlin.codegen.testutil.model
-import org.junit.jupiter.api.Test
-import software.amazon.smithy.kotlin.codegen.core.KotlinWriter
-import software.amazon.smithy.kotlin.codegen.rendering.ServiceClientConfigGenerator
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
-import software.amazon.smithy.kotlin.codegen.rendering.protocol.ProtocolMiddleware
-import software.amazon.smithy.kotlin.codegen.test.*
+import aws.smithy.kotlin.codegen.core.KotlinWriter
+import aws.smithy.kotlin.codegen.rendering.ServiceClientConfigGenerator
+import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
+import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolMiddleware
+import aws.smithy.kotlin.codegen.test.*
 import software.amazon.smithy.model.shapes.OperationShape
 import kotlin.test.*
 
@@ -99,6 +98,5 @@ class ContinueIntegrationTest {
 
 object FooMiddleware : ProtocolMiddleware {
     override val name: String = "FooMiddleware"
-    override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) =
-        fail("Unexpected call to `FooMiddleware.render")
+    override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) = fail("Unexpected call to `FooMiddleware.render")
 }

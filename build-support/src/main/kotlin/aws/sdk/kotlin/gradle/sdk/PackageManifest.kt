@@ -21,10 +21,9 @@ data class PackageManifest(
 
     val bySdkId: Map<String, PackageMetadata> = packages.associateBy(PackageMetadata::sdkId)
     companion object {
-        fun fromFile(file: File): PackageManifest =
-            file.inputStream().use {
-                Json.decodeFromStream<PackageManifest>(it)
-            }
+        fun fromFile(file: File): PackageManifest = file.inputStream().use {
+            Json.decodeFromStream<PackageManifest>(it)
+        }
     }
 }
 
@@ -65,12 +64,11 @@ data class PackageMetadata(
         /**
          * Create a new [PackageMetadata] from inferring values using the given sdkId
          */
-        fun from(sdkId: String): PackageMetadata =
-            PackageMetadata(
-                sdkId,
-                packageNamespaceForService(sdkId),
-                sdkIdToArtifactName(sdkId),
-                sdkIdToBrazilName(sdkId),
-            )
+        fun from(sdkId: String): PackageMetadata = PackageMetadata(
+            sdkId,
+            packageNamespaceForService(sdkId),
+            sdkIdToArtifactName(sdkId),
+            sdkIdToBrazilName(sdkId),
+        )
     }
 }

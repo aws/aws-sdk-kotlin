@@ -18,8 +18,7 @@ public object ListMappingConverters {
      * @param T The type being converted from
      * @param elementConverter A one-way converter of [T] elements to [F] elements
      */
-    public fun <F, T> of(elementConverter: ConvertsFrom<F, T>): ConvertsFrom<List<F>, List<T>> =
-        ConvertsFrom { to: List<T> -> to.map(elementConverter::convertFrom) }
+    public fun <F, T> of(elementConverter: ConvertsFrom<F, T>): ConvertsFrom<List<F>, List<T>> = ConvertsFrom { to: List<T> -> to.map(elementConverter::convertFrom) }
 
     /**
      * Chains this list converter with an element converter, yielding a new converter which performs a two-stage mapping
@@ -41,8 +40,7 @@ public object ListMappingConverters {
      * @param T The type being converted to
      * @param elementConverter A one-way converter of [F] elements to [T] elements
      */
-    public fun <F, T> of(elementConverter: ConvertsTo<F, T>): ConvertsTo<List<F>, List<T>> =
-        ConvertsTo { from: List<F> -> from.map(elementConverter::convertTo) }
+    public fun <F, T> of(elementConverter: ConvertsTo<F, T>): ConvertsTo<List<F>, List<T>> = ConvertsTo { from: List<F> -> from.map(elementConverter::convertTo) }
 
     /**
      * Chains this list converter with an element converter, yielding a new converter which performs a two-stage mapping
@@ -65,8 +63,7 @@ public object ListMappingConverters {
      * @param T The type being converted to
      * @param elementConverter A [Converter] for transforming between elements of type [F] and [T]
      */
-    public fun <F, T> of(elementConverter: Converter<F, T>): Converter<List<F>, List<T>> =
-        Converter(of(elementConverter as ConvertsTo<F, T>), of(elementConverter as ConvertsFrom<F, T>))
+    public fun <F, T> of(elementConverter: Converter<F, T>): Converter<List<F>, List<T>> = Converter(of(elementConverter as ConvertsTo<F, T>), of(elementConverter as ConvertsFrom<F, T>))
 }
 
 /**
@@ -80,8 +77,7 @@ public object ListMappingConverters {
  * of the given [elementConverter] must be the same as the source element type of this converter.
  */
 @ExperimentalApi
-public fun <F, F2, T> Converter<List<F>, T>.mapFrom(elementConverter: Converter<F2, F>): Converter<List<F2>, T> =
-    this.andThenFrom(ListMappingConverters.of(elementConverter))
+public fun <F, F2, T> Converter<List<F>, T>.mapFrom(elementConverter: Converter<F2, F>): Converter<List<F2>, T> = this.andThenFrom(ListMappingConverters.of(elementConverter))
 
 /**
  * Chains this list converter with an element converter, yielding a new converter which performs a two-stage mapping
@@ -94,5 +90,4 @@ public fun <F, F2, T> Converter<List<F>, T>.mapFrom(elementConverter: Converter<
  * of the given [elementConverter] must be the same as the target element type of this converter.
  */
 @ExperimentalApi
-public fun <F, T, T2> Converter<F, List<T>>.mapTo(elementConverter: Converter<T, T2>): Converter<F, List<T2>> =
-    this.andThenTo(ListMappingConverters.of(elementConverter))
+public fun <F, T, T2> Converter<F, List<T>>.mapTo(elementConverter: Converter<T, T2>): Converter<F, List<T2>> = this.andThenTo(ListMappingConverters.of(elementConverter))

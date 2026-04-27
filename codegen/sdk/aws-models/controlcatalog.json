@@ -956,14 +956,14 @@
                 "MappingType": {
                     "target": "com.amazonaws.controlcatalog#MappingType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of mapping relationship between the control and other entities. Indicates whether the mapping is to a framework or common control.</p>",
+                        "smithy.api#documentation": "<p>The type of mapping relationship between the control and other entities.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "Mapping": {
                     "target": "com.amazonaws.controlcatalog#Mapping",
                     "traits": {
-                        "smithy.api#documentation": "<p>The details of the mapping relationship, containing either framework or common control information.</p>",
+                        "smithy.api#documentation": "<p>The details of the mapping relationship, for example, containing framework, common control, or related control information.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -1016,13 +1016,36 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Five types of control parameters are supported.</p> <ul> <li> <p> <b>AllowedRegions</b>: List of Amazon Web Services Regions exempted from the control. Each string is expected to be an Amazon Web Services Region code. This parameter is mandatory for the <b>OU Region deny</b> control, <b>CT.MULTISERVICE.PV.1</b>.</p> <p>Example: <code>[\"us-east-1\",\"us-west-2\"]</code> </p> </li> <li> <p> <b>ExemptedActions</b>: List of Amazon Web Services IAM actions exempted from the control. Each string is expected to be an IAM action.</p> <p>Example: <code>[\"logs:DescribeLogGroups\",\"logs:StartQuery\",\"logs:GetQueryResults\"]</code> </p> </li> <li> <p> <b>ExemptedPrincipalArns</b>: List of Amazon Web Services IAM principal ARNs exempted from the control. Each string is expected to be an IAM principal that follows the pattern <code>^arn:(aws|aws-us-gov):(iam|sts)::.+:.+$</code> </p> <p>Example: <code>[\"arn:aws:iam::*:role/ReadOnly\",\"arn:aws:sts::*:assumed-role/ReadOnly/*\"]</code> </p> </li> <li> <p> <b>ExemptedResourceArns</b>: List of resource ARNs exempted from the control. Each string is expected to be a resource ARN.</p> <p>Example: <code>[\"arn:aws:s3:::my-bucket-name\"]</code> </p> </li> <li> <p> <b>ExemptAssumeRoot</b>: A parameter that lets you choose whether to exempt requests made with <code>AssumeRoot</code> from this control, for this OU. For member accounts, the <code>AssumeRoot</code> property is included in requests initiated by IAM centralized root access. This parameter applies only to the <code>AWS-GR_RESTRICT_ROOT_USER</code> control. If you add the parameter when enabling the control, the <code>AssumeRoot</code> exemption is allowed. If you omit the parameter, the <code>AssumeRoot</code> exception is not permitted. The parameter does not accept <code>False</code> as a value.</p> <p> <i>Example: Enabling the control and allowing <code>AssumeRoot</code> </i> </p> <p> <code>{ \"controlIdentifier\": \"arn:aws:controlcatalog:::control/5kvme4m5d2b4d7if2fs5yg2ui\", \"parameters\": [ { \"key\": \"ExemptAssumeRoot\", \"value\": true } ], \"targetIdentifier\": \"arn:aws:organizations::8633900XXXXX:ou/o-6jmn81636m/ou-qsah-jtiihcla\" }</code> </p> </li> </ul>"
+                "smithy.api#documentation": "<p>Five types of control parameters are supported.</p> <ul> <li> <p> <b>AllowedRegions</b>: List of Amazon Web Services Regions exempted from the control. Each string is expected to be an Amazon Web Services Region code. This parameter is mandatory for the <b>OU Region deny</b> control, <b>CT.MULTISERVICE.PV.1</b>.</p> <p>Example: <code>[\"us-east-1\",\"us-west-2\"]</code> </p> </li> <li> <p> <b>ExemptedActions</b>: List of Amazon Web Services IAM actions exempted from the control. Each string is expected to be an IAM action.</p> <p>Example: <code>[\"logs:DescribeLogGroups\",\"logs:StartQuery\",\"logs:GetQueryResults\"]</code> </p> </li> <li> <p> <b>ExemptedPrincipalArns</b>: List of Amazon Web Services IAM principal ARNs exempted from the control. Each string is expected to be an IAM principal that follows the format <code>arn:partition:service::account:resource</code> </p> <p>Example: <code>[\"arn:aws:iam::*:role/ReadOnly\",\"arn:aws:sts::*:assumed-role/ReadOnly/*\"]</code> </p> </li> <li> <p> <b>ExemptedResourceArns</b>: List of resource ARNs exempted from the control. Each string is expected to be a resource ARN.</p> <p>Example: <code>[\"arn:aws:s3:::my-bucket-name\"]</code> </p> </li> <li> <p> <b>ExemptAssumeRoot</b>: A parameter that lets you choose whether to exempt requests made with <code>AssumeRoot</code> from this control, for this OU. For member accounts, the <code>AssumeRoot</code> property is included in requests initiated by IAM centralized root access. This parameter applies only to the <code>AWS-GR_RESTRICT_ROOT_USER</code> control. If you add the parameter when enabling the control, the <code>AssumeRoot</code> exemption is allowed. If you omit the parameter, the <code>AssumeRoot</code> exception is not permitted. The parameter does not accept <code>False</code> as a value.</p> <p> <i>Example: Enabling the control and allowing <code>AssumeRoot</code> </i> </p> <p> <code>{ \"controlIdentifier\": \"arn:aws:controlcatalog:::control/5kvme4m5d2b4d7if2fs5yg2ui\", \"parameters\": [ { \"key\": \"ExemptAssumeRoot\", \"value\": true } ], \"targetIdentifier\": \"arn:aws:organizations::8633900XXXXX:ou/o-6jmn81636m/ou-qsah-jtiihcla\" }</code> </p> </li> </ul>"
             }
         },
         "com.amazonaws.controlcatalog#ControlParameters": {
             "type": "list",
             "member": {
                 "target": "com.amazonaws.controlcatalog#ControlParameter"
+            }
+        },
+        "com.amazonaws.controlcatalog#ControlRelationType": {
+            "type": "enum",
+            "members": {
+                "COMPLEMENTARY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "COMPLEMENTARY"
+                    }
+                },
+                "ALTERNATIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALTERNATIVE"
+                    }
+                },
+                "MUTUALLY_EXCLUSIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MUTUALLY_EXCLUSIVE"
+                    }
+                }
             }
         },
         "com.amazonaws.controlcatalog#ControlResource": {
@@ -2016,6 +2039,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The common control mapping details when the mapping type relates to a common control.</p>"
                     }
+                },
+                "RelatedControl": {
+                    "target": "com.amazonaws.controlcatalog#RelatedControlMappingDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Returns information about controls that are related to the specified control.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2035,6 +2064,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "COMMON_CONTROL"
+                    }
+                },
+                "RELATED_CONTROL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RELATED_CONTROL"
                     }
                 }
             }
@@ -2251,6 +2286,27 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control is available for deployment. For more information about scope, see <a href=\"https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html\">Global services</a>.</p> <p>If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the <code>RegionConfiguration</code> API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions <code>A</code>,<code>B</code>,and <code>C</code> while the control is available in Regions <code>A</code>, <code>B</code>, C<code>,</code> and <code>D</code>, you'd see a response with <code>DeployableRegions</code> of <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code> for a control with <code>REGIONAL</code> scope, even though you may not intend to deploy the control in Region <code>D</code>, because you do not govern it through your landing zone.</p>"
+            }
+        },
+        "com.amazonaws.controlcatalog#RelatedControlMappingDetails": {
+            "type": "structure",
+            "members": {
+                "ControlArn": {
+                    "target": "com.amazonaws.controlcatalog#ControlArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of a control.</p>"
+                    }
+                },
+                "RelationType": {
+                    "target": "com.amazonaws.controlcatalog#ControlRelationType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Returns an enumerated value that represents the relationship between two or more controls.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A structure that describes a control's relationship status with other controls.</p>"
             }
         },
         "com.amazonaws.controlcatalog#ResourceNotFoundException": {

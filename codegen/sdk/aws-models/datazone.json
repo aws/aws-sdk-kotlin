@@ -211,6 +211,9 @@
                     "target": "com.amazonaws.datazone#ResourceNotFoundException"
                 },
                 {
+                    "target": "com.amazonaws.datazone#ServiceQuotaExceededException"
+                },
+                {
                     "target": "com.amazonaws.datazone#ThrottlingException"
                 },
                 {
@@ -256,6 +259,12 @@
                     "target": "com.amazonaws.datazone#AcceptedAssetScopes",
                     "traits": {
                         "smithy.api#documentation": "<p>The asset scopes of the accept subscription request.</p>"
+                    }
+                },
+                "assetPermissions": {
+                    "target": "com.amazonaws.datazone#AssetPermissions",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The asset permissions of the accept subscription request.</p>"
                     }
                 }
             },
@@ -805,6 +814,20 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The details of the policy grant.</p>"
+            }
+        },
+        "com.amazonaws.datazone#AdditionalAttributes": {
+            "type": "structure",
+            "members": {
+                "formNames": {
+                    "target": "com.amazonaws.datazone#FormNameList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Names of forms on the query entity that can be requested in the response.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Additional details on the queried entity that can be requested in the response.</p>"
             }
         },
         "com.amazonaws.datazone#AggregationAttributeDisplayValue": {
@@ -1638,6 +1661,34 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.datazone#AssetPermission": {
+            "type": "structure",
+            "members": {
+                "assetId": {
+                    "target": "com.amazonaws.datazone#AssetId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The asset ID as part of the asset permissions.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "permissions": {
+                    "target": "com.amazonaws.datazone#Permissions",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The details as part of the asset permissions.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The asset permissions.</p>"
+            }
+        },
+        "com.amazonaws.datazone#AssetPermissions": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#AssetPermission"
+            }
+        },
         "com.amazonaws.datazone#AssetRevision": {
             "type": "structure",
             "members": {
@@ -2153,6 +2204,112 @@
                 }
             }
         },
+        "com.amazonaws.datazone#AttributeEntityType": {
+            "type": "enum",
+            "members": {
+                "ASSET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ASSET"
+                    }
+                },
+                "LISTING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LISTING"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.datazone#AttributeError": {
+            "type": "structure",
+            "members": {
+                "attributeIdentifier": {
+                    "target": "com.amazonaws.datazone#AttributeIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The attribute ID as part of the attribute error.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "code": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The code generated as part of the attribute error.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "message": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The message generated as part of the attribute error.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The attribute error.</p>"
+            }
+        },
+        "com.amazonaws.datazone#AttributeIdentifier": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                }
+            }
+        },
+        "com.amazonaws.datazone#AttributeInput": {
+            "type": "structure",
+            "members": {
+                "attributeIdentifier": {
+                    "target": "com.amazonaws.datazone#AttributeIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the attribute.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "forms": {
+                    "target": "com.amazonaws.datazone#FormInputList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The metadata forms as part of the attribute input.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The attribute input.</p>"
+            }
+        },
+        "com.amazonaws.datazone#Attributes": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#AttributeInput"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 5
+                }
+            }
+        },
+        "com.amazonaws.datazone#AttributesErrors": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#AttributeError"
+            }
+        },
+        "com.amazonaws.datazone#AttributesList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#AttributeIdentifier"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 5
+                }
+            }
+        },
         "com.amazonaws.datazone#AuthType": {
             "type": "enum",
             "members": {
@@ -2460,6 +2617,261 @@
             "traits": {
                 "smithy.api#documentation": "<p>The basic authentication credentials of a connection.</p>",
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.datazone#BatchGetAttributeItems": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#BatchGetAttributeOutput"
+            }
+        },
+        "com.amazonaws.datazone#BatchGetAttributeOutput": {
+            "type": "structure",
+            "members": {
+                "attributeIdentifier": {
+                    "target": "com.amazonaws.datazone#AttributeIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The attribute ID.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "forms": {
+                    "target": "com.amazonaws.datazone#FormOutputList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The metadata forms that are part of the results of the BatchGetAttribute action.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The results of the BatchGetAttribute action.</p>"
+            }
+        },
+        "com.amazonaws.datazone#BatchGetAttributesMetadata": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.datazone#BatchGetAttributesMetadataInput"
+            },
+            "output": {
+                "target": "com.amazonaws.datazone#BatchGetAttributesMetadataOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.datazone#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Gets the attribute metadata.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "GET",
+                    "uri": "/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.datazone#BatchGetAttributesMetadataInput": {
+            "type": "structure",
+            "members": {
+                "domainIdentifier": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The domain ID where you want to get the attribute metadata.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "entityType": {
+                    "target": "com.amazonaws.datazone#AttributeEntityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The entity type for which you want to get attribute metadata.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "entityIdentifier": {
+                    "target": "com.amazonaws.datazone#EntityId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The entity ID for which you want to get attribute metadata.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "entityRevision": {
+                    "target": "com.amazonaws.datazone#Revision",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The entity revision for which you want to get attribute metadata.</p>",
+                        "smithy.api#httpQuery": "entityRevision"
+                    }
+                },
+                "attributeIdentifiers": {
+                    "target": "com.amazonaws.datazone#AttributesList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The attribute identifier.</p>",
+                        "smithy.api#httpQuery": "attributeIdentifier",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.datazone#BatchGetAttributesMetadataOutput": {
+            "type": "structure",
+            "members": {
+                "attributes": {
+                    "target": "com.amazonaws.datazone#BatchGetAttributeItems",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The results of the BatchGetAttributesMetadata action.</p>"
+                    }
+                },
+                "errors": {
+                    "target": "com.amazonaws.datazone#AttributesErrors",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The errors generated when the BatchGetAttributesMetadata action is invoked.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.datazone#BatchPutAttributeItems": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#BatchPutAttributeOutput"
+            }
+        },
+        "com.amazonaws.datazone#BatchPutAttributeOutput": {
+            "type": "structure",
+            "members": {
+                "attributeIdentifier": {
+                    "target": "com.amazonaws.datazone#AttributeIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The attribute ID.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The results of the BatchPutAttribute action.</p>"
+            }
+        },
+        "com.amazonaws.datazone#BatchPutAttributesMetadata": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.datazone#BatchPutAttributesMetadataInput"
+            },
+            "output": {
+                "target": "com.amazonaws.datazone#BatchPutAttributesMetadataOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.datazone#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Writes the attribute metadata.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "PUT",
+                    "uri": "/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.datazone#BatchPutAttributesMetadataInput": {
+            "type": "structure",
+            "members": {
+                "domainIdentifier": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The domain ID where you want to write the attribute metadata.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "entityType": {
+                    "target": "com.amazonaws.datazone#AttributeEntityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The entity type for which you want to write the attribute metadata.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "entityIdentifier": {
+                    "target": "com.amazonaws.datazone#EntityId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The entity ID for which you want to write the attribute metadata.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.datazone#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "attributes": {
+                    "target": "com.amazonaws.datazone#Attributes",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The attributes of the metadata.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.datazone#BatchPutAttributesMetadataOutput": {
+            "type": "structure",
+            "members": {
+                "errors": {
+                    "target": "com.amazonaws.datazone#AttributesErrors",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The errors generated when the BatchPutAttributeMetadata action is invoked.</p>"
+                    }
+                },
+                "attributes": {
+                    "target": "com.amazonaws.datazone#BatchPutAttributeItems",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The results of the BatchPutAttributeMetadata action.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.datazone#BusinessNameGenerationConfiguration": {
@@ -2856,6 +3268,53 @@
                 "smithy.api#documentation": "<p>The configurable action of a Amazon DataZone environment.</p>"
             }
         },
+        "com.amazonaws.datazone#Configuration": {
+            "type": "structure",
+            "members": {
+                "classification": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The classification of the connection configuration.</p>",
+                        "smithy.api#length": {
+                            "max": 64
+                        },
+                        "smithy.api#pattern": "^[\\w][\\w\\.\\-\\_]*$"
+                    }
+                },
+                "properties": {
+                    "target": "com.amazonaws.datazone#PropertyMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The properties of the connection configuration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration of a connection.</p>"
+            }
+        },
+        "com.amazonaws.datazone#ConfigurationStatus": {
+            "type": "enum",
+            "members": {
+                "COMPLETED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "COMPLETED"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FAILED"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.datazone#Configurations": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#Configuration"
+            }
+        },
         "com.amazonaws.datazone#ConflictException": {
             "type": "structure",
             "members": {
@@ -2999,6 +3458,24 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The MLflow properties of a connection.</p>"
                     }
+                },
+                "workflowsMwaaProperties": {
+                    "target": "com.amazonaws.datazone#WorkflowsMwaaPropertiesInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon MWAA properties of a connection.</p>"
+                    }
+                },
+                "workflowsServerlessProperties": {
+                    "target": "com.amazonaws.datazone#WorkflowsServerlessPropertiesInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The MWAA serverless properties of a connection.</p>"
+                    }
+                },
+                "lakehouseProperties": {
+                    "target": "com.amazonaws.datazone#LakehousePropertiesInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The lakehouse properties of a connection.</p>"
+                    }
                 }
             },
             "traits": {
@@ -3067,6 +3544,24 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The MLflow properties of a connection.</p>"
                     }
+                },
+                "workflowsMwaaProperties": {
+                    "target": "com.amazonaws.datazone#WorkflowsMwaaPropertiesOutput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon MWAA properties of a connection.</p>"
+                    }
+                },
+                "workflowsServerlessProperties": {
+                    "target": "com.amazonaws.datazone#WorkflowsServerlessPropertiesOutput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The MWAA serverless properties of a connection.</p>"
+                    }
+                },
+                "lakehouseProperties": {
+                    "target": "com.amazonaws.datazone#LakehousePropertiesOutput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The lakehouse properties of a connection.</p>"
+                    }
                 }
             },
             "traits": {
@@ -3122,6 +3617,12 @@
                     "target": "com.amazonaws.datazone#MlflowPropertiesPatch",
                     "traits": {
                         "smithy.api#documentation": "<p>The MLflow properties of a connection.</p>"
+                    }
+                },
+                "lakehouseProperties": {
+                    "target": "com.amazonaws.datazone#LakehousePropertiesPatch",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The lakehouse properties of a connection properties patch.</p>"
                     }
                 }
             },
@@ -3208,6 +3709,12 @@
         "com.amazonaws.datazone#ConnectionSummary": {
             "type": "structure",
             "members": {
+                "configurations": {
+                    "target": "com.amazonaws.datazone#Configurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configurations of a connection summary.</p>"
+                    }
+                },
                 "connectionId": {
                     "target": "com.amazonaws.datazone#ConnectionId",
                     "traits": {
@@ -4497,6 +5004,12 @@
                         "smithy.api#idempotencyToken": {}
                     }
                 },
+                "configurations": {
+                    "target": "com.amazonaws.datazone#Configurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configurations of the connection.</p>"
+                    }
+                },
                 "description": {
                     "target": "com.amazonaws.datazone#Description",
                     "traits": {
@@ -4558,6 +5071,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the connection.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "configurations": {
+                    "target": "com.amazonaws.datazone#Configurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configurations of the connection.</p>"
                     }
                 },
                 "description": {
@@ -5381,8 +5900,7 @@
                 "domainExecutionRole": {
                     "target": "com.amazonaws.datazone#RoleArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The domain execution role that is created when an Amazon DataZone domain is created. The domain execution role is created in the Amazon Web Services account that houses the Amazon DataZone domain.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The domain execution role that is created when an Amazon DataZone domain is created. The domain execution role is created in the Amazon Web Services account that houses the Amazon DataZone domain.</p>"
                     }
                 },
                 "kmsKeyIdentifier": {
@@ -6074,6 +6592,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The configuration ID of the environment.</p>"
                     }
+                },
+                "environmentConfigurationName": {
+                    "target": "com.amazonaws.datazone#EnvironmentConfigurationName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration name of the environment.</p>"
+                    }
                 }
             },
             "traits": {
@@ -6222,6 +6746,12 @@
                     "target": "com.amazonaws.datazone#EnvironmentConfigurationId",
                     "traits": {
                         "smithy.api#documentation": "<p>The configuration ID of the environment.</p>"
+                    }
+                },
+                "environmentConfigurationName": {
+                    "target": "com.amazonaws.datazone#EnvironmentConfigurationName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration name of the environment.</p>"
                     }
                 }
             },
@@ -6963,8 +7493,13 @@
                 "groupIdentifier": {
                     "target": "com.amazonaws.datazone#GroupIdentifier",
                     "traits": {
-                        "smithy.api#documentation": "<p>The identifier of the group for which the group profile is created.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The identifier of the group for which the group profile is created.</p>"
+                    }
+                },
+                "rolePrincipalArn": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the IAM role that will be associated with the group profile. This role defines the permissions that group members will assume when accessing Amazon DataZone resources.</p>"
                     }
                 },
                 "clientToken": {
@@ -7004,6 +7539,18 @@
                     "target": "com.amazonaws.datazone#GroupProfileName",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the group for which group profile is created.</p>"
+                    }
+                },
+                "rolePrincipalArn": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the IAM role principal. This role is associated with the group profile.</p>"
+                    }
+                },
+                "rolePrincipalId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the IAM role principal. This principal is associated with the group profile.</p>"
                     }
                 }
             },
@@ -7214,6 +7761,15 @@
                         "smithy.api#documentation": "<p>The description of the Amazon DataZone project.</p>"
                     }
                 },
+                "resourceTags": {
+                    "target": "com.amazonaws.datazone#Tags",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource tags of the project.</p>",
+                        "smithy.api#length": {
+                            "max": 25
+                        }
+                    }
+                },
                 "glossaryTerms": {
                     "target": "com.amazonaws.datazone#GlossaryTerms",
                     "traits": {
@@ -7236,6 +7792,24 @@
                     "target": "com.amazonaws.datazone#EnvironmentConfigurationUserParametersList",
                     "traits": {
                         "smithy.api#documentation": "<p>The user parameters of the project.</p>"
+                    }
+                },
+                "projectCategory": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The category of the project. Set to 'ADMIN' designates this as an administrative project for the Amazon DataZone domain.</p>"
+                    }
+                },
+                "projectExecutionRole": {
+                    "target": "com.amazonaws.datazone#RoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The default project IAM role that is used to access project resources and run computes such as Glue and Sagemaker.</p>"
+                    }
+                },
+                "membershipAssignments": {
+                    "target": "com.amazonaws.datazone#ProjectMembershipAssignments",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The members to be assigned to the project.</p>"
                     }
                 }
             },
@@ -7382,6 +7956,12 @@
                         "smithy.api#timestampFormat": "date-time"
                     }
                 },
+                "resourceTags": {
+                    "target": "com.amazonaws.datazone#ResourceTags",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource tags of the project.</p>"
+                    }
+                },
                 "glossaryTerms": {
                     "target": "com.amazonaws.datazone#GlossaryTerms",
                     "traits": {
@@ -7410,6 +7990,12 @@
                     "target": "com.amazonaws.datazone#EnvironmentDeploymentDetails",
                     "traits": {
                         "smithy.api#documentation": "<p>The environment deployment details.</p>"
+                    }
+                },
+                "projectCategory": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The category of the project.</p>"
                     }
                 }
             },
@@ -7501,6 +8087,24 @@
                         "smithy.api#documentation": "<p>Project profile status.</p>"
                     }
                 },
+                "projectResourceTags": {
+                    "target": "com.amazonaws.datazone#ProjectResourceTagParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource tags of the project profile.</p>"
+                    }
+                },
+                "allowCustomProjectResourceTags": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether custom project resource tags are supported.</p>"
+                    }
+                },
+                "projectResourceTagsDescription": {
+                    "target": "com.amazonaws.datazone#Description",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
+                    }
+                },
                 "environmentConfigurations": {
                     "target": "com.amazonaws.datazone#EnvironmentConfigurationsList",
                     "traits": {
@@ -7552,6 +8156,24 @@
                     "target": "com.amazonaws.datazone#Status",
                     "traits": {
                         "smithy.api#documentation": "<p>Project profile status.</p>"
+                    }
+                },
+                "projectResourceTags": {
+                    "target": "com.amazonaws.datazone#ProjectResourceTagParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource tags of the project profile.</p>"
+                    }
+                },
+                "allowCustomProjectResourceTags": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether custom project resource tags are supported.</p>"
+                    }
+                },
+                "projectResourceTagsDescription": {
+                    "target": "com.amazonaws.datazone#Description",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
                     }
                 },
                 "environmentConfigurations": {
@@ -7910,6 +8532,12 @@
                         "smithy.api#required": {}
                     }
                 },
+                "environmentId": {
+                    "target": "com.amazonaws.datazone#EnvironmentId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The environment ID for which subscription grant is created.</p>"
+                    }
+                },
                 "subscriptionTargetId": {
                     "target": "com.amazonaws.datazone#SubscriptionTargetId",
                     "traits": {
@@ -7973,6 +8601,9 @@
                     "target": "com.amazonaws.datazone#ResourceNotFoundException"
                 },
                 {
+                    "target": "com.amazonaws.datazone#ServiceQuotaExceededException"
+                },
+                {
                     "target": "com.amazonaws.datazone#ThrottlingException"
                 },
                 {
@@ -8031,6 +8662,18 @@
                     "target": "com.amazonaws.datazone#MetadataFormInputs",
                     "traits": {
                         "smithy.api#documentation": "<p>The metadata form included in the subscription request.</p>"
+                    }
+                },
+                "assetPermissions": {
+                    "target": "com.amazonaws.datazone#AssetPermissions",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The asset permissions of the subscription request.</p>"
+                    }
+                },
+                "assetScopes": {
+                    "target": "com.amazonaws.datazone#AcceptedAssetScopes",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The asset scopes of the subscription request.</p>"
                     }
                 }
             },
@@ -8257,6 +8900,12 @@
                         "smithy.api#documentation": "<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
                         "smithy.api#idempotencyToken": {}
                     }
+                },
+                "subscriptionGrantCreationMode": {
+                    "target": "com.amazonaws.datazone#SubscriptionGrantCreationMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Determines the subscription grant creation mode for this target, defining if grants are auto-created upon subscription approval or managed manually. </p>"
+                    }
                 }
             },
             "traits": {
@@ -8367,6 +9016,12 @@
                         "smithy.api#documentation": "<p>The provider of the subscription target.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "subscriptionGrantCreationMode": {
+                    "target": "com.amazonaws.datazone#SubscriptionGrantCreationMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Determines the subscription grant creation mode for this target, defining if grants are auto-created upon subscription approval or managed manually. </p>"
+                    }
                 }
             },
             "traits": {
@@ -8432,6 +9087,16 @@
                         "smithy.api#documentation": "<p>The user type of the user for which the user profile is created.</p>"
                     }
                 },
+                "sessionName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The session name for IAM role sessions.</p>",
+                        "smithy.api#length": {
+                            "min": 2,
+                            "max": 64
+                        }
+                    }
+                },
                 "clientToken": {
                     "target": "smithy.api#String",
                     "traits": {
@@ -8472,7 +9137,10 @@
                     }
                 },
                 "details": {
-                    "target": "com.amazonaws.datazone#UserProfileDetails"
+                    "target": "com.amazonaws.datazone#UserProfileDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The user profile details.</p>"
+                    }
                 }
             },
             "traits": {
@@ -9866,6 +10534,12 @@
                     "target": "com.amazonaws.datazone#AssociateGovernedTerms"
                 },
                 {
+                    "target": "com.amazonaws.datazone#BatchGetAttributesMetadata"
+                },
+                {
+                    "target": "com.amazonaws.datazone#BatchPutAttributesMetadata"
+                },
+                {
                     "target": "com.amazonaws.datazone#CancelSubscription"
                 },
                 {
@@ -9926,6 +10600,9 @@
                     "target": "com.amazonaws.datazone#DeleteConnection"
                 },
                 {
+                    "target": "com.amazonaws.datazone#DeleteDataExportConfiguration"
+                },
+                {
                     "target": "com.amazonaws.datazone#DeleteEnvironment"
                 },
                 {
@@ -9972,6 +10649,9 @@
                 },
                 {
                     "target": "com.amazonaws.datazone#GetConnection"
+                },
+                {
+                    "target": "com.amazonaws.datazone#GetDataExportConfiguration"
                 },
                 {
                     "target": "com.amazonaws.datazone#GetEnvironment"
@@ -10112,6 +10792,12 @@
                     "target": "com.amazonaws.datazone#PostTimeSeriesDataPoints"
                 },
                 {
+                    "target": "com.amazonaws.datazone#PutDataExportConfiguration"
+                },
+                {
+                    "target": "com.amazonaws.datazone#QueryGraph"
+                },
+                {
                     "target": "com.amazonaws.datazone#RejectPredictions"
                 },
                 {
@@ -10176,6 +10862,9 @@
                 },
                 {
                     "target": "com.amazonaws.datazone#UpdateProjectProfile"
+                },
+                {
+                    "target": "com.amazonaws.datazone#UpdateRootDomainUnitOwner"
                 },
                 {
                     "target": "com.amazonaws.datazone#UpdateSubscriptionGrantStatus"
@@ -11027,6 +11716,67 @@
                     }
                 }
             },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.datazone#DeleteDataExportConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.datazone#DeleteDataExportConfigurationInput"
+            },
+            "output": {
+                "target": "com.amazonaws.datazone#DeleteDataExportConfigurationOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.datazone#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes data export configuration for a domain.</p> <p>This operation does not delete the S3 table created by the PutDataExportConfiguration operation.</p> <p>To temporarily disable export without deleting the configuration, use the PutDataExportConfiguration operation with the <code>--no-enable-export</code> flag instead. This allows you to re-enable export for the same domain using the <code>--enable-export</code> flag without deleting S3 table.</p>",
+                "smithy.api#http": {
+                    "code": 204,
+                    "method": "DELETE",
+                    "uri": "/v2/domains/{domainIdentifier}/data-export-configuration"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.datazone#DeleteDataExportConfigurationInput": {
+            "type": "structure",
+            "members": {
+                "domainIdentifier": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The domain ID for which you want to delete the data export configuration.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.datazone#DeleteDataExportConfigurationOutput": {
+            "type": "structure",
+            "members": {},
             "traits": {
                 "smithy.api#output": {}
             }
@@ -12468,6 +13218,12 @@
                         "smithy.api#required": {}
                     }
                 },
+                "environmentId": {
+                    "target": "com.amazonaws.datazone#EnvironmentId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the environment in which the subscription grant is deleted.</p>"
+                    }
+                },
                 "subscriptionTargetId": {
                     "target": "com.amazonaws.datazone#SubscriptionTargetId",
                     "traits": {
@@ -13653,6 +14409,26 @@
                 }
             }
         },
+        "com.amazonaws.datazone#EncryptionConfiguration": {
+            "type": "structure",
+            "members": {
+                "kmsKeyArn": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the KMS key to use for encryption. This field is required only when <code>sseAlgorithm</code> is set to <code>aws:kms</code>.</p>"
+                    }
+                },
+                "sseAlgorithm": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The server-side encryption algorithm to use. Valid values are AES256 for S3-managed encryption keys, or aws:kms for Amazon Web Services KMS-managed encryption keys. If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The encryption configuration details.</p>"
+            }
+        },
         "com.amazonaws.datazone#EntityId": {
             "type": "string",
             "traits": {
@@ -13669,6 +14445,35 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.datazone#OwnerPropertiesOutput"
+            }
+        },
+        "com.amazonaws.datazone#EntityPattern": {
+            "type": "structure",
+            "members": {
+                "entityType": {
+                    "target": "com.amazonaws.datazone#GraphEntityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of entity to be matched during the graph query.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "identifier": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the root entity to start traversal from during the graph query.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 2086
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "filters": {
+                    "target": "com.amazonaws.datazone#FilterClause"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The pattern describing the entities to be matched during the graph query.</p>"
             }
         },
         "com.amazonaws.datazone#EntityType": {
@@ -14568,6 +15373,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The configuration ID with which the environment is created.</p>"
                     }
+                },
+                "environmentConfigurationName": {
+                    "target": "com.amazonaws.datazone#EnvironmentConfigurationName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration name with which the environment is created.</p>"
+                    }
                 }
             },
             "traits": {
@@ -14666,12 +15477,25 @@
                 "value": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>A search filter value in Amazon DataZone.</p>",
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": "",
+                        "smithy.api#documentation": "<p>A search filter string value in Amazon DataZone.</p>",
                         "smithy.api#length": {
-                            "min": 1,
                             "max": 128
-                        },
-                        "smithy.api#required": {}
+                        }
+                    }
+                },
+                "intValue": {
+                    "target": "smithy.api#Long",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A search filter integer value in Amazon DataZone.</p>"
+                    }
+                },
+                "operator": {
+                    "target": "com.amazonaws.datazone#FilterOperator",
+                    "traits": {
+                        "smithy.api#default": "EQ",
+                        "smithy.api#documentation": "<p>Specifies the search filter operator.</p>"
                     }
                 }
             },
@@ -14787,6 +15611,47 @@
                 },
                 "smithy.api#pattern": "^[\\w -]+$",
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.datazone#FilterOperator": {
+            "type": "enum",
+            "members": {
+                "EQ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "EQ"
+                    }
+                },
+                "LE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LE"
+                    }
+                },
+                "LT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LT"
+                    }
+                },
+                "GE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GE"
+                    }
+                },
+                "GT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GT"
+                    }
+                },
+                "TEXT_SEARCH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TEXT_SEARCH"
+                    }
+                }
             }
         },
         "com.amazonaws.datazone#FilterStatus": {
@@ -14926,6 +15791,18 @@
                     "max": 128
                 },
                 "smithy.api#pattern": "^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"
+            }
+        },
+        "com.amazonaws.datazone#FormNameList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#FormName"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
             }
         },
         "com.amazonaws.datazone#FormOutput": {
@@ -15890,6 +16767,12 @@
                         "smithy.api#documentation": "<p>Connection credentials.</p>"
                     }
                 },
+                "configurations": {
+                    "target": "com.amazonaws.datazone#Configurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configurations of the connection.</p>"
+                    }
+                },
                 "connectionId": {
                     "target": "com.amazonaws.datazone#ConnectionId",
                     "traits": {
@@ -15966,6 +16849,100 @@
                     "target": "com.amazonaws.datazone#ConnectionScope",
                     "traits": {
                         "smithy.api#documentation": "<p>The scope of the connection.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.datazone#GetDataExportConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.datazone#GetDataExportConfigurationInput"
+            },
+            "output": {
+                "target": "com.amazonaws.datazone#GetDataExportConfigurationOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.datazone#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Gets data export configuration details.</p>",
+                "smithy.api#http": {
+                    "method": "GET",
+                    "uri": "/v2/domains/{domainIdentifier}/data-export-configuration"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.datazone#GetDataExportConfigurationInput": {
+            "type": "structure",
+            "members": {
+                "domainIdentifier": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the domain where you want to get the data export configuration details.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.datazone#GetDataExportConfigurationOutput": {
+            "type": "structure",
+            "members": {
+                "isExportEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether the export is enabled.</p>"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.datazone#ConfigurationStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the data export configuration.</p>"
+                    }
+                },
+                "encryptionConfiguration": {
+                    "target": "com.amazonaws.datazone#EncryptionConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The encryption configuration as part of the data export configuration details.</p>"
+                    }
+                },
+                "s3TableBucketArn": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 table bucket ARN as part of the data export configuration details.</p>"
+                    }
+                },
+                "createdAt": {
+                    "target": "com.amazonaws.datazone#CreatedAt",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp at which the data export configuration report was created.</p>"
+                    }
+                },
+                "updatedAt": {
+                    "target": "com.amazonaws.datazone#UpdatedAt",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp at which the data export configuration report was updated.</p>"
                     }
                 }
             },
@@ -17488,6 +18465,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The configuration ID that is used to create the environment.</p>"
                     }
+                },
+                "environmentConfigurationName": {
+                    "target": "com.amazonaws.datazone#EnvironmentConfigurationName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration name that is used to create the environment.</p>"
+                    }
                 }
             },
             "traits": {
@@ -18162,6 +19145,18 @@
                     "target": "com.amazonaws.datazone#GroupProfileName",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the group for which the specified group profile exists.</p>"
+                    }
+                },
+                "rolePrincipalArn": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the IAM role principal. This role is associated with the group profile.</p>"
+                    }
+                },
+                "rolePrincipalId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the IAM role principal. This principal is associated with the group profile.</p>"
                     }
                 }
             },
@@ -18862,6 +19857,13 @@
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
                     }
+                },
+                "type": {
+                    "target": "com.amazonaws.datazone#MetadataGenerationRunType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the metadata generation run.</p>",
+                        "smithy.api#httpQuery": "type"
+                    }
                 }
             },
             "traits": {
@@ -18900,7 +19902,17 @@
                 "type": {
                     "target": "com.amazonaws.datazone#MetadataGenerationRunType",
                     "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "This field is going to be deprecated, please use the 'types' field to provide the MetadataGenerationRun types",
+                            "since": "2025-11-21"
+                        },
                         "smithy.api#documentation": "<p>The type of metadata generation run.</p>"
+                    }
+                },
+                "types": {
+                    "target": "com.amazonaws.datazone#MetadataGenerationRunTypes",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The types of the metadata generation run.</p>"
                     }
                 },
                 "createdAt": {
@@ -18920,6 +19932,13 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the project that owns the assets for which you're running metadata generation.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "typeStats": {
+                    "target": "com.amazonaws.datazone#MetadataGenerationRunTypeStats",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type stats included in the metadata generation run output details.</p>",
+                        "smithy.api#notProperty": {}
                     }
                 }
             },
@@ -19049,6 +20068,12 @@
                         "smithy.api#timestampFormat": "date-time"
                     }
                 },
+                "resourceTags": {
+                    "target": "com.amazonaws.datazone#ResourceTags",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource tags of the project.</p>"
+                    }
+                },
                 "glossaryTerms": {
                     "target": "com.amazonaws.datazone#GlossaryTerms",
                     "traits": {
@@ -19077,6 +20102,12 @@
                     "target": "com.amazonaws.datazone#EnvironmentDeploymentDetails",
                     "traits": {
                         "smithy.api#documentation": "<p>The environment deployment status of a project.</p>"
+                    }
+                },
+                "projectCategory": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The category of the project.</p>"
                     }
                 }
             },
@@ -19177,6 +20208,24 @@
                     "target": "com.amazonaws.datazone#Status",
                     "traits": {
                         "smithy.api#documentation": "<p>The status of the project profile.</p>"
+                    }
+                },
+                "projectResourceTags": {
+                    "target": "com.amazonaws.datazone#ProjectResourceTagParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource tags of the project profile.</p>"
+                    }
+                },
+                "allowCustomProjectResourceTags": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether custom project resource tags are supported.</p>"
+                    }
+                },
+                "projectResourceTagsDescription": {
+                    "target": "com.amazonaws.datazone#Description",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
                     }
                 },
                 "environmentConfigurations": {
@@ -19523,6 +20572,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The timestamp of when the subscription grant was upated.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "environmentId": {
+                    "target": "com.amazonaws.datazone#EnvironmentId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The environment ID of the subscription grant.</p>"
                     }
                 },
                 "subscriptionTargetId": {
@@ -20011,6 +21066,12 @@
                         "smithy.api#documentation": "<p>The provider of the subscription target.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "subscriptionGrantCreationMode": {
+                    "target": "com.amazonaws.datazone#SubscriptionGrantCreationMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Determines the subscription grant creation mode for this target, defining if grants are auto-created upon subscription approval or managed manually. </p>"
+                    }
                 }
             },
             "traits": {
@@ -20198,6 +21259,17 @@
                         "smithy.api#documentation": "<p>The type of the user profile.</p>",
                         "smithy.api#httpQuery": "type"
                     }
+                },
+                "sessionName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The session name for IAM role sessions.</p>",
+                        "smithy.api#httpQuery": "sessionName",
+                        "smithy.api#length": {
+                            "min": 2,
+                            "max": 64
+                        }
+                    }
                 }
             },
             "traits": {
@@ -20232,7 +21304,10 @@
                     }
                 },
                 "details": {
-                    "target": "com.amazonaws.datazone#UserProfileDetails"
+                    "target": "com.amazonaws.datazone#UserProfileDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The user profile details.</p>"
+                    }
                 }
             },
             "traits": {
@@ -20517,10 +21592,36 @@
                 "target": "com.amazonaws.datazone#DeleteGlossaryTerm"
             }
         },
+        "com.amazonaws.datazone#GlossaryTermEnforcementDetail": {
+            "type": "structure",
+            "members": {
+                "requiredGlossaryTermIds": {
+                    "target": "com.amazonaws.datazone#GlossaryTermIdentifiers",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the required glossary term.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The enforcement details of a glossary term.</p>"
+            }
+        },
         "com.amazonaws.datazone#GlossaryTermId": {
             "type": "string",
             "traits": {
                 "smithy.api#pattern": "^[a-zA-Z0-9_-]{1,36}$"
+            }
+        },
+        "com.amazonaws.datazone#GlossaryTermIdentifiers": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#GlossaryTermId"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 5
+                }
             }
         },
         "com.amazonaws.datazone#GlossaryTermItem": {
@@ -20912,6 +22013,26 @@
                 "smithy.api#documentation": "<p>The Amazon Web Services Glue connecton input.</p>"
             }
         },
+        "com.amazonaws.datazone#GlueConnectionName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 64
+                }
+            }
+        },
+        "com.amazonaws.datazone#GlueConnectionNames": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#GlueConnectionName"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 16
+                }
+            }
+        },
         "com.amazonaws.datazone#GlueConnectionPatch": {
             "type": "structure",
             "members": {
@@ -21299,6 +22420,17 @@
                 "smithy.api#documentation": "<p>The details of a listing for which a subscription is to be granted.</p>"
             }
         },
+        "com.amazonaws.datazone#GraphEntityType": {
+            "type": "enum",
+            "members": {
+                "LINEAGE_NODE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LINEAGE_NODE"
+                    }
+                }
+            }
+        },
         "com.amazonaws.datazone#GreaterThanExpression": {
             "type": "structure",
             "members": {
@@ -21444,6 +22576,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The group name of a group profile.</p>"
                     }
+                },
+                "rolePrincipalArn": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the IAM role principal. This role is associated with the group profile.</p>"
+                    }
+                },
+                "rolePrincipalId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the IAM role principal. This principal is associated with the group profile.</p>"
+                    }
                 }
             },
             "traits": {
@@ -21473,6 +22617,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "DATAZONE_SSO_GROUP"
+                    }
+                },
+                "IAM_ROLE_SESSION_GROUP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IAM_ROLE_SESSION_GROUP"
                     }
                 }
             }
@@ -21539,6 +22689,16 @@
                 "smithy.api#documentation": "<p>The hyper pod properties of a Amazon Web Services Glue properties patch.</p>"
             }
         },
+        "com.amazonaws.datazone#IamPrincipalArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^arn:aws[^:]*:iam::\\d{12}:(role|user)(/[\\w+=,.@-]*)*/[\\w+=,.@-]+$"
+            }
+        },
         "com.amazonaws.datazone#IamPropertiesInput": {
             "type": "structure",
             "members": {
@@ -21599,18 +22759,30 @@
                 "arn": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ARN of an IAM user profile in Amazon DataZone.</p>"
+                        "smithy.api#documentation": "<p>The ARN of the IAM user.</p>"
                     }
                 },
                 "principalId": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>Principal ID of the IAM user.</p>"
+                        "smithy.api#documentation": "<p>The principal ID as part of the IAM user profile details.</p>"
+                    }
+                },
+                "sessionName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The session name for IAM role sessions.</p>"
+                    }
+                },
+                "groupProfileId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the group profile associated with the IAM user profile. This links the user to a specific group profile within the Amazon DataZone domain.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The details of an IAM user profile in Amazon DataZone.</p>"
+                "smithy.api#documentation": "<p>The details of the IAM user profile.</p>"
             }
         },
         "com.amazonaws.datazone#Import": {
@@ -21977,6 +23149,48 @@
                 "smithy.api#documentation": "<p>The Lake Formation configuration of the Data Lake blueprint.</p>"
             }
         },
+        "com.amazonaws.datazone#LakehousePropertiesInput": {
+            "type": "structure",
+            "members": {
+                "glueLineageSyncEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to enable Glue lineage sync for tables managed by Glue crawlers.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The lakehouse properties of a connection.</p>"
+            }
+        },
+        "com.amazonaws.datazone#LakehousePropertiesOutput": {
+            "type": "structure",
+            "members": {
+                "glueLineageSyncEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether Glue lineage sync is enabled for tables managed by Glue crawlers.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The lakehouse properties of a connection.</p>"
+            }
+        },
+        "com.amazonaws.datazone#LakehousePropertiesPatch": {
+            "type": "structure",
+            "members": {
+                "glueLineageSyncEnabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to enable Glue lineage sync for tables managed by Glue crawlers.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The lakehouse properties of a connection properties patch.</p>"
+            }
+        },
         "com.amazonaws.datazone#LambdaExecutionRoleArn": {
             "type": "string",
             "traits": {
@@ -22232,6 +23446,113 @@
                     "min": 1,
                     "max": 2086
                 }
+            }
+        },
+        "com.amazonaws.datazone#LineageNodeIds": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#LineageNodeId"
+            }
+        },
+        "com.amazonaws.datazone#LineageNodeItem": {
+            "type": "structure",
+            "members": {
+                "domainId": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the domain of the data lineage node.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the data lineage node.</p>"
+                    }
+                },
+                "description": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the data lineage node.</p>"
+                    }
+                },
+                "createdAt": {
+                    "target": "com.amazonaws.datazone#CreatedAt",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp at which the data lineage node was created.</p>"
+                    }
+                },
+                "createdBy": {
+                    "target": "com.amazonaws.datazone#CreatedBy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The user who created the data lineage node.</p>"
+                    }
+                },
+                "updatedAt": {
+                    "target": "com.amazonaws.datazone#UpdatedAt",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp at which the data lineage node was updated.</p>"
+                    }
+                },
+                "updatedBy": {
+                    "target": "com.amazonaws.datazone#UpdatedBy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The user who updated the data lineage node.</p>"
+                    }
+                },
+                "id": {
+                    "target": "com.amazonaws.datazone#LineageNodeId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the data lineage node.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "typeName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the type of the data lineage node.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "typeRevision": {
+                    "target": "com.amazonaws.datazone#Revision",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the revision of the data lineage node.</p>"
+                    }
+                },
+                "sourceIdentifier": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The alternate ID of the data lineage node.</p>"
+                    }
+                },
+                "eventTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The event timestamp of the data lineage node.</p>"
+                    }
+                },
+                "formsOutput": {
+                    "target": "com.amazonaws.datazone#FormOutputList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The forms included in the additional attributes of a data lineage node.</p>"
+                    }
+                },
+                "upstreamLineageNodeIds": {
+                    "target": "com.amazonaws.datazone#LineageNodeIds",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the upstream data lineage nodes.</p>"
+                    }
+                },
+                "downstreamLineageNodeIds": {
+                    "target": "com.amazonaws.datazone#LineageNodeIds",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the downstream data lineage nodes.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The summary and output forms of a LineageNode</p>"
             }
         },
         "com.amazonaws.datazone#LineageNodeReference": {
@@ -24810,6 +26131,13 @@
                         "smithy.api#documentation": "<p>The maximum number of metadata generation runs to return in a single call to ListMetadataGenerationRuns. When the number of metadata generation runs to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListMetadataGenerationRuns to list the next set of revisions.</p>",
                         "smithy.api#httpQuery": "maxResults"
                     }
+                },
+                "targetIdentifier": {
+                    "target": "com.amazonaws.datazone#EntityId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The target ID for which you want to list metadata generation runs.</p>",
+                        "smithy.api#httpQuery": "targetIdentifier"
+                    }
                 }
             },
             "traits": {
@@ -25369,6 +26697,13 @@
                         "smithy.api#httpQuery": "name"
                     }
                 },
+                "projectCategory": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A parameter to filter projects by their category.</p>",
+                        "smithy.api#httpQuery": "projectCategory"
+                    }
+                },
                 "nextToken": {
                     "target": "com.amazonaws.datazone#PaginationToken",
                     "traits": {
@@ -25649,9 +26984,34 @@
                         "smithy.api#httpQuery": "owningProjectId"
                     }
                 },
+                "owningIamPrincipalArn": {
+                    "target": "com.amazonaws.datazone#IamPrincipalArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the owning IAM principal.</p>",
+                        "smithy.api#httpQuery": "owningIamPrincipalArn"
+                    }
+                },
+                "owningUserId": {
+                    "target": "com.amazonaws.datazone#UserProfileId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the owning user.</p>",
+                        "smithy.api#httpQuery": "owningUserId"
+                    }
+                },
+                "owningGroupId": {
+                    "target": "com.amazonaws.datazone#GroupProfileId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the owning group.</p>",
+                        "smithy.api#httpQuery": "owningGroupId"
+                    }
+                },
                 "sortBy": {
                     "target": "com.amazonaws.datazone#SortKey",
                     "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "Results are always sorted by updatedAt",
+                            "since": "Jan 31 2026"
+                        },
                         "smithy.api#documentation": "<p>Specifies the way of sorting the results of this action.</p>",
                         "smithy.api#httpQuery": "sortBy"
                     }
@@ -25776,6 +27136,13 @@
                         "smithy.api#httpQuery": "owningProjectId"
                     }
                 },
+                "owningIamPrincipalArn": {
+                    "target": "com.amazonaws.datazone#IamPrincipalArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the owning IAM principal.</p>",
+                        "smithy.api#httpQuery": "owningIamPrincipalArn"
+                    }
+                },
                 "approverProjectId": {
                     "target": "com.amazonaws.datazone#ProjectId",
                     "traits": {
@@ -25783,9 +27150,27 @@
                         "smithy.api#httpQuery": "approverProjectId"
                     }
                 },
+                "owningUserId": {
+                    "target": "com.amazonaws.datazone#UserProfileId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the owning user.</p>",
+                        "smithy.api#httpQuery": "owningUserId"
+                    }
+                },
+                "owningGroupId": {
+                    "target": "com.amazonaws.datazone#GroupProfileId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the owning group.</p>",
+                        "smithy.api#httpQuery": "owningGroupId"
+                    }
+                },
                 "sortBy": {
                     "target": "com.amazonaws.datazone#SortKey",
                     "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "Results are always sorted by updatedAt",
+                            "since": "Jan 31 2026"
+                        },
                         "smithy.api#documentation": "<p>Specifies the way to sort the results of this action.</p>",
                         "smithy.api#httpQuery": "sortBy"
                     }
@@ -26031,6 +27416,27 @@
                         "smithy.api#httpQuery": "owningProjectId"
                     }
                 },
+                "owningIamPrincipalArn": {
+                    "target": "com.amazonaws.datazone#IamPrincipalArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the owning IAM principal.</p>",
+                        "smithy.api#httpQuery": "owningIamPrincipalArn"
+                    }
+                },
+                "owningUserId": {
+                    "target": "com.amazonaws.datazone#UserProfileId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the owning user.</p>",
+                        "smithy.api#httpQuery": "owningUserId"
+                    }
+                },
+                "owningGroupId": {
+                    "target": "com.amazonaws.datazone#GroupProfileId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the owning group.</p>",
+                        "smithy.api#httpQuery": "owningGroupId"
+                    }
+                },
                 "approverProjectId": {
                     "target": "com.amazonaws.datazone#ProjectId",
                     "traits": {
@@ -26041,6 +27447,10 @@
                 "sortBy": {
                     "target": "com.amazonaws.datazone#SortKey",
                     "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "Results are always sorted by updatedAt",
+                            "since": "Jan 31 2026"
+                        },
                         "smithy.api#documentation": "<p>Specifies the way in which the results of this action are to be sorted.</p>",
                         "smithy.api#httpQuery": "sortBy"
                     }
@@ -26619,6 +28029,38 @@
                 }
             }
         },
+        "com.amazonaws.datazone#MatchClause": {
+            "type": "union",
+            "members": {
+                "relationPattern": {
+                    "target": "com.amazonaws.datazone#RelationPattern",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The pattern describing the query's relational traversal.</p>"
+                    }
+                },
+                "entityPattern": {
+                    "target": "com.amazonaws.datazone#EntityPattern",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The pattern describing the entities for the query to traverse.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A clause to match a query pattern</p>"
+            }
+        },
+        "com.amazonaws.datazone#MatchClauses": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#MatchClause"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 2,
+                    "max": 2
+                }
+            }
+        },
         "com.amazonaws.datazone#MatchCriteria": {
             "type": "list",
             "member": {
@@ -26846,6 +28288,9 @@
                 "type": {
                     "target": "com.amazonaws.datazone#MetadataGenerationRunType"
                 },
+                "types": {
+                    "target": "com.amazonaws.datazone#MetadataGenerationRunTypes"
+                },
                 "target": {
                     "target": "com.amazonaws.datazone#MetadataGenerationRunTarget"
                 },
@@ -26916,7 +28361,17 @@
                 "type": {
                     "target": "com.amazonaws.datazone#MetadataGenerationRunType",
                     "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "This field is going to be deprecated, please use the 'types' field to provide the MetadataGenerationRun types",
+                            "since": "2025-11-21"
+                        },
                         "smithy.api#documentation": "<p>The type of the metadata generation run.</p>"
+                    }
+                },
+                "types": {
+                    "target": "com.amazonaws.datazone#MetadataGenerationRunTypes",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The types of the metadata generation run.</p>"
                     }
                 },
                 "createdAt": {
@@ -26949,6 +28404,10 @@
                 "SUBMITTED": {
                     "target": "smithy.api#Unit",
                     "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "This metadata generation run status is going to be deprecated",
+                            "since": "2025-11-21"
+                        },
                         "smithy.api#enumValue": "SUBMITTED"
                     }
                 },
@@ -26974,6 +28433,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "FAILED"
+                    }
+                },
+                "PARTIALLY_SUCCEEDED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PARTIALLY_SUCCEEDED"
                     }
                 }
             }
@@ -27014,6 +28479,64 @@
                     "traits": {
                         "smithy.api#enumValue": "BUSINESS_DESCRIPTIONS"
                     }
+                },
+                "BUSINESS_NAMES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BUSINESS_NAMES"
+                    }
+                },
+                "BUSINESS_GLOSSARY_ASSOCIATIONS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BUSINESS_GLOSSARY_ASSOCIATIONS"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.datazone#MetadataGenerationRunTypeStat": {
+            "type": "structure",
+            "members": {
+                "type": {
+                    "target": "com.amazonaws.datazone#MetadataGenerationRunType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the metadata generation run type statistics.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.datazone#MetadataGenerationRunStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the metadata generation run type statistics.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "errorMessage": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message displayed if the action fails to run.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The statistics of the metadata generation run type.</p>"
+            }
+        },
+        "com.amazonaws.datazone#MetadataGenerationRunTypeStats": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#MetadataGenerationRunTypeStat"
+            }
+        },
+        "com.amazonaws.datazone#MetadataGenerationRunTypes": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#MetadataGenerationRunType"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2
                 }
             }
         },
@@ -27046,12 +28569,6 @@
         "com.amazonaws.datazone#MlflowPropertiesInput": {
             "type": "structure",
             "members": {
-                "trackingServerName": {
-                    "target": "smithy.api#String",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The name of the tracking server as part of the MLflow properties of a connection.</p>"
-                    }
-                },
                 "trackingServerArn": {
                     "target": "smithy.api#String",
                     "traits": {
@@ -27066,12 +28583,6 @@
         "com.amazonaws.datazone#MlflowPropertiesOutput": {
             "type": "structure",
             "members": {
-                "trackingServerName": {
-                    "target": "smithy.api#String",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The name of the tracking server as part of the MLflow properties of a connection.</p>"
-                    }
-                },
                 "trackingServerArn": {
                     "target": "smithy.api#String",
                     "traits": {
@@ -27086,12 +28597,6 @@
         "com.amazonaws.datazone#MlflowPropertiesPatch": {
             "type": "structure",
             "members": {
-                "trackingServerName": {
-                    "target": "smithy.api#String",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The name of the tracking server as part of the MLflow properties of a connection.</p>"
-                    }
-                },
                 "trackingServerArn": {
                     "target": "smithy.api#String",
                     "traits": {
@@ -27772,6 +29277,20 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.datazone#Permissions": {
+            "type": "union",
+            "members": {
+                "s3": {
+                    "target": "com.amazonaws.datazone#S3Permissions",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The S3 details of the asset permissions.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The asset permissions.</p>"
+            }
+        },
         "com.amazonaws.datazone#PhysicalConnectionRequirements": {
             "type": "structure",
             "members": {
@@ -27821,6 +29340,12 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Web Services Glue connection name.</p>"
+                    }
+                },
+                "glueConnectionNames": {
+                    "target": "com.amazonaws.datazone#GlueConnectionNames",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Glue connection names in the physical endpoint.</p>"
                     }
                 },
                 "glueConnection": {
@@ -28370,6 +29895,34 @@
                 "target": "com.amazonaws.datazone#ProjectMember"
             }
         },
+        "com.amazonaws.datazone#ProjectMembershipAssignment": {
+            "type": "structure",
+            "members": {
+                "member": {
+                    "target": "com.amazonaws.datazone#Member",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The details about a project member.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "designation": {
+                    "target": "com.amazonaws.datazone#UserDesignation",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The designation of the project membership.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A map of user or group profiles to designations that need to be assigned in the project.</p>"
+            }
+        },
+        "com.amazonaws.datazone#ProjectMembershipAssignments": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#ProjectMembershipAssignment"
+            }
+        },
         "com.amazonaws.datazone#ProjectName": {
             "type": "string",
             "traits": {
@@ -28505,6 +30058,17 @@
                 "smithy.api#documentation": "<p>The summary of a project profile.</p>"
             }
         },
+        "com.amazonaws.datazone#ProjectResourceTagParameters": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#ResourceTagParameter"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 25
+                }
+            }
+        },
         "com.amazonaws.datazone#ProjectStatus": {
             "type": "enum",
             "members": {
@@ -28619,6 +30183,12 @@
                     "target": "com.amazonaws.datazone#DomainUnitId",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the domain unit.</p>"
+                    }
+                },
+                "projectCategory": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The category of the project.</p>"
                     }
                 }
             },
@@ -28747,6 +30317,89 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The provisioning properties of an environment blueprint.</p>"
+            }
+        },
+        "com.amazonaws.datazone#PutDataExportConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.datazone#PutDataExportConfigurationInput"
+            },
+            "output": {
+                "target": "com.amazonaws.datazone#PutDataExportConfigurationOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.datazone#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Creates data export configuration details.</p> <p>If you want to temporarily disable export and later re-enable it for the same domain, use the <code>--no-enable-export</code> flag to disable and the <code>--enable-export</code> flag to re-enable. This preserves the configuration and allows you to re-enable export without deleting S3 table.</p> <note> <p>You can enable asset metadata export for only one domain per account per Region. To enable export for a different domain, complete the following steps:</p> <ol> <li> <p>Delete the export configuration for the currently enabled domain using the DeleteDataExportConfiguration operation.</p> </li> <li> <p>Delete the asset S3 table under the aws-sagemaker-catalog S3 table bucket. We recommend backing up the S3 table before deletion.</p> </li> <li> <p>Call the PutDataExportConfiguration API to enable export for the new domain.</p> </li> </ol> </note>",
+                "smithy.api#http": {
+                    "method": "PUT",
+                    "uri": "/v2/domains/{domainIdentifier}/data-export-configuration"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.datazone#PutDataExportConfigurationInput": {
+            "type": "structure",
+            "members": {
+                "domainIdentifier": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The domain ID for which you want to create data export configuration details.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "enableExport": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies that the export is to be enabled as part of creating data export configuration details.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "encryptionConfiguration": {
+                    "target": "com.amazonaws.datazone#EncryptionConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The encryption configuration as part of creating data export configuration details.</p> <p>The KMS key provided here as part of encryptionConfiguration must have the required permissions as described in <a href=\"https://docs.aws.amazon.com/sagemaker-unified-studio/latest/adminguide/sagemaker-unified-studio-export-asset-metadata-kms-permissions.html\">KMS permissions for exporting asset metadata in Amazon SageMaker Unified Studio</a>.</p>"
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.datazone#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.datazone#PutDataExportConfigurationOutput": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.datazone#PutEnvironmentBlueprintConfiguration": {
@@ -28922,6 +30575,106 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The provisioning configuration of a blueprint.</p>",
                         "smithy.api#notProperty": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.datazone#QueryGraph": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.datazone#QueryGraphInput"
+            },
+            "output": {
+                "target": "com.amazonaws.datazone#QueryGraphOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.datazone#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Queries entities in the graph store.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "POST",
+                    "uri": "/v2/domains/{domainIdentifier}/graph/query"
+                },
+                "smithy.api#paginated": {
+                    "inputToken": "nextToken",
+                    "outputToken": "nextToken",
+                    "pageSize": "maxResults",
+                    "items": "items"
+                }
+            }
+        },
+        "com.amazonaws.datazone#QueryGraphInput": {
+            "type": "structure",
+            "members": {
+                "domainIdentifier": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the Amazon DataZone domain.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "match": {
+                    "target": "com.amazonaws.datazone#MatchClauses",
+                    "traits": {
+                        "smithy.api#documentation": "<p>List of query match clauses.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "maxResults": {
+                    "target": "com.amazonaws.datazone#MaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of entities to return in a single call to <code>QueryGraph</code>. When the number of entities to be listed is greater than the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value that you can use in a subsequent call to <code>QueryGraph</code> to list the next set of entities.</p>",
+                        "smithy.api#httpQuery": "maxResults"
+                    }
+                },
+                "nextToken": {
+                    "target": "com.amazonaws.datazone#PaginationToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>When the number of entities is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of entities, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>QueryGraph</code> to list the next set of entities.</p>",
+                        "smithy.api#httpQuery": "nextToken"
+                    }
+                },
+                "additionalAttributes": {
+                    "target": "com.amazonaws.datazone#AdditionalAttributes",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Additional details on the queried entity that can be requested in the response.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.datazone#QueryGraphOutput": {
+            "type": "structure",
+            "members": {
+                "items": {
+                    "target": "com.amazonaws.datazone#ResultItemList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The results of the <code>QueryGraph</code> action.</p>"
+                    }
+                },
+                "nextToken": {
+                    "target": "com.amazonaws.datazone#PaginationToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>When the number of entities is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of entities, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>QueryGraph</code> to list the next set of entities.</p>"
                     }
                 }
             },
@@ -29781,6 +31534,66 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.datazone#RelationDirection": {
+            "type": "enum",
+            "members": {
+                "IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IN"
+                    }
+                },
+                "OUT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "OUT"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.datazone#RelationPattern": {
+            "type": "structure",
+            "members": {
+                "relationType": {
+                    "target": "com.amazonaws.datazone#RelationType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of relation to query.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "relationDirection": {
+                    "target": "com.amazonaws.datazone#RelationDirection",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The direction to query.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "maxPathLength": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of hops to query.</p>",
+                        "smithy.api#range": {
+                            "min": 1,
+                            "max": 5
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The pattern describing the query's relational traversal.</p>"
+            }
+        },
+        "com.amazonaws.datazone#RelationType": {
+            "type": "enum",
+            "members": {
+                "LINEAGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LINEAGE"
+                    }
+                }
+            }
+        },
         "com.amazonaws.datazone#RelationalFilterConfiguration": {
             "type": "structure",
             "members": {
@@ -30103,6 +31916,112 @@
                 "smithy.api#httpError": 404
             }
         },
+        "com.amazonaws.datazone#ResourceTag": {
+            "type": "structure",
+            "members": {
+                "key": {
+                    "target": "com.amazonaws.datazone#TagKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key of the resource tag of the project.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "value": {
+                    "target": "com.amazonaws.datazone#TagValue",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The value of the resource tag of the project.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "source": {
+                    "target": "com.amazonaws.datazone#ResourceTagSource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The source of the resource tag of the project.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The resource tag of the project.</p>"
+            }
+        },
+        "com.amazonaws.datazone#ResourceTagParameter": {
+            "type": "structure",
+            "members": {
+                "key": {
+                    "target": "com.amazonaws.datazone#TagKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key of the resource tag parameter of the project profile.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "value": {
+                    "target": "com.amazonaws.datazone#TagValue",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The value of the resource tag parameter key of the project profile.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "isValueEditable": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether the value of the resource tag parameter of the project profile is editable at the project level.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The resource tag parameter of the project profile.</p>"
+            }
+        },
+        "com.amazonaws.datazone#ResourceTagSource": {
+            "type": "enum",
+            "members": {
+                "PROJECT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PROJECT"
+                    }
+                },
+                "PROJECT_PROFILE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PROJECT_PROFILE"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.datazone#ResourceTags": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#ResourceTag"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 25
+                }
+            }
+        },
+        "com.amazonaws.datazone#ResultItem": {
+            "type": "union",
+            "members": {
+                "lineageNode": {
+                    "target": "com.amazonaws.datazone#LineageNodeItem",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Resulting data lineage node from the query.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Resulting entity from the query.</p>"
+            }
+        },
+        "com.amazonaws.datazone#ResultItemList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#ResultItem"
+            }
+        },
         "com.amazonaws.datazone#Revision": {
             "type": "string",
             "traits": {
@@ -30275,7 +32194,7 @@
         "com.amazonaws.datazone#RoleArn": {
             "type": "string",
             "traits": {
-                "smithy.api#pattern": "^arn:aws[^:]*:iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]*$"
+                "smithy.api#pattern": "^arn:aws[^:]*:iam::\\d{12}:role(/[a-zA-Z0-9+=,.@_-]+)*/[a-zA-Z0-9+=,.@_-]+$"
             }
         },
         "com.amazonaws.datazone#RowFilter": {
@@ -30515,6 +32434,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The enforcement detail of the metadata form.</p>"
                     }
+                },
+                "glossaryTermEnforcementDetail": {
+                    "target": "com.amazonaws.datazone#GlossaryTermEnforcementDetail",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The enforcement details of a glossary term that's part of the metadata rule.</p>"
+                    }
                 }
             },
             "traits": {
@@ -30699,6 +32624,12 @@
                     "traits": {
                         "smithy.api#enumValue": "METADATA_FORM_ENFORCEMENT"
                     }
+                },
+                "GLOSSARY_TERM_ENFORCEMENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GLOSSARY_TERM_ENFORCEMENT"
+                    }
                 }
             }
         },
@@ -30777,6 +32708,32 @@
                 }
             }
         },
+        "com.amazonaws.datazone#S3Permission": {
+            "type": "enum",
+            "members": {
+                "READ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "READ"
+                    }
+                },
+                "WRITE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "WRITE"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.datazone#S3Permissions": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#S3Permission"
+            },
+            "traits": {
+                "smithy.api#documentation": "S3 permissions as a simple enum list."
+            }
+        },
         "com.amazonaws.datazone#S3PropertiesInput": {
             "type": "structure",
             "members": {
@@ -30791,6 +32748,12 @@
                     "target": "com.amazonaws.datazone#S3AccessGrantLocationId",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection.</p>"
+                    }
+                },
+                "registerS3AccessGrantLocation": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to register the Amazon S3 Access Grant location.</p>"
                     }
                 }
             },
@@ -30812,6 +32775,12 @@
                     "target": "com.amazonaws.datazone#S3AccessGrantLocationId",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection.</p>"
+                    }
+                },
+                "registerS3AccessGrantLocation": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to register the Amazon S3 Access Grant location.</p>"
                     }
                 },
                 "status": {
@@ -30845,6 +32814,12 @@
                     "target": "com.amazonaws.datazone#S3AccessGrantLocationId",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties patch of a connection.</p>"
+                    }
+                },
+                "registerS3AccessGrantLocation": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to register the Amazon S3 Access Grant location.</p>"
                     }
                 }
             },
@@ -30972,7 +32947,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Searches for assets in Amazon DataZone.</p> <p>Search in Amazon DataZone is a powerful capability that enables users to discover and explore data assets, glossary terms, and data products across their organization. It provides both basic and advanced search functionality, allowing users to find resources based on names, descriptions, metadata, and other attributes. Search can be scoped to specific types of resources (like assets, glossary terms, or data products) and can be filtered using various criteria such as creation date, owner, or status. The search functionality is essential for making the wealth of data resources in an organization discoverable and usable, helping users find the right data for their needs quickly and efficiently.</p> <p>Many search commands in Amazon DataZone are paginated, including <code>search</code> and <code>search-types</code>. When the result set is large, Amazon DataZone returns a <code>nextToken</code> in the response. This token can be used to retrieve the next page of results. </p> <p>Prerequisites:</p> <ul> <li> <p>The --domain-identifier must refer to an existing Amazon DataZone domain. </p> </li> <li> <p>--search-scope must be one of: ASSET, GLOSSARY_TERM, DATA_PRODUCT, or GLOSSARY.</p> </li> <li> <p>The user must have search permissions in the specified domain.</p> </li> <li> <p>If using --filters, ensure that the JSON is well-formed and that each filter includes valid attribute and value keys. </p> </li> <li> <p>For paginated results, be prepared to use --next-token to fetch additional pages.</p> </li> </ul>",
+                "smithy.api#documentation": "<p>Searches for assets in Amazon DataZone.</p> <p>Search in Amazon DataZone is a powerful capability that enables users to discover and explore data assets, glossary terms, and data products across their organization. It provides both basic and advanced search functionality, allowing users to find resources based on names, descriptions, metadata, and other attributes. Search can be scoped to specific types of resources (like assets, glossary terms, or data products) and can be filtered using various criteria such as creation date, owner, or status. The search functionality is essential for making the wealth of data resources in an organization discoverable and usable, helping users find the right data for their needs quickly and efficiently.</p> <p>Many search commands in Amazon DataZone are paginated, including <code>search</code> and <code>search-types</code>. When the result set is large, Amazon DataZone returns a <code>nextToken</code> in the response. This token can be used to retrieve the next page of results. </p> <p>Prerequisites:</p> <ul> <li> <p>The --domain-identifier must refer to an existing Amazon DataZone domain. </p> </li> <li> <p>--search-scope must be one of: ASSET, GLOSSARY_TERM, DATA_PRODUCT, or GLOSSARY.</p> </li> <li> <p>The user must have search permissions in the specified domain.</p> </li> <li> <p>If using --filters, ensure that the JSON is well-formed and that each filter includes valid attribute and value keys. </p> </li> <li> <p>For paginated results, be prepared to use --next-token to fetch additional pages.</p> </li> </ul> <p>To run a standard free-text search, the <code>searchText</code> parameter must be supplied. By default, all searchable fields are indexed for semantic search and will return semantic matches for SearchListings queries. To prevent semantic search indexing for a custom form attribute, see the <a href=\"https://docs.aws.amazon.com/datazone/latest/APIReference/API_CreateFormType.html\">CreateFormType API documentation</a>. To run a lexical search query, enclose the query with double quotes (\"\"). This will disable semantic search even for fields that have semantic search enabled and will only return results that contain the keywords wrapped by double quotes (order of tokens in the query is not enforced). Free-text search is supported for all attributes annotated with @amazon.datazone#searchable.</p> <p>To run a filtered search, provide filter clause using the <code>filters</code> parameter. To filter on glossary terms, use the special attribute <code>__DataZoneGlossaryTerms</code>. To filter on an indexed numeric attribute (i.e., a numeric attribute annotated with <code>@amazon.datazone#sortable</code>), provide a filter using the <code>intValue</code> parameter. The filters parameter can also be used to run more advanced free-text searches that target specific attributes (attributes must be annotated with <code>@amazon.datazone#searchable</code> for free-text search). Create/update timestamp filtering is supported using the special <code>creationTime</code>/<code>lastUpdatedTime</code> attributes. Filter types can be mixed and matched to power complex queries.</p> <p> To find out whether an attribute has been annotated and indexed for a given search type, use the GetFormType API to retrieve the form containing the attribute.</p>",
                 "smithy.api#http": {
                     "code": 200,
                     "method": "POST",
@@ -31246,7 +33221,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Searches listings in Amazon DataZone.</p> <p>SearchListings is a powerful capability that enables users to discover and explore published assets and data products across their organization. It provides both basic and advanced search functionality, allowing users to find resources based on names, descriptions, metadata, and other attributes. SearchListings also supports filtering using various criteria such as creation date, owner, or status. This API is essential for making the wealth of data resources in an organization discoverable and usable, helping users find the right data for their needs quickly and efficiently.</p> <p>SearchListings returns results in a paginated format. When the result set is large, the response will include a nextToken, which can be used to retrieve the next page of results.</p> <p>The SearchListings API gives users flexibility in specifying what kind of search is run.</p> <p>To run a free-text search, the <code>searchText</code> parameter must be supplied. By default, all searchable fields are indexed for semantic search and will return semantic matches for SearchListings queries. To prevent semantic search indexing for a custom form attribute, see the <a href=\"https://docs.aws.amazon.com/datazone/latest/APIReference/API_CreateFormType.html\">CreateFormType API documentation</a>. To run a lexical search query, enclose the query with double quotes (\"\"). This will disable semantic search even for fields that have semantic search enabled and will only return results that contain the keywords wrapped by double quotes (order of tokens in the query is not enforced). Free-text search is supported for all attributes annotated with @amazon.datazone#searchable.</p> <p>To run a filtered search, provide filter clause using the filters parameter. To filter on glossary terms, use the special attribute <code>__DataZoneGlossaryTerms</code>.</p> <p> To find out whether an attribute has been annotated and indexed for a given search type, use the GetFormType API to retrieve the form containing the attribute.</p>",
+                "smithy.api#documentation": "<p>Searches listings in Amazon DataZone.</p> <p>SearchListings is a powerful capability that enables users to discover and explore published assets and data products across their organization. It provides both basic and advanced search functionality, allowing users to find resources based on names, descriptions, metadata, and other attributes. SearchListings also supports filtering using various criteria such as creation date, owner, or status. This API is essential for making the wealth of data resources in an organization discoverable and usable, helping users find the right data for their needs quickly and efficiently.</p> <p>SearchListings returns results in a paginated format. When the result set is large, the response will include a nextToken, which can be used to retrieve the next page of results.</p> <p>The SearchListings API gives users flexibility in specifying what kind of search is run.</p> <p>To run a standard free-text search, the <code>searchText</code> parameter must be supplied. By default, all searchable fields are indexed for semantic search and will return semantic matches for SearchListings queries. To prevent semantic search indexing for a custom form attribute, see the <a href=\"https://docs.aws.amazon.com/datazone/latest/APIReference/API_CreateFormType.html\">CreateFormType API documentation</a>. To run a lexical search query, enclose the query with double quotes (\"\"). This will disable semantic search even for fields that have semantic search enabled and will only return results that contain the keywords wrapped by double quotes (order of tokens in the query is not enforced). Free-text search is supported for all attributes annotated with @amazon.datazone#searchable.</p> <p>To run a filtered search, provide filter clause using the <code>filters</code> parameter. To filter on glossary terms, use the special attribute <code>__DataZoneGlossaryTerms</code>. To filter on an indexed numeric attribute (i.e., a numeric attribute annotated with <code>@amazon.datazone#sortable</code>), provide a filter using the <code>intValue</code> parameter. The filters parameter can also be used to run more advanced free-text searches that target specific attributes (attributes must be annotated with <code>@amazon.datazone#searchable</code> for free-text search). Create/update timestamp filtering is supported using the special <code>creationTime</code>/<code>lastUpdatedTime</code> attributes. Filter types can be mixed and matched to power complex queries.</p> <p> To find out whether an attribute has been annotated and indexed for a given search type, use the GetFormType API to retrieve the form containing the attribute.</p>",
                 "smithy.api#http": {
                     "code": 200,
                     "method": "POST",
@@ -32276,10 +34251,16 @@
                 "glueConnectionName": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Amazon Web Services Glue connection name in the Spark Amazon Web Services Glue properties.</p>",
+                        "smithy.api#documentation": "<p>The Amazon Web Services Glue connection name in the Spark Amazon Web Services Glue properties. Specify either <code>glueConnectionName</code> or <code>glueConnectionNames</code>, but not both.</p>",
                         "smithy.api#length": {
                             "max": 256
                         }
+                    }
+                },
+                "glueConnectionNames": {
+                    "target": "com.amazonaws.datazone#GlueConnectionNames",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Glue connection names in the Spark Amazon Web Services Glue properties. Specify either <code>glueConnectionName</code> or <code>glueConnectionNames</code>, but not both.</p>"
                     }
                 },
                 "glueVersion": {
@@ -32350,6 +34331,12 @@
                         "smithy.api#documentation": "<p>The Amazon Web Services Glue connection name in the Spark Amazon Web Services Glue properties. </p>"
                     }
                 },
+                "glueConnectionNames": {
+                    "target": "com.amazonaws.datazone#GlueConnectionNames",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Glue connection names in the Spark Amazon Web Services Glue properties.</p>"
+                    }
+                },
                 "glueVersion": {
                     "target": "smithy.api#String",
                     "traits": {
@@ -32397,24 +34384,24 @@
                 "username": {
                     "target": "com.amazonaws.datazone#UserProfileName",
                     "traits": {
-                        "smithy.api#documentation": "<p>The username included in the single sign-on details of the user profile.</p>"
+                        "smithy.api#documentation": "<p>The username as part of the SSO user profile detail. </p>"
                     }
                 },
                 "firstName": {
                     "target": "com.amazonaws.datazone#FirstName",
                     "traits": {
-                        "smithy.api#documentation": "<p>The first name included in the single sign-on details of the user profile.</p>"
+                        "smithy.api#documentation": "<p>The first name as part of the SSO user profile detail.</p>"
                     }
                 },
                 "lastName": {
                     "target": "com.amazonaws.datazone#LastName",
                     "traits": {
-                        "smithy.api#documentation": "<p>The last name included in the single sign-on details of the user profile.</p>"
+                        "smithy.api#documentation": "<p>The last name as part of the SSO user profile detail.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The single sign-on details of the user profile.</p>"
+                "smithy.api#documentation": "<p>The SSO user profile detail.</p>"
             }
         },
         "com.amazonaws.datazone#StartDataSourceRun": {
@@ -32615,7 +34602,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Starts the metadata generation run.</p> <p>Prerequisites:</p> <ul> <li> <p>Asset must be created and belong to the specified domain and project. </p> </li> <li> <p>Asset type must be supported for metadata generation (e.g., Amazon Web Services Glue table).</p> </li> <li> <p>Asset must have a structured schema with valid rows and columns.</p> </li> <li> <p>Valid values for --type: BUSINESS_DESCRIPTIONS, BUSINESS_NAMES.</p> </li> <li> <p>The user must have permission to run metadata generation in the domain/project.</p> </li> </ul>",
+                "smithy.api#documentation": "<p>Starts the metadata generation run.</p> <p>Prerequisites:</p> <ul> <li> <p>Asset must be created and belong to the specified domain and project. </p> </li> <li> <p>Asset type must be supported for metadata generation (e.g., Amazon Web Services Glue table).</p> </li> <li> <p>Asset must have a structured schema with valid rows and columns.</p> </li> <li> <p>Valid values for --type: BUSINESS_DESCRIPTIONS, BUSINESS_NAMES, BUSINESS_GLOSSARY_ASSOCIATIONS.</p> </li> <li> <p>The user must have permission to run metadata generation in the domain/project.</p> </li> </ul>",
                 "smithy.api#http": {
                     "code": 200,
                     "method": "POST",
@@ -32638,8 +34625,17 @@
                 "type": {
                     "target": "com.amazonaws.datazone#MetadataGenerationRunType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of the metadata generation run.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#deprecated": {
+                            "message": "This field is going to be deprecated, please use the 'types' field to provide the MetadataGenerationRun types",
+                            "since": "2025-11-21"
+                        },
+                        "smithy.api#documentation": "<p>The type of the metadata generation run.</p>"
+                    }
+                },
+                "types": {
+                    "target": "com.amazonaws.datazone#MetadataGenerationRunTypes",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The types of the metadata generation run.</p>"
                     }
                 },
                 "target": {
@@ -32694,7 +34690,17 @@
                 "type": {
                     "target": "com.amazonaws.datazone#MetadataGenerationRunType",
                     "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "This field is going to be deprecated, please use the 'types' field to provide the MetadataGenerationRun types",
+                            "since": "2025-11-21"
+                        },
                         "smithy.api#documentation": "<p>The type of the metadata generation run.</p>"
+                    }
+                },
+                "types": {
+                    "target": "com.amazonaws.datazone#MetadataGenerationRunTypes",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The types of the metadata generation run.</p>"
                     }
                 },
                 "createdAt": {
@@ -32817,6 +34823,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The asset scope of the subscribed asset.</p>"
                     }
+                },
+                "permissions": {
+                    "target": "com.amazonaws.datazone#Permissions",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The asset permissions.</p>"
+                    }
                 }
             },
             "traits": {
@@ -32861,6 +34873,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The asset scope of the subscribed asset listing.</p>"
                     }
+                },
+                "permissions": {
+                    "target": "com.amazonaws.datazone#Permissions",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The asset permissions.</p>"
+                    }
                 }
             },
             "traits": {
@@ -32871,6 +34889,68 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.datazone#SubscribedAsset"
+            }
+        },
+        "com.amazonaws.datazone#SubscribedGroup": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.datazone#GroupProfileId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the subscribed group.</p>"
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.datazone#GroupProfileName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the subscribed group.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The group that subscribes to the asset.</p>"
+            }
+        },
+        "com.amazonaws.datazone#SubscribedGroupInput": {
+            "type": "structure",
+            "members": {
+                "identifier": {
+                    "target": "com.amazonaws.datazone#GroupProfileId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the subscribed group.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The details of the subscribed group.</p>"
+            }
+        },
+        "com.amazonaws.datazone#SubscribedIamPrincipal": {
+            "type": "structure",
+            "members": {
+                "principalArn": {
+                    "target": "com.amazonaws.datazone#IamPrincipalArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the subscribed IAM principal.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The IAM principal that subscribes to the asset.</p>"
+            }
+        },
+        "com.amazonaws.datazone#SubscribedIamPrincipalInput": {
+            "type": "structure",
+            "members": {
+                "identifier": {
+                    "target": "com.amazonaws.datazone#IamPrincipalArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the subscribed IAM principal.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The details of the subscribed IAM principal.</p>"
             }
         },
         "com.amazonaws.datazone#SubscribedListing": {
@@ -32989,6 +35069,24 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The project that has the subscription grant.</p>"
                     }
+                },
+                "user": {
+                    "target": "com.amazonaws.datazone#SubscribedUser",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The subscribed user.</p>"
+                    }
+                },
+                "group": {
+                    "target": "com.amazonaws.datazone#SubscribedGroup",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The subscribed group.</p>"
+                    }
+                },
+                "iam": {
+                    "target": "com.amazonaws.datazone#SubscribedIamPrincipal",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The subscribed IAM principal.</p>"
+                    }
                 }
             },
             "traits": {
@@ -33002,6 +35100,24 @@
                     "target": "com.amazonaws.datazone#SubscribedProjectInput",
                     "traits": {
                         "smithy.api#documentation": "<p>The project that is to be given a subscription grant.</p>"
+                    }
+                },
+                "user": {
+                    "target": "com.amazonaws.datazone#SubscribedUserInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The subscribed user.</p>"
+                    }
+                },
+                "group": {
+                    "target": "com.amazonaws.datazone#SubscribedGroupInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The subscribed group.</p>"
+                    }
+                },
+                "iam": {
+                    "target": "com.amazonaws.datazone#SubscribedIamPrincipalInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The subscribed IAM principal.</p>"
                     }
                 }
             },
@@ -33103,6 +35219,57 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The project that is to be given a subscription grant.</p>"
+            }
+        },
+        "com.amazonaws.datazone#SubscribedUser": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.datazone#UserProfileId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the subscribed user.</p>"
+                    }
+                },
+                "details": {
+                    "target": "com.amazonaws.datazone#UserProfileDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The subscribed user details.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The subscribed user.</p>"
+            }
+        },
+        "com.amazonaws.datazone#SubscribedUserInput": {
+            "type": "structure",
+            "members": {
+                "identifier": {
+                    "target": "com.amazonaws.datazone#UserProfileId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the subscribed user.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The subscribed user.</p>"
+            }
+        },
+        "com.amazonaws.datazone#SubscriptionGrantCreationMode": {
+            "type": "enum",
+            "members": {
+                "AUTOMATIC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AUTOMATIC"
+                    }
+                },
+                "MANUAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MANUAL"
+                    }
+                }
             }
         },
         "com.amazonaws.datazone#SubscriptionGrantId": {
@@ -33253,6 +35420,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The timestamp of when the subscription grant was updated.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "environmentId": {
+                    "target": "com.amazonaws.datazone#EnvironmentId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The environment ID of the subscription grant.</p>"
                     }
                 },
                 "subscriptionTargetId": {
@@ -33704,6 +35877,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The provider of the subscription target.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "subscriptionGrantCreationMode": {
+                    "target": "com.amazonaws.datazone#SubscriptionGrantCreationMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Determines the subscription grant creation mode for this target, defining if grants are auto-created upon subscription approval or managed manually. </p>"
                     }
                 }
             },
@@ -35101,6 +37280,12 @@
         "com.amazonaws.datazone#UpdateConnectionInput": {
             "type": "structure",
             "members": {
+                "configurations": {
+                    "target": "com.amazonaws.datazone#Configurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configurations of the connection.</p>"
+                    }
+                },
                 "domainIdentifier": {
                     "target": "com.amazonaws.datazone#DomainId",
                     "traits": {
@@ -35147,6 +37332,12 @@
         "com.amazonaws.datazone#UpdateConnectionOutput": {
             "type": "structure",
             "members": {
+                "configurations": {
+                    "target": "com.amazonaws.datazone#Configurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configurations of the connection.</p>"
+                    }
+                },
                 "connectionId": {
                     "target": "com.amazonaws.datazone#ConnectionId",
                     "traits": {
@@ -36178,6 +38369,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The user parameters of the environment.</p>"
                     }
+                },
+                "environmentConfigurationName": {
+                    "target": "com.amazonaws.datazone#EnvironmentConfigurationName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration name of the environment.</p>"
+                    }
                 }
             },
             "traits": {
@@ -36326,6 +38523,12 @@
                     "target": "com.amazonaws.datazone#EnvironmentConfigurationId",
                     "traits": {
                         "smithy.api#documentation": "<p>The configuration ID of the environment.</p>"
+                    }
+                },
+                "environmentConfigurationName": {
+                    "target": "com.amazonaws.datazone#EnvironmentConfigurationName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration name of the environment.</p>"
                     }
                 }
             },
@@ -36911,6 +39114,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the group profile that is updated.</p>"
                     }
+                },
+                "rolePrincipalArn": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the IAM role principal. This role is associated with the updated group profile.</p>"
+                    }
+                },
+                "rolePrincipalId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the IAM role principal. This principal is associated with the updated group profile.</p>"
+                    }
                 }
             },
             "traits": {
@@ -36987,6 +39202,15 @@
                     "target": "com.amazonaws.datazone#Description",
                     "traits": {
                         "smithy.api#documentation": "<p>The description to be updated as part of the <code>UpdateProject</code> action.</p>"
+                    }
+                },
+                "resourceTags": {
+                    "target": "com.amazonaws.datazone#Tags",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource tags of the project.</p>",
+                        "smithy.api#length": {
+                            "max": 25
+                        }
                     }
                 },
                 "glossaryTerms": {
@@ -37087,6 +39311,12 @@
                         "smithy.api#timestampFormat": "date-time"
                     }
                 },
+                "resourceTags": {
+                    "target": "com.amazonaws.datazone#ResourceTags",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource tags of the project.</p>"
+                    }
+                },
                 "glossaryTerms": {
                     "target": "com.amazonaws.datazone#GlossaryTerms",
                     "traits": {
@@ -37115,6 +39345,12 @@
                     "target": "com.amazonaws.datazone#EnvironmentDeploymentDetails",
                     "traits": {
                         "smithy.api#documentation": "<p>The environment deployment details of the project.</p>"
+                    }
+                },
+                "projectCategory": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The category of the project.</p>"
                     }
                 }
             },
@@ -37200,6 +39436,24 @@
                         "smithy.api#documentation": "<p>The status of a project profile.</p>"
                     }
                 },
+                "projectResourceTags": {
+                    "target": "com.amazonaws.datazone#ProjectResourceTagParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource tags of the project profile.</p>"
+                    }
+                },
+                "allowCustomProjectResourceTags": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether custom project resource tags are supported.</p>"
+                    }
+                },
+                "projectResourceTagsDescription": {
+                    "target": "com.amazonaws.datazone#Description",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
+                    }
+                },
                 "environmentConfigurations": {
                     "target": "com.amazonaws.datazone#EnvironmentConfigurationsList",
                     "traits": {
@@ -37253,6 +39507,24 @@
                         "smithy.api#documentation": "<p>The status of the project profile.</p>"
                     }
                 },
+                "projectResourceTags": {
+                    "target": "com.amazonaws.datazone#ProjectResourceTagParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resource tags of the project profile.</p>"
+                    }
+                },
+                "allowCustomProjectResourceTags": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether custom project resource tags are supported.</p>"
+                    }
+                },
+                "projectResourceTagsDescription": {
+                    "target": "com.amazonaws.datazone#Description",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
+                    }
+                },
                 "environmentConfigurations": {
                     "target": "com.amazonaws.datazone#EnvironmentConfigurationsList",
                     "traits": {
@@ -37287,6 +39559,91 @@
                     }
                 }
             },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.datazone#UpdateRootDomainUnitOwner": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.datazone#UpdateRootDomainUnitOwnerInput"
+            },
+            "output": {
+                "target": "com.amazonaws.datazone#UpdateRootDomainUnitOwnerOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.datazone#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Updates the owner of the root domain unit.</p>",
+                "smithy.api#http": {
+                    "code": 204,
+                    "method": "PATCH",
+                    "uri": "/v2/domains/{domainIdentifier}/root-domain-unit-owner"
+                },
+                "smithy.api#idempotent": {},
+                "smithy.api#tags": [
+                    "Administration"
+                ]
+            }
+        },
+        "com.amazonaws.datazone#UpdateRootDomainUnitOwnerInput": {
+            "type": "structure",
+            "members": {
+                "domainIdentifier": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the domain where the root domain unit owner is to be updated.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "currentOwner": {
+                    "target": "com.amazonaws.datazone#UserIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current owner of the root domain unit.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "newOwner": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The new owner of the root domain unit.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.datazone#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.datazone#UpdateRootDomainUnitOwnerOutput": {
+            "type": "structure",
+            "members": {},
             "traits": {
                 "smithy.api#output": {}
             }
@@ -37618,6 +39975,12 @@
                         "smithy.api#required": {}
                     }
                 },
+                "environmentId": {
+                    "target": "com.amazonaws.datazone#EnvironmentId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the environment in which the subscription grant is updated.</p>"
+                    }
+                },
                 "subscriptionTargetId": {
                     "target": "com.amazonaws.datazone#SubscriptionTargetId",
                     "traits": {
@@ -37937,6 +40300,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The provider to be updated as part of the <code>UpdateSubscriptionTarget</code> action.</p>"
                     }
+                },
+                "subscriptionGrantCreationMode": {
+                    "target": "com.amazonaws.datazone#SubscriptionGrantCreationMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Determines the subscription grant creation mode for this target, defining if grants are auto-created upon subscription approval or managed manually. </p>"
+                    }
                 }
             },
             "traits": {
@@ -38047,6 +40416,12 @@
                         "smithy.api#documentation": "<p>The provider to be updated as part of the <code>UpdateSubscriptionTarget</code> action.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "subscriptionGrantCreationMode": {
+                    "target": "com.amazonaws.datazone#SubscriptionGrantCreationMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Determines the subscription grant creation mode for this target, defining if grants are auto-created upon subscription approval or managed manually. </p>"
+                    }
                 }
             },
             "traits": {
@@ -38118,6 +40493,16 @@
                         "smithy.api#documentation": "<p>The status of the user profile that are to be updated.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "sessionName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The session name for IAM role sessions.</p>",
+                        "smithy.api#length": {
+                            "min": 2,
+                            "max": 64
+                        }
+                    }
                 }
             },
             "traits": {
@@ -38152,7 +40537,10 @@
                     }
                 },
                 "details": {
-                    "target": "com.amazonaws.datazone#UserProfileDetails"
+                    "target": "com.amazonaws.datazone#UserProfileDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The results of the UpdateUserProfile action.</p>"
+                    }
                 }
             },
             "traits": {
@@ -38278,18 +40666,18 @@
                 "iam": {
                     "target": "com.amazonaws.datazone#IamUserProfileDetails",
                     "traits": {
-                        "smithy.api#documentation": "<p>The IAM details included in the user profile details.</p>"
+                        "smithy.api#documentation": "<p>The IAM details of the user profile.</p>"
                     }
                 },
                 "sso": {
                     "target": "com.amazonaws.datazone#SsoUserProfileDetails",
                     "traits": {
-                        "smithy.api#documentation": "<p>The single sign-on details included in the user profile details.</p>"
+                        "smithy.api#documentation": "<p>The SSO details of the user profile.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The details of the user profile in Amazon DataZone.</p>"
+                "smithy.api#documentation": "<p>The user profile details.</p>"
             }
         },
         "com.amazonaws.datazone#UserProfileId": {
@@ -38458,6 +40846,12 @@
                     "traits": {
                         "smithy.api#enumValue": "SSO_USER"
                     }
+                },
+                "IAM_ROLE_SESSION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IAM_ROLE_SESSION"
+                    }
                 }
             }
         },
@@ -38506,6 +40900,48 @@
                 "smithy.api#documentation": "<p>The input fails to satisfy the constraints specified by the Amazon Web Services service.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 400
+            }
+        },
+        "com.amazonaws.datazone#WorkflowsMwaaPropertiesInput": {
+            "type": "structure",
+            "members": {
+                "mwaaEnvironmentName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The MWAA environment name.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Amazon MWAA properties.</p>"
+            }
+        },
+        "com.amazonaws.datazone#WorkflowsMwaaPropertiesOutput": {
+            "type": "structure",
+            "members": {
+                "mwaaEnvironmentName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The MWAA environment name.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Amazon MWAA properties.</p>"
+            }
+        },
+        "com.amazonaws.datazone#WorkflowsServerlessPropertiesInput": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>The MWAA serverless properties.</p>"
+            }
+        },
+        "com.amazonaws.datazone#WorkflowsServerlessPropertiesOutput": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "<p>The MWAA serverless properties.</p>"
             }
         }
     }

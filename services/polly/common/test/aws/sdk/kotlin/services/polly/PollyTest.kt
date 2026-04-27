@@ -59,6 +59,5 @@ class PollyPresignerTest {
 object NoHttpEngine : HttpClientEngineBase("no-http") {
     override val config: HttpClientEngineConfig = HttpClientEngineConfig.Default
 
-    override suspend fun roundTrip(context: ExecutionContext, request: HttpRequest): HttpCall =
-        error("Should not need HTTP round trip")
+    override suspend fun roundTrip(context: ExecutionContext, request: HttpRequest): HttpCall = error("Should not need HTTP round trip")
 }

@@ -4,10 +4,10 @@
  */
 package aws.sdk.kotlin.codegen
 
-import software.amazon.smithy.kotlin.codegen.core.KotlinWriter
-import software.amazon.smithy.kotlin.codegen.model.buildSymbol
-import software.amazon.smithy.kotlin.codegen.test.TestModelDefault
-import software.amazon.smithy.kotlin.codegen.test.shouldContainOnlyOnceWithDiff
+import aws.smithy.kotlin.codegen.core.KotlinWriter
+import aws.smithy.kotlin.codegen.model.buildSymbol
+import aws.smithy.kotlin.codegen.test.TestModelDefault
+import aws.smithy.kotlin.codegen.test.shouldContainOnlyOnceWithDiff
 import kotlin.test.*
 
 class ServiceClientCompanionObjectWriterTest {

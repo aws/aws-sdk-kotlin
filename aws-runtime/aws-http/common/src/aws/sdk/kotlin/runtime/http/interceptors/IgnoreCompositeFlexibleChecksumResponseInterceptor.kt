@@ -25,14 +25,13 @@ public class IgnoreCompositeFlexibleChecksumResponseInterceptor(
     override fun ignoreChecksum(
         checksum: String,
         context: ProtocolResponseInterceptorContext<Any, HttpRequest, HttpResponse>,
-    ): Boolean =
-        checksum.isCompositeChecksum().also { compositeChecksum ->
-            if (compositeChecksum) {
-                context.executionContext.coroutineContext.info<IgnoreCompositeFlexibleChecksumResponseInterceptor> {
-                    "Checksum validation was skipped because it was a composite checksum"
-                }
+    ): Boolean = checksum.isCompositeChecksum().also { compositeChecksum ->
+        if (compositeChecksum) {
+            context.executionContext.coroutineContext.info<IgnoreCompositeFlexibleChecksumResponseInterceptor> {
+                "Checksum validation was skipped because it was a composite checksum"
             }
         }
+    }
 }
 
 /**

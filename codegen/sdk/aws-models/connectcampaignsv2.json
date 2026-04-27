@@ -72,6 +72,9 @@
                     "target": "com.amazonaws.connectcampaignsv2#DeleteCampaignCommunicationTime"
                 },
                 {
+                    "target": "com.amazonaws.connectcampaignsv2#DeleteCampaignEntryLimits"
+                },
+                {
                     "target": "com.amazonaws.connectcampaignsv2#DeleteConnectInstanceConfig"
                 },
                 {
@@ -148,6 +151,9 @@
                 },
                 {
                     "target": "com.amazonaws.connectcampaignsv2#UpdateCampaignCommunicationTime"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#UpdateCampaignEntryLimits"
                 },
                 {
                     "target": "com.amazonaws.connectcampaignsv2#UpdateCampaignFlowAssociation"
@@ -927,10 +933,10 @@
                     }
                 },
                 "channelSubtypeConfig": {
-                    "target": "com.amazonaws.connectcampaignsv2#ChannelSubtypeConfig",
-                    "traits": {
-                        "smithy.api#required": {}
-                    }
+                    "target": "com.amazonaws.connectcampaignsv2#ChannelSubtypeConfig"
+                },
+                "type": {
+                    "target": "com.amazonaws.connectcampaignsv2#ExternalCampaignType"
                 },
                 "source": {
                     "target": "com.amazonaws.connectcampaignsv2#Source"
@@ -940,6 +946,9 @@
                 },
                 "schedule": {
                     "target": "com.amazonaws.connectcampaignsv2#Schedule"
+                },
+                "entryLimitsConfig": {
+                    "target": "com.amazonaws.connectcampaignsv2#EntryLimitsConfig"
                 },
                 "communicationTimeConfig": {
                     "target": "com.amazonaws.connectcampaignsv2#CommunicationTimeConfig"
@@ -1093,8 +1102,14 @@
                         "smithy.api#required": {}
                     }
                 },
+                "type": {
+                    "target": "com.amazonaws.connectcampaignsv2#ExternalCampaignType"
+                },
                 "schedule": {
                     "target": "com.amazonaws.connectcampaignsv2#Schedule"
+                },
+                "entryLimitsConfig": {
+                    "target": "com.amazonaws.connectcampaignsv2#EntryLimitsConfig"
                 },
                 "connectCampaignFlowArn": {
                     "target": "com.amazonaws.connectcampaignsv2#Arn"
@@ -1139,6 +1154,10 @@
                     {
                         "value": "EMAIL",
                         "name": "EMAIL"
+                    },
+                    {
+                        "value": "WHATSAPP",
+                        "name": "WHATSAPP"
                     }
                 ]
             }
@@ -1154,6 +1173,9 @@
                 },
                 "email": {
                     "target": "com.amazonaws.connectcampaignsv2#EmailChannelSubtypeConfig"
+                },
+                "whatsApp": {
+                    "target": "com.amazonaws.connectcampaignsv2#WhatsAppChannelSubtypeConfig"
                 }
             },
             "traits": {
@@ -1181,6 +1203,9 @@
                 },
                 "email": {
                     "target": "com.amazonaws.connectcampaignsv2#EmailChannelSubtypeParameters"
+                },
+                "whatsApp": {
+                    "target": "com.amazonaws.connectcampaignsv2#WhatsAppChannelSubtypeParameters"
                 }
             },
             "traits": {
@@ -1311,6 +1336,9 @@
                 },
                 "email": {
                     "target": "com.amazonaws.connectcampaignsv2#TimeWindow"
+                },
+                "whatsApp": {
+                    "target": "com.amazonaws.connectcampaignsv2#TimeWindow"
                 }
             },
             "traits": {
@@ -1333,6 +1361,10 @@
                     {
                         "value": "EMAIL",
                         "name": "EMAIL"
+                    },
+                    {
+                        "value": "WHATSAPP",
+                        "name": "WHATSAPP"
                     }
                 ]
             }
@@ -1424,10 +1456,10 @@
                     }
                 },
                 "channelSubtypeConfig": {
-                    "target": "com.amazonaws.connectcampaignsv2#ChannelSubtypeConfig",
-                    "traits": {
-                        "smithy.api#required": {}
-                    }
+                    "target": "com.amazonaws.connectcampaignsv2#ChannelSubtypeConfig"
+                },
+                "type": {
+                    "target": "com.amazonaws.connectcampaignsv2#ExternalCampaignType"
                 },
                 "source": {
                     "target": "com.amazonaws.connectcampaignsv2#Source"
@@ -1437,6 +1469,9 @@
                 },
                 "schedule": {
                     "target": "com.amazonaws.connectcampaignsv2#Schedule"
+                },
+                "entryLimitsConfig": {
+                    "target": "com.amazonaws.connectcampaignsv2#EntryLimitsConfig"
                 },
                 "communicationTimeConfig": {
                     "target": "com.amazonaws.connectcampaignsv2#CommunicationTimeConfig"
@@ -1778,6 +1813,59 @@
             },
             "traits": {
                 "smithy.api#documentation": "The request for DeleteCampaignCommunicationTime API.",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#DeleteCampaignEntryLimits": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.connectcampaignsv2#DeleteCampaignEntryLimitsRequest"
+            },
+            "output": {
+                "target": "smithy.api#Unit"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#InvalidCampaignStateException"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "Deletes the entry limits config for a campaign. This API is idempotent.",
+                "smithy.api#http": {
+                    "uri": "/v2/campaigns/{id}/entry-limits",
+                    "method": "DELETE"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#DeleteCampaignEntryLimitsRequest": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.connectcampaignsv2#CampaignId",
+                    "traits": {
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "The request for DeleteCampaignEntryLimits API.",
                 "smithy.api#input": {}
             }
         },
@@ -2198,6 +2286,31 @@
                 ]
             }
         },
+        "com.amazonaws.connectcampaignsv2#EntryLimitsConfig": {
+            "type": "structure",
+            "members": {
+                "maxEntryCount": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "Maximum number of times a participant can enter the campaign. A value of 0 indicates unlimited entries. Values of 1 or greater specify the exact number of entries allowed.",
+                        "smithy.api#range": {
+                            "min": 0
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "minEntryInterval": {
+                    "target": "com.amazonaws.connectcampaignsv2#Iso8601Duration",
+                    "traits": {
+                        "smithy.api#documentation": "Minimum time interval that must pass before a participant can enter the campaign again.",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Campaign entry limits config"
+            }
+        },
         "com.amazonaws.connectcampaignsv2#EventTrigger": {
             "type": "structure",
             "members": {
@@ -2229,6 +2342,26 @@
                     {
                         "value": "Campaign-Orchestration",
                         "name": "CAMPAIGN_ORCHESTRATION"
+                    },
+                    {
+                        "value": "Campaign-WhatsApp",
+                        "name": "CAMPAIGN_WHATS_APP"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#ExternalCampaignType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "The type of campaign externally exposed in APIs.",
+                "smithy.api#enum": [
+                    {
+                        "value": "MANAGED",
+                        "name": "MANAGED"
+                    },
+                    {
+                        "value": "JOURNEY",
+                        "name": "JOURNEY"
                     }
                 ]
             }
@@ -2848,6 +2981,9 @@
                 },
                 "qConnect": {
                     "target": "com.amazonaws.connectcampaignsv2#QConnectIntegrationConfig"
+                },
+                "lambda": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaIntegrationConfig"
                 }
             },
             "traits": {
@@ -2862,6 +2998,9 @@
                 },
                 "qConnect": {
                     "target": "com.amazonaws.connectcampaignsv2#QConnectIntegrationIdentifier"
+                },
+                "lambda": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaIntegrationIdentifier"
                 }
             },
             "traits": {
@@ -2876,6 +3015,9 @@
                 },
                 "qConnect": {
                     "target": "com.amazonaws.connectcampaignsv2#QConnectIntegrationSummary"
+                },
+                "lambda": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaIntegrationSummary"
                 }
             },
             "traits": {
@@ -2987,6 +3129,59 @@
             "traits": {
                 "smithy.api#documentation": "Time in ISO 8601 format, e.g. T23:11",
                 "smithy.api#pattern": "^T\\d{2}:\\d{2}$"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#LambdaArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "Lambda ARN for integration with Connect instances",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 140
+                },
+                "smithy.api#pattern": "^arn:aws[a-zA-Z-]*:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d:\\d{12}:function:([a-zA-Z0-9-_]+)(:([a-zA-Z0-9-_]+))?$"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#LambdaIntegrationConfig": {
+            "type": "structure",
+            "members": {
+                "functionArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaArn",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Lambda integration config"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#LambdaIntegrationIdentifier": {
+            "type": "structure",
+            "members": {
+                "functionArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaArn",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Lambda integration identifier"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#LambdaIntegrationSummary": {
+            "type": "structure",
+            "members": {
+                "functionArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#LambdaArn",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Lambda integration summary"
             }
         },
         "com.amazonaws.connectcampaignsv2#ListCampaigns": {
@@ -3974,6 +4169,16 @@
                 "smithy.api#input": {}
             }
         },
+        "com.amazonaws.connectcampaignsv2#RingTimeout": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#documentation": "Ring timeout for outbound calls",
+                "smithy.api#range": {
+                    "min": 15,
+                    "max": 60
+                }
+            }
+        },
         "com.amazonaws.connectcampaignsv2#Schedule": {
             "type": "structure",
             "members": {
@@ -4541,6 +4746,9 @@
                 },
                 "answerMachineDetectionConfig": {
                     "target": "com.amazonaws.connectcampaignsv2#AnswerMachineDetectionConfig"
+                },
+                "ringTimeout": {
+                    "target": "com.amazonaws.connectcampaignsv2#RingTimeout"
                 }
             },
             "traits": {
@@ -4561,6 +4769,9 @@
                 },
                 "answerMachineDetectionConfig": {
                     "target": "com.amazonaws.connectcampaignsv2#AnswerMachineDetectionConfig"
+                },
+                "ringTimeout": {
+                    "target": "com.amazonaws.connectcampaignsv2#RingTimeout"
                 }
             },
             "traits": {
@@ -4929,6 +5140,65 @@
                 "smithy.api#input": {}
             }
         },
+        "com.amazonaws.connectcampaignsv2#UpdateCampaignEntryLimits": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.connectcampaignsv2#UpdateCampaignEntryLimitsRequest"
+            },
+            "output": {
+                "target": "smithy.api#Unit"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#InvalidCampaignStateException"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.connectcampaignsv2#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "Updates the entry limits config for a campaign. This API is idempotent.",
+                "smithy.api#http": {
+                    "uri": "/v2/campaigns/{id}/entry-limits",
+                    "method": "POST"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#UpdateCampaignEntryLimitsRequest": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.connectcampaignsv2#CampaignId",
+                    "traits": {
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "entryLimitsConfig": {
+                    "target": "com.amazonaws.connectcampaignsv2#EntryLimitsConfig",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "The request for UpdateCampaignEntryLimits API.",
+                "smithy.api#input": {}
+            }
+        },
         "com.amazonaws.connectcampaignsv2#UpdateCampaignFlowAssociation": {
             "type": "operation",
             "input": {
@@ -5182,6 +5452,86 @@
                 "smithy.api#documentation": "The input fails to satisfy the constraints specified by an AWS service.",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 400
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#WhatsAppChannelSubtypeConfig": {
+            "type": "structure",
+            "members": {
+                "capacity": {
+                    "target": "com.amazonaws.connectcampaignsv2#Capacity"
+                },
+                "outboundMode": {
+                    "target": "com.amazonaws.connectcampaignsv2#WhatsAppOutboundMode",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "defaultOutboundConfig": {
+                    "target": "com.amazonaws.connectcampaignsv2#WhatsAppOutboundConfig",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "WhatsApp Channel Subtype config"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#WhatsAppChannelSubtypeParameters": {
+            "type": "structure",
+            "members": {
+                "destinationPhoneNumber": {
+                    "target": "com.amazonaws.connectcampaignsv2#DestinationPhoneNumber",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "connectSourcePhoneNumberArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#Arn"
+                },
+                "templateArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#Arn"
+                },
+                "templateParameters": {
+                    "target": "com.amazonaws.connectcampaignsv2#Attributes",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Parameters for the WhatsApp Channel Subtype"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#WhatsAppOutboundConfig": {
+            "type": "structure",
+            "members": {
+                "connectSourcePhoneNumberArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#Arn",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "wisdomTemplateArn": {
+                    "target": "com.amazonaws.connectcampaignsv2#Arn",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Default WhatsApp Outbound config"
+            }
+        },
+        "com.amazonaws.connectcampaignsv2#WhatsAppOutboundMode": {
+            "type": "union",
+            "members": {
+                "agentless": {
+                    "target": "com.amazonaws.connectcampaignsv2#AgentlessConfig"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "WhatsApp Outbound Mode"
             }
         },
         "com.amazonaws.connectcampaignsv2#XAmazonErrorType": {

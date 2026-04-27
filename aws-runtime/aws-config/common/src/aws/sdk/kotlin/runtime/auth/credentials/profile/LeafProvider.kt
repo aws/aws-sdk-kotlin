@@ -92,6 +92,19 @@ internal sealed class LeafProvider {
     ) : LeafProvider()
 
     /**
+     * A provider that uses AWS login
+     *
+     * Example
+     * ```ini
+     * [profile W]
+     * login_session = arn:aws:iam::0123456789012:user/Admin
+     * ```
+     */
+    data class LoginSession(
+        val loginSessionName: String,
+    ) : LeafProvider()
+
+    /**
      * A provider that invokes a command and reads its standard output to parse credentials.
      */
     data class Process(val command: String) : LeafProvider()

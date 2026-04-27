@@ -97,30 +97,244 @@
                             "builtIn": "AWS::Region",
                             "required": false,
                             "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
+                            "type": "string"
                         },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
                         }
                     },
                     "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "isSet",
+                                            "argv": [
+                                                {
+                                                    "ref": "Endpoint"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseDualStack"
+                                        },
+                                        false
+                                    ]
+                                },
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "aws.partition",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ],
+                                    "assign": "PartitionResult"
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "name"
+                                                    ]
+                                                },
+                                                "aws"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "name"
+                                                    ]
+                                                },
+                                                "aws-cn"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "name"
+                                                    ]
+                                                },
+                                                "aws-us-gov"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "name"
+                                                    ]
+                                                },
+                                                "aws-iso"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "name"
+                                                    ]
+                                                },
+                                                "aws-iso-b"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "name"
+                                                    ]
+                                                },
+                                                "aws-iso-e"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "name"
+                                                    ]
+                                                },
+                                                "aws-iso-f"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://health-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                },
+                                {
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "https://health.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
                         {
                             "conditions": [
                                 {
@@ -768,6 +982,523 @@
                             "expect": {
                                 "error": "Invalid Configuration: Missing Region"
                             }
+                        },
+                        {
+                            "documentation": "For region us-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.us-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.us-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.us-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.us-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region aws-global with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "properties": {
+                                        "authSchemes": [
+                                            {
+                                                "name": "sigv4",
+                                                "signingName": "health",
+                                                "signingRegion": "us-east-1"
+                                            }
+                                        ]
+                                    },
+                                    "url": "https://global.health.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "aws-global",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.cn-north-1.amazonaws.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.cn-north-1.api.amazonwebservices.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.cn-north-1.amazonaws.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.cn-north-1.api.amazonwebservices.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region aws-cn-global with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "properties": {
+                                        "authSchemes": [
+                                            {
+                                                "name": "sigv4",
+                                                "signingName": "health",
+                                                "signingRegion": "cn-northwest-1"
+                                            }
+                                        ]
+                                    },
+                                    "url": "https://global.health.amazonaws.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "aws-cn-global",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.us-gov-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.us-gov-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.us-gov-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.us-gov-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.us-iso-east-1.c2s.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.us-iso-east-1.c2s.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.us-isob-east-1.sc2s.sgov.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.us-iso-east-1.api.aws.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.us-iso-east-1.api.aws.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.us-isob-east-1.sc2s.sgov.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.us-isob-east-1.api.aws.scloud"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.us-isob-east-1.api.aws.scloud"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isof-south-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.us-isof-south-1.csp.hci.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isof-south-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isof-south-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.us-isof-south-1.api.aws.hci.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isof-south-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isof-south-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.us-isof-south-1.csp.hci.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isof-south-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isof-south-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.us-isof-south-1.api.aws.hci.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isof-south-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region eu-isoe-west-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.eu-isoe-west-1.cloud.adc-e.uk"
+                                }
+                            },
+                            "params": {
+                                "Region": "eu-isoe-west-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region eu-isoe-west-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.eu-isoe-west-1.api.cloud-aws.adc-e.uk"
+                                }
+                            },
+                            "params": {
+                                "Region": "eu-isoe-west-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region eu-isoe-west-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.eu-isoe-west-1.cloud.adc-e.uk"
+                                }
+                            },
+                            "params": {
+                                "Region": "eu-isoe-west-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region eu-isoe-west-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.eu-isoe-west-1.api.cloud-aws.adc-e.uk"
+                                }
+                            },
+                            "params": {
+                                "Region": "eu-isoe-west-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region eusc-de-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.eusc-de-east-1.api.amazonwebservices.eu"
+                                }
+                            },
+                            "params": {
+                                "Region": "eusc-de-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region eusc-de-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health.eusc-de-east-1.api.amazonwebservices.eu"
+                                }
+                            },
+                            "params": {
+                                "Region": "eusc-de-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region eusc-de-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.eusc-de-east-1.api.amazonwebservices.eu"
+                                }
+                            },
+                            "params": {
+                                "Region": "eusc-de-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region eusc-de-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://health-fips.eusc-de-east-1.api.amazonwebservices.eu"
+                                }
+                            },
+                            "params": {
+                                "Region": "eusc-de-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with region set and fips disabled and dualstack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://example.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false,
+                                "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with region not set and fips disabled and dualstack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://example.com"
+                                }
+                            },
+                            "params": {
+                                "UseFIPS": false,
+                                "UseDualStack": false,
+                                "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "Missing region",
+                            "expect": {
+                                "error": "Invalid Configuration: Missing Region"
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with fips enabled and dualstack disabled",
+                            "expect": {
+                                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false,
+                                "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
+                            "expect": {
+                                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true,
+                                "Endpoint": "https://example.com"
+                            }
                         }
                     ],
                     "version": "1.0"
@@ -849,7 +1580,7 @@
                 "statusCode": {
                     "target": "com.amazonaws.health#entityStatusCode",
                     "traits": {
-                        "smithy.api#documentation": "<p>The most recent status of the entity affected by the event. The possible values are\n            <code>IMPAIRED</code>, <code>UNIMPAIRED</code>, and <code>UNKNOWN</code>.</p>"
+                        "smithy.api#documentation": "<p>The most recent status of the entity affected by the event. The possible values are\n            <code>IMPAIRED</code>, <code>UNIMPAIRED</code>, <code>UNKNOWN</code>, <code>PENDING</code>, and <code>RESOLVED</code>.</p>"
                     }
                 },
                 "tags": {
@@ -1065,7 +1796,7 @@
                 "maxResults": {
                     "target": "com.amazonaws.health#maxResultsLowerRange",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum number of items to return in one batch, between 10 and 100, inclusive.</p>"
+                        "smithy.api#documentation": "<p>The maximum number of items to return in one batch, between 1 and 100, inclusive.</p>"
                     }
                 },
                 "organizationEntityAccountFilters": {
@@ -1128,9 +1859,9 @@
                     }
                 },
                 "maxResults": {
-                    "target": "com.amazonaws.health#maxResults",
+                    "target": "com.amazonaws.health#maxResultsLowerRange",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum number of items to return in one batch, between 10 and 100, inclusive.</p>"
+                        "smithy.api#documentation": "<p>The maximum number of items to return in one batch, between 1 and 100, inclusive.</p>"
                     }
                 }
             },
@@ -1617,7 +2348,7 @@
                 "maxResults": {
                     "target": "com.amazonaws.health#maxResultsLowerRange",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum number of items to return in one batch, between 10 and 100, inclusive.</p>"
+                        "smithy.api#documentation": "<p>The maximum number of items to return in one batch, between 1 and 100, inclusive.</p>"
                     }
                 },
                 "locale": {
@@ -1667,9 +2398,9 @@
                     }
                 },
                 "maxResults": {
-                    "target": "com.amazonaws.health#maxResults",
+                    "target": "com.amazonaws.health#maxResultsLowerRange",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum number of items to return in one batch, between 10 and 100, inclusive.</p>"
+                        "smithy.api#documentation": "<p>The maximum number of items to return in one batch, between 1 and 100, inclusive.</p>"
                     }
                 },
                 "locale": {
@@ -1945,6 +2676,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>This parameter specifies if the Health event is a public Amazon Web Services service event or an account-specific event.</p>\n         <ul>\n            <li>\n               <p>If the <code>eventScopeCode</code> value is <code>PUBLIC</code>, then the\n                  <code>affectedAccounts</code> value is always empty.</p>\n            </li>\n            <li>\n               <p>If the <code>eventScopeCode</code> value is <code>ACCOUNT_SPECIFIC</code>, then\n               the <code>affectedAccounts</code> value lists the affected Amazon Web Services accounts in your\n               organization. For example, if an event affects a service such as Amazon Elastic Compute Cloud and you\n               have Amazon Web Services accounts that use that service, those account IDs appear in the\n               response.</p>\n            </li>\n            <li>\n               <p>If the <code>eventScopeCode</code> value is <code>NONE</code>, then the\n                  <code>eventArn</code> that you specified in the request is invalid or doesn't\n               exist.</p>\n            </li>\n         </ul>"
                     }
+                },
+                "actionability": {
+                    "target": "com.amazonaws.health#EventActionability",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The actionability classification of the event. Possible values are <code>ACTION_REQUIRED</code>, <code>ACTION_MAY_BE_REQUIRED</code> and <code>INFORMATIONAL</code>. Events with <code>ACTION_REQUIRED</code> actionability require customer action to resolve or mitigate the event. Events with <code>ACTION_MAY_BE_REQUIRED</code> actionability indicates that the current status is unknown or conditional and inspection is needed to determine if action is required.\nEvents with <code>INFORMATIONAL</code> actionability are provided for awareness and do not require immediate action.</p>"
+                    }
+                },
+                "personas": {
+                    "target": "com.amazonaws.health#EventPersonaList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of persona classifications that indicate the target audience for the event. Possible values are <code>OPERATIONS</code>, <code>SECURITY</code>, and <code>BILLING</code>. Events can be associated with multiple personas to indicate relevance to different teams or roles within an organization.</p>"
+                    }
                 }
             },
             "traits": {
@@ -1970,6 +2713,41 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The values used to filter results from the <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetailsForOrganization.html\">DescribeEventDetailsForOrganization</a> and <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeAffectedEntitiesForOrganization.html\">DescribeAffectedEntitiesForOrganization</a> operations.</p>"
+            }
+        },
+        "com.amazonaws.health#EventActionability": {
+            "type": "enum",
+            "members": {
+                "ACTION_REQUIRED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACTION_REQUIRED"
+                    }
+                },
+                "ACTION_MAY_BE_REQUIRED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACTION_MAY_BE_REQUIRED"
+                    }
+                },
+                "INFORMATIONAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INFORMATIONAL"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.health#EventActionabilityList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.health#EventActionability"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 3
+                }
             }
         },
         "com.amazonaws.health#EventAggregate": {
@@ -2083,6 +2861,12 @@
         "com.amazonaws.health#EventFilter": {
             "type": "structure",
             "members": {
+                "actionabilities": {
+                    "target": "com.amazonaws.health#EventActionabilityList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of actionability values to filter events. Use this to filter events based on whether they require action (<code>ACTION_REQUIRED</code>), may require action (<code>ACTION_MAY_BE_REQUIRED</code>) or are informational (<code>INFORMATIONAL</code>).</p>"
+                    }
+                },
                 "eventArns": {
                     "target": "com.amazonaws.health#eventArnList",
                     "traits": {
@@ -2160,6 +2944,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A list of event status codes.</p>"
                     }
+                },
+                "personas": {
+                    "target": "com.amazonaws.health#EventPersonaList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of persona values to filter events. Use this to filter events based on their target audience: <code>OPERATIONS</code>, <code>SECURITY</code>, or <code>BILLING</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2170,6 +2960,41 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.health#Event"
+            }
+        },
+        "com.amazonaws.health#EventPersona": {
+            "type": "enum",
+            "members": {
+                "OPERATIONS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "OPERATIONS"
+                    }
+                },
+                "SECURITY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SECURITY"
+                    }
+                },
+                "BILLING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BILLING"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.health#EventPersonaList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.health#EventPersona"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 3
+                }
             }
         },
         "com.amazonaws.health#EventType": {
@@ -2192,6 +3017,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A list of event type category codes. Possible values are\n<code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently,\nthe <code>investigation</code> value isn't supported at this time.</p>"
                     }
+                },
+                "actionability": {
+                    "target": "com.amazonaws.health#EventTypeActionability",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The actionability classification of the event. Possible values are <code>ACTION_REQUIRED</code>, <code>ACTION_MAY_BE_REQUIRED</code> and <code>INFORMATIONAL</code>. Events with <code>ACTION_REQUIRED</code> actionability require customer action to resolve or mitigate the event. Events with <code>ACTION_MAY_BE_REQUIRED</code> actionability indicates that the current status is unknown or conditional and inspection is needed to determine if action is required.\nEvents with <code>INFORMATIONAL</code> actionability are provided for awareness and do not require immediate action.</p>"
+                    }
+                },
+                "personas": {
+                    "target": "com.amazonaws.health#EventTypePersonaList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of persona classifications that indicate the target audience for the event. Possible values are <code>OPERATIONS</code>, <code>SECURITY</code>, and <code>BILLING</code>. Events can be associated with multiple personas to indicate relevance to different teams or roles within an organization.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2206,6 +3043,41 @@
                     "max": 100
                 },
                 "smithy.api#pattern": "^[^:/]{3,100}$"
+            }
+        },
+        "com.amazonaws.health#EventTypeActionability": {
+            "type": "enum",
+            "members": {
+                "ACTION_REQUIRED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACTION_REQUIRED"
+                    }
+                },
+                "ACTION_MAY_BE_REQUIRED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACTION_MAY_BE_REQUIRED"
+                    }
+                },
+                "INFORMATIONAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INFORMATIONAL"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.health#EventTypeActionabilityList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.health#EventTypeActionability"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 3
+                }
             }
         },
         "com.amazonaws.health#EventTypeCategoryList": {
@@ -2252,6 +3124,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A list of event type category codes. Possible values are\n<code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently,\nthe <code>investigation</code> value isn't supported at this time.</p>"
                     }
+                },
+                "actionabilities": {
+                    "target": "com.amazonaws.health#EventTypeActionabilityList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of actionability values to filter event types. Possible values are <code>ACTION_REQUIRED</code>, <code>ACTION_MAY_BE_REQUIRED</code> and <code>INFORMATIONAL</code>.</p>"
+                    }
+                },
+                "personas": {
+                    "target": "com.amazonaws.health#EventTypePersonaList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of persona classifications to filter event types. Possible values are <code>OPERATIONS</code>, <code>SECURITY</code>, and <code>BILLING</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2262,6 +3146,41 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.health#EventType"
+            }
+        },
+        "com.amazonaws.health#EventTypePersona": {
+            "type": "enum",
+            "members": {
+                "OPERATIONS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "OPERATIONS"
+                    }
+                },
+                "SECURITY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SECURITY"
+                    }
+                },
+                "BILLING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BILLING"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.health#EventTypePersonaList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.health#EventTypePersona"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 3
+                }
             }
         },
         "com.amazonaws.health#InvalidPaginationToken": {
@@ -2445,6 +3364,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The most recent status of the event. Possible values are <code>open</code>,\n            <code>closed</code>, and <code>upcoming</code>.</p>"
                     }
+                },
+                "actionability": {
+                    "target": "com.amazonaws.health#EventActionability",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The actionability classification of the event. Possible values are <code>ACTION_REQUIRED</code>, <code>ACTION_MAY_BE_REQUIRED</code> and <code>INFORMATIONAL</code>. Events with <code>ACTION_REQUIRED</code> actionability require customer action to resolve or mitigate the event. Events with <code>ACTION_MAY_BE_REQUIRED</code> actionability indicates that the current status is unknown or conditional and inspection is needed to determine if action is required.\nEvents with <code>INFORMATIONAL</code> actionability are provided for awareness and do not require immediate action.</p>"
+                    }
+                },
+                "personas": {
+                    "target": "com.amazonaws.health#EventPersonaList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of persona classifications that indicate the target audience for the event. Possible values are <code>OPERATIONS</code>, <code>SECURITY</code>, and <code>BILLING</code>. Events can be associated with multiple personas to indicate relevance to different teams or roles within an organization.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2536,6 +3467,12 @@
         "com.amazonaws.health#OrganizationEventFilter": {
             "type": "structure",
             "members": {
+                "actionabilities": {
+                    "target": "com.amazonaws.health#EventActionabilityList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of actionability values to filter events. Use this to filter events based on whether they require action (<code>ACTION_REQUIRED</code>), may require action (<code>ACTION_MAY_BE_REQUIRED</code>) or are informational (<code>INFORMATIONAL</code>).</p>"
+                    }
+                },
                 "eventTypeCodes": {
                     "target": "com.amazonaws.health#eventTypeList2",
                     "traits": {
@@ -2592,6 +3529,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A list of event status codes.</p>"
                     }
+                },
+                "personas": {
+                    "target": "com.amazonaws.health#EventPersonaList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of persona values to filter events. Use this to filter events based on their target audience: <code>OPERATIONS</code>, <code>SECURITY</code>, or <code>BILLING</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2642,7 +3585,7 @@
                     "min": 6,
                     "max": 18
                 },
-                "smithy.api#pattern": "^[a-z]{2}\\-[0-9a-z\\-]{4,16}$"
+                "smithy.api#pattern": "^[a-z]{2,4}\\-[0-9a-z\\-]{4,16}$"
             }
         },
         "com.amazonaws.health#availabilityZones": {

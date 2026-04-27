@@ -1219,7 +1219,7 @@
                 "TargetLkfs": {
                     "target": "com.amazonaws.medialive#__doubleMinNegative59Max0",
                     "traits": {
-                        "smithy.api#documentation": "Target LKFS(loudness) to adjust volume to. If no value is entered, a default value will be used according to the chosen algorithm.  The CALM Act (1770-1) recommends a target of -24 LKFS. The EBU R-128 specification (1770-2) recommends a target of -23 LKFS.",
+                        "smithy.api#documentation": "Target LKFS(loudness) to adjust volume to. If no value is entered, a default value will be used according to the chosen algorithm.  The CALM Act recommends a target of -24 LKFS. The EBU R-128 specification recommends a target of -23 LKFS.",
                         "smithy.api#jsonName": "targetLkfs"
                     }
                 }
@@ -1559,6 +1559,26 @@
                 "smithy.api#documentation": "The settings for Automatic Input Failover."
             }
         },
+        "com.amazonaws.medialive#Av1BitDepth": {
+            "type": "enum",
+            "members": {
+                "DEPTH_10": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DEPTH_10"
+                    }
+                },
+                "DEPTH_8": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DEPTH_8"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Av1 Bit Depth"
+            }
+        },
         "com.amazonaws.medialive#Av1ColorSpaceSettings": {
             "type": "structure",
             "members": {
@@ -1584,6 +1604,12 @@
                     "target": "com.amazonaws.medialive#Rec709Settings",
                     "traits": {
                         "smithy.api#jsonName": "rec709Settings"
+                    }
+                },
+                "Hlg2020Settings": {
+                    "target": "com.amazonaws.medialive#Hlg2020Settings",
+                    "traits": {
+                        "smithy.api#jsonName": "hlg2020Settings"
                     }
                 }
             },
@@ -1921,10 +1947,98 @@
                         "smithy.api#documentation": "Used for QVBR rate control mode only.\nOptional.\nEnter a minimum bitrate if you want to keep the output bitrate about a threshold, in order to prevent the downstream system from de-allocating network bandwidth for this output.",
                         "smithy.api#jsonName": "minBitrate"
                     }
+                },
+                "SpatialAq": {
+                    "target": "com.amazonaws.medialive#Av1SpatialAq",
+                    "traits": {
+                        "smithy.api#documentation": "Spatial AQ makes adjustments within each frame based on spatial variation of content complexity. Enabled: MediaLive will determine the appropriate level of spatial AQ to apply. Disabled: No spatial AQ. For more information, see the topic about video adaptive quantization in the MediaLive user guide.",
+                        "smithy.api#jsonName": "spatialAq"
+                    }
+                },
+                "TemporalAq": {
+                    "target": "com.amazonaws.medialive#Av1TemporalAq",
+                    "traits": {
+                        "smithy.api#documentation": "Temporal AQ makes adjustments within each frame based on variations in content complexity over time. Enabled: MediaLive will determine the appropriate level of temporal AQ to apply. Disabled: No temporal AQ. For more information, see the topic about video adaptive quantization in the MediaLive user guide.",
+                        "smithy.api#jsonName": "temporalAq"
+                    }
+                },
+                "TimecodeInsertion": {
+                    "target": "com.amazonaws.medialive#Av1TimecodeInsertionBehavior",
+                    "traits": {
+                        "smithy.api#documentation": "Controls how MediaLive inserts timecodes into the video output encode.\nDISABLED: Do not insert timecodes.\nMETADATA_OBU: Include timecodes. MediaLive inserts timecode metadata based on the timecode from the source specified in the Timecode Config property. The timecode metadata is a metadata OBU (Open Bitstream Unit) of type METADATA_TYPE_TIMECODE, in accordance with https://aomediacodec.github.io/av1-spec/#metadata-timecode-syntax.",
+                        "smithy.api#jsonName": "timecodeInsertion"
+                    }
+                },
+                "BitDepth": {
+                    "target": "com.amazonaws.medialive#Av1BitDepth",
+                    "traits": {
+                        "smithy.api#documentation": "Specifies the bit depth for the output encode. Choose a value. Or leave the field empty to use the default, which is 8 bit.",
+                        "smithy.api#jsonName": "bitDepth"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "Av1 Settings"
+            }
+        },
+        "com.amazonaws.medialive#Av1SpatialAq": {
+            "type": "enum",
+            "members": {
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DISABLED"
+                    }
+                },
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ENABLED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Av1 Spatial Aq"
+            }
+        },
+        "com.amazonaws.medialive#Av1TemporalAq": {
+            "type": "enum",
+            "members": {
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DISABLED"
+                    }
+                },
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ENABLED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Av1 Temporal Aq"
+            }
+        },
+        "com.amazonaws.medialive#Av1TimecodeInsertionBehavior": {
+            "type": "enum",
+            "members": {
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DISABLED"
+                    }
+                },
+                "METADATA_OBU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "METADATA_OBU"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Av1 Timecode Insertion Behavior"
             }
         },
         "com.amazonaws.medialive#AvailBlanking": {
@@ -3653,6 +3767,27 @@
                         "smithy.api#documentation": "Requested engine version for this channel.",
                         "smithy.api#jsonName": "channelEngineVersion"
                     }
+                },
+                "LinkedChannelSettings": {
+                    "target": "com.amazonaws.medialive#DescribeLinkedChannelSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Linked Channel Settings for this channel.",
+                        "smithy.api#jsonName": "linkedChannelSettings"
+                    }
+                },
+                "ChannelSecurityGroups": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "A list of IDs for all the Input Security Groups attached to the channel.",
+                        "smithy.api#jsonName": "channelSecurityGroups"
+                    }
+                },
+                "InferenceSettings": {
+                    "target": "com.amazonaws.medialive#DescribeInferenceSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Include this setting to include Elemental Inference features in this channel.",
+                        "smithy.api#jsonName": "inferenceSettings"
+                    }
                 }
             },
             "traits": {
@@ -4085,6 +4220,27 @@
                     "traits": {
                         "smithy.api#documentation": "The engine version that the running pipelines are using.",
                         "smithy.api#jsonName": "usedChannelEngineVersions"
+                    }
+                },
+                "LinkedChannelSettings": {
+                    "target": "com.amazonaws.medialive#DescribeLinkedChannelSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Linked Channel Settings for this channel.",
+                        "smithy.api#jsonName": "linkedChannelSettings"
+                    }
+                },
+                "ChannelSecurityGroups": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "A list of IDs for all the Input Security Groups attached to the channel.",
+                        "smithy.api#jsonName": "channelSecurityGroups"
+                    }
+                },
+                "InferenceSettings": {
+                    "target": "com.amazonaws.medialive#DescribeInferenceSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Include this setting to include Elemental Inference features in this channel.",
+                        "smithy.api#jsonName": "inferenceSettings"
                     }
                 }
             },
@@ -5151,6 +5307,26 @@
                 "smithy.api#httpError": 409
             }
         },
+        "com.amazonaws.medialive#ConnectionMode": {
+            "type": "enum",
+            "members": {
+                "CALLER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CALLER"
+                    }
+                },
+                "LISTENER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LISTENER"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for ConnectionMode"
+            }
+        },
         "com.amazonaws.medialive#ContentType": {
             "type": "enum",
             "members": {
@@ -5471,6 +5647,27 @@
                     "target": "com.amazonaws.medialive#__boolean",
                     "traits": {
                         "smithy.api#jsonName": "dryRun"
+                    }
+                },
+                "LinkedChannelSettings": {
+                    "target": "com.amazonaws.medialive#LinkedChannelSettings",
+                    "traits": {
+                        "smithy.api#documentation": "The linked channel settings for the channel.",
+                        "smithy.api#jsonName": "linkedChannelSettings"
+                    }
+                },
+                "ChannelSecurityGroups": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "A list of IDs for all the Input Security Groups attached to the channel.",
+                        "smithy.api#jsonName": "channelSecurityGroups"
+                    }
+                },
+                "InferenceSettings": {
+                    "target": "com.amazonaws.medialive#InferenceSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Include this setting to include Elemental Inference features in this channel.",
+                        "smithy.api#jsonName": "inferenceSettings"
                     }
                 }
             },
@@ -6514,6 +6711,12 @@
                     "target": "com.amazonaws.medialive#InputSdiSources",
                     "traits": {
                         "smithy.api#jsonName": "sdiSources"
+                    }
+                },
+                "RouterSettings": {
+                    "target": "com.amazonaws.medialive#RouterSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "routerSettings"
                     }
                 }
             },
@@ -8190,6 +8393,27 @@
                     "traits": {
                         "smithy.api#documentation": "Requested engine version for this channel.",
                         "smithy.api#jsonName": "channelEngineVersion"
+                    }
+                },
+                "LinkedChannelSettings": {
+                    "target": "com.amazonaws.medialive#DescribeLinkedChannelSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Linked Channel Settings for this channel.",
+                        "smithy.api#jsonName": "linkedChannelSettings"
+                    }
+                },
+                "ChannelSecurityGroups": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "A list of IDs for all the Input Security Groups attached to the channel.",
+                        "smithy.api#jsonName": "channelSecurityGroups"
+                    }
+                },
+                "InferenceSettings": {
+                    "target": "com.amazonaws.medialive#DescribeInferenceSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Include this setting to include Elemental Inference features in this channel.",
+                        "smithy.api#jsonName": "inferenceSettings"
                     }
                 }
             },
@@ -10343,6 +10567,27 @@
                         "smithy.api#documentation": "Requested engine version for this channel.",
                         "smithy.api#jsonName": "channelEngineVersion"
                     }
+                },
+                "LinkedChannelSettings": {
+                    "target": "com.amazonaws.medialive#DescribeLinkedChannelSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Linked Channel Settings for this channel.",
+                        "smithy.api#jsonName": "linkedChannelSettings"
+                    }
+                },
+                "ChannelSecurityGroups": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "A list of IDs for all the Input Security Groups attached to the channel.",
+                        "smithy.api#jsonName": "channelSecurityGroups"
+                    }
+                },
+                "InferenceSettings": {
+                    "target": "com.amazonaws.medialive#DescribeInferenceSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Include this setting to include Elemental Inference features in this channel.",
+                        "smithy.api#jsonName": "inferenceSettings"
+                    }
                 }
             },
             "traits": {
@@ -10609,6 +10854,43 @@
             },
             "traits": {
                 "smithy.api#documentation": "Used in ListClustersResult."
+            }
+        },
+        "com.amazonaws.medialive#DescribeFollowerChannelSettings": {
+            "type": "structure",
+            "members": {
+                "LinkedChannelType": {
+                    "target": "com.amazonaws.medialive#LinkedChannelType",
+                    "traits": {
+                        "smithy.api#documentation": "Specifies this as a follower channel",
+                        "smithy.api#jsonName": "linkedChannelType"
+                    }
+                },
+                "PrimaryChannelArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "The ARN of the primary channel this channel follows",
+                        "smithy.api#jsonName": "primaryChannelArn"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Details of a follower channel in a linked pair"
+            }
+        },
+        "com.amazonaws.medialive#DescribeInferenceSettings": {
+            "type": "structure",
+            "members": {
+                "FeedArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "The ARN of the feed resource that is associated with this channel. The feed is a resource in the Elemental Inference service.",
+                        "smithy.api#jsonName": "feedArn"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Configures Elemental Inference features in a channel."
             }
         },
         "com.amazonaws.medialive#DescribeInput": {
@@ -11212,6 +11494,13 @@
                     "traits": {
                         "smithy.api#jsonName": "sdiSources"
                     }
+                },
+                "RouterSettings": {
+                    "target": "com.amazonaws.medialive#RouterInputSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Information about any MediaConnect router association with this input.",
+                        "smithy.api#jsonName": "routerSettings"
+                    }
                 }
             },
             "traits": {
@@ -11320,11 +11609,38 @@
                         "smithy.api#documentation": "Whitelist rules and their sync status",
                         "smithy.api#jsonName": "whitelistRules"
                     }
+                },
+                "Channels": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "The list of channels currently using this Input Security Group as their channel security group.",
+                        "smithy.api#jsonName": "channels"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "Placeholder documentation for DescribeInputSecurityGroupResponse",
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.medialive#DescribeLinkedChannelSettings": {
+            "type": "structure",
+            "members": {
+                "FollowerChannelSettings": {
+                    "target": "com.amazonaws.medialive#DescribeFollowerChannelSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "followerChannelSettings"
+                    }
+                },
+                "PrimaryChannelSettings": {
+                    "target": "com.amazonaws.medialive#DescribePrimaryChannelSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "primaryChannelSettings"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Linked channel configuration details"
             }
         },
         "com.amazonaws.medialive#DescribeMultiplex": {
@@ -12360,6 +12676,28 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.medialive#DescribePrimaryChannelSettings": {
+            "type": "structure",
+            "members": {
+                "FollowingChannelArns": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "The ARNs of the following channels for this primary channel",
+                        "smithy.api#jsonName": "followingChannelArns"
+                    }
+                },
+                "LinkedChannelType": {
+                    "target": "com.amazonaws.medialive#LinkedChannelType",
+                    "traits": {
+                        "smithy.api#documentation": "Specifies this as a primary channel",
+                        "smithy.api#jsonName": "linkedChannelType"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Details of a primary (leader) channel in a linked pair"
+            }
+        },
         "com.amazonaws.medialive#DescribeReservation": {
             "type": "operation",
             "input": {
@@ -12867,6 +13205,21 @@
             },
             "traits": {
                 "smithy.api#documentation": "The status of software on the input device."
+            }
+        },
+        "com.amazonaws.medialive#DisabledLockingSettings": {
+            "type": "structure",
+            "members": {
+                "CustomEpoch": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "Optional. Only applies to CMAF Ingest Output Group and MediaPackage V2 Output Group. Enter a value here to use a custom epoch, instead of the standard epoch (which started at 1970-01-01T00:00:00 UTC). Specify the start time of the custom epoch, in YYYY-MM-DDTHH:MM:SS in UTC. The time must be 2000-01-01T00:00:00 or later. Always set the MM:SS portion to 00:00.",
+                        "smithy.api#jsonName": "customEpoch"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Disabled Locking Settings"
             }
         },
         "com.amazonaws.medialive#DolbyEProgramSelection": {
@@ -15213,6 +15566,28 @@
                 "smithy.api#documentation": "Follow reference point."
             }
         },
+        "com.amazonaws.medialive#FollowerChannelSettings": {
+            "type": "structure",
+            "members": {
+                "LinkedChannelType": {
+                    "target": "com.amazonaws.medialive#LinkedChannelType",
+                    "traits": {
+                        "smithy.api#documentation": "Specifies this as a follower channel",
+                        "smithy.api#jsonName": "linkedChannelType"
+                    }
+                },
+                "PrimaryChannelArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "The ARN of the primary channel to follow",
+                        "smithy.api#jsonName": "primaryChannelArn"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Settings for a follower channel in a linked pair"
+            }
+        },
         "com.amazonaws.medialive#ForbiddenException": {
             "type": "structure",
             "members": {
@@ -17448,6 +17823,12 @@
                     "traits": {
                         "smithy.api#jsonName": "rec709Settings"
                     }
+                },
+                "Hlg2020Settings": {
+                    "target": "com.amazonaws.medialive#Hlg2020Settings",
+                    "traits": {
+                        "smithy.api#jsonName": "hlg2020Settings"
+                    }
                 }
             },
             "traits": {
@@ -18224,6 +18605,13 @@
             },
             "traits": {
                 "smithy.api#documentation": "Hdr10 Settings"
+            }
+        },
+        "com.amazonaws.medialive#Hlg2020Settings": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#documentation": "Hlg2020 Settings"
             }
         },
         "com.amazonaws.medialive#HlsAdMarkers": {
@@ -19613,6 +20001,21 @@
                 "smithy.api#documentation": "Include Filler Nal Units"
             }
         },
+        "com.amazonaws.medialive#InferenceSettings": {
+            "type": "structure",
+            "members": {
+                "FeedArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "The ARN of the feed resource that is associated with this channel. The feed is a resource in the Elemental Inference service.",
+                        "smithy.api#jsonName": "feedArn"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Configures Elemental Inference features in a channel."
+            }
+        },
         "com.amazonaws.medialive#Input": {
             "type": "structure",
             "members": {
@@ -19758,6 +20161,13 @@
                     "target": "com.amazonaws.medialive#InputSdiSources",
                     "traits": {
                         "smithy.api#jsonName": "sdiSources"
+                    }
+                },
+                "RouterSettings": {
+                    "target": "com.amazonaws.medialive#RouterInputSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Information about any MediaConnect router association with this input.",
+                        "smithy.api#jsonName": "routerSettings"
                     }
                 }
             },
@@ -21386,6 +21796,13 @@
                         "smithy.api#documentation": "Whitelist rules and their sync status",
                         "smithy.api#jsonName": "whitelistRules"
                     }
+                },
+                "Channels": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "The list of channels currently using this Input Security Group as their channel security group.",
+                        "smithy.api#jsonName": "channels"
+                    }
                 }
             },
             "traits": {
@@ -21811,6 +22228,18 @@
                     "traits": {
                         "smithy.api#enumValue": "SDI"
                     }
+                },
+                "MEDIACONNECT_ROUTER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MEDIACONNECT_ROUTER"
+                    }
+                },
+                "SRT_LISTENER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SRT_LISTENER"
+                    }
                 }
             },
             "traits": {
@@ -22030,6 +22459,46 @@
             },
             "traits": {
                 "smithy.api#documentation": "If you specify a StopTimecode in an input (in order to clip the file), you can specify if you want the clip to exclude (the default) or include the frame specified by the timecode."
+            }
+        },
+        "com.amazonaws.medialive#LinkedChannelSettings": {
+            "type": "structure",
+            "members": {
+                "FollowerChannelSettings": {
+                    "target": "com.amazonaws.medialive#FollowerChannelSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "followerChannelSettings"
+                    }
+                },
+                "PrimaryChannelSettings": {
+                    "target": "com.amazonaws.medialive#PrimaryChannelSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "primaryChannelSettings"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Configuration for linked channel relationships"
+            }
+        },
+        "com.amazonaws.medialive#LinkedChannelType": {
+            "type": "enum",
+            "members": {
+                "FOLLOWING_CHANNEL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FOLLOWING_CHANNEL"
+                    }
+                },
+                "PRIMARY_CHANNEL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PRIMARY_CHANNEL"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "The values for the role for a linked channel."
             }
         },
         "com.amazonaws.medialive#ListAlerts": {
@@ -25528,11 +25997,7 @@
         "com.amazonaws.medialive#MaxResults": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for MaxResults",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 1000
-                }
+                "smithy.api#documentation": "Placeholder documentation for MaxResults"
             }
         },
         "com.amazonaws.medialive#MediaConnectFlow": {
@@ -25563,6 +26028,131 @@
             },
             "traits": {
                 "smithy.api#documentation": "The settings for a MediaConnect Flow."
+            }
+        },
+        "com.amazonaws.medialive#MediaConnectRouterContainerSettings": {
+            "type": "structure",
+            "members": {
+                "M2tsSettings": {
+                    "target": "com.amazonaws.medialive#M2tsSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "m2tsSettings"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Media Connect Router Container Settings"
+            }
+        },
+        "com.amazonaws.medialive#MediaConnectRouterGroupSettings": {
+            "type": "structure",
+            "members": {
+                "AvailabilityZones": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "The names of the Availability Zones in which to write output to MediaConnect Router.",
+                        "smithy.api#jsonName": "availabilityZones"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Media Connect Router Group Settings"
+            }
+        },
+        "com.amazonaws.medialive#MediaConnectRouterOutputConnectionMap": {
+            "type": "structure",
+            "members": {
+                "Pipeline0": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "The ARN of the MediaConnect Router Input connected to pipeline 0.",
+                        "smithy.api#jsonName": "pipeline0"
+                    }
+                },
+                "Pipeline1": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "The ARN of the MediaConnect Router Input connected to pipeline 1.",
+                        "smithy.api#jsonName": "pipeline1"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Map of MediaLive pipeline IDs to the ARNs of the MediaConnect Router Inputs to which this Output is connected."
+            }
+        },
+        "com.amazonaws.medialive#MediaConnectRouterOutputDestinationSettings": {
+            "type": "structure",
+            "members": {
+                "EncryptionType": {
+                    "target": "com.amazonaws.medialive#MediaConnectRouterOutputEncryptionType",
+                    "traits": {
+                        "smithy.api#documentation": "Encryption configuration for MediaConnect router. When using SECRETS_MANAGER encryption, you must provide the ARN of the secret used to encrypt data in transit. When using AUTOMATIC encryption, a service-managed secret will be used instead.",
+                        "smithy.api#jsonName": "encryptionType"
+                    }
+                },
+                "SecretArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "ARN of the secret used to encrypt this input. Used only with the SECRETS_MANAGER encryption type.",
+                        "smithy.api#jsonName": "secretArn"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "MediaConnect Router Output Destination Settings"
+            }
+        },
+        "com.amazonaws.medialive#MediaConnectRouterOutputEncryptionType": {
+            "type": "enum",
+            "members": {
+                "AUTOMATIC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AUTOMATIC"
+                    }
+                },
+                "SECRETS_MANAGER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SECRETS_MANAGER"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Encryption configuration for MediaConnect router. When using SECRETS_MANAGER encryption, you must provide the ARN of the secret used to encrypt data in transit. When using AUTOMATIC encryption, a service-managed secret will be used instead."
+            }
+        },
+        "com.amazonaws.medialive#MediaConnectRouterOutputSettings": {
+            "type": "structure",
+            "members": {
+                "ConnectedRouterInputs": {
+                    "target": "com.amazonaws.medialive#MediaConnectRouterOutputConnectionMap",
+                    "traits": {
+                        "smithy.api#documentation": "Shows the MediaConnect Router Inputs that are connected to this output. This parameter is purely informative, and editing it will have no effect. To connect or disconnect MediaConnect Router Inputs, go to MediaConnect.",
+                        "smithy.api#jsonName": "connectedRouterInputs"
+                    }
+                },
+                "ContainerSettings": {
+                    "target": "com.amazonaws.medialive#MediaConnectRouterContainerSettings",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#jsonName": "containerSettings",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Destination": {
+                    "target": "com.amazonaws.medialive#OutputLocationRef",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Destination for this MediaConnect Router Output. The referenced OutputDestination must have MediaConnect Router settings configured.",
+                        "smithy.api#jsonName": "destination",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Media Connect Router Output Settings"
             }
         },
         "com.amazonaws.medialive#MediaLive": {
@@ -26737,6 +27327,23 @@
                 }
             }
         },
+        "com.amazonaws.medialive#MediaPackageAdditionalDestinations": {
+            "type": "structure",
+            "members": {
+                "Destination": {
+                    "target": "com.amazonaws.medialive#OutputLocationRef",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The destination location",
+                        "smithy.api#jsonName": "destination",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Additional output destinations for a CMAF Ingest output group"
+            }
+        },
         "com.amazonaws.medialive#MediaPackageGroupSettings": {
             "type": "structure",
             "members": {
@@ -26783,6 +27390,20 @@
                     "traits": {
                         "smithy.api#documentation": "Name of the channel in MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2.",
                         "smithy.api#jsonName": "channelName"
+                    }
+                },
+                "ChannelEndpointId": {
+                    "target": "com.amazonaws.medialive#__stringMin1",
+                    "traits": {
+                        "smithy.api#documentation": "Endpoint 1 or 2 of the channel in MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2.",
+                        "smithy.api#jsonName": "channelEndpointId"
+                    }
+                },
+                "MediaPackageRegionName": {
+                    "target": "com.amazonaws.medialive#__stringMin1",
+                    "traits": {
+                        "smithy.api#documentation": "Region the channel group and channel are located in for MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2.",
+                        "smithy.api#jsonName": "mediaPackageRegionName"
                     }
                 }
             },
@@ -26912,6 +27533,13 @@
                     "traits": {
                         "smithy.api#documentation": "Set to enabled to pass through ID3 metadata from the input sources.",
                         "smithy.api#jsonName": "timedMetadataPassthrough"
+                    }
+                },
+                "AdditionalDestinations": {
+                    "target": "com.amazonaws.medialive#__listOfMediaPackageAdditionalDestinations",
+                    "traits": {
+                        "smithy.api#documentation": "Optional an array of additional destinational HTTP destinations for the OutputGroup outputs",
+                        "smithy.api#jsonName": "additionalDestinations"
                     }
                 }
             },
@@ -29087,6 +29715,13 @@
                         "smithy.api#documentation": "The name of the physical interface on the hardware that will be running Elemental anywhere.",
                         "smithy.api#jsonName": "physicalInterfaceName"
                     }
+                },
+                "PhysicalInterfaceIpAddresses": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "The IP addresses associated with the physical interface on the node hardware.",
+                        "smithy.api#jsonName": "physicalInterfaceIpAddresses"
+                    }
                 }
             },
             "traits": {
@@ -29440,6 +30075,13 @@
                         "smithy.api#documentation": "Optional assignment of an output to a logical interface on the Node. Only applies to on premises channels.",
                         "smithy.api#jsonName": "logicalInterfaceNames"
                     }
+                },
+                "MediaConnectRouterSettings": {
+                    "target": "com.amazonaws.medialive#__listOfMediaConnectRouterOutputDestinationSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Destination settings for a MediaConnect Router output; one destination for each redundant encoder.",
+                        "smithy.api#jsonName": "mediaConnectRouterSettings"
+                    }
                 }
             },
             "traits": {
@@ -29576,6 +30218,12 @@
                     "traits": {
                         "smithy.api#jsonName": "srtGroupSettings"
                     }
+                },
+                "MediaConnectRouterGroupSettings": {
+                    "target": "com.amazonaws.medialive#MediaConnectRouterGroupSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "mediaConnectRouterGroupSettings"
+                    }
                 }
             },
             "traits": {
@@ -29609,6 +30257,12 @@
                     "target": "com.amazonaws.medialive#PipelineLockingSettings",
                     "traits": {
                         "smithy.api#jsonName": "pipelineLockingSettings"
+                    }
+                },
+                "DisabledLockingSettings": {
+                    "target": "com.amazonaws.medialive#DisabledLockingSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "disabledLockingSettings"
                     }
                 }
             },
@@ -29677,6 +30331,12 @@
                     "target": "com.amazonaws.medialive#SrtOutputSettings",
                     "traits": {
                         "smithy.api#jsonName": "srtOutputSettings"
+                    }
+                },
+                "MediaConnectRouterOutputSettings": {
+                    "target": "com.amazonaws.medialive#MediaConnectRouterOutputSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "mediaConnectRouterOutputSettings"
                     }
                 }
             },
@@ -29775,9 +30435,44 @@
                 "smithy.api#documentation": "Pipeline ID"
             }
         },
+        "com.amazonaws.medialive#PipelineLockingMethod": {
+            "type": "enum",
+            "members": {
+                "SOURCE_TIMECODE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SOURCE_TIMECODE"
+                    }
+                },
+                "VIDEO_ALIGNMENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "VIDEO_ALIGNMENT"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Pipeline Locking Method"
+            }
+        },
         "com.amazonaws.medialive#PipelineLockingSettings": {
             "type": "structure",
-            "members": {},
+            "members": {
+                "PipelineLockingMethod": {
+                    "target": "com.amazonaws.medialive#PipelineLockingMethod",
+                    "traits": {
+                        "smithy.api#documentation": "The method to use to lock the video frames in the pipelines. sourceTimecode (default): Use the timecode in the source. videoAlignment: Lock frames that the encoder identifies as having matching content. If videoAlignment is selected, existing timecodes will not be used for any locking decisions.",
+                        "smithy.api#jsonName": "pipelineLockingMethod"
+                    }
+                },
+                "CustomEpoch": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "Optional. Only applies to CMAF Ingest Output Group and MediaPackage V2 Output Group Only. Enter a value here to use a custom epoch, instead of the standard epoch (which started at 1970-01-01T00:00:00 UTC). Specify the start time of the custom epoch, in YYYY-MM-DDTHH:MM:SS in UTC. The time must be 2000-01-01T00:00:00 or later. Always set the MM:SS portion to 00:00.",
+                        "smithy.api#jsonName": "customEpoch"
+                    }
+                }
+            },
             "traits": {
                 "smithy.api#documentation": "Pipeline Locking Settings"
             }
@@ -29823,6 +30518,21 @@
             },
             "traits": {
                 "smithy.api#documentation": "Indicates which pipeline is preferred by the multiplex for program ingest.\nIf set to \\\"PIPELINE_0\\\" or \\\"PIPELINE_1\\\" and an unhealthy ingest causes the multiplex to switch to the non-preferred pipeline,\nit will switch back once that ingest is healthy again. If set to \\\"CURRENTLY_ACTIVE\\\",\nit will not switch back to the other pipeline based on it recovering to a healthy state,\nit will only switch if the active pipeline becomes unhealthy."
+            }
+        },
+        "com.amazonaws.medialive#PrimaryChannelSettings": {
+            "type": "structure",
+            "members": {
+                "LinkedChannelType": {
+                    "target": "com.amazonaws.medialive#LinkedChannelType",
+                    "traits": {
+                        "smithy.api#documentation": "Specifies this as a primary channel",
+                        "smithy.api#jsonName": "linkedChannelType"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Settings for a primary (leader) channel in a linked pair"
             }
         },
         "com.amazonaws.medialive#PurchaseOffering": {
@@ -30874,6 +31584,27 @@
                         "smithy.api#documentation": "Requested engine version for this channel.",
                         "smithy.api#jsonName": "channelEngineVersion"
                     }
+                },
+                "LinkedChannelSettings": {
+                    "target": "com.amazonaws.medialive#DescribeLinkedChannelSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Linked Channel Settings for this channel.",
+                        "smithy.api#jsonName": "linkedChannelSettings"
+                    }
+                },
+                "ChannelSecurityGroups": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "A list of IDs for all the Input Security Groups attached to the channel.",
+                        "smithy.api#jsonName": "channelSecurityGroups"
+                    }
+                },
+                "InferenceSettings": {
+                    "target": "com.amazonaws.medialive#DescribeInferenceSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Include this setting to include Elemental Inference features in this channel.",
+                        "smithy.api#jsonName": "inferenceSettings"
+                    }
                 }
             },
             "traits": {
@@ -30945,6 +31676,121 @@
             },
             "traits": {
                 "smithy.api#documentation": "Used in UpdateNetworkRequest."
+            }
+        },
+        "com.amazonaws.medialive#RouterDestination": {
+            "type": "structure",
+            "members": {
+                "AvailabilityZoneName": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "The Availability Zone (AZ) names of the AZs this destination is created in.",
+                        "smithy.api#jsonName": "availabilityZoneName"
+                    }
+                },
+                "RouterOutputArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "ARN of the output from MediaConnect Router currently connected to this input.",
+                        "smithy.api#jsonName": "routerOutputArn"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for RouterDestination"
+            }
+        },
+        "com.amazonaws.medialive#RouterDestinationSettings": {
+            "type": "structure",
+            "members": {
+                "AvailabilityZoneName": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Availability Zone for this MediaConnect Router destination.",
+                        "smithy.api#jsonName": "availabilityZoneName",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for RouterDestinationSettings"
+            }
+        },
+        "com.amazonaws.medialive#RouterEncryptionType": {
+            "type": "enum",
+            "members": {
+                "AUTOMATIC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AUTOMATIC"
+                    }
+                },
+                "SECRETS_MANAGER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SECRETS_MANAGER"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Encryption configuration for MediaConnect router. When using SECRETS_MANAGER encryption, you must provide the ARN of the secret used to encrypt data in transit. When using AUTOMATIC encryption, a service-managed secret will be used instead."
+            }
+        },
+        "com.amazonaws.medialive#RouterInputSettings": {
+            "type": "structure",
+            "members": {
+                "Destinations": {
+                    "target": "com.amazonaws.medialive#__listOfRouterDestination",
+                    "traits": {
+                        "smithy.api#documentation": "MediaConnect Router destinations associated with the MediaLive Input.",
+                        "smithy.api#jsonName": "destinations"
+                    }
+                },
+                "EncryptionType": {
+                    "target": "com.amazonaws.medialive#RouterEncryptionType",
+                    "traits": {
+                        "smithy.api#jsonName": "encryptionType"
+                    }
+                },
+                "SecretArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "ARN of the secret used to encrypt this input.",
+                        "smithy.api#jsonName": "secretArn"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "The settings for a MediaConnect Router Input."
+            }
+        },
+        "com.amazonaws.medialive#RouterSettings": {
+            "type": "structure",
+            "members": {
+                "Destinations": {
+                    "target": "com.amazonaws.medialive#__listOfRouterDestinationSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Destinations for the input from MediaConnect Router. Provide one for a single-pipeline input and two for a standard input.",
+                        "smithy.api#jsonName": "destinations"
+                    }
+                },
+                "EncryptionType": {
+                    "target": "com.amazonaws.medialive#RouterEncryptionType",
+                    "traits": {
+                        "smithy.api#jsonName": "encryptionType"
+                    }
+                },
+                "SecretArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "ARN of the secret used to encrypt this input.",
+                        "smithy.api#jsonName": "secretArn"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "This is the collection of settings that are used during the creation of a MediaConnect router input."
             }
         },
         "com.amazonaws.medialive#RtmpAdMarkers": {
@@ -32759,6 +33605,21 @@
                 "smithy.api#documentation": "Smpte Tt Destination Settings"
             }
         },
+        "com.amazonaws.medialive#SpecialRouterSettings": {
+            "type": "structure",
+            "members": {
+                "RouterArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "This is the arn of the MediaConnect Router resource being associated with the MediaLive Input.",
+                        "smithy.api#jsonName": "routerArn"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service."
+            }
+        },
         "com.amazonaws.medialive#SrtCallerDecryption": {
             "type": "structure",
             "members": {
@@ -32928,6 +33789,118 @@
                 "smithy.api#documentation": "Srt Group Settings"
             }
         },
+        "com.amazonaws.medialive#SrtListenerDecryption": {
+            "type": "structure",
+            "members": {
+                "Algorithm": {
+                    "target": "com.amazonaws.medialive#Algorithm",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The algorithm used to decrypt content.",
+                        "smithy.api#jsonName": "algorithm",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PassphraseSecretArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The ARN for the secret in Secrets Manager that holds the passphrase for decryption.",
+                        "smithy.api#jsonName": "passphraseSecretArn",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Decryption settings for SRT listener. If present, both algorithm and passphraseSecretArn are required."
+            }
+        },
+        "com.amazonaws.medialive#SrtListenerDecryptionRequest": {
+            "type": "structure",
+            "members": {
+                "Algorithm": {
+                    "target": "com.amazonaws.medialive#Algorithm",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Required. The decryption algorithm.",
+                        "smithy.api#jsonName": "algorithm",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PassphraseSecretArn": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Required. The ARN for the secret in Secrets Manager that holds the passphrase.",
+                        "smithy.api#jsonName": "passphraseSecretArn",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Decryption settings. If specified, both algorithm and passphraseSecretArn are required."
+            }
+        },
+        "com.amazonaws.medialive#SrtListenerSettings": {
+            "type": "structure",
+            "members": {
+                "Decryption": {
+                    "target": "com.amazonaws.medialive#SrtListenerDecryption",
+                    "traits": {
+                        "smithy.api#jsonName": "decryption"
+                    }
+                },
+                "MinimumLatency": {
+                    "target": "com.amazonaws.medialive#__integer",
+                    "traits": {
+                        "smithy.api#documentation": "The preferred latency (in milliseconds) for implementing packet loss and recovery. Range 120-15000.",
+                        "smithy.api#jsonName": "minimumLatency"
+                    }
+                },
+                "StreamId": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "The stream ID, if the upstream system uses this identifier.",
+                        "smithy.api#jsonName": "streamId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Settings for SRT Listener input."
+            }
+        },
+        "com.amazonaws.medialive#SrtListenerSettingsRequest": {
+            "type": "structure",
+            "members": {
+                "Decryption": {
+                    "target": "com.amazonaws.medialive#SrtListenerDecryptionRequest",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#jsonName": "decryption",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MinimumLatency": {
+                    "target": "com.amazonaws.medialive#__integer",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Required. The preferred latency in milliseconds for packet loss and recovery. Range 120-15000.",
+                        "smithy.api#jsonName": "minimumLatency",
+                        "smithy.api#required": {}
+                    }
+                },
+                "StreamId": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "Optional. The stream ID if the upstream system uses this identifier.",
+                        "smithy.api#jsonName": "streamId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Configuration for SRT Listener input. Encryption is REQUIRED for all SRT Listener inputs for security reasons. You must provide decryption settings including algorithm and passphrase secret ARN."
+            }
+        },
         "com.amazonaws.medialive#SrtOutputDestinationSettings": {
             "type": "structure",
             "members": {
@@ -32950,6 +33923,20 @@
                     "traits": {
                         "smithy.api#documentation": "A URL specifying a destination",
                         "smithy.api#jsonName": "url"
+                    }
+                },
+                "ConnectionMode": {
+                    "target": "com.amazonaws.medialive#ConnectionMode",
+                    "traits": {
+                        "smithy.api#documentation": "Specifies the mode the output should use for connection establishment. CALLER mode requires URL, LISTENER mode requires port.",
+                        "smithy.api#jsonName": "connectionMode"
+                    }
+                },
+                "ListenerPort": {
+                    "target": "com.amazonaws.medialive#__integerMin1Max65535",
+                    "traits": {
+                        "smithy.api#documentation": "Port number for listener mode connections (required when connectionMode is LISTENER, must not be provided when connectionMode is CALLER).",
+                        "smithy.api#jsonName": "listenerPort"
                     }
                 }
             },
@@ -33010,10 +33997,16 @@
                     "traits": {
                         "smithy.api#jsonName": "srtCallerSources"
                     }
+                },
+                "SrtListenerSettings": {
+                    "target": "com.amazonaws.medialive#SrtListenerSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "srtListenerSettings"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "The configured sources for this SRT input."
+                "smithy.api#documentation": "The configured settings for SRT inputs (caller and listener)."
             }
         },
         "com.amazonaws.medialive#SrtSettingsRequest": {
@@ -33024,10 +34017,16 @@
                     "traits": {
                         "smithy.api#jsonName": "srtCallerSources"
                     }
+                },
+                "SrtListenerSettings": {
+                    "target": "com.amazonaws.medialive#SrtListenerSettingsRequest",
+                    "traits": {
+                        "smithy.api#jsonName": "srtListenerSettings"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "Configures the sources for this SRT input. For a single-pipeline input, include one srtCallerSource in the array. For a standard-pipeline input, include two srtCallerSource."
+                "smithy.api#documentation": "Configures the settings for SRT inputs. Provide either srtCallerSources (for SRT_CALLER type) OR srtListenerSettings (for SRT_LISTENER type), not both."
             }
         },
         "com.amazonaws.medialive#StandardHlsSettings": {
@@ -33252,6 +34251,27 @@
                     "traits": {
                         "smithy.api#documentation": "Requested engine version for this channel.",
                         "smithy.api#jsonName": "channelEngineVersion"
+                    }
+                },
+                "LinkedChannelSettings": {
+                    "target": "com.amazonaws.medialive#DescribeLinkedChannelSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Linked Channel Settings for this channel.",
+                        "smithy.api#jsonName": "linkedChannelSettings"
+                    }
+                },
+                "ChannelSecurityGroups": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "A list of IDs for all the Input Security Groups attached to the channel.",
+                        "smithy.api#jsonName": "channelSecurityGroups"
+                    }
+                },
+                "InferenceSettings": {
+                    "target": "com.amazonaws.medialive#DescribeInferenceSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Include this setting to include Elemental Inference features in this channel.",
+                        "smithy.api#jsonName": "inferenceSettings"
                     }
                 }
             },
@@ -34575,6 +35595,27 @@
                     "traits": {
                         "smithy.api#documentation": "Requested engine version for this channel.",
                         "smithy.api#jsonName": "channelEngineVersion"
+                    }
+                },
+                "LinkedChannelSettings": {
+                    "target": "com.amazonaws.medialive#DescribeLinkedChannelSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Linked Channel Settings for this channel.",
+                        "smithy.api#jsonName": "linkedChannelSettings"
+                    }
+                },
+                "ChannelSecurityGroups": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "A list of IDs for all the Input Security Groups attached to the channel.",
+                        "smithy.api#jsonName": "channelSecurityGroups"
+                    }
+                },
+                "InferenceSettings": {
+                    "target": "com.amazonaws.medialive#DescribeInferenceSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Include this setting to include Elemental Inference features in this channel.",
+                        "smithy.api#jsonName": "inferenceSettings"
                     }
                 }
             },
@@ -36104,6 +37145,34 @@
                         "smithy.api#documentation": "The Elemental Anywhere settings for this channel.",
                         "smithy.api#jsonName": "anywhereSettings"
                     }
+                },
+                "LinkedChannelSettings": {
+                    "target": "com.amazonaws.medialive#LinkedChannelSettings",
+                    "traits": {
+                        "smithy.api#documentation": "The linked channel settings for the channel.",
+                        "smithy.api#jsonName": "linkedChannelSettings"
+                    }
+                },
+                "ChannelSecurityGroups": {
+                    "target": "com.amazonaws.medialive#__listOf__string",
+                    "traits": {
+                        "smithy.api#documentation": "A list of IDs for all the Input Security Groups attached to the channel.",
+                        "smithy.api#jsonName": "channelSecurityGroups"
+                    }
+                },
+                "InferenceSettings": {
+                    "target": "com.amazonaws.medialive#InferenceSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Include this setting to include Elemental Inference features in this channel.",
+                        "smithy.api#jsonName": "inferenceSettings"
+                    }
+                },
+                "SpecialRouterSettings": {
+                    "target": "com.amazonaws.medialive#SpecialRouterSettings",
+                    "traits": {
+                        "smithy.api#documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service.",
+                        "smithy.api#jsonName": "specialRouterSettings"
+                    }
                 }
             },
             "traits": {
@@ -37238,6 +38307,13 @@
                     "traits": {
                         "smithy.api#jsonName": "sdiSources"
                     }
+                },
+                "SpecialRouterSettings": {
+                    "target": "com.amazonaws.medialive#SpecialRouterSettings",
+                    "traits": {
+                        "smithy.api#documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service.",
+                        "smithy.api#jsonName": "specialRouterSettings"
+                    }
                 }
             },
             "traits": {
@@ -38326,7 +39402,7 @@
                 "ScalingBehavior": {
                     "target": "com.amazonaws.medialive#VideoDescriptionScalingBehavior",
                     "traits": {
-                        "smithy.api#documentation": "STRETCH_TO_OUTPUT configures the output position to stretch the video to the specified output resolution (height and width). This option will override any position value. DEFAULT may insert black boxes (pillar boxes or letter boxes) around the video to provide the specified output resolution.",
+                        "smithy.api#documentation": "Configures how MediaLive transforms the video picture to match the output frame.\nUse STRETCH_TO_OUTPUT to stretch the video to fill the output frame. The video might get distorted.\nUse DEFAULT to insert pillar boxes or letter boxes around the video to fill the output frame. The video won't get distorted.\nUse SMART_CROP to enable the smart crop feature that uses the Elemental Inference service to crop the frame using AI - see the MediaLive User Guide for more information.",
                         "smithy.api#jsonName": "scalingBehavior"
                     }
                 },
@@ -38388,6 +39464,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "STRETCH_TO_OUTPUT"
+                    }
+                },
+                "SMART_CROP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SMART_CROP"
                     }
                 }
             },
@@ -38779,644 +39861,397 @@
         "com.amazonaws.medialive#__integerMax5": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMax5",
-                "smithy.api#range": {
-                    "max": 5
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMax5"
             }
         },
         "com.amazonaws.medialive#__integerMin0": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0",
-                "smithy.api#range": {
-                    "min": 0
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max10": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max10",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 10
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max10"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max100": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max100",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 100
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max100"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max1000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max1000",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 1000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max1000"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max10000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max10000",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 10000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max10000"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max1000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max1000000",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 1000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max1000000"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max100000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max100000000",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 100000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max100000000"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max128": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max128",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 128
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max128"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max15": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max15",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 15
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max15"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max2000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max2000",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 2000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max2000"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max255": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max255",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 255
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max255"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max3": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max3",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 3
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max3"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max30": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max30",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 30
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max30"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max32768": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max32768",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 32768
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max32768"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max3600": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max3600",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 3600
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max3600"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max40000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max40000000",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 40000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max40000000"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max500": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max500",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 500
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max500"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max600": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max600",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 600
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max600"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max65535": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max65535",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 65535
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max65535"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max65536": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max65536",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 65536
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max65536"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max7": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max7",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 7
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max7"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max8000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max8000000",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 8000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max8000000"
             }
         },
         "com.amazonaws.medialive#__integerMin0Max8191": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max8191",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 8191
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max8191"
             }
         },
         "com.amazonaws.medialive#__integerMin1": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1",
-                "smithy.api#range": {
-                    "min": 1
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1"
             }
         },
         "com.amazonaws.medialive#__integerMin100": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin100",
-                "smithy.api#range": {
-                    "min": 100
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin100"
             }
         },
         "com.amazonaws.medialive#__integerMin1000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1000",
-                "smithy.api#range": {
-                    "min": 1000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1000"
             }
         },
         "com.amazonaws.medialive#__integerMin1000000Max100000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1000000Max100000000",
-                "smithy.api#range": {
-                    "min": 1000000,
-                    "max": 100000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1000000Max100000000"
             }
         },
         "com.amazonaws.medialive#__integerMin100000Max100000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin100000Max100000000",
-                "smithy.api#range": {
-                    "min": 100000,
-                    "max": 100000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin100000Max100000000"
             }
         },
         "com.amazonaws.medialive#__integerMin100000Max40000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin100000Max40000000",
-                "smithy.api#range": {
-                    "min": 100000,
-                    "max": 40000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin100000Max40000000"
             }
         },
         "com.amazonaws.medialive#__integerMin100000Max80000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin100000Max80000000",
-                "smithy.api#range": {
-                    "min": 100000,
-                    "max": 80000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin100000Max80000000"
             }
         },
         "com.amazonaws.medialive#__integerMin1000Max30000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1000Max30000",
-                "smithy.api#range": {
-                    "min": 1000,
-                    "max": 30000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1000Max30000"
             }
         },
         "com.amazonaws.medialive#__integerMin10Max86400": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin10Max86400",
-                "smithy.api#range": {
-                    "min": 10,
-                    "max": 86400
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin10Max86400"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max10": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max10",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 10
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max10"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max1000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max1000000",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 1000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max1000000"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max16": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max16",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 16
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max16"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max20": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max20",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 20
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max20"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max3003": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max3003",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 3003
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max3003"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max31": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max31",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 31
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max31"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max32": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max32",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 32
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max32"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max3600000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max3600000",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 3600000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max3600000"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max4": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max4",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 4
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max4"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max5": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max5",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 5
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max5"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max51": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max51",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 51
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max51"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max6": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max6",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 6
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max6"
+            }
+        },
+        "com.amazonaws.medialive#__integerMin1Max65535": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max65535"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max8": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max8",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 8
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max8"
             }
         },
         "com.amazonaws.medialive#__integerMin1Max800": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max800",
-                "smithy.api#range": {
-                    "min": 1,
-                    "max": 800
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max800"
             }
         },
         "com.amazonaws.medialive#__integerMin256Max3840": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin256Max3840",
-                "smithy.api#range": {
-                    "min": 256,
-                    "max": 3840
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin256Max3840"
             }
         },
         "com.amazonaws.medialive#__integerMin25Max10000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin25Max10000",
-                "smithy.api#range": {
-                    "min": 25,
-                    "max": 10000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin25Max10000"
             }
         },
         "com.amazonaws.medialive#__integerMin25Max2000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin25Max2000",
-                "smithy.api#range": {
-                    "min": 25,
-                    "max": 2000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin25Max2000"
             }
         },
         "com.amazonaws.medialive#__integerMin3": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin3",
-                "smithy.api#range": {
-                    "min": 3
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin3"
             }
         },
         "com.amazonaws.medialive#__integerMin30": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin30",
-                "smithy.api#range": {
-                    "min": 30
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin30"
             }
         },
         "com.amazonaws.medialive#__integerMin32Max8191": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin32Max8191",
-                "smithy.api#range": {
-                    "min": 32,
-                    "max": 8191
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin32Max8191"
             }
         },
         "com.amazonaws.medialive#__integerMin40Max16000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin40Max16000",
-                "smithy.api#range": {
-                    "min": 40,
-                    "max": 16000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin40Max16000"
             }
         },
         "com.amazonaws.medialive#__integerMin4Max20": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin4Max20",
-                "smithy.api#range": {
-                    "min": 4,
-                    "max": 20
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin4Max20"
             }
         },
         "com.amazonaws.medialive#__integerMin50000Max12000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin50000Max12000000",
-                "smithy.api#range": {
-                    "min": 50000,
-                    "max": 12000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin50000Max12000000"
             }
         },
         "com.amazonaws.medialive#__integerMin50000Max24000000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin50000Max24000000",
-                "smithy.api#range": {
-                    "min": 50000,
-                    "max": 24000000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin50000Max24000000"
             }
         },
         "com.amazonaws.medialive#__integerMin64Max2160": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin64Max2160",
-                "smithy.api#range": {
-                    "min": 64,
-                    "max": 2160
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin64Max2160"
             }
         },
         "com.amazonaws.medialive#__integerMin800Max3000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin800Max3000",
-                "smithy.api#range": {
-                    "min": 800,
-                    "max": 3000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin800Max3000"
             }
         },
         "com.amazonaws.medialive#__integerMin80Max800": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin80Max800",
-                "smithy.api#range": {
-                    "min": 80,
-                    "max": 800
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin80Max800"
             }
         },
         "com.amazonaws.medialive#__integerMin96Max600": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMin96Max600",
-                "smithy.api#range": {
-                    "min": 96,
-                    "max": 600
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMin96Max600"
             }
         },
         "com.amazonaws.medialive#__integerMinNegative1000Max1000": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMinNegative1000Max1000",
-                "smithy.api#range": {
-                    "min": -1000,
-                    "max": 1000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMinNegative1000Max1000"
             }
         },
         "com.amazonaws.medialive#__integerMinNegative5Max5": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMinNegative5Max5",
-                "smithy.api#range": {
-                    "min": -5,
-                    "max": 5
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMinNegative5Max5"
             }
         },
         "com.amazonaws.medialive#__integerMinNegative60Max6": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMinNegative60Max6",
-                "smithy.api#range": {
-                    "min": -60,
-                    "max": 6
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMinNegative60Max6"
             }
         },
         "com.amazonaws.medialive#__integerMinNegative60Max60": {
             "type": "integer",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __integerMinNegative60Max60",
-                "smithy.api#range": {
-                    "min": -60,
-                    "max": 60
-                }
+                "smithy.api#documentation": "Placeholder documentation for __integerMinNegative60Max60"
             }
         },
         "com.amazonaws.medialive#__listOfAdditionalDestinations": {
@@ -39932,6 +40767,24 @@
                 "smithy.api#documentation": "Placeholder documentation for __listOfMediaConnectFlowRequest"
             }
         },
+        "com.amazonaws.medialive#__listOfMediaConnectRouterOutputDestinationSettings": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.medialive#MediaConnectRouterOutputDestinationSettings"
+            },
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __listOfMediaConnectRouterOutputDestinationSettings"
+            }
+        },
+        "com.amazonaws.medialive#__listOfMediaPackageAdditionalDestinations": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.medialive#MediaPackageAdditionalDestinations"
+            },
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __listOfMediaPackageAdditionalDestinations"
+            }
+        },
         "com.amazonaws.medialive#__listOfMediaPackageOutputDestinationSettings": {
             "type": "list",
             "member": {
@@ -40139,6 +40992,24 @@
                 "smithy.api#documentation": "Placeholder documentation for __listOfRouteUpdateRequest"
             }
         },
+        "com.amazonaws.medialive#__listOfRouterDestination": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.medialive#RouterDestination"
+            },
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __listOfRouterDestination"
+            }
+        },
+        "com.amazonaws.medialive#__listOfRouterDestinationSettings": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.medialive#RouterDestinationSettings"
+            },
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __listOfRouterDestinationSettings"
+            }
+        },
         "com.amazonaws.medialive#__listOfRtmpAdMarkers": {
             "type": "list",
             "member": {
@@ -40310,41 +41181,25 @@
         "com.amazonaws.medialive#__longMin0Max1099511627775": {
             "type": "long",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __longMin0Max1099511627775",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 1099511627775
-                }
+                "smithy.api#documentation": "Placeholder documentation for __longMin0Max1099511627775"
             }
         },
         "com.amazonaws.medialive#__longMin0Max4294967295": {
             "type": "long",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __longMin0Max4294967295",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 4294967295
-                }
+                "smithy.api#documentation": "Placeholder documentation for __longMin0Max4294967295"
             }
         },
         "com.amazonaws.medialive#__longMin0Max8589934591": {
             "type": "long",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __longMin0Max8589934591",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 8589934591
-                }
+                "smithy.api#documentation": "Placeholder documentation for __longMin0Max8589934591"
             }
         },
         "com.amazonaws.medialive#__longMin0Max86400000": {
             "type": "long",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __longMin0Max86400000",
-                "smithy.api#range": {
-                    "min": 0,
-                    "max": 86400000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __longMin0Max86400000"
             }
         },
         "com.amazonaws.medialive#__string": {
@@ -40356,283 +41211,181 @@
         "com.amazonaws.medialive#__stringMax100": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMax100",
-                "smithy.api#length": {
-                    "min": 0,
-                    "max": 100
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMax100"
             }
         },
         "com.amazonaws.medialive#__stringMax1000": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMax1000",
-                "smithy.api#length": {
-                    "min": 0,
-                    "max": 1000
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMax1000"
             }
         },
         "com.amazonaws.medialive#__stringMax2048": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMax2048",
-                "smithy.api#length": {
-                    "min": 0,
-                    "max": 2048
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMax2048"
             }
         },
         "com.amazonaws.medialive#__stringMax255": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMax255",
-                "smithy.api#length": {
-                    "min": 0,
-                    "max": 255
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMax255"
             }
         },
         "com.amazonaws.medialive#__stringMax256": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMax256",
-                "smithy.api#length": {
-                    "min": 0,
-                    "max": 256
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMax256"
             }
         },
         "com.amazonaws.medialive#__stringMax32": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMax32",
-                "smithy.api#length": {
-                    "min": 0,
-                    "max": 32
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMax32"
             }
         },
         "com.amazonaws.medialive#__stringMax64": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMax64",
-                "smithy.api#length": {
-                    "min": 0,
-                    "max": 64
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMax64"
             }
         },
         "com.amazonaws.medialive#__stringMin0Max1024": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin0Max1024",
-                "smithy.api#length": {
-                    "min": 0,
-                    "max": 1024
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin0Max1024"
             }
         },
         "com.amazonaws.medialive#__stringMin1": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin1",
-                "smithy.api#length": {
-                    "min": 1
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin1"
             }
         },
         "com.amazonaws.medialive#__stringMin1Max2048": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max2048",
-                "smithy.api#length": {
-                    "min": 1,
-                    "max": 2048
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max2048"
             }
         },
         "com.amazonaws.medialive#__stringMin1Max2048PatternArn": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max2048PatternArn",
-                "smithy.api#length": {
-                    "min": 1,
-                    "max": 2048
-                },
-                "smithy.api#pattern": "^arn.+$"
+                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max2048PatternArn"
             }
         },
         "com.amazonaws.medialive#__stringMin1Max255": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max255",
-                "smithy.api#length": {
-                    "min": 1,
-                    "max": 255
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max255"
             }
         },
         "com.amazonaws.medialive#__stringMin1Max255PatternS": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max255PatternS",
-                "smithy.api#length": {
-                    "min": 1,
-                    "max": 255
-                },
-                "smithy.api#pattern": "^[^\\s]+$"
+                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max255PatternS"
             }
         },
         "com.amazonaws.medialive#__stringMin1Max256": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max256",
-                "smithy.api#length": {
-                    "min": 1,
-                    "max": 256
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max256"
             }
         },
         "com.amazonaws.medialive#__stringMin1Max256PatternS": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max256PatternS",
-                "smithy.api#length": {
-                    "min": 1,
-                    "max": 256
-                },
-                "smithy.api#pattern": "^[\\S]+$"
+                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max256PatternS"
             }
         },
         "com.amazonaws.medialive#__stringMin1Max35": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max35",
-                "smithy.api#length": {
-                    "min": 1,
-                    "max": 35
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max35"
             }
         },
         "com.amazonaws.medialive#__stringMin1Max7": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max7",
-                "smithy.api#length": {
-                    "min": 1,
-                    "max": 7
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin1Max7"
             }
         },
         "com.amazonaws.medialive#__stringMin2Max2": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin2Max2",
-                "smithy.api#length": {
-                    "min": 2,
-                    "max": 2
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin2Max2"
             }
         },
         "com.amazonaws.medialive#__stringMin32Max32": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin32Max32",
-                "smithy.api#length": {
-                    "min": 32,
-                    "max": 32
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin32Max32"
             }
         },
         "com.amazonaws.medialive#__stringMin34Max34": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin34Max34",
-                "smithy.api#length": {
-                    "min": 34,
-                    "max": 34
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin34Max34"
             }
         },
         "com.amazonaws.medialive#__stringMin3Max3": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin3Max3",
-                "smithy.api#length": {
-                    "min": 3,
-                    "max": 3
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin3Max3"
             }
         },
         "com.amazonaws.medialive#__stringMin6Max6": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin6Max6",
-                "smithy.api#length": {
-                    "min": 6,
-                    "max": 6
-                }
+                "smithy.api#documentation": "Placeholder documentation for __stringMin6Max6"
             }
         },
         "com.amazonaws.medialive#__stringMin7Max11PatternAws097": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringMin7Max11PatternAws097",
-                "smithy.api#length": {
-                    "min": 7,
-                    "max": 11
-                },
-                "smithy.api#pattern": "^(aws-)?[0-9]{7}$"
+                "smithy.api#documentation": "Placeholder documentation for __stringMin7Max11PatternAws097"
             }
         },
         "com.amazonaws.medialive#__stringPattern010920300": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringPattern010920300",
-                "smithy.api#pattern": "^([0,1]?[0-9]|2[0-3]):00$"
+                "smithy.api#documentation": "Placeholder documentation for __stringPattern010920300"
             }
         },
         "com.amazonaws.medialive#__stringPatternArnMedialiveCloudwatchAlarmTemplate": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringPatternArnMedialiveCloudwatchAlarmTemplate",
-                "smithy.api#pattern": "^arn:.+:medialive:.+:cloudwatch-alarm-template:.+$"
+                "smithy.api#documentation": "Placeholder documentation for __stringPatternArnMedialiveCloudwatchAlarmTemplate"
             }
         },
         "com.amazonaws.medialive#__stringPatternArnMedialiveCloudwatchAlarmTemplateGroup": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringPatternArnMedialiveCloudwatchAlarmTemplateGroup",
-                "smithy.api#pattern": "^arn:.+:medialive:.+:cloudwatch-alarm-template-group:.+$"
+                "smithy.api#documentation": "Placeholder documentation for __stringPatternArnMedialiveCloudwatchAlarmTemplateGroup"
             }
         },
         "com.amazonaws.medialive#__stringPatternArnMedialiveEventbridgeRuleTemplate": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringPatternArnMedialiveEventbridgeRuleTemplate",
-                "smithy.api#pattern": "^arn:.+:medialive:.+:eventbridge-rule-template:.+$"
+                "smithy.api#documentation": "Placeholder documentation for __stringPatternArnMedialiveEventbridgeRuleTemplate"
             }
         },
         "com.amazonaws.medialive#__stringPatternArnMedialiveEventbridgeRuleTemplateGroup": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringPatternArnMedialiveEventbridgeRuleTemplateGroup",
-                "smithy.api#pattern": "^arn:.+:medialive:.+:eventbridge-rule-template-group:.+$"
+                "smithy.api#documentation": "Placeholder documentation for __stringPatternArnMedialiveEventbridgeRuleTemplateGroup"
             }
         },
         "com.amazonaws.medialive#__stringPatternArnMedialiveSignalMap": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringPatternArnMedialiveSignalMap",
-                "smithy.api#pattern": "^arn:.+:medialive:.+:signal-map:.+$"
+                "smithy.api#documentation": "Placeholder documentation for __stringPatternArnMedialiveSignalMap"
             }
         },
         "com.amazonaws.medialive#__stringPatternS": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "Placeholder documentation for __stringPatternS",
-                "smithy.api#pattern": "^[^\\s]+$"
+                "smithy.api#documentation": "Placeholder documentation for __stringPatternS"
             }
         },
         "com.amazonaws.medialive#__timestamp": {

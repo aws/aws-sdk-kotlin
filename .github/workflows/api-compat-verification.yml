@@ -6,16 +6,21 @@ on:
     branches:
       - main
       - '*-main'
+  merge_group:
+    types: [checks_requested]
 
-permissions: { }
+permissions:
+  contents: read
 
 jobs:
   api-compat-verification:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Check for API compatibility
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'acknowledge-api-break') }}
+        if: ${{ github.event_name != 'merge_group' && !contains(github.event.pull_request.labels.*.name, 'acknowledge-api-break') }}
         run: |
           git fetch origin ${{ github.base_ref }} --depth 1 && \
           git diff remotes/origin/${{ github.base_ref }} --numstat "*.api" | awk '

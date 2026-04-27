@@ -40,7 +40,7 @@ public class SchemaGeneratorPlugin : Plugin<Project> {
         }
 
         val sdkVersion = getSdkVersion()
-        dependencies.add("ksp", "aws.sdk.kotlin:dynamodb-mapper-schema-codegen:$sdkVersion")
+        dependencies.add("ksp", "com.sonatype.central.testing.amazon:dynamodb-mapper-schema-codegen:$sdkVersion")
     }
 
     // Reads sdk-version.txt for the SDK version to add dependencies on. The file is created in this module's build.gradle.kts

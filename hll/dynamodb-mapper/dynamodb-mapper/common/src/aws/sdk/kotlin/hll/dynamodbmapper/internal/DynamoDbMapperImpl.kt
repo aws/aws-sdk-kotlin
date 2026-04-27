@@ -20,11 +20,9 @@ internal data class DynamoDbMapperImpl(
     override val client: DynamoDbClient,
     override val config: DynamoDbMapper.Config,
 ) : DynamoDbMapper {
-    override fun <T, PK> getTable(name: String, schema: ItemSchema.PartitionKey<T, PK>) =
-        tableImpl(this, name, schema)
+    override fun <T, PK> getTable(name: String, schema: ItemSchema.PartitionKey<T, PK>) = tableImpl(this, name, schema)
 
-    override fun <T, PK, SK> getTable(name: String, schema: ItemSchema.CompositeKey<T, PK, SK>) =
-        tableImpl(this, name, schema)
+    override fun <T, PK, SK> getTable(name: String, schema: ItemSchema.CompositeKey<T, PK, SK>) = tableImpl(this, name, schema)
 }
 
 internal data class MapperConfigImpl(
@@ -52,5 +50,4 @@ internal object BusinessMetricInterceptor : HttpInterceptor {
     }
 }
 
-internal inline fun <T> DynamoDbClient.withWrappedClient(block: (DynamoDbClient) -> T): T =
-    withConfig { interceptors += BusinessMetricInterceptor }.use(block)
+internal inline fun <T> DynamoDbClient.withWrappedClient(block: (DynamoDbClient) -> T): T = withConfig { interceptors += BusinessMetricInterceptor }.use(block)

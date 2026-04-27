@@ -94,9 +94,25 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/InvalidJsonCredential
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
+public final class aws/sdk/kotlin/runtime/auth/credentials/InvalidLoginTokenException : aws/sdk/kotlin/runtime/ConfigurationException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
 public final class aws/sdk/kotlin/runtime/auth/credentials/InvalidSsoTokenException : aws/sdk/kotlin/runtime/ConfigurationException {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class aws/sdk/kotlin/runtime/auth/credentials/LoginCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/time/Clock;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/time/Clock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun close ()V
+	public final fun getHttpClient ()Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;
+	public final fun getLoginSession ()Ljava/lang/String;
+	public final fun getPlatformProvider ()Laws/smithy/kotlin/runtime/util/PlatformProvider;
+	public final fun getRegion ()Ljava/lang/String;
+	public fun resolve (Laws/smithy/kotlin/runtime/collections/Attributes;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class aws/sdk/kotlin/runtime/auth/credentials/ProcessCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider {
@@ -277,7 +293,7 @@ public final class aws/sdk/kotlin/runtime/config/AwsSdkSetting {
 	public final fun getAwsAccessKeyId ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsAccountId ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsAccountIdEndpointMode ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
-	public final fun getAwsAppId ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
+	public final fun getAwsAppId ()Laws/smithy/kotlin/runtime/config/MultipleKeyEnvironmentSetting;
 	public final fun getAwsAuthSchemePreference ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsConfigFile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsContainerAuthorizationToken ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
@@ -305,7 +321,7 @@ public final class aws/sdk/kotlin/runtime/config/AwsSdkSetting {
 	public final fun getAwsSecretAccessKey ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsSessionToken ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsSharedCredentialsFile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
-	public final fun getAwsSigV4aSigningRegionSet ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
+	public final fun getAwsSigV4aSigningRegionSet ()Laws/smithy/kotlin/runtime/config/MultipleKeyEnvironmentSetting;
 	public final fun getAwsUseDualStackEndpoint ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsUseFipsEndpoint ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsWebIdentityTokenFile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
@@ -362,10 +378,8 @@ public final class aws/sdk/kotlin/runtime/config/endpoints/ResolversKt {
 }
 
 public final class aws/sdk/kotlin/runtime/config/imds/EC2MetadataError : aws/sdk/kotlin/runtime/AwsServiceException {
-	public fun <init> (ILjava/lang/String;)V
 	public fun <init> (Laws/smithy/kotlin/runtime/http/HttpStatusCode;Ljava/lang/String;)V
 	public final fun getStatus ()Laws/smithy/kotlin/runtime/http/HttpStatusCode;
-	public final fun getStatusCode ()I
 }
 
 public abstract class aws/sdk/kotlin/runtime/config/imds/EndpointConfiguration {
@@ -421,10 +435,12 @@ public final class aws/sdk/kotlin/runtime/config/imds/ImdsClient : aws/sdk/kotli
 public final class aws/sdk/kotlin/runtime/config/imds/ImdsClient$Builder {
 	public fun <init> ()V
 	public final fun getEndpointConfiguration ()Laws/sdk/kotlin/runtime/config/imds/EndpointConfiguration;
+	public final fun getEngine ()Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;
 	public final fun getLogMode ()Laws/smithy/kotlin/runtime/client/LogMode;
 	public final fun getMaxRetries ()I
 	public final fun getTokenTtl-UwyO8pc ()J
 	public final fun setEndpointConfiguration (Laws/sdk/kotlin/runtime/config/imds/EndpointConfiguration;)V
+	public final fun setEngine (Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;)V
 	public final fun setLogMode (Laws/smithy/kotlin/runtime/client/LogMode;)V
 	public final fun setMaxRetries (I)V
 	public final fun setTokenTtl-LRDsOJo (J)V
@@ -640,5 +656,10 @@ public final class aws/sdk/kotlin/runtime/region/ResolveRegionKt {
 	public static synthetic fun resolveRegion$default (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun resolveSigV4aSigningRegionSet (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun resolveSigV4aSigningRegionSet$default (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class aws/sdk/kotlin/runtime/region/ValidateRegionKt {
+	public static final fun isRegionValid (Ljava/lang/String;)Z
+	public static final fun validateRegion (Ljava/lang/String;)Ljava/lang/String;
 }
 

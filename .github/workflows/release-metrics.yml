@@ -4,6 +4,10 @@ on:
   release:
     types: [ published ]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-sdk:
     runs-on: ubuntu-latest
@@ -19,13 +23,9 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           UPLOAD: 'true'
           RELEASE_METRICS: 'true'
-          IDENTIFIER: 'null' # Only needed for pull requests
+          IDENTIFIER: ${{ github.ref_name }}
         uses: aws-actions/aws-codebuild-run-build@v1
         with:
           project-name: aws-sdk-kotlin-service-build
           source-version-override: ${{ github.ref }}
           env-vars-for-codebuild: GITHUB_REPOSITORY, UPLOAD, RELEASE_METRICS, IDENTIFIER
-
-permissions:
-  id-token: write
-  contents: read

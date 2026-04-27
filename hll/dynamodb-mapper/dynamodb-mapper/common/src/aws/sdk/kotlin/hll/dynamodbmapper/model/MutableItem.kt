@@ -33,5 +33,4 @@ public fun MutableMap<String, AttributeValue>.toMutableItem(): MutableItem = Mut
  * second is the attribute value.
  */
 @ExperimentalApi
-public fun mutableItemOf(vararg pairs: Pair<String, AttributeValue>): MutableItem =
-    MutableItemImpl(mutableMapOf(*pairs))
+public fun mutableItemOf(vararg pairs: Pair<String, AttributeValue>): MutableItem = MutableItemImpl(mutableMapOf(*pairs))

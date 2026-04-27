@@ -200,12 +200,11 @@ public class ImdsCredentialsProvider(
         }
     }
 
-    private suspend fun usePreviousCredentials(): Credentials? =
-        previousCredentials?.apply {
-            coroutineContext.info<ImdsCredentialsProvider> {
-                "Attempting to reuse previously-fetched credentials (expiration = $expiration)"
-            }
+    private suspend fun usePreviousCredentials(): Credentials? = previousCredentials?.apply {
+        coroutineContext.info<ImdsCredentialsProvider> {
+            "Attempting to reuse previously-fetched credentials (expiration = $expiration)"
         }
+    }
 
     override fun toString(): String = this.simpleClassName
 
@@ -232,5 +231,4 @@ internal class ImdsCredentialsException(
 
 internal class ImdsProfileException(cause: Throwable) : RuntimeException("Failed to load instance profile name", cause)
 
-private fun Throwable.wrapAsCredentialsProviderException() =
-    CredentialsProviderException(message.orEmpty(), this)
+private fun Throwable.wrapAsCredentialsProviderException() = CredentialsProviderException(message.orEmpty(), this)

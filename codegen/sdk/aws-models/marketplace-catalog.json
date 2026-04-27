@@ -100,31 +100,31 @@
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
                     "parameters": {
-                        "Region": {
-                            "builtIn": "AWS::Region",
-                            "required": false,
-                            "documentation": "The AWS region used to dispatch the request.",
-                            "type": "String"
-                        },
                         "UseDualStack": {
                             "builtIn": "AWS::UseDualStack",
                             "required": true,
                             "default": false,
                             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "UseFIPS": {
                             "builtIn": "AWS::UseFIPS",
                             "required": true,
                             "default": false,
                             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-                            "type": "Boolean"
+                            "type": "boolean"
                         },
                         "Endpoint": {
                             "builtIn": "SDK::Endpoint",
                             "required": false,
                             "documentation": "Override the endpoint used to send this request",
-                            "type": "String"
+                            "type": "string"
+                        },
+                        "Region": {
+                            "builtIn": "AWS::Region",
+                            "required": false,
+                            "documentation": "The AWS region used to dispatch the request.",
+                            "type": "string"
                         }
                     },
                     "rules": [
@@ -156,58 +156,7 @@
                                     "type": "error"
                                 },
                                 {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseDualStack"
-                                                },
-                                                true
-                                            ]
-                                        }
-                                    ],
-                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                    "type": "error"
-                                },
-                                {
                                     "conditions": [],
-                                    "endpoint": {
-                                        "url": {
-                                            "ref": "Endpoint"
-                                        },
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ],
-                            "type": "tree"
-                        },
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "isSet",
-                                    "argv": [
-                                        {
-                                            "ref": "Region"
-                                        }
-                                    ]
-                                }
-                            ],
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "aws.partition",
-                                            "argv": [
-                                                {
-                                                    "ref": "Region"
-                                                }
-                                            ],
-                                            "assign": "PartitionResult"
-                                        }
-                                    ],
                                     "rules": [
                                         {
                                             "conditions": [
@@ -215,184 +164,21 @@
                                                     "fn": "booleanEquals",
                                                     "argv": [
                                                         {
-                                                            "ref": "UseFIPS"
-                                                        },
-                                                        true
-                                                    ]
-                                                },
-                                                {
-                                                    "fn": "booleanEquals",
-                                                    "argv": [
-                                                        {
                                                             "ref": "UseDualStack"
                                                         },
                                                         true
                                                     ]
                                                 }
                                             ],
-                                            "rules": [
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                true,
-                                                                {
-                                                                    "fn": "getAttr",
-                                                                    "argv": [
-                                                                        {
-                                                                            "ref": "PartitionResult"
-                                                                        },
-                                                                        "supportsFIPS"
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                true,
-                                                                {
-                                                                    "fn": "getAttr",
-                                                                    "argv": [
-                                                                        {
-                                                                            "ref": "PartitionResult"
-                                                                        },
-                                                                        "supportsDualStack"
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [],
-                                                            "endpoint": {
-                                                                "url": "https://catalog.marketplace-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                "properties": {},
-                                                                "headers": {}
-                                                            },
-                                                            "type": "endpoint"
-                                                        }
-                                                    ],
-                                                    "type": "tree"
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                                                    "type": "error"
-                                                }
-                                            ],
-                                            "type": "tree"
-                                        },
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "booleanEquals",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "UseFIPS"
-                                                        },
-                                                        true
-                                                    ]
-                                                }
-                                            ],
-                                            "rules": [
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "fn": "getAttr",
-                                                                    "argv": [
-                                                                        {
-                                                                            "ref": "PartitionResult"
-                                                                        },
-                                                                        "supportsFIPS"
-                                                                    ]
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [],
-                                                            "endpoint": {
-                                                                "url": "https://catalog.marketplace-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                                "properties": {},
-                                                                "headers": {}
-                                                            },
-                                                            "type": "endpoint"
-                                                        }
-                                                    ],
-                                                    "type": "tree"
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "error": "FIPS is enabled but this partition does not support FIPS",
-                                                    "type": "error"
-                                                }
-                                            ],
-                                            "type": "tree"
-                                        },
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "booleanEquals",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "UseDualStack"
-                                                        },
-                                                        true
-                                                    ]
-                                                }
-                                            ],
-                                            "rules": [
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                true,
-                                                                {
-                                                                    "fn": "getAttr",
-                                                                    "argv": [
-                                                                        {
-                                                                            "ref": "PartitionResult"
-                                                                        },
-                                                                        "supportsDualStack"
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [],
-                                                            "endpoint": {
-                                                                "url": "https://catalog.marketplace.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                "properties": {},
-                                                                "headers": {}
-                                                            },
-                                                            "type": "endpoint"
-                                                        }
-                                                    ],
-                                                    "type": "tree"
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "error": "DualStack is enabled but this partition does not support DualStack",
-                                                    "type": "error"
-                                                }
-                                            ],
-                                            "type": "tree"
+                                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                                            "type": "error"
                                         },
                                         {
                                             "conditions": [],
                                             "endpoint": {
-                                                "url": "https://catalog.marketplace.{Region}.{PartitionResult#dnsSuffix}",
+                                                "url": {
+                                                    "ref": "Endpoint"
+                                                },
                                                 "properties": {},
                                                 "headers": {}
                                             },
@@ -406,24 +192,338 @@
                         },
                         {
                             "conditions": [],
-                            "error": "Invalid Configuration: Missing Region",
-                            "type": "error"
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "isSet",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "aws.partition",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "Region"
+                                                        }
+                                                    ],
+                                                    "assign": "PartitionResult"
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "us-east-1"
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                false
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://catalog-marketplace.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                true
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        true,
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsFIPS"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        true,
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsDualStack"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [],
+                                                                    "endpoint": {
+                                                                        "url": "https://catalog.marketplace-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                        "properties": {},
+                                                                        "headers": {}
+                                                                    },
+                                                                    "type": "endpoint"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                                            "type": "error"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                true
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                false
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsFIPS"
+                                                                            ]
+                                                                        },
+                                                                        true
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [],
+                                                                    "endpoint": {
+                                                                        "url": "https://catalog.marketplace-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                        "properties": {},
+                                                                        "headers": {}
+                                                                    },
+                                                                    "type": "endpoint"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "error": "FIPS is enabled but this partition does not support FIPS",
+                                                            "type": "error"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                false
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        true,
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "supportsDualStack"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [],
+                                                                    "endpoint": {
+                                                                        "url": "https://catalog.marketplace.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                        "properties": {},
+                                                                        "headers": {}
+                                                                    },
+                                                                    "type": "endpoint"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "error": "DualStack is enabled but this partition does not support DualStack",
+                                                            "type": "error"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://catalog.marketplace.{Region}.{PartitionResult#dnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "Invalid Configuration: Missing Region",
+                                    "type": "error"
+                                }
+                            ],
+                            "type": "tree"
                         }
                     ]
                 },
                 "smithy.rules#endpointTests": {
                     "testCases": [
                         {
-                            "documentation": "For region us-east-1 with FIPS disabled and DualStack disabled",
+                            "documentation": "For custom endpoint with region not set and fips disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://catalog.marketplace.us-east-1.amazonaws.com"
+                                    "url": "https://example.com"
+                                }
+                            },
+                            "params": {
+                                "Endpoint": "https://example.com",
+                                "UseFIPS": false
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with fips enabled",
+                            "expect": {
+                                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+                            },
+                            "params": {
+                                "Endpoint": "https://example.com",
+                                "UseFIPS": true
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
+                            "expect": {
+                                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+                            },
+                            "params": {
+                                "Endpoint": "https://example.com",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://catalog-marketplace.us-east-1.api.aws"
                                 }
                             },
                             "params": {
                                 "Region": "us-east-1",
                                 "UseFIPS": false,
-                                "UseDualStack": false
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -453,118 +553,92 @@
                             }
                         },
                         {
-                            "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
+                            "documentation": "For region us-east-1 with FIPS disabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://catalog.marketplace.us-east-1.api.aws"
+                                    "url": "https://catalog.marketplace.us-east-1.amazonaws.com"
                                 }
                             },
                             "params": {
                                 "Region": "us-east-1",
                                 "UseFIPS": false,
-                                "UseDualStack": true
+                                "UseDualStack": false
                             }
                         },
                         {
-                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
+                            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack enabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://catalog.marketplace-fips.cn-north-1.api.amazonwebservices.com.cn"
+                                    "url": "https://catalog.marketplace-fips.cn-northwest-1.api.amazonwebservices.com.cn"
                                 }
                             },
                             "params": {
-                                "Region": "cn-north-1",
+                                "Region": "cn-northwest-1",
                                 "UseFIPS": true,
                                 "UseDualStack": true
                             }
                         },
                         {
-                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
+                            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://catalog.marketplace-fips.cn-north-1.amazonaws.com.cn"
+                                    "url": "https://catalog.marketplace-fips.cn-northwest-1.amazonaws.com.cn"
                                 }
                             },
                             "params": {
-                                "Region": "cn-north-1",
+                                "Region": "cn-northwest-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
                             }
                         },
                         {
-                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
+                            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack enabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://catalog.marketplace.cn-north-1.api.amazonwebservices.com.cn"
+                                    "url": "https://catalog.marketplace.cn-northwest-1.api.amazonwebservices.com.cn"
                                 }
                             },
                             "params": {
-                                "Region": "cn-north-1",
+                                "Region": "cn-northwest-1",
                                 "UseFIPS": false,
                                 "UseDualStack": true
                             }
                         },
                         {
-                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
+                            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://catalog.marketplace.cn-north-1.amazonaws.com.cn"
+                                    "url": "https://catalog.marketplace.cn-northwest-1.amazonaws.com.cn"
                                 }
                             },
                             "params": {
-                                "Region": "cn-north-1",
+                                "Region": "cn-northwest-1",
                                 "UseFIPS": false,
                                 "UseDualStack": false
                             }
                         },
                         {
-                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
+                            "documentation": "For region eusc-de-east-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://catalog.marketplace-fips.us-gov-east-1.api.aws"
+                                    "url": "https://catalog.marketplace-fips.eusc-de-east-1.amazonaws.eu"
                                 }
                             },
                             "params": {
-                                "Region": "us-gov-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
-                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://catalog.marketplace-fips.us-gov-east-1.amazonaws.com"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-gov-east-1",
+                                "Region": "eusc-de-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": false
                             }
                         },
                         {
-                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack enabled",
+                            "documentation": "For region eusc-de-east-1 with FIPS disabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://catalog.marketplace.us-gov-east-1.api.aws"
+                                    "url": "https://catalog.marketplace.eusc-de-east-1.amazonaws.eu"
                                 }
                             },
                             "params": {
-                                "Region": "us-gov-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
-                            }
-                        },
-                        {
-                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://catalog.marketplace.us-gov-east-1.amazonaws.com"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-gov-east-1",
+                                "Region": "eusc-de-east-1",
                                 "UseFIPS": false,
                                 "UseDualStack": false
                             }
@@ -622,54 +696,107 @@
                             }
                         },
                         {
-                            "documentation": "For custom endpoint with region set and fips disabled and dualstack disabled",
+                            "documentation": "For region eu-isoe-west-1 with FIPS enabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
-                                    "url": "https://example.com"
+                                    "url": "https://catalog.marketplace-fips.eu-isoe-west-1.cloud.adc-e.uk"
                                 }
                             },
                             "params": {
-                                "Region": "us-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false,
-                                "Endpoint": "https://example.com"
-                            }
-                        },
-                        {
-                            "documentation": "For custom endpoint with region not set and fips disabled and dualstack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://example.com"
-                                }
-                            },
-                            "params": {
-                                "UseFIPS": false,
-                                "UseDualStack": false,
-                                "Endpoint": "https://example.com"
-                            }
-                        },
-                        {
-                            "documentation": "For custom endpoint with fips enabled and dualstack disabled",
-                            "expect": {
-                                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
-                            },
-                            "params": {
-                                "Region": "us-east-1",
+                                "Region": "eu-isoe-west-1",
                                 "UseFIPS": true,
-                                "UseDualStack": false,
-                                "Endpoint": "https://example.com"
+                                "UseDualStack": false
                             }
                         },
                         {
-                            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
+                            "documentation": "For region eu-isoe-west-1 with FIPS disabled and DualStack disabled",
                             "expect": {
-                                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+                                "endpoint": {
+                                    "url": "https://catalog.marketplace.eu-isoe-west-1.cloud.adc-e.uk"
+                                }
                             },
                             "params": {
-                                "Region": "us-east-1",
+                                "Region": "eu-isoe-west-1",
                                 "UseFIPS": false,
-                                "UseDualStack": true,
-                                "Endpoint": "https://example.com"
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isof-south-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://catalog.marketplace-fips.us-isof-south-1.csp.hci.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isof-south-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isof-south-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://catalog.marketplace.us-isof-south-1.csp.hci.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-isof-south-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://catalog.marketplace-fips.us-gov-west-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://catalog.marketplace-fips.us-gov-west-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://catalog.marketplace.us-gov-west-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://catalog.marketplace.us-gov-west-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2439,6 +2566,12 @@
                 },
                 "MachineLearningProductSummary": {
                     "target": "com.amazonaws.marketplacecatalog#MachineLearningProductSummary"
+                },
+                "OfferSetSummary": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetSummary",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An object that contains summary information about the offer set.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2502,6 +2635,12 @@
                 },
                 "MachineLearningProductFilters": {
                     "target": "com.amazonaws.marketplacecatalog#MachineLearningProductFilters"
+                },
+                "OfferSetFilters": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetFilters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter for offer sets.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2549,6 +2688,12 @@
                 },
                 "MachineLearningProductSort": {
                     "target": "com.amazonaws.marketplacecatalog#MachineLearningProductSort"
+                },
+                "OfferSetSort": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetSort",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A sort for offer sets.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2963,7 +3108,7 @@
                 "EntityType": {
                     "target": "com.amazonaws.marketplacecatalog#EntityType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of entities to\n            retrieve. Valid\n            values are: <code>AmiProduct</code>, <code>ContainerProduct</code>,\n                <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>,\n                <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>,\n                <code>Offer</code>, <code>Seller</code>,\n            <code>ResaleAuthorization</code>.</p>",
+                        "smithy.api#documentation": "<p>The type of entities to\n            retrieve. Valid\n            values are: <code>AmiProduct</code>, <code>ContainerProduct</code>,\n                <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>,\n                <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>,\n                <code>Offer</code>, <code>OfferSet</code>, <code>Seller</code>,\n            <code>ResaleAuthorization</code>, <code>Solution</code>.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -3570,6 +3715,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Allows filtering on the <code>LastModifiedDate</code> of an offer.</p>"
                     }
+                },
+                "OfferSetId": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetIdFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>OfferSetId</code> of an offer.</p>"
+                    }
                 }
             },
             "traits": {
@@ -3758,6 +3909,458 @@
                 "smithy.api#pattern": "^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
             }
         },
+        "com.amazonaws.marketplacecatalog#OfferSetAssociatedOfferIdsFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetAssociatedOfferIdsFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>AssociatedOfferIds</code> of an offer set with list input.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>AssociatedOfferIds</code> of an offer set.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetAssociatedOfferIdsFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#OfferSetAssociatedOfferIdsString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetAssociatedOfferIdsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#OfferSetAssociatedOfferIdsString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetAssociatedOfferIdsString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetEntityIdFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetEntityIdFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on entity id of an offer set with list input.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the entity id of an offer set.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetEntityIdFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#OfferSetEntityIdString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetEntityIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^offerset-[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetFilters": {
+            "type": "structure",
+            "members": {
+                "EntityId": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetEntityIdFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on <code>EntityId</code> of an offer set.</p>"
+                    }
+                },
+                "Name": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetNameFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>Name</code> of an offer set.</p>"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetStateFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>State</code> of an offer set.</p>"
+                    }
+                },
+                "ReleaseDate": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetReleaseDateFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>ReleaseDate</code> of an offer set.</p>"
+                    }
+                },
+                "AssociatedOfferIds": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetAssociatedOfferIdsFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>AssociatedOfferIds</code> of an offer set.</p>"
+                    }
+                },
+                "SolutionId": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetSolutionIdFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>SolutionId</code> of an offer set.</p>"
+                    }
+                },
+                "LastModifiedDate": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetLastModifiedDateFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Object containing all the filter fields for offer sets entity. Client can add a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetIdFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetIdFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>OfferSetId</code> of an offer.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>OfferSetId</code> of an offer.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetIdFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#OfferSetIdString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 50
+                },
+                "smithy.api#pattern": "^offerset-[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetLastModifiedDateFilter": {
+            "type": "structure",
+            "members": {
+                "DateRange": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetLastModifiedDateFilterDateRange",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set with date range as input.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetLastModifiedDateFilterDateRange": {
+            "type": "structure",
+            "members": {
+                "AfterValue": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set after a date.</p>"
+                    }
+                },
+                "BeforeValue": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set before a date.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set with date range as input.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetNameFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetNameFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>Name</code> of an offer set with list input.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>Name</code> of an offer set.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetNameFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#OfferSetNameString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetNameString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 150
+                },
+                "smithy.api#pattern": "^(.)+$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetReleaseDateFilter": {
+            "type": "structure",
+            "members": {
+                "DateRange": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetReleaseDateFilterDateRange",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>ReleaseDate</code> of an offer set with date range as input.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>ReleaseDate</code> of an offer set.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetReleaseDateFilterDateRange": {
+            "type": "structure",
+            "members": {
+                "AfterValue": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>ReleaseDate</code> of offer set after a date.</p>"
+                    }
+                },
+                "BeforeValue": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>ReleaseDate</code> of offer set before a date.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>ReleaseDate</code> of an offer set with date range as input.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetSolutionIdFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetSolutionIdFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>SolutionId</code> of an offer set with list input.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>SolutionId</code> of an offer set.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetSolutionIdFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#OfferSetSolutionIdString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetSolutionIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 50
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetSort": {
+            "type": "structure",
+            "members": {
+                "SortBy": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetSortBy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows to sort offer sets.</p>"
+                    }
+                },
+                "SortOrder": {
+                    "target": "com.amazonaws.marketplacecatalog#SortOrder",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows to sort offer sets.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows to sort offer sets.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetSortBy": {
+            "type": "enum",
+            "members": {
+                "Name": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Name"
+                    }
+                },
+                "State": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "State"
+                    }
+                },
+                "ReleaseDate": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ReleaseDate"
+                    }
+                },
+                "SolutionId": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SolutionId"
+                    }
+                },
+                "EntityId": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "EntityId"
+                    }
+                },
+                "LastModifiedDate": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LastModifiedDate"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetStateFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetStateFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>State</code> of an offer set with list input.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>State</code> of an offer set.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetStateFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#OfferSetStateString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetStateString": {
+            "type": "enum",
+            "members": {
+                "Draft": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Draft"
+                    }
+                },
+                "Released": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Released"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#OfferSetSummary": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetNameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the offer set.</p>"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetStateString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The state of the offer set.</p>"
+                    }
+                },
+                "ReleaseDate": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The release date of the offer set.</p>"
+                    }
+                },
+                "AssociatedOfferIds": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetAssociatedOfferIdsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of offer IDs associated with the offer set.</p>"
+                    }
+                },
+                "SolutionId": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetSolutionIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The solution ID associated with the offer set.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Summarized information about an offer set.</p>"
+            }
+        },
         "com.amazonaws.marketplacecatalog#OfferSort": {
             "type": "structure",
             "members": {
@@ -3839,6 +4442,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "LastModifiedDate"
+                    }
+                },
+                "OfferSetId": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "OfferSetId"
                     }
                 }
             }
@@ -3935,6 +4544,12 @@
                     "target": "com.amazonaws.marketplacecatalog#OfferTargetingList",
                     "traits": {
                         "smithy.api#documentation": "<p>The targeting in the offer.</p>"
+                    }
+                },
+                "OfferSetId": {
+                    "target": "com.amazonaws.marketplacecatalog#OfferSetIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The offer set ID of the offer.</p>"
                     }
                 }
             },

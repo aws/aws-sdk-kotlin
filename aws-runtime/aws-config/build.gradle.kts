@@ -52,6 +52,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.smithy.kotlin.http.test)
+                implementation(libs.smithy.kotlin.testing)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotest.framework.datatest)
             }
@@ -70,14 +71,14 @@ kotlin {
     }
 }
 
-fun awsModelFile(name: String): String =
-    rootProject.file("codegen/sdk/aws-models/$name").relativeTo(project.layout.buildDirectory.get().asFile).toString()
+fun awsModelFile(name: String): String = rootProject.file("codegen/sdk/aws-models/$name").relativeTo(project.layout.buildDirectory.get().asFile).toString()
 
 val codegen by configurations.getting
 dependencies {
     codegen(project(":codegen:aws-sdk-codegen"))
     codegen(libs.smithy.cli)
     codegen(libs.smithy.model)
+    codegen(libs.smithy.aws.smoke.test.model)
 }
 
 smithyBuild {
@@ -184,6 +185,41 @@ smithyBuild {
                 "args": {
                     "operations": [
                         "com.amazonaws.ssooidc#CreateToken"
+                    ]
+                }
+            }
+            """,
+            )
+        }
+
+        create("signin-credentials-provider") {
+            imports = listOf(
+                awsModelFile("signin.json"),
+            )
+
+            val serviceShape = "com.amazonaws.signin#Signin"
+            smithyKotlinPlugin {
+                serviceShapeId = serviceShape
+                packageName = "$basePackage.signin"
+                packageVersion = project.version.toString()
+                packageDescription = "Internal Signin credentials provider"
+                sdkId = "Signin"
+                buildSettings {
+                    generateDefaultBuildFiles = false
+                    generateFullProject = false
+                }
+                apiSettings {
+                    visibility = "internal"
+                }
+            }
+
+            transforms = listOf(
+                """
+            {
+                "name": "awsSmithyKotlinIncludeOperations",
+                "args": {
+                    "operations": [
+                        "com.amazonaws.signin#CreateOAuth2Token"
                     ]
                 }
             }
