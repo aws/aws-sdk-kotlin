@@ -23,30 +23,21 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
 import kotlin.time.Duration.Companion.milliseconds
 
-/**
- * Services that use a shorter initial backoff delay (25ms instead of the standard 50ms).
- */
-private val SHORT_BACKOFF_SERVICES = setOf("dynamodb", "dynamodb streams")
+// Standard retry defaults (SEP Retry Behavior 2.1)
+private val STANDARD_INITIAL_DELAY = 50.milliseconds
+private const val STANDARD_SCALE_FACTOR = 2.0
+private const val STANDARD_RETRY_COST = 14
+private const val STANDARD_THROTTLING_RETRY_COST = 5
 
-/**
- * The initial backoff delay for DynamoDB and DynamoDB Streams (SEP Retry Behavior 2.1: x = 0.025).
- */
+// DynamoDB / DynamoDB Streams overrides
+private val DYNAMODB_SERVICES = setOf("dynamodb", "dynamodb streams")
 private val DYNAMODB_INITIAL_DELAY = 25.milliseconds
-
-/**
- * Services that use an increased default max attempts (4 instead of the standard 3).
- */
-private val INCREASED_MAX_ATTEMPTS_SERVICES = SHORT_BACKOFF_SERVICES
-
-/**
- * The default max attempts for DynamoDB and DynamoDB Streams.
- */
 private const val DYNAMODB_DEFAULT_MAX_ATTEMPTS = 4
 
 /**
  * Attempt to resolve the retry strategy used to make requests by fetching the max attempts and retry mode.
- * If `AWS_NEW_RETRIES_2026` (or `aws.newRetries2026` system property) is set to `true`, the standard retry
- * strategy behavior is enabled. Falls back to smithy-kotlin's `SMITHY_NEW_RETRIES_2026` / `smithy.newRetries2026`.
+ * If `AWS_NEW_RETRIES_2026` is set to `true`, the standard retry strategy behavior is enabled.
+ * Falls back to smithy-kotlin's `SMITHY_NEW_RETRIES_2026`.
  */
 @InternalSdkApi
 public suspend fun resolveRetryStrategy(
@@ -78,11 +69,11 @@ public suspend fun resolveRetryStrategy(
 
 /**
  * Configures the retry strategy builder with the resolved max attempts and, when new retries are enabled,
- * AWS service-specific defaults as defined in the Retry Behavior 2.1 SEP.
+ * all standard defaults as defined in the New Retry Behavior.
  *
- * When [useNewRetries] is `true` and [serviceName] identifies DynamoDB or DynamoDB Streams:
- * - Sets `initialDelay` to 25ms (instead of the standard 50ms)
- * - Sets `maxAttempts` to 4 (instead of the standard 3), unless [configuredMaxAttempts] is provided
+ * When [useNewRetries] is `true`:
+ * - Sets scaleFactor=2.0, retryCost=14, timeoutRetryCost=5, initialDelay=50ms
+ * - For DynamoDB / DynamoDB Streams: initialDelay=25ms, maxAttempts=4
  */
 @InternalSdkApi
 public fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
@@ -95,15 +86,19 @@ public fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
         return
     }
 
-    val normalizedName = serviceName?.lowercase()
+    val isDynamoDb = serviceName?.lowercase() in DYNAMODB_SERVICES
 
-    if (normalizedName in SHORT_BACKOFF_SERVICES) {
-        delayProvider {
-            initialDelay = DYNAMODB_INITIAL_DELAY
-        }
+    delayProvider {
+        initialDelay = if (isDynamoDb) DYNAMODB_INITIAL_DELAY else STANDARD_INITIAL_DELAY
+        scaleFactor = STANDARD_SCALE_FACTOR
+    }
+
+    tokenBucket {
+        retryCost = STANDARD_RETRY_COST
+        timeoutRetryCost = STANDARD_THROTTLING_RETRY_COST
     }
 
     maxAttempts = configuredMaxAttempts
-        ?: if (normalizedName in INCREASED_MAX_ATTEMPTS_SERVICES) DYNAMODB_DEFAULT_MAX_ATTEMPTS
+        ?: if (isDynamoDb) DYNAMODB_DEFAULT_MAX_ATTEMPTS
         else StandardRetryStrategy.Config.DEFAULT_MAX_ATTEMPTS
 }
