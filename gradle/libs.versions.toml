@@ -1,6 +1,6 @@
 [versions]
 kotlin-version = "2.3.21"
-ksp-version = "2.3.6"
+ksp-version = "2.3.7"
 
 dokka-version = "2.2.0"
 
