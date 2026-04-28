@@ -258,6 +258,7 @@ public abstract class aws/sdk/kotlin/runtime/config/AbstractAwsSdkClientFactory 
 	protected fun finalizeEnvironmentalConfig (Laws/smithy/kotlin/runtime/client/SdkClient$Builder;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun fromEnvironment (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun fromEnvironment$default (Laws/sdk/kotlin/runtime/config/AbstractAwsSdkClientFactory;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	protected abstract fun getServiceName ()Ljava/lang/String;
 }
 
 public abstract interface class aws/sdk/kotlin/runtime/config/AwsSdkClientConfig : aws/smithy/kotlin/runtime/client/SdkClientConfig {
@@ -307,6 +308,7 @@ public final class aws/sdk/kotlin/runtime/config/AwsSdkSetting {
 	public final fun getAwsExecutionEnv ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsIgnoreEndpointUrls ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsMaxAttempts ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
+	public final fun getAwsNewRetries ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsProfile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsRegion ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsRequestChecksumCalculation ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
@@ -595,8 +597,10 @@ public final class aws/sdk/kotlin/runtime/config/profile/ConfigSection {
 }
 
 public final class aws/sdk/kotlin/runtime/config/retries/ResolveRetryStrategyKt {
-	public static final fun resolveRetryStrategy (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun resolveRetryStrategy$default (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun configureRetryDefaults (Laws/smithy/kotlin/runtime/retries/StandardRetryStrategy$Config$Builder;Ljava/lang/String;Ljava/lang/Integer;Z)V
+	public static synthetic fun configureRetryDefaults$default (Laws/smithy/kotlin/runtime/retries/StandardRetryStrategy$Config$Builder;Ljava/lang/String;Ljava/lang/Integer;ZILjava/lang/Object;)V
+	public static final fun resolveRetryStrategy (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun resolveRetryStrategy$default (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class aws/sdk/kotlin/runtime/config/useragent/ResolveUserAgentKt {
