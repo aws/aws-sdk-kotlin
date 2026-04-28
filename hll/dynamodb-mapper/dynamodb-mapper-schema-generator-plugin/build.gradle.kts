@@ -20,6 +20,8 @@ kotlin {
 }
 
 dependencies {
+    implementation(gradleApi())
+
     implementation(kotlin("gradle-plugin", version = kotlin.coreLibrariesVersion))
     implementation(libs.ksp.gradle.plugin)
 
