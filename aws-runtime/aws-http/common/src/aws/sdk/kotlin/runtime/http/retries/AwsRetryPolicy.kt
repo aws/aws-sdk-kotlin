@@ -5,13 +5,18 @@
 
 package aws.sdk.kotlin.runtime.http.retries
 
+import aws.sdk.kotlin.runtime.http.AwsHttpSetting
+import aws.smithy.kotlin.runtime.CoreSettings
 import aws.smithy.kotlin.runtime.ServiceErrorMetadata
 import aws.smithy.kotlin.runtime.ServiceException
+import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.retries.policy.RetryDirective
 import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.Throttling
 import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.Transient
 import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
+import aws.smithy.kotlin.runtime.util.PlatformEnvironProvider
+import aws.smithy.kotlin.runtime.util.PlatformProvider
 
 /**
  * The standard policy for AWS service clients that defines which error conditions are retryable and how. This policy
@@ -20,7 +25,7 @@ import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
  * * Any [ServiceException] with an `sdkErrorMetadata.errorCode` of:
  *   * `BandwidthLimitExceeded`
  *   * `EC2ThrottledException`
- *   * `IDPCommunicationError` (STS only)
+ *   * `IDPCommunicationError` (STS only when new retry behavior is enabled; all services otherwise)
  *   * `LimitExceededException`
  *   * `PriorRequestNotComplete`
  *   * `ProvisionedThroughputExceededException`
@@ -44,11 +49,21 @@ import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
  * If none of those conditions match, this policy delegates to [StandardRetryPolicy]. See that class's documentation for
  * more information about how it evaluates exceptions.
  *
- * @param serviceName The optional sdkId of the service (e.g. `"STS"`). When provided, service-scoped error codes
- * such as `IDPCommunicationError` are only retried for the matching service.
+ * @param serviceName The optional sdkId of the service (e.g. `"STS"`). When new retry behavior is enabled
+ * (`AWS_NEW_RETRIES_2026` or `SMITHY_NEW_RETRIES_2026`), service-scoped error codes such as
+ * `IDPCommunicationError` are only retried for the matching service. Otherwise, they are retried for all services.
  */
-public open class AwsRetryPolicy(private val serviceName: String? = null) : StandardRetryPolicy() {
+public open class AwsRetryPolicy internal constructor(
+    private val serviceName: String? = null,
+    platformProvider: PlatformEnvironProvider = PlatformProvider.System,
+) : StandardRetryPolicy() {
+    public constructor(serviceName: String? = null) : this(serviceName, PlatformProvider.System)
+
+    private val useNewRetries: Boolean =
+        AwsHttpSetting.AwsNewRetries.resolve(platformProvider) ?: CoreSettings.resolveNewRetriesEnabled(platformProvider)
+
     public companion object {
+
         /**
          * The default [aws.smithy.kotlin.runtime.retries.policy.RetryPolicy] used by AWS service clients
          */
@@ -97,7 +112,7 @@ public open class AwsRetryPolicy(private val serviceName: String? = null) : Stan
     private fun evaluateServiceException(ex: ServiceException): RetryDirective? = with(ex.sdkErrorMetadata) {
         val errorType = knownErrorTypes[errorCode]
             ?: serviceSpecificErrorTypes[errorCode]?.let { (type, services) ->
-                type.takeIf { serviceName?.lowercase() in services }
+                if (useNewRetries) type.takeIf { serviceName?.lowercase() in services } else type
             }
             ?: knownStatusCodes[statusCode]
         errorType?.let { RetryDirective.RetryError(it) }

@@ -12,6 +12,7 @@ import aws.smithy.kotlin.runtime.http.HttpStatusCode
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.retries.policy.RetryDirective
 import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType
+import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -38,25 +39,41 @@ class AwsRetryPolicyTest {
         }
     }
 
+    // When new retry flag is off (default), IDPCommunicationError is retryable for all services (legacy behavior)
     @Test
-    fun testIDPCommunicationErrorRetriedForSts() {
-        val policy = AwsRetryPolicy("STS")
+    fun testIDPCommunicationErrorRetriedForAllServicesWhenFlagOff() {
+        val platform = TestPlatformProvider()
+        listOf("STS", "IAM", null).forEach { service ->
+            val policy = AwsRetryPolicy(service, platform)
+            val ex = ServiceException()
+            ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = "IDPCommunicationError"
+            assertEquals(RetryDirective.RetryError(RetryErrorType.Transient), policy.evaluate(Result.failure(ex)))
+        }
+    }
+
+    // When new retry flag is on, IDPCommunicationError is only retried for STS
+    @Test
+    fun testIDPCommunicationErrorRetriedOnlyForStsWhenFlagOn() {
+        val platform = TestPlatformProvider(env = mapOf("AWS_NEW_RETRIES_2026" to "true"))
+        val stsPolicy = AwsRetryPolicy("STS", platform)
         val ex = ServiceException()
         ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = "IDPCommunicationError"
-        assertEquals(RetryDirective.RetryError(RetryErrorType.Transient), policy.evaluate(Result.failure(ex)))
+        assertEquals(RetryDirective.RetryError(RetryErrorType.Transient), stsPolicy.evaluate(Result.failure(ex)))
     }
 
     @Test
-    fun testIDPCommunicationErrorNotRetriedForOtherServices() {
-        val policy = AwsRetryPolicy("IAM")
+    fun testIDPCommunicationErrorNotRetriedForOtherServicesWhenFlagOn() {
+        val platform = TestPlatformProvider(env = mapOf("AWS_NEW_RETRIES_2026" to "true"))
+        val iamPolicy = AwsRetryPolicy("IAM", platform)
         val ex = ServiceException()
         ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = "IDPCommunicationError"
-        assertEquals(RetryDirective.TerminateAndFail, policy.evaluate(Result.failure(ex)))
+        assertEquals(RetryDirective.TerminateAndFail, iamPolicy.evaluate(Result.failure(ex)))
     }
 
     @Test
-    fun testIDPCommunicationErrorNotRetriedWithoutServiceName() {
-        val policy = AwsRetryPolicy()
+    fun testIDPCommunicationErrorNotRetriedWithoutServiceNameWhenFlagOn() {
+        val platform = TestPlatformProvider(env = mapOf("AWS_NEW_RETRIES_2026" to "true"))
+        val policy = AwsRetryPolicy(null, platform)
         val ex = ServiceException()
         ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = "IDPCommunicationError"
         assertEquals(RetryDirective.TerminateAndFail, policy.evaluate(Result.failure(ex)))
