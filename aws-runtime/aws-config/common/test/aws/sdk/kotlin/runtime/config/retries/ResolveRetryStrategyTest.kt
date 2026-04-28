@@ -7,6 +7,7 @@ package aws.sdk.kotlin.runtime.config.retries
 
 import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
+import aws.sdk.kotlin.runtime.http.AwsHttpSetting
 import aws.smithy.kotlin.runtime.ClientException
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
@@ -249,7 +250,7 @@ class ResolveRetryStrategyTest {
     @Test
     fun itUsesDynamoDbDefaultsWhenNewRetriesEnabled() = runTest {
         val platform = TestPlatformProvider(
-            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
+            env = mapOf(AwsHttpSetting.AwsNewRetries.envVar to "true"),
         )
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "DynamoDB"))
         assertEquals(4, strategy.config.maxAttempts)
@@ -260,7 +261,7 @@ class ResolveRetryStrategyTest {
     @Test
     fun itUsesDynamoDbDefaultsWhenNewRetriesDisabled() = runTest {
         val platform = TestPlatformProvider(
-            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "false"),
+            env = mapOf(AwsHttpSetting.AwsNewRetries.envVar to "false"),
         )
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "DynamoDB"))
         assertEquals(3, strategy.config.maxAttempts)
@@ -271,7 +272,7 @@ class ResolveRetryStrategyTest {
     @Test
     fun itUsesStandardDefaultsForNonDynamoDbWhenNewRetriesEnabled() = runTest {
         val platform = TestPlatformProvider(
-            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
+            env = mapOf(AwsHttpSetting.AwsNewRetries.envVar to "true"),
         )
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "S3"))
         assertEquals(3, strategy.config.maxAttempts)

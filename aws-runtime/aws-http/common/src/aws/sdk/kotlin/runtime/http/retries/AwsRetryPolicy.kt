@@ -49,9 +49,7 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
  * If none of those conditions match, this policy delegates to [StandardRetryPolicy]. See that class's documentation for
  * more information about how it evaluates exceptions.
  *
- * @param serviceName The optional sdkId of the service (e.g. `"STS"`). When new retry behavior is enabled
- * (`AWS_NEW_RETRIES_2026` or `SMITHY_NEW_RETRIES_2026`), service-scoped error codes such as
- * `IDPCommunicationError` are only retried for the matching service. Otherwise, they are retried for all services.
+ * @param serviceName The optional sdkId of the service (e.g. `"STS"`).
  */
 public open class AwsRetryPolicy internal constructor(
     private val serviceName: String? = null,
