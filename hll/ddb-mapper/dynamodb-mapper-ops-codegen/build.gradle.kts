@@ -8,22 +8,19 @@
 * SPDX-License-Identifier: Apache-2.0
 */
 
-description = "DynamoDbMapper schema code generation"
-extra["displayName"] = "AWS :: SDK :: Kotlin :: HLL :: DynamoDbMapper :: Codegen :: Schema"
-extra["moduleName"] = "aws.sdk.kotlin.hll.dynamodbmapper.codegen.schema"
+description = "DynamoDbMapper ops code generation"
+extra["displayName"] = "AWS :: SDK :: Kotlin :: HLL :: DynamoDbMapper :: Codegen :: Ops"
+extra["moduleName"] = "aws.sdk.kotlin.hll.dynamodbmapper.codegen.ops"
 
 plugins {
     id(libs.plugins.kotlin.jvm.get().pluginId)
-    `maven-publish`
 }
 
 dependencies {
     implementation(libs.ksp.api)
     implementation(project(":hll:hll-codegen"))
-    implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-annotations"))
-    implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-codegen"))
-    implementation(project(":hll:dynamodb-mapper:dynamodb-mapper")) // for ValueConverter.kt
-    implementation(libs.smithy.kotlin.codegen) // for RuntimeTypes
+    implementation(project(":services:dynamodb"))
+    implementation(project(":hll:ddb-mapper:dynamodb-mapper-codegen"))
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.params)
@@ -53,21 +50,5 @@ tasks.test {
         showStackTraces = true
         showExceptions = true
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-    }
-}
-
-val sourcesJar by tasks.creating(Jar::class) {
-    group = "publishing"
-    description = "Assembles Kotlin sources jar"
-    archiveClassifier.set("sources")
-    from(sourceSets.getByName("main").allSource)
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("dynamodb-mapper-schema-codegen") {
-            from(components["java"])
-            artifact(sourcesJar)
-        }
     }
 }

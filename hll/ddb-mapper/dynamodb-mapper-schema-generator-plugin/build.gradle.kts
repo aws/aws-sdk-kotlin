@@ -24,8 +24,8 @@ dependencies {
     implementation(libs.ksp.gradle.plugin)
 
     implementation(project(":hll:hll-codegen")) // for RenderOptions
-    implementation(project(":hll:dynamodb-mapper:dynamodb-mapper")) // for ValueConverter
-    implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-schema-codegen")) // for AnnotationsProcessorOptions
+    implementation(project(":hll:ddb-mapper:dynamodb-mapper")) // for ValueConverter
+    implementation(project(":hll:ddb-mapper:dynamodb-mapper-schema-codegen")) // for AnnotationsProcessorOptions
     implementation(libs.smithy.kotlin.runtime.core) // for AttributeKey
 
     testImplementation(libs.junit.jupiter)
@@ -195,11 +195,11 @@ tasks.withType<Test> {
     dependsOn(":aws-runtime:aws-core:publishToMavenLocal")
     dependsOn(":aws-runtime:aws-endpoint:publishToMavenLocal")
     dependsOn(":aws-runtime:aws-http:publishToMavenLocal")
-    dependsOn(":hll:dynamodb-mapper:dynamodb-mapper-annotations:publishToMavenLocal")
-    dependsOn(":hll:dynamodb-mapper:dynamodb-mapper-codegen:publishToMavenLocal")
-    dependsOn(":hll:dynamodb-mapper:dynamodb-mapper-schema-codegen:publishToMavenLocal")
-    dependsOn(":hll:dynamodb-mapper:dynamodb-mapper-schema-generator-plugin:publishToMavenLocal")
-    dependsOn(":hll:dynamodb-mapper:dynamodb-mapper:publishToMavenLocal")
+    dependsOn(":hll:ddb-mapper:dynamodb-mapper-annotations:publishToMavenLocal")
+    dependsOn(":hll:ddb-mapper:dynamodb-mapper-codegen:publishToMavenLocal")
+    dependsOn(":hll:ddb-mapper:dynamodb-mapper-schema-codegen:publishToMavenLocal")
+    dependsOn(":hll:ddb-mapper:dynamodb-mapper-schema-generator-plugin:publishToMavenLocal")
+    dependsOn(":hll:ddb-mapper:dynamodb-mapper:publishToMavenLocal")
     dependsOn(":hll:hll-codegen:publishToMavenLocal")
     dependsOn(":hll:hll-mapping-core:publishToMavenLocal")
     dependsOn(":services:dynamodb:publishToMavenLocal")
