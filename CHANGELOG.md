@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.6.65] - 04/27/2026
+
+### Features
+* (**applicationsignals**) Application Signals now supports creating composite Service Level Objectives on Service Operations. Users can now create service SLO on multiple operations.
+* (**billingconductor**) Add support for Passthrough pricing plan
+* (**cloudwatchlogs**) Adds support for selecting all logs sources and types in a single association.
+* (**glue**) Addition of AdditionalAuditContext to GetPartition, GetPartitions, GetTableVersion, and GetTableVersions
+* (**ivs**) Adds tags parameter to the CreateAdConfiguration operation
+* (**kms**) KMS GetKeyLastUsage API provides information on the last successful cryptographic operation performed on KMS keys. This new API provides KMS customers with the last timestamp, CloudTrail eventId, and the cryptographic operation that was performed on the key.
+* (**mgn**) Added network modernization support, enabling customers to edit, resize, merge, and split VPCs and subnets during migration while retaining functional, non-conflicting IP addresses.
+* (**omics**) Enable Public Internet or VPC configuration to BatchRun
+* (**opensearch**) Amazon OpenSearch Service now supports JWKS URL configuration for JWT authentication
+* (**sagemaker**) Updated API documentation for endpoint MetricsConfig. Added details on supported metric publish frequencies and clarified how EnableEnhancedMetrics controls utilization and invocation metric behavior.
+* (**workspaces**) Added support for Protocol as modified resource and added update failure as modification state
+
+### Documentation
+* (**gameliftstreams**) Adds Proton 10.0-4 to the list of runtime environment options available when creating an Amazon GameLift Streams application
+
 ## [1.6.64] - 04/24/2026
 
 ### Features
