@@ -7,18 +7,15 @@ package aws.sdk.kotlin.runtime.config.retries
 
 import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
-import aws.sdk.kotlin.runtime.http.AwsHttpSetting
 import aws.smithy.kotlin.runtime.ClientException
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
-import aws.smithy.kotlin.runtime.retries.delay.ExponentialBackoffWithJitter
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
-import kotlin.time.Duration.Companion.milliseconds
 
 class ResolveRetryStrategyTest {
     @Test

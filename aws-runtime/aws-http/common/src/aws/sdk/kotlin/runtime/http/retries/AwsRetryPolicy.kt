@@ -12,8 +12,6 @@ import aws.smithy.kotlin.runtime.retries.policy.RetryDirective
 import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.Throttling
 import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.Transient
 import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
-import aws.smithy.kotlin.runtime.util.PlatformEnvironProvider
-import aws.smithy.kotlin.runtime.util.PlatformProvider
 
 /**
  * The standard policy for AWS service clients that defines which error conditions are retryable and how. This policy
@@ -47,9 +45,7 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
  * more information about how it evaluates exceptions.
  */
 public open class AwsRetryPolicy : StandardRetryPolicy() {
-
     public companion object {
-
         /**
          * The default [aws.smithy.kotlin.runtime.retries.policy.RetryPolicy] used by AWS service clients
          */
@@ -89,8 +85,8 @@ public open class AwsRetryPolicy : StandardRetryPolicy() {
     }
 
     private fun evaluateServiceException(ex: ServiceException): RetryDirective? = with(ex.sdkErrorMetadata) {
-        val errorType = knownErrorTypes[errorCode] ?: knownStatusCodes[statusCode]
-        errorType?.let { RetryDirective.RetryError(it) }
+        (knownErrorTypes[errorCode] ?: knownStatusCodes[statusCode])
+            ?.let { RetryDirective.RetryError(it) }
     }
 
     private val ServiceErrorMetadata.statusCode: Int?

@@ -237,6 +237,12 @@ public object AwsSdkSetting {
      * Configures an ordered preference of auth schemes
      */
     public val AwsAuthSchemePreference: EnvironmentSetting<String> = strEnvSetting("aws.authSchemePreference", "AWS_AUTH_SCHEME_PREFERENCE")
+
+    /**
+     * Enables the new retry behavior. When set, takes precedence over
+     * the `SMITHY_NEW_RETRIES_2026` environment variable defined in smithy-kotlin.
+     */
+    public val AwsNewRetries: EnvironmentSetting<Boolean> = boolEnvSetting("aws.newRetries2026", "AWS_NEW_RETRIES_2026")
 }
 
 /**

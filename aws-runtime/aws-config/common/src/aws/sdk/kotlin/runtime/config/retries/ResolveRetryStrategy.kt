@@ -58,7 +58,7 @@ private suspend fun resolveRetryStrategyImpl(
     defaultMaxAttempts: Int? = null,
     defaultInitialDelay: Duration? = null,
 ): RetryStrategy {
-    val useNewRetries = AwsHttpSetting.AwsNewRetries.resolve(platformProvider) ?: CoreSettings.resolveNewRetriesEnabled(platformProvider)
+    val useNewRetries = AwsSdkSetting.AwsNewRetries.resolve(platformProvider) ?: CoreSettings.resolveNewRetriesEnabled(platformProvider)
     val maxAttempts = AwsSdkSetting.AwsMaxAttempts.resolve(platformProvider)
         ?: profile.get().maxAttempts
 
