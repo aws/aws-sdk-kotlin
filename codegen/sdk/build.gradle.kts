@@ -3,17 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import aws.sdk.kotlin.gradle.codegen.*
 import aws.sdk.kotlin.gradle.codegen.dsl.SmithyProjection
 import aws.sdk.kotlin.gradle.codegen.dsl.generateSmithyProjections
 import aws.sdk.kotlin.gradle.codegen.dsl.smithyKotlinPlugin
+import aws.sdk.kotlin.gradle.codegen.smithyKotlinProjectionPath
 import aws.sdk.kotlin.gradle.sdk.*
 import aws.sdk.kotlin.gradle.sdk.tasks.UpdatePackageManifest
 import aws.sdk.kotlin.gradle.util.typedProp
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.ServiceShape
+import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.streams.toList
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
 
 plugins {
     kotlin("jvm")
@@ -93,14 +95,18 @@ val bootstrap = BootstrapConfig(
     typedProp("aws.protocols"),
 )
 
+val modelsDir: Path = run {
+    val modelsDir: String by project
+    Paths.get(modelsDir)
+}
+
 /**
- * Returns an AwsService model for every JSON file found in directory defined by property `modelsDirProp`
+ * Returns an AwsService model for every JSON file found in directory defined by Gradle property `modelsDir`
  * @param applyFilters Flag indicating if models should be filtered to respect the `aws.services` and `aws.protocol`
  * membership tests
  */
 fun discoverServices(applyFilters: Boolean = true): List<AwsService> {
     logger.info("discover services called")
-    val modelsDir: String by project
     val bootstrapConfig = bootstrap.takeIf { applyFilters } ?: BootstrapConfig.ALL
     val pkgManifest = PackageManifest
         .fromFile(file("packages.json"))
@@ -206,13 +212,13 @@ tasks.register<UpdatePackageManifest>("updatePackageManifest") {
 }
 
 /**
- * Represents a type for a model that is sourced from aws-models
+ * Represents a type for a model that is sourced from api-models-aws
  */
 data class SourceModel(
     /**
-     * The path in aws-models to the model file
+     * The path in api-models-aws to the model file
      */
-    val path: String,
+    val path: Path,
     /**
      * The sdkId trait value from the model
      */
@@ -229,37 +235,51 @@ data class SourceModel(
         get() = "${sdkIdToModelFilename(sdkId)}.json"
 }
 
-fun discoverSourceModels(repoPath: String): List<SourceModel> {
-    val root = File(repoPath)
-    val models = root.listFiles()
-        ?.map { Paths.get(it.absolutePath, "smithy", "model.json").toFile() }
-        ?.filter { it.exists() } ?: error("no models found in $root")
+fun discoverServiceModel(servicePath: Path): Path {
+    val modelDir = servicePath
+        .resolve("service")
+        .listDirectoryEntries() // `service/` contains subdirectories named after API versions (e.g., `2019-11-01`)
+        .maxBy { it.name } // Take the largest service version by lexicographic ordering
 
-    return models.map { file ->
-        val model = Model.assembler().addImport(file.absolutePath).assemble().result.get()
+    return modelDir
+        .listDirectoryEntries("*.json")
+        .singleOrNull()
+        ?: error("Expected only one model file in $modelDir")
+}
+
+fun discoverSourceModels(repoPath: Path): List<SourceModel> {
+    val root = repoPath.resolve("models")
+    val models = root
+        .listDirectoryEntries()
+        .map(::discoverServiceModel)
+        .takeUnless { it.isEmpty() }
+        ?: error("no models found in $root")
+
+    return models.map { modelPath ->
+        val model = Model.assembler().addImport(modelPath).assemble().result.get()
         val services: List<ServiceShape> = model.shapes(ServiceShape::class.java).sorted().toList()
-        require(services.size == 1) { "Expected one service per aws model, but found ${services.size} in ${file.absolutePath}: ${services.map { it.id }}" }
+        require(services.size == 1) { "Expected one service per aws model, but found ${services.size} in $modelPath: ${services.map { it.id }}" }
         val service = services.first()
         val serviceApi = service.getTrait(software.amazon.smithy.aws.traits.ServiceTrait::class.java).orNull()
-            ?: error("Expected aws.api#service trait attached to model ${file.absolutePath}")
+            ?: error("Expected aws.api#service trait attached to model $modelPath")
 
-        SourceModel(file.absolutePath, serviceApi.sdkId, service.version)
+        SourceModel(modelPath, serviceApi.sdkId, service.version)
     }
 }
 
-fun discoverAwsModelsRepoPath(): String? {
-    val discovered = rootProject.file("../aws-models")
-    if (discovered.exists()) return discovered.absolutePath
-
-    return typedProp<String>("awsModelsDir")?.let { File(it) }?.absolutePath
+fun discoverAwsModelsRepoPath(): Path? {
+    val specified = typedProp<String>("awsModelsDir")?.let { Paths.get(it) }
+    val discovered = rootProject.file("../api-models-aws").takeIf { it.exists() }?.toPath()
+    return specified ?: discovered
 }
 
 /*
- * Synchronize upstream changes from aws-models repository.
+ * Synchronize upstream changes from api-models-aws repository. This should only be necessary if models have drifted
+ * according to our release build's `VerifyModels` step.
  *
  * Steps to synchronize:
- * 1. Clone aws-models if not already cloned
- * 2. `cd <path/to/aws-models>`
+ * 1. Clone aws/api-models-aws if not already cloned
+ * 2. `cd <path/to/api-models-aws>`
  * 3. `git pull` to pull down the latest changes
  * 4. `cd <path/to/aws-sdk-kotlin>`
  * 5. Run `./gradlew syncAwsModels`
@@ -267,11 +287,11 @@ fun discoverAwsModelsRepoPath(): String? {
  */
 tasks.register("syncAwsModels") {
     group = "codegen"
-    description = "Sync upstream changes from aws-models repo"
+    description = "Sync upstream changes from api-models-aws repo"
 
     doLast {
         println("syncing AWS models")
-        val repoPath = discoverAwsModelsRepoPath() ?: error("Failed to discover path to aws-models. Explicitly set -PawsModelsDir=<path-to-local-repo>")
+        val repoPath = discoverAwsModelsRepoPath() ?: error("Failed to discover path to api-models-aws. Explicitly set -PawsModelsDir=<path-to-local-repo>")
         val sourceModelsBySdkId = discoverSourceModels(repoPath).associateBy { it.sdkId }
 
         val existingModelsBySdkId = discoverServices(applyFilters = false).associateBy { it.sdkId }
@@ -284,11 +304,21 @@ tasks.register("syncAwsModels") {
             sourceModelsBySdkId[existing.sdkId]?.let { source -> Pair(source, existing) }
         }
 
-        val modelsDir = project.file("aws-models")
-
         pairs.forEach { (source, existing) ->
             // ensure we don't accidentally take a new API version
-            if (source.version != existing.version) error("upstream version of ${source.path} does not match destination of existing model version ${existing.modelFile.name}")
+            if (source.version != existing.version) error(
+                buildString {
+                    append("upstream version of ")
+                    append(source.path)
+                    append(" (")
+                    append(source.version)
+                    append(") does not match existing version of ")
+                    append(existing.modelFile)
+                    append(" (")
+                    append(existing.version)
+                    append(")")
+                }
+            )
 
             println("syncing ${existing.modelFile.name} from ${source.path}")
             copy {
@@ -304,7 +334,7 @@ tasks.register("syncAwsModels") {
         // sync new models
         newSources.forEach { sdkId ->
             val source = sourceModelsBySdkId[sdkId]!!
-            val dest = Paths.get(modelsDir.absolutePath, source.destFilename).toFile()
+            val dest = modelsDir.resolve(source.destFilename)
             println("syncing new model ${source.sdkId} to $dest")
             copy {
                 from(source.path)
@@ -318,7 +348,7 @@ tasks.register("syncAwsModels") {
             println("\nWarnings:")
         }
 
-        // models with no upstream source in aws-models
+        // models with no upstream source in api-models-aws
         orphaned.forEach { sdkId ->
             val existing = existingModelsBySdkId[sdkId]!!
             logger.warn("Cannot find a model file for ${existing.modelFile.name} (sdkId=${existing.sdkId}) but it exists in aws-sdk-kotlin!")
@@ -327,7 +357,7 @@ tasks.register("syncAwsModels") {
         // new since last sync
         newSources.forEach { sdkId ->
             val source = sourceModelsBySdkId[sdkId]!!
-            logger.warn("${source.path} (sdkId=$sdkId) is new to aws-models since the last sync!")
+            logger.warn("${source.path} (sdkId=$sdkId) is new to api-models-aws since the last sync!")
         }
     }
 }
