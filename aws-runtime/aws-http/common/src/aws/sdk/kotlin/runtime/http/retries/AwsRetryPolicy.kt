@@ -5,11 +5,8 @@
 
 package aws.sdk.kotlin.runtime.http.retries
 
-import aws.sdk.kotlin.runtime.http.AwsHttpSetting
-import aws.smithy.kotlin.runtime.CoreSettings
 import aws.smithy.kotlin.runtime.ServiceErrorMetadata
 import aws.smithy.kotlin.runtime.ServiceException
-import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.retries.policy.RetryDirective
 import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.Throttling
@@ -25,7 +22,7 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
  * * Any [ServiceException] with an `sdkErrorMetadata.errorCode` of:
  *   * `BandwidthLimitExceeded`
  *   * `EC2ThrottledException`
- *   * `IDPCommunicationError` (STS only when new retry behavior is enabled; all services otherwise)
+ *   * `IDPCommunicationError` (only STS throws it)
  *   * `LimitExceededException`
  *   * `PriorRequestNotComplete`
  *   * `ProvisionedThroughputExceededException`
@@ -48,17 +45,8 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
  *
  * If none of those conditions match, this policy delegates to [StandardRetryPolicy]. See that class's documentation for
  * more information about how it evaluates exceptions.
- *
- * @param serviceName The optional sdkId of the service (e.g. `"STS"`).
  */
-public open class AwsRetryPolicy internal constructor(
-    private val serviceName: String? = null,
-    platformProvider: PlatformEnvironProvider = PlatformProvider.System,
-) : StandardRetryPolicy() {
-    public constructor(serviceName: String? = null) : this(serviceName, PlatformProvider.System)
-
-    private val useNewRetries: Boolean =
-        AwsHttpSetting.AwsNewRetries.resolve(platformProvider) ?: CoreSettings.resolveNewRetriesEnabled(platformProvider)
+public open class AwsRetryPolicy: StandardRetryPolicy() {
 
     public companion object {
 
@@ -70,6 +58,7 @@ public open class AwsRetryPolicy internal constructor(
         internal val knownErrorTypes = mapOf(
             "BandwidthLimitExceeded" to Throttling,
             "EC2ThrottledException" to Throttling,
+            "IDPCommunicationError" to Transient,
             "LimitExceededException" to Throttling,
             "PriorRequestNotComplete" to Throttling,
             "ProvisionedThroughputExceededException" to Throttling,
@@ -86,14 +75,6 @@ public open class AwsRetryPolicy internal constructor(
             "TransactionInProgressException" to Throttling,
         )
 
-        /**
-         * Error codes that are only retryable for specific services.
-         * Maps error code to (RetryErrorType, set of matching service names lowercased).
-         */
-        internal val serviceSpecificErrorTypes = mapOf(
-            "IDPCommunicationError" to (Transient to setOf("sts")),
-        )
-
         internal val knownStatusCodes = mapOf(
             500 to Transient,
             502 to Transient,
@@ -108,11 +89,7 @@ public open class AwsRetryPolicy internal constructor(
     }
 
     private fun evaluateServiceException(ex: ServiceException): RetryDirective? = with(ex.sdkErrorMetadata) {
-        val errorType = knownErrorTypes[errorCode]
-            ?: serviceSpecificErrorTypes[errorCode]?.let { (type, services) ->
-                if (useNewRetries) type.takeIf { serviceName?.lowercase() in services } else type
-            }
-            ?: knownStatusCodes[statusCode]
+        val errorType = knownErrorTypes[errorCode] ?: knownStatusCodes[statusCode]
         errorType?.let { RetryDirective.RetryError(it) }
     }
 
