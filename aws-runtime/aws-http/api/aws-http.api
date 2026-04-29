@@ -11,11 +11,6 @@ public final class aws/sdk/kotlin/runtime/http/ApiMetadata {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class aws/sdk/kotlin/runtime/http/AwsHttpSetting {
-	public static final field INSTANCE Laws/sdk/kotlin/runtime/http/AwsHttpSetting;
-	public final fun getAwsNewRetries ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
-}
-
 public final class aws/sdk/kotlin/runtime/http/AwsUserAgentMetadata {
 	public static final field Companion Laws/sdk/kotlin/runtime/http/AwsUserAgentMetadata$Companion;
 	public fun <init> (Laws/sdk/kotlin/runtime/http/SdkMetadata;Laws/sdk/kotlin/runtime/http/ApiMetadata;Laws/sdk/kotlin/runtime/http/OsMetadata;Laws/sdk/kotlin/runtime/http/LanguageMetadata;Laws/sdk/kotlin/runtime/http/ExecutionEnvMetadata;Laws/sdk/kotlin/runtime/http/FrameworkMetadata;Ljava/lang/String;Laws/sdk/kotlin/runtime/http/operation/CustomUserAgentMetadata;)V

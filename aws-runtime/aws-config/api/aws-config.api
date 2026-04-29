@@ -309,6 +309,7 @@ public final class aws/sdk/kotlin/runtime/config/AwsSdkSetting {
 	public final fun getAwsExecutionEnv ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsIgnoreEndpointUrls ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsMaxAttempts ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
+	public final fun getAwsNewRetries ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsProfile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsRegion ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsRequestChecksumCalculation ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
