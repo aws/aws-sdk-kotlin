@@ -1,5 +1,76 @@
 # Changelog
 
+## [1.6.66] - 04/29/2026
+
+### Features
+* (**account**) Adds AccountState in the response for the GetAccountInformation API. Each state represents a specific phase in the account lifecycle. Use this information to manage account access, automate workflows, or trigger actions based on account state changes.
+* (**bedrockagentcore**) Adds batch evaluation for running evaluators against multiple agent sessions with server-side orchestration, AI-powered recommendations for optimizing system prompts and tool descriptions, and AB testing with controlled traffic splitting and statistical significance reporting
+* (**bedrockagentcorecontrol**) Adds configuration bundles for versioned, immutable agent configuration snapshots with branch-based lineage
+* (**cloudfront**) Amazon CloudFront now supports cache tag. Tag objects via response headers and invalidate all matching objects in a single request, replacing manual URL tracking and broad wildcards.
+* (**deadline**) Adds support for rtx-pro-server-6000 GPU accelerator for service-managed fleets.
+* (**gamelift**) Amazon GameLift Servers adds a new DescribeContainerGroupPortMappings API for container fleets, making it easy to discover which connection ports map to your container ports without needing to remotely access the compute.
+* (**mediapackagev2**) This feature adds configuration for specifying SCTE marker handling and allow greater control over generated manifest and segment URIs
+* (**transfer**) This launch will increase the limits for customers to list the contents from the remote directories from 10k to 200k.
+* (**workspacesweb**) Allow admins to configure IPv6 ranges on IP Access Settings.
+
+### Documentation
+* (**ecr**) Removes support for registry policy V1
+
+## [1.6.65] - 04/27/2026
+
+### Features
+* (**applicationsignals**) Application Signals now supports creating composite Service Level Objectives on Service Operations. Users can now create service SLO on multiple operations.
+* (**billingconductor**) Add support for Passthrough pricing plan
+* (**cloudwatchlogs**) Adds support for selecting all logs sources and types in a single association.
+* (**glue**) Addition of AdditionalAuditContext to GetPartition, GetPartitions, GetTableVersion, and GetTableVersions
+* (**ivs**) Adds tags parameter to the CreateAdConfiguration operation
+* (**kms**) KMS GetKeyLastUsage API provides information on the last successful cryptographic operation performed on KMS keys. This new API provides KMS customers with the last timestamp, CloudTrail eventId, and the cryptographic operation that was performed on the key.
+* (**mgn**) Added network modernization support, enabling customers to edit, resize, merge, and split VPCs and subnets during migration while retaining functional, non-conflicting IP addresses.
+* (**omics**) Enable Public Internet or VPC configuration to BatchRun
+* (**opensearch**) Amazon OpenSearch Service now supports JWKS URL configuration for JWT authentication
+* (**sagemaker**) Updated API documentation for endpoint MetricsConfig. Added details on supported metric publish frequencies and clarified how EnableEnhancedMetrics controls utilization and invocation metric behavior.
+* (**workspaces**) Added support for Protocol as modified resource and added update failure as modification state
+
+### Documentation
+* (**gameliftstreams**) Adds Proton 10.0-4 to the list of runtime environment options available when creating an Amazon GameLift Streams application
+
+## [1.6.64] - 04/24/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Added support for configuring identity providers and inbound authorizers within a private VPC for AWS Bedrock AgentCore, enabling secure network connection without public internet access
+* (**cloudwatchlogs**) Adding nextToken and maxItems to the GetQueryResults API.
+* (**connect**) Amazon Connect is expanding attachment capabilities to give customers greater flexibility and control. Currently limited to predefined file types, the new feature will allow contact center administrators to customize which file extensions and sizes are supported across chat, email, tasks, and cases.
+* (**connecthealth**) Corrected CreateWebAppConfiguration documentation. Adding slash as an allowed character for the Ambient documentation agent to allow pronoun specifications.
+* (**evs**) EVS now supports i7i.metal-24xl EC2 bare metal instance type, delivering high random IOPS performance with real-time latency, ideal for IO intensive and latency-sensitive workloads such as transactional databases, real-time analytics, and AI ML pre-processing.
+* (**transfer**) AWS Transfer Family now support configurable IP address types for Web Apps of type VPC, enabling customers to select IPv4-only or dual-stack (IPv4 and IPv6) configurations based on their network requirements.
+
+## [1.6.63] - 04/23/2026
+
+### Features
+* (**datazone**) Releasing For LakehouseProperties attributes in the Connections API's
+* (**iotmanagedintegrations**) Adds "Status" field to provisioning profile operation response types, giving users visibility into the readiness of a provisioning profile to be used for device provisioning.
+* (**opensearch**) Amazon OpenSearch UI applications now support cross-Region domain association, enabling you to connect OpenSearch Dashboards in one AWS Region to OpenSearch domains in other Regions within the same partition for centralized data visualization.
+
+### Documentation
+* (**pcs**) This release adds support for Slurm 25.11 with expedited requeue enabled by default for jobs failing due to node issues, configurable requeue delay, health checks at node startup only, and unauthenticated HTTP endpoints disabled by default for improved security.
+
+## [1.6.62] - 04/22/2026
+
+### Features
+* (**batch**) Support of S3Files volume type, container start and stop timeouts.
+* (**bedrockagentcore**) Adds support for Amazon Bedrock AgentCore Harness data plane APIs, enabling customers to invoke managed agent loops and execute commands on live agent sessions with streaming responses.
+* (**bedrockagentcorecontrol**) Adds support for Amazon Bedrock AgentCore Harness control plane APIs, enabling customers to create, manage, and configure managed agent loops with customizable models, tools, memory, and isolated execution environments.
+* (**ec2**) Managed resource visibility settings control whether resources that AWS services provision on your behalf within your AWS account appear in your Amazon console views and API list operations.
+* (**ecs**) GPU health monitoring and auto-repair for ECS Managed Instances
+* (**emrserverless**) This release adds support for Spark connect sessions starting with release label emr-7.13.0.
+* (**iotwireless**) Enable customers to optionally specify a desired confidence level for Cellular and WiFi position estimates. Customers can use this to trade off confidence level and radius of uncertainty based on their needs.
+* (**ivs**) Adds support for Amazon IVS server-side ad insertion
+* (**lambda**) Add Ruby 4.0 (ruby4.0) support to AWS Lambda.
+* (**opensearch**) Adds support for RollbackServiceSoftwareUpdate API
+* (**osis**) Update the pipeline configuration body character limit for the CreatePipeline API call.
+* (**s3**) This release adds five additional checksum algorithms for S3 data integrity (MD5, SHA-512, XXHash3, XXHash64, XXHash128) and support for S3 Inventory on directory buckets (S3 Express One Zone).
+* (**s3control**) This release adds support for five additional checksum algorithms for data integrity checking in Amazon S3 - MD5, SHA-512, XXHash3, XXHash64, and XXHash128.
+
 ## [1.6.61] - 04/21/2026
 
 ### Features

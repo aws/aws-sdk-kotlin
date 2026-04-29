@@ -6917,6 +6917,24 @@
                 "smithy.api#documentation": "<p>Returns the results from the specified query.</p>\n         <p>Only the fields requested in the query are returned, along with a <code>@ptr</code> field,\n      which is the identifier for the log record. You can use the value of <code>@ptr</code> in a\n        <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogRecord.html\">GetLogRecord</a>\n      operation to get the full log record.</p>\n         <p>\n            <code>GetQueryResults</code> does not start running a query. To run a query, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a>. For more information about how long results of previous queries are\n      available, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html\">CloudWatch Logs\n        quotas</a>.</p>\n         <p>If the value of the <code>Status</code> field in the output is <code>Running</code>, this\n      operation returns only partial results. If you see a value of <code>Scheduled</code> or\n        <code>Running</code> for the status, you can retry the operation later to see the final\n      results. </p>\n         <p>This operation is used both for retrieving results from interactive queries and from\n      automated scheduled query executions. Scheduled queries use <code>GetQueryResults</code>\n      internally to retrieve query results for processing and delivery to configured\n      destinations.</p>\n         <p>If you are using CloudWatch cross-account observability, you can use this operation\n      in a monitoring account to start queries in linked source accounts. For more information, see\n        <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p>"
             }
         },
+        "com.amazonaws.cloudwatchlogs#GetQueryResultsMaxItems": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 0,
+                    "max": 10000
+                }
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#GetQueryResultsNextToken": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 1024
+                }
+            }
+        },
         "com.amazonaws.cloudwatchlogs#GetQueryResultsRequest": {
             "type": "structure",
             "members": {
@@ -6925,6 +6943,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The ID number of the query.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "nextToken": {
+                    "target": "com.amazonaws.cloudwatchlogs#GetQueryResultsNextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next set of items to return. The token expires after 1 hour.</p>"
+                    }
+                },
+                "maxItems": {
+                    "target": "com.amazonaws.cloudwatchlogs#GetQueryResultsMaxItems",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of log events to return in the response. The maximum is 10,000 log events.</p>"
                     }
                 }
             },
@@ -6963,6 +6993,12 @@
                     "target": "com.amazonaws.cloudwatchlogs#EncryptionKey",
                     "traits": {
                         "smithy.api#documentation": "<p>If you associated an KMS key with the CloudWatch Logs Insights\n      query results in this account, this field displays the ARN of the key that's used to encrypt\n      the query results when <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> stores\n      them.</p>"
+                    }
+                },
+                "nextToken": {
+                    "target": "com.amazonaws.cloudwatchlogs#GetQueryResultsNextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>If there are more log events remaining in the results, the response includes a\n      <code>nextToken</code>. You can use this token in a subsequent <code>GetQueryResults</code>\n      request to get the next set of results.</p>"
                     }
                 }
             },
@@ -12579,14 +12615,14 @@
                 "resourceArn": {
                     "target": "com.amazonaws.cloudwatchlogs#Arn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ARN of the Amazon Web Services resource that is generating and sending logs. For\n      example,\n        <code>arn:aws:workmail:us-east-1:123456789012:organization/m-1234EXAMPLEabcd1234abcd1234abcd1234</code>\n         </p>\n         <p>For the <code>SECURITY_FINDING_LOGS</code> logType, use a wildcard ARN for the hub\n      resource. For example,\n        <code>arn:aws:securityhub:us-east-1:111122223333:hub/*</code>\n         </p>",
+                        "smithy.api#documentation": "<p>The ARN of the Amazon Web Services resource that is generating and sending logs. For\n      example,\n        <code>arn:aws:workmail:us-east-1:123456789012:organization/m-1234EXAMPLEabcd1234abcd1234abcd1234</code>\n         </p>\n         <p>For the <code>SECURITY_FINDING_LOGS</code> logType, use a wildcard ARN for the hub\n      resource. For Amazon Web Services Security Hub CSPM, use\n        <code>arn:aws:securityhub:us-east-1:111122223333:hub/*</code>\n      and for Amazon Web Services Security Hub, use\n        <code>arn:aws:securityhub:us-east-1:111122223333:hubv2/*</code>\n         </p>",
                         "smithy.api#required": {}
                     }
                 },
                 "logType": {
                     "target": "com.amazonaws.cloudwatchlogs#LogType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Defines the type of log that the source is sending.</p>\n         <ul>\n            <li>\n               <p>For Amazon Bedrock Agents, the valid values are <code>APPLICATION_LOGS</code> and\n            <code>EVENT_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock Knowledge Bases, the valid value is\n            <code>APPLICATION_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock AgentCore Runtime, the valid values are\n            <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock AgentCore Tools, the valid values are\n            <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock AgentCore Identity, the valid values are\n            <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock AgentCore Memory, the valid values are\n            <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock AgentCore Gateway, the valid values are\n            <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p>\n            </li>\n            <li>\n               <p>For CloudFront, the valid value is <code>ACCESS_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For DevOps Agent, the valid value is <code>APPLICATION_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon CodeWhisperer, the valid value is <code>EVENT_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Elemental MediaPackage, the valid values are <code>EGRESS_ACCESS_LOGS</code> and\n            <code>INGRESS_ACCESS_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Elemental MediaTailor, the valid values are <code>AD_DECISION_SERVER_LOGS</code>,\n            <code>MANIFEST_SERVICE_LOGS</code>, and <code>TRANSCODE_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon EKS Auto Mode, the valid values are <code>AUTO_MODE_BLOCK_STORAGE_LOGS</code>,\n            <code>AUTO_MODE_COMPUTE_LOGS</code>, <code>AUTO_MODE_IPAM_LOGS</code>, and\n            <code>AUTO_MODE_LOAD_BALANCING_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Entity Resolution, the valid value is <code>WORKFLOW_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For IAM Identity Center, the valid value is\n          <code>ERROR_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Network Firewall Proxy, the valid values are <code>ALERT_LOGS</code>,\n            <code>ALLOW_LOGS</code>, and <code>DENY_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Network Load Balancer, the valid value is <code>NLB_ACCESS_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For PCS, the valid values are <code>PCS_SCHEDULER_LOGS</code> and\n            <code>PCS_JOBCOMP_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Quick, the valid values are <code>CHAT_LOGS</code> and\n            <code>FEEDBACK_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Web Services RTB Fabric, the valid values is\n          <code>APPLICATION_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Q, the valid values are <code>EVENT_LOGS</code> and\n            <code>SYNC_JOB_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Web Services Security Hub CSPM, the valid value is\n            <code>SECURITY_FINDING_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon SES mail manager, the valid values are\n            <code>APPLICATION_LOGS</code> and <code>TRAFFIC_POLICY_DEBUG_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon WorkMail, the valid values are <code>ACCESS_CONTROL_LOGS</code>,\n            <code>AUTHENTICATION_LOGS</code>, <code>WORKMAIL_AVAILABILITY_PROVIDER_LOGS</code>,\n            <code>WORKMAIL_MAILBOX_ACCESS_LOGS</code>, and\n            <code>WORKMAIL_PERSONAL_ACCESS_TOKEN_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon VPC Route Server, the valid value is\n          <code>EVENT_LOGS</code>.</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>Defines the type of log that the source is sending.</p>\n         <ul>\n            <li>\n               <p>For Amazon Bedrock Agents, the valid values are <code>APPLICATION_LOGS</code> and\n            <code>EVENT_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock Knowledge Bases, the valid value is\n            <code>APPLICATION_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock AgentCore Runtime, the valid values are\n            <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock AgentCore Tools, the valid values are\n            <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock AgentCore Identity, the valid values are\n            <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock AgentCore Memory, the valid values are\n            <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Bedrock AgentCore Gateway, the valid values are\n            <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p>\n            </li>\n            <li>\n               <p>For CloudFront, the valid value is <code>ACCESS_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For DevOps Agent, the valid value is <code>APPLICATION_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon CodeWhisperer, the valid value is <code>EVENT_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Elemental MediaPackage, the valid values are <code>EGRESS_ACCESS_LOGS</code> and\n            <code>INGRESS_ACCESS_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Elemental MediaTailor, the valid values are <code>AD_DECISION_SERVER_LOGS</code>,\n            <code>MANIFEST_SERVICE_LOGS</code>, and <code>TRANSCODE_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon EKS Auto Mode, the valid values are <code>AUTO_MODE_BLOCK_STORAGE_LOGS</code>,\n            <code>AUTO_MODE_COMPUTE_LOGS</code>, <code>AUTO_MODE_IPAM_LOGS</code>, and\n            <code>AUTO_MODE_LOAD_BALANCING_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Entity Resolution, the valid value is <code>WORKFLOW_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For IAM Identity Center, the valid value is\n          <code>ERROR_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Network Firewall Proxy, the valid values are <code>ALERT_LOGS</code>,\n            <code>ALLOW_LOGS</code>, and <code>DENY_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Network Load Balancer, the valid value is <code>NLB_ACCESS_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For PCS, the valid values are <code>PCS_SCHEDULER_LOGS</code>,\n            <code>PCS_JOBCOMP_LOGS</code>, and <code>PCS_SCHEDULER_AUDIT_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Quick, the valid values are <code>CHAT_LOGS</code> and\n            <code>FEEDBACK_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Web Services RTB Fabric, the valid values is\n          <code>APPLICATION_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Q, the valid values are <code>EVENT_LOGS</code> and\n            <code>SYNC_JOB_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Web Services Security Hub CSPM, the valid value is\n            <code>SECURITY_FINDING_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon Web Services Security Hub, the valid value is\n            <code>SECURITY_FINDING_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon SES mail manager, the valid values are\n            <code>APPLICATION_LOGS</code> and <code>TRAFFIC_POLICY_DEBUG_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon WorkMail, the valid values are <code>ACCESS_CONTROL_LOGS</code>,\n            <code>AUTHENTICATION_LOGS</code>, <code>WORKMAIL_AVAILABILITY_PROVIDER_LOGS</code>,\n            <code>WORKMAIL_MAILBOX_ACCESS_LOGS</code>, and\n            <code>WORKMAIL_PERSONAL_ACCESS_TOKEN_LOGS</code>.</p>\n            </li>\n            <li>\n               <p>For Amazon VPC Route Server, the valid value is\n          <code>EVENT_LOGS</code>.</p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -14309,6 +14345,12 @@
                     "target": "com.amazonaws.cloudwatchlogs#Timestamp",
                     "traits": {
                         "smithy.api#documentation": "<p>The timestamp when the data source association was created.</p>"
+                    }
+                },
+                "parentSourceIdentifier": {
+                    "target": "com.amazonaws.cloudwatchlogs#S3TableIntegrationSourceIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the parent data source for this association.</p>"
                     }
                 }
             },
