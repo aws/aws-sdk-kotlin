@@ -247,8 +247,8 @@ public object AwsSdkSetting {
      * provider or Login token provider)
      */
     public val AwsCachedAuthFilePermissions: EnvironmentSetting<CachedAuthFilePermissions> = enumEnvSetting<CachedAuthFilePermissions>(
-        "aws.cachedAuthFilePermissions",
-        "AWS_CACHED_AUTH_FILE_PERMISSIONS",
+        "aws.restrictFilePermissions",
+        "AWS_RESTRICT_FILE_PERMISSIONS",
     )
 }
 
