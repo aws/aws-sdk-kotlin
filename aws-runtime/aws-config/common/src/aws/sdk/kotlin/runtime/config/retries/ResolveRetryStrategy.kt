@@ -22,6 +22,7 @@ import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
 import aws.smithy.kotlin.runtime.util.LazyAsyncValue
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 // Standard retry defaults (New Retry Behavior)
@@ -30,23 +31,34 @@ private const val STANDARD_SCALE_FACTOR = 2.0
 private const val STANDARD_RETRY_COST = 14
 private const val STANDARD_THROTTLING_RETRY_COST = 5
 
-// DynamoDB / DynamoDB Streams overrides
-private val DYNAMODB_SERVICES = setOf("dynamodb", "dynamodb streams")
-private val DYNAMODB_INITIAL_DELAY = 25.milliseconds
-private const val DYNAMODB_DEFAULT_MAX_ATTEMPTS = 4
-
 /**
- * Attempt to resolve the retry strategy used to make requests by fetching the max attempts and retry mode.
- * If `AWS_NEW_RETRIES_2026` is set to `true`, the standard retry strategy behavior is enabled.
- * Falls back to smithy-kotlin's `SMITHY_NEW_RETRIES_2026`.
+ * Attempt to resolve the retry strategy from environment variables and profile settings.
  */
 @InternalSdkApi
 public suspend fun resolveRetryStrategy(
     platformProvider: PlatformProvider = PlatformProvider.System,
     profile: LazyAsyncValue<AwsProfile> = asyncLazy { loadAwsSharedConfig(platformProvider).activeProfile },
-    serviceName: String? = null,
+): RetryStrategy = resolveRetryStrategyImpl(platformProvider, profile)
+
+/**
+ * Attempt to resolve the retry strategy from environment variables and profile settings,
+ * with service-specific defaults pre-set by codegen.
+ */
+@InternalSdkApi
+public suspend fun resolveRetryStrategy(
+    platformProvider: PlatformProvider = PlatformProvider.System,
+    profile: LazyAsyncValue<AwsProfile> = asyncLazy { loadAwsSharedConfig(platformProvider).activeProfile },
+    defaultMaxAttempts: Int?,
+    defaultInitialDelay: Duration?,
+): RetryStrategy = resolveRetryStrategyImpl(platformProvider, profile, defaultMaxAttempts, defaultInitialDelay)
+
+private suspend fun resolveRetryStrategyImpl(
+    platformProvider: PlatformProvider,
+    profile: LazyAsyncValue<AwsProfile>,
+    defaultMaxAttempts: Int? = null,
+    defaultInitialDelay: Duration? = null,
 ): RetryStrategy {
-    val useNewRetries = AwsHttpSetting.AwsNewRetries.resolve(platformProvider) ?: CoreSettings.resolveNewRetriesEnabled()
+    val useNewRetries = AwsHttpSetting.AwsNewRetries.resolve(platformProvider) ?: CoreSettings.resolveNewRetriesEnabled(platformProvider)
     val maxAttempts = AwsSdkSetting.AwsMaxAttempts.resolve(platformProvider)
         ?: profile.get().maxAttempts
 
@@ -64,7 +76,12 @@ public suspend fun resolveRetryStrategy(
     }
 
     return factory {
-        configureRetryDefaults(serviceName, maxAttempts, useNewRetries)
+        configureRetryDefaults(
+            configuredMaxAttempts = maxAttempts,
+            useNewRetries = useNewRetries,
+            defaultMaxAttempts = defaultMaxAttempts,
+            defaultInitialDelay = defaultInitialDelay,
+        )
     }
 }
 
@@ -72,21 +89,19 @@ public suspend fun resolveRetryStrategy(
  * Configures the retry strategy builder with the resolved max attempts and, when new retries are enabled,
  * all standard defaults as defined in the New Retry Behavior.
  */
-@InternalSdkApi
-public fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
-    serviceName: String? = null,
+internal fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
     configuredMaxAttempts: Int? = null,
     useNewRetries: Boolean = false,
+    defaultMaxAttempts: Int? = null,
+    defaultInitialDelay: Duration? = null,
 ) {
     if (!useNewRetries) {
         configuredMaxAttempts?.let { maxAttempts = it }
         return
     }
 
-    val isDynamoDb = serviceName?.lowercase() in DYNAMODB_SERVICES
-
     delayProvider {
-        initialDelay = if (isDynamoDb) DYNAMODB_INITIAL_DELAY else STANDARD_INITIAL_DELAY
+        initialDelay = defaultInitialDelay ?: STANDARD_INITIAL_DELAY
         scaleFactor = STANDARD_SCALE_FACTOR
     }
 
@@ -96,9 +111,6 @@ public fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
     }
 
     maxAttempts = configuredMaxAttempts
-        ?: if (isDynamoDb) {
-            DYNAMODB_DEFAULT_MAX_ATTEMPTS
-        } else {
-            StandardRetryStrategy.Config.DEFAULT_MAX_ATTEMPTS
-        }
+        ?: defaultMaxAttempts
+        ?: StandardRetryStrategy.Config.DEFAULT_MAX_ATTEMPTS
 }

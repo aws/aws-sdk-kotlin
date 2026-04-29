@@ -22,9 +22,6 @@ class ServiceClientCompanionObjectWriter : AppendingSectionWriter {
     object FinalizeEnvironmentalConfig : SectionId
 
     override fun append(writer: KotlinWriter) {
-        writer.write("")
-        writer.write("override val serviceName: String = ServiceId")
-
         val funName = "finalizeEnvironmentalConfig"
         writer.write("")
         writer.withBlock(

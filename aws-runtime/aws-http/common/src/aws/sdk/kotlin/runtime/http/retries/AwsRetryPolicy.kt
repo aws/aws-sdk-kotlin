@@ -46,7 +46,7 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
  * If none of those conditions match, this policy delegates to [StandardRetryPolicy]. See that class's documentation for
  * more information about how it evaluates exceptions.
  */
-public open class AwsRetryPolicy: StandardRetryPolicy() {
+public open class AwsRetryPolicy : StandardRetryPolicy() {
 
     public companion object {
 

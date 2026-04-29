@@ -17,6 +17,13 @@ import kotlinx.coroutines.test.currentTime
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlin.test.*
+import kotlin.time.Duration.Companion.milliseconds
+
+private val DYNAMODB_SERVICES = setOf("dynamodb", "dynamodb streams")
+
+// DynamoDB retry defaults — must match DynamoDbRetryDefaultsIntegration constants
+private const val DYNAMODB_MAX_ATTEMPTS = 4
+private val DYNAMODB_INITIAL_DELAY = 25.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AwsRetryIntegrationTest {
@@ -28,11 +35,17 @@ class AwsRetryIntegrationTest {
         }
 
         testCases.forEach { (name, tc) ->
+            // Map service name to codegen defaults (simulating what codegen would generate)
+            val isDynamoDb = tc.given.service.lowercase() in DYNAMODB_SERVICES
+            val defaultMaxAttempts = if (isDynamoDb) DYNAMODB_MAX_ATTEMPTS else null
+            val defaultInitialDelay = if (isDynamoDb) DYNAMODB_INITIAL_DELAY else null
+
             val strategy = StandardRetryStrategy {
                 configureRetryDefaults(
-                    serviceName = tc.given.service,
                     configuredMaxAttempts = tc.given.maxAttempts,
                     useNewRetries = true,
+                    defaultMaxAttempts = defaultMaxAttempts,
+                    defaultInitialDelay = defaultInitialDelay,
                 )
                 delayProvider {
                     if (tc.given.exponentialBase == 1.0) jitter = 0.0

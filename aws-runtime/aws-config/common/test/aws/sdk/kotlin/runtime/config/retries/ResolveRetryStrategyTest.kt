@@ -246,35 +246,4 @@ class ResolveRetryStrategyTest {
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
         assertEquals(expectedMaxAttempts, strategy.config.maxAttempts)
     }
-
-    @Test
-    fun itUsesDynamoDbDefaultsWhenNewRetriesEnabled() = runTest {
-        val platform = TestPlatformProvider(
-            env = mapOf(AwsHttpSetting.AwsNewRetries.envVar to "true"),
-        )
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "DynamoDB"))
-        assertEquals(4, strategy.config.maxAttempts)
-        val delayer = assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
-        assertEquals(25.milliseconds, delayer.config.initialDelay)
-    }
-
-    @Test
-    fun itUsesDynamoDbDefaultsWhenNewRetriesDisabled() = runTest {
-        val platform = TestPlatformProvider(
-            env = mapOf(AwsHttpSetting.AwsNewRetries.envVar to "false"),
-        )
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "DynamoDB"))
-        assertEquals(3, strategy.config.maxAttempts)
-        val delayer = assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
-        assertEquals(10.milliseconds, delayer.config.initialDelay)
-    }
-
-    @Test
-    fun itUsesStandardDefaultsForNonDynamoDbWhenNewRetriesEnabled() = runTest {
-        val platform = TestPlatformProvider(
-            env = mapOf(AwsHttpSetting.AwsNewRetries.envVar to "true"),
-        )
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "S3"))
-        assertEquals(3, strategy.config.maxAttempts)
-    }
 }
