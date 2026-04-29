@@ -306,19 +306,21 @@ tasks.register("syncAwsModels") {
 
         pairs.forEach { (source, existing) ->
             // ensure we don't accidentally take a new API version
-            if (source.version != existing.version) error(
-                buildString {
-                    append("upstream version of ")
-                    append(source.path)
-                    append(" (")
-                    append(source.version)
-                    append(") does not match existing version of ")
-                    append(existing.modelFile)
-                    append(" (")
-                    append(existing.version)
-                    append(")")
-                }
-            )
+            if (source.version != existing.version) {
+                error(
+                    buildString {
+                        append("upstream version of ")
+                        append(source.path)
+                        append(" (")
+                        append(source.version)
+                        append(") does not match existing version of ")
+                        append(existing.modelFile)
+                        append(" (")
+                        append(existing.version)
+                        append(")")
+                    },
+                )
+            }
 
             println("syncing ${existing.modelFile.name} from ${source.path}")
             copy {
