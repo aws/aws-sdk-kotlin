@@ -15,7 +15,8 @@ import aws.sdk.kotlin.runtime.config.endpoints.resolveUseFips
 import aws.sdk.kotlin.runtime.config.profile.AwsProfile
 import aws.sdk.kotlin.runtime.config.profile.AwsSharedConfig
 import aws.sdk.kotlin.runtime.config.profile.loadAwsSharedConfig
-import aws.sdk.kotlin.runtime.config.retries.resolveRetryStrategy
+import aws.sdk.kotlin.runtime.config.retries.buildRetryStrategy
+import aws.sdk.kotlin.runtime.config.retries.resolveRetryConfig
 import aws.sdk.kotlin.runtime.config.useragent.resolveUserAgentAppId
 import aws.sdk.kotlin.runtime.region.resolveRegion
 import aws.sdk.kotlin.runtime.region.resolveSigV4aSigningRegionSet
@@ -89,7 +90,8 @@ public abstract class AbstractAwsSdkClientFactory<
             // As a DslBuilderProperty, the value of retryStrategy cannot be checked for nullability because it may have
             // been set using a DSL. Thus, set the resolved strategy _first_ to ensure it's used as the fallback.
             if (config is RetryStrategyClientConfig.Builder) {
-                config.retryStrategy = resolveRetryStrategy(profile = profile, defaultMaxAttempts = defaultMaxAttempts, defaultInitialDelay = defaultInitialDelay)
+                val retryConfig = resolveRetryConfig(platform, profile)
+                config.retryStrategy = buildRetryStrategy(retryConfig, defaultMaxAttempts, defaultInitialDelay)
             }
 
             block?.let(config::apply)

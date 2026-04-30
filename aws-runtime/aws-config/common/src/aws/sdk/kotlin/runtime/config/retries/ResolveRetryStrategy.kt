@@ -31,33 +31,25 @@ private const val STANDARD_RETRY_COST = 14
 private const val STANDARD_THROTTLING_RETRY_COST = 5
 
 /**
- * Attempt to resolve the retry strategy from environment variables and profile settings.
+ * Resolved retry configuration sourced from environment variables and profile settings.
  */
-@InternalSdkApi
-public suspend fun resolveRetryStrategy(
-    platformProvider: PlatformProvider = PlatformProvider.System,
-    profile: LazyAsyncValue<AwsProfile> = asyncLazy { loadAwsSharedConfig(platformProvider).activeProfile },
-): RetryStrategy = resolveRetryStrategyImpl(platformProvider, profile)
+internal data class ResolvedRetryConfig(
+    val maxAttempts: Int?,
+    val retryMode: RetryMode,
+    val useNewRetries: Boolean,
+)
 
 /**
- * Attempt to resolve the retry strategy from environment variables and profile settings,
- * with service-specific defaults pre-set by codegen.
+ * Resolve the retry configuration (max attempts, retry mode, and new retries flag) from environment variables
+ * and profile settings.
  */
-@InternalSdkApi
-public suspend fun resolveRetryStrategy(
-    platformProvider: PlatformProvider = PlatformProvider.System,
-    profile: LazyAsyncValue<AwsProfile> = asyncLazy { loadAwsSharedConfig(platformProvider).activeProfile },
-    defaultMaxAttempts: Int?,
-    defaultInitialDelay: Duration?,
-): RetryStrategy = resolveRetryStrategyImpl(platformProvider, profile, defaultMaxAttempts, defaultInitialDelay)
-
-private suspend fun resolveRetryStrategyImpl(
+internal suspend fun resolveRetryConfig(
     platformProvider: PlatformProvider,
     profile: LazyAsyncValue<AwsProfile>,
-    defaultMaxAttempts: Int? = null,
-    defaultInitialDelay: Duration? = null,
-): RetryStrategy {
-    val useNewRetries = AwsSdkSetting.AwsNewRetries.resolve(platformProvider) ?: CoreSettings.resolveNewRetriesEnabled(platformProvider)
+): ResolvedRetryConfig {
+    val useNewRetries = AwsSdkSetting.AwsNewRetries.resolve(platformProvider)
+        ?: CoreSettings.resolveNewRetriesEnabled(platformProvider)
+
     val maxAttempts = AwsSdkSetting.AwsMaxAttempts.resolve(platformProvider)
         ?: profile.get().maxAttempts
 
@@ -69,15 +61,37 @@ private suspend fun resolveRetryStrategyImpl(
         ?: profile.get().retryMode
         ?: RetryMode.STANDARD
 
-    val factory = when (retryMode) {
+    return ResolvedRetryConfig(maxAttempts, retryMode, useNewRetries)
+}
+
+/**
+ * Attempt to resolve the retry strategy from environment variables and profile settings.
+ */
+@InternalSdkApi
+public suspend fun resolveRetryStrategy(
+    platformProvider: PlatformProvider = PlatformProvider.System,
+    profile: LazyAsyncValue<AwsProfile> = asyncLazy { loadAwsSharedConfig(platformProvider).activeProfile },
+): RetryStrategy {
+    val config = resolveRetryConfig(platformProvider, profile)
+    return buildRetryStrategy(config)
+}
+
+internal fun buildRetryStrategy(config: ResolvedRetryConfig): RetryStrategy = buildRetryStrategy(config, defaultMaxAttempts = null, defaultInitialDelay = null)
+
+internal fun buildRetryStrategy(
+    config: ResolvedRetryConfig,
+    defaultMaxAttempts: Int?,
+    defaultInitialDelay: Duration?,
+): RetryStrategy {
+    val factory = when (config.retryMode) {
         RetryMode.STANDARD, RetryMode.LEGACY -> StandardRetryStrategy
         RetryMode.ADAPTIVE -> AdaptiveRetryStrategy
     }
 
     return factory {
         configureRetryDefaults(
-            configuredMaxAttempts = maxAttempts,
-            useNewRetries = useNewRetries,
+            configuredMaxAttempts = config.maxAttempts,
+            useNewRetries = config.useNewRetries,
             defaultMaxAttempts = defaultMaxAttempts,
             defaultInitialDelay = defaultInitialDelay,
         )
