@@ -21,7 +21,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
-import kotlin.time.Duration.Companion.milliseconds
 
 class ResolveRetryStrategyTest {
     @Test
@@ -260,10 +259,10 @@ class ResolveRetryStrategyTest {
         val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
         val bucketConfig = assertIs<StandardRetryTokenBucket.Config>(strategy.config.tokenBucket.config)
 
-        assertEquals(50.milliseconds, delayConfig.initialDelay)
-        assertEquals(2.0, delayConfig.scaleFactor)
-        assertEquals(14, bucketConfig.retryCost)
-        assertEquals(5, bucketConfig.timeoutRetryCost)
+        assertEquals(STANDARD_INITIAL_DELAY, delayConfig.initialDelay)
+        assertEquals(STANDARD_SCALE_FACTOR, delayConfig.scaleFactor)
+        assertEquals(STANDARD_RETRY_COST, bucketConfig.retryCost)
+        assertEquals(STANDARD_THROTTLING_RETRY_COST, bucketConfig.timeoutRetryCost)
     }
 
     @Test
@@ -276,10 +275,10 @@ class ResolveRetryStrategyTest {
         val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
         val bucketConfig = assertIs<StandardRetryTokenBucket.Config>(strategy.config.tokenBucket.config)
 
-        assertEquals(50.milliseconds, delayConfig.initialDelay)
-        assertEquals(2.0, delayConfig.scaleFactor)
-        assertEquals(14, bucketConfig.retryCost)
-        assertEquals(5, bucketConfig.timeoutRetryCost)
+        assertEquals(STANDARD_INITIAL_DELAY, delayConfig.initialDelay)
+        assertEquals(STANDARD_SCALE_FACTOR, delayConfig.scaleFactor)
+        assertEquals(STANDARD_RETRY_COST, bucketConfig.retryCost)
+        assertEquals(STANDARD_THROTTLING_RETRY_COST, bucketConfig.timeoutRetryCost)
     }
 
     @Test

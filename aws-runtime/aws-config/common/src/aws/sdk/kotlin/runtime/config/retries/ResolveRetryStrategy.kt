@@ -25,10 +25,10 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 // Standard retry defaults (New Retry Behavior)
-private val STANDARD_INITIAL_DELAY = 50.milliseconds
-private const val STANDARD_SCALE_FACTOR = 2.0
-private const val STANDARD_RETRY_COST = 14
-private const val STANDARD_THROTTLING_RETRY_COST = 5
+internal val STANDARD_INITIAL_DELAY = 50.milliseconds
+internal const val STANDARD_SCALE_FACTOR = 2.0
+internal const val STANDARD_RETRY_COST = 14
+internal const val STANDARD_THROTTLING_RETRY_COST = 5
 
 /**
  * Resolved retry configuration sourced from environment variables and profile settings.
