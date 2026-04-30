@@ -37,8 +37,13 @@ class DynamoDbRetryDefaultsIntegration : KotlinIntegration {
                 ServiceClientGenerator.Sections.CompanionObject,
                 AppendingSectionWriter { writer ->
                     writer.write("")
-                    writer.write("override val defaultMaxAttempts: Int = $DYNAMODB_MAX_ATTEMPTS")
-                    writer.write("override val defaultInitialDelay: #T = $DYNAMODB_INITIAL_DELAY_MS.#T", KotlinTypes.Time.Duration, KotlinTypes.Time.milliseconds)
+                    writer.write("override val defaultMaxAttempts: Int = #L", DYNAMODB_MAX_ATTEMPTS)
+                    writer.write(
+                        "override val defaultInitialDelay: #T = #L.#T",
+                        KotlinTypes.Time.Duration,
+                        DYNAMODB_INITIAL_DELAY_MS,
+                        KotlinTypes.Time.milliseconds,
+                    )
                 },
             ),
         )

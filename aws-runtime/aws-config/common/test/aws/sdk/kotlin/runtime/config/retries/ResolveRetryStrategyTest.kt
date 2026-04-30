@@ -7,15 +7,21 @@ package aws.sdk.kotlin.runtime.config.retries
 
 import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
+import aws.sdk.kotlin.runtime.config.profile.loadAwsSharedConfig
 import aws.smithy.kotlin.runtime.ClientException
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
+import aws.smithy.kotlin.runtime.retries.delay.ExponentialBackoffWithJitter
+import aws.smithy.kotlin.runtime.retries.delay.StandardRetryTokenBucket
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
+import aws.smithy.kotlin.runtime.util.asyncLazy
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.time.Duration.Companion.milliseconds
 
 class ResolveRetryStrategyTest {
     @Test
@@ -242,5 +248,47 @@ class ResolveRetryStrategyTest {
 
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
         assertEquals(expectedMaxAttempts, strategy.config.maxAttempts)
+    }
+
+    @Test
+    fun itResolvesNewRetriesFromEnvironmentVariable() = runTest {
+        val platform = TestPlatformProvider(
+            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
+        )
+
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
+        val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
+        val bucketConfig = assertIs<StandardRetryTokenBucket.Config>(strategy.config.tokenBucket.config)
+
+        assertEquals(50.milliseconds, delayConfig.initialDelay)
+        assertEquals(2.0, delayConfig.scaleFactor)
+        assertEquals(14, bucketConfig.retryCost)
+        assertEquals(5, bucketConfig.timeoutRetryCost)
+    }
+
+    @Test
+    fun itResolvesNewRetriesFromSystemProperty() = runTest {
+        val platform = TestPlatformProvider(
+            props = mapOf(AwsSdkSetting.AwsNewRetries.sysProp to "true"),
+        )
+
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
+        val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
+        val bucketConfig = assertIs<StandardRetryTokenBucket.Config>(strategy.config.tokenBucket.config)
+
+        assertEquals(50.milliseconds, delayConfig.initialDelay)
+        assertEquals(2.0, delayConfig.scaleFactor)
+        assertEquals(14, bucketConfig.retryCost)
+        assertEquals(5, bucketConfig.timeoutRetryCost)
+    }
+
+    @Test
+    fun itDoesNotApplyNewRetriesDefaultsWhenDisabled() = runTest {
+        val platform = TestPlatformProvider(
+            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "false"),
+        )
+
+        val config = resolveRetryConfig(platform, asyncLazy { loadAwsSharedConfig(platform).activeProfile })
+        assertFalse(config.useNewRetries)
     }
 }
