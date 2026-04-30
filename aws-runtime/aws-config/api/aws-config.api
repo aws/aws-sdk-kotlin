@@ -600,8 +600,6 @@ public final class aws/sdk/kotlin/runtime/config/profile/ConfigSection {
 public final class aws/sdk/kotlin/runtime/config/retries/ResolveRetryStrategyKt {
 	public static final fun resolveRetryStrategy (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun resolveRetryStrategy$default (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static final fun resolveRetryStrategy-51bEbmg (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun resolveRetryStrategy-51bEbmg$default (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class aws/sdk/kotlin/runtime/config/useragent/ResolveUserAgentKt {
