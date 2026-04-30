@@ -26,7 +26,7 @@ buildscript {
 
             FIXME: Figure out what broke our buildscript classpath, this is a temporary fix
              */
-            force("com.squareup.okhttp3:okhttp-coroutines:5.0.0-alpha.14")
+            force("com.squareup.okhttp3:okhttp-coroutines:5.3.2")
         }
     }
 }

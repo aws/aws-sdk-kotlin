@@ -11,7 +11,6 @@ import aws.smithy.kotlin.codegen.rendering.ServiceClientConfigGenerator
 import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
 import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolMiddleware
 import aws.smithy.kotlin.codegen.test.*
-import org.junit.jupiter.api.Test
 import software.amazon.smithy.model.shapes.OperationShape
 import kotlin.test.*
 

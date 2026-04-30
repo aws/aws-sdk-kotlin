@@ -25,8 +25,6 @@ dependencies {
     implementation(project(":hll:dynamodb-mapper:dynamodb-mapper")) // for ValueConverter.kt
     implementation(libs.smithy.kotlin.codegen) // for RuntimeTypes
 
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.kotest.assertions.core.jvm)
     testImplementation(libs.kotlin.test.junit5)
 }

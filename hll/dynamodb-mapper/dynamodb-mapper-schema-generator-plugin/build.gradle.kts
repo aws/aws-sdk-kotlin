@@ -28,9 +28,10 @@ dependencies {
     implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-schema-codegen")) // for AnnotationsProcessorOptions
     implementation(libs.smithy.kotlin.runtime.core) // for AttributeKey
 
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.smithy.kotlin.testing)
+    testImplementation(libs.kotlinx.coroutines.core)
 }
 
 gradlePlugin {
