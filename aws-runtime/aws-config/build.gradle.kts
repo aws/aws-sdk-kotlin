@@ -51,6 +51,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.smithy.kotlin.http.test)
+                implementation(libs.smithy.kotlin.testing)
                 implementation(libs.kotlinx.serialization.json)
             }
         }

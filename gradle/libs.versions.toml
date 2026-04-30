@@ -1,32 +1,31 @@
 [versions]
-kotlin-version = "2.3.0"
-ksp-version = "2.3.4"
+kotlin-version = "2.3.21"
+ksp-version = "2.3.7"
 
-dokka-version = "2.0.0"
+dokka-version = "2.2.0"
 
-aws-kotlin-repo-tools-version = "0.5.8"
+aws-kotlin-repo-tools-version = "0.5.10"
 
 # libs
 coroutines-version = "1.10.2"
-atomicfu-version = "0.29.0"
-binary-compatibility-validator-version = "0.18.0"
+atomicfu-version = "0.32.1"
+binary-compatibility-validator-version = "0.18.1"
 
 # smithy-kotlin
-smithy-kotlin-version = "1.6.4"
+smithy-kotlin-version = "1.6.12"
 
 # codegen
-smithy-version = "1.67.0"
+smithy-version = "1.69.0"
 
 # testing
 ddb-local-version = "3.3.0"
-junit-version = "5.14.1"
 kotest-version = "5.9.1"
-kotlinx-benchmark-version = "0.4.15"
-kotlinx-serialization-version = "1.9.0"
-mockk-version = "1.14.7"
-mokkery-version = "3.2.0"
+kotlinx-benchmark-version = "0.4.16"
+kotlinx-serialization-version = "1.11.0"
+mockk-version = "1.14.9"
+mokkery-version = "3.3.0"
 slf4j-version = "2.0.17"
-jsoup-version = "1.21.2"
+jsoup-version = "1.22.2"
 
 [libraries]
 aws-kotlin-repo-tools-build-support = { module="aws.sdk.kotlin.gradle:build-support", version.ref = "aws-kotlin-repo-tools-version" }
@@ -107,9 +106,6 @@ smithy-protocol-test-traits = { module = "software.amazon.smithy:smithy-protocol
 smithy-smoke-test-traits = { module = "software.amazon.smithy:smithy-smoke-test-traits", version.ref = "smithy-version" }
 smithy-aws-smoke-test-model = { module = "software.amazon.smithy:smithy-aws-smoke-test-model", version.ref = "smithy-version" }
 
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-version" }
-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-version" }
-
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup-version" }
 
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-version" }
@@ -149,4 +145,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery-version" }
 aws-kotlin-repo-tools-kmp = { id = "aws.sdk.kotlin.gradle.kmp", version.ref = "aws-kotlin-repo-tools-version" }
 aws-kotlin-repo-tools-smithybuild = { id = "aws.sdk.kotlin.gradle.smithybuild", version.ref = "aws-kotlin-repo-tools-version" }
-gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.1"}
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "2.1.1"}

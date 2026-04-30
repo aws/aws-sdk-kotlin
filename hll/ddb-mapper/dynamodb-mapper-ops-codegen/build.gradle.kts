@@ -22,8 +22,6 @@ dependencies {
     implementation(project(":services:dynamodb"))
     implementation(project(":hll:ddb-mapper:dynamodb-mapper-codegen"))
 
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.kotest.assertions.core.jvm)
     testImplementation(libs.kotlin.test.junit5)
 }

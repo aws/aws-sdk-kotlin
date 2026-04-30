@@ -14,23 +14,20 @@ import aws.smithy.kotlin.runtime.client.region.RegionProvider
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
 import aws.smithy.kotlin.runtime.testing.withEnvVars
 import aws.smithy.kotlin.runtime.testing.withSystemProperties
+import aws.smithy.kotlin.runtime.testing.withTempDir
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.io.TempDir
-import java.nio.file.Path
-import kotlin.io.path.absolutePathString
-import kotlin.io.path.deleteIfExists
-import kotlin.io.path.writeText
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.writeString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.time.Duration.Companion.seconds
 
 class AbstractAwsSdkClientFactoryTest {
-    @JvmField
-    @TempDir
-    var tempDir: Path? = null
 
     @Test
     fun testFromEnvironmentFavorsExplicitConfig() = runTest {
@@ -63,27 +60,26 @@ class AbstractAwsSdkClientFactoryTest {
     fun testFromEnvironmentResolvesAppId() = runTest(
         timeout = 20.seconds,
     ) {
-        val credentialsFile = tempDir!!.resolve("credentials")
-        val configFile = tempDir!!.resolve("config")
+        withTempDir { dir ->
+            val credentialsFile = Path(dir, "credentials")
+            val configFile = Path(dir, "config")
 
-        configFile.writeText("[profile foo]\nsdk_ua_app_id = profile-app-id")
+            SystemFileSystem.sink(configFile).buffered().use { it.writeString("[profile foo]\nsdk_ua_app_id = profile-app-id") }
 
-        val testPlatform = mockPlatform(
-            pathSegment = PlatformProvider.System.filePathSeparator,
-            awsProfileEnv = "foo",
-            homeEnv = "/home/user",
-            awsConfigFileEnv = configFile.absolutePathString(),
-            awsSharedCredentialsFileEnv = credentialsFile.absolutePathString(),
-            os = PlatformProvider.System.osInfo(),
-        )
+            val testPlatform = mockPlatform(
+                pathSegment = PlatformProvider.System.filePathSeparator,
+                awsProfileEnv = "foo",
+                homeEnv = "/home/user",
+                awsConfigFileEnv = configFile.toString(),
+                awsSharedCredentialsFileEnv = credentialsFile.toString(),
+                os = PlatformProvider.System.osInfo(),
+            )
 
-        val sharedConfig = asyncLazy { loadAwsSharedConfig(testPlatform) }
-        val profile = asyncLazy { sharedConfig.get().activeProfile }
+            val sharedConfig = asyncLazy { loadAwsSharedConfig(testPlatform) }
+            val profile = asyncLazy { sharedConfig.get().activeProfile }
 
-        assertEquals("profile-app-id", resolveUserAgentAppId(testPlatform, profile))
-
-        configFile.deleteIfExists()
-        credentialsFile.deleteIfExists()
+            assertEquals("profile-app-id", resolveUserAgentAppId(testPlatform, profile))
+        }
 
         withEnvVars(
             mapOf(
