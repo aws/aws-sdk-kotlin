@@ -13,8 +13,14 @@ dokka {
     val sdkVersion: String by project
     moduleVersion.set(sdkVersion)
 
-    dokkaGeneratorIsolation = ProcessIsolation {
-        maxHeapSize = "16g"
+    val isolationMode = properties["dokka.isolationMode"]?.toString()?.lowercase() ?: "process"
+    val heapSize = properties["dokka.maxHeapSize"]?.toString() ?: "16g"
+
+    dokkaGeneratorIsolation = when (isolationMode) {
+        "classloader" -> ClassLoaderIsolation { }.also { println("Configured Dokka with classloader isolation") }
+        else -> ProcessIsolation {
+            maxHeapSize = heapSize
+        }.also { println("Configured Dokka with process isolation and maxHeapSize=${it.maxHeapSize.get()}") }
     }
 
     pluginsConfiguration.html {
