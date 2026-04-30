@@ -5,16 +5,13 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.model
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.internal.ItemImpl
-import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAttr
+import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
-import kotlin.jvm.JvmName
 
 /**
  * An immutable representation of a low-level item in a DynamoDB table. Items consist of attributes, each of which have
  * a string name and a value.
  */
-@ExperimentalApi
 public interface Item : Map<String, AttributeValue>
 
 /**
@@ -22,33 +19,34 @@ public interface Item : Map<String, AttributeValue>
  * of it.
  * @param block The block to apply to the [MutableItem] builder
  */
-@ExperimentalApi
-public inline fun buildItem(block: MutableItem.() -> Unit): Item = mutableMapOf<String, AttributeValue>().toMutableItem().apply(block).toItem()
+public inline fun buildItem(block: MutableItem.() -> Unit): Item = mutableItemOf().apply(block).toItem()
 
 /**
  * Convert this [Item] into a [MutableItem]. Changes to the returned instance do not affect this instance.
  */
-@ExperimentalApi
 public fun Item.toMutableItem(): MutableItem = toMutableMap().toMutableItem()
 
 /**
  * Converts this map to an immutable [Item]
  */
-@ExperimentalApi
 public fun Map<String, AttributeValue>.toItem(): Item = ItemImpl(this)
 
 /**
  * Dynamically converts this map to an immutable [Item]
  */
 @JvmName("mapStringAnyToItem")
-internal fun Map<String, Any?>.toItem() = mapValues { (_, v) -> dynamicAttr(v) }.toItem()
+internal fun Map<String, Any?>.toItem() = mapValues { (_, v) -> dynamicAv(v) }.toItem()
+
+/**
+ * Returns a new immutable [Item] with no attributes (i.e., an empty item)
+ */
+public fun itemOf(): Item = mapOf<String, AttributeValue>().toItem()
 
 /**
  * Returns a new immutable [Item] with the specified attributes, given as name-value pairs
  * @param pairs A collection of [Pair]<[String], [AttributeValue]> where the first value is the attribute name and the
  * second is the attribute value.
  */
-@ExperimentalApi
 public fun itemOf(vararg pairs: Pair<String, AttributeValue>): Item = mapOf(*pairs).toItem()
 
 /**

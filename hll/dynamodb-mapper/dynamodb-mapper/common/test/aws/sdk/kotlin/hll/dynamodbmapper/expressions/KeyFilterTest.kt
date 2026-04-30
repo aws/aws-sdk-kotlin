@@ -4,32 +4,32 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.FilterImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.FilterDslImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.toExpression
-import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
+import aws.sdk.kotlin.hll.mapping.core.converters.Converter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class KeyFilterTest {
-    private val singleKeySchema = ItemSchema(DummyConverter, KeySpec.String("primary"))
-    private val compositeSchema = ItemSchema(DummyConverter, KeySpec.String("primary"), KeySpec.Number("secondary"))
+    private val singleKeySchema = ItemSchema(DummyConverter, KeySpec.string("primary"))
+    private val compositeSchema = ItemSchema(DummyConverter, KeySpec.string("primary"), KeySpec.int("secondary"))
 
     @Test
     fun testSingleKeySchema() {
         val kf = KeyFilter("foo")
         val actual = kf.toExpression(singleKeySchema)
-        val expected = FilterImpl.run { attr("primary") eq "foo" }
+        val expected = FilterDslImpl.run { attr["primary"] eq "foo" }
 
         assertEquals(expected, actual)
     }
 
     @Test
     fun testSingleKeySchemaWithErroneousSortKey() {
-        val kf = KeyFilter("foo") { sortKey eq 2 }
+        val kf = KeyFilter("foo", { sortKey eq 2 })
 
         assertFailsWith<IllegalArgumentException> {
             kf.toExpression(singleKeySchema)
@@ -38,12 +38,12 @@ class KeyFilterTest {
 
     @Test
     fun testCompositeSchema() {
-        val kf = KeyFilter("foo") { sortKey lte 10 }
+        val kf = KeyFilter("foo", { sortKey lte 10 })
         val actual = kf.toExpression(compositeSchema)
-        val expected = FilterImpl.run {
+        val expected = FilterDslImpl.run {
             and(
-                attr("primary") eq "foo",
-                attr("secondary") lte 10,
+                attr["primary"] eq "foo",
+                attr["secondary"] lte 10,
             )
         }
 
@@ -54,13 +54,10 @@ class KeyFilterTest {
     fun testCompositeSchemaWithoutSortKey() {
         val kf = KeyFilter("foo")
         val actual = kf.toExpression(compositeSchema)
-        val expected = FilterImpl.run { attr("primary") eq "foo" }
+        val expected = FilterDslImpl.run { attr["primary"] eq "foo" }
 
         assertEquals(expected, actual)
     }
 }
 
-object DummyConverter : ItemConverter<Any> {
-    override fun convertFrom(to: Item) = error("Not needed")
-    override fun convertTo(from: Any, onlyAttributes: Set<String>?) = error("Not needed")
-}
+val DummyConverter = Converter<Any, Item>({ error("Not needed") }, { error("Not needed") })

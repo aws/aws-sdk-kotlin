@@ -4,10 +4,11 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model
 
+import aws.sdk.kotlin.hll.codegen.model.GenericsSet
 import aws.sdk.kotlin.hll.codegen.model.Operation
 import aws.sdk.kotlin.hll.codegen.model.TypeRef
-import aws.sdk.kotlin.hll.codegen.model.TypeVar
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperPkg
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
 
 /**
  * Identifies a type in the `ItemSource<T>` hierarchy
@@ -16,11 +17,14 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperPkg
  * @param parent The parent type of this type (if any)
  * @param isAbstract Indicates whether this item source kind is purely abstract and should not have an implementation
  * class (e.g., `ItemSource<T>` should be abstract and non-instantiable)
+ * @param isSchemaless Indicates whether instances of this item source kind use a schema (e.g., a table or index) or not
+ * (e.g., the `DynamoDbMapper` interface)
  */
 internal enum class ItemSourceKind(
     val hoistedFields: List<String>,
     val parent: ItemSourceKind? = null,
     val isAbstract: Boolean = false,
+    val isSchemaless: Boolean = false,
 ) {
     /**
      * Indicates the `ItemSource<T>` interface
@@ -37,13 +41,33 @@ internal enum class ItemSourceKind(
      */
     Table(listOf("tableName"), ItemSource),
 
-    ;
-
     /**
-     * Get the [TypeRef] for the `*Spec` type for this item source kind
-     * @param typeVar The type variable name to use for the generic type
+     * Indicates the `DynamoDbMapper` interface
      */
-    fun getSpecType(typeVar: String): TypeRef = TypeRef(MapperPkg.Hl.Model, "${name}Spec", listOf(TypeVar(typeVar)))
+    DynamoDbMapper(listOf(), isSchemaless = true),
+}
+
+/**
+ * Forms the [TypeRef] for this [ItemSourceKind]'s operations type (e.g., `ItemSourceOperations<T>` or
+ * `TableOperations.PartitionKey<T, PK>`)
+ * @param keyType The type of keys to include in the [TypeRef]
+ */
+internal fun ItemSourceKind.opsType(keyType: KeyProjectionType): TypeRef {
+    val name = "${name}Operations${keyType.nameSuffix}"
+    val generics = if (isSchemaless) GenericsSet() else keyType.typeVars
+    return TypeRef(MapperPkg.Hl.Ops.Base, name, generics)
+}
+
+/**
+ * Forms the [TypeRef] for this [ItemSourceKind]'s specification type (e.g., `ItemSourceSpec<T>` or
+ * `TableSpec.PartitionKey<T, PK>`)
+ * @param keyType The type of keys to include in the [TypeRef]
+ */
+internal fun ItemSourceKind.specType(
+    keyType: KeyProjectionType,
+): TypeRef = when (isSchemaless) {
+    true -> MapperTypes.Model.DynamoDbMapperSpec
+    else -> TypeRef(MapperPkg.Hl.Model, "${name}Spec${keyType.nameSuffix}", keyType.typeVars)
 }
 
 /**
@@ -52,6 +76,15 @@ internal enum class ItemSourceKind(
  */
 internal val Operation.itemSourceKinds: Set<ItemSourceKind>
     get() = when (name) {
-        "Query", "Scan" -> setOf(ItemSourceKind.ItemSource, ItemSourceKind.Index, ItemSourceKind.Table)
+        "BatchGetItem",
+        "BatchWriteItem",
+        "TransactGetItems",
+        "TransactWriteItems",
+        -> setOf(ItemSourceKind.DynamoDbMapper)
+
+        "Query",
+        "Scan",
+        -> setOf(ItemSourceKind.ItemSource, ItemSourceKind.Index, ItemSourceKind.Table)
+
         else -> setOf(ItemSourceKind.Table)
     }

@@ -6,8 +6,8 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
+import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * An item converter which uses attribute descriptors to convert objects to items and vice versa. This converter
@@ -22,7 +22,6 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * [T] are the same type, this may be an identity function.
  * @param descriptors A collection of [AttributeDescriptor] which describe how to construct and parse attributes
  */
-@ExperimentalApi
 public class SimpleItemConverter<T, B>(
     private val builderFactory: () -> B,
     private val build: B.() -> T,
@@ -36,7 +35,7 @@ public class SimpleItemConverter<T, B>(
             }
         }
 
-    override fun convertFrom(to: Item): T {
+    override val left: MonoConverter<Item, T> = MonoConverter {
         val builder = builderFactory()
 
         /**
@@ -49,17 +48,17 @@ public class SimpleItemConverter<T, B>(
          * descriptor.setter(builder, value) // Type mismatch for value. Required: Nothing, Found: Any?
          * ```
          */
-        fun <A> AttributeDescriptor<A, T, B>.fromAttributeValue(attr: AttributeValue) = builder.setter(converter.convertFrom(attr))
+        fun <A> AttributeDescriptor<A, T, B>.fromAttributeValue(attr: AttributeValue) = builder.setter(converter.convertLeft(attr))
 
-        to.forEach { (name, attr) ->
+        it.forEach { (name, attr) ->
             // TODO make behavior for unknown attributes configurable (ignore, exception, other?)
-            descriptors[name]?.fromAttributeValue(attr)
+            this.descriptors[name]?.fromAttributeValue(attr)
         }
 
-        return builder.build()
+        builder.build()
     }
 
-    override fun convertTo(from: T, onlyAttributes: Set<String>?): Item {
+    override val right: MonoConverter<T, Item> = MonoConverter {
         /**
          * This is a convenience function to keep the compile-time safety for type param `A`. Without this, the compiler
          * can't track generic types across multiple statements:
@@ -70,16 +69,12 @@ public class SimpleItemConverter<T, B>(
          * descriptor.converter.toAttributeValue(value) // Type mismatch for value. Required: Nothing, Found: Any?
          * ```
          */
-        fun <A> AttributeDescriptor<A, T, B>.toAttributeValue() = converter.convertTo(getter(from))
+        fun <A> AttributeDescriptor<A, T, B>.toAttributeValue() = converter.convertRight(getter(it))
 
-        val descriptors = if (onlyAttributes == null) {
-            this.descriptors.values
-        } else {
-            this.descriptors.filterKeys(onlyAttributes::contains).values
-        }
-
-        return buildItem {
-            descriptors.forEach { desc -> put(desc.name, desc.toAttributeValue()) }
+        buildItem {
+            this@SimpleItemConverter.descriptors.values.forEach { desc ->
+                put(desc.name, desc.toAttributeValue())
+            }
         }
     }
 }

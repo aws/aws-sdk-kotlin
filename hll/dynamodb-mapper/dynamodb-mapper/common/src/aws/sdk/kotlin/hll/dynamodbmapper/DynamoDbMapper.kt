@@ -7,21 +7,20 @@ package aws.sdk.kotlin.hll.dynamodbmapper
 import aws.sdk.kotlin.hll.dynamodbmapper.internal.DynamoDbMapperImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.internal.MapperConfigBuilderImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Table
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.DynamoDbMapperOperations
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * A high-level client for DynamoDB which maps custom data types into DynamoDB attributes and vice versa.
  */
-@ExperimentalApi
-public interface DynamoDbMapper {
-    @ExperimentalApi
+public interface DynamoDbMapper : DynamoDbMapperOperations {
     public companion object {
         /**
-         * Instantiate a new [Config] object
+         * Instantiate a new [DynamoDbMapper.Config] object
          * @param config A DSL block for setting properties of the config
          */
         public fun Config(config: Config.Builder.() -> Unit = { }): Config = Config.Builder().apply(config).build()
@@ -40,11 +39,11 @@ public interface DynamoDbMapper {
     /**
      * Get a [Table] reference for performing table operations
      * @param T The type of objects which will be read from and/or written to this table
-     * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
+     * @param PK The type of the partition key property, either [KeyType] or one of its specific derivations
      * @param name The name of the table
      * @param schema The [ItemSchema] which describes the table, its keys, and how items are converted
      */
-    public fun <T, PK> getTable(
+    public fun <T, PK : KeyType> getTable(
         name: String,
         schema: ItemSchema.PartitionKey<T, PK>,
     ): Table.PartitionKey<T, PK>
@@ -52,12 +51,12 @@ public interface DynamoDbMapper {
     /**
      * Get a [Table] reference for performing table operations
      * @param T The type of objects which will be read from and/or written to this table
-     * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
-     * @param SK The type of the sort key property, either [String], [Number], or [ByteArray]
+     * @param PK The type of the partition key property, either [KeyType] or one of its specific derivations
+     * @param SK The type of the sort key property, either [KeyType] or one of its specific derivations
      * @param name The name of the table
      * @param schema The [ItemSchema] which describes the table, its keys, and how items are converted
      */
-    public fun <T, PK, SK> getTable(
+    public fun <T, PK : KeyType, SK : KeyType> getTable(
         name: String,
         schema: ItemSchema.CompositeKey<T, PK, SK>,
     ): Table.CompositeKey<T, PK, SK>
@@ -70,7 +69,7 @@ public interface DynamoDbMapper {
     public interface Config {
         public companion object {
             /**
-             * Instantiate a new [Builder] object
+             * Instantiate a new [Config.Builder] object
              */
             public fun Builder(): Builder = MapperConfigBuilderImpl()
         }
@@ -82,8 +81,8 @@ public interface DynamoDbMapper {
         public val interceptors: List<InterceptorAny>
 
         /**
-         * Convert this immutable configuration into a mutable [Builder] object. Updates made to the mutable builder
-         * properties will not affect this instance.
+         * Convert this immutable configuration into a mutable [Config.Builder] object. Updates made to the mutable
+         * builder properties will not affect this instance.
          */
         public fun toBuilder(): Builder
 
@@ -111,7 +110,6 @@ public interface DynamoDbMapper {
  * @param client The low-level DynamoDB client to use for underlying calls to the service
  * @param config A DSL configuration block
  */
-@ExperimentalApi
 public fun DynamoDbMapper(
     client: DynamoDbClient,
     config: DynamoDbMapper.Config.Builder.() -> Unit = { },

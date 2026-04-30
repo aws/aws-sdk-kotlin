@@ -7,15 +7,14 @@ package aws.sdk.kotlin.hll.dynamodbmapper.pipeline
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.HReqContextImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Contextual data for stages in the pipeline dealing with high-level requests (i.e., before serialization)
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  */
-@ExperimentalApi
-public interface HReqContext<T, HReq> : SerializeInput<T, HReq> {
+public interface HReqContext<T, S : ItemSchema<T>, HReq> : SerializeInput<T, S, HReq> {
 
     /**
      * Additional, generalized context which may be useful to interceptors
@@ -33,16 +32,16 @@ public interface HReqContext<T, HReq> : SerializeInput<T, HReq> {
 /**
  * Creates a new [HReqContext]
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param highLevelRequest The high-level request object which is to be serialized into a low-level request object
  * @param serializeSchema The [ItemSchema] to use for serializing objects into items
  * @param mapperContext Additional, generalized context which may be useful to interceptors
  * @param error The most recent error which occurred, if any. Defaults to null.
  */
-@ExperimentalApi
-public fun <T, HReq> HReqContext(
+public fun <T, S : ItemSchema<T>, HReq> HReqContext(
     highLevelRequest: HReq,
-    serializeSchema: ItemSchema<T>,
+    serializeSchema: S,
     mapperContext: MapperContext<T>,
     error: Throwable? = null,
-): HReqContext<T, HReq> = HReqContextImpl(highLevelRequest, serializeSchema, mapperContext, error)
+): HReqContext<T, S, HReq> = HReqContextImpl(highLevelRequest, serializeSchema, mapperContext, error)

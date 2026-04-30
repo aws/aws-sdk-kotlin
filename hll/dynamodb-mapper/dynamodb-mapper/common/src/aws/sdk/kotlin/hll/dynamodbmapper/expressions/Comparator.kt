@@ -4,13 +4,10 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
-
 /**
  * Identifies a comparison operator to use in an expression
  * @param exprString The literal value of the operator to use in an expression string
  */
-@ExperimentalApi
 public enum class Comparator(public val exprString: String) {
     /**
      * An equality comparison, equivalent to `==` in Kotlin and to `=` in DynamoDB

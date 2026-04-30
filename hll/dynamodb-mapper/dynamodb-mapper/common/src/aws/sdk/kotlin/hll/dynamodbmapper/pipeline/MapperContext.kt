@@ -6,13 +6,11 @@ package aws.sdk.kotlin.hll.dynamodbmapper.pipeline
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.PersistenceSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.MapperContextImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Holds generalized context which may be useful to interceptors
  * @param T The type of objects being converted to/from DynamoDB items
  */
-@ExperimentalApi
 public interface MapperContext<T> {
     // TODO what other fields would be useful in here?
 
@@ -33,5 +31,4 @@ public interface MapperContext<T> {
  * @param persistenceSpec The metadata about an operation invocation
  * @param operation The name of the high-level operation being invoked
  */
-@ExperimentalApi
 public fun <T> MapperContext(persistenceSpec: PersistenceSpec<T>, operation: String): MapperContext<T> = MapperContextImpl(persistenceSpec, operation)

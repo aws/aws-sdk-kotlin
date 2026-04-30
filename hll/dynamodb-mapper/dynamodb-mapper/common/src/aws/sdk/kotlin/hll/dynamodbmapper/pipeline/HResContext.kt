@@ -8,20 +8,19 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemResponse
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.HResContextImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
 import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
 
 /**
  * Contextual data for stages in the pipeline dealing with high-level responses (i.e., after deserialization)
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
  * @param HRes The type of high-level response object (e.g., [GetItemResponse])
  */
-@ExperimentalApi
-public interface HResContext<T, HReq, LReq, LRes, HRes> : LResContext<T, HReq, LReq, LRes> {
+public interface HResContext<T, S : ItemSchema<T>, HReq, LReq, LRes, HRes> : LResContext<T, S, HReq, LReq, LRes> {
     /**
      * The high-level response to return to the caller
      */
@@ -31,6 +30,7 @@ public interface HResContext<T, HReq, LReq, LRes, HRes> : LResContext<T, HReq, L
 /**
  * Creates a new [HResContext]
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
@@ -43,17 +43,16 @@ public interface HResContext<T, HReq, LReq, LRes, HRes> : LResContext<T, HReq, L
  * @param highLevelResponse The high-level response to return to the caller
  * @param error The most recent error which occurred, if any. Defaults to null.
  */
-@ExperimentalApi
-public fun <T, HReq, LReq, LRes, HRes> HResContext(
+public fun <T, S : ItemSchema<T>, HReq, LReq, LRes, HRes> HResContext(
     highLevelRequest: HReq,
-    serializeSchema: ItemSchema<T>,
+    serializeSchema: S,
     mapperContext: MapperContext<T>,
     lowLevelRequest: LReq,
     lowLevelResponse: LRes,
-    deserializeSchema: ItemSchema<T>,
+    deserializeSchema: S,
     highLevelResponse: HRes,
     error: Throwable? = null,
-): HResContext<T, HReq, LReq, LRes, HRes> = HResContextImpl(
+): HResContext<T, S, HReq, LReq, LRes, HRes> = HResContextImpl(
     highLevelRequest,
     serializeSchema,
     mapperContext,

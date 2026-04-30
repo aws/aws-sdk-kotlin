@@ -4,13 +4,12 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.model
 
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.ItemSourceOperations
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents a source of DynamoDB items (such as a table or secondary index)
  */
-@ExperimentalApi
 public interface ItemSource<T> :
     PersistenceSpec<T>,
     ItemSourceOperations<T> {
@@ -19,22 +18,22 @@ public interface ItemSource<T> :
      * Represents a source of DynamoDB items (such as a table or secondary index) whose primary key is a single
      * partition key
      * @param T The type of objects which will be read from and/or written to this item source
-     * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
+     * @param PK The type of the partition key property, either [KeyType] or one of its specific derivations
      */
-    @ExperimentalApi
-    public interface PartitionKey<T, PK> :
+    public interface PartitionKey<T, PK : KeyType> :
         ItemSource<T>,
+        ItemSourceOperations.PartitionKey<T, PK>,
         PersistenceSpec.PartitionKey<T, PK>
 
     /**
      * Represents a source of DynamoDB items (such as a table or secondary index) whose primary key is a composite of a
      * partition key and a sort key
      * @param T The type of objects which will be read from and/or written to this item source
-     * @param PK The type of the partition key property, either [String], [Number], or [ByteArray]
-     * @param SK The type of the sort key property, either [String], [Number], or [ByteArray]
+     * @param PK The type of the partition key property, either [KeyType] or one of its specific derivations
+     * @param SK The type of the sort key property, either [KeyType] or one of its specific derivations
      */
-    @ExperimentalApi
-    public interface CompositeKey<T, PK, SK> :
+    public interface CompositeKey<T, PK : KeyType, SK : KeyType> :
         ItemSource<T>,
+        ItemSourceOperations.CompositeKey<T, PK, SK>,
         PersistenceSpec.CompositeKey<T, PK, SK>
 }

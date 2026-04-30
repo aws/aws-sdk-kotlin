@@ -4,8 +4,9 @@
  */
 
 import aws.sdk.kotlin.gradle.hll.configureKspCodegen
-import com.amazonaws.services.dynamodbv2.local.main.ServerRunner
-import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer
+import dev.mokkery.verify.VerifyMode
+import software.amazon.dynamodb.services.local.main.ServerRunner
+import software.amazon.dynamodb.services.local.server.DynamoDBProxyServer
 import java.net.ServerSocket
 import kotlin.properties.Delegates
 
@@ -21,6 +22,7 @@ buildscript {
 
 plugins {
     alias(libs.plugins.ksp)
+    alias(libs.plugins.mokkery)
     `dokka-convention`
 }
 
@@ -38,14 +40,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation(libs.mockk)
-                implementation(libs.kotest.assertions.core)
-                implementation(libs.kotest.runner.junit5)
+                implementation(libs.smithy.kotlin.testing)
             }
         }
     }
@@ -55,14 +50,20 @@ ksp {
     arg("pkg", "aws.sdk.kotlin.hll.dynamodbmapper.operations")
 
     val allowlist = listOf(
+        "batchGetItem",
+        "batchWriteItem",
         "deleteItem",
         "getItem",
         "putItem",
         "query",
         "scan",
+        "transactGetItems",
+        "transactWriteItems",
+        "updateItem",
     )
     arg("op-allowlist", allowlist.joinToString(";"))
 }
+
 configureKspCodegen(listOf(":hll:dynamodb-mapper:dynamodb-mapper-ops-codegen"))
 
 open class DynamoDbLocalInstance : DefaultTask() {
@@ -117,4 +118,8 @@ tasks.withType<Test> {
     doLast {
         startDdbLocal.get().stop()
     }
+}
+
+mokkery {
+    defaultVerifyMode.set(VerifyMode.order)
 }

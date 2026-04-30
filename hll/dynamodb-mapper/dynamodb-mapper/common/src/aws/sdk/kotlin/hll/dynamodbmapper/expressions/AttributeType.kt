@@ -4,14 +4,11 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
-
 /**
  * Represents a
  * [DynamoDB attribute data type](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes)
  * @param abbreviation The DynamoDB type name
  */
-@ExperimentalApi
 public enum class AttributeType(public val abbreviation: kotlin.String) {
     /**
      * Binary data type, denoted in DynamoDB as `B`

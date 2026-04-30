@@ -5,13 +5,11 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.ScalarFuncExprImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * Represents a function expression that yields a non-boolean result as described in
  * [DynamoDB's **function** documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html#Expressions.OperatorsAndFunctions.Functions)
  */
-@ExperimentalApi
 public interface ScalarFuncExpr : BooleanExpr {
     /**
      * The specific non-boolean function to use
@@ -19,9 +17,9 @@ public interface ScalarFuncExpr : BooleanExpr {
     public val func: ScalarFunc
 
     /**
-     * The attribute path to pass as the function's first argument
+     * The expression to pass as the function's first argument
      */
-    public val path: AttributePath
+    public val initialOperand: Expression
 
     /**
      * Any additional arguments used by the function
@@ -34,25 +32,23 @@ public interface ScalarFuncExpr : BooleanExpr {
 /**
  * Creates a new non-boolean function expression
  * @param func The specific non-boolean function to use
- * @param path The attribute path to pass as the function's first argument
+ * @param initialOperand The expression to pass as the function's first argument
  * @param additionalOperands Any additional arguments used by the function
  */
-@ExperimentalApi
 public fun ScalarFuncExpr(
     func: ScalarFunc,
-    path: AttributePath,
+    initialOperand: Expression,
     additionalOperands: List<Expression> = listOf(),
-): ScalarFuncExpr = ScalarFuncExprImpl(func, path, additionalOperands)
+): ScalarFuncExpr = ScalarFuncExprImpl(func, initialOperand, additionalOperands)
 
 /**
  * Creates a new non-boolean function expression
  * @param func The specific non-boolean function to use
- * @param path The attribute path to pass as the function's first argument
+ * @param initialOperand The expression to pass as the function's first argument
  * @param additionalOperands Any additional arguments used by the function
  */
-@ExperimentalApi
 public fun ScalarFuncExpr(
     func: ScalarFunc,
-    path: AttributePath,
+    initialOperand: Expression,
     vararg additionalOperands: Expression,
-): ScalarFuncExpr = ScalarFuncExprImpl(func, path, additionalOperands.toList())
+): ScalarFuncExpr = ScalarFuncExprImpl(func, initialOperand, additionalOperands.toList())

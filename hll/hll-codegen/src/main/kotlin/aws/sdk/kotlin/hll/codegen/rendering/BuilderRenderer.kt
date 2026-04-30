@@ -7,48 +7,53 @@ package aws.sdk.kotlin.hll.codegen.rendering
 
 import aws.sdk.kotlin.hll.codegen.core.CodeGenerator
 import aws.sdk.kotlin.hll.codegen.model.*
+import aws.sdk.kotlin.hll.codegen.util.generatedAnnotation
 import aws.sdk.kotlin.hll.codegen.util.visibility
 import aws.sdk.kotlin.runtime.InternalSdkApi
 
 /**
  * A DSL-style builder renderer.
+ * @param ctx The rendering context
  * @param generator The generator in which the builder will be written
- * @param builtType The [TypeRef] representing the type for which a builder will be generated. This type can be a class
- * or an interface.
+ * @param builtType The [Structure] for which a builder will be generated
  * @param implementationType The [TypeRef] representing the implementing type whose constructor will be called by the
  * generated `build` method. This type must expose a constructor which accepts each element of [members] as parameters.
  * Note that this type doesn't have to be public (merely accessible to the `build` method) and may be the same as
  * [builtType] if it has an appropriate constructor.
  * @param members The [Set] of members of [builtType] which will be included in the builder
- * @param ctx The rendering context
+ * @param builderNameOverride May be set to override the name for the builder. If not set, the builder name will be
+ * the same as the interface name concatenated with "Builder".
  */
 @InternalSdkApi
 public class BuilderRenderer(
+    private val ctx: RenderContext,
     private val generator: CodeGenerator,
-    private val builtType: TypeRef,
+    private val builtStructure: Structure,
     private val implementationType: TypeRef,
     private val members: Set<Member>,
-    private val ctx: RenderContext,
+    builderNameOverride: String? = null,
 ) : CodeGenerator by generator {
     @InternalSdkApi
     public companion object {
-        public fun builderName(builtType: TypeRef): String = "${builtType.shortName}Builder"
-        public fun builderType(builtType: TypeRef): TypeRef = builtType.copy(shortName = builderName(builtType))
+        public fun builderName(builtType: Structure): String = "${builtType.type.shortName}Builder"
+        public fun builderType(builtType: Structure): TypeRef = builtType.type.copy(shortName = builderName(builtType))
     }
 
-    private val builderName = builderName(builtType)
+    private val builtType = builtStructure.type
+    private val builderName = builderNameOverride ?: builderName(builtStructure)
 
     public fun render() {
         docs("A DSL-style builder for instances of [#T]", builtType)
 
-        val genericParams = members.flatMap { it.type.genericVars() }.asParamsList()
+        generatedAnnotation(builtStructure, ctx)
+        val generics = members.genericVars()
 
-        write("@#T", Types.Smithy.ExperimentalApi)
-        withBlock("#Lclass #L#L {", "}", ctx.attributes.visibility, builderName, genericParams) {
+        withBlock("#Lclass #L#G {", "}", ctx.attributes.visibility, builderName, generics) {
             members.forEach(::renderProperty)
             blankLine()
 
-            withBlock("#Lfun build(): #T {", "}", ctx.attributes.visibility, builtType, genericParams) {
+            generatedAnnotation(builtStructure, ctx)
+            withBlock("#Lfun build(): #T {", "}", ctx.attributes.visibility, builtType) {
                 members.forEach {
                     if (it.type.nullable) {
                         write("val #1L = #1L", it.name)
@@ -68,26 +73,51 @@ public class BuilderRenderer(
     }
 
     private fun renderProperty(member: Member) {
-        val dslInfo = member.dslInfo
+        val dsls = member.dsls
 
-        if (dslInfo != null) {
+        if (dsls.isNotEmpty()) {
             blankLine()
         }
 
+        generatedAnnotation(member, ctx)
         write("#Lvar #L: #T = null", ctx.attributes.visibility, member.name, member.type.nullable())
 
-        if (dslInfo != null) {
+        dsls.forEach { dslInfo ->
+            val dslBlockResultType = when (dslInfo.implFinalizer) {
+                null -> member.type
+                else -> Types.Kotlin.Unit
+            }
+
+            val dslName = dslInfo.nameOverride ?: member.name
+
             blankLine()
+            generatedAnnotation(member, ctx)
+            writeInline("#Lfun #G#L(", ctx.attributes.visibility, dslInfo.interfaceType.genericVars(), dslName)
+
+            dslInfo.dslMethodParams.forEach { arg ->
+                writeInline("#L: #T, ", arg.name, arg.type)
+            }
+
             withBlock(
-                "#Lfun #L(block: #T.() -> #T) {",
+                "block: #T.() -> #T) {",
                 "}",
-                ctx.attributes.visibility,
-                member.name,
+
                 dslInfo.interfaceType,
-                member.type,
+                dslBlockResultType,
             ) {
-                val constructorIfNecessary = if (dslInfo.implSingleton) "" else "()"
-                write("#L = #T#L.run(block)", member.name, dslInfo.implType, constructorIfNecessary)
+                val scopeMethod = when (dslInfo.implFinalizer) {
+                    null -> "run" // The result of DSL method call is the DSL block return value
+                    else -> "apply" // The result of the DSL method call is provided by the finalizer
+                }
+
+                write(
+                    "#L = #T#L.#L(block)#L",
+                    member.name,
+                    dslInfo.implType,
+                    dslInfo.implInvocationStyle.invocationString,
+                    scopeMethod,
+                    dslInfo.implFinalizer ?: "",
+                )
             }
             blankLine()
         }

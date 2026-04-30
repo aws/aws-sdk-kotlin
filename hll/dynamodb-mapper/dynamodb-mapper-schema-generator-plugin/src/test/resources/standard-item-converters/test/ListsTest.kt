@@ -4,12 +4,10 @@
  */
 package org.example
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import org.example.dynamodbmapper.generatedschemas.ListsConverter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalApi::class)
 public class ListsTest {
     @Test
     fun converterTest() {
@@ -36,8 +34,8 @@ public class ListsTest {
             nullableListNullableElement = null,
         )
 
-        val item = ListsConverter.convertTo(lists)
-        val converted = ListsConverter.convertFrom(item)
+        val item = ListsConverter.convertRight(lists)
+        val converted = ListsConverter.convertLeft(item)
         assertEquals(lists, converted)
     }
 }

@@ -4,7 +4,6 @@
  */
 package org.example
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.content.Document
 import aws.smithy.kotlin.runtime.net.url.Url
 import aws.smithy.kotlin.runtime.time.Instant
@@ -12,7 +11,6 @@ import org.example.dynamodbmapper.generatedschemas.PrimitivesConverter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalApi::class)
 public class PrimitivesTest {
     @Test
     fun converterTest() {
@@ -39,8 +37,8 @@ public class PrimitivesTest {
             document = Document.Number(5),
         )
 
-        val item = PrimitivesConverter.convertTo(primitive)
-        val converted = PrimitivesConverter.convertFrom(item)
+        val item = PrimitivesConverter.convertRight(primitive)
+        val converted = PrimitivesConverter.convertLeft(item)
         assertEquals(primitive, converted)
     }
 }

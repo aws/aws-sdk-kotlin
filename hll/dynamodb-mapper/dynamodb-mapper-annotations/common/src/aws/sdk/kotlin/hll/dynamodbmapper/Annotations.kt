@@ -4,6 +4,10 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper
 
+import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConverter
+import kotlin.reflect.KClass
+
 /**
  * Specifies the attribute name for a property in a [DynamoDbItem]-annotated class/interface. If this annotation is not
  * included then the attribute name matches the property name.
@@ -12,14 +16,18 @@ package aws.sdk.kotlin.hll.dynamodbmapper
 public annotation class DynamoDbAttribute(val name: String)
 
 /**
+ * Specifies the type of [ValueConverter] to be used when processing this attribute.
+ */
+@Target(AnnotationTarget.PROPERTY)
+public annotation class DynamoDbAttributeConverter(val converter: KClass<out ValueConverter<*>>)
+
+/**
  * Specifies that this class/interface describes an item type in a table. All public properties of this type will be mapped to
  * attributes unless they are explicitly ignored.
- * @param converterName The fully qualified name of the item converter to be used for converting this class/interface.
- * If not set, one will be automatically generated.
+ * @param converter The item converter to be used for converting this class/interface. If not set, one will be automatically generated.
  */
-// FIXME Update to take a KClass<ItemConverter>, which will require splitting codegen modules due to a circular dependency
 @Target(AnnotationTarget.CLASS)
-public annotation class DynamoDbItem(val converterName: String = "")
+public annotation class DynamoDbItem(val converter: KClass<out ItemConverter<*>> = ItemConverter::class)
 
 /**
  * Specifies that this property is the primary key for the item. Every top-level [DynamoDbItem] to be used in a table
@@ -40,3 +48,17 @@ public annotation class DynamoDbSortKey
  */
 @Target(AnnotationTarget.PROPERTY)
 public annotation class DynamoDbIgnore
+
+/**
+ * Specifies that this property is used to track the item's time-to-live (TTL).
+ * https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html
+ * @param lifetime The lifetime of this item, in seconds
+ */
+@Target(AnnotationTarget.PROPERTY)
+public annotation class DynamoDbTtlSeconds(val lifetime: Long)
+
+/**
+ * Specifies that this property should be used as a counter field, incrementing each time an item is persisted to DynamoDB.
+ */
+@Target(AnnotationTarget.PROPERTY)
+public annotation class DynamoDbCounter

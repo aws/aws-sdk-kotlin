@@ -4,11 +4,11 @@
  */
 package aws.sdk.kotlin.hll.codegen.model
 
-import aws.sdk.kotlin.hll.codegen.util.requireAllDistinct
 import aws.sdk.kotlin.runtime.InternalSdkApi
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeReference
+import software.amazon.smithy.codegen.core.Symbol
 
 /**
  * Describes a Kotlin data type
@@ -39,6 +39,15 @@ public sealed interface Type {
                 nullable = ksType.isMarkedNullable,
             )
         }
+
+        /**
+         * Derives a [TypeRef] from a Smithy [Symbol]
+         */
+        public fun from(symbol: Symbol, nullable: Boolean = false): TypeRef = TypeRef(
+            pkg = symbol.namespace,
+            shortName = symbol.name,
+            nullable = nullable,
+        )
     }
 
     /**
@@ -70,34 +79,77 @@ public data class TypeRef(
     val genericArgs: List<Type> = listOf(),
     override val nullable: Boolean = false,
 ) : Type {
+    @InternalSdkApi
+    public constructor(
+        pkg: String,
+        shortName: String,
+        genericArgs: GenericsSet,
+        nullable: Boolean = false,
+    ) : this(pkg, shortName, genericArgs.toList(), nullable)
+
     /**
      * The full name of this type, including the Kotlin package
      */
     val fullName: String = "$pkg.$shortName"
 
     /**
-     * The base name of this type. In most cases, this will be the same as the short name, but for nested types, this
-     * will only include the top-level name. For example, the base name of a type Foo.Bar.Baz is Foo.
+     * The base name of this type, not including the package name. In most cases, this will be the same as the short
+     * name but, for nested types, this will only include the top-level name. For example, the base short name of a type
+     * `com.bar.Foo.Bar.Baz` is `Foo`.
      */
-    val baseName: String = shortName.substringBefore(".")
+    val shortBaseName: String = shortName.substringBefore(".")
+
+    /**
+     * The base name of this type, including the package name. In most cases, this will be the same as the full name
+     * but, for nested types, this will only include the top-level name. For example, the base full name of a type
+     * `com.base.Foo.Bar.Baz` is `com.bar.Foo`.
+     */
+    val fullBaseName: String = "$pkg.$shortBaseName"
+
+    /**
+     * The "leaf" name of this type. In most cases, this will be the same as the short name but, for nested types, this
+     * will only include the innermost name component. For example, the leaf name of a type `com.bar.Foo.Bar.Baz` is
+     * `Baz`.
+     */
+    val leafName: String = shortName.substringAfterLast('.')
 }
 
 /**
  * A generic type variable (e.g., `T`)
  * @param shortName The name of this type variable
  * @param nullable Indicates whether instances of this type allow nullable references
+ * @param constraintType An optional type constraint for this generic variable
  */
 @InternalSdkApi
-public data class TypeVar(override val shortName: String, override val nullable: Boolean = false) : Type
+public data class TypeVar(
+    override val shortName: String,
+    override val nullable: Boolean = false,
+    val constraintType: TypeRef? = null,
+) : Type {
+    @InternalSdkApi
+    public companion object {
+        @InternalSdkApi
+        public val Star: TypeVar = TypeVar("*")
+
+        @InternalSdkApi
+        public val T: TypeVar = TypeVar("T")
+    }
+}
+
+@InternalSdkApi
+public data object StarProjection : Type {
+    override val nullable: Boolean = false
+    override val shortName: String = "*"
+}
 
 /**
  * Derives a nullable [Type] equivalent for this type
  */
 @InternalSdkApi
 public fun Type.nullable(value: Boolean = true): Type = when {
-    nullable == value -> this
-    this is TypeRef -> copy(nullable = value)
-    this is TypeVar -> copy(nullable = value)
+    nullable == value || this == StarProjection -> this
+    this is TypeRef -> this.nullable(value)
+    this is TypeVar -> this.nullable(value)
     else -> error("Unknown Type ${this::class}") // Should be unreachable, only here to make compiler happy
 }
 
@@ -123,24 +175,21 @@ public fun TypeVar.nullable(value: Boolean = true): TypeVar = when {
  * Gets a collection of all generic variables referenced by this [Type]
  */
 @InternalSdkApi
-public fun Type.genericVars(): List<TypeVar> = buildList {
-    when (val type = this@genericVars) {
-        is TypeVar -> add(type)
-        is TypeRef -> type.genericArgs.flatMap { it.genericVars() }
+public fun Type?.genericVars(): GenericsSet = GenericsSet(genericVarsList())
+
+private fun Type?.genericVarsList(): List<TypeVar> = buildList {
+    when (val type = this@genericVarsList) {
+        null, is StarProjection -> { }
+        is TypeVar -> add(type.nullable(false))
+        is TypeRef -> addAll(type.genericArgs.flatMap { it.genericVars() })
     }
 }
 
 /**
- * Formats a collection of [TypeVar] into a Kotlin generics list (e.g., `<A, B, C>`)
- * @param postfix An optional string to include at the end of the generated string. This can be useful when the intended
- * destination for the string is codegen and additional spacing may be required.
+ * Assembles the list of generic variables referenced by all member types in this collection
  */
 @InternalSdkApi
-public fun List<TypeVar>.asParamsList(postfix: String = ""): String = takeUnless { isEmpty() }
-    ?.map { it.shortName }
-    ?.requireAllDistinct()
-    ?.joinToString(", ", "<", ">$postfix")
-    ?: ""
+public fun Collection<Member>.genericVars(): GenericsSet = GenericsSet(flatMap { it.type.genericVarsList() })
 
 /**
  * Returns whether this [TypeRef] is generic for an [other]

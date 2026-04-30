@@ -94,47 +94,73 @@ class SchemaGeneratorPluginTest {
         val schemaContents = schemaFile.readText()
 
         // Builder
-        assertContains(schemaContents, "public class UserBuilder")
-        assertContains(schemaContents, "public var id: Int? = null")
-        assertContains(schemaContents, "public var givenName: String? = null")
-        assertContains(schemaContents, "public var surname: String? = null")
-        assertContains(schemaContents, "public var age: Int? = null")
-        assertContains(schemaContents, "public fun build(): User")
+        assertContains(
+            schemaContents,
+            """
+                @GeneratedApi
+                public class UserBuilder {
+                    @GeneratedApi
+                    public var id: Int? = null
+                    @GeneratedApi
+                    public var givenName: String? = null
+                    @GeneratedApi
+                    public var surname: String? = null
+                    @GeneratedApi
+                    public var age: Int? = null
+
+                    @GeneratedApi
+                    public fun build(): User {
+                        val id = requireNotNull(id) { "Missing value for id" }
+                        val givenName = requireNotNull(givenName) { "Missing value for givenName" }
+                        val surname = requireNotNull(surname) { "Missing value for surname" }
+                        val age = requireNotNull(age) { "Missing value for age" }
+
+                        return User(
+                            id,
+                            givenName,
+                            surname,
+                            age,
+                        )
+                    }
+                }
+            """.trimIndent(),
+        )
 
         // Converter
         assertContains(
             schemaContents,
             """
-        object UserConverter : ItemConverter<User> by SimpleItemConverter(
-            builderFactory = ::UserBuilder,
-            build = UserBuilder::build,
-            descriptors = arrayOf(
-                AttributeDescriptor(
-                    "id",
-                    User::id,
-                    UserBuilder::id::set,
-                    IntConverter,
-                ),
-                AttributeDescriptor(
-                    "fName",
-                    User::givenName,
-                    UserBuilder::givenName::set,
-                    StringConverter,
-                ),
-                AttributeDescriptor(
-                    "lName",
-                    User::surname,
-                    UserBuilder::surname::set,
-                    StringConverter,
-                ),
-                AttributeDescriptor(
-                    "age",
-                    User::age,
-                    UserBuilder::age::set,
-                    IntConverter,
-                ),
-            ),
-        )
+                @GeneratedApi
+                public object UserConverter : ItemConverter<User> by SimpleItemConverter(
+                    builderFactory = ::UserBuilder,
+                    build = UserBuilder::build,
+                    descriptors = arrayOf(
+                        AttributeDescriptor(
+                            "id",
+                            User::id,
+                            UserBuilder::id::set,
+                            NumberValueConverters.Int,
+                        ),
+                        AttributeDescriptor(
+                            "fName",
+                            User::givenName,
+                            UserBuilder::givenName::set,
+                            StringValueConverter,
+                        ),
+                        AttributeDescriptor(
+                            "lName",
+                            User::surname,
+                            UserBuilder::surname::set,
+                            StringValueConverter,
+                        ),
+                        AttributeDescriptor(
+                            "age",
+                            User::age,
+                            UserBuilder::age::set,
+                            NumberValueConverters.Int,
+                        ),
+                    ),
+                )
             """.trimIndent(),
         )
 
@@ -142,15 +168,23 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
-        object UserSchema : ItemSchema.PartitionKey<User, Int> {
-            override val converter: UserConverter = UserConverter
-            override val partitionKey: KeySpec<Number> = aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec.Number("id")
-        }
+                @GeneratedApi
+                public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
+                    override val converter: UserConverter = UserConverter
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
+                    override val attributes: Attributes = emptyAttributes()
+                }
             """.trimIndent(),
         )
 
         // GetTable
-        assertContains(schemaContents, "fun DynamoDbMapper.getUserTable(name: String): Table.PartitionKey<User, Int> = getTable(name, UserSchema)".trimIndent())
+        assertContains(
+            schemaContents,
+            """
+                @GeneratedApi
+                public fun DynamoDbMapper.getUserTable(name: String): Table.PartitionKey<User, KeyType.Key1<Int>> = getTable(name, UserSchema)
+            """.trimIndent(),
+        )
     }
 
     @Test
@@ -172,36 +206,37 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
-        object BuilderNotRequiredConverter : ItemConverter<BuilderNotRequired> by SimpleItemConverter(
-            builderFactory = { BuilderNotRequired() },
-            build = { this },
-            descriptors = arrayOf(
-                AttributeDescriptor(
-                    "id",
-                    BuilderNotRequired::id,
-                    BuilderNotRequired::id::set,
-                    IntConverter,
-                ),
-                AttributeDescriptor(
-                    "fName",
-                    BuilderNotRequired::givenName,
-                    BuilderNotRequired::givenName::set,
-                    StringConverter,
-                ),
-                AttributeDescriptor(
-                    "lName",
-                    BuilderNotRequired::surname,
-                    BuilderNotRequired::surname::set,
-                    StringConverter,
-                ),
-                AttributeDescriptor(
-                    "age",
-                    BuilderNotRequired::age,
-                    BuilderNotRequired::age::set,
-                    IntConverter,
-                ),
-            ),
-        )
+                @GeneratedApi
+                public object BuilderNotRequiredConverter : ItemConverter<BuilderNotRequired> by SimpleItemConverter(
+                    builderFactory = { BuilderNotRequired() },
+                    build = { this },
+                    descriptors = arrayOf(
+                        AttributeDescriptor(
+                            "id",
+                            BuilderNotRequired::id,
+                            BuilderNotRequired::id::set,
+                            NumberValueConverters.Int,
+                        ),
+                        AttributeDescriptor(
+                            "fName",
+                            BuilderNotRequired::givenName,
+                            BuilderNotRequired::givenName::set,
+                            StringValueConverter,
+                        ),
+                        AttributeDescriptor(
+                            "lName",
+                            BuilderNotRequired::surname,
+                            BuilderNotRequired::surname::set,
+                            StringValueConverter,
+                        ),
+                        AttributeDescriptor(
+                            "age",
+                            BuilderNotRequired::age,
+                            BuilderNotRequired::age::set,
+                            NumberValueConverters.Int,
+                        ),
+                    ),
+                )
             """.trimIndent(),
         )
     }
@@ -209,14 +244,12 @@ class SchemaGeneratorPluginTest {
     @Test
     fun testGenerateBuilderOption() = withTestProject {
         val pluginConfiguration = """
-        import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.GenerateBuilderClasses
-        import aws.smithy.kotlin.runtime.ExperimentalApi
-        
-        @OptIn(ExperimentalApi::class)
-        dynamoDbMapper {
-            generateBuilderClasses = GenerateBuilderClasses.ALWAYS
-        }
-        
+            import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.GenerateBuilderClasses
+            
+            dynamoDbMapper {
+                generateBuilderClasses = GenerateBuilderClasses.ALWAYS
+            }
+            
         """.trimIndent()
         buildFile.prependText(pluginConfiguration)
 
@@ -231,25 +264,48 @@ class SchemaGeneratorPluginTest {
         val schemaContents = schemaFile.readText()
 
         // Assert a builder is still generated, because we configured GenerateBuilderClasses.ALWAYS
-        assertContains(schemaContents, "public class BuilderNotRequiredBuilder")
-        assertContains(schemaContents, "public var id: Int? = null")
-        assertContains(schemaContents, "public var givenName: String? = null")
-        assertContains(schemaContents, "public var surname: String? = null")
-        assertContains(schemaContents, "public var age: Int? = null")
-        assertContains(schemaContents, "public fun build(): BuilderNotRequired")
+        assertContains(
+            schemaContents,
+            """
+                @GeneratedApi
+                public class BuilderNotRequiredBuilder {
+                    @GeneratedApi
+                    public var id: Int? = null
+                    @GeneratedApi
+                    public var givenName: String? = null
+                    @GeneratedApi
+                    public var surname: String? = null
+                    @GeneratedApi
+                    public var age: Int? = null
+
+                    @GeneratedApi
+                    public fun build(): BuilderNotRequired {
+                        val id = requireNotNull(id) { "Missing value for id" }
+                        val givenName = requireNotNull(givenName) { "Missing value for givenName" }
+                        val surname = requireNotNull(surname) { "Missing value for surname" }
+                        val age = requireNotNull(age) { "Missing value for age" }
+
+                        return BuilderNotRequired(
+                            id,
+                            givenName,
+                            surname,
+                            age,
+                        )
+                    }
+                }
+            """.trimIndent(),
+        )
     }
 
     @Test
     fun testVisibilityOption() = withTestProject {
         val pluginConfiguration = """
-        import aws.sdk.kotlin.hll.codegen.rendering.Visibility
-        import aws.smithy.kotlin.runtime.ExperimentalApi
-        
-        @OptIn(ExperimentalApi::class)
-        dynamoDbMapper {
-            visibility = Visibility.INTERNAL
-        }
-        
+            import aws.sdk.kotlin.hll.codegen.rendering.Visibility
+            
+            dynamoDbMapper {
+                visibility = Visibility.INTERNAL
+            }
+            
         """.trimIndent()
         buildFile.prependText(pluginConfiguration)
 
@@ -273,13 +329,10 @@ class SchemaGeneratorPluginTest {
     @Test
     fun testGenerateGetTableFunctionOption() = withTestProject {
         val pluginConfiguration = """
-        import aws.smithy.kotlin.runtime.ExperimentalApi
-        
-        @OptIn(ExperimentalApi::class)
-        dynamoDbMapper {
-            generateGetTableExtension = false
-        }
-        
+            dynamoDbMapper {
+                generateGetTableExtension = false
+            }
+            
         """.trimIndent()
         buildFile.prependText(pluginConfiguration)
 
@@ -303,14 +356,12 @@ class SchemaGeneratorPluginTest {
     @Test
     fun testRelativeDestinationPackage() = withTestProject {
         val pluginConfiguration = """
-        import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
-        import aws.smithy.kotlin.runtime.ExperimentalApi
-        
-        @OptIn(ExperimentalApi::class)
-        dynamoDbMapper {
-            destinationPackage = DestinationPackage.Relative("hello.moto")
-        }
-        
+            import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
+            
+            dynamoDbMapper {
+                destinationPackage = DestinationPackage.Relative("hello.moto")
+            }
+            
         """.trimIndent()
         buildFile.prependText(pluginConfiguration)
 
@@ -330,14 +381,12 @@ class SchemaGeneratorPluginTest {
     @Test
     fun testAbsoluteDestinationPackage() = withTestProject {
         val pluginConfiguration = """
-        import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
-        import aws.smithy.kotlin.runtime.ExperimentalApi
-        
-        @OptIn(ExperimentalApi::class)
-        dynamoDbMapper {
-            destinationPackage = DestinationPackage.Absolute("absolutely.my.`package`")
-        }
-        
+            import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
+            
+            dynamoDbMapper {
+                destinationPackage = DestinationPackage.Absolute("absolutely.my.`package`")
+            }
+            
         """.trimIndent()
         buildFile.prependText(pluginConfiguration)
 
@@ -358,9 +407,9 @@ class SchemaGeneratorPluginTest {
     fun testGeneratedItemConverter() = withTestProject {
         buildFile.appendText(
             """
-            dependencies {
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
 
             """.trimIndent(),
         )
@@ -393,12 +442,37 @@ class SchemaGeneratorPluginTest {
 
         val schemaContents = schemaFile.readText()
 
-        assertContains(schemaContents, "public class IgnoredProperty")
-        assertContains(schemaContents, "public var id: Int? = null")
-        assertContains(schemaContents, "public var givenName: String? = null")
-        assertContains(schemaContents, "public var surname: String? = null")
-        assertContains(schemaContents, "public var age: Int? = null")
-        assertContains(schemaContents, "public fun build(): IgnoredProperty")
+        assertContains(
+            schemaContents,
+            """
+                @GeneratedApi
+                public class IgnoredPropertyBuilder {
+                    @GeneratedApi
+                    public var id: Int? = null
+                    @GeneratedApi
+                    public var givenName: String? = null
+                    @GeneratedApi
+                    public var surname: String? = null
+                    @GeneratedApi
+                    public var age: Int? = null
+                
+                    @GeneratedApi
+                    public fun build(): IgnoredProperty {
+                        val id = requireNotNull(id) { "Missing value for id" }
+                        val givenName = requireNotNull(givenName) { "Missing value for givenName" }
+                        val surname = requireNotNull(surname) { "Missing value for surname" }
+                        val age = requireNotNull(age) { "Missing value for age" }
+                
+                        return IgnoredProperty(
+                            id,
+                            givenName,
+                            surname,
+                            age,
+                        )
+                    }
+                }
+            """.trimIndent(),
+        )
 
         // ssn is annotated with DynamoDbIgnore
         assertFalse(schemaContents.contains("public var ssn: String? = null"))
@@ -420,10 +494,12 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
-            public object CustomUserSchema : ItemSchema.PartitionKey<CustomUser, Int> {
-                override val converter: MyCustomUserConverter = MyCustomUserConverter
-                override val partitionKey: KeySpec<Number> = aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec.Number("id")
-            }
+                @GeneratedApi
+                public object CustomUserSchema : ItemSchema.PartitionKey<CustomUser, KeyType.Key1<Int>> {
+                    override val converter: MyCustomUserConverter = MyCustomUserConverter
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
+                    override val attributes: Attributes = emptyAttributes()
+                }
             """.trimIndent(),
         )
     }
@@ -432,10 +508,10 @@ class SchemaGeneratorPluginTest {
     fun testPrimitives() = withTestProject {
         buildFile.appendText(
             """
-            dependencies {
-                implementation("aws.smithy.kotlin:runtime-core:$smithyKotlinVersion")
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    implementation("aws.smithy.kotlin:runtime-core:$smithyKotlinVersion")
+                    testImplementation(kotlin("test")) 
+                }
             """.trimIndent(),
         )
 
@@ -459,10 +535,10 @@ class SchemaGeneratorPluginTest {
     fun testNullableTypes() = withTestProject {
         buildFile.appendText(
             """
-            dependencies {
-                implementation("aws.smithy.kotlin:runtime-core:$smithyKotlinVersion")
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    implementation("aws.smithy.kotlin:runtime-core:$smithyKotlinVersion")
+                    testImplementation(kotlin("test")) 
+                }
             """.trimIndent(),
         )
 
@@ -486,9 +562,9 @@ class SchemaGeneratorPluginTest {
     fun testLists() = withTestProject {
         buildFile.appendText(
             """
-            dependencies {
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
             """.trimIndent(),
         )
 
@@ -512,9 +588,9 @@ class SchemaGeneratorPluginTest {
     fun testSets() = withTestProject {
         buildFile.appendText(
             """
-            dependencies {
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
             """.trimIndent(),
         )
 
@@ -538,9 +614,9 @@ class SchemaGeneratorPluginTest {
     fun testMaps() = withTestProject {
         buildFile.appendText(
             """
-            dependencies {
-                testImplementation(kotlin("test")) 
-            }
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
             """.trimIndent(),
         )
 
@@ -576,11 +652,155 @@ class SchemaGeneratorPluginTest {
         assertContains(
             schemaContents,
             """
-        object RenamedPartitionKeySchema : ItemSchema.PartitionKey<RenamedPartitionKey, Int> {
-            override val converter: RenamedPartitionKeyConverter = RenamedPartitionKeyConverter
-            override val partitionKey: KeySpec<Number> = aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec.Number("user_id")
-        }
+                @GeneratedApi
+                public object RenamedPartitionKeySchema : ItemSchema.PartitionKey<RenamedPartitionKey, KeyType.Key1<Int>> {
+                    override val converter: RenamedPartitionKeyConverter = RenamedPartitionKeyConverter
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("user_id")
+                    override val attributes: Attributes = emptyAttributes()
+                }
             """.trimIndent(),
         )
+    }
+
+    @Test
+    fun testDynamoDbAttributeConverter() = withTestProject {
+        createClassFile("attribute-converter/Employee")
+        createClassFile("attribute-converter/HealthcareConverter")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas/EmployeeSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        assertContains(schemaContents, "import org.example.OccupationConverter")
+        assertContains(
+            schemaContents,
+            """        AttributeDescriptor(
+            "occupation",
+            Employee::occupation,
+            Employee::occupation::set,
+            org.example.OccupationConverter(),
+        ),""",
+        )
+
+        // Test cross-package converter
+        assertContains(schemaContents, "import a.different.pkg.HealthcareConverter")
+        assertContains(
+            schemaContents,
+            """        AttributeDescriptor(
+            "healthcare",
+            Employee::healthcare,
+            Employee::healthcare::set,
+            a.different.pkg.HealthcareConverter(),
+        ),""",
+        )
+    }
+
+    @Test
+    fun testDynamoDbTtlSeconds() = withTestProject {
+        createClassFile("ttl/User")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/ttl/dynamodbmapper/generatedschemas/UserSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        // Ensure that TTL field is set
+        assertContains(
+            schemaContents,
+            """
+            public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
+                override val converter: UserConverter = UserConverter
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
+                override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 86400L))
+                }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun testInvalidDynamoDbTtlSeconds() = withTestProject {
+        createClassFile("ttl/InvalidTtlLifetime")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "@DynamoDbTtlSeconds must be positive, got -5 seconds on property expiresAt")
+    }
+
+    @Test
+    fun testMultipleTtlAnnotations() = withTestProject {
+        createClassFile("ttl/MultipleTtlAnnotations")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/ttl/dynamodbmapper/generatedschemas/MultipleTtlAnnotationsSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        // Ensure that both TTL fields are set
+        assertContains(
+            schemaContents,
+            """
+            public object MultipleTtlAnnotationsSchema : ItemSchema.PartitionKey<MultipleTtlAnnotations, KeyType.Key1<Int>> {
+                override val converter: MultipleTtlAnnotationsConverter = MultipleTtlAnnotationsConverter
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
+                override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 3600L), Pair("actuallyExpiresAt", 7200L))
+                }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun testInvalidTtlExpression() = withTestProject {
+        createClassFile("ttl/InvalidTtlExpression")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "@DynamoDbTtlSeconds annotation argument on property expiresAt could not be evaluated at compile time. Use a literal value like @DynamoDbTtlSeconds(3600) instead of expressions like @DynamoDbTtlSeconds(1.hours.inWholeSeconds).")
+    }
+
+    @Test
+    fun testDynamoDbCounter() = withTestProject {
+        createClassFile("counter/UserWithCounter")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/main/kotlin/org/example/counter/dynamodbmapper/generatedschemas/UserWithCounterSchema.kt")
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+
+        // Ensure that counter fields are set
+        assertContains(
+            schemaContents,
+            """
+            public object UserWithCounterSchema : ItemSchema.PartitionKey<UserWithCounter, KeyType.Key1<Int>> {
+                override val converter: UserWithCounterConverter = UserWithCounterConverter
+                override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
+                override val attributes: Attributes = attributesOf {
+                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 3600L))
+                    SchemaAttributes.CounterFields to setOf("accessCount", "updateCount")
+                }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun testDynamoDbCounterInvalidType() = withTestProject {
+        createClassFile("counter/UserWithInvalidCounter")
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Property 'accessCount' annotated with @DynamoDbCounter must be of type Int or Long, but was String")
     }
 }

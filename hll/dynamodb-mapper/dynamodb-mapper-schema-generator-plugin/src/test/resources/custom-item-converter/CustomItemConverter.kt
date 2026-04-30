@@ -8,12 +8,10 @@ package my.custom.item.converter
 import aws.sdk.kotlin.hll.dynamodbmapper.items.AttributeDescriptor
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.IntConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringConverter
-import aws.smithy.kotlin.runtime.ExperimentalApi
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import org.example.CustomUser
 
-@OptIn(ExperimentalApi::class)
 public object MyCustomUserConverter : ItemConverter<CustomUser> by SimpleItemConverter(
     builderFactory = { CustomUser() },
     build = { this },
@@ -22,25 +20,25 @@ public object MyCustomUserConverter : ItemConverter<CustomUser> by SimpleItemCon
             "id",
             CustomUser::id,
             CustomUser::id::set,
-            IntConverter,
+            NumberValueConverters.Int,
         ),
         AttributeDescriptor(
             "myCustomFirstName",
             CustomUser::givenName,
             CustomUser::givenName::set,
-            StringConverter,
+            StringValueConverter,
         ),
         AttributeDescriptor(
             "myCustomLastName",
             CustomUser::surname,
             CustomUser::surname::set,
-            StringConverter,
+            StringValueConverter,
         ),
         AttributeDescriptor(
             "myCustomAge",
             CustomUser::age,
             CustomUser::age::set,
-            IntConverter,
+            NumberValueConverters.Int,
         ),
     ),
 )

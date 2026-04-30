@@ -5,40 +5,92 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.KeyFilterImpl
-import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SortKeyFilterImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.SortKeyFilterDslImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.items.Key
+import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 
 /**
  * Represents a filter which limits a Query operation to a specific partition key and optional sort key criteria (if
  * applicable)
  */
-@ExperimentalApi
 public interface KeyFilter {
     /**
      * The required value of the partition key
      */
-    public val partitionKey: Any
+    public val partitionKey: KeyType
 
     /**
-     * The sort key expression (if set)
+     * The sort key expressions, in key order
      */
-    public val sortKey: SortKeyExpr?
+    public val sortKeyExpressions: List<SortKeyExpr>
 }
 
 /**
- * Creates a new [KeyFilter] for a partition key
- * @param partitionKey The value required for the partition key. This must be set to a byte array, string, or number
- * (including unsigned numbers).
+ * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions
+ * @param partitionKey The partition key value to assert
+ * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
  */
-@ExperimentalApi
-public fun KeyFilter(partitionKey: Any): KeyFilter = KeyFilterImpl(partitionKey, null)
+public fun KeyFilter(
+    partitionKey: ByteArray,
+    vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr,
+): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
 
 /**
- * Creates a new [KeyFilter] for a partition key and sort key. Note that using this overload requires a schema with a
- * composite key.
- * @param partitionKey The value required for the partition key. This must be set to a byte array, string, or number
- * (including unsigned numbers).
- * @param sortKey A DSL block that sets the condition for the sort key. See [SortKeyFilter] for more details.
+ * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions
+ * @param partitionKey The partition key value to assert
+ * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
  */
-@ExperimentalApi
-public fun KeyFilter(partitionKey: Any, sortKey: SortKeyFilter.() -> SortKeyExpr): KeyFilter = KeyFilterImpl(partitionKey, SortKeyFilterImpl.run(sortKey))
+public fun KeyFilter(
+    partitionKey: Byte,
+    vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr,
+): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
+
+/**
+ * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions
+ * @param partitionKey The partition key value to assert
+ * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
+ */
+public fun KeyFilter(
+    partitionKey: Int,
+    vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr,
+): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
+
+/**
+ * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions
+ * @param partitionKey The partition key value to assert
+ * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
+ */
+public fun KeyFilter(
+    partitionKey: Long,
+    vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr,
+): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
+
+/**
+ * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions
+ * @param partitionKey The partition key value to assert
+ * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
+ */
+public fun KeyFilter(
+    partitionKey: Short,
+    vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr,
+): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
+
+/**
+ * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions
+ * @param partitionKey The partition key value to assert
+ * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
+ */
+public fun KeyFilter(
+    partitionKey: String,
+    vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr,
+): KeyFilter = KeyFilter(Key(partitionKey), *sortKeyExpressions)
+
+/**
+ * Creates a new [KeyFilter] implementation for the given partition key value and optional sort key expressions
+ * @param partitionKey The partition key value to assert
+ * @param sortKeyExpressions Up to 4 sort key expressions in sort key attribute order
+ */
+public fun KeyFilter(
+    partitionKey: KeyType,
+    vararg sortKeyExpressions: SortKeyFilterDsl.() -> SortKeyExpr,
+): KeyFilter = KeyFilterImpl(partitionKey, SortKeyFilterDslImpl.run { sortKeyExpressions.map { it() } })

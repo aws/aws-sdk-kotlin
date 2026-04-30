@@ -4,7 +4,8 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model
 
-import aws.sdk.kotlin.hll.codegen.model.Operation
+import aws.sdk.kotlin.hll.codegen.model.Member
+import aws.sdk.kotlin.hll.codegen.model.Structure
 import aws.smithy.kotlin.runtime.collections.AttributeKey
 
 /**
@@ -12,8 +13,41 @@ import aws.smithy.kotlin.runtime.collections.AttributeKey
  */
 internal object MapperAttributes {
     /**
-     * For a given [Operation], this attribute key contains relevant pagination members (if applicable) in the request
-     * and response
+     * Gets the [MemberCodegenBehavior] associated with this [Member]
      */
-    val PaginationInfo: AttributeKey<PaginationMembers> = AttributeKey("aws.sdk.kotlin.ddbmapper#PaginationInfo")
+    val CodegenBehavior: AttributeKey<MemberCodegenBehavior> = AttributeKey("aws.sdk.kotlin.ddbmapper#CodegenBehavior")
+
+    /**
+     * Gets the list of additional parameters used in the high-low conversion method generated for a given structure
+     */
+    val ConversionParameters: AttributeKey<List<ConversionParameter>> = AttributeKey("aws.sdk.kotlin.ddbmapper#ConversionParameters")
+
+    /**
+     * Identifies whether this [Member] is inherited from the type hierarchy of its [Structure]
+     */
+    val IsInherited: AttributeKey<Boolean> = AttributeKey("aws.sdk.kotlin#InInherited")
+
+    /**
+     * Gets the [aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.KeyProjections] associated with this
+     * [Structure]
+     */
+    val KeyProjections: AttributeKey<KeyProjections> = AttributeKey("aws.sdk.kotlin.ddbmapper#KeyProjections")
+
+    /**
+     * Gets the [aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.KeyProjectionType] associated with this
+     * [Structure]
+     */
+    val KeyProjectionType: AttributeKey<KeyProjectionType> = AttributeKey("aws.sdk.kotlin.ddbmapper#KeyProjectionType")
+
+    /**
+     * Indicates whether this [Member] represents a reified key field derived from a low-level member with
+     * [MemberCodegenBehavior.MapToKeys].
+     */
+    val MemberKeyType: AttributeKey<MemberKeyType> = AttributeKey("aws.sdk.kotlin.ddbmapper#MemberKeyType")
 }
+
+/**
+ * Identifies whether this [Member] is inherited from the type hierarchy of its [Structure]
+ */
+internal val Member.isInherited: Boolean
+    get() = attributes.getOrNull(MapperAttributes.IsInherited) ?: false

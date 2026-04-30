@@ -12,17 +12,16 @@ import aws.sdk.kotlin.runtime.region.DefaultRegionProviderChain
 import aws.smithy.kotlin.runtime.client.*
 import aws.smithy.kotlin.runtime.client.region.RegionProvider
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
+import aws.smithy.kotlin.runtime.testing.withEnvVars
+import aws.smithy.kotlin.runtime.testing.withSystemProperties
 import aws.smithy.kotlin.runtime.testing.withTempDir
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
-import io.kotest.extensions.system.withEnvironment
-import io.kotest.extensions.system.withSystemProperties
 import kotlinx.coroutines.test.runTest
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.writeString
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -57,8 +56,6 @@ class AbstractAwsSdkClientFactoryTest {
         }
     }
 
-    // FIXME java.lang.reflect.InaccessibleObjectException: Unable to make field private final java.util.Map java.util.Collections$UnmodifiableMap.m accessible: module java.base does not "opens java.util" to unnamed module @7ee7980d
-    @Ignore
     @Test
     fun testFromEnvironmentResolvesAppId() = runTest(
         timeout = 20.seconds,
@@ -84,7 +81,7 @@ class AbstractAwsSdkClientFactoryTest {
             assertEquals("profile-app-id", resolveUserAgentAppId(testPlatform, profile))
         }
 
-        withEnvironment(
+        withEnvVars(
             mapOf(
                 AwsSdkSetting.AwsAppId.envVars.first() to "env-app-id",
             ),

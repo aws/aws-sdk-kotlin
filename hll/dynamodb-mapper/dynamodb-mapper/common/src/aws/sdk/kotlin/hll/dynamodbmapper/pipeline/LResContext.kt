@@ -7,7 +7,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.pipeline
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.GetItemRequest
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.LResContextImpl
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.sdk.kotlin.services.dynamodb.model.GetItemRequest as LowLevelGetItemRequest
 import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItemResponse
 
@@ -15,18 +14,19 @@ import aws.sdk.kotlin.services.dynamodb.model.GetItemResponse as LowLevelGetItem
  * Contextual data for stages in the pipeline dealing with low-level responses (i.e., between low-level invocation and
  * deserialization)
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
  */
-@ExperimentalApi
-public interface LResContext<T, HReq, LReq, LRes> :
-    LReqContext<T, HReq, LReq>,
-    DeserializeInput<T, LRes>
+public interface LResContext<T, S : ItemSchema<T>, HReq, LReq, LRes> :
+    LReqContext<T, S, HReq, LReq>,
+    DeserializeInput<T, S, LRes>
 
 /**
  * Creates a new [LResContext]
  * @param T The type of objects being converted to/from DynamoDB items
+ * @param S The type of schema used for conversion
  * @param HReq The type of high-level request object (e.g., [GetItemRequest])
  * @param LReq The type of low-level request object (e.g., [LowLevelGetItemRequest])
  * @param LRes The type of low-level response object (e.g., [LowLevelGetItemResponse])
@@ -38,16 +38,15 @@ public interface LResContext<T, HReq, LReq, LRes> :
  * @param deserializeSchema The [ItemSchema] to use for deserializing items into objects
  * @param error The most recent error which occurred, if any. Defaults to null.
  */
-@ExperimentalApi
-public fun <T, HReq, LReq, LRes> LResContext(
+public fun <T, S : ItemSchema<T>, HReq, LReq, LRes> LResContext(
     highLevelRequest: HReq,
-    serializeSchema: ItemSchema<T>,
+    serializeSchema: S,
     mapperContext: MapperContext<T>,
     lowLevelRequest: LReq,
     lowLevelResponse: LRes,
-    deserializeSchema: ItemSchema<T>,
+    deserializeSchema: S,
     error: Throwable? = null,
-): LResContext<T, HReq, LReq, LRes> = LResContextImpl(
+): LResContext<T, S, HReq, LReq, LRes> = LResContextImpl(
     highLevelRequest,
     serializeSchema,
     mapperContext,

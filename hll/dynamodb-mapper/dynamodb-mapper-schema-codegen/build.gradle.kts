@@ -22,6 +22,8 @@ dependencies {
     implementation(project(":hll:hll-codegen"))
     implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-annotations"))
     implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-codegen"))
+    implementation(project(":hll:dynamodb-mapper:dynamodb-mapper")) // for ValueConverter.kt
+    implementation(libs.smithy.kotlin.codegen) // for RuntimeTypes
 
     testImplementation(libs.kotest.assertions.core.jvm)
     testImplementation(libs.kotlin.test.junit5)

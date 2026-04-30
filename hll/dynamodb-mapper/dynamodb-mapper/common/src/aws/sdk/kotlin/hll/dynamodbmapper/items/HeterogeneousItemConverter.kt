@@ -6,8 +6,8 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
+import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 /**
  * An item converter which handles heterogeneous (i.e., incongruent) data types by way of a string discriminator
@@ -70,7 +70,7 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * val table = ... // some table which uses the vehicleConverter from above in its schema
  *
  * vehicles.forEach { vehicle ->
- *     table.putItem { item = vehicle }
+ *     table.putItem(vehicle)
  * }
  * ```
  *
@@ -95,29 +95,25 @@ import aws.smithy.kotlin.runtime.ExperimentalApi
  * [typeMapper] function returns a type name which does not exist in this map, or if an item is read containing a type
  * attribute value which does not exist in this map, an exception will be thrown.
  */
-@ExperimentalApi
 public class HeterogeneousItemConverter<T>(
     public val typeMapper: (T) -> String,
     public val typeAttribute: String,
     public val subConverters: Map<String, ItemConverter<T>>,
 ) : ItemConverter<T> {
-    override fun convertFrom(to: Item): T {
-        val attr = to[typeAttribute] ?: error("Missing $typeAttribute")
+    override val left: MonoConverter<Item, T> = MonoConverter { item ->
+        val attr = item[typeAttribute] ?: error("Missing $typeAttribute")
         val typeValue = attr.asSOrNull() ?: error("No string value for $attr")
         val converter = subConverters[typeValue] ?: error("No converter for $typeValue")
-        return converter.convertFrom(to)
+        converter.convertLeft(item)
     }
 
-    override fun convertTo(from: T, onlyAttributes: Set<String>?): Item {
-        val typeValue = typeMapper(from)
+    override val right: MonoConverter<T, Item> = MonoConverter { obj ->
+        val typeValue = typeMapper(obj)
         val converter = subConverters[typeValue] ?: error("No converter for $typeValue")
 
-        return buildItem {
-            if (onlyAttributes?.contains(typeAttribute) != false) {
-                put(typeAttribute, AttributeValue.S(typeValue))
-            }
-
-            putAll(converter.convertTo(from, onlyAttributes))
+        buildItem {
+            put(typeAttribute, AttributeValue.S(typeValue))
+            putAll(converter.convertRight(obj))
         }
     }
 }

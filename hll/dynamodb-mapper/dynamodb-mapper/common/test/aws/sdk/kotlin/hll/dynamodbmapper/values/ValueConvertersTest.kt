@@ -4,10 +4,9 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.values
 
-import aws.sdk.kotlin.hll.dynamodbmapper.util.attr
-import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAttr
+import aws.sdk.kotlin.hll.dynamodbmapper.util.av
+import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import kotlin.jvm.JvmName
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -22,7 +21,7 @@ import kotlin.test.assertTrue
  * ```kotlin
  * fun testFooConverter() = given(fooConverterInstance) {
  *     // Test conversion of high-level value `aFoo` to low-level attribute value { "S": "a foo" } and back again
- *     aFoo inDdbIs attr("a foo")
+ *     aFoo inDdbIs av("a foo")
  *
  *     // Test conversion of high-level value to an automatically-derived identical representation and back again
  *     bFoo inDdbIs theSame
@@ -31,7 +30,7 @@ import kotlin.test.assertTrue
  *     cFoo inDdbIs anError
  *
  *     // Test conversion only going one way (useful when conversion back results in a different value)
- *     dFoo inDdbIs attr("d foo") whenGoing Direction.TO_DDB
+ *     dFoo inDdbIs av("d foo") whenGoing Direction.TO_DDB
  * }
  * ```
  * @see [given]
@@ -39,7 +38,7 @@ import kotlin.test.assertTrue
  * @see [TestBuilder.theSame]
  * @see [TestBuilder.anError]
  * @see [TestBuilder.whenGoing]
- * @see [attr]
+ * @see [av]
  */
 abstract class ValueConvertersTest {
     /**
@@ -55,12 +54,12 @@ abstract class ValueConvertersTest {
             steps.forEach { (direction, highLevel, lowLevel) ->
                 when (direction) {
                     Direction.TO_ATTRIBUTE_VALUE -> {
-                        val result = runCatching { converter.convertTo(highLevel.requireInput()) }
+                        val result = runCatching { converter.convertRight(highLevel.requireInput()) }
                         lowLevel.assert(result, "Test $index failed converting to attribute value")
                     }
 
                     Direction.FROM_ATTRIBUTE_VALUE -> {
-                        val result = runCatching { converter.convertFrom(lowLevel.requireInput()) }
+                        val result = runCatching { converter.convertLeft(lowLevel.requireInput()) }
                         highLevel.assert(result, "Test $index failed converting from attribute value")
                     }
                 }
@@ -156,25 +155,25 @@ abstract class ValueConvertersTest {
             .also(tests::add)
 
         infix fun T.inDdbIs(anError: AnError) = addTest(anError)
-        infix fun T.inDdbIs(theSame: TheSame) = addTest(dynamicAttr(this))
+        infix fun T.inDdbIs(theSame: TheSame) = addTest(dynamicAv(this))
 
         infix fun T.inDdbIs(attr: AttributeValue) = addTest(attr)
-        infix fun T.inDdbIs(value: Boolean) = addTest(attr(value))
-        infix fun T.inDdbIs(value: ByteArray) = addTest(attr(value))
-        infix fun T.inDdbIs(value: List<Any?>) = addTest(attr(value))
-        infix fun T.inDdbIs(value: Map<String, Any?>) = addTest(attr(value))
-        infix fun T.inDdbIs(value: Nothing?) = addTest(attr(null))
-        infix fun T.inDdbIs(value: Number) = addTest(attr(value))
-        infix fun T.inDdbIs(value: String) = addTest(attr(value))
+        infix fun T.inDdbIs(value: Boolean) = addTest(av(value))
+        infix fun T.inDdbIs(value: ByteArray) = addTest(av(value))
+        infix fun T.inDdbIs(value: List<Any?>) = addTest(av(value))
+        infix fun T.inDdbIs(value: Map<String, Any?>) = addTest(av(value))
+        infix fun T.inDdbIs(value: Nothing?) = addTest(av(null))
+        infix fun T.inDdbIs(value: Number) = addTest(av(value))
+        infix fun T.inDdbIs(value: String) = addTest(av(value))
 
         @JvmName("inDdbIsSetByteArray")
-        infix fun T.inDdbIs(value: Set<ByteArray>) = addTest(attr(value))
+        infix fun T.inDdbIs(value: Set<ByteArray>) = addTest(av(value))
 
         @JvmName("inDdbIsSetNumber")
-        infix fun T.inDdbIs(value: Set<Number>) = addTest(attr(value))
+        infix fun T.inDdbIs(value: Set<Number>) = addTest(av(value))
 
         @JvmName("inDdbIsSetString")
-        infix fun T.inDdbIs(value: Set<String>) = addTest(attr(value))
+        infix fun T.inDdbIs(value: Set<String>) = addTest(av(value))
 
         /**
          * Limits a test case to only a single direction (i.e., checking one of `fromAttributeValue`/`toAttributeValue`

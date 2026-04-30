@@ -9,12 +9,14 @@ import aws.sdk.kotlin.hll.codegen.ksp.processors.HllKspProcessor
 import aws.sdk.kotlin.hll.codegen.model.Operation
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperPkg
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.assertAllCodegenBehaviorRulesMatched
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.toHighLevel
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.rendering.HighLevelRenderer
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.getDeclaredFunctions
-import com.google.devtools.ksp.processing.*
+import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 
@@ -27,16 +29,20 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
     private val codeGenerator = environment.codeGenerator
     private val logger = environment.logger
     private val opAllowlist = environment.options["op-allowlist"]?.split(";")
-    private val pkg = environment.options["pkg"] ?: MapperPkg.Hl.Ops
+    private val pkg = environment.options["pkg"] ?: MapperPkg.Hl.Ops.Base
+
+    private val ctx by lazy {
+        val codegenFactory = CodeGeneratorFactory(codeGenerator, logger) // FIXME Pass dependencies
+        RenderContext(logger, codegenFactory, pkg, "dynamodb-mapper-ops-codegen")
+    }
 
     override fun processImpl(resolver: Resolver): List<KSAnnotated> {
         logger.info("Scanning low-level DDB client for operations and types")
         val operations = getOperations(resolver)
-        val codegenFactory = CodeGeneratorFactory(codeGenerator, logger) // FIXME Pass dependencies
-        val ctx = RenderContext(logger, codegenFactory, pkg, "dynamodb-mapper-ops-codegen")
 
+        logger.info("Rendering high-level operations and types for ${operations.map { it.name }}")
         HighLevelRenderer(ctx, operations).render()
-
+        assertAllCodegenBehaviorRulesMatched()
         return listOf()
     }
 
@@ -58,6 +64,6 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
         .getDeclaredFunctions()
         .filter(::allow)
         .map(Operation::from)
-        .map { it.toHighLevel(pkg) }
+        .map { it.toHighLevel(ctx) }
         .toList()
 }

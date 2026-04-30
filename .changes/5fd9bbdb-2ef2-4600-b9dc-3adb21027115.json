@@ -1,0 +1,5 @@
+{
+    "id": "5fd9bbdb-2ef2-4600-b9dc-3adb21027115",
+    "type": "feature",
+    "description": "Add support for TTL through the @DynamoDbTtlSeconds annotation"
+}
