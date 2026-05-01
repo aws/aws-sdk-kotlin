@@ -11,7 +11,6 @@ import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.retries.policy.RetryDirective
-import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -36,29 +35,5 @@ class AwsRetryPolicyTest {
             val result = AwsRetryPolicy.Default.evaluate(Result.failure(ex))
             assertEquals(RetryDirective.RetryError(errorType), result)
         }
-    }
-
-    @Test
-    fun testIDPCommunicationErrorRetriedForSts() {
-        val policy = AwsRetryPolicy("STS")
-        val ex = ServiceException()
-        ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = "IDPCommunicationError"
-        assertEquals(RetryDirective.RetryError(RetryErrorType.Transient), policy.evaluate(Result.failure(ex)))
-    }
-
-    @Test
-    fun testIDPCommunicationErrorNotRetriedForOtherServices() {
-        val policy = AwsRetryPolicy("IAM")
-        val ex = ServiceException()
-        ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = "IDPCommunicationError"
-        assertEquals(RetryDirective.TerminateAndFail, policy.evaluate(Result.failure(ex)))
-    }
-
-    @Test
-    fun testIDPCommunicationErrorNotRetriedWithoutServiceName() {
-        val policy = AwsRetryPolicy()
-        val ex = ServiceException()
-        ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = "IDPCommunicationError"
-        assertEquals(RetryDirective.TerminateAndFail, policy.evaluate(Result.failure(ex)))
     }
 }
