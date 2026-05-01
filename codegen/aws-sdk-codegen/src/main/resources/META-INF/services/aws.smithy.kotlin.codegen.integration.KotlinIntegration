@@ -51,7 +51,5 @@ aws.sdk.kotlin.codegen.smoketests.testing.SmokeTestFailHttpEngineIntegration
 aws.sdk.kotlin.codegen.customization.AwsQueryModeCustomization
 aws.sdk.kotlin.codegen.ModuleDocumentationIntegration
 aws.sdk.kotlin.codegen.customization.EnvironmentBearerTokenCustomization
-aws.sdk.kotlin.codegen.customization.sqs.SqsLongPollingIntegration
-aws.sdk.kotlin.codegen.customization.sfn.SfnLongPollingIntegration
-aws.sdk.kotlin.codegen.customization.swf.SwfLongPollingIntegration
+aws.sdk.kotlin.codegen.customization.longpolling.LongPollingIntegration
 aws.sdk.kotlin.codegen.customization.dynamodb.DynamoDbRetryDefaultsIntegration
