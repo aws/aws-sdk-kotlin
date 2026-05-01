@@ -26,8 +26,7 @@ private val LONG_POLLING_OPERATIONS: Map<String, Set<String>> = mapOf(
 )
 
 class LongPollingIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean =
-        model.expectShape(settings.service, ServiceShape::class.java).sdkId.lowercase() in LONG_POLLING_OPERATIONS
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape(settings.service, ServiceShape::class.java).sdkId.lowercase() in LONG_POLLING_OPERATIONS
 
     override fun customizeMiddleware(
         ctx: ProtocolGenerator.GenerationContext,
@@ -42,8 +41,7 @@ class LongPollingIntegration : KotlinIntegration {
 private class LongPollingMiddleware(private val operationNames: Set<String>) : ProtocolMiddleware {
     override val name: String = "LongPolling"
 
-    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean =
-        op.id.name in operationNames
+    override fun isEnabledFor(ctx: ProtocolGenerator.GenerationContext, op: OperationShape): Boolean = op.id.name in operationNames
 
     override fun render(ctx: ProtocolGenerator.GenerationContext, op: OperationShape, writer: KotlinWriter) {
         writer.write(
