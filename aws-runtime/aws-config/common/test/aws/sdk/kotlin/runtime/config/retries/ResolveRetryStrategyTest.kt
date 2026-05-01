@@ -7,17 +7,20 @@ package aws.sdk.kotlin.runtime.config.retries
 
 import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
+import aws.sdk.kotlin.runtime.config.profile.loadAwsSharedConfig
 import aws.smithy.kotlin.runtime.ClientException
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
 import aws.smithy.kotlin.runtime.retries.delay.ExponentialBackoffWithJitter
+import aws.smithy.kotlin.runtime.retries.delay.StandardRetryTokenBucket
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
+import aws.smithy.kotlin.runtime.util.asyncLazy
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
-import kotlin.time.Duration.Companion.milliseconds
 
 class ResolveRetryStrategyTest {
     @Test
@@ -247,33 +250,44 @@ class ResolveRetryStrategyTest {
     }
 
     @Test
-    fun itUsesDynamoDbDefaultsWhenNewRetriesEnabled() = runTest {
+    fun itResolvesNewRetriesFromEnvironmentVariable() = runTest {
         val platform = TestPlatformProvider(
             env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
         )
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "DynamoDB"))
-        assertEquals(4, strategy.config.maxAttempts)
-        val delayer = assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
-        assertEquals(25.milliseconds, delayer.config.initialDelay)
+
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
+        val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
+        val bucketConfig = assertIs<StandardRetryTokenBucket.Config>(strategy.config.tokenBucket.config)
+
+        assertEquals(STANDARD_INITIAL_DELAY, delayConfig.initialDelay)
+        assertEquals(STANDARD_SCALE_FACTOR, delayConfig.scaleFactor)
+        assertEquals(STANDARD_RETRY_COST, bucketConfig.retryCost)
+        assertEquals(STANDARD_THROTTLING_RETRY_COST, bucketConfig.timeoutRetryCost)
     }
 
     @Test
-    fun itUsesDynamoDbDefaultsWhenNewRetriesDisabled() = runTest {
+    fun itResolvesNewRetriesFromSystemProperty() = runTest {
+        val platform = TestPlatformProvider(
+            props = mapOf(AwsSdkSetting.AwsNewRetries.sysProp to "true"),
+        )
+
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
+        val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
+        val bucketConfig = assertIs<StandardRetryTokenBucket.Config>(strategy.config.tokenBucket.config)
+
+        assertEquals(STANDARD_INITIAL_DELAY, delayConfig.initialDelay)
+        assertEquals(STANDARD_SCALE_FACTOR, delayConfig.scaleFactor)
+        assertEquals(STANDARD_RETRY_COST, bucketConfig.retryCost)
+        assertEquals(STANDARD_THROTTLING_RETRY_COST, bucketConfig.timeoutRetryCost)
+    }
+
+    @Test
+    fun itDoesNotApplyNewRetriesDefaultsWhenDisabled() = runTest {
         val platform = TestPlatformProvider(
             env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "false"),
         )
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "DynamoDB"))
-        assertEquals(3, strategy.config.maxAttempts)
-        val delayer = assertIs<ExponentialBackoffWithJitter>(strategy.config.delayProvider)
-        assertEquals(10.milliseconds, delayer.config.initialDelay)
-    }
 
-    @Test
-    fun itUsesStandardDefaultsForNonDynamoDbWhenNewRetriesEnabled() = runTest {
-        val platform = TestPlatformProvider(
-            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
-        )
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform, serviceName = "S3"))
-        assertEquals(3, strategy.config.maxAttempts)
+        val config = resolveRetryConfig(platform, asyncLazy { loadAwsSharedConfig(platform).activeProfile })
+        assertFalse(config.useNewRetries)
     }
 }

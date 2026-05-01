@@ -20,7 +20,7 @@ import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
  * * Any [ServiceException] with an `sdkErrorMetadata.errorCode` of:
  *   * `BandwidthLimitExceeded`
  *   * `EC2ThrottledException`
- *   * `IDPCommunicationError` (STS only)
+ *   * `IDPCommunicationError` (only STS throws it)
  *   * `LimitExceededException`
  *   * `PriorRequestNotComplete`
  *   * `ProvisionedThroughputExceededException`
@@ -43,11 +43,8 @@ import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
  *
  * If none of those conditions match, this policy delegates to [StandardRetryPolicy]. See that class's documentation for
  * more information about how it evaluates exceptions.
- *
- * @param serviceName The optional sdkId of the service (e.g. `"STS"`). When provided, service-scoped error codes
- * such as `IDPCommunicationError` are only retried for the matching service.
  */
-public open class AwsRetryPolicy(private val serviceName: String? = null) : StandardRetryPolicy() {
+public open class AwsRetryPolicy : StandardRetryPolicy() {
     public companion object {
         /**
          * The default [aws.smithy.kotlin.runtime.retries.policy.RetryPolicy] used by AWS service clients
@@ -57,6 +54,7 @@ public open class AwsRetryPolicy(private val serviceName: String? = null) : Stan
         internal val knownErrorTypes = mapOf(
             "BandwidthLimitExceeded" to Throttling,
             "EC2ThrottledException" to Throttling,
+            "IDPCommunicationError" to Transient,
             "LimitExceededException" to Throttling,
             "PriorRequestNotComplete" to Throttling,
             "ProvisionedThroughputExceededException" to Throttling,
@@ -73,14 +71,6 @@ public open class AwsRetryPolicy(private val serviceName: String? = null) : Stan
             "TransactionInProgressException" to Throttling,
         )
 
-        /**
-         * Error codes that are only retryable for specific services.
-         * Maps error code to (RetryErrorType, set of matching service names lowercased).
-         */
-        internal val serviceSpecificErrorTypes = mapOf(
-            "IDPCommunicationError" to (Transient to setOf("sts")),
-        )
-
         internal val knownStatusCodes = mapOf(
             500 to Transient,
             502 to Transient,
@@ -95,12 +85,8 @@ public open class AwsRetryPolicy(private val serviceName: String? = null) : Stan
     }
 
     private fun evaluateServiceException(ex: ServiceException): RetryDirective? = with(ex.sdkErrorMetadata) {
-        val errorType = knownErrorTypes[errorCode]
-            ?: serviceSpecificErrorTypes[errorCode]?.let { (type, services) ->
-                type.takeIf { serviceName?.lowercase() in services }
-            }
-            ?: knownStatusCodes[statusCode]
-        errorType?.let { RetryDirective.RetryError(it) }
+        (knownErrorTypes[errorCode] ?: knownStatusCodes[statusCode])
+            ?.let { RetryDirective.RetryError(it) }
     }
 
     private val ServiceErrorMetadata.statusCode: Int?

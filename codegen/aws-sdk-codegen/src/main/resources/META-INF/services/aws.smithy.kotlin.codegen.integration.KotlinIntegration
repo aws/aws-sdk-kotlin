@@ -52,3 +52,4 @@ aws.sdk.kotlin.codegen.customization.AwsQueryModeCustomization
 aws.sdk.kotlin.codegen.ModuleDocumentationIntegration
 aws.sdk.kotlin.codegen.customization.EnvironmentBearerTokenCustomization
 aws.sdk.kotlin.codegen.customization.LongPollingIntegration
+aws.sdk.kotlin.codegen.customization.dynamodb.DynamoDbRetryDefaultsIntegration
