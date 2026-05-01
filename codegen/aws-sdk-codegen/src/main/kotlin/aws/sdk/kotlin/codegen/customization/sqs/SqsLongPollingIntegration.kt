@@ -2,45 +2,28 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-package aws.sdk.kotlin.codegen.customization
+package aws.sdk.kotlin.codegen.customization.sqs
 
 import aws.sdk.kotlin.codegen.sdkId
 import aws.smithy.kotlin.codegen.KotlinSettings
 import aws.smithy.kotlin.codegen.core.KotlinWriter
 import aws.smithy.kotlin.codegen.core.RuntimeTypes
 import aws.smithy.kotlin.codegen.integration.KotlinIntegration
-import aws.smithy.kotlin.codegen.model.expectTrait
 import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
 import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolMiddleware
-import software.amazon.smithy.aws.traits.ServiceTrait
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.shapes.OperationShape
 import software.amazon.smithy.model.shapes.ServiceShape
 
-/**
- * Hard-coded long-polling operations per SEP Retry Behavior 2.1.
- * These operations always back off when retryable, even if the retry quota is exhausted.
- */
-private val LONG_POLLING_OPERATIONS: Map<String, Set<String>> = mapOf(
-    "sqs" to setOf("ReceiveMessage"),
-    "sfn" to setOf("GetActivityTask"),
-    "swf" to setOf("PollForActivityTask", "PollForDecisionTask"),
-)
+private val LONG_POLLING_OPERATIONS = setOf("ReceiveMessage")
 
-class LongPollingIntegration : KotlinIntegration {
-    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean {
-        val sdkId = model.expectShape(settings.service, ServiceShape::class.java).sdkId.lowercase()
-        return sdkId in LONG_POLLING_OPERATIONS
-    }
+class SqsLongPollingIntegration : KotlinIntegration {
+    override fun enabledForService(model: Model, settings: KotlinSettings): Boolean = model.expectShape(settings.service, ServiceShape::class.java).sdkId.lowercase() == "sqs"
 
     override fun customizeMiddleware(
         ctx: ProtocolGenerator.GenerationContext,
         resolved: List<ProtocolMiddleware>,
-    ): List<ProtocolMiddleware> {
-        val sdkId = ctx.model.expectShape(ctx.settings.service, ServiceShape::class.java).sdkId.lowercase()
-        val ops = LONG_POLLING_OPERATIONS[sdkId] ?: return resolved
-        return resolved + LongPollingMiddleware(ops)
-    }
+    ): List<ProtocolMiddleware> = resolved + LongPollingMiddleware(LONG_POLLING_OPERATIONS)
 }
 
 private class LongPollingMiddleware(private val operationNames: Set<String>) : ProtocolMiddleware {
