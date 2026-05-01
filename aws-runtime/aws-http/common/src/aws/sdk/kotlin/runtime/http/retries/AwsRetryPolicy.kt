@@ -20,7 +20,7 @@ import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
  * * Any [ServiceException] with an `sdkErrorMetadata.errorCode` of:
  *   * `BandwidthLimitExceeded`
  *   * `EC2ThrottledException`
- *   * `IDPCommunicationError`
+ *   * `IDPCommunicationError` (only STS throws it)
  *   * `LimitExceededException`
  *   * `PriorRequestNotComplete`
  *   * `ProvisionedThroughputExceededException`
