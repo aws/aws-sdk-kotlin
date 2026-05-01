@@ -18,7 +18,8 @@ dokka {
 
     dokkaGeneratorIsolation = when (isolationMode) {
         "classloader" -> ClassLoaderIsolation { }
-        else -> ProcessIsolation { maxHeapSize = heapSize }
+        "process" -> ProcessIsolation { maxHeapSize = heapSize }
+        else -> error("Unsupported Dokka isolation mode: `$isolationMode`. Expected `process` or `classloader`")
     }
 
     pluginsConfiguration.html {
@@ -62,9 +63,9 @@ dokka {
             create("smithy-kotlin") {
                 url("https://docs.aws.amazon.com/smithy-kotlin/api/latest")
 
-                val smithyKotlinPackageList = properties["dokka.smithyKotlin.packageList"]?.toString()
-                if (smithyKotlinPackageList != null) {
-                    packageListUrl(smithyKotlinPackageList)
+                val smithyKotlinPackageListUrl = properties["dokka.smithyKotlin.packageListUrl"]?.toString()
+                if (smithyKotlinPackageListUrl != null) {
+                    packageListUrl(smithyKotlinPackageListUrl)
                 }
             }
         }
