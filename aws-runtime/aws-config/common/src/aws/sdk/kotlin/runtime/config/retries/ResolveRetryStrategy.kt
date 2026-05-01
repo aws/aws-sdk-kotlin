@@ -113,6 +113,8 @@ internal fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
         return
     }
 
+    enableLongPollingBackoff = true
+
     delayProvider {
         initialDelay = defaultInitialDelay ?: STANDARD_INITIAL_DELAY
         scaleFactor = STANDARD_SCALE_FACTOR
