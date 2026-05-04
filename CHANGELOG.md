@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.69] - 05/04/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Amazon Bedrock AgentCore gateways now support MCP Sessions and response streaming from MCP targets. Session timeouts can be set between 15 minutes and 8 hours, and response streaming enables forwarding stream events sent by MCP targets to gateway users.
+* (**cloudwatchlogs**) Adding an additional optional deliverySourceConfiguration field to PutDeliverySource API. This enables customers to pass service-specific configurations through IngestionHub such as tracing enablement or sampling rates that will be propagated to the source resource.
+* (**ec2**) This feature allows customers to change the tunnel bandwidth on existing VPN connections using the ModifyVpnConnectionOptions API
+* (**georoutes**) Added support for TravelTimeExceedsDriverWorkHours, ViolatedBlockedRoad, and ViolatedVehicleRestriction notice codes to the CalculateRoutes API response.
+* (**lexmodelbuildingservice**) Lex V1 is deprecated, use Lex V2 instead
+* (**medialive**) Updates the type of the MediaLiveRouterOutputConnectionMap.
+* (**securityagent**) AWS Security Agent is adding a new target domain verification method for private VPC penetration testing. Additionally, the target domain resource will now have a verification status reason field to surface additional details about domain verification
+* (**vpclattice**) Amazon VPC Lattice now supports privately resolvable DNS resources
+
 ## [1.6.68] - 05/01/2026
 
 ### Features
