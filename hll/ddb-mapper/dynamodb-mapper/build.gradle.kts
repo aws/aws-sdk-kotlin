@@ -64,7 +64,7 @@ ksp {
     arg("op-allowlist", allowlist.joinToString(";"))
 }
 
-configureKspCodegen(listOf(":hll:dynamodb-mapper:dynamodb-mapper-ops-codegen"))
+configureKspCodegen(listOf(":hll:ddb-mapper:dynamodb-mapper-ops-codegen"))
 
 open class DynamoDbLocalInstance : DefaultTask() {
     private var port: Int by Delegates.notNull()

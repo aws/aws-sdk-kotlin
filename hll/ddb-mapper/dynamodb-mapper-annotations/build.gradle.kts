@@ -12,7 +12,7 @@ kotlin {
         commonMain {
             dependencies {
                 // For ValueConverter
-                implementation(project(":hll:dynamodb-mapper:dynamodb-mapper"))
+                implementation(project(":hll:ddb-mapper:dynamodb-mapper"))
             }
         }
     }

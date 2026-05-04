@@ -20,7 +20,7 @@ dependencies {
     implementation(libs.ksp.api)
     implementation(project(":hll:hll-codegen"))
     implementation(project(":services:dynamodb"))
-    implementation(project(":hll:dynamodb-mapper:dynamodb-mapper-codegen"))
+    implementation(project(":hll:ddb-mapper:dynamodb-mapper-codegen"))
 
     testImplementation(libs.kotest.assertions.core.jvm)
     testImplementation(libs.kotlin.test.junit5)
