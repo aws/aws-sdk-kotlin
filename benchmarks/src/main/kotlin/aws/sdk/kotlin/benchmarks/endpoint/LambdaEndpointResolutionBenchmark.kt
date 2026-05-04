@@ -14,7 +14,7 @@ import org.openjdk.jmh.annotations.State
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
 @Warmup(iterations = 5, time = 1, timeUnit = BenchmarkTimeUnit.SECONDS)
-@Measurement(iterations = 1000, time = 1, timeUnit = BenchmarkTimeUnit.SECONDS)
+@Measurement(iterations = 20, time = 1, timeUnit = BenchmarkTimeUnit.SECONDS)
 class LambdaEndpointResolutionBenchmark {
 
     private val provider = DefaultLambdaEndpointProvider()

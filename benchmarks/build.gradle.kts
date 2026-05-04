@@ -25,12 +25,7 @@ benchmark {
     }
     configurations {
         named("main") {
-            warmups = 5
-            iterations = 1000
-            iterationTime = 1
-            iterationTimeUnit = "ns"
-            mode = "avgt"
-            outputTimeUnit = "ns"
+            reportFormat = "json"
         }
     }
 }
