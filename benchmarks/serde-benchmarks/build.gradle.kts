@@ -158,8 +158,8 @@ benchmark {
     configurations {
         named("main") {
             reportFormat = "json"
-            iterations = 20
-            warmups = 5
+            iterations = 30
+            warmups = 15
             iterationTime = 1
             iterationTimeUnit = "s"
             outputTimeUnit = "ns"
