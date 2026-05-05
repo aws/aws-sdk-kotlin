@@ -1,3 +1,7 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /*
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -23,64 +27,74 @@ class S3EndpointResolutionBenchmark {
     // vanilla virtual addressing@us-west-2
     @Benchmark
     fun vanillaVirtualAddressing() = runBlocking {
-        provider.resolveEndpoint(S3EndpointParameters {
-            accelerate = false
-            bucket = "bucket-name"
-            forcePathStyle = false
-            region = "us-west-2"
-            useDualStack = false
-            useFips = false
-        })
+        provider.resolveEndpoint(
+            S3EndpointParameters {
+                accelerate = false
+                bucket = "bucket-name"
+                forcePathStyle = false
+                region = "us-west-2"
+                useDualStack = false
+                useFips = false
+            },
+        )
     }
 
     // vanilla path style@us-west-2
     @Benchmark
     fun vanillaPathStyle() = runBlocking {
-        provider.resolveEndpoint(S3EndpointParameters {
-            accelerate = false
-            bucket = "bucket-name"
-            forcePathStyle = true
-            region = "us-west-2"
-            useDualStack = false
-            useFips = false
-        })
+        provider.resolveEndpoint(
+            S3EndpointParameters {
+                accelerate = false
+                bucket = "bucket-name"
+                forcePathStyle = true
+                region = "us-west-2"
+                useDualStack = false
+                useFips = false
+            },
+        )
     }
 
     // Data Plane with short zone name
     @Benchmark
     fun dataPlaneShortZoneName() = runBlocking {
-        provider.resolveEndpoint(S3EndpointParameters {
-            region = "us-east-1"
-            bucket = "mybucket--abcd-ab1--x-s3"
-            useFips = false
-            useDualStack = false
-            accelerate = false
-            useS3ExpressControlEndpoint = false
-        })
+        provider.resolveEndpoint(
+            S3EndpointParameters {
+                region = "us-east-1"
+                bucket = "mybucket--abcd-ab1--x-s3"
+                useFips = false
+                useDualStack = false
+                accelerate = false
+                useS3ExpressControlEndpoint = false
+            },
+        )
     }
 
     // vanilla access point arn@us-west-2
     @Benchmark
     fun vanillaAccessPointArn() = runBlocking {
-        provider.resolveEndpoint(S3EndpointParameters {
-            accelerate = false
-            bucket = "arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint"
-            forcePathStyle = false
-            region = "us-west-2"
-            useDualStack = false
-            useFips = false
-        })
+        provider.resolveEndpoint(
+            S3EndpointParameters {
+                accelerate = false
+                bucket = "arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint"
+                forcePathStyle = false
+                region = "us-west-2"
+                useDualStack = false
+                useFips = false
+            },
+        )
     }
 
     // S3 outposts vanilla test
     @Benchmark
     fun s3OutpostsVanilla() = runBlocking {
-        provider.resolveEndpoint(S3EndpointParameters {
-            region = "us-west-2"
-            useFips = false
-            useDualStack = false
-            accelerate = false
-            bucket = "arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-01234567890123456/accesspoint/reports"
-        })
+        provider.resolveEndpoint(
+            S3EndpointParameters {
+                region = "us-west-2"
+                useFips = false
+                useDualStack = false
+                accelerate = false
+                bucket = "arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-01234567890123456/accesspoint/reports"
+            },
+        )
     }
 }

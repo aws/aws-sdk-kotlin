@@ -29,13 +29,14 @@ val benchmarkProjections = listOf(
 
 // Path to the AwsSdkPerformanceBenchmarkModels model directory
 // Pass via: -PbenchmarkModelsDir=/path/to/AwsSdkPerformanceBenchmarkModels/.../model
-val benchmarkModelsDir: String = project.findProperty("benchmarkModelsDir") as? String
-    ?: error("benchmarkModelsDir property is required. Pass -PbenchmarkModelsDir=/path/to/model")
+val benchmarkModelsDir: String? = project.findProperty("benchmarkModelsDir") as? String
 
 smithyBuild {
     benchmarkProjections.forEach { proj ->
         projections.register(proj.name) {
-            imports = listOf(benchmarkModelsDir)
+            imports = listOf(
+                benchmarkModelsDir ?: error("benchmarkModelsDir property is required. Pass -PbenchmarkModelsDir=/path/to/model"),
+            )
 
             transforms = listOf(
                 """

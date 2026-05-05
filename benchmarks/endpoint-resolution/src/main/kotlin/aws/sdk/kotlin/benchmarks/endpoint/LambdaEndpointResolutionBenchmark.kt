@@ -22,20 +22,24 @@ class LambdaEndpointResolutionBenchmark {
     // For region us-east-1 with FIPS disabled and DualStack disabled
     @Benchmark
     fun usEast1Standard() = runBlocking {
-        provider.resolveEndpoint(LambdaEndpointParameters {
-            region = "us-east-1"
-            useFips = false
-            useDualStack = false
-        })
+        provider.resolveEndpoint(
+            LambdaEndpointParameters {
+                region = "us-east-1"
+                useFips = false
+                useDualStack = false
+            },
+        )
     }
 
     // For region us-gov-east-1 with FIPS enabled and DualStack enabled
     @Benchmark
     fun usGovEast1FipsDualStack() = runBlocking {
-        provider.resolveEndpoint(LambdaEndpointParameters {
-            region = "us-gov-east-1"
-            useFips = true
-            useDualStack = true
-        })
+        provider.resolveEndpoint(
+            LambdaEndpointParameters {
+                region = "us-gov-east-1"
+                useFips = true
+                useDualStack = true
+            },
+        )
     }
 }
