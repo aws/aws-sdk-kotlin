@@ -65,6 +65,7 @@ if (endpointBenchmarkServices.all { it.isBootstrappedService }) {
     val missing = endpointBenchmarkServices.filterNot { it.isBootstrappedService }
     logger.warn("Skipping :benchmarks:endpoint-resolution because these service(s) are not bootstrapped: $missing")
 }
+include(":benchmarks:serde-benchmarks")
 include(":tests")
 include(":tests:codegen")
 include(":tests:codegen:event-stream")
