@@ -163,6 +163,7 @@ benchmark {
             iterationTime = 1
             iterationTimeUnit = "s"
             outputTimeUnit = "ns"
+            jvmArgs = listOf("-Xmx4g")
         }
     }
 }
