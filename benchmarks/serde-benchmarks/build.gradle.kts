@@ -172,4 +172,7 @@ afterEvaluate {
     tasks.named<org.gradle.jvm.tasks.Jar>("mainBenchmarkJar") {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
+    tasks.named<JavaExec>("mainBenchmark") {
+        jvmArgs("-Xmx4g")
+    }
 }
