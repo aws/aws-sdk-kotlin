@@ -6,6 +6,7 @@ package aws.sdk.kotlin.codegen.customization.longpolling
 
 import aws.sdk.kotlin.codegen.testutil.lines
 import aws.smithy.kotlin.codegen.test.*
+import software.amazon.smithy.model.Model
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -194,7 +195,7 @@ class LongPollingIntegrationTest {
         assertOperationNotLongPolling(swfModel, "registerDomain", "RegisterDomainRequest", "RegisterDomainResponse")
     }
 
-    private fun generateClient(model: software.amazon.smithy.model.Model): String {
+    private fun generateClient(model: Model): String {
         val ctx = model.newTestContext("TestService", integrations = listOf(LongPollingIntegration()))
         val generator = MockHttpProtocolGenerator(model)
         generator.generateProtocolClient(ctx.generationCtx)
@@ -203,7 +204,7 @@ class LongPollingIntegrationTest {
         return ctx.manifest.expectFileString("/src/main/kotlin/com/test/DefaultTestClient.kt")
     }
 
-    private fun assertOperationHasLongPolling(model: software.amazon.smithy.model.Model, methodName: String, inputType: String, outputType: String) {
+    private fun assertOperationHasLongPolling(model: Model, methodName: String, inputType: String, outputType: String) {
         val code = generateClient(model)
         val method = code.lines(
             "    override suspend fun $methodName(input: $inputType): $outputType {",
@@ -212,7 +213,7 @@ class LongPollingIntegrationTest {
         assertTrue(method.contains("op.context[HttpOperationContext.LongPolling] = true"), "Expected LongPolling set for $methodName")
     }
 
-    private fun assertOperationNotLongPolling(model: software.amazon.smithy.model.Model, methodName: String, inputType: String, outputType: String) {
+    private fun assertOperationNotLongPolling(model: Model, methodName: String, inputType: String, outputType: String) {
         val code = generateClient(model)
         val method = code.lines(
             "    override suspend fun $methodName(input: $inputType): $outputType {",
