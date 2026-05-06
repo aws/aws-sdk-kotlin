@@ -21,6 +21,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertTrue
 
 class ResolveRetryStrategyTest {
     @Test
@@ -263,6 +264,7 @@ class ResolveRetryStrategyTest {
         assertEquals(STANDARD_SCALE_FACTOR, delayConfig.scaleFactor)
         assertEquals(STANDARD_RETRY_COST, bucketConfig.retryCost)
         assertEquals(STANDARD_THROTTLING_RETRY_COST, bucketConfig.timeoutRetryCost)
+        assertTrue(strategy.config.enableLongPollingBackoff)
     }
 
     @Test
@@ -279,6 +281,7 @@ class ResolveRetryStrategyTest {
         assertEquals(STANDARD_SCALE_FACTOR, delayConfig.scaleFactor)
         assertEquals(STANDARD_RETRY_COST, bucketConfig.retryCost)
         assertEquals(STANDARD_THROTTLING_RETRY_COST, bucketConfig.timeoutRetryCost)
+        assertTrue(strategy.config.enableLongPollingBackoff)
     }
 
     @Test
@@ -289,5 +292,8 @@ class ResolveRetryStrategyTest {
 
         val config = resolveRetryConfig(platform, asyncLazy { loadAwsSharedConfig(platform).activeProfile })
         assertFalse(config.useNewRetries)
+
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
+        assertFalse(strategy.config.enableLongPollingBackoff)
     }
 }
