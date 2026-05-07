@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model
 
 import aws.sdk.kotlin.hll.codegen.model.Member
+import aws.sdk.kotlin.hll.codegen.model.Operation
 import aws.sdk.kotlin.hll.codegen.model.Structure
 import aws.sdk.kotlin.hll.codegen.model.lowLevel
 
@@ -28,20 +29,15 @@ internal data class PaginationInfo(
     val items: Member,
 ) {
     companion object {
-        private fun KeyProjection.findMemberByLowLevelName(name: String): Member? = interfaceStruct.members.find { it.lowLevel.name == name }
-
-        private fun KeyProjection.findMembersByLowLevelName(name: String): List<Member>? = interfaceStruct.members.filter { it.lowLevel.name == name }
-
         /**
          * Derive [PaginationInfo] for the given request and response projections, or `null` if the given
          * request/response aren't used in a paginated operation
          */
         fun forRequestResponse(requestProjection: KeyProjection, responseProjection: KeyProjection): PaginationInfo? {
-            val inputTokens = requestProjection.findMembersByLowLevelName("exclusiveStartKey") ?: return null
-            val outputTokens = responseProjection.findMembersByLowLevelName("lastEvaluatedKey") ?: return null
-            require(inputTokens.size == outputTokens.size) {
-                "Mismatched pagination: found ${inputTokens.size} input tokens but ${outputTokens.size} output tokens"
-            }
+            val inputTokens = requestProjection.findMembersByLowLevelName("exclusiveStartKey")
+            val outputTokens = responseProjection.findMembersByLowLevelName("lastEvaluatedKey")
+            assertTokensMatch(inputTokens, outputTokens)
+
             val tokens = (inputTokens zip outputTokens).map { (i, o) -> PaginationToken(i, o) }
 
             val limit = requestProjection.findMemberByLowLevelName("limit") ?: return null
@@ -65,3 +61,34 @@ internal data class PaginationInfo(
  * @param output The output token member (e.g., `lastEvaluatedKey`)
  */
 internal data class PaginationToken(val input: Member, val output: Member)
+
+private fun Structure.findMemberByLowLevelName(name: String): Member? = members.find { it.lowLevel.name == name }
+private fun Structure.findMembersByLowLevelName(name: String): List<Member> = members.filter { it.lowLevel.name == name }
+private fun KeyProjection.findMemberByLowLevelName(name: String): Member? = interfaceStruct.findMemberByLowLevelName(name)
+private fun KeyProjection.findMembersByLowLevelName(name: String): List<Member> = interfaceStruct.findMembersByLowLevelName(name)
+
+internal val Operation.isPaginated: Boolean
+    get() {
+        val inputTokens = request
+            .keyProjections[KeyProjectionType.PARTITION_KEY]
+            .findMembersByLowLevelName("exclusiveStartKey")
+
+        val outputTokens = response
+            .keyProjections[KeyProjectionType.PARTITION_KEY]
+            .findMembersByLowLevelName("lastEvaluatedKey")
+
+        assertTokensMatch(inputTokens, outputTokens)
+        return inputTokens.isNotEmpty()
+    }
+
+private fun assertTokensMatch(inputTokens: List<Member>, outputTokens: List<Member>) {
+    require(inputTokens.size == outputTokens.size) {
+        buildString {
+            append("Found mismatched input/output tokens for pagination. Input tokens: ")
+            inputTokens.joinTo(this) { it.name }
+
+            append(". Output tokens: ")
+            outputTokens.joinTo(this) { it.name }
+        }
+    }
+}

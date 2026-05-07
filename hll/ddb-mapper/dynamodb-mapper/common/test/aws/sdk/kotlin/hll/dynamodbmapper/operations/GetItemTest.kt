@@ -5,7 +5,6 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.operations
 
 import aws.sdk.kotlin.hll.dynamodbmapper.items.*
-import aws.sdk.kotlin.hll.dynamodbmapper.model.getItem
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
@@ -123,19 +122,19 @@ class GetItemTest : DdbLocalTest() {
     fun testPkGetItemByScalarKey() = runTest {
         val table = mapper().getTable(PK_TABLE_NAME, pkSchema)
 
-        val item = assertNotNull(table.getItem(1))
-        assertEquals("foo", item.value)
+        val resp = assertNotNull(table.getItem(1))
+        assertEquals("foo", resp.item?.value)
 
-        assertNull(table.getItem(2))
+        assertNull(table.getItem(2).item)
     }
 
     @Test
     fun testCkGetItemByScalarKeys() = runTest {
         val table = mapper().getTable(CK_TABLE_NAME, ckSchema)
 
-        val item = assertNotNull(table.getItem(Key("abcd"), Key(42)))
-        assertEquals("foo", item.value)
+        val resp = assertNotNull(table.getItem("abcd", 42))
+        assertEquals("foo", resp.item?.value)
 
-        assertNull(table.getItem(Key("abcd"), Key(43)))
+        assertNull(table.getItem("abcd", 43).item)
     }
 }
