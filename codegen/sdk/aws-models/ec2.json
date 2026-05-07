@@ -40363,7 +40363,7 @@
                 "target": "com.amazonaws.ec2#DescribeInstanceTypesResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Describes the specified instance types. By default, all instance types for the current\n   Region are described. Alternatively, you can filter the results.</p>",
+                "smithy.api#documentation": "<p>Describes the specified instance types. By default, all instance types for the current\n   Region are described. Alternatively, you can filter the results. To include instance types\n   that are not supported in the current Region, set <code>IncludeUnsupportedInRegion</code>\n   to <code>true</code>.</p>",
                 "smithy.api#paginated": {
                     "inputToken": "NextToken",
                     "outputToken": "NextToken",
@@ -40405,6 +40405,12 @@
                     "target": "com.amazonaws.ec2#NextToken",
                     "traits": {
                         "smithy.api#documentation": "<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+                    }
+                },
+                "IncludeUnsupportedInRegion": {
+                    "target": "com.amazonaws.ec2#IncludeUnsupportedInRegion",
+                    "traits": {
+                        "smithy.api#documentation": "<p>If <code>true</code>, the response includes instance types that are not supported\n   in the current Region, in addition to the supported types. Default: <code>false</code>.</p>"
                     }
                 }
             },
@@ -72676,6 +72682,9 @@
                 "smithy.api#documentation": "<p>Describes an import volume task.</p>"
             }
         },
+        "com.amazonaws.ec2#IncludeUnsupportedInRegion": {
+            "type": "boolean"
+        },
         "com.amazonaws.ec2#InferenceAcceleratorInfo": {
             "type": "structure",
             "members": {
@@ -84399,6 +84408,14 @@
                         "aws.protocols#ec2QueryName": "RebootMigrationSupport",
                         "smithy.api#documentation": "<p>Indicates whether reboot migration during a user-initiated reboot is supported for\n   instances that have a scheduled <code>system-reboot</code> event. For more information,\n   see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/schedevents_actions_reboot.html#reboot-migration\">Enable or disable reboot migration</a> in the\n   <i>Amazon EC2 User Guide</i>.</p>",
                         "smithy.api#xmlName": "rebootMigrationSupport"
+                    }
+                },
+                "SupportedInRegion": {
+                    "target": "com.amazonaws.ec2#SupportedInRegion",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SupportedInRegion",
+                        "smithy.api#documentation": "<p>Indicates whether the instance type is supported in the current Region.</p>",
+                        "smithy.api#xmlName": "supportedInRegion"
                     }
                 }
             },
@@ -124771,6 +124788,9 @@
                     "smithy.api#xmlName": "item"
                 }
             }
+        },
+        "com.amazonaws.ec2#SupportedInRegion": {
+            "type": "boolean"
         },
         "com.amazonaws.ec2#SupportedIpAddressTypes": {
             "type": "list",
