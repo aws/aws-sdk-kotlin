@@ -10339,6 +10339,12 @@
                         "smithy.api#documentation": "<p>Element of the JWT assertion to use for roles.</p>"
                     }
                 },
+                "JwksUrl": {
+                    "target": "com.amazonaws.opensearch#JwksUrl",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL endpoint that hosts the JSON Web Key Set (JWKS) containing public keys used to verify JWT signatures.</p>"
+                    }
+                },
                 "PublicKey": {
                     "target": "com.amazonaws.opensearch#String",
                     "traits": {
@@ -10371,6 +10377,12 @@
                         "smithy.api#documentation": "<p>The key used for matching the JWT roles attribute.</p>"
                     }
                 },
+                "JwksUrl": {
+                    "target": "com.amazonaws.opensearch#JwksUrl",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configured JWKS URL endpoint from which the cluster retrieves public keys to verify JWT requests.</p>"
+                    }
+                },
                 "PublicKey": {
                     "target": "com.amazonaws.opensearch#String",
                     "traits": {
@@ -10380,6 +10392,16 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Describes the JWT options configured for the domain.</p>"
+            }
+        },
+        "com.amazonaws.opensearch#JwksUrl": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^$|^https://(?!(?:10|127|169\\.254|192\\.168|172\\.(?:1[6-9]|2[0-9]|3[01]))\\.)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\\.[a-zA-Z]{2,}(?::[0-9]{1,5})?(?:/[a-zA-Z0-9\\-._~%!$&'()*+,;=:']*)?$"
             }
         },
         "com.amazonaws.opensearch#KeyStoreAccessOption": {
@@ -17040,6 +17062,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The list of security group IDs associated with the VPC endpoints for the\n            domain.</p>"
                     }
+                },
+                "EgressEnabled": {
+                    "target": "com.amazonaws.opensearch#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether egress traffic from the domain is routed through the customer VPC.\n            When <code>true</code>, outbound traffic flows through the VPC. When\n            <code>false</code>, outbound traffic goes through the public internet.</p>"
+                    }
                 }
             },
             "traits": {
@@ -17074,13 +17102,19 @@
                 "SubnetIds": {
                     "target": "com.amazonaws.opensearch#StringList",
                     "traits": {
-                        "smithy.api#documentation": "<p>A list of subnet IDs associated with the VPC endpoints for the domain. If your domain\n            uses multiple Availability Zones, you need to provide two subnet IDs, one per zone.\n            Otherwise, provide only one.</p>"
+                        "smithy.api#documentation": "<p>A list of subnet IDs associated with the VPC endpoints for the domain. If your domain uses\n        multiple Availability Zones, you need to provide two subnet IDs, one per zone. Otherwise, provide\n        only one.</p>"
                     }
                 },
                 "SecurityGroupIds": {
                     "target": "com.amazonaws.opensearch#StringList",
                     "traits": {
                         "smithy.api#documentation": "<p>The list of security group IDs associated with the VPC endpoints for the domain. If\n            you do not provide a security group ID, OpenSearch Service uses the default security\n            group for the VPC.</p>"
+                    }
+                },
+                "EgressEnabled": {
+                    "target": "com.amazonaws.opensearch#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Controls whether egress traffic from the domain is routed through the customer VPC.\n            When <code>true</code>, outbound traffic flows through the VPC. When\n            <code>false</code>, outbound traffic goes through the public internet.</p>"
                     }
                 }
             },

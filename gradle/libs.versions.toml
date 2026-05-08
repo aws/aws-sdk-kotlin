@@ -4,7 +4,7 @@ ksp-version = "2.3.7"
 
 dokka-version = "2.2.0"
 
-aws-kotlin-repo-tools-version = "0.5.8"
+aws-kotlin-repo-tools-version = "0.5.12"
 
 # libs
 coroutines-version = "1.10.2"
