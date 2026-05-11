@@ -20,6 +20,8 @@ import kotlin.coroutines.intrinsics.startCoroutineUninterceptedOrReturn
  * Uses [startCoroutineUninterceptedOrReturn] to invoke the suspend function directly
  * without coroutine infrastructure overhead. This matches production behavior where
  * resolveEndpoint is called from within an existing coroutine and never actually suspends.
+ *
+ * Each benchmark binds parameters per the smithy.endpoints#endpointTests trait definitions.
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -34,29 +36,29 @@ class LambdaEndpointResolutionBenchmark {
         result.getOrThrow()
     }
 
-    private val usEast1StandardParams = LambdaEndpointParameters {
-        region = "us-east-1"
-        useFips = false
-        useDualStack = false
-    }
-
-    private val usGovEast1FipsDualStackParams = LambdaEndpointParameters {
-        region = "us-gov-east-1"
-        useFips = true
-        useDualStack = true
-    }
-
+    // For region us-east-1 with FIPS disabled and DualStack disabled
     @Benchmark
     fun usEast1Standard(blackhole: Blackhole) {
-        val result = suspend { provider.resolveEndpoint(usEast1StandardParams) }
+        val params = LambdaEndpointParameters {
+            region = "us-east-1"
+            useFips = false
+            useDualStack = false
+        }
+        val result = suspend { provider.resolveEndpoint(params) }
             .startCoroutineUninterceptedOrReturn(completion)
         check(result !== COROUTINE_SUSPENDED) { "resolveEndpoint suspended unexpectedly" }
         blackhole.consume(result)
     }
 
+    // For region us-gov-east-1 with FIPS enabled and DualStack enabled
     @Benchmark
     fun usGovEast1FipsDualStack(blackhole: Blackhole) {
-        val result = suspend { provider.resolveEndpoint(usGovEast1FipsDualStackParams) }
+        val params = LambdaEndpointParameters {
+            region = "us-gov-east-1"
+            useFips = true
+            useDualStack = true
+        }
+        val result = suspend { provider.resolveEndpoint(params) }
             .startCoroutineUninterceptedOrReturn(completion)
         check(result !== COROUTINE_SUSPENDED) { "resolveEndpoint suspended unexpectedly" }
         blackhole.consume(result)
