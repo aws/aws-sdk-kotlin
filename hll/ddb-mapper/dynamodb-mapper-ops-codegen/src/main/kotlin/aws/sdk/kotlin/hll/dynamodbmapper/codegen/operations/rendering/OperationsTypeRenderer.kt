@@ -9,7 +9,6 @@ import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.RendererBase
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.*
-import aws.smithy.kotlin.runtime.util.length
 
 /**
  * Renders an `*Operations` interface and `*OperationsImpl` class which contain methods for each code-generated
@@ -214,22 +213,22 @@ internal class OperationsTypeRenderer(
 
         val methodName = when (pagination) {
             PaginationType.PAGE_FLOW -> PaginatorRenderer.paginatorName(op)
-            else -> op.methodName
+            PaginationType.UNPAGINATED, PaginationType.SINGLE_PAGE -> op.methodName
         }
 
         val keyedMembers = requestProjection.interfaceStruct.members.filter { it.keyType != null }
-        val keyPermutations = keyDataTypes.permutations(keyedMembers.size) { permutation ->
-            keyedMembers.zip(permutation) { member, dataType ->
+        val keyVariants = keyDataTypes.cartesianProduct(keyedMembers.size) { product ->
+            keyedMembers.zip(product) { member, dataType ->
                 member.copy(type = dataType)
             }
         }
 
-        keyPermutations.forEach { keyPermutation ->
+        keyVariants.forEach { keyVariant ->
             fun TypeRef.replaceGenericArgs(): TypeRef = copy(
                 genericArgs = genericArgs.map { typeArg ->
                     when (typeArg.shortName) {
-                        "PK" -> MapperTypes.Items.keyType(listOf(keyPermutation[0].type))
-                        "SK" -> MapperTypes.Items.keyType(listOf(keyPermutation[1].type))
+                        "PK" -> MapperTypes.Items.keyType(listOf(keyVariant[0].type))
+                        "SK" -> MapperTypes.Items.keyType(listOf(keyVariant[1].type))
                         else -> typeArg
                     }
                 },
@@ -252,13 +251,13 @@ internal class OperationsTypeRenderer(
                 receiver,
                 methodName,
             ) {
-                keyPermutation.forEach { member ->
+                keyVariant.forEach { member ->
                     write("#L: #T,", member.name, member.type)
                 }
 
                 closeAndOpenBlock("): #T = #L {", response, methodName)
 
-                keyPermutation.forEach { member ->
+                keyVariant.forEach { member ->
                     write("this.#L = #T(#L)", member.name, MapperTypes.Items.Key, member.name)
                 }
             }
@@ -336,11 +335,11 @@ private fun Operation.appliesToKindOrAncestor(
     kind: ItemSourceKind,
 ): Boolean = kind in itemSourceKinds || (kind.parent?.let { appliesToKindOrAncestor(it) } ?: false)
 
-private fun <T, R> List<T>.permutations(length: Int, transform: (List<T>) -> List<R>): List<List<R>> = buildList {
-    val values = this@permutations
+private fun <T, R> List<T>.cartesianProduct(exponent: Int, transform: (List<T>) -> List<R>): List<List<R>> = buildList {
+    val values = this@cartesianProduct
 
     fun generate(current: List<T>) {
-        if (current.length == length) {
+        if (current.size == exponent) {
             add(transform(current))
         } else {
             values.forEach { value ->
