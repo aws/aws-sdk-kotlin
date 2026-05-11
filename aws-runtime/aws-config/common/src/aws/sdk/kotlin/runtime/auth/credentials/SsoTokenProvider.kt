@@ -9,10 +9,11 @@ import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc.SsoOidcClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc.createToken
 import aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc.model.CreateTokenResponse
-import aws.sdk.kotlin.runtime.config.profile.AwsProfile
+import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.profile.normalizePath
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.collections.emptyAttributes
+import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.hashing.sha1
 import aws.smithy.kotlin.runtime.http.auth.BearerToken
 import aws.smithy.kotlin.runtime.http.auth.BearerTokenProvider
@@ -26,7 +27,9 @@ import aws.smithy.kotlin.runtime.text.encoding.encodeToHex
 import aws.smithy.kotlin.runtime.time.Clock
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.TimestampFormat
-import aws.smithy.kotlin.runtime.util.*
+import aws.smithy.kotlin.runtime.util.PlatformProvider
+import aws.smithy.kotlin.runtime.util.SingleFlightGroup
+import aws.smithy.kotlin.runtime.util.WriteType
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -67,47 +70,13 @@ public class SsoTokenProvider(
     public val refreshBufferWindow: Duration = DEFAULT_SSO_TOKEN_REFRESH_BUFFER_SECONDS.seconds,
     public val httpClient: HttpClientEngine? = null,
     public val platformProvider: PlatformProvider = PlatformProvider.System,
-    public val profile: LazyAsyncValue<AwsProfile>? = null,
     private val clock: Clock = Clock.System,
 ) : BearerTokenProvider {
-
-    /**
-     * Initializes a new SSO token provider. See [aws.sdk.kotlin.runtime.auth.credentials.SsoTokenProvider] for details.
-     *
-     * @param ssoSessionName the name of the SSO Session from the shared config file to load tokens for
-     * @param startUrl the start URL (also known as the "User Portal URL") provided by the SSO service
-     * @param ssoRegion the AWS region where the SSO directory for the given [startUrl] is hosted.
-     * @param refreshBufferWindow amount of time before the actual credential expiration time when credentials are
-     * considered expired. For example, if credentials are expiring in 15 minutes, and the buffer time is 10 seconds,
-     * then any requests made after 14 minutes and 50 seconds will load new credentials. Defaults to 5 minutes.
-     * @param httpClient the [HttpClientEngine] instance to use to make requests. NOTE: This engine's resources and lifetime
-     * are NOT managed by the provider. Caller is responsible for closing.
-     * @param platformProvider the platform provider to use
-     * @param clock the source of time for the provider
-     */
-    public constructor(
-        ssoSessionName: String,
-        startUrl: String,
-        ssoRegion: String,
-        refreshBufferWindow: Duration = DEFAULT_SSO_TOKEN_REFRESH_BUFFER_SECONDS.seconds,
-        httpClient: HttpClientEngine? = null,
-        platformProvider: PlatformProvider = PlatformProvider.System,
-        clock: Clock = Clock.System,
-    ) : this(
-        ssoSessionName,
-        startUrl,
-        ssoRegion,
-        refreshBufferWindow,
-        httpClient,
-        platformProvider,
-        null,
-        clock,
-    )
-
     // debounce concurrent requests for a token
     private val sfg = SingleFlightGroup<SsoToken>()
 
-    private val tokenFilePermissions = asyncLazy { resolveCachedAuthFilePermissions(platformProvider, profile) }
+    private val tokenFilePermissions = AwsSdkSetting.AwsRestrictFilePermissions.resolve(platformProvider)
+        ?: RestrictFilePermissions.USER_READ_WRITE
 
     override suspend fun resolve(attributes: Attributes): BearerToken = sfg.singleFlight {
         getToken(attributes)
@@ -155,7 +124,7 @@ public class SsoTokenProvider(
                 filepath,
                 contents,
                 WriteType.OVERWRITE,
-                permissions = tokenFilePermissions.get().posixOctal,
+                permissions = tokenFilePermissions.posixOctal,
             )
         } catch (ex: Exception) {
             coroutineContext.debug<SsoTokenProvider>(ex) { "failed to write refreshed token back to disk at $filepath" }

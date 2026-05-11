@@ -26,20 +26,6 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/AssumeRoleWithWebIden
 	public final fun getWebIdentityTokenFilePath ()Ljava/lang/String;
 }
 
-public final class aws/sdk/kotlin/runtime/auth/credentials/CachedAuthFilePermissions : java/lang/Enum {
-	public static final field OS_DEFAULT Laws/sdk/kotlin/runtime/auth/credentials/CachedAuthFilePermissions;
-	public static final field USER_READ_WRITE Laws/sdk/kotlin/runtime/auth/credentials/CachedAuthFilePermissions;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public final fun getPosixOctal ()Ljava/lang/String;
-	public static fun valueOf (Ljava/lang/String;)Laws/sdk/kotlin/runtime/auth/credentials/CachedAuthFilePermissions;
-	public static fun values ()[Laws/sdk/kotlin/runtime/auth/credentials/CachedAuthFilePermissions;
-}
-
-public final class aws/sdk/kotlin/runtime/auth/credentials/CachedAuthFilePermissionsKt {
-	public static final fun resolveCachedAuthFilePermissions (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun resolveCachedAuthFilePermissions$default (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-}
-
 public final class aws/sdk/kotlin/runtime/auth/credentials/CredentialsNotLoadedException : aws/sdk/kotlin/runtime/ClientException {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -155,6 +141,15 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/ProviderConfiguration
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
+public final class aws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissions : java/lang/Enum {
+	public static final field OS_DEFAULT Laws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissions;
+	public static final field USER_READ_WRITE Laws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissions;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getPosixOctal ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Laws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissions;
+	public static fun values ()[Laws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissions;
+}
+
 public final class aws/sdk/kotlin/runtime/auth/credentials/SsoCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/time/Clock;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/time/Clock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -172,11 +167,8 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/SsoCredentialsProvide
 public final class aws/sdk/kotlin/runtime/auth/credentials/SsoTokenProvider : aws/smithy/kotlin/runtime/http/auth/BearerTokenProvider {
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLaws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/time/Clock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLaws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/time/Clock;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLaws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Laws/smithy/kotlin/runtime/time/Clock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLaws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/util/LazyAsyncValue;Laws/smithy/kotlin/runtime/time/Clock;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getHttpClient ()Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;
 	public final fun getPlatformProvider ()Laws/smithy/kotlin/runtime/util/PlatformProvider;
-	public final fun getProfile ()Laws/smithy/kotlin/runtime/util/LazyAsyncValue;
 	public final fun getRefreshBufferWindow-UwyO8pc ()J
 	public final fun getSsoRegion ()Ljava/lang/String;
 	public final fun getSsoSessionName ()Ljava/lang/String;
@@ -310,7 +302,6 @@ public final class aws/sdk/kotlin/runtime/config/AwsSdkSetting {
 	public final fun getAwsAccountIdEndpointMode ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsAppId ()Laws/smithy/kotlin/runtime/config/MultipleKeyEnvironmentSetting;
 	public final fun getAwsAuthSchemePreference ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
-	public final fun getAwsCachedAuthFilePermissions ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsConfigFile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsContainerAuthorizationToken ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsContainerAuthorizationTokenFile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
@@ -330,6 +321,7 @@ public final class aws/sdk/kotlin/runtime/config/AwsSdkSetting {
 	public final fun getAwsRequestChecksumCalculation ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsRequestMinCompressionSizeBytes ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsResponseChecksumValidation ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
+	public final fun getAwsRestrictFilePermissions ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsRetryMode ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsRoleArn ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsRoleSessionName ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
@@ -564,7 +556,6 @@ public final class aws/sdk/kotlin/runtime/config/profile/AwsProfileKt {
 	public static final fun getAwsSessionToken (Laws/sdk/kotlin/runtime/config/profile/ConfigSection;)Ljava/lang/String;
 	public static final fun getBooleanOrNull (Laws/sdk/kotlin/runtime/config/profile/ConfigSection;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Boolean;
 	public static synthetic fun getBooleanOrNull$default (Laws/sdk/kotlin/runtime/config/profile/ConfigSection;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/Boolean;
-	public static final fun getCachedAuthFilePermissions (Laws/sdk/kotlin/runtime/config/profile/ConfigSection;)Laws/sdk/kotlin/runtime/auth/credentials/CachedAuthFilePermissions;
 	public static final fun getCredentialProcess (Laws/sdk/kotlin/runtime/config/profile/ConfigSection;)Ljava/lang/String;
 	public static final fun getDisableRequestCompression (Laws/sdk/kotlin/runtime/config/profile/ConfigSection;)Ljava/lang/Boolean;
 	public static final fun getEndpointDiscoveryEnabled (Laws/sdk/kotlin/runtime/config/profile/ConfigSection;)Ljava/lang/Boolean;

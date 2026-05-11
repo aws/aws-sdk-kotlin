@@ -6,7 +6,7 @@
 package aws.sdk.kotlin.runtime.config
 
 import aws.sdk.kotlin.runtime.InternalSdkApi
-import aws.sdk.kotlin.runtime.auth.credentials.CachedAuthFilePermissions
+import aws.sdk.kotlin.runtime.auth.credentials.RestrictFilePermissions
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting.AwsAccessKeyId
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting.AwsContainerCredentialsRelativeUri
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting.AwsSecretAccessKey
@@ -243,10 +243,10 @@ public object AwsSdkSetting {
     public val AwsAuthSchemePreference: EnvironmentSetting<String> = strEnvSetting("aws.authSchemePreference", "AWS_AUTH_SCHEME_PREFERENCE")
 
     /**
-     * Configures the file permissions used when creating cached authentication token files (e.g., for the SSO token
-     * provider or Login token provider)
+     * Configures the file permission restrictions used when creating cached authentication token files (e.g., for the
+     * SSO token provider or Login token provider)
      */
-    public val AwsCachedAuthFilePermissions: EnvironmentSetting<CachedAuthFilePermissions> = enumEnvSetting<CachedAuthFilePermissions>(
+    public val AwsRestrictFilePermissions: EnvironmentSetting<RestrictFilePermissions> = enumEnvSetting<RestrictFilePermissions>(
         "aws.restrictFilePermissions",
         "AWS_RESTRICT_FILE_PERMISSIONS",
     )
