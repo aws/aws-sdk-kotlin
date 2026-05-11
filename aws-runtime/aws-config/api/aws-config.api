@@ -142,7 +142,7 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/ProviderConfiguration
 }
 
 public final class aws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissions : java/lang/Enum {
-	public static final field OS_DEFAULT Laws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissions;
+	public static final field UNRESTRICTED Laws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissions;
 	public static final field USER_READ_WRITE Laws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissions;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getPosixOctal ()Ljava/lang/String;
