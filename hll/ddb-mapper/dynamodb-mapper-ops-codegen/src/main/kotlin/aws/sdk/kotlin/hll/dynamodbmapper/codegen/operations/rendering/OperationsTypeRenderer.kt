@@ -4,10 +4,7 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.rendering
 
-import aws.sdk.kotlin.hll.codegen.model.Operation
-import aws.sdk.kotlin.hll.codegen.model.Type
-import aws.sdk.kotlin.hll.codegen.model.TypeRef
-import aws.sdk.kotlin.hll.codegen.model.genericVars
+import aws.sdk.kotlin.hll.codegen.model.*
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.codegen.rendering.RendererBase
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
@@ -29,6 +26,24 @@ internal class OperationsTypeRenderer(
     private val parentType: Type?,
     private val operations: List<Operation>,
 ) : RendererBase(ctx, "${itemSourceKind.name}Operations") {
+    private companion object {
+        // FIXME Support unsigned number types?
+        val keyDataTypes = listOf(
+            Types.Kotlin.Byte,
+            Types.Kotlin.ByteArray,
+            Types.Kotlin.Int,
+            Types.Kotlin.Long,
+            Types.Kotlin.Short,
+            Types.Kotlin.String,
+        )
+
+        enum class PaginationType {
+            UNPAGINATED,
+            SINGLE_PAGE,
+            PAGE_FLOW,
+        }
+    }
+
     private val keyedOperations: List<Operation>
     private val unkeyedOperations: List<Operation>
 
@@ -45,6 +60,7 @@ internal class OperationsTypeRenderer(
     override fun generate() {
         renderInterface()
         renderDslOps()
+        renderKeyExtensions()
         renderResponsePaginators()
 
         if (itemSourceKind.isAbstract) {
@@ -71,14 +87,12 @@ internal class OperationsTypeRenderer(
 
     private fun renderDslOp(op: Operation, keyType: KeyProjectionType) {
         val requestProjection = op.request.keyProjections[keyType]
-        val responseProjection = op.response.keyProjections[keyType]
-
         val request = requestProjection.interfaceStruct.type
-        val response = responseProjection.interfaceStruct.type
+        val response = op.response.keyProjections[keyType].interfaceStruct.type
         val generics = request.genericVars() + response.genericVars()
 
-        val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
-        if (paginationInfo != null) renderManualPaginationAnnotation(op) else blankLine()
+        if (op.isPaginated) renderManualPaginationAnnotation(op) else blankLine()
+
         withBlock(
             "public suspend inline fun #G#T.#L(crossinline block: #T.() -> Unit): #T =",
             "",
@@ -124,20 +138,19 @@ internal class OperationsTypeRenderer(
                 }
 
                 operations.forEach { op ->
-                    val requestProjection = op.request.keyProjections[keyType]
-                    val responseProjection = op.response.keyProjections[keyType]
+                    val request = op.request.keyProjections[keyType].interfaceStruct.type
 
-                    val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
-                    if (paginationInfo != null) renderManualPaginationAnnotation(op)
+                    val isPaginated = op.isPaginated
+                    if (isPaginated) renderManualPaginationAnnotation(op)
 
                     write(
                         "override suspend fun #L(request: #T) = #L(spec).execute(request)",
                         op.methodName,
-                        requestProjection.interfaceStruct.type,
+                        request,
                         FactoryRenderer.factoryFunctionName(op),
                     )
 
-                    if (paginationInfo != null) blankLine()
+                    if (isPaginated) blankLine()
                 }
             }
         }
@@ -179,6 +192,80 @@ internal class OperationsTypeRenderer(
         }
     }
 
+    private fun renderKeyExtensions() {
+        keyedOperations
+            .filterNot { it.appliesToAncestorKind() }
+            .forEach { op ->
+                val paginationType = if (op.isPaginated) PaginationType.SINGLE_PAGE else PaginationType.UNPAGINATED
+                renderOpKeyExtensions(op, KeyProjectionType.PARTITION_KEY, paginationType)
+                renderOpKeyExtensions(op, KeyProjectionType.COMPOSITE_KEY, paginationType)
+            }
+    }
+
+    private fun renderOpKeyExtensions(
+        op: Operation,
+        keyType: KeyProjectionType,
+        pagination: PaginationType,
+    ) {
+        val requestProjection = op.request.keyProjections[keyType]
+        val genericReceiver = itemSourceKind.opsType(keyType)
+        val genericResponse = op.response.keyProjections[keyType].interfaceStruct.type
+
+        val methodName = when (pagination) {
+            PaginationType.PAGE_FLOW -> PaginatorRenderer.paginatorName(op)
+            PaginationType.UNPAGINATED, PaginationType.SINGLE_PAGE -> op.methodName
+        }
+
+        val keyedMembers = requestProjection.interfaceStruct.members.filter { it.keyType != null }
+        val keyVariants = keyDataTypes.cartesianProduct(keyedMembers.size) { product ->
+            keyedMembers.zip(product) { member, dataType ->
+                member.copy(type = dataType)
+            }
+        }
+
+        keyVariants.forEach { keyVariant ->
+            fun TypeRef.replaceGenericArgs(): TypeRef = copy(
+                genericArgs = genericArgs.map { typeArg ->
+                    when (typeArg.shortName) {
+                        "PK" -> MapperTypes.Items.keyType(listOf(keyVariant[0].type))
+                        "SK" -> MapperTypes.Items.keyType(listOf(keyVariant[1].type))
+                        else -> typeArg
+                    }
+                },
+            )
+
+            val receiver = genericReceiver.replaceGenericArgs()
+
+            val response = when (pagination) {
+                PaginationType.PAGE_FLOW -> Types.Kotlinx.Coroutines.Flow.flow(genericResponse.replaceGenericArgs())
+                else -> genericResponse.replaceGenericArgs()
+            }
+
+            val modifier = if (pagination == PaginationType.PAGE_FLOW) "" else "suspend "
+
+            if (pagination == PaginationType.SINGLE_PAGE) renderManualPaginationAnnotation(op)
+            withBlock(
+                "public #L fun <T> #T.#L(",
+                "}",
+                modifier,
+                receiver,
+                methodName,
+            ) {
+                keyVariant.forEach { member ->
+                    write("#L: #T,", member.name, member.type)
+                }
+
+                closeAndOpenBlock("): #T = #L {", response, methodName)
+
+                keyVariant.forEach { member ->
+                    write("this.#L = #T(#L)", member.name, MapperTypes.Items.Key, member.name)
+                }
+            }
+
+            blankLine()
+        }
+    }
+
     private fun renderManualPaginationAnnotation(op: Operation) {
         blankLine()
         write(
@@ -191,20 +278,20 @@ internal class OperationsTypeRenderer(
     private fun renderOp(op: Operation, keyType: KeyProjectionType) {
         if (op.appliesToAncestorKind()) return
 
-        val requestProjection = op.request.keyProjections[keyType]
-        val responseProjection = op.response.keyProjections[keyType]
+        val request = op.request.keyProjections[keyType].interfaceStruct.type
+        val response = op.response.keyProjections[keyType].interfaceStruct.type
 
-        val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
-        if (paginationInfo != null) renderManualPaginationAnnotation(op)
+        val isPaginated = op.isPaginated
+        if (isPaginated) renderManualPaginationAnnotation(op)
 
         write(
             "public suspend fun #L(request: #T): #T",
             op.methodName,
-            requestProjection.interfaceStruct.type,
-            responseProjection.interfaceStruct.type,
+            request,
+            response,
         )
 
-        if (paginationInfo != null) blankLine()
+        if (isPaginated) blankLine()
     }
 
     private fun renderItemsPaginators() = operations
@@ -219,17 +306,21 @@ internal class OperationsTypeRenderer(
         }
 
     private fun renderResponsePaginators() = operations
+        .filterNot { it.appliesToAncestorKind() }
         .forEach { op ->
             op.keyTypes.forEach { keyType ->
                 val requestProjection = op.request.keyProjections[keyType]
                 val responseProjection = op.response.keyProjections[keyType]
 
                 val paginationInfo = PaginationInfo.forRequestResponse(requestProjection, responseProjection)
-                paginationInfo?.let {
-                    PaginatorRenderer(ctx, this, keyType.interfaceType, op, it, forResponses = true).render()
-                }
+                    ?: return@forEach
+
+                PaginatorRenderer(ctx, this, keyType.interfaceType, op, paginationInfo, forResponses = true).render()
+
+                renderOpKeyExtensions(op, keyType, PaginationType.PAGE_FLOW)
             }
         }
+
     private fun Operation.appliesToAncestorKind() = itemSourceKind.parent?.let { appliesToKindOrAncestor(it) } ?: false
 
     private val KeyProjectionType.interfaceType: TypeRef
@@ -240,4 +331,22 @@ internal class OperationsTypeRenderer(
         }
 }
 
-private fun Operation.appliesToKindOrAncestor(kind: ItemSourceKind): Boolean = kind in itemSourceKinds || (kind.parent?.let { appliesToKindOrAncestor(it) } ?: false)
+private fun Operation.appliesToKindOrAncestor(
+    kind: ItemSourceKind,
+): Boolean = kind in itemSourceKinds || (kind.parent?.let { appliesToKindOrAncestor(it) } ?: false)
+
+private fun <T, R> List<T>.cartesianProduct(exponent: Int, transform: (List<T>) -> List<R>): List<List<R>> = buildList {
+    val values = this@cartesianProduct
+
+    fun generate(current: List<T>) {
+        if (current.size == exponent) {
+            add(transform(current))
+        } else {
+            values.forEach { value ->
+                generate(current + value)
+            }
+        }
+    }
+
+    generate(listOf())
+}

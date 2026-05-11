@@ -77,6 +77,8 @@ public object MapperTypes {
             return TypeRef(MapperPkg.Hl.Items, "KeySpec.Key$keySize", keyTypes)
         }
 
+        public val Key: TypeRef = TypeRef(MapperPkg.Hl.Items, "Key")
+
         public val KeySpecByte: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.byte")
         public val KeySpecByteArray: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.byteArray")
         public val KeySpecInt: TypeRef = TypeRef(MapperPkg.Hl.Items, "KeySpec.int")
@@ -95,7 +97,7 @@ public object MapperTypes {
         public val KeyTypeAsPK: TypeVar = TypeVar("PK", false, KeyType)
         public val KeyTypeAsSK: TypeVar = TypeVar("SK", false, KeyType)
 
-        public fun keyType(keyTypes: List<TypeRef>): TypeRef {
+        public fun keyType(keyTypes: List<Type>): TypeRef {
             val keySize = keyTypes.size
             require(keySize in 1..4) { "KeyType subtypes must have between 1 and 4 keys, found $keySize" }
             return TypeRef(MapperPkg.Hl.Items, "KeyType.Key$keySize", keyTypes)

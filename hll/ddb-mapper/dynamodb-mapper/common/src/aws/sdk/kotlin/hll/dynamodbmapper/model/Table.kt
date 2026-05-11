@@ -8,10 +8,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeyType
 import aws.sdk.kotlin.hll.dynamodbmapper.items.entityToCk
 import aws.sdk.kotlin.hll.dynamodbmapper.items.entityToPk
-import aws.sdk.kotlin.hll.dynamodbmapper.operations.TableOperations
-import aws.sdk.kotlin.hll.dynamodbmapper.operations.deleteItem
-import aws.sdk.kotlin.hll.dynamodbmapper.operations.getItem
-import aws.sdk.kotlin.hll.dynamodbmapper.operations.putItem
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.*
 
 /**
  * Represents a table in DynamoDB and an associated item schema. Operations on this table will invoke low-level
@@ -72,52 +69,36 @@ public interface Table<T> :
     ): Index.CompositeKey<T, PK, SK>
 }
 
-public suspend fun <T, PK : KeyType> Table.PartitionKey<T, PK>.deleteItem(item: T) {
-    this.deleteItem { partitionKey = entityToPk(schema, item) }
-}
-
-public suspend fun <T, PK : KeyType> Table.PartitionKey<T, PK>.deleteItem(partitionKey: PK) {
-    this.deleteItem { this.partitionKey = partitionKey }
-}
-
-public suspend fun <T, PK : KeyType, SK : KeyType> Table.CompositeKey<T, PK, SK>.deleteItem(item: T) {
-    val (pk, sk) = entityToCk(schema, item)
-    this.deleteItem {
-        partitionKey = pk
-        sortKey = sk
-    }
+public suspend fun <T, PK : KeyType> Table.PartitionKey<T, PK>.deleteItem(
+    item: T,
+): DeleteItemResponse<T> = deleteItem {
+    partitionKey = entityToPk(schema, item)
 }
 
 public suspend fun <T, PK : KeyType, SK : KeyType> Table.CompositeKey<T, PK, SK>.deleteItem(
-    partitionKey: PK,
-    sortKey: SK,
-) {
-    this.deleteItem {
-        this.partitionKey = partitionKey
-        this.sortKey = sortKey
+    item: T,
+): DeleteItemResponse<T> {
+    val (pk, sk) = entityToCk(schema, item)
+    return deleteItem {
+        partitionKey = pk
+        sortKey = sk
     }
 }
 
-public suspend fun <T, PK : KeyType> Table.PartitionKey<T, PK>.getItem(item: T): T? = this.getItem { partitionKey = entityToPk(schema, item) }.item
-
-public suspend fun <T, PK : KeyType> Table.PartitionKey<T, PK>.getItem(partitionKey: PK): T? = this.getItem { this.partitionKey = partitionKey }.item
-
-public suspend fun <T, PK : KeyType, SK : KeyType> Table.CompositeKey<T, PK, SK>.getItem(item: T): T? {
-    val (pk, sk) = entityToCk(schema, item)
-    return this.getItem {
-        partitionKey = pk
-        sortKey = sk
-    }.item
+public suspend fun <T, PK : KeyType> Table.PartitionKey<T, PK>.getItem(
+    item: T,
+): GetItemResponse<T> = getItem {
+    partitionKey = entityToPk(schema, item)
 }
 
 public suspend fun <T, PK : KeyType, SK : KeyType> Table.CompositeKey<T, PK, SK>.getItem(
-    partitionKey: PK,
-    sortKey: SK,
-): T? = this.getItem {
-    this.partitionKey = partitionKey
-    this.sortKey = sortKey
-}.item
-
-public suspend fun <T> Table<T>.putItem(item: T) {
-    this.putItem { this.item = item }
+    item: T,
+): GetItemResponse<T> {
+    val (pk, sk) = entityToCk(schema, item)
+    return getItem {
+        partitionKey = pk
+        sortKey = sk
+    }
 }
+
+public suspend fun <T> Table<T>.putItem(item: T): PutItemResponse<T> = putItem { this.item = item }
