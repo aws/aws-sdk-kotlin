@@ -1,5 +1,82 @@
 # Changelog
 
+## [1.6.72] - 05/07/2026
+
+### Features
+* (**bcmdataexports**) With this release, customers can configure their data exports to generate additional integration artifacts for Athena and Redshift.
+* (**bedrockagentcore**) Launching AgentCore payments - a capability that provides secure, instant microtransaction payments for AI agents to access paid APIs, MCP servers, and content. It handles payment processing for x402 protocol, payment limits, and 3P wallet integrations with Coinbase CDP and Stripe (Privy).
+* (**bedrockagentcorecontrol**) Launching AgentCore payments - a capability that provides secure, instant microtransaction payments for AI agents to access paid APIs, MCP servers, and content. It handles payment processing for x402 protocol, payment limits, and 3P wallet integrations with Coinbase CDP and Stripe (Privy).
+* (**ec2**) DescribeInstanceTypes now accepts an IncludeUnsupportedInRegion parameter. When set, the response also lists instance types that are not available in the current Region. Each instance type includes a SupportedInRegion field indicating its regional availability.
+* (**invoicing**) Updated ListInvoiceSummaries API to add new ReceiverRole filter in Request and Response
+* (**route53resolver**) Adds supports for DNS64 on inbound endpoints and IPv6 forwarding through the internet gateway (IGW) on outbound endpoints, making it easier to manage hybrid DNS across IPv4 and IPv6 networks.
+
+### Documentation
+* (**guardduty**) This is a documentation update
+
+## [1.6.71] - 05/06/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Adds support for bring-your-own file system in AgentCore Runtime. Developers can mount Amazon S3 Files and Amazon EFS access points directly into agent sessions using filesystemConfigurations.
+* (**glue**) Adds support for a CustomLogGroupPrefix parameter in StartDataQualityRulesetEvaluationRun to specify custom CloudWatch log group paths, and a RulesetName filter in ListDataQualityRulesetEvaluationRuns to filter evaluation runs by ruleset name.
+* (**imagebuilder**) The ImportDiskImage API now enforces a maximum character limit of 128 characters on the image name field.
+* (**lexmodelsv2**) Amazon Lex V2 introduces audio filler support for speech-to-speech bots. Configure melody or typing sounds that play during backend processing to reduce perceived latency and maintain a natural conversational experience for callers.
+* (**mwaa**) Amazon MWAA now supports a PublicAndPrivate webserver access mode. The Airflow web server is accessible over both public and private endpoints, enabling workers in VPCs without internet access to reach the Task API privately while retaining public access to the Airflow UI.
+* (**s3**) Validate outpost access point resource name
+* (**sagemaker**) Amazon SageMaker HyperPod now returns ImageVersionStatus in DescribeCluster, DescribeClusterNode, and ListClusterNodes responses, indicating whether cluster instances are running the latest available image version.
+* (**securityhub**) Release GenerateRecommendedPolicyV2 and GetRecommendedPolicyV2 APIs. This supports generating and retrieving policy recommendations to remediate unused permissions findings that are now being supported on Security Hub.
+
+## [1.6.70] - 05/05/2026
+
+### Features
+* (**cleanroomsml**) Increase max configurable output limits in the Clean Rooms ML configured model algorithm association resource.
+* (**cloudfront**) Adds support for tagging CloudFront Functions and KeyValueStores resources.
+* (**marketplaceagreement**) With this release, Agreements API provides a programmatic way to generate quotes, accept offers, track charges and entitlements, manage renewals and cancellations, and streamline operations entirely through APIs without navigating to the AWS Marketplace website or AWS Management Console.
+* (**mediatailor**) Added support for Monetization Functions. Monetization Functions let you enrich ad requests with external data and transform session parameters using JSONata expressions, without deploying custom infrastructure.
+* (**medicalimaging**) Add support for DICOM Json Metadata Override features in startDICOMImportJob API
+* (**opensearch**) Amazon OpenSearch Service now supports VPC egress, enabling outbound traffic from your OpenSearch domain to route privately through your VPC instead of the public internet.
+* (**route53domains**) This release adds the TLDInMaintenance exception.
+* (**sagemaker**) Adds support for ml.p5.4xlarge instance type for SageMaker Studio JupyterLab and CodeEditor apps for IAD (us-east-1), NRT (ap-northeast-1), BOM (ap-south-1), CGK (ap-southeast-3), GRU (sa-east-1), PDX (us-west-2), CMH (us-east-2).
+
+## [1.6.69] - 05/04/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Amazon Bedrock AgentCore gateways now support MCP Sessions and response streaming from MCP targets. Session timeouts can be set between 15 minutes and 8 hours, and response streaming enables forwarding stream events sent by MCP targets to gateway users.
+* (**cloudwatchlogs**) Adding an additional optional deliverySourceConfiguration field to PutDeliverySource API. This enables customers to pass service-specific configurations through IngestionHub such as tracing enablement or sampling rates that will be propagated to the source resource.
+* (**ec2**) This feature allows customers to change the tunnel bandwidth on existing VPN connections using the ModifyVpnConnectionOptions API
+* (**georoutes**) Added support for TravelTimeExceedsDriverWorkHours, ViolatedBlockedRoad, and ViolatedVehicleRestriction notice codes to the CalculateRoutes API response.
+* (**lexmodelbuildingservice**) Lex V1 is deprecated, use Lex V2 instead
+* (**medialive**) Updates the type of the MediaLiveRouterOutputConnectionMap.
+* (**securityagent**) AWS Security Agent is adding a new target domain verification method for private VPC penetration testing. Additionally, the target domain resource will now have a verification status reason field to surface additional details about domain verification
+* (**vpclattice**) Amazon VPC Lattice now supports privately resolvable DNS resources
+
+## [1.6.68] - 05/01/2026
+
+### Features
+* (**appstream**) Amazon WorkSpaces Applications now enables AI agents to securely operate desktop applications. Administrators configure stacks to provide agents access to WorkSpaces. Agents can click, type, and take screenshots. Agents authenticate with AWS IAM credentials with activity logged in AWS CloudTrail.
+* (**cloudwatch**) This release adds tag support for CloudWatch Dashboards. The PutDashboard API now accepts a Tags parameter, allowing you to tag dashboards at creation time. Additionally, the TagResource, UntagResource, and ListTagsForResource APIs now support dashboard ARNs as resources.
+* (**cloudwatchlogs**) Adds support for filtering log groups by tags in the ListLogGroups API via the new logGroupTags parameter.
+* (**entityresolution**) Add support for transitive matching in AWS Entity Resolution rule-based matching workflows. When enabled, records that match through different rules are grouped together into the same match group, allowing related records to be connected across rule levels.
+* (**iot**) AWS IoT HTTP rule actions now support cross-topic batching, combining messages from different MQTT topics into single HTTP requests.
+* (**qconnect**) Added reasoning details, statusDescription, and timeToFirstTokenMs fields to the ListSpans response in Amazon Q in Connect to provide visibility into model thinking, error diagnostics, and inference latency metrics.
+* (**quicksight**) Add IdentityProviderCACertificatesBundleS3Uri for private CA certs with OAuth datasources. 256-char limit for FontFamily in themes. ControlTitleFormatText on all 13 filters. ControlTitleFontConfiguration. ContextRegion for cross-region identity context. Story,scenario in CreateCustomCapability API.
+
+### Documentation
+* (**iam**) Added guidance for CreateOpenIDConnectProvider to include multiple thumbprints when OIDC discovery and JWKS endpoints use different hosts or certificates
+
+## [1.6.67] - 04/30/2026
+
+### Features
+* (**bedrockagentcore**) AgentCore Identity now supports on-behalf-of token exchange OAuth2. AgentCore Memory now supports metadata for LongTerm Memory Records.
+* (**bedrockagentcorecontrol**) AgentCore Identity now supports on-behalf-of token exchange OAuth2. AgentCore Memory now supports metadata for LongTerm Memory Records.
+* (**datazone**) Adds support for asynchronous notebook runs
+* (**eks**) Vended logs update param for capability vended logs feature
+* (**kafka**) Adds support for ZookeeperAccess field to control the Client-Zookeeper connectivity.
+* (**observabilityadmin**) Observability Admin enablement launch for AWS Kafka, Bedrock Agent Core Workload Identity and OTel metric enablement.
+* (**paymentcryptography**) Adds support for resource-based policies on AWS Payment Cryptography keys, enabling cross-account key sharing. Also adds Multi-Party Approval (MPA) team association APIs for protecting sensitive import root public key operations.
+* (**route53globalresolver**) Adds support for regions in the UpdateGlobalResolver input.
+* (**sagemaker**) Add InstancePools support to Endpoint for flexible provisioning across a prioritized list of instance types. Add Specifications support to InferenceComponent for per-instance-type model configurations.
+* (**ssoadmin**) Add InstanceArn and IdentityStoreArn in the response of CreateApplication API and IdentityStoreArn in the response of DescribeApplication API
+
 ## [1.6.66] - 04/29/2026
 
 ### Features

@@ -972,6 +972,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The list of variable fields that can be used in the suffix path of a delivery that\n      delivers to an S3 bucket.</p>"
                     }
+                },
+                "deliverySourceConfiguration": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSchemas",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The schema of the delivery source configuration that is available for this log type.\n      Each element describes a configuration that can be set when calling <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>, including the configuration name, type, and default value.</p>"
+                    }
+                },
+                "s3TablesIntegration": {
+                    "target": "com.amazonaws.cloudwatchlogs#S3TablesIntegration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The S3 Tables integration configuration for this configuration template, including the\n      datasource name and type.</p>"
+                    }
                 }
             },
             "traits": {
@@ -3215,10 +3227,164 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The tags that have been assigned to this delivery source.</p>"
                     }
+                },
+                "deliverySourceConfiguration": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The map of key-value pairs that configure the delivery source.</p>"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the delivery source. A delivery source can have the status\n      <code>ACTIVE</code> or <code>INACTIVE</code>. Note: This value is defined for selective log types.</p>"
+                    }
+                },
+                "statusReason": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceStatusReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason for the status of the delivery source. A status reason of\n      <code>RESOURCE_DELETED</code> indicates that the resource associated with the delivery\n      source has been deleted. Note: This value is defined for selective log types.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>This structure contains information about one <i>delivery source</i> in your\n      account. A delivery source is an Amazon Web Services resource that sends logs to an Amazon Web Services destination. The destination can be CloudWatch Logs, Amazon S3, or\n        Firehose.</p>\n         <p>Only some Amazon Web Services services support being configured as a delivery source. These\n      services are listed as <b>Supported [V2 Permissions]</b> in the\n      table at <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html\">Enabling logging from\n          Amazon Web Services services.</a>\n         </p>\n         <p>To configure logs delivery between a supported Amazon Web Services service and a\n      destination, you must do the following:</p>\n         <ul>\n            <li>\n               <p>Create a delivery source, which is a logical object that represents the resource that\n          is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p>\n            </li>\n            <li>\n               <p>Create a <i>delivery destination</i>, which is a logical object that\n          represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p>\n            </li>\n            <li>\n               <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationPolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination.\n        </p>\n            </li>\n            <li>\n               <p>Create a <i>delivery</i> by pairing exactly one delivery source and one\n          delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p>\n            </li>\n         </ul>\n         <p>You can configure a single delivery source to send logs to multiple destinations by\n      creating multiple deliveries. You can also create multiple deliveries to configure multiple\n      delivery sources to send logs to the same delivery destination.</p>"
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceConfiguration": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationKey"
+            },
+            "value": {
+                "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationValue"
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                }
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationNumericValue": {
+            "type": "double"
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSchema": {
+            "type": "structure",
+            "members": {
+                "keyName": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSchemaField",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the configuration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "valueType": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSchemaValueType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The data type of the configuration value. Valid values are <code>string</code>,\n      <code>boolean</code>, <code>int</code>, <code>double</code>, and\n      <code>long</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "defaultValue": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSchemaField",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The default value of the configuration that is used when a value is not\n      specified in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a> request.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "supportedValues": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSupportedValues",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of allowed values for the configuration. Empty for free-form configuration.</p>"
+                    }
+                },
+                "minValue": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationNumericValue",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The minimum numeric value allowed for the configuration. This applies only when\n      the <code>valueType</code> is a numeric type.</p>"
+                    }
+                },
+                "maxValue": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationNumericValue",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum numeric value allowed for the configuration. This applies only when\n      the <code>valueType</code> is a numeric type.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A structure that describes a single configuration for a log type,\n      including its name, value type, default value, and the range of supported values.</p>"
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSchemaField": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                }
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSchemaValueType": {
+            "type": "enum",
+            "members": {
+                "STRING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "string"
+                    }
+                },
+                "BOOLEAN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "boolean"
+                    }
+                },
+                "INT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "int"
+                    }
+                },
+                "DOUBLE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "double"
+                    }
+                },
+                "LONG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "long"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSchemas": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSchema"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A list of <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DeliverySourceConfigurationSchema.html\">DeliverySourceConfigurationSchema</a> objects that describe the available configuration\n      parameters for a delivery source.</p>"
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSupportedValues": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationSchemaField"
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceConfigurationValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                }
             }
         },
         "com.amazonaws.cloudwatchlogs#DeliverySourceName": {
@@ -3229,6 +3395,34 @@
                     "max": 60
                 },
                 "smithy.api#pattern": "^[\\w-]*$"
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceStatus": {
+            "type": "enum",
+            "members": {
+                "ACTIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACTIVE"
+                    }
+                },
+                "INACTIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INACTIVE"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#DeliverySourceStatusReason": {
+            "type": "enum",
+            "members": {
+                "RESOURCE_DELETED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RESOURCE_DELETED"
+                    }
+                }
             }
         },
         "com.amazonaws.cloudwatchlogs#DeliverySources": {
@@ -8366,7 +8560,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns a list of log groups in the Region in your account. If you are performing this\n      action in a monitoring account, you can choose to also return log groups from source accounts\n      that are linked to the monitoring account. For more information about using cross-account\n      observability to set up monitoring accounts and source accounts, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">\n        CloudWatch cross-account observability</a>.</p>\n         <p>You can optionally filter the list by log group class, by using regular expressions in\n      your request to match strings in the log group names, by using the fieldIndexes parameter to\n      filter log groups based on which field indexes are configured, by using the dataSources\n      parameter to filter log groups by data source types, and by using the fieldIndexNames\n      parameter to filter by specific field index names.</p>\n         <p>This operation is paginated. By default, your first use of this operation returns 50\n      results, and includes a token to use in a subsequent operation to return more results.</p>"
+                "smithy.api#documentation": "<p>Returns a list of log groups in the Region in your account. If you are performing this\n      action in a monitoring account, you can choose to also return log groups from source accounts\n      that are linked to the monitoring account. For more information about using cross-account\n      observability to set up monitoring accounts and source accounts, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">\n        CloudWatch cross-account observability</a>.</p>\n         <p>You can optionally filter the results by log group class, log group name pattern,\n      field indexes, data sources, field index names, or log group tags. If you specify more than\n      one filter type, the results include log groups that satisfy all filters.</p>\n         <p>This operation is paginated. By default, your first use of this operation returns 50\n      results, and includes a token to use in a subsequent operation to return more results.</p>"
             }
         },
         "com.amazonaws.cloudwatchlogs#ListLogGroupsForQuery": {
@@ -8497,6 +8691,12 @@
                     "target": "com.amazonaws.cloudwatchlogs#FieldIndexNames",
                     "traits": {
                         "smithy.api#documentation": "<p>An array of field index names to filter log groups that have specific field indexes. Only\n      log groups containing all specified field indexes are returned. You can specify 1 to 20 field\n      index names, each with 1 to 512 characters.</p>"
+                    }
+                },
+                "logGroupTags": {
+                    "target": "com.amazonaws.cloudwatchlogs#TagFilters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An array of tag filters to return only log groups that have specific tags. Multiple\n      filters are combined with AND logic.</p>"
                     }
                 }
             },
@@ -12631,6 +12831,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An optional list of key-value pairs to associate with the resource.</p>\n         <p>For more information about tagging, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>\n         </p>"
                     }
+                },
+                "deliverySourceConfiguration": {
+                    "target": "com.amazonaws.cloudwatchlogs#DeliverySourceConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of key-value pairs to configure the delivery source. Both keys and values must be\n      between 1 and 255 characters in length. For example,\n      <code>{\"samplingRate\": \"50\"}</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -14410,6 +14616,44 @@
                 "target": "com.amazonaws.cloudwatchlogs#S3TableIntegrationSource"
             }
         },
+        "com.amazonaws.cloudwatchlogs#S3TablesDatasourceName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                }
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#S3TablesDatasourceType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                }
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#S3TablesIntegration": {
+            "type": "structure",
+            "members": {
+                "datasourceName": {
+                    "target": "com.amazonaws.cloudwatchlogs#S3TablesDatasourceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the S3 Tables datasource.</p>"
+                    }
+                },
+                "datasourceType": {
+                    "target": "com.amazonaws.cloudwatchlogs#S3TablesDatasourceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the S3 Tables datasource.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about the S3 Tables integration configuration for a configuration\n      template.</p>"
+            }
+        },
         "com.amazonaws.cloudwatchlogs#S3Uri": {
             "type": "string",
             "traits": {
@@ -15130,7 +15374,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Starts a query of one or more log groups or data sources using CloudWatch Logs\n      Insights. You specify the log groups or data sources and time range to query and the query\n      string to use. You can query up to 10 data sources in a single query.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query\n        Syntax</a>.</p>\n         <p>After you run a query using <code>StartQuery</code>, the query results are stored by\n        CloudWatch Logs. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html\">GetQueryResults</a> to retrieve the results of a query, using the <code>queryId</code>\n      that <code>StartQuery</code> returns. </p>\n         <p>Interactive queries started with <code>StartQuery</code> share concurrency limits with\n      automated scheduled query executions. Both types of queries count toward the same regional\n      concurrent query quota, so high scheduled query activity may affect the availability of\n      concurrent slots for interactive queries.</p>\n         <note>\n            <p>To specify the log groups to query, a <code>StartQuery</code> operation must include one\n        of the following:</p>\n            <ul>\n               <li>\n                  <p>Either exactly one of the following parameters: <code>logGroupName</code>,\n              <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>\n                  </p>\n               </li>\n               <li>\n                  <p>Or the <code>queryString</code> must include a <code>SOURCE</code> command to select\n            log groups for the query. The <code>SOURCE</code> command can select log groups based on\n            log group name prefix, account ID, and log class, or select data sources using\n            dataSource syntax in LogsQL, PPL, and SQL.\n            </p>\n                  <p>For more information about the <code>SOURCE</code> command, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax-Source.html\">SOURCE</a>.</p>\n               </li>\n            </ul>\n         </note>\n         <p>If you have associated a KMS key with the query results in this\n      account, then <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> uses\n      that key to encrypt the results when it stores them. If no key is associated with query\n      results, the query results are encrypted with the default CloudWatch Logs encryption\n      method.</p>\n         <p>Queries time out after 60 minutes of runtime. If your queries are timing out, reduce the\n      time range being searched or partition your query into a number of queries.</p>\n         <p>If you are using CloudWatch cross-account observability, you can use this operation\n      in a monitoring account to start a query in a linked source account. For more information, see\n        <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>. For a cross-account <code>StartQuery</code>\n      operation, the query definition must be defined in the monitoring account.</p>\n         <p>You can have up to 100 concurrent CloudWatch Logs insights queries, including queries\n      that have been added to dashboards. </p>"
+                "smithy.api#documentation": "<p>Starts a query of one or more log groups or data sources using CloudWatch Logs\n      Insights. You specify the log groups or data sources and time range to query and the query\n      string to use. You can query up to 10 data sources in a single query.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query\n        Syntax</a>.</p>\n         <p>After you run a query using <code>StartQuery</code>, the query results are stored by\n        CloudWatch Logs. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html\">GetQueryResults</a> to retrieve the results of a query, using the <code>queryId</code>\n      that <code>StartQuery</code> returns. </p>\n         <p>Interactive queries started with <code>StartQuery</code> share concurrency limits with\n      automated scheduled query executions. Both types of queries count toward the same regional\n      concurrent query quota, so high scheduled query activity may affect the availability of\n      concurrent slots for interactive queries.</p>\n         <note>\n            <p>To specify the log groups to query, a <code>StartQuery</code> operation must include one\n        of the following:</p>\n            <ul>\n               <li>\n                  <p>Either exactly one of the following parameters: <code>logGroupName</code>,\n              <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>\n                  </p>\n               </li>\n               <li>\n                  <p>Or the <code>queryString</code> must include a <code>SOURCE</code> command to select\n            log groups for the query. The <code>SOURCE</code> command can select log groups based on\n            log group name prefix, account ID, and log class, or select data sources using\n            dataSource syntax in LogsQL, PPL, and SQL. In LogsQL, the <code>SOURCE</code> command\n            also supports filtering by log group tags.\n            </p>\n                  <p>For more information about the <code>SOURCE</code> command, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax-Source.html\">SOURCE</a>.</p>\n               </li>\n            </ul>\n         </note>\n         <p>If you have associated a KMS key with the query results in this\n      account, then <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a> uses\n      that key to encrypt the results when it stores them. If no key is associated with query\n      results, the query results are encrypted with the default CloudWatch Logs encryption\n      method.</p>\n         <p>Queries time out after 60 minutes of runtime. If your queries are timing out, reduce the\n      time range being searched or partition your query into a number of queries.</p>\n         <p>If you are using CloudWatch cross-account observability, you can use this operation\n      in a monitoring account to start a query in a linked source account. For more information, see\n        <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>. For a cross-account <code>StartQuery</code>\n      operation, the query definition must be defined in the monitoring account.</p>\n         <p>You can have up to 100 concurrent CloudWatch Logs insights queries, including queries\n      that have been added to dashboards. </p>"
             }
         },
         "com.amazonaws.cloudwatchlogs#StartQueryRequest": {
@@ -15527,6 +15771,71 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.cloudwatchlogs#String"
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#TagFilter": {
+            "type": "structure",
+            "members": {
+                "key": {
+                    "target": "com.amazonaws.cloudwatchlogs#TagFilterKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tag key to filter on.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "values": {
+                    "target": "com.amazonaws.cloudwatchlogs#TagFilterValues",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An optional list of tag values to filter on.</p>\n         <ul>\n            <li>\n               <p>If you specify a filter that contains more than one value for a key, \n      the response returns log groups that match any of the specified values for that key.</p>\n            </li>\n            <li>\n               <p>If you don't specify values, the response returns all log groups that are \n      tagged with that key, with any or no value.</p>\n            </li>\n            <li>\n               <p>Use <code>*</code> for wildcard matching. For example,\n        <code>prod*</code> matches values that start with <code>prod</code>.</p>\n            </li>\n            <li>\n               <p>Use <code>!</code> as a prefix for negation. For example,\n        <code>!prod</code> matches values that are not <code>prod</code>.</p>\n            </li>\n            <li>\n               <p>Exact matching and negation are case-sensitive. Wildcard matching is\n        case-insensitive.</p>\n            </li>\n         </ul>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A tag filter that specifies a tag key and optional tag values for filtering log\n      groups by tags.</p>"
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#TagFilterKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 128
+                },
+                "smithy.api#pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]+)$"
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#TagFilterValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 259
+                },
+                "smithy.api#pattern": "^!?\\*?([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)\\*?$"
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#TagFilterValues": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cloudwatchlogs#TagFilterValue"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 5
+                }
+            }
+        },
+        "com.amazonaws.cloudwatchlogs#TagFilters": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.cloudwatchlogs#TagFilter"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 5
+                }
             }
         },
         "com.amazonaws.cloudwatchlogs#TagKey": {

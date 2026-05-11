@@ -250,6 +250,12 @@ public object AwsSdkSetting {
         "aws.restrictFilePermissions",
         "AWS_RESTRICT_FILE_PERMISSIONS",
     )
+    
+    /**
+     * Enables the new retry behavior. When set, takes precedence over
+     * the `SMITHY_NEW_RETRIES_2026` environment variable defined in smithy-kotlin.
+     */
+    public val AwsNewRetries: EnvironmentSetting<Boolean> = boolEnvSetting("aws.newRetries2026", "AWS_NEW_RETRIES_2026")
 }
 
 /**

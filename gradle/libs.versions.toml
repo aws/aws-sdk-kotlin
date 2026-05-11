@@ -4,7 +4,7 @@ ksp-version = "2.3.7"
 
 dokka-version = "2.2.0"
 
-aws-kotlin-repo-tools-version = "0.5.9"
+aws-kotlin-repo-tools-version = "0.5.12"
 
 # libs
 coroutines-version = "1.10.2"
@@ -22,6 +22,7 @@ ddb-local-version = "2.6.1"
 kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.16"
 kotlinx-serialization-version = "1.11.0"
+kaml-version = "0.55.0"
 mockk-version = "1.14.9"
 slf4j-version = "2.0.17"
 jsoup-version = "1.22.2"
@@ -112,6 +113,7 @@ kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", 
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest-version" }
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark-version" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-version" }
+kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml-version" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk-version" }
 
 ddb-local = { module = "com.amazonaws:DynamoDBLocal", version.ref = "ddb-local-version" }

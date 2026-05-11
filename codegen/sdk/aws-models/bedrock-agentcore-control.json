@@ -60,6 +60,29 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#ActorTokenContentType": {
+            "type": "enum",
+            "members": {
+                "NONE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NONE"
+                    }
+                },
+                "M2M": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "M2M"
+                    }
+                },
+                "AWS_IAM_ID_TOKEN_JWT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS_IAM_ID_TOKEN_JWT"
+                    }
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#AdditionalModelRequestFields": {
             "type": "document"
         },
@@ -587,6 +610,50 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#AllowedStringListValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#AllowedStringListValuesList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#AllowedStringListValue"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#AllowedStringValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#AllowedStringValuesList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#AllowedStringValue"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#AmazonBedrockAgentCoreControl": {
             "type": "service",
             "version": "2023-06-05",
@@ -661,6 +728,12 @@
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcorecontrol#OnlineEvaluationConfig"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProvider"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerResource"
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcorecontrol#PolicyEngineResource"
@@ -2359,6 +2432,29 @@
                 "smithy.api#documentation": "<p>The value or values to match for.</p> <ul> <li> <p>Include a <code>matchValueString</code> with the <code>EQUALS</code> operator to specify a string that matches the claim field value.</p> </li> <li> <p>Include a <code>matchValueArray</code> to specify an array of string values. You can use the following operators:</p> <ul> <li> <p>Use <code>CONTAINS</code> to yield a match if the claim field value is in the array.</p> </li> <li> <p>Use <code>CONTAINS_ANY</code> to yield a match if the claim field value contains any of the strings in the array.</p> </li> </ul> </li> </ul>"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#ClientAuthenticationMethodType": {
+            "type": "enum",
+            "members": {
+                "CLIENT_SECRET_BASIC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CLIENT_SECRET_BASIC"
+                    }
+                },
+                "CLIENT_SECRET_POST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CLIENT_SECRET_POST"
+                    }
+                },
+                "AWS_IAM_ID_TOKEN_JWT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS_IAM_ID_TOKEN_JWT"
+                    }
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#ClientIdType": {
             "type": "string",
             "traits": {
@@ -2670,6 +2766,94 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Contains summary information about a code interpreter. A code interpreter enables Amazon Bedrock AgentCore Agent to execute code.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpApiKeyIdType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 512
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9\\-_]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpApiKeySecretType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9+/=\\-_\\s]+$",
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpConfigurationInput": {
+            "type": "structure",
+            "members": {
+                "apiKeyId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpApiKeyIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The API key identifier provided by Coinbase Developer Platform.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "apiKeySecret": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpApiKeySecretType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The API key secret provided by Coinbase Developer Platform.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "walletSecret": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpWalletSecretType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The wallet secret provided by Coinbase Developer Platform.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Coinbase CDP configuration - credentials provided by Coinbase Developer Platform"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpConfigurationOutput": {
+            "type": "structure",
+            "members": {
+                "apiKeyId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpApiKeyIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The API key identifier provided by Coinbase Developer Platform.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "apiKeySecretArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#Secret",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "walletSecretArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#Secret",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Coinbase CDP configuration output with secret ARNs"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpWalletSecretType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9+/=\\-_\\s]+$",
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#ComponentConfiguration": {
@@ -5091,6 +5275,12 @@
                         "smithy.api#documentation": "<p>The memory strategies to use for this memory. Strategies define how information is extracted, processed, and consolidated.</p>"
                     }
                 },
+                "indexedKeys": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#IndexedKeysList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Metadata keys to index for filtering. Once declared, indexed keys cannot be removed.</p>"
+                    }
+                },
                 "streamDeliveryResources": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#StreamDeliveryResources",
                     "traits": {
@@ -5411,6 +5601,441 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p> The reason for failure if the online evaluation configuration creation or execution failed. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreatePaymentConnector": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreatePaymentConnectorRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreatePaymentConnectorResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Creates a new payment connector for a payment manager. A payment connector integrates with a supported payment provider to enable payment processing capabilities.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "POST",
+                    "uri": "/payments/managers/{paymentManagerId}/connectors"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreatePaymentConnectorRequest": {
+            "type": "structure",
+            "members": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment manager to create the connector for.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsDescription",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A description of the payment connector.</p>"
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of payment connector, which determines the payment provider integration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderConfigurations": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialsProviderConfigurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The credential provider configurations for the payment connector. These configurations specify how the connector authenticates with the payment provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreatePaymentConnectorResponse": {
+            "type": "structure",
+            "members": {
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the created payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the parent payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the created payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the created payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderConfigurations": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialsProviderConfigurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The credential provider configurations for the created payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "createdAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment connector was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreatePaymentCredentialProvider": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreatePaymentCredentialProviderRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreatePaymentCredentialProviderResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DecryptionFailure"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#EncryptionFailure"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceLimitExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#controlPlane": {},
+                "smithy.api#documentation": "<p>Creates a new payment credential provider for storing authentication credentials used by payment connectors to communicate with external payment providers.</p>",
+                "smithy.api#http": {
+                    "code": 201,
+                    "uri": "/identities/CreatePaymentCredentialProvider",
+                    "method": "POST"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreatePaymentCredentialProviderRequest": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialProviderName",
+                    "traits": {
+                        "smithy.api#documentation": "Unique name for the payment credential provider",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderVendor": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderVendorType",
+                    "traits": {
+                        "smithy.api#documentation": "The vendor type (e.g., CoinbaseCDP)",
+                        "smithy.api#required": {}
+                    }
+                },
+                "providerConfigurationInput": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentProviderConfigurationInput",
+                    "traits": {
+                        "smithy.api#documentation": "Configuration specific to the vendor, including API credentials",
+                        "smithy.api#notProperty": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "tags": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#TagsMap",
+                    "traits": {
+                        "smithy.api#documentation": "Optional tags for resource organization",
+                        "smithy.api#notProperty": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreatePaymentCredentialProviderResponse": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialProviderName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the created payment credential provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderVendor": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderVendorType",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the created payment credential provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "providerConfigurationOutput": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentProviderConfigurationOutput",
+                    "traits": {
+                        "smithy.api#documentation": "Output configuration (contains secret ARNs, excludes actual secret values)",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreatePaymentManager": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreatePaymentManagerRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreatePaymentManagerResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Creates a new payment manager in your Amazon Web Services account. A payment manager serves as the top-level resource for managing payment processing capabilities, including payment connectors that integrate with supported payment providers.</p> <p>If you specify <code>CUSTOM_JWT</code> as the <code>authorizerType</code>, you must provide an <code>authorizerConfiguration</code>.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "POST",
+                    "uri": "/payments/managers"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreatePaymentManagerRequest": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsDescription",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A description of the payment manager.</p>"
+                    }
+                },
+                "authorizerType": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsAuthorizerType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of authorizer to use for the payment manager.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "authorizerConfiguration": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AuthorizerConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The authorizer configuration for the payment manager.</p>"
+                    }
+                },
+                "roleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#RoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that the payment manager assumes to access resources on your behalf.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                },
+                "tags": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#TagsMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of tag keys and values to assign to the payment manager.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreatePaymentManagerResponse": {
+            "type": "structure",
+            "members": {
+                "paymentManagerArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the created payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the created payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the created payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "authorizerType": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsAuthorizerType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of authorizer for the created payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "authorizerConfiguration": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AuthorizerConfiguration"
+                },
+                "roleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#RoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role associated with the created payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "workloadIdentityDetails": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#WorkloadIdentityDetails"
+                },
+                "createdAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment manager was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the payment manager. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "tags": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#TagsMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags associated with the created payment manager.</p>"
                     }
                 }
             },
@@ -6343,6 +6968,38 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#CredentialsProviderConfiguration": {
+            "type": "union",
+            "members": {
+                "coinbaseCDP": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The credential provider configuration for a Coinbase CDP payment connector.</p>"
+                    }
+                },
+                "stripePrivy": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The credential provider configuration for a Stripe Privy payment connector.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The credential provider configuration for a payment connector. Specifies the payment provider type and its associated credential provider.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CredentialsProviderConfigurations": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CredentialsProviderConfiguration"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#CustomClaimValidationType": {
             "type": "structure",
             "members": {
@@ -6606,7 +7263,7 @@
                 "privateEndpointOverrides": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#PrivateEndpointOverrides",
                     "traits": {
-                        "smithy.api#documentation": "<p>A list of private endpoint overrides for the JWT authorizer. Each override maps a specific domain to a private endpoint, enabling secure connectivity through VPC Lattice resource configurations.</p>"
+                        "smithy.api#documentation": "<p>The private endpoint overrides for the custom JWT authorizer configuration.</p>"
                     }
                 }
             },
@@ -6651,6 +7308,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The configuration for the custom memory strategy.</p>"
                     }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Schema for metadata fields on records generated by this strategy.</p>"
+                    }
                 }
             },
             "traits": {
@@ -6668,17 +7331,19 @@
                     }
                 },
                 "clientId": {
-                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientIdType",
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DefaultClientIdType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The client ID for the custom OAuth2 provider.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": "",
+                        "smithy.api#documentation": "<p>The client ID for the custom OAuth2 provider.</p>"
                     }
                 },
                 "clientSecret": {
-                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientSecretType",
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DefaultClientSecretType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The client secret for the custom OAuth2 provider.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": "",
+                        "smithy.api#documentation": "<p>The client secret for the custom OAuth2 provider.</p>"
                     }
                 },
                 "privateEndpoint": {
@@ -6690,7 +7355,19 @@
                 "privateEndpointOverrides": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#PrivateEndpointOverrides",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of private endpoint overrides for the custom OAuth2 provider. Each override maps a specific domain to a private endpoint, enabling secure connectivity through VPC Lattice resource configurations.</p>"
+                        "smithy.api#documentation": "<p>The private endpoint overrides for the custom OAuth2 provider configuration.</p>"
+                    }
+                },
+                "onBehalfOfTokenExchangeConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#OnBehalfOfTokenExchangeConfigType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration for on-behalf-of token exchange. This enables authentication flows that use RFC 8693 token exchange or RFC 7523 JWT authorization grants.</p>"
+                    }
+                },
+                "clientAuthenticationMethod": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientAuthenticationMethodType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The client authentication method to use when authenticating with the token endpoint.</p>"
                     }
                 }
             },
@@ -6723,7 +7400,19 @@
                 "privateEndpointOverrides": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#PrivateEndpointOverrides",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of private endpoint overrides for the custom OAuth2 provider. Each override maps a specific domain to a private endpoint, enabling secure connectivity through VPC Lattice resource configurations.</p>"
+                        "smithy.api#documentation": "<p>The private endpoint overrides for the custom OAuth2 provider configuration.</p>"
+                    }
+                },
+                "onBehalfOfTokenExchangeConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#OnBehalfOfTokenExchangeConfigType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration for on-behalf-of token exchange.</p>"
+                    }
+                },
+                "clientAuthenticationMethod": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientAuthenticationMethodType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The client authentication method used when authenticating with the token endpoint.</p>"
                     }
                 }
             },
@@ -6802,6 +7491,33 @@
                 "smithy.api#documentation": "<p>Exception thrown when decryption of a secret fails.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 400
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DefaultClientIdType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 256
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DefaultClientSecretType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 2048
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#Definition": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1000
+                },
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#DeleteAgentRuntime": {
@@ -8083,6 +8799,235 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#DeletePaymentConnector": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeletePaymentConnectorRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeletePaymentConnectorResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes a payment connector.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "DELETE",
+                    "uri": "/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeletePaymentConnectorRequest": {
+            "type": "structure",
+            "members": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the parent payment manager.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment connector to delete.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+                        "smithy.api#httpQuery": "clientToken",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeletePaymentConnectorResponse": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the payment connector, set to <code>DELETING</code> when deletion is initiated. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the deleted payment connector.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeletePaymentCredentialProvider": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeletePaymentCredentialProviderRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeletePaymentCredentialProviderResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#controlPlane": {},
+                "smithy.api#documentation": "<p>Deletes a payment credential provider and its associated stored credentials.</p>",
+                "smithy.api#http": {
+                    "code": 204,
+                    "uri": "/identities/DeletePaymentCredentialProvider",
+                    "method": "POST"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeletePaymentCredentialProviderRequest": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialProviderName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment credential provider to delete.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeletePaymentCredentialProviderResponse": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeletePaymentManager": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeletePaymentManagerRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeletePaymentManagerResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes a payment manager. All payment connectors associated with the payment manager must be deleted before the payment manager can be deleted. This operation initiates the deletion process asynchronously.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "DELETE",
+                    "uri": "/payments/managers/{paymentManagerId}"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeletePaymentManagerRequest": {
+            "type": "structure",
+            "members": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment manager to delete.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+                        "smithy.api#httpQuery": "clientToken",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeletePaymentManagerResponse": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the payment manager, set to <code>DELETING</code> when deletion is initiated. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the deleted payment manager.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#DeletePolicy": {
             "type": "operation",
             "input": {
@@ -8691,11 +9636,42 @@
         "com.amazonaws.bedrockagentcorecontrol#DiscoveryUrlType": {
             "type": "string",
             "traits": {
-                "smithy.api#pattern": "^.+/\\.well-known/openid-configuration$"
+                "smithy.api#pattern": "^.+/\\.well-known/(openid-configuration|oauth-authorization-server)$"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#DomainName": {
             "type": "string"
+        },
+        "com.amazonaws.bedrockagentcorecontrol#EfsAccessPointArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 128
+                },
+                "smithy.api#pattern": "^arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:access-point/fsap-[0-9a-f]{8,40}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#EfsAccessPointConfiguration": {
+            "type": "structure",
+            "members": {
+                "accessPointArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#EfsAccessPointArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the EFS access point to mount into the AgentCore Runtime.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "mountPath": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MountPath",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The mount path for the EFS access point inside the AgentCore Runtime. The path must be under <code>/mnt</code> with exactly one subdirectory level (for example, <code>/mnt/data</code>).</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for an Amazon EFS access point filesystem mounted into the AgentCore Runtime. EFS access points provide shared file storage accessible from your AgentCore Runtime sessions.</p>"
+            }
         },
         "com.amazonaws.bedrockagentcorecontrol#EncryptionFailure": {
             "type": "structure",
@@ -8858,6 +9834,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The configuration for the reflections created with the episodic memory strategy.</p>"
                     }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Schema for metadata fields on records generated by this strategy.</p>"
+                    }
                 }
             },
             "traits": {
@@ -8966,6 +9948,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The namespaceTemplates to use for episodic reflection. Can be less nested than the episodic namespaces.</p>"
                     }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Schema for metadata fields on records generated by this reflection override.</p>"
+                    }
                 }
             },
             "traits": {
@@ -8990,6 +9978,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The namespaceTemplates for which to create reflections. Can be less nested than the episodic namespaces.</p>"
                     }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\"Schema for metadata fields on records generated by reflections.</p>"
+                    }
                 }
             },
             "traits": {
@@ -9013,6 +10007,12 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#NamespacesList",
                     "traits": {
                         "smithy.api#documentation": "<p>The namespaceTemplates over which to create reflections. Can be less nested than episode namespaces.</p>"
+                    }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Schema for metadata fields on records generated by reflections.</p>"
                     }
                 }
             },
@@ -9051,6 +10051,12 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#NamespacesList",
                     "traits": {
                         "smithy.api#documentation": "<p>The namespaceTemplates over which reflections were created. Can be less nested than the episodic namespaces.</p>"
+                    }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Schema for metadata fields on records generated by this reflection override.</p>"
                     }
                 }
             },
@@ -9383,6 +10389,20 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#ExtractionConfig": {
+            "type": "union",
+            "members": {
+                "llmExtractionConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#LlmExtractionConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Model-based extraction using a definition and instructions.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for metadata extraction from conversational content.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#ExtractionConfiguration": {
             "type": "union",
             "members": {
@@ -9405,6 +10425,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Configuration for session storage. Session storage provides persistent storage that is preserved across AgentCore Runtime session invocations.</p>"
                     }
+                },
+                "s3FilesAccessPoint": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#S3FilesAccessPointConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configuration for an Amazon S3 Files access point to mount into the AgentCore Runtime.</p>"
+                    }
+                },
+                "efsAccessPoint": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#EfsAccessPointConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configuration for an Amazon EFS access point to mount into the AgentCore Runtime.</p>"
+                    }
                 }
             },
             "traits": {
@@ -9419,7 +10451,7 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 0,
-                    "max": 1
+                    "max": 5
                 }
             }
         },
@@ -12347,7 +13379,7 @@
                 "failureReason": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>The reason for the failure if the OAuth2 credential provider is in a failed state.</p>",
+                        "smithy.api#documentation": "<p>The reason for failure if the OAuth2 credential provider is in a failed state.</p>",
                         "smithy.api#notProperty": {}
                     }
                 }
@@ -12501,6 +13533,373 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p> The reason for failure if the online evaluation configuration execution failed. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetPaymentConnector": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetPaymentConnectorRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetPaymentConnectorResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves information about a specific payment connector.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "GET",
+                    "uri": "/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetPaymentConnectorRequest": {
+            "type": "structure",
+            "members": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the parent payment manager.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment connector to retrieve.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetPaymentConnectorResponse": {
+            "type": "structure",
+            "members": {
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsDescription",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the payment connector.</p>"
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the payment connector, which determines the payment provider integration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderConfigurations": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialsProviderConfigurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The credential provider configurations for the payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "createdAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment connector was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "lastUpdatedAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment connector was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetPaymentCredentialProvider": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetPaymentCredentialProviderRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetPaymentCredentialProviderResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DecryptionFailure"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#controlPlane": {},
+                "smithy.api#documentation": "<p>Retrieves information about a specific payment credential provider.</p>",
+                "smithy.api#http": {
+                    "uri": "/identities/GetPaymentCredentialProvider",
+                    "method": "POST"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetPaymentCredentialProviderRequest": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialProviderName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment credential provider to retrieve.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetPaymentCredentialProviderResponse": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialProviderName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment credential provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the payment credential provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderVendor": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderVendorType",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "providerConfigurationOutput": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentProviderConfigurationOutput",
+                    "traits": {
+                        "smithy.api#documentation": "Output configuration (contains secret ARNs, excludes actual secret values)",
+                        "smithy.api#required": {}
+                    }
+                },
+                "createdTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment credential provider was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "lastUpdatedTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment credential provider was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "tags": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#TagsMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags associated with the payment credential provider.</p>",
+                        "smithy.api#notProperty": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetPaymentManager": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetPaymentManagerRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetPaymentManagerResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves information about a specific payment manager.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "GET",
+                    "uri": "/payments/managers/{paymentManagerId}"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetPaymentManagerRequest": {
+            "type": "structure",
+            "members": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment manager to retrieve.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetPaymentManagerResponse": {
+            "type": "structure",
+            "members": {
+                "paymentManagerArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsDescription",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the payment manager.</p>"
+                    }
+                },
+                "authorizerType": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsAuthorizerType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of authorizer used by the payment manager.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "authorizerConfiguration": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AuthorizerConfiguration"
+                },
+                "roleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#RoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role associated with the payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "workloadIdentityDetails": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#WorkloadIdentityDetails"
+                },
+                "createdAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment manager was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "lastUpdatedAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment manager was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the payment manager. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "tags": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#TagsMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The tags associated with the payment manager.</p>"
                     }
                 }
             },
@@ -14804,7 +16203,7 @@
                     "min": 1,
                     "max": 256
                 },
-                "smithy.api#pattern": "^(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9-]+)$"
+                "smithy.api#pattern": "^[A-Za-z][A-Za-z0-9_-]{0,255}$"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#HttpHeaderKey": {
@@ -15065,6 +16464,40 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The configuration details returned for a supported OAuth2 provider, including client credentials and OAuth2 discovery information.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#IndexedKey": {
+            "type": "structure",
+            "members": {
+                "key": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MetadataKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The metadata key name to index.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MetadataValueType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The data type of the indexed key.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A metadata key indexed for filtering.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#IndexedKeysList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#IndexedKey"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#InferenceConfiguration": {
@@ -16901,6 +18334,266 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#ListPaymentConnectors": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ListPaymentConnectorsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ListPaymentConnectorsResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Lists all payment connectors for a specified payment manager.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "POST",
+                    "uri": "/payments/managers/{paymentManagerId}/connectors-list"
+                },
+                "smithy.api#paginated": {
+                    "inputToken": "nextToken",
+                    "outputToken": "nextToken",
+                    "pageSize": "maxResults",
+                    "items": "paymentConnectors"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ListPaymentConnectorsRequest": {
+            "type": "structure",
+            "members": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment manager whose connectors to list.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "maxResults": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+                        "smithy.api#httpQuery": "maxResults"
+                    }
+                },
+                "nextToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+                        "smithy.api#httpQuery": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ListPaymentConnectorsResponse": {
+            "type": "structure",
+            "members": {
+                "paymentConnectors": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorSummaries",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of payment connector summaries. For details about the fields in each summary, see the <code>PaymentConnectorSummary</code> data type.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "nextToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ListPaymentCredentialProviders": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ListPaymentCredentialProvidersRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ListPaymentCredentialProvidersResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#controlPlane": {},
+                "smithy.api#documentation": "<p>Lists all payment credential providers in the account.</p>",
+                "smithy.api#http": {
+                    "uri": "/identities/ListPaymentCredentialProviders",
+                    "method": "POST"
+                },
+                "smithy.api#paginated": {
+                    "inputToken": "nextToken",
+                    "outputToken": "nextToken",
+                    "pageSize": "maxResults",
+                    "items": "credentialProviders"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ListPaymentCredentialProvidersRequest": {
+            "type": "structure",
+            "members": {
+                "nextToken": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Pagination token.</p>"
+                    }
+                },
+                "maxResults": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#default": 10,
+                        "smithy.api#documentation": "<p>Maximum number of results to return.</p>",
+                        "smithy.api#range": {
+                            "min": 1,
+                            "max": 20
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ListPaymentCredentialProvidersResponse": {
+            "type": "structure",
+            "members": {
+                "credentialProviders": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviders",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of payment credential providers.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "nextToken": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Pagination token for the next page of results.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ListPaymentManagers": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ListPaymentManagersRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ListPaymentManagersResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Lists all payment managers in the account.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "POST",
+                    "uri": "/payments/managers-list"
+                },
+                "smithy.api#paginated": {
+                    "inputToken": "nextToken",
+                    "outputToken": "nextToken",
+                    "pageSize": "maxResults",
+                    "items": "paymentManagers"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ListPaymentManagersRequest": {
+            "type": "structure",
+            "members": {
+                "maxResults": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+                        "smithy.api#httpQuery": "maxResults"
+                    }
+                },
+                "nextToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+                        "smithy.api#httpQuery": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ListPaymentManagersResponse": {
+            "type": "structure",
+            "members": {
+                "paymentManagers": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerSummaries",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of payment manager summaries. For details about the fields in each summary, see the <code>PaymentManagerSummary</code> data type.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "nextToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#ListPolicies": {
             "type": "operation",
             "input": {
@@ -17693,6 +19386,43 @@
                 "smithy.api#documentation": "<p> The configuration for LLM-as-a-Judge evaluation that uses a language model to assess agent performance based on custom instructions and rating scales. </p>"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#LlmExtractionConfig": {
+            "type": "structure",
+            "members": {
+                "llmExtractionInstruction": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#LlmExtractionInstruction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Instructions for extraction. Supports built-in operators like LATEST_VALUE or custom natural-language instructions.</p>"
+                    }
+                },
+                "definition": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#Definition",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Description of what this metadata field represents.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "validation": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#Validation",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Validation rules to constrain extracted values.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Model-based metadata extraction configuration.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#LlmExtractionInstruction": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1000
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#LogGroupName": {
             "type": "string",
             "traits": {
@@ -17728,6 +19458,18 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#SearchType",
                     "traits": {
                         "smithy.api#documentation": "<p>The search type for the Model Context Protocol gateway. This field specifies how the gateway handles search operations.</p>"
+                    }
+                },
+                "sessionConfiguration": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#SessionConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The session configuration for the MCP gateway. This configuration controls session behavior, including session timeout settings.</p>"
+                    }
+                },
+                "streamingConfiguration": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StreamingConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The streaming configuration for the MCP gateway. This configuration controls whether response streaming is enabled for the gateway.</p>"
                     }
                 }
             },
@@ -17800,7 +19542,7 @@
                 "routingDomain": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#RoutingDomain",
                     "traits": {
-                        "smithy.api#documentation": "<p>An intermediate publicly resolvable domain used as the VPC Lattice resource configuration endpoint. Required when your private endpoint uses a domain that is not publicly resolvable.</p>"
+                        "smithy.api#documentation": "<p>An intermediate domain to use as the resource configuration endpoint instead of the actual target domain. Use this when you want to route traffic through an intermediate component such as a VPC endpoint or internal load balancer. For more information, see xref:lattice-vpc-egress-routing-domain[Route traffic through an intermediate domain].</p>"
                     }
                 }
             },
@@ -18170,6 +19912,12 @@
                         "smithy.api#documentation": "<p>The list of memory strategies associated with this memory.</p>"
                     }
                 },
+                "indexedKeys": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#IndexedKeysList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The indexed metadata keys for this memory. Only indexed keys can be used in metadata filters.</p>"
+                    }
+                },
                 "streamDeliveryResources": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#StreamDeliveryResources",
                     "traits": {
@@ -18197,6 +19945,20 @@
                     "min": 12
                 },
                 "smithy.api#pattern": "^[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema": {
+            "type": "structure",
+            "members": {
+                "metadataSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MetadataSchemaList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The metadata field definitions for this strategy.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Schema for metadata on memory records generated by a strategy.</p>"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#MemoryResource": {
@@ -18321,6 +20083,12 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#MemoryStrategyStatus",
                     "traits": {
                         "smithy.api#documentation": "<p>The current status of the memory strategy.</p>"
+                    }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Schema for metadata fields on records generated by this strategy.</p>"
                     }
                 }
             },
@@ -18573,6 +20341,78 @@
                 "smithy.api#documentation": "<p>Configuration for HTTP header and query parameter propagation between the gateway and target servers.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#MetadataKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 128
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#MetadataSchemaEntry": {
+            "type": "structure",
+            "members": {
+                "key": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MetadataKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The metadata field name. Must match an indexed key to be queryable via metadata filters.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MetadataValueType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The MetadataValueType.</p>"
+                    }
+                },
+                "extractionConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ExtractionConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configuration for extracting this metadata value from conversational content.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A metadata field definition within a strategy's schema.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#MetadataSchemaList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#MetadataSchemaEntry"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 20
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#MetadataValueType": {
+            "type": "enum",
+            "members": {
+                "STRING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STRING"
+                    }
+                },
+                "STRINGLIST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STRINGLIST"
+                    }
+                },
+                "NUMBER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NUMBER"
+                    }
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#MicrosoftOauth2ProviderConfigInput": {
             "type": "structure",
             "members": {
@@ -18742,6 +20582,12 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#ModifyStrategyConfiguration",
                     "traits": {
                         "smithy.api#documentation": "<p>The updated configuration for the memory strategy.</p>"
+                    }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Updated metadata schema for records generated by this strategy.</p>"
                     }
                 }
             },
@@ -18946,6 +20792,26 @@
                 "target": "com.amazonaws.bedrockagentcorecontrol#NonEmptyString"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#NumberValidation": {
+            "type": "structure",
+            "members": {
+                "minValue": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Minimum allowed value.</p>"
+                    }
+                },
+                "maxValue": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Maximum allowed value.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Validation for NUMBER fields.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#NumericalScaleDefinition": {
             "type": "structure",
             "members": {
@@ -19120,6 +20986,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "AUTHORIZATION_CODE"
+                    }
+                },
+                "TOKEN_EXCHANGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TOKEN_EXCHANGE"
                     }
                 }
             }
@@ -19429,6 +21301,46 @@
                 "smithy.api#documentation": "<p>Contains the output configuration for an OAuth2 provider.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#OnBehalfOfTokenExchangeConfigType": {
+            "type": "structure",
+            "members": {
+                "grantType": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#OnBehalfOfTokenExchangeGrantTypeType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The grant type for the on-behalf-of token exchange.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "tokenExchangeGrantTypeConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#TokenExchangeGrantTypeConfigType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configuration specific to the TOKEN_EXCHANGE grant type (RFC 8693).</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for on-behalf-of token exchange.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#OnBehalfOfTokenExchangeGrantTypeType": {
+            "type": "enum",
+            "members": {
+                "TOKEN_EXCHANGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>RFC 8693 token exchange, adopted by the majority of identity providers supporting on-behalf-of flows.</p>",
+                        "smithy.api#enumValue": "TOKEN_EXCHANGE"
+                    }
+                },
+                "JWT_AUTHORIZATION_GRANT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>RFC 7523 JWT authorization grant, adopted by Microsoft Entra ID.</p>",
+                        "smithy.api#enumValue": "JWT_AUTHORIZATION_GRANT"
+                    }
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#OnlineEvaluationConfig": {
             "type": "resource",
             "identifiers": {
@@ -19654,6 +21566,552 @@
                         "smithy.api#enumValue": "EPISODIC_OVERRIDE"
                     }
                 }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 12,
+                    "max": 211
+                },
+                "smithy.api#pattern": "^([0-9a-z][-]?){1,100}-[0-9a-z]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 48
+                },
+                "smithy.api#pattern": "^[a-zA-Z][a-zA-Z0-9_]{0,47}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorResource": {
+            "type": "resource",
+            "identifiers": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId"
+                },
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId"
+                }
+            },
+            "create": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreatePaymentConnector"
+            },
+            "read": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetPaymentConnector"
+            },
+            "update": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentConnector"
+            },
+            "delete": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeletePaymentConnector"
+            },
+            "list": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ListPaymentConnectors"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorStatus": {
+            "type": "enum",
+            "members": {
+                "CREATING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CREATING"
+                    }
+                },
+                "UPDATING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPDATING"
+                    }
+                },
+                "DELETING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETING"
+                    }
+                },
+                "READY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "READY"
+                    }
+                },
+                "CREATE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CREATE_FAILED"
+                    }
+                },
+                "UPDATE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPDATE_FAILED"
+                    }
+                },
+                "DELETE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETE_FAILED"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorSummaries": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorSummary"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorSummary": {
+            "type": "structure",
+            "members": {
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the payment connector, which determines the payment provider integration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "lastUpdatedAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment connector was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains summary information about a payment connector.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorType": {
+            "type": "enum",
+            "members": {
+                "COINBASE_CDP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CoinbaseCDP"
+                    }
+                },
+                "STRIPE_PRIVY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "StripePrivy"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProvider": {
+            "type": "resource",
+            "identifiers": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialProviderName"
+                }
+            },
+            "properties": {
+                "credentialProviderVendor": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderVendorType"
+                },
+                "credentialProviderArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderArnType"
+                },
+                "providerConfigurationOutput": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentProviderConfigurationOutput"
+                },
+                "createdTime": {
+                    "target": "smithy.api#Timestamp"
+                },
+                "lastUpdatedTime": {
+                    "target": "smithy.api#Timestamp"
+                }
+            },
+            "put": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreatePaymentCredentialProvider"
+            },
+            "read": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetPaymentCredentialProvider"
+            },
+            "update": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentCredentialProvider"
+            },
+            "delete": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeletePaymentCredentialProvider"
+            },
+            "collectionOperations": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ListPaymentCredentialProviders"
+                }
+            ]
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderArn": {
+            "type": "string",
+            "traits": {
+                "aws.api#arnReference": {
+                    "type": "AWS::BedrockAgentCore::PaymentCredentialProvider"
+                },
+                "smithy.api#length": {
+                    "min": 69,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b|aws-iso-e|aws-iso-f|aws-eusc):(acps|bedrock-agentcore):[A-Za-z0-9-]{1,64}:[0-9]{12}:token-vault/[a-zA-Z0-9-.]+/paymentcredentialprovider/[a-zA-Z0-9-.]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderArnType": {
+            "type": "string",
+            "traits": {
+                "aws.api#arnReference": {
+                    "type": "AWS::BedrockAgentCore::PaymentCredentialProvider"
+                },
+                "smithy.api#pattern": "^arn:(aws|aws-us-gov):acps:[A-Za-z0-9-]{1,64}:[0-9]{12}:token-vault/[a-zA-Z0-9-.]+/paymentcredentialprovider/[a-zA-Z0-9-.]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderConfiguration": {
+            "type": "structure",
+            "members": {
+                "credentialProviderArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the credential provider that stores the authentication credentials for the payment provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for a payment credential provider that stores authentication credentials for a payment provider.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderItem": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialProviderName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment credential provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderVendor": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderVendorType",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the payment credential provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "createdTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment credential provider was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "lastUpdatedTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment credential provider was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains summary information about a payment credential provider.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderVendorType": {
+            "type": "enum",
+            "members": {
+                "CoinbaseCDP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "Coinbase Developer Platform - https://docs.cdp.coinbase.com/",
+                        "smithy.api#enumValue": "CoinbaseCDP"
+                    }
+                },
+                "StripePrivy": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "Stripe + Privy - https://docs.privy.io/",
+                        "smithy.api#enumValue": "StripePrivy"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Supported vendor types for payment providers using non-standard auth protocols"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviders": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderItem"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentManagerArn": {
+            "type": "string",
+            "traits": {
+                "aws.api#arnReference": {
+                    "type": "AWS::BedrockAgentCore::PaymentManager"
+                },
+                "smithy.api#length": {
+                    "min": 66,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:payment-manager/([0-9a-z][-]?){1,48}-[a-z0-9]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 12,
+                    "max": 211
+                },
+                "smithy.api#pattern": "^([0-9a-z][-]?){1,100}-[0-9a-z]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentManagerName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 48
+                },
+                "smithy.api#pattern": "^[a-zA-Z][a-zA-Z0-9]{0,47}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentManagerResource": {
+            "type": "resource",
+            "identifiers": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId"
+                }
+            },
+            "create": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreatePaymentManager"
+            },
+            "read": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetPaymentManager"
+            },
+            "update": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentManager"
+            },
+            "delete": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeletePaymentManager"
+            },
+            "list": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ListPaymentManagers"
+            },
+            "resources": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorResource"
+                }
+            ]
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentManagerStatus": {
+            "type": "enum",
+            "members": {
+                "CREATING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CREATING"
+                    }
+                },
+                "UPDATING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPDATING"
+                    }
+                },
+                "DELETING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETING"
+                    }
+                },
+                "READY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "READY"
+                    }
+                },
+                "CREATE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CREATE_FAILED"
+                    }
+                },
+                "UPDATE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPDATE_FAILED"
+                    }
+                },
+                "DELETE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETE_FAILED"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentManagerSummaries": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerSummary"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentManagerSummary": {
+            "type": "structure",
+            "members": {
+                "paymentManagerArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsDescription",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the payment manager.</p>"
+                    }
+                },
+                "authorizerType": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsAuthorizerType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of authorizer used by the payment manager.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "roleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#RoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role associated with the payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the payment manager. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "createdAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment manager was created.</p>"
+                    }
+                },
+                "lastUpdatedAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment manager was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains summary information about a payment manager.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentProviderConfigurationInput": {
+            "type": "union",
+            "members": {
+                "coinbaseCdpConfiguration": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpConfigurationInput"
+                },
+                "stripePrivyConfiguration": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StripePrivyConfigurationInput"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "PROVIDER CONFIGURATION INPUT - Contains secrets for creation/update"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentProviderConfigurationOutput": {
+            "type": "union",
+            "members": {
+                "coinbaseCdpConfiguration": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpConfigurationOutput"
+                },
+                "stripePrivyConfiguration": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StripePrivyConfigurationOutput"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "PROVIDER CONFIGURATION OUTPUT - No raw secrets, only ARNs"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentsAuthorizerType": {
+            "type": "enum",
+            "members": {
+                "CUSTOM_JWT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CUSTOM_JWT"
+                    }
+                },
+                "AWS_IAM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS_IAM"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PaymentsDescription": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 4096
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9\\s]+$"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#Policies": {
@@ -21478,6 +23936,37 @@
                 "smithy.api#documentation": "<p>The Amazon S3 configuration for a gateway. This structure defines how the gateway accesses files in Amazon S3.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#S3FilesAccessPointArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 256
+                },
+                "smithy.api#pattern": "^arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}/access-point/fsap-[0-9a-f]{17,40}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#S3FilesAccessPointConfiguration": {
+            "type": "structure",
+            "members": {
+                "accessPointArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#S3FilesAccessPointArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the S3 Files access point to mount into the AgentCore Runtime.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "mountPath": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MountPath",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The mount path for the S3 Files access point inside the AgentCore Runtime. The path must be under <code>/mnt</code> with exactly one subdirectory level (for example, <code>/mnt/data</code>).</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for an Amazon S3 Files access point filesystem mounted into the AgentCore Runtime. S3 Files access points provide shared file storage accessible from your AgentCore Runtime sessions.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#S3Location": {
             "type": "structure",
             "members": {
@@ -21694,6 +24183,21 @@
             "type": "list",
             "member": {
                 "target": "smithy.api#String"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ScopeType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 128
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ScopesListType": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ScopeType"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#SearchType": {
@@ -21929,6 +24433,9 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The namespaceTemplates associated with the semantic memory strategy.</p>"
                     }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema"
                 }
             },
             "traits": {
@@ -22123,6 +24630,24 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p> The configuration that defines how agent sessions are detected and when they are considered complete for evaluation. </p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#SessionConfiguration": {
+            "type": "structure",
+            "members": {
+                "sessionTimeoutInSeconds": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The session timeout in seconds. After this timeout, the session expires and subsequent requests to this session will receive an error. The minimum value is 900 seconds (15 minutes), the maximum value is 28800 seconds (8 hours), and the default value is 3600 seconds (1 hour).</p>",
+                        "smithy.api#range": {
+                            "min": 900,
+                            "max": 28800
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The session configuration for an MCP gateway. This structure defines settings that control session behavior.</p>"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#SessionStorageConfiguration": {
@@ -22669,8 +25194,173 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#StreamingConfiguration": {
+            "type": "structure",
+            "members": {
+                "enableResponseStreaming": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether response streaming is enabled for the gateway. When set to <code>true</code>, the gateway streams responses from targets back to the client.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The streaming configuration for an MCP gateway. This structure defines settings that control response streaming behavior.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#String": {
             "type": "string"
+        },
+        "com.amazonaws.bedrockagentcorecontrol#StringListValidation": {
+            "type": "structure",
+            "members": {
+                "allowedValues": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AllowedStringListValuesList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allowed values for items in this STRINGLIST field.</p>"
+                    }
+                },
+                "maxItems": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Maximum number of items in the string list.</p>",
+                        "smithy.api#range": {
+                            "min": 1,
+                            "max": 5
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Validation for STRINGLIST fields.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#StringValidation": {
+            "type": "structure",
+            "members": {
+                "allowedValues": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AllowedStringValuesList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allowed values for this STRING field.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Validation for STRING fields.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#StripePrivyAppIdType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 512
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9\\-_]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#StripePrivyAppSecretType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9+/=\\-_\\s]+$",
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#StripePrivyAuthorizationIdType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 512
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9\\-_]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#StripePrivyAuthorizationPrivateKeyType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9+/=\\-_\\s]+$",
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#StripePrivyConfigurationInput": {
+            "type": "structure",
+            "members": {
+                "appId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StripePrivyAppIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The app ID provided by Privy.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "appSecret": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StripePrivyAppSecretType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The app secret provided by Privy.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "authorizationPrivateKey": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StripePrivyAuthorizationPrivateKeyType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The authorization private key for the Stripe Privy integration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "authorizationId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StripePrivyAuthorizationIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The authorization ID for the Stripe Privy integration.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "StripePrivy configuration - credentials provided by Stripe + Privy"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#StripePrivyConfigurationOutput": {
+            "type": "structure",
+            "members": {
+                "appId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StripePrivyAppIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The app ID provided by Privy.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "appSecretArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#Secret",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "authorizationPrivateKeyArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#Secret",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "authorizationId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StripePrivyAuthorizationIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The authorization ID for the Stripe Privy integration.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "StripePrivy configuration output with secret ARNs"
+            }
         },
         "com.amazonaws.bedrockagentcorecontrol#SubmitRegistryRecordForApproval": {
             "type": "operation",
@@ -22852,6 +25542,12 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#NamespacesList",
                     "traits": {
                         "smithy.api#documentation": "<p>The namespaceTemplates associated with the summary memory strategy.</p>"
+                    }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Schema for metadata fields on records generated by this strategy.</p>"
                     }
                 }
             },
@@ -23566,6 +26262,27 @@
         },
         "com.amazonaws.bedrockagentcorecontrol#TokenEndpointType": {
             "type": "string"
+        },
+        "com.amazonaws.bedrockagentcorecontrol#TokenExchangeGrantTypeConfigType": {
+            "type": "structure",
+            "members": {
+                "actorTokenContent": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ActorTokenContentType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The content type for the actor token in the token exchange.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "actorTokenScopes": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ScopesListType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scopes for the actor token. Only valid when actorTokenContent is M2M.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for RFC 8693 token exchange.</p>"
+            }
         },
         "com.amazonaws.bedrockagentcorecontrol#TokenVaultIdType": {
             "type": "string",
@@ -25519,6 +28236,12 @@
                         "smithy.api#documentation": "<p>The memory strategies to add, modify, or delete.</p>"
                     }
                 },
+                "addIndexedKeys": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#IndexedKeysList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Additional metadata keys to index. Previously indexed keys cannot be removed.</p>"
+                    }
+                },
                 "streamDeliveryResources": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#StreamDeliveryResources",
                     "traits": {
@@ -25685,7 +28408,7 @@
                 "status": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#Status",
                     "traits": {
-                        "smithy.api#documentation": "<p>The current status of the OAuth2 credential provider.</p>"
+                        "smithy.api#documentation": "<p>The current status of the updated OAuth2 credential provider.</p>"
                     }
                 }
             },
@@ -25835,6 +28558,428 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p> The reason for failure if the online evaluation configuration update or execution failed. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentConnector": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentConnectorRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentConnectorResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Updates an existing payment connector. This operation uses PATCH semantics, so you only need to specify the fields you want to change.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "PATCH",
+                    "uri": "/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentConnectorRequest": {
+            "type": "structure",
+            "members": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the parent payment manager.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment connector to update.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsDescription",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated description of the payment connector.</p>"
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated type of the payment connector.</p>"
+                    }
+                },
+                "credentialProviderConfigurations": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialsProviderConfigurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated credential provider configurations for the payment connector.</p>"
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentConnectorResponse": {
+            "type": "structure",
+            "members": {
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the updated payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the parent payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the updated payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the updated payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderConfigurations": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialsProviderConfigurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The credential provider configurations for the updated payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "lastUpdatedAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment connector was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the updated payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentCredentialProvider": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentCredentialProviderRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentCredentialProviderResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DecryptionFailure"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#EncryptionFailure"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#controlPlane": {},
+                "smithy.api#documentation": "<p>Updates an existing payment credential provider with new authentication credentials.</p>",
+                "smithy.api#http": {
+                    "uri": "/identities/UpdatePaymentCredentialProvider",
+                    "method": "POST"
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentCredentialProviderRequest": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialProviderName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the payment credential provider to update.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderVendor": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderVendorType",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "providerConfigurationInput": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentProviderConfigurationInput",
+                    "traits": {
+                        "smithy.api#documentation": "Configuration specific to the vendor, including API credentials",
+                        "smithy.api#notProperty": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentCredentialProviderResponse": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialProviderName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the updated payment credential provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderVendor": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderVendorType",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialProviderArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentCredentialProviderArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the updated payment credential provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "providerConfigurationOutput": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentProviderConfigurationOutput",
+                    "traits": {
+                        "smithy.api#documentation": "Output configuration (contains secret ARNs, excludes actual secret values)",
+                        "smithy.api#required": {}
+                    }
+                },
+                "createdTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment credential provider was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "lastUpdatedTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment credential provider was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentManager": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentManagerRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentManagerResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Updates an existing payment manager. This operation uses PATCH semantics, so you only need to specify the fields you want to change.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "PATCH",
+                    "uri": "/payments/managers/{paymentManagerId}"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentManagerRequest": {
+            "type": "structure",
+            "members": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment manager to update.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsDescription",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated description of the payment manager.</p>"
+                    }
+                },
+                "authorizerType": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsAuthorizerType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated authorizer type for the payment manager.</p>"
+                    }
+                },
+                "authorizerConfiguration": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AuthorizerConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated authorizer configuration for the payment manager.</p>"
+                    }
+                },
+                "roleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#RoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated Amazon Resource Name (ARN) of the IAM role for the payment manager.</p>"
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdatePaymentManagerResponse": {
+            "type": "structure",
+            "members": {
+                "paymentManagerArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the updated payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the updated payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the updated payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "authorizerType": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentsAuthorizerType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of authorizer for the updated payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "roleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#RoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role associated with the updated payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "workloadIdentityDetails": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#WorkloadIdentityDetails"
+                },
+                "lastUpdatedAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment manager was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the updated payment manager. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>",
+                        "smithy.api#required": {}
                     }
                 }
             },
@@ -27110,6 +30255,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The namespaceTemplates associated with the user preference memory strategy.</p>"
                     }
+                },
+                "memoryRecordSchema": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MemoryRecordSchema",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Schema for metadata fields on records generated by this strategy.</p>"
+                    }
                 }
             },
             "traits": {
@@ -27178,6 +30329,23 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Input for user preference override extraction configuration in a memory strategy.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#Validation": {
+            "type": "union",
+            "members": {
+                "stringValidation": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StringValidation"
+                },
+                "stringListValidation": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StringListValidation"
+                },
+                "numberValidation": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#NumberValidation"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Validation rules for extracted metadata values. Only one type can be specified, matching the field's data type.</p>"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#ValidationException": {
