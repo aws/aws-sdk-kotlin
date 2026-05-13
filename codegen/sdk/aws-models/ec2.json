@@ -16661,18 +16661,27 @@
                 ]
             }
         },
+        "com.amazonaws.ec2#CopyImageClientToken": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 128
+                }
+            }
+        },
         "com.amazonaws.ec2#CopyImageRequest": {
             "type": "structure",
             "members": {
                 "ClientToken": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#CopyImageClientToken",
                     "traits": {
                         "smithy.api#documentation": "<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For\n      more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency in\n          Amazon EC2 API requests</a> in the <i>Amazon EC2 API\n      Reference</i>.</p>",
                         "smithy.api#idempotencyToken": {}
                     }
                 },
                 "Description": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#ImageDescriptionRequest",
                     "traits": {
                         "smithy.api#documentation": "<p>A description for the new AMI.</p>"
                     }
@@ -16694,7 +16703,7 @@
                     }
                 },
                 "Name": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#ImageNameRequest",
                     "traits": {
                         "smithy.api#clientOptional": {},
                         "smithy.api#documentation": "<p>The name of the new AMI.</p>",
@@ -19154,7 +19163,7 @@
                     }
                 },
                 "Name": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#ImageNameRequest",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Name",
                         "smithy.api#clientOptional": {},
@@ -19164,7 +19173,7 @@
                     }
                 },
                 "Description": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#ImageDescriptionRequest",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Description",
                         "smithy.api#documentation": "<p>A description for the new image.</p>",
@@ -19220,6 +19229,15 @@
                 "smithy.api#documentation": "<p>Creates a report that shows how your image is used across other Amazon Web Services accounts. The report\n      provides visibility into which accounts are using the specified image, and how many resources\n      (EC2 instances or launch templates) are referencing it.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/your-ec2-ami-usage.html\">View your AMI usage</a> in the\n      <i>Amazon EC2 User Guide</i>.</p>"
             }
         },
+        "com.amazonaws.ec2#CreateImageUsageReportClientToken": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 128
+                }
+            }
+        },
         "com.amazonaws.ec2#CreateImageUsageReportRequest": {
             "type": "structure",
             "members": {
@@ -19254,7 +19272,7 @@
                     }
                 },
                 "ClientToken": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#CreateImageUsageReportClientToken",
                     "traits": {
                         "smithy.api#documentation": "<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
                         "smithy.api#idempotencyToken": {}
@@ -22501,7 +22519,7 @@
                     }
                 },
                 "Name": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#ImageNameRequest",
                     "traits": {
                         "smithy.api#documentation": "<p>The name for the restored AMI. The name must be unique for AMIs in the Region for this\n      account. If you do not provide a name, the new AMI gets the same name as the original\n      AMI.</p>"
                     }
@@ -70637,7 +70655,7 @@
                     }
                 },
                 "ImageNames": {
-                    "target": "com.amazonaws.ec2#ImageNameRequestList",
+                    "target": "com.amazonaws.ec2#ImageNameCriteriaRequestList",
                     "traits": {
                         "smithy.api#documentation": "<p>The names of allowed images. Names can include wildcards (<code>?</code> and\n        <code>*</code>).</p>\n         <p>Length: 1–128 characters. With <code>?</code>, the minimum is 3 characters.</p>\n         <p>Valid characters:</p>\n         <ul>\n            <li>\n               <p>Letters: <code>A–Z, a–z</code>\n               </p>\n            </li>\n            <li>\n               <p>Numbers: <code>0–9</code>\n               </p>\n            </li>\n            <li>\n               <p>Special characters: <code>( ) [ ] . / - ' @ _ * ?</code>\n               </p>\n            </li>\n            <li>\n               <p>Spaces</p>\n            </li>\n         </ul>\n         <p>Maximum: 50 values</p>",
                         "smithy.api#xmlName": "ImageName"
@@ -70666,6 +70684,15 @@
                 "target": "com.amazonaws.ec2#ImageCriterionRequest",
                 "traits": {
                     "smithy.api#xmlName": "ImageCriterion"
+                }
+            }
+        },
+        "com.amazonaws.ec2#ImageDescriptionRequest": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 255
                 }
             }
         },
@@ -70835,6 +70862,24 @@
         "com.amazonaws.ec2#ImageName": {
             "type": "string"
         },
+        "com.amazonaws.ec2#ImageNameCriteriaRequest": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 128
+                }
+            }
+        },
+        "com.amazonaws.ec2#ImageNameCriteriaRequestList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#ImageNameCriteriaRequest",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
         "com.amazonaws.ec2#ImageNameList": {
             "type": "list",
             "member": {
@@ -70845,14 +70890,11 @@
             }
         },
         "com.amazonaws.ec2#ImageNameRequest": {
-            "type": "string"
-        },
-        "com.amazonaws.ec2#ImageNameRequestList": {
-            "type": "list",
-            "member": {
-                "target": "com.amazonaws.ec2#ImageNameRequest",
-                "traits": {
-                    "smithy.api#xmlName": "item"
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 3,
+                    "max": 128
                 }
             }
         },
@@ -71103,6 +71145,15 @@
                     "traits": {
                         "smithy.api#enumValue": "ramdisk"
                     }
+                }
+            }
+        },
+        "com.amazonaws.ec2#ImageUefiDataRequest": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 64000
                 }
             }
         },
@@ -109285,7 +109336,7 @@
                     }
                 },
                 "UefiData": {
-                    "target": "com.amazonaws.ec2#StringType",
+                    "target": "com.amazonaws.ec2#ImageUefiDataRequest",
                     "traits": {
                         "smithy.api#documentation": "<p>Base64 representation of the non-volatile UEFI variable store. To retrieve the UEFI data,\n      use the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetInstanceUefiData\">GetInstanceUefiData</a> command. You can inspect and modify the UEFI data by using the\n        <a href=\"https://github.com/awslabs/python-uefivars\">python-uefivars tool</a> on\n      GitHub. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/uefi-secure-boot.html\">UEFI Secure Boot for Amazon EC2\n        instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
                     }
@@ -109312,7 +109363,7 @@
                     }
                 },
                 "Name": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#ImageNameRequest",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Name",
                         "smithy.api#clientOptional": {},
@@ -109322,7 +109373,7 @@
                     }
                 },
                 "Description": {
-                    "target": "com.amazonaws.ec2#String",
+                    "target": "com.amazonaws.ec2#ImageDescriptionRequest",
                     "traits": {
                         "aws.protocols#ec2QueryName": "Description",
                         "smithy.api#documentation": "<p>A description for your AMI.</p>",
@@ -124036,15 +124087,6 @@
                 }
             }
         },
-        "com.amazonaws.ec2#StringType": {
-            "type": "string",
-            "traits": {
-                "smithy.api#length": {
-                    "min": 0,
-                    "max": 64000
-                }
-            }
-        },
         "com.amazonaws.ec2#Subnet": {
             "type": "structure",
             "members": {
@@ -133560,13 +133602,6 @@
                         "aws.protocols#ec2QueryName": "EndTime",
                         "smithy.api#documentation": "<p>The modification completion or failure time.</p>",
                         "smithy.api#xmlName": "endTime"
-                    }
-                },
-                "Operator": {
-                    "target": "com.amazonaws.ec2#OperatorResponse",
-                    "traits": {
-                        "aws.protocols#ec2QueryName": "Operator",
-                        "smithy.api#xmlName": "operator"
                     }
                 }
             },
