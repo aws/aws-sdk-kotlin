@@ -8,13 +8,7 @@ import aws.sdk.kotlin.gradle.codegen.smithyKotlinProjectionPath
 
 plugins {
     id(libs.plugins.kotlin.jvm.get().pluginId)
-    id("org.jetbrains.kotlinx.benchmark") version libs.versions.kotlinx.benchmark.version.get()
-    id("org.jetbrains.kotlin.plugin.allopen") version libs.versions.kotlin.version.get()
     alias(libs.plugins.aws.kotlin.repo.tools.smithybuild)
-}
-
-allOpen {
-    annotation("org.openjdk.jmh.annotations.State")
 }
 
 data class BenchmarkProjection(val name: String, val serviceShapeId: String, val sdkId: String)
@@ -77,7 +71,6 @@ dependencies {
     codegen(libs.smithy.model)
     codegen(libs.smithy.aws.protocol.tests)
 
-    implementation(libs.kotlinx.benchmark.runtime)
     implementation(libs.kotlinx.coroutines.core)
     implementation(project(":aws-runtime:aws-core"))
     implementation(project(":aws-runtime:aws-config"))
@@ -114,7 +107,7 @@ tasks.generateSmithyProjections {
     }
 }
 
-// Stage generated sources (main + test/benchmark) into a single source set for JMH
+// Stage generated sources (main + test/benchmark) into a single source set
 val stageGeneratedSources = tasks.register("stageGeneratedSources") {
     group = "codegen"
     dependsOn(tasks.generateSmithyProjections)
@@ -151,28 +144,24 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 
-benchmark {
-    targets {
-        register("main")
-    }
-    configurations {
-        named("main") {
-            reportFormat = "json"
-            iterations = 30
-            warmups = 15
-            iterationTime = 1
-            iterationTimeUnit = "s"
-            outputTimeUnit = "ns"
-        }
-    }
+// Register a JavaExec task for each generated benchmark main class
+val runBenchmarks = tasks.register("runBenchmarks") {
+    group = "benchmark"
+    description = "Run all serde benchmarks"
+    dependsOn("classes")
 }
 
-// Workaround for https://github.com/Kotlin/kotlinx-benchmark/issues/39
-afterEvaluate {
-    tasks.named<org.gradle.jvm.tasks.Jar>("mainBenchmarkJar") {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    }
-//    tasks.named<JavaExec>("mainBenchmark") {
-//        jvmArgs("-Xmx4g")
-//    }
+// Discover and run all generated main classes
+// Each generated benchmark file has a main() function
+tasks.register<JavaExec>("runAllBenchmarks") {
+    group = "benchmark"
+    description = "Run all serde benchmarks sequentially"
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("aws.sdk.kotlin.benchmarks.serde.BenchmarkRunnerKt")
+    // Pass system properties for benchmark configuration
+    systemProperty("benchmark.minIterations", project.findProperty("benchmark.minIterations") ?: "1000")
+    systemProperty("benchmark.maxIterations", project.findProperty("benchmark.maxIterations") ?: "10000")
+    systemProperty("benchmark.maxDurationSeconds", project.findProperty("benchmark.maxDurationSeconds") ?: "30")
+    systemProperty("benchmark.warmupFraction", project.findProperty("benchmark.warmupFraction") ?: "0.5")
 }
