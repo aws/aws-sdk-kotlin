@@ -1,5 +1,0 @@
-{
-  "id": "63e5c52a-caf3-42a7-97d2-eabfaf8b1921",
-  "type": "feature",
-  "description": "Add new standard retry behavior behind `AWS_NEW_RETRIES_2026` feature flag with updated backoff defaults, DynamoDB-specific overrides, and service-scoped error classification. See the [announcement](https://github.com/aws/aws-sdk-kotlin/discussions/1885) for more details."
-}

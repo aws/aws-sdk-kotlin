@@ -1,5 +1,0 @@
-{
-    "id": "dda6fb55-d53c-48d6-8aa8-11ec3a7d8732",
-    "type": "feature",
-    "description": "⚠️ **IMPORTANT**: Write cached auth files for SSO and AWS Login credentials providers with `600` permissions on POSIX OSes"
-}

@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.6.73] - 05/13/2026
+
+### Features
+* (**arcregionswitch**) Adds support for enabling and disabling Lambda event source mappings in Region switch plans.
+* (**bedrockagentcorecontrol**) Adds support for read-only summary APIs for Policy Engine, Policy, and Policy Generation resources, enabling metadata retrieval without KMS decryption for AWS Config integration.
+* (**billingconductor**) Add ConflictException to UpdateCustomLineItem operation.
+* (**connect**) This change added three new EventSourceName for schedule notification feature
+* (**connectcampaignsv2**) This release added support for Outbound Campaign timezone detection using all available contact methods
+* (**connectcases**) Amazon Connect Cases now supports SLA durations of up to 2 years (1,051,200 minutes), increased from the previous maximum of 90 days (129,600 minutes). This enables you to track long-running service level agreements for cases that require extended resolution timelines.
+* (**dsql**) Added support for Amazon Aurora DSQL change data capture (CDC) streams that deliver row-level database changes to Amazon Kinesis in JSON format. Includes CreateStream, GetStream, ListStreams, and DeleteStream operations.
+* (**ec2**) Include length limits in the SDK and documentation for text fields in Image (AMI) APIs such as the image name and description
+* (**elasticsearchservice**) Adds support for AutomatedSnapshotPauseOptions.
+* (**lightsail**) Added OriginIpAddressTypeEnum (ipv4, ipv6, dualstack) and ipAddressType field to Origin and InputOrigin structures for Lightsail CDN distributions. Allows customers to specify how the distribution connects to origins, using IPv4, IPv6, or dualstack networking
+* (**opensearch**) Adds support for AutomatedSnapshotPauseOptions.
+* (**partnercentralaccount**) Added ServiceQuotaExceededExceptions for Profile operations
+* (**pcs**) Add support for Amazon EC2 Interruptible-ODCR
+* (**quicksight**) Adds five new custom permission option for Quick Apps so that these capabilities can be controlled by public SDK and CLI.
+* (**rtbfabric**) Customers can now configure custom domain names for their RTB Fabric gateways. This enables partners to use their own branded domain for RTB traffic instead of the default rtbfabric endpoint
+* (**sagemaker**) Adds execution role session name mode to reflect user identity in Studio. Adds Flexible Training Plans on Studio apps. Adds restricted model packages to control access to proprietary model artifacts via IAM. Fixed instance type parity between inference endpoints and managed shadow tests.
+* (**securityagent**) Add support for code reviews, a new resource type that enables automated security-focused static analysis of source code repositories.
+* (**sfn**) Updated default SDK endpoints for AWS Step Functions in AWS GovCloud (US) regions. The default Dual-Stack endpoints now resolve to "states-fips" prefixed hostnames. There are no changes to service behavior. No customer action is required.
+* (**socialmessaging**) Adds parameters to call the GetWhatsAppMessageTemplate and UpdateWhatsAppMessageTemplate APIs with a template name and language code in place of the template ID. Linked WhatsApp accounts also describe whether the WABA is onboarded to Meta's Marketing Messages API.
+* ⚠️ **IMPORTANT**: Write cached auth files for SSO and AWS Login credentials providers with `600` permissions on POSIX OSes
+* Add new standard retry behavior behind `AWS_NEW_RETRIES_2026` feature flag with updated backoff defaults, DynamoDB-specific overrides, and service-scoped error classification. See the [announcement](https://github.com/aws/aws-sdk-kotlin/discussions/1885) for more details.
+* Add retry logic for long polling operations. See the [announcement](https://github.com/aws/aws-sdk-kotlin/discussions/1885) for more details.
+
+### Documentation
+* (**batch**) Adds a billing callout to docs regarding using the CE Scale Down Delay feature
+* (**glue**) AWS Glue now defaults the job timeout to 480 minutes for Glue version 5.0 and later when no timeout value is specified. The default remains 2,880 minutes for Glue version 4.0 and earlier.
+* (**redshift**) Added rg.xlarge and rg.4xlarge to valid NodeType values and updated documentation for CreateCluster, ModifyCluster, ResizeCluster, and RestoreFromClusterSnapshot APIs to reflect RG node type support.
+
 ## [1.6.72] - 05/07/2026
 
 ### Features
