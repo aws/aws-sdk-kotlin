@@ -36,6 +36,7 @@ if (asyncProfilerLib != null) {
     val profilesDir = project.layout.buildDirectory.dir("profiles")
     tasks.withType<JavaExec>().configureEach {
         if (name.contains("Benchmark")) {
+            doFirst { profilesDir.get().asFile.mkdirs() }
             jvmArgs("-agentpath:$asyncProfilerLib=start,event=cpu,file=${profilesDir.get()}/profile.html")
         }
     }
