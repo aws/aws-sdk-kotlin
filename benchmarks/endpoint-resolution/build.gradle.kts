@@ -19,6 +19,8 @@ dependencies {
     implementation(project(":services:lambda"))
 }
 
+val asyncProfilerLib: String? = providers.gradleProperty("asyncProfiler.libPath").orNull
+
 benchmark {
     targets {
         register("main")
@@ -26,6 +28,12 @@ benchmark {
     configurations {
         named("main") {
             reportFormat = "json"
+        }
+        if (asyncProfilerLib != null) {
+            register("profile") {
+                reportFormat = "json"
+                profiler = "async:libPath=$asyncProfilerLib;output=flamegraph;dir=build/profiles"
+            }
         }
     }
 }
