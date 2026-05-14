@@ -50,11 +50,11 @@ class LambdaEndpointResolutionBenchmark {
         blackhole.consume(result)
     }
 
-    // For region us-east-1 with FIPS enabled and DualStack enabled
+    // For region us-gov-east-1 with FIPS enabled and DualStack enabled
     @Benchmark
-    fun usEast1FipsDualStack(blackhole: Blackhole) {
+    fun usGovEast1FipsDualStack(blackhole: Blackhole) {
         val params = LambdaEndpointParameters {
-            region = "us-east-1"
+            region = "us-gov-east-1"
             useFips = true
             useDualStack = true
         }
