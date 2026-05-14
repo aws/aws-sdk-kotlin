@@ -29,11 +29,14 @@ benchmark {
         named("main") {
             reportFormat = "json"
         }
-        if (asyncProfilerLib != null) {
-            register("profile") {
-                reportFormat = "json"
-                profiler = "async:libPath=$asyncProfilerLib;output=flamegraph;dir=build/profiles"
-            }
+    }
+}
+
+if (asyncProfilerLib != null) {
+    val profilesDir = project.layout.buildDirectory.dir("profiles")
+    tasks.withType<JavaExec>().configureEach {
+        if (name.contains("Benchmark")) {
+            jvmArgs("-agentpath:$asyncProfilerLib=start,event=cpu,file=${profilesDir.get()}/profile.html")
         }
     }
 }
