@@ -35,10 +35,10 @@ class OverheadBenchmark {
 
     private suspend fun noOpResolve(): Endpoint = precomputedEndpoint
 
-    @Benchmark
-    fun directCall(blackhole: Blackhole) {
-        blackhole.consume(precomputedEndpoint)
-    }
+//    @Benchmark
+//    fun directCall(blackhole: Blackhole) {
+//        blackhole.consume(precomputedEndpoint)
+//    }
 
     @Benchmark
     fun suspendLambdaCall(blackhole: Blackhole) {
@@ -48,9 +48,9 @@ class OverheadBenchmark {
         blackhole.consume(result)
     }
 
-    @Benchmark
-    fun runBlockingCall(blackhole: Blackhole) {
-        val result = runBlocking { noOpResolve() }
-        blackhole.consume(result)
-    }
+//    @Benchmark
+//    fun runBlockingCall(blackhole: Blackhole) {
+//        val result = runBlocking { noOpResolve() }
+//        blackhole.consume(result)
+//    }
 }
