@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.75] - 05/15/2026
+
+### Features
+* (**cloudwatchlogs**) Updating the max limit for start query api parameter.
+* (**mediapackagev2**) This release adds support for AvailabilityStartTimeConfiguration in MediaPackageV2 DASH manifests
+* (**partnercentralselling**) Enable TCV intake on Opportunity to improve Opportunities Hygiene and downstream revenue attribution.
+
 ## [1.6.74] - 05/14/2026
 
 ### Features
