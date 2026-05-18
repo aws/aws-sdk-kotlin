@@ -51,6 +51,10 @@ object BenchmarkHarness {
             operation()
         }
 
+        // Flush garbage accumulated during warmup before measuring
+        System.gc()
+        Thread.sleep(100)
+
         // Phase 2: Measurement
         val samples = ArrayList<Long>(MAX_ITERATIONS.coerceAtMost(1_000_000))
         val measureStart = System.nanoTime()

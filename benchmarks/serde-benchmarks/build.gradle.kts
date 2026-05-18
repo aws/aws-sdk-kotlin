@@ -151,6 +151,8 @@ val runBenchmarks = tasks.register("runBenchmarks") {
     dependsOn("classes")
 }
 
+val asyncProfilerLib: String? = providers.gradleProperty("asyncProfiler.libPath").orNull
+
 // Discover and run all generated main classes
 // Each generated benchmark file has a main() function
 tasks.register<JavaExec>("runAllBenchmarks") {
@@ -165,4 +167,10 @@ tasks.register<JavaExec>("runAllBenchmarks") {
     systemProperty("benchmark.minIterations", project.findProperty("benchmark.minIterations") ?: "1000")
     systemProperty("benchmark.maxIterations", project.findProperty("benchmark.maxIterations") ?: "10000000")
     systemProperty("benchmark.instance", project.findProperty("benchmark.instance") ?: "unknown")
+
+    if (asyncProfilerLib != null) {
+        val profilesDir = project.layout.buildDirectory.dir("profiles")
+        doFirst { profilesDir.get().asFile.mkdirs() }
+        jvmArgs("-agentpath:$asyncProfilerLib=start,event=cpu,file=${profilesDir.get()}/serde-profile.html")
+    }
 }
