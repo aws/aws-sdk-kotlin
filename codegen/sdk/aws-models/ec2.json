@@ -2162,6 +2162,13 @@
                         "smithy.api#documentation": "<p>Exclude a particular CIDR range from being returned by the pool. Disallowed CIDRs are only allowed if using netmask length for allocation.</p>",
                         "smithy.api#xmlName": "DisallowedCidr"
                     }
+                },
+                "TagSpecifications": {
+                    "target": "com.amazonaws.ec2#TagSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value.\n    For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>\n         <p>If you specify tags, the request is authorized against the allocation resource in addition to the pool resource.</p>",
+                        "smithy.api#xmlName": "TagSpecification"
+                    }
                 }
             },
             "traits": {
@@ -3483,6 +3490,9 @@
                     "target": "com.amazonaws.ec2#DescribeIpamPolicies"
                 },
                 {
+                    "target": "com.amazonaws.ec2#DescribeIpamPoolAllocations"
+                },
+                {
                     "target": "com.amazonaws.ec2#DescribeIpamPools"
                 },
                 {
@@ -4360,6 +4370,9 @@
                 },
                 {
                     "target": "com.amazonaws.ec2#ModifyIpamPool"
+                },
+                {
+                    "target": "com.amazonaws.ec2#ModifyIpamPoolAllocation"
                 },
                 {
                     "target": "com.amazonaws.ec2#ModifyIpamPrefixListResolver"
@@ -41133,6 +41146,97 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#DescribeIpamPoolAllocations": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#DescribeIpamPoolAllocationsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#DescribeIpamPoolAllocationsResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes IPAM pool allocations. You can describe all allocations owned by you across all pools, or you can describe specific allocations by ID.</p>\n         <p>If you specify <code>IpamPoolAllocationIds</code>, the results include only the specified allocations. If you do not specify <code>IpamPoolAllocationIds</code>, the results include all allocations owned by you. You can use <code>Filters</code> to narrow the results.</p>\n         <note>\n            <p>This action returns only allocations directly owned by you. To view all allocations in a pool you own or that has been shared with you, including allocations owned by other accounts, use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetIpamPoolAllocations.html\">GetIpamPoolAllocations</a>.</p>\n         </note>",
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "IpamPoolAllocations",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeIpamPoolAllocationsMaxResults": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1000,
+                    "max": 100000
+                }
+            }
+        },
+        "com.amazonaws.ec2#DescribeIpamPoolAllocationsRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "IpamPoolAllocationIds": {
+                    "target": "com.amazonaws.ec2#ValueStringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the IPAM pool allocations you want to describe.</p>",
+                        "smithy.api#xmlName": "IpamPoolAllocationId"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.ec2#FilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>One or more filters for the request. For more information about filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Filtering CLI output</a>.</p>",
+                        "smithy.api#xmlName": "Filter"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.ec2#DescribeIpamPoolAllocationsMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token for the next page of results.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#DescribeIpamPoolAllocationsResult": {
+            "type": "structure",
+            "members": {
+                "IpamPoolAllocations": {
+                    "target": "com.amazonaws.ec2#IpamPoolAllocationSet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPoolAllocationSet",
+                        "smithy.api#documentation": "<p>Information about the IPAM pool allocations.</p>",
+                        "smithy.api#xmlName": "ipamPoolAllocationSet"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.ec2#NextToken",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "NextToken",
+                        "smithy.api#documentation": "<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+                        "smithy.api#xmlName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#DescribeIpamPools": {
             "type": "operation",
             "input": {
@@ -41170,7 +41274,7 @@
                 "MaxResults": {
                     "target": "com.amazonaws.ec2#IpamMaxResults",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum number of results to return in the request.</p>"
+                        "smithy.api#documentation": "<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
                     }
                 },
                 "NextToken": {
@@ -41586,7 +41690,7 @@
                 "MaxResults": {
                     "target": "com.amazonaws.ec2#IpamMaxResults",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum number of results to return in the request.</p>"
+                        "smithy.api#documentation": "<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
                     }
                 },
                 "NextToken": {
@@ -41668,7 +41772,7 @@
                 "MaxResults": {
                     "target": "com.amazonaws.ec2#IpamMaxResults",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum number of results to return in the request.</p>"
+                        "smithy.api#documentation": "<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
                     }
                 },
                 "NextToken": {
@@ -65812,7 +65916,7 @@
                 "MaxResults": {
                     "target": "com.amazonaws.ec2#IpamMaxResults",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum number of results to return in the request.</p>"
+                        "smithy.api#documentation": "<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
                     }
                 },
                 "NextToken": {
@@ -66144,7 +66248,7 @@
                 "MaxResults": {
                     "target": "com.amazonaws.ec2#IpamMaxResults",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum number of results to return in the request.</p>"
+                        "smithy.api#documentation": "<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
                     }
                 },
                 "NextToken": {
@@ -86789,6 +86893,14 @@
                         "smithy.api#documentation": "<p>The owner of the resource.</p>",
                         "smithy.api#xmlName": "resourceOwner"
                     }
+                },
+                "Tags": {
+                    "target": "com.amazonaws.ec2#TagList",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "TagSet",
+                        "smithy.api#documentation": "<p>The tags for the IPAM pool allocation.</p>",
+                        "smithy.api#xmlName": "tagSet"
+                    }
                 }
             },
             "traits": {
@@ -97282,6 +97394,62 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Modify the configurations of an IPAM pool.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/mod-pool-ipam.html\">Modify a pool</a> in the <i>Amazon VPC IPAM User Guide</i>.\n      </p>"
+            }
+        },
+        "com.amazonaws.ec2#ModifyIpamPoolAllocation": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#ModifyIpamPoolAllocationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#ModifyIpamPoolAllocationResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Modifies the description of an IPAM pool allocation. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/modify-alloc-ipam.html\">Modify an IPAM pool allocation</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ModifyIpamPoolAllocationRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A check for whether you have the required permissions for the action without actually making the request \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "IpamPoolAllocationId": {
+                    "target": "com.amazonaws.ec2#IpamPoolAllocationId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the IPAM pool allocation you want to modify.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Description": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The new description for the IPAM pool allocation. If you submit a <code>null</code> value, the description is removed from the allocation.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#ModifyIpamPoolAllocationResult": {
+            "type": "structure",
+            "members": {
+                "IpamPoolAllocation": {
+                    "target": "com.amazonaws.ec2#IpamPoolAllocation",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "IpamPoolAllocation",
+                        "smithy.api#documentation": "<p>The modified IPAM pool allocation.</p>",
+                        "smithy.api#xmlName": "ipamPoolAllocation"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.ec2#ModifyIpamPoolRequest": {
@@ -114409,6 +114577,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "vpn-concentrator"
+                    }
+                },
+                "ipam_pool_allocation": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ipam-pool-allocation"
                     }
                 }
             }
@@ -133602,6 +133776,13 @@
                         "aws.protocols#ec2QueryName": "EndTime",
                         "smithy.api#documentation": "<p>The modification completion or failure time.</p>",
                         "smithy.api#xmlName": "endTime"
+                    }
+                },
+                "Operator": {
+                    "target": "com.amazonaws.ec2#OperatorResponse",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Operator",
+                        "smithy.api#xmlName": "operator"
                     }
                 }
             },
