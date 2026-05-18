@@ -160,9 +160,9 @@ tasks.register<JavaExec>("runAllBenchmarks") {
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("aws.sdk.kotlin.benchmarks.serde.BenchmarkRunnerKt")
     // Pass system properties for benchmark configuration
+    systemProperty("benchmark.warmupSeconds", project.findProperty("benchmark.warmupSeconds") ?: "10")
+    systemProperty("benchmark.measurementSeconds", project.findProperty("benchmark.measurementSeconds") ?: "30")
     systemProperty("benchmark.minIterations", project.findProperty("benchmark.minIterations") ?: "1000")
-    systemProperty("benchmark.maxIterations", project.findProperty("benchmark.maxIterations") ?: "10000")
-    systemProperty("benchmark.maxDurationSeconds", project.findProperty("benchmark.maxDurationSeconds") ?: "30")
-    systemProperty("benchmark.warmupFraction", project.findProperty("benchmark.warmupFraction") ?: "0.5")
+    systemProperty("benchmark.maxIterations", project.findProperty("benchmark.maxIterations") ?: "10000000")
     systemProperty("benchmark.instance", project.findProperty("benchmark.instance") ?: "unknown")
 }

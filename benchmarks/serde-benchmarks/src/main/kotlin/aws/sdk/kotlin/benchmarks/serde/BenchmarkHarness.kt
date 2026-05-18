@@ -6,10 +6,13 @@ package aws.sdk.kotlin.benchmarks.serde
 
 import kotlin.math.sqrt
 
-var MIN_ITERATIONS = System.getProperty("benchmark.minIterations", "1000").toInt()
-var MAX_ITERATIONS = System.getProperty("benchmark.maxIterations", "10000").toInt()
-var MAX_DURATION_NANOS = System.getProperty("benchmark.maxDurationSeconds", "30").toLong() * 1_000_000_000L
-var WARMUP_FRACTION = System.getProperty("benchmark.warmupFraction", "0.5").toDouble()
+val WARMUP_SECONDS = System.getProperty("benchmark.warmupSeconds", "10").toLong()
+val MEASUREMENT_SECONDS = System.getProperty("benchmark.measurementSeconds", "30").toLong()
+val MIN_ITERATIONS = System.getProperty("benchmark.minIterations", "1000").toInt()
+val MAX_ITERATIONS = System.getProperty("benchmark.maxIterations", "10000000").toInt()
+
+private val WARMUP_NANOS = WARMUP_SECONDS * 1_000_000_000L
+private val MEASUREMENT_NANOS = MEASUREMENT_SECONDS * 1_000_000_000L
 
 data class BenchmarkStats(
     val iterations: Int,
@@ -30,14 +33,10 @@ object BenchmarkHarness {
 
     /**
      * Runs a benchmark following the spec:
-     * - Min 1,000 iterations
-     * - Max 30 seconds OR 10,000 iterations
-     * - Discard up to 50% warmup from earliest iterations
-     *
-     * @param id the test case identifier
-     * @param interceptor the benchmark interceptor to read timestamps from
-     * @param extractNanos function to extract the relevant duration from the interceptor (serialization or deserialization)
-     * @param operation the suspend function to benchmark (e.g., `{ client.putObject(input) }`)
+     * - Warmup phase: run for WARMUP_SECONDS (default 10s) to let JIT reach steady state.
+     *   All warmup samples are discarded.
+     * - Measurement phase: run for MEASUREMENT_SECONDS (default 30s) or until MAX_ITERATIONS,
+     *   whichever comes first. Must record at least MIN_ITERATIONS (default 1,000).
      */
     suspend fun run(
         id: String,
@@ -45,29 +44,34 @@ object BenchmarkHarness {
         extractNanos: (BenchmarkInterceptor) -> Long,
         operation: suspend () -> Unit,
     ): BenchmarkResult {
-        val samples = LongArray(MAX_ITERATIONS)
-        var count = 0
-        val benchmarkStart = System.nanoTime()
-
-        while (count < MAX_ITERATIONS) {
+        // Phase 1: Warmup — discard all results
+        val warmupStart = System.nanoTime()
+        while (System.nanoTime() - warmupStart < WARMUP_NANOS) {
             interceptor.reset()
             operation()
-            samples[count] = extractNanos(interceptor)
-            count++
+        }
 
-            if (count >= MIN_ITERATIONS) {
-                val elapsed = System.nanoTime() - benchmarkStart
-                if (elapsed >= MAX_DURATION_NANOS) break
+        // Phase 2: Measurement
+        val samples = ArrayList<Long>(MAX_ITERATIONS.coerceAtMost(1_000_000))
+        val measureStart = System.nanoTime()
+
+        while (samples.size < MAX_ITERATIONS) {
+            interceptor.reset()
+            operation()
+            samples.add(extractNanos(interceptor))
+
+            if (samples.size >= MIN_ITERATIONS) {
+                val elapsed = System.nanoTime() - measureStart
+                if (elapsed >= MEASUREMENT_NANOS) break
             }
         }
 
-        val warmupCount = (count * WARMUP_FRACTION).toInt()
-        val measured = samples.copyOfRange(warmupCount, count)
-        measured.sort()
+        val sorted = samples.toLongArray()
+        sorted.sort()
 
         return BenchmarkResult(
             id = id,
-            stats = computeStats(measured),
+            stats = computeStats(sorted),
         )
     }
 
