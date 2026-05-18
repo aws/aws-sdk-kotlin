@@ -164,4 +164,5 @@ tasks.register<JavaExec>("runAllBenchmarks") {
     systemProperty("benchmark.maxIterations", project.findProperty("benchmark.maxIterations") ?: "10000")
     systemProperty("benchmark.maxDurationSeconds", project.findProperty("benchmark.maxDurationSeconds") ?: "30")
     systemProperty("benchmark.warmupFraction", project.findProperty("benchmark.warmupFraction") ?: "0.5")
+    systemProperty("benchmark.instance", project.findProperty("benchmark.instance") ?: "unknown")
 }

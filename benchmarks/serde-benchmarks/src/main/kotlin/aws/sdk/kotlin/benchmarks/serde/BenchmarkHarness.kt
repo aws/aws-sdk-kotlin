@@ -112,6 +112,7 @@ object BenchmarkHarness {
         appendLine("      [\"AWS SDK for Kotlin\", \"${metadata.sdkVersion}\"]")
         appendLine("    ],")
         appendLine("    \"os\": \"${metadata.os}\",")
+        appendLine("    \"instance\": \"${metadata.instance}\",")
         appendLine("    \"precision\": \"-9\"")
         appendLine("  },")
         appendLine("  \"serde_benchmarks\": [")
@@ -119,12 +120,12 @@ object BenchmarkHarness {
             appendLine("    {")
             appendLine("      \"id\": \"${result.id}\",")
             appendLine("      \"n\": ${result.stats.iterations},")
-            appendLine("      \"mean\": ${result.stats.mean.toLong()},")
-            appendLine("      \"p50\": ${result.stats.p50.toLong()},")
-            appendLine("      \"p90\": ${result.stats.p90.toLong()},")
-            appendLine("      \"p95\": ${result.stats.p95.toLong()},")
-            appendLine("      \"p99\": ${result.stats.p99.toLong()},")
-            appendLine("      \"std_dev\": ${result.stats.stdDev.toLong()}")
+            appendLine("      \"mean\": ${result.stats.mean},")
+            appendLine("      \"p50\": ${result.stats.p50},")
+            appendLine("      \"p90\": ${result.stats.p90},")
+            appendLine("      \"p95\": ${result.stats.p95},")
+            appendLine("      \"p99\": ${result.stats.p99},")
+            appendLine("      \"std_dev\": ${result.stats.stdDev}")
             append("    }")
             if (i < results.size - 1) appendLine(",") else appendLine()
         }
@@ -137,4 +138,5 @@ data class BenchmarkMetadata(
     val smithyKotlinVersion: String,
     val sdkVersion: String,
     val os: String = "${System.getProperty("os.name")} ${System.getProperty("os.version")}",
+    val instance: String = System.getProperty("benchmark.instance", "unknown"),
 )
