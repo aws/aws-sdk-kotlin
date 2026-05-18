@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.76] - 05/18/2026
+
+### Features
+* (**accessanalyzer**) Services manage service-linked analyzers through dedicated APIs - CreateServiceLinkedAnalyzer and DeleteServiceLinkedAnalyzer that separate service-linked specific operations from customer-managed operations. It also shows up in ListAnalyzers and GetAnalyzer responses.
+* (**connect**) Amazon Connect Cases now supports SLA durations of up to 2 years (1,051,200 minutes), increased from the previous maximum of 90 days (129,600 minutes). This enables you to track long-running service level agreements for cases that require extended resolution timelines.
+* (**ec2**) Amazon VPC IP Address Manager (IPAM) now supports tags on IPAM pool allocations, enabling all standard tagging features for allocations including tag-on-create.
+* (**ecs**) Amazon ECS now supports Pause lifecycle hooks for service deployments, allowing customers to automatically pause deployments at specified stages and use the new ContinueServiceDeployment API to continue or roll back with confidence.
+* (**ivs**) Adds support for up to 3 mediaTailorPlaybackConfiguration objects in an ad configuration resource
+* (**quicksight**) Support for dataset enrichment and geo spatial in new data preparation experience
+
+### Documentation
+* (**evs**) Amazon EVS now supports up to 32 hosts per EVS environment, increasing the previous host limit to allow a larger scale of VMware workload deployments and reduce operational overhead.
+
 ## [1.6.75] - 05/15/2026
 
 ### Features
