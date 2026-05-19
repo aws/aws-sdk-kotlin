@@ -14,11 +14,19 @@ dokka {
     moduleVersion.set(sdkVersion)
 
     val isolationMode = properties["dokka.isolationMode"]?.toString()?.lowercase() ?: "process"
-    val heapSize = properties["dokka.maxHeapSize"]?.toString() ?: "16g"
+    val aggregatorPaths = setOf(":", ":services", ":aws-runtime", ":hll")
+    val heapSize = if (project.path in aggregatorPaths) {
+        providers.gradleProperty("dokka.aggregator.maxHeapSize").getOrElse("64g")
+    } else {
+        providers.gradleProperty("dokka.module.maxHeapSize").getOrElse("16g")
+    }
 
     dokkaGeneratorIsolation = when (isolationMode) {
         "classloader" -> ClassLoaderIsolation { }
-        "process" -> ProcessIsolation { maxHeapSize = heapSize }
+        "process" -> ProcessIsolation {
+            maxHeapSize = heapSize
+            jvmArgs.addAll(listOf("-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-XX:G1HeapRegionSize=32m"))
+        }
         else -> error("Unsupported Dokka isolation mode: `$isolationMode`. Expected `process` or `classloader`")
     }
 
