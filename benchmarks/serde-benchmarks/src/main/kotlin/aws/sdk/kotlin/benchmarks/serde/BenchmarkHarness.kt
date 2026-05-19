@@ -13,6 +13,7 @@ val MAX_ITERATIONS = System.getProperty("benchmark.maxIterations", "10000000").t
 
 private val WARMUP_NANOS = WARMUP_SECONDS * 1_000_000_000L
 private val MEASUREMENT_NANOS = MEASUREMENT_SECONDS * 1_000_000_000L
+private const val WINDOW_NANOS = 1_000_000_000L // 1-second windows for std_dev calculation
 
 data class BenchmarkStats(
     val iterations: Int,
@@ -55,19 +56,39 @@ object BenchmarkHarness {
         System.gc()
         Thread.sleep(100)
 
-        // Phase 2: Measurement
+        // Phase 2: Measurement — collect individual samples and track 1-second windows
         val samples = ArrayList<Long>(MAX_ITERATIONS.coerceAtMost(1_000_000))
+        val windowMeans = ArrayList<Double>()
         val measureStart = System.nanoTime()
+        var windowStart = measureStart
+        var windowSum = 0L
+        var windowCount = 0
 
         while (samples.size < MAX_ITERATIONS) {
             interceptor.reset()
             operation()
-            samples.add(extractNanos(interceptor))
+            val sample = extractNanos(interceptor)
+            samples.add(sample)
+            windowSum += sample
+            windowCount++
+
+            val now = System.nanoTime()
+            if (now - windowStart >= WINDOW_NANOS) {
+                windowMeans.add(windowSum.toDouble() / windowCount)
+                windowStart = now
+                windowSum = 0L
+                windowCount = 0
+            }
 
             if (samples.size >= MIN_ITERATIONS) {
-                val elapsed = System.nanoTime() - measureStart
+                val elapsed = now - measureStart
                 if (elapsed >= MEASUREMENT_NANOS) break
             }
+        }
+
+        // Flush any remaining partial window
+        if (windowCount > 0) {
+            windowMeans.add(windowSum.toDouble() / windowCount)
         }
 
         val sorted = samples.toLongArray()
@@ -75,21 +96,23 @@ object BenchmarkHarness {
 
         return BenchmarkResult(
             id = id,
-            stats = computeStats(sorted),
+            stats = computeStats(sorted, windowMeans),
         )
     }
 
-    private fun computeStats(sorted: LongArray): BenchmarkStats {
+    private fun computeStats(sorted: LongArray, windowMeans: List<Double>): BenchmarkStats {
         val n = sorted.size
         val sum = sorted.sum()
         val mean = sum.toDouble() / n
 
-        var varianceSum = 0.0
-        for (v in sorted) {
-            val diff = v.toDouble() - mean
-            varianceSum += diff * diff
+        // std_dev over 1-second window means (like JMH iteration means)
+        val stdDev = if (windowMeans.size > 1) {
+            val wmMean = windowMeans.average()
+            val variance = windowMeans.sumOf { (it - wmMean) * (it - wmMean) } / windowMeans.size
+            sqrt(variance)
+        } else {
+            0.0
         }
-        val stdDev = sqrt(varianceSum / n)
 
         return BenchmarkStats(
             iterations = n,
