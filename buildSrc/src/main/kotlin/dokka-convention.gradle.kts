@@ -23,10 +23,7 @@ dokka {
 
     dokkaGeneratorIsolation = when (isolationMode) {
         "classloader" -> ClassLoaderIsolation { }
-        "process" -> ProcessIsolation {
-            maxHeapSize = heapSize
-            jvmArgs.addAll(listOf("-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-XX:G1HeapRegionSize=32m"))
-        }
+        "process" -> ProcessIsolation { maxHeapSize = heapSize }
         else -> error("Unsupported Dokka isolation mode: `$isolationMode`. Expected `process` or `classloader`")
     }
 
