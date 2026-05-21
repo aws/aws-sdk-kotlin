@@ -1,5 +1,64 @@
 # Changelog
 
+## [1.6.79] - 05/21/2026
+
+### Features
+* (**acm**) Adding new BDD representation of endpoint ruleset
+* (**acmpca**) Adding new BDD representation of endpoint ruleset
+* (**apigateway**) Adding new BDD representation of endpoint ruleset
+* (**apigatewayv2**) Adding new BDD representation of endpoint ruleset
+* (**appstream**) Adding new BDD representation of endpoint ruleset
+* (**backup**) Adding new BDD representation of endpoint ruleset
+* (**bedrockagent**) Adding new BDD representation of endpoint ruleset
+* (**bedrockagentcorecontrol**) Adds dataset management APIs for creating, versioning, and managing evaluation datasets.
+* (**bedrockruntime**) Adding new BDD representation of endpoint ruleset
+* (**cleanrooms**) Collaboration creators can update payment configurations without recreating the collaboration. When multiple payer candidates are configured for a cost type, analysis runners can specify the actual payer at submission time, providing granular control over billing.
+* (**cleanroomsml**) Collaboration creators can update payment configurations without recreating the collaboration. When multiple payer candidates are configured for a cost type, analysis runners can specify the actual payer at submission time, providing granular control over billing.
+* (**cloud9**) Adding new BDD representation of endpoint ruleset
+* (**codeartifact**) Adding new BDD representation of endpoint ruleset
+* (**codeguruprofiler**) Adding new BDD representation of endpoint ruleset
+* (**comprehend**) Adding new BDD representation of endpoint ruleset
+* (**comprehendmedical**) Adding new BDD representation of endpoint ruleset
+* (**connect**) Adding new BDD representation of endpoint ruleset
+* (**datasync**) Adding new BDD representation of endpoint ruleset
+* (**dlm**) Adding new BDD representation of endpoint ruleset
+* (**eks**) Adding new BDD representation of endpoint ruleset
+* (**evs**) A new GetDepotUrl API has been added to retrieve a URL for accessing Amazon EVS custom addon packages. Customers can use this URL to configure vSphere Lifecycle Manager (vLCM) as an online depot source, enabling upgrades of addon components across ESXi hosts.
+* (**fms**) Adding new BDD representation of endpoint ruleset
+* (**fsx**) Adding new BDD representation of endpoint ruleset
+* (**globalaccelerator**) Adding new BDD representation of endpoint ruleset
+* (**guardduty**) Adding new BDD representation of endpoint ruleset
+* (**healthlake**) Adding new BDD representation of endpoint ruleset
+* (**iotjobsdataplane**) Adding new BDD representation of endpoint ruleset
+* (**kafka**) Adding new BDD representation of endpoint ruleset
+* (**kendraranking**) Adding new BDD representation of endpoint ruleset
+* (**kinesisvideoarchivedmedia**) Adding new BDD representation of endpoint ruleset
+* (**marketplaceentitlementservice**) Adding new BDD representation of endpoint ruleset
+* (**mediaconnect**) Adds support for controlling the timecode source of NDI flow outputs.
+* (**mediatailor**) Adding new BDD representation of endpoint ruleset
+* (**migrationhubconfig**) Adding new BDD representation of endpoint ruleset
+* (**migrationhuborchestrator**) Adding new BDD representation of endpoint ruleset
+* (**networkmanager**) Adding new BDD representation of endpoint ruleset
+* (**pricing**) Adding new BDD representation of endpoint ruleset
+* (**qapps**) Adding new BDD representation of endpoint ruleset
+* (**quicksight**) Adding new BDD representation of endpoint ruleset
+* (**route53resolver**) Adding new BDD representation of endpoint ruleset
+* (**sagemaker**) Add support for disabling home EFS file system creation on SageMaker domains.
+* (**sagemakermetrics**) Adding new BDD representation of endpoint ruleset
+* (**securityhub**) Adding new BDD representation of endpoint ruleset
+* (**serverlessapplicationrepository**) Adding new BDD representation of endpoint ruleset
+* (**servicecatalogappregistry**) Adding new BDD representation of endpoint ruleset
+* (**signer**) Adding new BDD representation of endpoint ruleset
+* (**ssoadmin**) Adding new BDD representation of endpoint ruleset
+* (**textract**) Adding new BDD representation of endpoint ruleset
+* (**transcribe**) Adding new BDD representation of endpoint ruleset
+* (**translate**) Adding new BDD representation of endpoint ruleset
+* (**verifiedpermissions**) Support hard deleting policy store aliases. Users can now delete an alias and immediately reassign it to a different policy store without waiting for the soft-delete retention period.
+* (**workmail**) Adding new BDD representation of endpoint ruleset
+
+### Documentation
+* (**batch**) Clarified CreateComputeEnvironment parameter requirements - serviceRole is required for UNMANAGED compute environments, allocationStrategy is required for EKS compute environments, and compute environments must be created in the ENABLED state.
+
 ## [1.6.78] - 05/20/2026
 
 ### Features
