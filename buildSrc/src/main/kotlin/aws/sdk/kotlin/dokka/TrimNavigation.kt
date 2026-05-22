@@ -7,18 +7,12 @@ package aws.sdk.kotlin.dokka
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.TaskAction
-import org.gradle.workers.WorkAction
-import org.gradle.workers.WorkParameters
-import org.gradle.workers.WorkerExecutor
 import org.jsoup.Jsoup
-import java.io.File
-import javax.inject.Inject
-import kotlin.io.walk
+import org.jsoup.nodes.Element
 
-abstract class TrimNavigation @Inject constructor(private val workerExecutor: WorkerExecutor) : DefaultTask() {
+abstract class TrimNavigation : DefaultTask() {
     @get:InputDirectory
     abstract val sourceDirectory: DirectoryProperty
 
@@ -29,64 +23,76 @@ abstract class TrimNavigation @Inject constructor(private val workerExecutor: Wo
 
     @TaskAction
     fun trimNavigation() {
-        val queue = workerExecutor.noIsolation()
-        val sourceDirectory = this.sourceDirectory.getAsFile().get()
+        val sourceDir = sourceDirectory.asFile.get()
+        val rootNavFile = sourceDir.resolve("navigation.html")
 
-        logger.info("Searching for navigation.html files in $sourceDirectory")
-        sourceDirectory
-            .walk()
-            .filter { it.name == "navigation.html" && it.parentFile != sourceDirectory }
-            .forEach { file ->
-                queue.submit(TrimModule::class.java) {
-                    navigationFile = file
-                    projectRoot = project.layout.projectDirectory.asFile
-                }
-            }
-    }
-}
+        if (!rootNavFile.exists()) {
+            logger.warn("Root navigation.html not found at $rootNavFile, skipping trim")
+            return
+        }
 
-interface TrimModuleParameters : WorkParameters {
-    var navigationFile: File
-    var projectRoot: File
-}
+        val rootNavSize = rootNavFile.length() / 1024 / 1024
+        logger.lifecycle("[TrimNavigation] Parsing root navigation.html ($rootNavSize MB)...")
+        val parseStart = System.currentTimeMillis()
+        val rootDoc = Jsoup.parse(rootNavFile)
+        logger.lifecycle("[TrimNavigation] Parsed in ${(System.currentTimeMillis() - parseStart) / 1000}s")
 
-abstract class TrimModule : WorkAction<TrimModuleParameters> {
-    override fun execute() {
-        val navigation = parameters.navigationFile
-        val moduleName = navigation.parentFile.name
-
-        val relativePath = navigation.toRelativeString(parameters.projectRoot)
-        val logger = Logging.getLogger(TrimNavigation::class.java)
-        logger.info("Trimming $relativePath...")
-
-        val doc = Jsoup.parse(navigation)
-
-        // Remove all parent directory elements from all navigation links
-        doc.select("a[href^=../]").forEach { anchor ->
+        rootDoc.select("a[href^=../]").forEach { anchor ->
             var href = anchor.attr("href")
-
             while (href.startsWith("../")) {
                 href = href.removePrefix("../")
             }
-
             anchor.attr("href", href)
         }
 
-        // Trim side menus
-        doc.select("div.sideMenu > div.toc--part")
-            .filterNot { it.id().startsWith("$moduleName-nav-submenu") }
-            .forEach { moduleMenu ->
-                val moduleRow = moduleMenu.select("div.toc--row").first()!!
-                val toggleButton = moduleRow.select("button.toc--button").single()
-                toggleButton.remove()
+        val tocParts = rootDoc.select("div.sideMenu > div.toc--part")
 
-                moduleMenu.children()
-                    .filterNot { it == moduleRow }
-                    .forEach { it.remove() }
+        data class Segment(val id: String, val collapsed: ByteArray, val full: ByteArray)
+
+        val segments = tocParts.mapNotNull { part ->
+            val id = part.id()
+            val moduleRow = part.select("div.toc--row").first() ?: return@mapNotNull null
+            val collapsedPart = (part.shallowClone() as Element).apply {
+                appendChild(moduleRow.clone().apply {
+                    select("button.toc--button").remove()
+                })
             }
+            Segment(id, collapsedPart.outerHtml().toByteArray(), part.outerHtml().toByteArray())
+        }
 
-        // Update navigation.html
-        val trimmedSideMenuParts = doc.select("div.sideMenu > div.toc--part")
-        navigation.writeText("<div class=\"sideMenu\">\n$trimmedSideMenuParts\n</div>")
+        val moduleNavFiles = sourceDir.listFiles()
+            ?.filter { it.isDirectory }
+            ?.mapNotNull { dir ->
+                val navFile = dir.resolve("navigation.html")
+                if (navFile.exists()) dir.name to navFile else null
+            }
+            ?: emptyList()
+
+        val totalSegmentBytes = segments.sumOf { it.collapsed.size.toLong() + it.full.size.toLong() } / 1024 / 1024
+        logger.lifecycle("[TrimNavigation] ${segments.size} segments pre-extracted (${totalSegmentBytes} MB in memory)")
+        logger.lifecycle("[TrimNavigation] Writing ${moduleNavFiles.size} trimmed navigation files...")
+        val writeStart = System.currentTimeMillis()
+
+        val header = "<div class=\"sideMenu\">\n".toByteArray()
+        val footer = "</div>".toByteArray()
+        val newline = "\n".toByteArray()
+
+        moduleNavFiles.parallelStream().forEach { (moduleName, navFile) ->
+            navFile.outputStream().buffered().use { out ->
+                out.write(header)
+                for (seg in segments) {
+                    if (seg.id.startsWith("$moduleName-nav-submenu")) {
+                        out.write(seg.full)
+                    } else {
+                        out.write(seg.collapsed)
+                    }
+                    out.write(newline)
+                }
+                out.write(footer)
+            }
+        }
+
+        val writeElapsed = (System.currentTimeMillis() - writeStart) / 1000
+        logger.lifecycle("[TrimNavigation] Done trimming navigation files in ${writeElapsed}s")
     }
 }
