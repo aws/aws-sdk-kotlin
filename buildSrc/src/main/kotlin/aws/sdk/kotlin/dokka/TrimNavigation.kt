@@ -50,9 +50,9 @@ abstract class TrimNavigation : DefaultTask() {
 
         data class Segment(val id: String, val collapsed: ByteArray, val full: ByteArray)
 
-        val segments = tocParts.mapNotNull { part ->
+        val segments = tocParts.map { part ->
             val id = part.id()
-            val moduleRow = part.select("div.toc--row").first() ?: return@mapNotNull null
+            val moduleRow = part.select("div.toc--row").first()!!
             val collapsedPart = (part.shallowClone() as Element).apply {
                 appendChild(
                     moduleRow.clone().apply {
