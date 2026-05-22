@@ -53,9 +53,11 @@ abstract class TrimNavigation : DefaultTask() {
             val id = part.id()
             val moduleRow = part.select("div.toc--row").first() ?: return@mapNotNull null
             val collapsedPart = (part.shallowClone() as Element).apply {
-                appendChild(moduleRow.clone().apply {
-                    select("button.toc--button").remove()
-                })
+                appendChild(
+                    moduleRow.clone().apply {
+                        select("button.toc--button").remove()
+                    },
+                )
             }
             Segment(id, collapsedPart.outerHtml().toByteArray(), part.outerHtml().toByteArray())
         }
@@ -64,12 +66,16 @@ abstract class TrimNavigation : DefaultTask() {
             ?.filter { it.isDirectory }
             ?.mapNotNull { dir ->
                 val navFile = dir.resolve("navigation.html")
-                if (navFile.exists()) dir.name to navFile else null
+                if (navFile.exists()) {
+                    dir.name to navFile
+                } else {
+                    null
+                }
             }
             ?: emptyList()
 
         val totalSegmentBytes = segments.sumOf { it.collapsed.size.toLong() + it.full.size.toLong() } / 1024 / 1024
-        logger.lifecycle("[TrimNavigation] ${segments.size} segments pre-extracted (${totalSegmentBytes} MB in memory)")
+        logger.lifecycle("[TrimNavigation] ${segments.size} segments pre-extracted ($totalSegmentBytes MB in memory)")
         logger.lifecycle("[TrimNavigation] Writing ${moduleNavFiles.size} trimmed navigation files...")
         val writeStart = System.currentTimeMillis()
 
