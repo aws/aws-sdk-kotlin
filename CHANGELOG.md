@@ -1,5 +1,60 @@
 # Changelog
 
+## [1.6.80] - 05/22/2026
+
+### Features
+* (**appconfig**) Adding new BDD representation of endpoint ruleset
+* (**applicationsignals**) Adding new BDD representation of endpoint ruleset
+* (**b2bi**) Adding new BDD representation of endpoint ruleset
+* (**bcmpricingcalculator**) Adding new BDD representation of endpoint ruleset
+* (**bcmrecommendedactions**) Adding new BDD representation of endpoint ruleset
+* (**bedrock**) Adding new BDD representation of endpoint ruleset
+* (**bedrockagentruntime**) Adding new BDD representation of endpoint ruleset
+* (**cloudcontrol**) Adding new BDD representation of endpoint ruleset
+* (**codestarnotifications**) Adding new BDD representation of endpoint ruleset
+* (**controltower**) Adding new BDD representation of endpoint ruleset
+* (**customerprofiles**) Adding new BDD representation of endpoint ruleset
+* (**databrew**) Adding new BDD representation of endpoint ruleset
+* (**datazone**) Add support for VPC connection
+* (**dsql**) Adding new BDD representation of endpoint ruleset
+* (**ec2**) The ModifyInstanceAttribute API now supports modification of EnclaveOptions for the instance as a typed parameter.
+* (**emrcontainers**) Adding new BDD representation of endpoint ruleset
+* (**forecast**) Adding new BDD representation of endpoint ruleset
+* (**forecastquery**) Adding new BDD representation of endpoint ruleset
+* (**frauddetector**) Adding new BDD representation of endpoint ruleset
+* (**freetier**) Adding new BDD representation of endpoint ruleset
+* (**geoplaces**) Adding new BDD representation of endpoint ruleset
+* (**internetmonitor**) Adding new BDD representation of endpoint ruleset
+* (**invoicing**) Adds support for idempotency with a new ClientToken field for the CreateInvoiceUnit, DeleteInvoiceUnit, UpdateInvoiceUnit, DeleteProcurementPortalPreference, PutProcurementPortalPreference, and UpdateProcurementPortalPreferenceStatus APIs.
+* (**iotwireless**) Adding new BDD representation of endpoint ruleset
+* (**ivsrealtime**) Adding new BDD representation of endpoint ruleset
+* (**kafkaconnect**) Adding new BDD representation of endpoint ruleset
+* (**licensemanagerlinuxsubscriptions**) Adding new BDD representation of endpoint ruleset
+* (**licensemanagerusersubscriptions**) Adding new BDD representation of endpoint ruleset
+* (**marketplacediscovery**) Adding new BDD representation of endpoint ruleset
+* (**migrationhubrefactorspaces**) Adding new BDD representation of endpoint ruleset
+* (**neptunedata**) Adding new BDD representation of endpoint ruleset
+* (**networkfirewall**) Adding new BDD representation of endpoint ruleset
+* (**notificationscontacts**) Adding new BDD representation of endpoint ruleset
+* (**oam**) Adding new BDD representation of endpoint ruleset
+* (**outposts**) Adding new BDD representation of endpoint ruleset
+* (**panorama**) Adding new BDD representation of endpoint ruleset
+* (**partnercentralaccount**) Adding new BDD representation of endpoint ruleset
+* (**pi**) Added ListPerformanceAnalysisReportRecommendations API to retrieve recommendations for a performance analysis report. Added analysis configuration support to CreatePerformanceAnalysisReport for enhanced analysis types such as vacuum analysis.
+* (**qconnect**) Added guardrail assessment results to inference spans in the ListSpans API. You can now see which AI Guardrail policies were evaluated, whether content was blocked or masked, and per-policy details for each Bedrock Converse call
+* (**rbin**) Adding new BDD representation of endpoint ruleset
+* (**repostspace**) Adding new BDD representation of endpoint ruleset
+* (**s3vectors**) Adding new BDD representation of endpoint ruleset
+* (**schemas**) Adding new BDD representation of endpoint ruleset
+* (**securityagent**) Adds support for verification scripts on penetration test findings. Customers can now download executable scripts to independently reproduce confirmed vulnerabilities, with instructions and required environment variables provided for each finding.
+* (**sesv2**) Adding new BDD representation of endpoint ruleset
+* (**simspaceweaver**) Adding new BDD representation of endpoint ruleset
+* (**ssooidc**) Adding new BDD representation of endpoint ruleset
+* (**tnb**) Adding new BDD representation of endpoint ruleset
+
+### Documentation
+* (**gameliftstreams**) Added new Gen6 stream classes based on the EC2 G6e instance family. These classes are designed for streaming high-fidelity, graphically demanding games and applications that benefit from additional GPU memory and performance.
+
 ## [1.6.79] - 05/21/2026
 
 ### Features
