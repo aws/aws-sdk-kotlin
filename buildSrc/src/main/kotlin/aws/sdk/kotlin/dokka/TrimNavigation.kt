@@ -11,6 +11,7 @@ import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import java.io.File
 
 abstract class TrimNavigation : DefaultTask() {
     @get:InputDirectory
@@ -62,17 +63,10 @@ abstract class TrimNavigation : DefaultTask() {
             Segment(id, collapsedPart.outerHtml().toByteArray(), part.outerHtml().toByteArray())
         }
 
-        val moduleNavFiles = sourceDir.listFiles()
-            ?.filter { it.isDirectory }
-            ?.mapNotNull { dir ->
-                val navFile = dir.resolve("navigation.html")
-                if (navFile.exists()) {
-                    dir.name to navFile
-                } else {
-                    null
-                }
-            }
-            ?: emptyList()
+        val moduleNavFiles: List<Pair<String, File>> = sourceDir.walk()
+            .filter { it.name == "navigation.html" && it.parentFile != sourceDir }
+            .map { it.parentFile.name to it }
+            .toList()
 
         val totalSegmentBytes = segments.sumOf { it.collapsed.size.toLong() + it.full.size.toLong() } / 1024 / 1024
         logger.lifecycle("[TrimNavigation] ${segments.size} segments pre-extracted ($totalSegmentBytes MB in memory)")
