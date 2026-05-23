@@ -13,18 +13,16 @@ import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 
 /**
- * Captures precise timestamps at the SDK's boundaries per the benchmark spec:
+ * Captures precise timestamps around protocol serialization and deserialization only,
+ * excluding signing, interceptors, retry handling, and other client-side machinery.
  *
  * Serialization:
- * - Start: [readBeforeExecution] — immediately before the SDK does anything (matches spec's
- *   "immediately before the invocation that would transmit the request to the server")
- * - End: [readBeforeTransmit] — right before the HTTP request is sent to the transport
- *   (matches spec's "immediately after the request object is no longer mutated")
+ * - Start: [readBeforeSerialization] — immediately before the input is marshalled
+ * - End: [readAfterSerialization] — immediately after the protocol request is produced
  *
  * Deserialization:
- * - Start: [readBeforeDeserialization] — immediately before the HTTP response is handed
- *   to SDK deserialization code
- * - End: [readAfterDeserialization] — immediately after the final output object is produced
+ * - Start: [readBeforeDeserialization] — immediately before the HTTP response is unmarshalled
+ * - End: [readAfterDeserialization] — immediately after the output object is produced
  */
 class BenchmarkInterceptor : HttpInterceptor {
     var serializationStartNanos: Long = 0L
@@ -47,11 +45,11 @@ class BenchmarkInterceptor : HttpInterceptor {
 
     fun deserializationNanos(): Long = deserializationEndNanos - deserializationStartNanos
 
-    override fun readBeforeExecution(context: RequestInterceptorContext<Any>) {
+    override fun readBeforeSerialization(context: RequestInterceptorContext<Any>) {
         serializationStartNanos = System.nanoTime()
     }
 
-    override fun readBeforeTransmit(context: ProtocolRequestInterceptorContext<Any, HttpRequest>) {
+    override fun readAfterSerialization(context: ProtocolRequestInterceptorContext<Any, HttpRequest>) {
         serializationEndNanos = System.nanoTime()
     }
 
