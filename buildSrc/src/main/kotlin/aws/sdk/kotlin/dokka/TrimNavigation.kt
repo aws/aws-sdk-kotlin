@@ -12,6 +12,8 @@ import org.gradle.api.tasks.TaskAction
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.io.File
+import kotlin.time.measureTime
+import kotlin.time.measureTimedValue
 
 abstract class TrimNavigation : DefaultTask() {
     @get:InputDirectory
@@ -32,11 +34,10 @@ abstract class TrimNavigation : DefaultTask() {
             return
         }
 
-        val rootNavSize = rootNavFile.length() / 1024 / 1024
-        logger.lifecycle("[TrimNavigation] Parsing root navigation.html ($rootNavSize MB)...")
-        val parseStart = System.currentTimeMillis()
-        val rootDoc = Jsoup.parse(rootNavFile)
-        logger.lifecycle("[TrimNavigation] Parsed in ${(System.currentTimeMillis() - parseStart) / 1000}s")
+        val rootNavSizeMb = rootNavFile.length().toDouble() / 1024 / 1024
+        logger.lifecycle("[TrimNavigation] Parsing root navigation.html (${"%.3f".format(rootNavSizeMb)} MB)...")
+        val (rootDoc, parseTime) = measureTimedValue { Jsoup.parse(rootNavFile) }
+        logger.lifecycle("[TrimNavigation] Parsed in $parseTime")
 
         rootDoc.select("a[href^=../]").forEach { anchor ->
             var href = anchor.attr("href")
@@ -68,31 +69,31 @@ abstract class TrimNavigation : DefaultTask() {
             .map { it.parentFile.name to it }
             .toList()
 
-        val totalSegmentBytes = segments.sumOf { it.collapsed.size.toLong() + it.full.size.toLong() } / 1024 / 1024
-        logger.lifecycle("[TrimNavigation] ${segments.size} segments pre-extracted ($totalSegmentBytes MB in memory)")
+        val totalSegmentMb = segments.sumOf { it.collapsed.size.toLong() + it.full.size.toLong() }.toDouble() / 1024 / 1024
+        logger.lifecycle("[TrimNavigation] ${segments.size} segments pre-extracted (${"%.3f".format(totalSegmentMb)} MB in memory)")
         logger.lifecycle("[TrimNavigation] Writing ${moduleNavFiles.size} trimmed navigation files...")
-        val writeStart = System.currentTimeMillis()
 
         val header = "<div class=\"sideMenu\">\n".toByteArray()
         val footer = "</div>".toByteArray()
         val newline = "\n".toByteArray()
 
-        moduleNavFiles.parallelStream().forEach { (moduleName, navFile) ->
-            navFile.outputStream().buffered().use { out ->
-                out.write(header)
-                for (seg in segments) {
-                    if (seg.id.startsWith("$moduleName-nav-submenu")) {
-                        out.write(seg.full)
-                    } else {
-                        out.write(seg.collapsed)
+        val writeTime = measureTime {
+            moduleNavFiles.parallelStream().forEach { (moduleName, navFile) ->
+                navFile.outputStream().buffered().use { out ->
+                    out.write(header)
+                    for (seg in segments) {
+                        if (seg.id.startsWith("$moduleName-nav-submenu")) {
+                            out.write(seg.full)
+                        } else {
+                            out.write(seg.collapsed)
+                        }
+                        out.write(newline)
                     }
-                    out.write(newline)
+                    out.write(footer)
                 }
-                out.write(footer)
             }
         }
 
-        val writeElapsed = (System.currentTimeMillis() - writeStart) / 1000
-        logger.lifecycle("[TrimNavigation] Done trimming navigation files in ${writeElapsed}s")
+        logger.lifecycle("[TrimNavigation] Done trimming navigation files in $writeTime")
     }
 }
