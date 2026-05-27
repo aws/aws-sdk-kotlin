@@ -37,7 +37,7 @@ if (asyncProfilerLib != null) {
     tasks.withType<JavaExec>().configureEach {
         if (name.contains("Benchmark")) {
             doFirst { profilesDir.get().asFile.mkdirs() }
-            jvmArgs("-agentpath:$asyncProfilerLib=start,event=cpu,file=${profilesDir.get()}/profile.html")
+            jvmArgs("-agentpath:$asyncProfilerLib=start,event=cpu,file=${profilesDir.get()}/profile.jfr")
         }
     }
 }

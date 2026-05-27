@@ -171,6 +171,6 @@ tasks.register<JavaExec>("runAllBenchmarks") {
     if (asyncProfilerLib != null) {
         val profilesDir = project.layout.buildDirectory.dir("profiles")
         doFirst { profilesDir.get().asFile.mkdirs() }
-        jvmArgs("-agentpath:$asyncProfilerLib=start,event=cpu,file=${profilesDir.get()}/serde-profile.html")
+        jvmArgs("-agentpath:$asyncProfilerLib=start,event=cpu,file=${profilesDir.get()}/serde-profile.jfr")
     }
 }
