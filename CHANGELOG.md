@@ -1,5 +1,64 @@
 # Changelog
 
+## [1.6.81] - 05/26/2026
+
+### Features
+* (**aiops**) Adding new BDD representation of endpoint ruleset
+* (**applicationcostprofiler**) Adding new BDD representation of endpoint ruleset
+* (**apprunner**) Adding new BDD representation of endpoint ruleset
+* (**backup**) Launching S3 PITR malware scanning support for AWS Backup
+* (**batch**) Increase the maximum value of jobExecutionTimeoutMinutes to support longer job timeouts during compute environment infrastructure updates.
+* (**bcmdataexports**) Adding new BDD representation of endpoint ruleset
+* (**bedrockagentcore**) Adding new BDD representation of endpoint ruleset
+* (**bedrockagentcorecontrol**) Adding new BDD representation of endpoint ruleset
+* (**bedrockdataautomation**) Adding new BDD representation of endpoint ruleset
+* (**billing**) Adding new BDD representation of endpoint ruleset
+* (**chimesdkidentity**) Adding new BDD representation of endpoint ruleset
+* (**chimesdkmediapipelines**) Adding new BDD representation of endpoint ruleset
+* (**cleanrooms**) Adding new BDD representation of endpoint ruleset
+* (**cleanroomsml**) Adding new BDD representation of endpoint ruleset
+* (**codeconnections**) Adding new BDD representation of endpoint ruleset
+* (**connecthealth**) Adding new BDD representation of endpoint ruleset
+* (**controlcatalog**) Adding new BDD representation of endpoint ruleset
+* (**datazone**) Added resourceConfigurations and allowUserProvidedConfigurations fields to environment blueprint configuration APIs, enabling customers who migrated from V1 to V2 domains to update resource configurations (such as lineage schedules) programmatically via the SDK.
+* (**devopsguru**) Adding new BDD representation of endpoint ruleset
+* (**emrserverless**) Adding new BDD representation of endpoint ruleset
+* (**evs**) Adding new BDD representation of endpoint ruleset
+* (**greengrassv2**) Adding new BDD representation of endpoint ruleset
+* (**guardduty**) Add malware scan support for Continuous Backups, also known as Point-In-Time Recovery Points (PITR).
+* (**identitystore**) Adding new BDD representation of endpoint ruleset
+* (**iotmanagedintegrations**) Adding new BDD representation of endpoint ruleset
+* (**ivschat**) Adding new BDD representation of endpoint ruleset
+* (**keyspacesstreams**) Adding new BDD representation of endpoint ruleset
+* (**kinesisvideowebrtcstorage**) Adding new BDD representation of endpoint ruleset
+* (**managedblockchainquery**) Adding new BDD representation of endpoint ruleset
+* (**marketplaceagreement**) Adding new BDD representation of endpoint ruleset
+* (**mediapackagev2**) Adding new BDD representation of endpoint ruleset
+* (**medicalimaging**) Adding new BDD representation of endpoint ruleset
+* (**notifications**) Adding new BDD representation of endpoint ruleset
+* (**observabilityadmin**) Adding new BDD representation of endpoint ruleset
+* (**odb**) Adding new BDD representation of endpoint ruleset
+* (**osis**) Adding new BDD representation of endpoint ruleset
+* (**partnercentralchannel**) Adding new BDD representation of endpoint ruleset
+* (**pcaconnectorscep**) Adding new BDD representation of endpoint ruleset
+* (**pipes**) Adding new BDD representation of endpoint ruleset
+* (**redshiftserverless**) Adding new BDD representation of endpoint ruleset
+* (**resiliencehub**) Adding new BDD representation of endpoint ruleset
+* (**resourcegroupstaggingapi**) The GetResources API now returns MissingTagKeys in ComplianceDetails, listing tag keys defined as required in the ReportRequiredTagBlock block of the effective tag policy that are absent from the resource.
+* (**rolesanywhere**) Adding new BDD representation of endpoint ruleset
+* (**route53globalresolver**) Adding new BDD representation of endpoint ruleset
+* (**s3tables**) Adding new BDD representation of endpoint ruleset
+* (**sagemakeredge**) Adding new BDD representation of endpoint ruleset
+* (**sagemakergeospatial**) Adding new BDD representation of endpoint ruleset
+* (**scheduler**) Adding new BDD representation of endpoint ruleset
+* (**servicediscovery**) Adding new BDD representation of endpoint ruleset
+* (**servicequotas**) Adding new BDD representation of endpoint ruleset
+* (**ssmquicksetup**) Adding new BDD representation of endpoint ruleset
+* (**workspacesthinclient**) Adding new BDD representation of endpoint ruleset
+
+### Documentation
+* (**budgets**) AWS Budget Name Validation Documentation Updates.
+
 ## [1.6.80] - 05/22/2026
 
 ### Features
