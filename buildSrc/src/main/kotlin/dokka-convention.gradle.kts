@@ -14,7 +14,12 @@ dokka {
     moduleVersion.set(sdkVersion)
 
     val isolationMode = properties["dokka.isolationMode"]?.toString()?.lowercase() ?: "process"
-    val heapSize = properties["dokka.maxHeapSize"]?.toString() ?: "16g"
+    val aggregatorPaths = setOf(":", ":services", ":aws-runtime", ":hll")
+    val heapSize = if (project.path in aggregatorPaths) {
+        providers.gradleProperty("dokka.aggregator.maxHeapSize").getOrElse("64g")
+    } else {
+        providers.gradleProperty("dokka.module.maxHeapSize").getOrElse("16g")
+    }
 
     dokkaGeneratorIsolation = when (isolationMode) {
         "classloader" -> ClassLoaderIsolation { }
