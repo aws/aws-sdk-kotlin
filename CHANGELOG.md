@@ -1,5 +1,63 @@
 # Changelog
 
+## [1.6.82] - 05/27/2026
+
+### Features
+* (**bcmdashboards**) Adding new BDD representation of endpoint ruleset
+* (**bedrockdataautomation**) Matcher Fallback extends the CustomOutputConfiguration for the Document modality in DataAutomationProjects, enabling a fallback blueprint when no match is found. A FALLBACK match status is returned, improving the matching experience and guaranteeing customers always receive CustomOutputResults.
+* (**computeoptimizer**) Adding new BDD representation of endpoint ruleset
+* (**computeoptimizerautomation**) Adding new BDD representation of endpoint ruleset
+* (**connectcases**) Adding new BDD representation of endpoint ruleset
+* (**dataexchange**) Adding new BDD representation of endpoint ruleset
+* (**devopsagent**) Adding new BDD representation of endpoint ruleset
+* (**docdbelastic**) Adding new BDD representation of endpoint ruleset
+* (**ebs**) Adding new BDD representation of endpoint ruleset
+* (**ecrpublic**) Adding new BDD representation of endpoint ruleset
+* (**ecs**) Add support for Neuron device resource requirements for Amazon ECS
+* (**eksauth**) Adding new BDD representation of endpoint ruleset
+* (**elementalinference**) Added support for smart subtitles in Elemental Inference, enabling automatic generation of subtitles for media content. Available in English, Spanish, French, German, Italian, and Portuguese.
+* (**eventbridge**) Adding new BDD representation of endpoint ruleset
+* (**finspace**) Adding new BDD representation of endpoint ruleset
+* (**fis**) Adding new BDD representation of endpoint ruleset
+* (**imagebuilder**) Adding new BDD representation of endpoint ruleset
+* (**inspector2**) Adding new BDD representation of endpoint ruleset
+* (**iotdeviceadvisor**) Adding new BDD representation of endpoint ruleset
+* (**iotfleetwise**) Adding new BDD representation of endpoint ruleset
+* (**iotthingsgraph**) Adding new BDD representation of endpoint ruleset
+* (**launchwizard**) Adding new BDD representation of endpoint ruleset
+* (**location**) Adding new BDD representation of endpoint ruleset
+* (**m2**) Adding new BDD representation of endpoint ruleset
+* (**marketplacedeployment**) Adding new BDD representation of endpoint ruleset
+* (**medialive**) AWS Elemental MediaLive now supports Smart Subtitles, a new caption source that uses AWS Elemental Inference to automatically generate WebVTT and TTML captions from source audio. Available in English, Spanish, French, German, Italian, and Portuguese.
+* (**memorydb**) Adding new BDD representation of endpoint ruleset
+* (**mgn**) Adding new BDD representation of endpoint ruleset
+* (**mpa**) Adding new BDD representation of endpoint ruleset
+* (**novaact**) Adding new BDD representation of endpoint ruleset
+* (**omics**) Adding new BDD representation of endpoint ruleset
+* (**opensearch**) OpenSearch will now support multi-segment paths in JWKS URLs.
+* (**partnercentralbenefits**) Adding new BDD representation of endpoint ruleset
+* (**partnercentralselling**) Adding new BDD representation of endpoint ruleset
+* (**paymentcryptography**) Adding new BDD representation of endpoint ruleset
+* (**pcaconnectorad**) Adding new BDD representation of endpoint ruleset
+* (**resourceexplorer2**) Adding new BDD representation of endpoint ruleset
+* (**rtbfabric**) Adding new BDD representation of endpoint ruleset
+* (**rum**) Adding new BDD representation of endpoint ruleset
+* (**sagemaker**) Adds shared environment support for Restricted Instance Groups (RIGs) on SageMaker HyperPod, enabling cross-RIG workload scheduling and FSx sharing. This unlocks shared CPU-GPU environments needed for cost-efficient RL training (e.g., Nova Forge). Adds p6 instance support for recommendation jobs
+* (**sagemakerfeaturestoreruntime**) Adding new BDD representation of endpoint ruleset
+* (**savingsplans**) Adding new BDD representation of endpoint ruleset
+* (**securityir**) Adding new BDD representation of endpoint ruleset
+* (**simpledbv2**) Adding new BDD representation of endpoint ruleset
+* (**ssmcontacts**) Adding new BDD representation of endpoint ruleset
+* (**ssmsap**) Adding new BDD representation of endpoint ruleset
+* (**supportapp**) Adding new BDD representation of endpoint ruleset
+* (**voiceid**) Adding new BDD representation of endpoint ruleset
+* (**wellarchitected**) Adding new BDD representation of endpoint ruleset
+* (**workmailmessageflow**) Adding new BDD representation of endpoint ruleset
+* (**workspacesweb**) Adding new BDD representation of endpoint ruleset
+
+### Documentation
+* (**organizations**) AWS Organizations now emits CloudTrail events (AccountJoinedOrganization, AccountDepartedOrganization) to the management account for membership changes, including join and departure method and timestamp.
+
 ## [1.6.81] - 05/26/2026
 
 ### Features
