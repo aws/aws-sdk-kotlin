@@ -77,6 +77,10 @@ abstract class TrimNavigation : DefaultTask() {
         val footer = "</div>".toByteArray()
         val newline = "\n".toByteArray()
 
+        // Uses parallelStream() (ForkJoinPool) instead of Gradle's Worker API because each work item
+        // is a trivial byte-array write — Worker API overhead would dominate. This bypasses --max-workers
+        // but is safe because this task runs in temporal isolation via finalizedBy (after dokkaGenerate).
+        // Revisit if TrimNavigation ever runs concurrently with other CPU/IO-heavy tasks.
         val writeTime = measureTime {
             moduleNavFiles.parallelStream().forEach { (moduleName, navFile) ->
                 navFile.outputStream().buffered().use { out ->
