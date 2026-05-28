@@ -6,7 +6,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 
 /**
@@ -100,20 +99,20 @@ public class HeterogeneousItemConverter<T>(
     public val typeAttribute: String,
     public val subConverters: Map<String, ItemConverter<T>>,
 ) : ItemConverter<T> {
-    override val left: MonoConverter<Item, T> = MonoConverter { item ->
-        val attr = item[typeAttribute] ?: error("Missing $typeAttribute")
+    override fun convertLeft(from: Item): T {
+        val attr = from[typeAttribute] ?: error("Missing $typeAttribute")
         val typeValue = attr.asSOrNull() ?: error("No string value for $attr")
         val converter = subConverters[typeValue] ?: error("No converter for $typeValue")
-        converter.convertLeft(item)
+        return converter.convertLeft(from)
     }
 
-    override val right: MonoConverter<T, Item> = MonoConverter { obj ->
-        val typeValue = typeMapper(obj)
+    override fun convertRight(from: T): Item {
+        val typeValue = typeMapper(from)
         val converter = subConverters[typeValue] ?: error("No converter for $typeValue")
 
-        buildItem {
+        return buildItem {
             put(typeAttribute, AttributeValue.S(typeValue))
-            putAll(converter.convertRight(obj))
+            putAll(converter.convertRight(from))
         }
     }
 }

@@ -13,7 +13,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.SchemaAttributes
 import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.MapperContext
-import aws.sdk.kotlin.hll.mapping.core.converters.Converter
+import aws.sdk.kotlin.hll.mapping.core.converters.ConverterImpl
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
 import aws.smithy.kotlin.runtime.collections.attributesOf
@@ -114,7 +114,7 @@ class CounterInterceptorTest {
             counterFields?.let { SchemaAttributes.CounterFields to it }
         }
 
-        val converter: ItemConverter<Any> = Converter(right = { buildItem { } }, left = { "" })
+        val converter: ItemConverter<Any> = ConverterImpl(convertRight = { buildItem { } }, convertLeft = { "" })
 
         val schema = ItemSchemaPartitionKeyImpl(
             converter = converter,

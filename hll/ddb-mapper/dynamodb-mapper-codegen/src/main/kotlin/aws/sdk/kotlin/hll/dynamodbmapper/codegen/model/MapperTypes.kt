@@ -379,9 +379,9 @@ public object MapperTypes {
         }
 
         public object SmithyTypes {
-            public val DefaultInstantValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "InstantValueConverter.Default")
+            public val DocumentValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "DocumentValueConverter.Default")
+            public val InstantValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "InstantValueConverter")
             public val UrlValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "UrlValueConverter")
-            public val DefaultDocumentValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "DocumentValueConverter.Default")
         }
     }
 

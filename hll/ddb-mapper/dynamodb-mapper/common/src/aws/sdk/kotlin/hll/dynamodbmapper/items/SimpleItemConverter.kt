@@ -6,7 +6,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 
 /**
@@ -35,7 +34,7 @@ public class SimpleItemConverter<T, B>(
             }
         }
 
-    override val left: MonoConverter<Item, T> = MonoConverter {
+    override fun convertLeft(from: Item): T {
         val builder = builderFactory()
 
         /**
@@ -50,15 +49,15 @@ public class SimpleItemConverter<T, B>(
          */
         fun <A> AttributeDescriptor<A, T, B>.fromAttributeValue(attr: AttributeValue) = builder.setter(converter.convertLeft(attr))
 
-        it.forEach { (name, attr) ->
+        from.forEach { (name, attr) ->
             // TODO make behavior for unknown attributes configurable (ignore, exception, other?)
             this.descriptors[name]?.fromAttributeValue(attr)
         }
 
-        builder.build()
+        return builder.build()
     }
 
-    override val right: MonoConverter<T, Item> = MonoConverter {
+    override fun convertRight(from: T): Item {
         /**
          * This is a convenience function to keep the compile-time safety for type param `A`. Without this, the compiler
          * can't track generic types across multiple statements:
@@ -69,9 +68,9 @@ public class SimpleItemConverter<T, B>(
          * descriptor.converter.toAttributeValue(value) // Type mismatch for value. Required: Nothing, Found: Any?
          * ```
          */
-        fun <A> AttributeDescriptor<A, T, B>.toAttributeValue() = converter.convertRight(getter(it))
+        fun <A> AttributeDescriptor<A, T, B>.toAttributeValue() = converter.convertRight(getter(from))
 
-        buildItem {
+        return buildItem {
             this@SimpleItemConverter.descriptors.values.forEach { desc ->
                 put(desc.name, desc.toAttributeValue())
             }

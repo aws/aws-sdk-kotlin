@@ -5,23 +5,14 @@
 package aws.sdk.kotlin.hll.mapping.core.converters.collections
 
 import aws.sdk.kotlin.hll.mapping.core.converters.Converter
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
-import aws.sdk.kotlin.hll.mapping.core.converters.reversedBy
 
 /**
- * Creates a set-mapping [MonoConverter] which turns values of type `Set<L>` into values of type `Set<R>`
- * @param A The element type to convert from
- * @param B The element type to convert to
- * @param delegate A [MonoConverter] from type [A] to type [B] to use for each set element
- */
-@Suppress("ktlint:standard:function-naming")
-public fun <A, B> SetMappingMonoConverter(delegate: MonoConverter<A, B>): MonoConverter<Set<A>, Set<B>> = MonoConverter { it.map(delegate::convert).toSet() }
-
-/**
- * Creates a set-mapping [Converter] which performs two-way conversions between values of type `Set<L>` and values of
- * type `Set<R>`
+ * A set-mapping [Converter] which performs two-way conversions between values of type `Set<L>` and values of type
+ * `Set<R>`
  * @param L The **left** element type
  * @param R The **right** element type
  */
-@Suppress("ktlint:standard:function-naming")
-public fun <L, R> SetMappingConverter(delegate: Converter<L, R>): Converter<Set<L>, Set<R>> = SetMappingMonoConverter(delegate.right) reversedBy SetMappingMonoConverter(delegate.left)
+public class SetMappingConverter<L, R>(private val delegate: Converter<L, R>): Converter<Set<L>, Set<R>> {
+    override fun convertLeft(from: Set<R>): Set<L> = from.map { delegate.convertLeft(it) }.toSet()
+    override fun convertRight(from: Set<L>): Set<R> = from.map { delegate.convertRight(it) }.toSet()
+}

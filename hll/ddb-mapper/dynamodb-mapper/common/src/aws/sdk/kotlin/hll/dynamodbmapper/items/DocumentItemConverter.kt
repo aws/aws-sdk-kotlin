@@ -6,44 +6,45 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.toItem
-import aws.sdk.kotlin.hll.dynamodbmapper.util.NULL_ATTR
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
-import aws.sdk.kotlin.hll.mapping.core.converters.reversedBy
+import aws.sdk.kotlin.hll.dynamodbmapper.values.NullValueConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.AttributeValueListValueConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.AttributeValueMapValueConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.BooleanValueConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.smithytypes.DocumentConverterBase
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.InternalApi
 import aws.smithy.kotlin.runtime.content.Document
-import aws.smithy.kotlin.runtime.util.toNumber
 
-private val docToItem = MonoConverter<Document, Item> {
-    require(it is Document.Map) // only
-    it.mapValues { (_, value) -> toAttributeValue(value) }.toItem()
-}
+/**
+ * Converts between [Document] and [Item]. The top-level document must be a [Document.Map]; nested values use the
+ * same element-level conversion as [DocumentValueConverter][aws.sdk.kotlin.hll.dynamodbmapper.values.smithytypes.DocumentValueConverter].
+ */
+public class DocumentItemConverter(
+    numberValueConverter: ValueConverter<Number> = NumberValueConverters.Auto,
+    stringValueConverter: ValueConverter<String> = StringValueConverter,
+    booleanValueConverter: ValueConverter<Boolean> = BooleanValueConverter,
+    nullValueConverter: ValueConverter<Nothing?> = NullValueConverter,
+    attributeValueListValueConverter: ValueConverter<List<AttributeValue>> = AttributeValueListValueConverter,
+    attributeValueMapValueConverter: ValueConverter<Map<String, AttributeValue>> = AttributeValueMapValueConverter,
+) : DocumentConverterBase(
+    numberValueConverter,
+    stringValueConverter,
+    booleanValueConverter,
+    nullValueConverter,
+    attributeValueListValueConverter,
+    attributeValueMapValueConverter,
+), ItemConverter<Document> {
+    public companion object {
+        public val Default: DocumentItemConverter = DocumentItemConverter()
+    }
 
-private val itemToDoc = MonoConverter<Item, Document> {
-    it
-        .mapValues { (_, attr) -> fromAttributeValue(attr) }
-        .let(Document::Map)
-}
+    override fun convertLeft(from: Item): Document =
+        Document.Map(from.mapValues { (_, attr) -> documentFromAttributeValue(attr) })
 
-// FIXME Combine with DocumentValueConverter or refactor to commonize as much code as possible
-public val DocumentItemConverter: ItemConverter<Document> = docToItem reversedBy itemToDoc
-
-@OptIn(InternalApi::class)
-private fun fromAttributeValue(attr: AttributeValue): Document? = when (attr) {
-    is AttributeValue.Null -> null
-    is AttributeValue.N -> Document.Number(attr.value.toNumber()!!) // FIXME need better toNumber logic
-    is AttributeValue.S -> Document.String(attr.value)
-    is AttributeValue.Bool -> Document.Boolean(attr.value)
-    is AttributeValue.L -> Document.List(attr.value.map(::fromAttributeValue))
-    is AttributeValue.M -> Document.Map(attr.value.mapValues { (_, nestedValue) -> fromAttributeValue(nestedValue) })
-    else -> error("Documents do not support ${attr::class.qualifiedName}")
-}
-
-private fun toAttributeValue(value: Document?): AttributeValue = when (value) {
-    null -> NULL_ATTR
-    is Document.Number -> AttributeValue.N(value.value.toString())
-    is Document.String -> AttributeValue.S(value.value)
-    is Document.Boolean -> AttributeValue.Bool(value.value)
-    is Document.List -> AttributeValue.L(value.value.map(::toAttributeValue))
-    is Document.Map -> AttributeValue.M(value.mapValues { (_, nestedValue) -> toAttributeValue(nestedValue) })
+    override fun convertRight(from: Document): Item {
+        require(from is Document.Map) { "DocumentItemConverter requires a Document.Map at the top level" }
+        return from.mapValues { (_, value) -> attributeValueFromDocument(value) }.toItem()
+    }
 }

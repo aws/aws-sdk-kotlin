@@ -246,9 +246,9 @@ internal class SchemaRenderer(
             else -> writeInline(
                 "#T",
                 when (type) {
-                    Types.Smithy.Instant -> MapperTypes.Values.SmithyTypes.DefaultInstantValueConverter
+                    Types.Smithy.Instant -> MapperTypes.Values.SmithyTypes.InstantValueConverter
                     Types.Smithy.Url -> MapperTypes.Values.SmithyTypes.UrlValueConverter
-                    Types.Smithy.Document -> MapperTypes.Values.SmithyTypes.DefaultDocumentValueConverter
+                    Types.Smithy.Document -> MapperTypes.Values.SmithyTypes.DocumentValueConverter
 
                     Types.Kotlin.Boolean -> MapperTypes.Values.Scalars.BooleanValueConverter
                     Types.Kotlin.String -> MapperTypes.Values.Scalars.StringValueConverter

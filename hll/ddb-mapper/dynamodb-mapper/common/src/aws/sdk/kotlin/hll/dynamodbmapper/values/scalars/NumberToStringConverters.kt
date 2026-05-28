@@ -5,27 +5,33 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.values.scalars
 
 import aws.sdk.kotlin.hll.mapping.core.converters.Converter
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 
 public object NumberToStringConverters {
     /**
      * Converts between [Number] and [String] values
      */
-    public val Auto: Converter<Number, String> =
-        Converter(Number::toString) {
-            when {
-                '.' in it -> it.toDouble()
-                else -> when (val longNumber = it.toLong()) {
+    public class Auto : Converter<Number, String> by Auto {
+        public companion object : Converter<Number, String> {
+            override fun convertRight(from: Number): String = from.toString()
+            override fun convertLeft(from: String): Number = when {
+                '.' in from -> from.toDouble()
+                else -> when (val longNumber = from.toLong()) {
                     in kotlin.Int.MIN_VALUE..kotlin.Int.MAX_VALUE -> longNumber.toInt()
                     else -> longNumber
                 }
             }
         }
+    }
 
     /**
      * Converts between [kotlin.Byte] and [String] values
      */
-    public val Byte: Converter<Byte, String> = Converter(kotlin.Byte::toString, String::toByte)
+    public class Byte : Converter<kotlin.Byte, String> by Byte {
+        public companion object : Converter<kotlin.Byte, String> {
+            override fun convertRight(from: kotlin.Byte): String = from.toString()
+            override fun convertLeft(from: String): kotlin.Byte = from.toByte()
+        }
+    }
 
     /**
      * Converts between [kotlin.Double] and [String] values. Because
@@ -33,12 +39,14 @@ public object NumberToStringConverters {
      * do not support them, this converter throws exceptions for non-finite numbers such as [Double.NEGATIVE_INFINITY],
      * [Double.POSITIVE_INFINITY], and [Double.NaN].
      */
-    public val Double: Converter<Double, String> = run {
-        val doubleToString = MonoConverter<Double, String> {
-            require(it.isFinite()) { "Cannot convert $it: only finite numbers are supported" }
-            it.toString()
+    public class Double : Converter<kotlin.Double, String> by Double {
+        public companion object : Converter<kotlin.Double, String> {
+            override fun convertRight(from: kotlin.Double): String {
+                require(from.isFinite()) { "Cannot convert $from: only finite numbers are supported" }
+                return from.toString()
+            }
+            override fun convertLeft(from: String): kotlin.Double = from.toDouble()
         }
-        Converter(doubleToString, String::toDouble)
     }
 
     /**
@@ -47,46 +55,83 @@ public object NumberToStringConverters {
      * do not support them, this converter throws exceptions for non-finite numbers such as [Float.NEGATIVE_INFINITY],
      * [Float.POSITIVE_INFINITY], and [Float.NaN].
      */
-    public val Float: Converter<Float, String> = run {
-        val floatToString = MonoConverter<Float, String> {
-            require(it.isFinite()) { "Cannot convert $it: only finite numbers are supported" }
-            it.toString()
+    public class Float : Converter<kotlin.Float, String> by Float {
+        public companion object : Converter<kotlin.Float, String> {
+            override fun convertRight(from: kotlin.Float): String {
+                require(from.isFinite()) { "Cannot convert $from: only finite numbers are supported" }
+                return from.toString()
+            }
+            override fun convertLeft(from: String): kotlin.Float = from.toFloat()
         }
-        Converter(floatToString, String::toFloat)
     }
 
     /**
      * Converts between [kotlin.Int] and [String] values
      */
-    public val Int: Converter<Int, String> = Converter(kotlin.Int::toString, String::toInt)
+    public class Int : Converter<kotlin.Int, String> by Int {
+        public companion object : Converter<kotlin.Int, String> {
+            override fun convertRight(from: kotlin.Int): String = from.toString()
+            override fun convertLeft(from: String): kotlin.Int = from.toInt()
+        }
+    }
 
     /**
      * Converts between [kotlin.Long] and [String] values
      */
-    public val Long: Converter<Long, String> = Converter(kotlin.Long::toString, String::toLong)
+    public class Long : Converter<kotlin.Long, String> by Long {
+        public companion object : Converter<kotlin.Long, String> {
+            override fun convertRight(from: kotlin.Long): String = from.toString()
+            override fun convertLeft(from: String): kotlin.Long = from.toLong()
+        }
+    }
 
     /**
      * Converts between [kotlin.Short] and [String] values
      */
-    public val Short: Converter<Short, String> = Converter(kotlin.Short::toString, String::toShort)
+    public class Short : Converter<kotlin.Short, String> by Short {
+        public companion object : Converter<kotlin.Short, String> {
+            override fun convertRight(from: kotlin.Short): String = from.toString()
+            override fun convertLeft(from: String): kotlin.Short = from.toShort()
+        }
+    }
 
     /**
      * Converts between [kotlin.UByte] and [String] values
      */
-    public val UByte: Converter<UByte, String> = Converter(kotlin.UByte::toString, String::toUByte)
+    public class UByte : Converter<kotlin.UByte, String> by UByte {
+        public companion object : Converter<kotlin.UByte, String> {
+            override fun convertRight(from: kotlin.UByte): String = from.toString()
+            override fun convertLeft(from: String): kotlin.UByte = from.toUByte()
+        }
+    }
 
     /**
      * Converts between [kotlin.UInt] and [String] values
      */
-    public val UInt: Converter<UInt, String> = Converter(kotlin.UInt::toString, String::toUInt)
+    public class UInt : Converter<kotlin.UInt, String> by UInt {
+        public companion object : Converter<kotlin.UInt, String> {
+            override fun convertRight(from: kotlin.UInt): String = from.toString()
+            override fun convertLeft(from: String): kotlin.UInt = from.toUInt()
+        }
+    }
 
     /**
      * Converts between [kotlin.ULong] and [String] values
      */
-    public val ULong: Converter<ULong, String> = Converter(kotlin.ULong::toString, String::toULong)
+    public class ULong : Converter<kotlin.ULong, String> by ULong {
+        public companion object : Converter<kotlin.ULong, String> {
+            override fun convertRight(from: kotlin.ULong): String = from.toString()
+            override fun convertLeft(from: String): kotlin.ULong = from.toULong()
+        }
+    }
 
     /**
      * Converts between [kotlin.UShort] and [String] values
      */
-    public val UShort: Converter<UShort, String> = Converter(kotlin.UShort::toString, String::toUShort)
+    public class UShort : Converter<kotlin.UShort, String> by UShort {
+        public companion object : Converter<kotlin.UShort, String> {
+            override fun convertRight(from: kotlin.UShort): String = from.toString()
+            override fun convertLeft(from: String): kotlin.UShort = from.toUShort()
+        }
+    }
 }

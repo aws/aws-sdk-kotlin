@@ -7,7 +7,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.values.collections
 import aws.sdk.kotlin.hll.dynamodbmapper.util.av
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConvertersTest
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import kotlin.test.Test
 
@@ -28,15 +27,15 @@ private data class Bar(val foo: Boolean, val baz: List<String>) {
 }
 
 private object BarConverter : ValueConverter<Bar> {
-    override val left: MonoConverter<AttributeValue, Bar> = MonoConverter { value ->
-        val list = value.asL()
+    override fun convertLeft(from: AttributeValue): Bar {
+        val list = from.asL()
         val foo = list.first().asBool()
         val baz = list.drop(1).map { it.asS() }
-        Bar(foo, baz)
+        return Bar(foo, baz)
     }
 
-    override val right: MonoConverter<Bar, AttributeValue> = MonoConverter { obj ->
-        val list = listOf(av(obj.foo)) + obj.baz.map(::av)
-        AttributeValue.L(list)
+    override fun convertRight(from: Bar): AttributeValue {
+        val list = listOf(av(from.foo)) + from.baz.map(::av)
+        return AttributeValue.L(list)
     }
 }

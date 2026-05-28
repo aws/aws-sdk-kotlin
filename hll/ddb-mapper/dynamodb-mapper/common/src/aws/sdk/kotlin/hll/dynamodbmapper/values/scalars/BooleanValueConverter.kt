@@ -12,9 +12,19 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
  * Converts between [Boolean] and
  * [DynamoDB `BOOL` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.Boolean)
  */
-public val BooleanValueConverter: ValueConverter<Boolean> = Converter(AttributeValue::Bool, AttributeValue::asBool)
+public class BooleanValueConverter : ValueConverter<Boolean> by BooleanValueConverter {
+    public companion object : ValueConverter<Boolean> {
+        override fun convertLeft(from: AttributeValue): Boolean = from.asBool()
+        override fun convertRight(from: Boolean): AttributeValue = AttributeValue.Bool(from)
+    }
+}
 
 /**
  * Converts between [Boolean] and [String]
  */
-public val BooleanToStringConverter: Converter<Boolean, String> = Converter({ it.toString() }, { it.toBoolean() })
+public class BooleanToStringConverter : Converter<Boolean, String> by BooleanToStringConverter {
+    public companion object : Converter<Boolean, String> {
+        override fun convertLeft(from: String): Boolean = from.toBoolean()
+        override fun convertRight(from: Boolean): String = from.toString()
+    }
+}
