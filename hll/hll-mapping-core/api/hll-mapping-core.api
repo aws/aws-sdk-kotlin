@@ -20,20 +20,6 @@ public final class aws/sdk/kotlin/hll/mapping/core/converters/ConverterImpl : aw
 	public fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
 }
 
-public abstract interface class aws/sdk/kotlin/hll/mapping/core/converters/MonoConverter {
-	public static final field Companion Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter$Companion;
-	public abstract fun convert (Ljava/lang/Object;)Ljava/lang/Object;
-}
-
-public final class aws/sdk/kotlin/hll/mapping/core/converters/MonoConverter$Companion {
-	public final fun identity ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
-}
-
-public final class aws/sdk/kotlin/hll/mapping/core/converters/MonoConverterChain : aws/sdk/kotlin/hll/mapping/core/converters/MonoConverter {
-	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)V
-	public fun convert (Ljava/lang/Object;)Ljava/lang/Object;
-}
-
 public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/ListMappingConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
 	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
 	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
