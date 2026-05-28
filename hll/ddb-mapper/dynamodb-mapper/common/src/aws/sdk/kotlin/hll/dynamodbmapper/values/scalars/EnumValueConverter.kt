@@ -23,5 +23,6 @@ public class EnumValueConverter<E : Enum<E>>(
  * @param E The [Enum] type for which to create a [ValueConverter]
  */
 @Suppress("ktlint:standard:function-naming")
-public inline fun <reified E : Enum<E>> EnumValueConverter(): EnumValueConverter<E> =
-    EnumValueConverter(ConverterImpl({ it.name }, { enumValueOf(it) }))
+public inline fun <reified E : Enum<E>> EnumValueConverter(): EnumValueConverter<E> = EnumValueConverter(
+    ConverterImpl({ it.name }, { enumValueOf(it) }),
+)

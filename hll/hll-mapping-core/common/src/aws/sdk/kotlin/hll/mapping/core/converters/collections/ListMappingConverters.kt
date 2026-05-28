@@ -13,7 +13,7 @@ import aws.sdk.kotlin.hll.mapping.core.converters.Converter
  * @param R The **right** element type
  */
 @Suppress("ktlint:standard:function-naming")
-public class ListMappingConverter<L, R>(private val delegate: Converter<L, R>): Converter<List<L>, List<R>> {
+public class ListMappingConverter<L, R>(private val delegate: Converter<L, R>) : Converter<List<L>, List<R>> {
     override fun convertLeft(from: List<R>): List<L> = from.map { delegate.convertLeft(it) }
     override fun convertRight(from: List<L>): List<R> = from.map { delegate.convertRight(it) }
 }

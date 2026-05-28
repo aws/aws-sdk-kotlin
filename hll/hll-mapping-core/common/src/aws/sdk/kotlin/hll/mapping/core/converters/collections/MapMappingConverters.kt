@@ -17,7 +17,7 @@ import aws.sdk.kotlin.hll.mapping.core.converters.Converter
 public class MapMappingConverter<LK, LV, RK, RV> private constructor(
     private val convertPairRight: (Pair<LK, LV>) -> Pair<RK, RV>,
     private val convertPairLeft: (Pair<RK, RV>) -> Pair<LK, LV>,
-): Converter<Map<LK, LV>, Map<RK, RV>> {
+) : Converter<Map<LK, LV>, Map<RK, RV>> {
     /**
      * Create a map-mapping [Converter] which performs two-way conversions between values of type `Map<LK, LV>` and
      * values of type `Map<RK, RV>`

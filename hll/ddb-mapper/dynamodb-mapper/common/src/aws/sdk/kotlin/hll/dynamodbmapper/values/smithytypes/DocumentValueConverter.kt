@@ -31,7 +31,8 @@ public class DocumentValueConverter(
     nullValueConverter,
     attributeValueListValueConverter,
     attributeValueMapValueConverter,
-), ValueConverter<Document?> {
+),
+    ValueConverter<Document?> {
     public companion object {
         public val Default: DocumentValueConverter = DocumentValueConverter()
     }

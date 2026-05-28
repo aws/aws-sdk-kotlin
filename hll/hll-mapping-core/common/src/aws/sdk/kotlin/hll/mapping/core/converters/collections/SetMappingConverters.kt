@@ -12,7 +12,7 @@ import aws.sdk.kotlin.hll.mapping.core.converters.Converter
  * @param L The **left** element type
  * @param R The **right** element type
  */
-public class SetMappingConverter<L, R>(private val delegate: Converter<L, R>): Converter<Set<L>, Set<R>> {
+public class SetMappingConverter<L, R>(private val delegate: Converter<L, R>) : Converter<Set<L>, Set<R>> {
     override fun convertLeft(from: Set<R>): Set<L> = from.map { delegate.convertLeft(it) }.toSet()
     override fun convertRight(from: Set<L>): Set<R> = from.map { delegate.convertRight(it) }.toSet()
 }

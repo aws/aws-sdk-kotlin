@@ -35,13 +35,15 @@ public class DocumentItemConverter(
     nullValueConverter,
     attributeValueListValueConverter,
     attributeValueMapValueConverter,
-), ItemConverter<Document> {
+),
+    ItemConverter<Document> {
     public companion object {
         public val Default: DocumentItemConverter = DocumentItemConverter()
     }
 
-    override fun convertLeft(from: Item): Document =
-        Document.Map(from.mapValues { (_, attr) -> documentFromAttributeValue(attr) })
+    override fun convertLeft(from: Item): Document = Document.Map(
+        from.mapValues { (_, attr) -> documentFromAttributeValue(attr) },
+    )
 
     override fun convertRight(from: Document): Item {
         require(from is Document.Map) { "DocumentItemConverter requires a Document.Map at the top level" }
