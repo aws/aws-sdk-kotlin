@@ -1,5 +1,67 @@
 # Changelog
 
+## [1.6.83] - 05/28/2026
+
+### Features
+* (**accessanalyzer**) Adding new BDD representation of endpoint ruleset
+* (**amp**) Adding new BDD representation of endpoint ruleset
+* (**amplifyuibuilder**) Adding new BDD representation of endpoint ruleset
+* (**appstream**) Amazon WorkSpaces Applications now supports BYOL (Bring Your Own License). This enables customers to import their own WorkSpaces images and use them in WorkSpaces Applications.
+* (**arcregionswitch**) Adding new BDD representation of endpoint ruleset
+* (**artifact**) Adding new BDD representation of endpoint ruleset
+* (**backupsearch**) Adding new BDD representation of endpoint ruleset
+* (**bedrock**) Add support for ModelPackageArn in Bedrock's CreateCustomModel API
+* (**bedrockagentcore**) Added Harness support for LiteLLM model configuration for third-party model providers. Added S3 and Git skill source types. Added Responses API format for OpenAI and Bedrock models. Added runtimeUserId and runtimeClientError to InvokeHarness.
+* (**bedrockagentcorecontrol**) Added Harness support for LiteLLM model configuration for third-party model providers. Added S3 and Git skill source types. Added Responses API format for OpenAI and Bedrock models. Added runtimeUserId parameter to InvokeHarness for end-user identification.
+* (**bedrockdataautomationruntime**) Adding new BDD representation of endpoint ruleset
+* (**bedrockruntime**) Support system role in message
+* (**billingconductor**) Adding new BDD representation of endpoint ruleset
+* (**braket**) Adding new BDD representation of endpoint ruleset
+* (**chatbot**) Adding new BDD representation of endpoint ruleset
+* (**chimesdkmeetings**) Adding new BDD representation of endpoint ruleset
+* (**chimesdkmessaging**) Adding new BDD representation of endpoint ruleset
+* (**cloudfrontkeyvaluestore**) Adding new BDD representation of endpoint ruleset
+* (**codegurureviewer**) Adding new BDD representation of endpoint ruleset
+* (**codestarconnections**) Adding new BDD representation of endpoint ruleset
+* (**controlcatalog**) AWS Control Catalog - Added GovernedProviders response field and inclusion filter to GetControl and ListControls APIs to identify and filter by cloud provider. Added ParameterRequirementSummary response field indicating parameter requirements.
+* (**costoptimizationhub**) Adding new BDD representation of endpoint ruleset
+* (**customerprofiles**) BatchPutProfileObject API adds multiple profile objects to a domain of a given ObjectType in a single API call.
+* (**deadline**) Added support for persistent storage on Service-Managed Fleets, allowing customers to configure persistent storage that preserves data across worker sessions which reduces job startup times for workloads with large software installations or asset caches.
+* (**detective**) Adding new BDD representation of endpoint ruleset
+* (**finspacedata**) Adding new BDD representation of endpoint ruleset
+* (**georoutes**) Adding new BDD representation of endpoint ruleset
+* (**groundstation**) Adding new BDD representation of endpoint ruleset
+* (**iot**) Adds new connectivity-related fields to Fleet Indexing API requests and responses.
+* (**iotdataplane**) Adding GetConnection, ListSubscriptions, and SendDirectMessage APIs to IoT Data Plane
+* (**iottwinmaker**) Adding new BDD representation of endpoint ruleset
+* (**ivs**) Adding new BDD representation of endpoint ruleset
+* (**keyspaces**) Adding new BDD representation of endpoint ruleset
+* (**kinesisanalyticsv2**) Adding new BDD representation of endpoint ruleset
+* (**kinesisvideosignaling**) Adding new BDD representation of endpoint ruleset
+* (**lookoutequipment**) Adding new BDD representation of endpoint ruleset
+* (**marketplacereporting**) Adding new BDD representation of endpoint ruleset
+* (**migrationhubstrategy**) Adding new BDD representation of endpoint ruleset
+* (**neptunegraph**) Adding new BDD representation of endpoint ruleset
+* (**networkmonitor**) Adding new BDD representation of endpoint ruleset
+* (**opensearchserverless**) Adds support for deletion protection on collections, ability to create NEXTGEN collection groups and autoscaling visibility for NEXTGEN collection groups
+* (**pcs**) This release adds support for configuring scaleDownIdleTimeInSeconds at the compute node group level, allowing customers to set different idle timeouts per node group. Previously this setting was only available at the cluster level.
+* (**pinpointsmsvoicev2**) Adding new BDD representation of endpoint ruleset
+* (**redshiftdata**) Adding new BDD representation of endpoint ruleset
+* (**resiliencehubv2**) This is the initial SDK release for the next generation of Resilience Hub.
+* (**route53recoverycontrolconfig**) Adding new BDD representation of endpoint ruleset
+* (**s3control**) Update the minimum value of MinStorageBytesPercentage in StorageLensPrefixLevel.SelectionCriteria from 0.1 to 1, aligning the model with the documented contract.
+* (**sagemakera2iruntime**) Adding new BDD representation of endpoint ruleset
+* (**sagemakerruntime**) Adding new BDD representation of endpoint ruleset
+* (**securityagent**) Adding new BDD representation of endpoint ruleset
+* (**signin**) Adding new BDD representation of endpoint ruleset
+* (**socialmessaging**) Adding new BDD representation of endpoint ruleset
+* (**ssmincidents**) Adding new BDD representation of endpoint ruleset
+* (**supplychain**) Adding new BDD representation of endpoint ruleset
+* (**timestreaminfluxdb**) Adding new BDD representation of endpoint ruleset
+* (**trustedadvisor**) Adding new BDD representation of endpoint ruleset
+* (**verifiedpermissions**) Adding new BDD representation of endpoint ruleset
+* (**wickr**) Adding new BDD representation of endpoint ruleset
+
 ## [1.6.82] - 05/27/2026
 
 ### Features
