@@ -13,9 +13,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
  * Converts between [Item] and [AttributeValue]. This converter is typically chained following an [ItemConverter] using
  * the `+` operator.
  */
-public class ItemValueConverter : ValueConverter<Item> by ItemValueConverter {
-    public companion object : ValueConverter<Item> {
-        override fun convertLeft(from: AttributeValue): Item = from.asM().toItem()
-        override fun convertRight(from: Item): AttributeValue = AttributeValue.M(from)
-    }
+public object ItemValueConverter : ValueConverter<Item> {
+    override fun convertLeft(from: AttributeValue): Item = from.asM().toItem()
+    override fun convertRight(from: Item): AttributeValue = AttributeValue.M(from)
 }

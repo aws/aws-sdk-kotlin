@@ -24,34 +24,28 @@ public object InstantValueConverter : ValueConverter<Instant> by EpochS {
      * [DynamoDB `N` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.Number)
      * containing the number of milliseconds since the Unix epoch
      */
-    public class EpochMs : ValueConverter<Instant> by EpochMs {
-        public companion object : ConverterChain<Instant, Long, AttributeValue>(
-            ConverterImpl(Instant::epochMilliseconds, Instant::fromEpochMilliseconds),
-            NumberValueConverters.Long,
-        )
-    }
+    public object EpochMs : ValueConverter<Instant> by ConverterChain(
+        ConverterImpl(Instant::epochMilliseconds, Instant::fromEpochMilliseconds),
+        NumberValueConverters.Long,
+    )
 
     /**
      * Converts between [Instant] and
      * [DynamoDB `N` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.Number)
      * containing the number of seconds since the Unix epoch
      */
-    public class EpochS : ValueConverter<Instant> by EpochS {
-        public companion object : ConverterChain<Instant, Long, AttributeValue>(
-            ConverterImpl(Instant::epochSeconds, Instant::fromEpochSeconds),
-            NumberValueConverters.Long,
-        )
-    }
+    public object EpochS : ValueConverter<Instant> by ConverterChain(
+        ConverterImpl(Instant::epochSeconds, Instant::fromEpochSeconds),
+        NumberValueConverters.Long,
+    )
 
     /**
      * Converts between [Instant] and
      * [DynamoDB `S` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.String)
      * containing a formatted ISO 8601 representation
      */
-    public class Iso8601 : ValueConverter<Instant> by Iso8601 {
-        public companion object : ConverterChain<Instant, String, AttributeValue>(
-            ConverterImpl({ it.format(TimestampFormat.ISO_8601_FULL) }, Instant::fromIso8601),
-            StringValueConverter,
-        )
-    }
+    public object Iso8601 : ValueConverter<Instant> by ConverterChain(
+        ConverterImpl({ it.format(TimestampFormat.ISO_8601_FULL) }, Instant::fromIso8601),
+        StringValueConverter,
+    )
 }

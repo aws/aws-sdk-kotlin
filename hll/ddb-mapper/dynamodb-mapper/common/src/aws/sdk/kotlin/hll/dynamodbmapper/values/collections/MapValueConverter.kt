@@ -22,11 +22,9 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
  * val instantMapConv2 = MapValueConverter.mapValuesFrom(InstantConverter.Default) // same as above
  * ```
  */
-public class AttributeValueMapValueConverter : ValueConverter<Map<String, AttributeValue>> by AttributeValueMapValueConverter {
-    public companion object : ValueConverter<Map<String, AttributeValue>> {
-        override fun convertLeft(from: AttributeValue): Map<String, AttributeValue> = from.asM()
-        override fun convertRight(from: Map<String, AttributeValue>): AttributeValue = AttributeValue.M(from)
-    }
+public object AttributeValueMapValueConverter : ValueConverter<Map<String, AttributeValue>> {
+    override fun convertLeft(from: AttributeValue): Map<String, AttributeValue> = from.asM()
+    override fun convertRight(from: Map<String, AttributeValue>): AttributeValue = AttributeValue.M(from)
 }
 
 /**

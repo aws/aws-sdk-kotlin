@@ -11,9 +11,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
  * Converts between [ByteArray] and
  * [DynamoDB `B` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.Binary)
  */
-public class ByteArrayValueConverter : ValueConverter<ByteArray> by ByteArrayValueConverter {
-    public companion object : ValueConverter<ByteArray> {
-        override fun convertLeft(from: AttributeValue): ByteArray = from.asB()
-        override fun convertRight(from: ByteArray): AttributeValue = AttributeValue.B(from)
-    }
+public object ByteArrayValueConverter : ValueConverter<ByteArray> {
+    override fun convertLeft(from: AttributeValue): ByteArray = from.asB()
+    override fun convertRight(from: ByteArray): AttributeValue = AttributeValue.B(from)
 }

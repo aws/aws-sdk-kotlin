@@ -14,14 +14,12 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
  * This converter is not generally useful on its own and is typically combined with a type-specific non-nullable
  * delegate in a [NullableValueConverter].
  */
-public class NullValueConverter : ValueConverter<Nothing?> by NullValueConverter {
-    public companion object : ValueConverter<Nothing?> {
-        override fun convertLeft(from: AttributeValue): Nothing? {
-            require(from is AttributeValue.Null)
-            return null
-        }
-        override fun convertRight(from: Nothing?): AttributeValue = NULL_ATTR
+public object NullValueConverter : ValueConverter<Nothing?> {
+    override fun convertLeft(from: AttributeValue): Nothing? {
+        require(from is AttributeValue.Null)
+        return null
     }
+    override fun convertRight(from: Nothing?): AttributeValue = NULL_ATTR
 }
 
 /**

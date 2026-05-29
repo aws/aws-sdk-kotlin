@@ -184,21 +184,27 @@ internal class SchemaRenderer(
             // converter
             // KSP requires extra work to get a class argument out of an annotation, can't just use getAnnotationsByType
             // https://slack-chats.kotlinlang.org/t/8480301/hello-again-how-do-you-get-a-kclass-out-from-an-annotation-a
-            val attributeValueConverter = prop
+            val attributeValueConverterKsType = prop
                 .annotations
                 .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbAttributeConverter::class.qualifiedName }
                 ?.arguments
                 ?.single()
                 ?.value
-                ?.let { it as? KSType }
-                ?.let { Type.from(it) }
+                ?.let { it as KSType }
+
+            val attributeValueConverter = attributeValueConverterKsType?.let { Type.from(it) }
+            val needsCtorInvoke = attributeValueConverterKsType?.declaration?.isObject != true
 
             attributeValueConverter?.let {
-                write("#T(),", it)
+                writeInline("#T", it)
+
+                if (needsCtorInvoke) {
+                    writeInline("()")
+                }
             } ?: run {
                 renderValueConverter(prop.type.resolve())
-                write(",")
             }
+            write(",")
         }
     }
 
@@ -460,8 +466,8 @@ internal class SchemaRenderer(
 private val KSType.isUserClass: Boolean
     get() = declaration.isAnnotationPresent(DynamoDbItem::class)
 
-private val KSPropertyDeclaration.typeName: String
-    get() = checkNotNull(getter?.returnType?.resolve()?.declaration?.qualifiedName?.asString()) { "Failed to determine type name for $this" }
+private val KSDeclaration.isObject: Boolean
+    get() = (this as? KSClassDeclaration)?.classKind == ClassKind.OBJECT
 
 @OptIn(KspExperimental::class)
 private val KSPropertyDeclaration.isPk: Boolean

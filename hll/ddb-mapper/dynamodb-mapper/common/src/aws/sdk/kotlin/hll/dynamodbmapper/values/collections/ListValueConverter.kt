@@ -16,11 +16,9 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
  * with another converter which handles mapping elements to [AttributeValue], such as by using the factory function
  * [ListValueConverter].
  */
-public class AttributeValueListValueConverter : ValueConverter<List<AttributeValue>> by AttributeValueListValueConverter {
-    public companion object : ValueConverter<List<AttributeValue>> {
-        override fun convertLeft(from: AttributeValue): List<AttributeValue> = from.asL()
-        override fun convertRight(from: List<AttributeValue>): AttributeValue = AttributeValue.L(from)
-    }
+public object AttributeValueListValueConverter : ValueConverter<List<AttributeValue>> {
+    override fun convertLeft(from: AttributeValue): List<AttributeValue> = from.asL()
+    override fun convertRight(from: List<AttributeValue>): AttributeValue = AttributeValue.L(from)
 }
 
 /**
