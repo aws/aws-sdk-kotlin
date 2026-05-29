@@ -1,5 +1,59 @@
 # Changelog
 
+## [1.6.84] - 05/29/2026
+
+### Features
+* (**account**) Adding new BDD representation of endpoint ruleset
+* (**applicationinsights**) Adding new BDD representation of endpoint ruleset
+* (**arczonalshift**) Adding new BDD representation of endpoint ruleset
+* (**athena**) Adding new BDD representation of endpoint ruleset
+* (**autoscaling**) Adding new BDD representation of endpoint ruleset
+* (**autoscalingplans**) Adding new BDD representation of endpoint ruleset
+* (**backupgateway**) Adding new BDD representation of endpoint ruleset
+* (**bedrock**) Automated Reasoning checks - Added two build workflows for policies. Iterative Refine Policy uses AI to update policy definitions based on test results and feedback. Resolve Policy Ambiguities consolidates ambiguous variables in Automated Reasoning policies, a common source of ambiguous validation.
+* (**bedrockagentcorecontrol**) Reference your own AWS Secrets Manager secrets when configuring credential providers, giving you control over encryption, rotation, and access policies instead of using service-managed secrets.
+* (**budgets**) Adding new BDD representation of endpoint ruleset
+* (**chime**) Adding new BDD representation of endpoint ruleset
+* (**clouddirectory**) Adding new BDD representation of endpoint ruleset
+* (**cloudhsm**) Adding new BDD representation of endpoint ruleset
+* (**cloudhsmv2**) Adding new BDD representation of endpoint ruleset
+* (**cloudsearch**) Adding new BDD representation of endpoint ruleset
+* (**cloudsearchdomain**) Adding new BDD representation of endpoint ruleset
+* (**cloudtrail**) Adding new BDD representation of endpoint ruleset
+* (**codebuild**) Adding new BDD representation of endpoint ruleset
+* (**codecatalyst**) Adding new BDD representation of endpoint ruleset
+* (**codecommit**) Adding new BDD representation of endpoint ruleset
+* (**codedeploy**) Adding new BDD representation of endpoint ruleset
+* (**codegurusecurity**) Adding new BDD representation of endpoint ruleset
+* (**connectcampaignsv2**) Adding new BDD representation of endpoint ruleset
+* (**connectcontactlens**) Adding new BDD representation of endpoint ruleset
+* (**directoryservicedata**) Adding new BDD representation of endpoint ruleset
+* (**drs**) Adding new BDD representation of endpoint ruleset
+* (**entityresolution**) Adding new BDD representation of endpoint ruleset
+* (**grafana**) Adding new BDD representation of endpoint ruleset
+* (**groundstation**) Adds support for Alpha-5 satellite number encoding in the Two-Line Element ephemeris format.
+* (**inspectorscan**) Adding new BDD representation of endpoint ruleset
+* (**lexmodelsv2**) Adding new BDD representation of endpoint ruleset
+* (**lexruntimev2**) Adding new BDD representation of endpoint ruleset
+* (**mailmanager**) Adding new BDD representation of endpoint ruleset
+* (**mwaa**) Adding new BDD representation of endpoint ruleset
+* (**networkflowmonitor**) Adding new BDD representation of endpoint ruleset
+* (**omics**) Add engineSettings to StartRun and GetRun. Add profiles and profileParameterTemplates to GetWorkflow and GetWorkflowVersion.
+* (**paymentcryptographydata**) Adding new BDD representation of endpoint ruleset
+* (**pcs**) Adding new BDD representation of endpoint ruleset
+* (**personalizeevents**) Adding new BDD representation of endpoint ruleset
+* (**proton**) Adding new BDD representation of endpoint ruleset
+* (**qbusiness**) Adding new BDD representation of endpoint ruleset
+* (**quicksight**) Adds support for creating, updating, describing, listing, and deleting an OAuthClientApplication resource, a new quicksight resource that allows customers to store OAuth configurations to connect to their databases via 3 Legged OAuth.
+* (**rdsdata**) RDS Data API arrays (longValues, doubleValues, stringValues, booleanValues) in ExecuteStatement responses now correctly support null elements. Runtime change for JS v3 and .NET. Compile-time change for C plus plus, .NET, Kotlin, Rust. No impact for Java, Python, Ruby, PHP, Go.
+* (**route53recoverycluster**) Adding new BDD representation of endpoint ruleset
+* (**route53resolver**) Added BatchCreateFirewallRule, BatchUpdateFirewallRule, BatchDeleteFirewallRule, and ListFirewallRuleTypes APIs. Added FirewallRuleType support to Firewall Rule APIs.
+* (**sesv2**) This release introduces support for Tenant Suppression Lists
+* (**ssmguiconnect**) Adding new BDD representation of endpoint ruleset
+* (**synthetics**) Adding new BDD representation of endpoint ruleset
+* (**wafv2**) Adding new BDD representation of endpoint ruleset
+* (**workspacesinstances**) Adding new BDD representation of endpoint ruleset
+
 ## [1.6.83] - 05/28/2026
 
 ### Features
