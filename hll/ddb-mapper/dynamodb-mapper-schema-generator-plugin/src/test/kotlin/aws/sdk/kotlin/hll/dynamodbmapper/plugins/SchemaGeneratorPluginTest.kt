@@ -682,7 +682,7 @@ class SchemaGeneratorPluginTest {
             "occupation",
             Employee::occupation,
             Employee::occupation::set,
-            org.example.OccupationConverter(),
+            OccupationConverter(),
         ),""",
         )
 
@@ -694,7 +694,7 @@ class SchemaGeneratorPluginTest {
             "healthcare",
             Employee::healthcare,
             Employee::healthcare::set,
-            a.different.pkg.HealthcareConverter(),
+            HealthcareConverter(),
         ),""",
         )
     }
@@ -802,5 +802,12 @@ class SchemaGeneratorPluginTest {
         createClassFile("counter/UserWithInvalidCounter")
         val result = runner.buildAndFail()
         assertContains(result.output, "Property 'accessCount' annotated with @DynamoDbCounter must be of type Int or Long, but was String")
+    }
+
+    @Test
+    fun testOverriddenAttributeConverter() = withTestProject {
+        createClassFile("override-item-converters/User")
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
     }
 }
