@@ -1,5 +1,55 @@
 # Changelog
 
+## [1.6.85] - 06/01/2026
+
+### Features
+* (**amplify**) Adding new BDD representation of endpoint ruleset
+* (**applicationdiscoveryservice**) Adding new BDD representation of endpoint ruleset
+* (**appmesh**) Adding new BDD representation of endpoint ruleset
+* (**appsync**) Adding new BDD representation of endpoint ruleset
+* (**cloudwatchevents**) Adding new BDD representation of endpoint ruleset
+* (**codepipeline**) Adding new BDD representation of endpoint ruleset
+* (**cognitoidentity**) Adding new BDD representation of endpoint ruleset
+* (**cognitoidentityprovider**) Add support for multi-region replication, enabling synchronization of user data and configurations to a secondary user pool in a standby Region. Add support for customer managed keys (CMK) in AWS KMS for encrypting user pool data at rest.
+* (**cognitosync**) Adding new BDD representation of endpoint ruleset
+* (**configservice**) Adding new BDD representation of endpoint ruleset
+* (**costandusagereportservice**) Adding new BDD representation of endpoint ruleset
+* (**databasemigrationservice**) Adding new BDD representation of endpoint ruleset
+* (**datapipeline**) Adding new BDD representation of endpoint ruleset
+* (**devicefarm**) Adding new BDD representation of endpoint ruleset
+* (**directoryservice**) Adding new BDD representation of endpoint ruleset
+* (**docdb**) Adding new BDD representation of endpoint ruleset
+* (**ecr**) Adding new BDD representation of endpoint ruleset
+* (**ecs**) Adding new BDD representation of endpoint ruleset
+* (**elasticache**) Adding new BDD representation of endpoint ruleset
+* (**elasticbeanstalk**) Adding new BDD representation of endpoint ruleset
+* (**elasticloadbalancing**) Adding new BDD representation of endpoint ruleset
+* (**elasticloadbalancingv2**) Adding new BDD representation of endpoint ruleset
+* (**elasticsearchservice**) Adding new BDD representation of endpoint ruleset
+* (**emr**) Adding new BDD representation of endpoint ruleset
+* (**gamelift**) Adding new BDD representation of endpoint ruleset
+* (**glacier**) Adding new BDD representation of endpoint ruleset
+* (**greengrass**) Adding new BDD representation of endpoint ruleset
+* (**health**) Adding new BDD representation of endpoint ruleset
+* (**iam**) Adding new BDD representation of endpoint ruleset
+* (**inspector**) Adding new BDD representation of endpoint ruleset
+* (**iot**) Adding new BDD representation of endpoint ruleset
+* (**ioteventsdata**) Adding new BDD representation of endpoint ruleset
+* (**kinesisanalytics**) Adding new BDD representation of endpoint ruleset
+* (**kinesisvideo**) Adding new BDD representation of endpoint ruleset
+* (**kinesisvideomedia**) Adding new BDD representation of endpoint ruleset
+* (**kms**) Adding new BDD representation of endpoint ruleset
+* (**lambda**) Adding new BDD representation of endpoint ruleset
+* (**lexmodelbuildingservice**) Adding new BDD representation of endpoint ruleset
+* (**licensemanager**) Adding new BDD representation of endpoint ruleset
+* (**lightsail**) Adding new BDD representation of endpoint ruleset
+* (**machinelearning**) Adding new BDD representation of endpoint ruleset
+* (**marketplaceagreement**) Adding Entitlements in SearchAgreements Response
+* (**marketplacecatalog**) Adding new BDD representation of endpoint ruleset
+* (**mediastoredata**) Adding new BDD representation of endpoint ruleset
+* (**personalize**) Adding new BDD representation of endpoint ruleset
+* (**quicksight**) This release adds public APIs for Amazon QuickSight Spaces, Agents, and Flows. Spaces APIs enable management of curated resource collections. Agents APIs provide lifecycle control over AI-powered agents that leverage Spaces. Flows APIs add CRUDL APIs for automated workflows.
+
 ## [1.6.84] - 05/29/2026
 
 ### Features
