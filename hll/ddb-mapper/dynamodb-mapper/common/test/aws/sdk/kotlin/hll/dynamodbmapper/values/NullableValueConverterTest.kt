@@ -5,8 +5,8 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.values
 
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
-import aws.sdk.kotlin.hll.mapping.core.converters.Converter
-import aws.sdk.kotlin.hll.mapping.core.converters.plus
+import aws.sdk.kotlin.hll.mapping.core.converters.ConverterChain
+import aws.sdk.kotlin.hll.mapping.core.converters.ConverterImpl
 import kotlin.test.Test
 
 class NullableValueConverterTest : ValueConvertersTest() {
@@ -19,4 +19,7 @@ class NullableValueConverterTest : ValueConvertersTest() {
     }
 }
 
-private val stringReverseConverter = Converter(String::reversed, String::reversed) + StringValueConverter
+private val stringReverseConverter = ConverterChain(
+    ConverterImpl(String::reversed, String::reversed),
+    StringValueConverter,
+)

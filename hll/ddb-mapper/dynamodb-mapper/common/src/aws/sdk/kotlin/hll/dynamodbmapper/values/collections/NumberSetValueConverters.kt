@@ -5,22 +5,10 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.values.collections
 
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConverter
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.Byte
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.Double
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.Float
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.Int
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.Long
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.Short
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.String
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.UByte
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.UInt
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.ULong
-import aws.sdk.kotlin.hll.dynamodbmapper.values.collections.NumberSetValueConverters.UShort
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberToStringConverters
-import aws.sdk.kotlin.hll.mapping.core.converters.Converter
+import aws.sdk.kotlin.hll.mapping.core.converters.ConverterChain
 import aws.sdk.kotlin.hll.mapping.core.converters.collections.SetMappingConverter
 import aws.sdk.kotlin.hll.mapping.core.converters.collections.SetToListConverter
-import aws.sdk.kotlin.hll.mapping.core.converters.plus
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 
 /**
@@ -31,82 +19,74 @@ public object NumberSetValueConverters {
      * Converts between a [List] of [String] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val StringList: ValueConverter<List<String>> =
-        Converter(AttributeValue::Ns, AttributeValue::asNs)
+    public object StringList : ValueConverter<List<kotlin.String>> {
+        override fun convertLeft(from: AttributeValue): List<kotlin.String> = from.asNs()
+        override fun convertRight(from: List<kotlin.String>): AttributeValue = AttributeValue.Ns(from)
+    }
 
     /**
      * Converts between a [Set] of [String] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val String: ValueConverter<Set<String>> = SetToListConverter<String>() + StringList
-
-    /**
-     * Creates a [ValueConverter] which converts between a [Set] of [N] elements and
-     * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
-     * @param N The type of high-level values which will be converted
-     */
-    public fun <N> of(
-        numberConverter: Converter<N, String>,
-        stringSetValueConverter: ValueConverter<Set<String>> = String,
-    ): ValueConverter<Set<N>> = SetMappingConverter(numberConverter) + stringSetValueConverter
+    public object String : ValueConverter<Set<kotlin.String>> by ConverterChain(SetToListConverter(), StringList)
 
     /**
      * Converts between a [Set] of [Byte] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val Byte: ValueConverter<Set<Byte>> = of(NumberToStringConverters.Byte)
+    public object Byte : ValueConverter<Set<kotlin.Byte>> by ConverterChain(SetMappingConverter(NumberToStringConverters.Byte), String)
 
     /**
      * Converts between a [Set] of [Double] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val Double: ValueConverter<Set<Double>> = of(NumberToStringConverters.Double)
+    public object Double : ValueConverter<Set<kotlin.Double>> by ConverterChain(SetMappingConverter(NumberToStringConverters.Double), String)
 
     /**
      * Converts between a [Set] of [Float] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val Float: ValueConverter<Set<Float>> = of(NumberToStringConverters.Float)
+    public object Float : ValueConverter<Set<kotlin.Float>> by ConverterChain(SetMappingConverter(NumberToStringConverters.Float), String)
 
     /**
      * Converts between a [Set] of [Int] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val Int: ValueConverter<Set<Int>> = of(NumberToStringConverters.Int)
+    public object Int : ValueConverter<Set<kotlin.Int>> by ConverterChain(SetMappingConverter(NumberToStringConverters.Int), String)
 
     /**
      * Converts between a [Set] of [Long] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val Long: ValueConverter<Set<Long>> = of(NumberToStringConverters.Long)
+    public object Long : ValueConverter<Set<kotlin.Long>> by ConverterChain(SetMappingConverter(NumberToStringConverters.Long), String)
 
     /**
      * Converts between a [Set] of [Short] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val Short: ValueConverter<Set<Short>> = of(NumberToStringConverters.Short)
+    public object Short : ValueConverter<Set<kotlin.Short>> by ConverterChain(SetMappingConverter(NumberToStringConverters.Short), String)
 
     /**
      * Converts between a [Set] of [UByte] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val UByte: ValueConverter<Set<UByte>> = of(NumberToStringConverters.UByte)
+    public object UByte : ValueConverter<Set<kotlin.UByte>> by ConverterChain(SetMappingConverter(NumberToStringConverters.UByte), String)
 
     /**
      * Converts between a [Set] of [UInt] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val UInt: ValueConverter<Set<UInt>> = of(NumberToStringConverters.UInt)
+    public object UInt : ValueConverter<Set<kotlin.UInt>> by ConverterChain(SetMappingConverter(NumberToStringConverters.UInt), String)
 
     /**
      * Converts between a [Set] of [ULong] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val ULong: ValueConverter<Set<ULong>> = of(NumberToStringConverters.ULong)
+    public object ULong : ValueConverter<Set<kotlin.ULong>> by ConverterChain(SetMappingConverter(NumberToStringConverters.ULong), String)
 
     /**
      * Converts between a [Set] of [UShort] elements and
      * [DynamoDB `NS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
      */
-    public val UShort: ValueConverter<Set<UShort>> = of(NumberToStringConverters.UShort)
+    public object UShort : ValueConverter<Set<kotlin.UShort>> by ConverterChain(SetMappingConverter(NumberToStringConverters.UShort), String)
 }

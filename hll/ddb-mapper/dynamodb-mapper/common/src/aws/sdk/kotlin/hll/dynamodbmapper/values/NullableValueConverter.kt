@@ -6,8 +6,6 @@ package aws.sdk.kotlin.hll.dynamodbmapper.values
 
 import aws.sdk.kotlin.hll.dynamodbmapper.util.NULL_ATTR
 import aws.sdk.kotlin.hll.mapping.core.converters.Converter
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
-import aws.sdk.kotlin.hll.mapping.core.converters.reversedBy
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 
 /**
@@ -16,11 +14,13 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
  * This converter is not generally useful on its own and is typically combined with a type-specific non-nullable
  * delegate in a [NullableValueConverter].
  */
-public val NullValueConverter: ValueConverter<Nothing?> =
-    MonoConverter<Nothing?, AttributeValue> { NULL_ATTR } reversedBy MonoConverter {
-        require(it is AttributeValue.Null)
-        null
+public object NullValueConverter : ValueConverter<Nothing?> {
+    override fun convertLeft(from: AttributeValue): Nothing? {
+        require(from is AttributeValue.Null)
+        return null
     }
+    override fun convertRight(from: Nothing?): AttributeValue = NULL_ATTR
+}
 
 /**
  * Creates a converter between potentially-`null` values and
@@ -29,26 +29,19 @@ public val NullValueConverter: ValueConverter<Nothing?> =
  * @param delegate The delegate converter for non-null values
  * @param nullValueConverter A [Converter] for `null` values. The default is [NullValueConverter].
  */
-@Suppress("ktlint:standard:function-naming")
-public fun <V : Any> NullableValueConverter(
-    delegate: ValueConverter<V>,
-    nullValueConverter: ValueConverter<Nothing?> = NullValueConverter,
-): ValueConverter<V?> {
-    val right = MonoConverter<V?, AttributeValue> { from ->
-        when (from) {
-            null -> nullValueConverter.convertRight(from)
-            else -> delegate.convertRight(from)
-        }
+public class NullableValueConverter<V : Any>(
+    private val delegate: ValueConverter<V>,
+    private val nullValueConverter: ValueConverter<Nothing?> = NullValueConverter,
+) : ValueConverter<V?> {
+    override fun convertLeft(from: AttributeValue): V? = when (from) {
+        is AttributeValue.Null -> nullValueConverter.convertLeft(from)
+        else -> delegate.convertLeft(from)
     }
 
-    val left = MonoConverter<AttributeValue, V?> { from ->
-        when (from) {
-            is AttributeValue.Null -> nullValueConverter.convertLeft(from)
-            else -> delegate.convertLeft(from)
-        }
+    override fun convertRight(from: V?): AttributeValue = when (from) {
+        null -> nullValueConverter.convertRight(from)
+        else -> delegate.convertRight(from)
     }
-
-    return Converter(right, left)
 }
 
 public fun <V : Any> ValueConverter<V>.asNullable(

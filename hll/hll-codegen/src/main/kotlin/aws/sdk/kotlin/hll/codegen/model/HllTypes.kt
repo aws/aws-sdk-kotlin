@@ -15,4 +15,13 @@ public object HllTypes {
             public val GeneratedApi: TypeRef = TypeRef("aws.smithy.kotlin.runtime", "GeneratedApi")
         }
     }
+
+    @InternalSdkApi
+    public object MappingCore {
+        @InternalSdkApi
+        public object Converters {
+            public val Converter: TypeRef = TypeRef("aws.sdk.kotlin.hll.mapping.core.converters", "Converter")
+            public val ConverterChain: TypeRef = TypeRef("aws.sdk.kotlin.hll.mapping.core.converters", "ConverterChain")
+        }
+    }
 }

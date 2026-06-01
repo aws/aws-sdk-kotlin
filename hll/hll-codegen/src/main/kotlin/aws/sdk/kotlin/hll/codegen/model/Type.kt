@@ -6,6 +6,7 @@ package aws.sdk.kotlin.hll.codegen.model
 
 import aws.sdk.kotlin.runtime.InternalSdkApi
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeReference
 import software.amazon.smithy.codegen.core.Symbol
@@ -31,10 +32,18 @@ public sealed interface Type {
          * Derives a [TypeRef] from a [KSType]
          */
         public fun from(ksType: KSType): TypeRef {
-            val name = ksType.declaration.qualifiedName!!
+            val rootType = ksType.declaration.rootDeclaration
+            val pkg = rootType.qualifiedName!!.getQualifier()
+
+            val shortName = ksType
+                .declaration
+                .qualifiedName!!
+                .asString()
+                .removePrefix("$pkg.")
+
             return TypeRef(
-                pkg = name.getQualifier(),
-                shortName = name.getShortName(),
+                pkg = pkg,
+                shortName = shortName,
                 genericArgs = ksType.arguments.map { from(it.type!!) },
                 nullable = ksType.isMarkedNullable,
             )
@@ -60,6 +69,9 @@ public sealed interface Type {
      */
     public val nullable: Boolean
 }
+
+private val KSDeclaration.rootDeclaration: KSDeclaration
+    get() = parentDeclaration?.rootDeclaration ?: this
 
 /**
  * A reference to a specific, named type (e.g., [kotlin.String]).

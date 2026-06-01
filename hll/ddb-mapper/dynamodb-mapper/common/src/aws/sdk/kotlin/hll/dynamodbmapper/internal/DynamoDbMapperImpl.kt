@@ -15,7 +15,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.DynamoDbMapperSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.model.internal.tableImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.DynamoDbMapperOperationsImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.InterceptorAny
-import aws.sdk.kotlin.hll.mapping.core.converters.Converter
+import aws.sdk.kotlin.hll.mapping.core.converters.ConverterImpl
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.withConfig
@@ -26,7 +26,7 @@ import aws.smithy.kotlin.runtime.io.use
 
 private val dummySchema = run {
     fun unsupported(): Nothing = throw UnsupportedOperationException("This action is unsupported on this schema")
-    val dummyItemConverter: ItemConverter<Any?> = Converter({ unsupported() }, { unsupported() })
+    val dummyItemConverter: ItemConverter<Any?> = ConverterImpl({ unsupported() }, { unsupported() })
 
     val dummyKeySpec = object : KeySpec.Key1<Any?> {
         override val attr1 get() = unsupported()

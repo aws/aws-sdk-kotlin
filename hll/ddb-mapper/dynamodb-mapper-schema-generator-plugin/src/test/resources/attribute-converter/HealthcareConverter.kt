@@ -6,16 +6,15 @@
 package a.different.pkg
 
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConverter
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import org.example.Healthcare
 
 class HealthcareConverter : ValueConverter<Healthcare> {
-    override val right = MonoConverter<Healthcare, AttributeValue> { AttributeValue.S(it.enrolled.toString()) }
+    override fun convertRight(from: Healthcare): AttributeValue = AttributeValue.S(from.enrolled.toString())
 
-    override val left = MonoConverter<AttributeValue, Healthcare> {
-        val content = it.asS()
+    override fun convertLeft(from: AttributeValue): Healthcare {
+        val content = from.asS()
         val enrolled = (content == "true")
-        Healthcare(enrolled)
+        return Healthcare(enrolled)
     }
 }

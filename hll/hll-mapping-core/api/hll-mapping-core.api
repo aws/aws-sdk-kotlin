@@ -1,57 +1,55 @@
 public abstract interface class aws/sdk/kotlin/hll/mapping/core/converters/Converter {
 	public static final field Companion Laws/sdk/kotlin/hll/mapping/core/converters/Converter$Companion;
-	public fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
-	public abstract fun getLeft ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
-	public abstract fun getRight ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
+	public abstract fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class aws/sdk/kotlin/hll/mapping/core/converters/Converter$Companion {
 	public final fun identity ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
 }
 
-public final class aws/sdk/kotlin/hll/mapping/core/converters/Converter$DefaultImpls {
-	public static fun convertLeft (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Ljava/lang/Object;)Ljava/lang/Object;
-	public static fun convertRight (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Ljava/lang/Object;)Ljava/lang/Object;
+public class aws/sdk/kotlin/hll/mapping/core/converters/ConverterChain : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
+	public fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
 }
 
-public final class aws/sdk/kotlin/hll/mapping/core/converters/ConverterKt {
-	public static final fun Converter (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun plus (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/mapping/core/converters/ConverterImpl : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
 }
 
-public abstract interface class aws/sdk/kotlin/hll/mapping/core/converters/MonoConverter {
-	public static final field Companion Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter$Companion;
-	public abstract fun convert (Ljava/lang/Object;)Ljava/lang/Object;
+public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/ListMappingConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertLeft (Ljava/util/List;)Ljava/util/List;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/util/List;)Ljava/util/List;
 }
 
-public final class aws/sdk/kotlin/hll/mapping/core/converters/MonoConverter$Companion {
-	public final fun identity ()Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
+public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/MapMappingConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
+	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertLeft (Ljava/util/Map;)Ljava/util/Map;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/util/Map;)Ljava/util/Map;
 }
 
-public final class aws/sdk/kotlin/hll/mapping/core/converters/MonoConverterKt {
-	public static final fun plus (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
-	public static final fun reversedBy (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
+public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/SetMappingConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertLeft (Ljava/util/Set;)Ljava/util/Set;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/util/Set;)Ljava/util/Set;
 }
 
-public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/CollectionConvertersKt {
-	public static final fun SetToListConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-}
-
-public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/ListMappingConvertersKt {
-	public static final fun ListMappingConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun ListMappingMonoConverter (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
-}
-
-public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/MapMappingConvertersKt {
-	public static final fun MapMappingConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun MapMappingConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun MapMappingMonoConverter (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
-	public static final fun MapMappingMonoConverter (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
-}
-
-public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/SetMappingConvertersKt {
-	public static final fun SetMappingConverter (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
-	public static final fun SetMappingMonoConverter (Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;)Laws/sdk/kotlin/hll/mapping/core/converters/MonoConverter;
+public final class aws/sdk/kotlin/hll/mapping/core/converters/collections/SetToListConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public fun <init> ()V
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertLeft (Ljava/util/List;)Ljava/util/Set;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/util/Set;)Ljava/util/List;
 }
 

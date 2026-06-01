@@ -15,7 +15,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.HReqContext
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.Interceptor
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
-import aws.sdk.kotlin.hll.mapping.core.converters.MonoConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import dev.mokkery.answering.calls
 import dev.mokkery.answering.throws
@@ -174,13 +173,8 @@ class OperationTest {
 private data class Foo(val value: String)
 
 private val fooConverter = object : ItemConverter<Foo> {
-    override val left: MonoConverter<Item, Foo> = MonoConverter { item ->
-        Foo(item["foo"]!!.asS())
-    }
-
-    override val right: MonoConverter<Foo, Item> = MonoConverter { obj ->
-        itemOf("foo" to AttributeValue.S(obj.value))
-    }
+    override fun convertLeft(from: Item): Foo = Foo(from["foo"]!!.asS())
+    override fun convertRight(from: Foo): Item = itemOf("foo" to AttributeValue.S(from.value))
 }
 private val fooSchema = fooConverter.withKeySpec(KeySpec.string("foo"))
 

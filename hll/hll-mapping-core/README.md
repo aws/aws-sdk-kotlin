@@ -7,79 +7,81 @@ This document describes the theory behind the conversion framework and how it ma
 
 In the context of this library, the following terms are used:
 
-* **Converter** — an object capable of bidirectional data mapping between two types, referred to as **left** and
-  **right**. A **converter** may be implemented as two symmetrical **mono-converters**
-* **Mono-converter** — an object capable of data mapping from one type into another type. A mono-converter which
-  performs the _reverse_ data mapping of another mono-converter is said to be **symmetrical** to the other and vice
-  versa. **Symmetrical** **mono-converters** are the typical implementation of **converters**, which would then perform
-  data mapping by delegating to the appropriate **mono-converter** for the transformation direction. 
+* **Converter** — an interface capable of bidirectional data mapping between two types, referred to as **left** and
+  **right**. Implementations provide `convertRight` and `convertLeft` methods directly.
 * **Left** — the name for the type on one side of a bidirectional data mapping. By convention, this is typically used to
   represent types that are closer to your application or business logic. One may think of **left** types as "my" types.
 * **Right** — the name for the type on one side of a bidirectional data mapping. By convention, this is typically used
   to represent types that are farther away from your application or business logic. One may think of **right** types as
   "their" types.
 
-## Interfaces
+## Interfaces and classes
 
-These two Kotlin interfaces form the basis of typed data mapping:
+### Converter
+
+The core interface for bidirectional data mapping:
 
 ```kotlin
-fun interface MonoConverter<A, B> {
-    fun convert(from: A): B
-}
-
 interface Converter<L, R> {
-    val right: MonoConverter<L, R>
-    val left: MonoConverter<R, L>
-
-    fun convertRight(from: L): R = right.convert(from)
-    fun convertLeft(from: R): L = left.convert(from)
+    fun convertRight(from: L): R
+    fun convertLeft(from: R): L
 }
 ```
 
-`MonoConverter` (i.e., the mono-converter [described above](#terminology)) is a generic type which maps from `A` to `B`.
-`A` is the source type of the conversion (i.e., the input) while `B` is the destination type (i.e., the output).
+`Converter` is a generic type which maps between `L` (the left type) and `R` (the right type). Implementations directly
+override `convertRight` and `convertLeft` to provide conversion logic.
 
-`Converter` (i.e., the converter [described above](#terminology)) is a generic type which maps between `L` (the left
-type) and `R` (the right type). Implementations are encouraged (but not required) to utilize symmetrical mono-converters
-and accept the default implementations of `convertLeft` and `convertRight`. This will maximize the converter's
-flexibility when used in [the composition operations described below](#composing-converters).
+### ConverterImpl
+
+A simple implementation of `Converter` backed by lambda functions:
+
+```kotlin
+class ConverterImpl<L, R>(
+    private val convertRight: (L) -> R,
+    private val convertLeft: (R) -> L,
+) : Converter<L, R>
+```
+
+This is the standard way to create a converter from a pair of conversion functions.
+
+### ConverterChain
+
+A converter that composes two converters in sequence:
+
+```kotlin
+open class ConverterChain<L, M, R>(
+    private val first: Converter<L, M>,
+    private val next: Converter<M, R>,
+) : Converter<L, R>
+```
+
+`ConverterChain` performs rightward conversion by passing data through `first` then `next`, and leftward conversion by
+passing data through `next` then `first`. Because it is an open class, it can be used as a superclass for converters
+that are naturally expressed as a composition of two stages.
 
 ### Example usage
 
 A simple converter that maps between a string and a boolean could be implemented as follows:
 
 ```kotlin
-val stringToBoolean = MonoConverter<String, Boolean> { input: String ->
-    when (input.lowercase()) {
-        "yes", "true" -> true
-        "no", "false" -> false
-        else -> error("Cannot convert '$input' to Boolean!")
-    }
-}
-println(stringToBoolean.convert("yes")) // Prints true
-println(stringToBoolean.convert("maybe?")) // Throws exception
-
-val booleanToString = MonoConverter<Boolean, String> { input: Boolean ->
-    when (input) {
-        true -> "yes"
-        false -> "no"
-    }
-}
-
-val converter = Converter(stringToBoolean, booleanToString)
+val converter = ConverterImpl<String, Boolean>(
+    convertRight = { input ->
+        when (input.lowercase()) {
+            "yes", "true" -> true
+            "no", "false" -> false
+            else -> error("Cannot convert '$input' to Boolean!")
+        }
+    },
+    convertLeft = { input ->
+        when (input) {
+            true -> "yes"
+            false -> "no"
+        }
+    },
+)
 println(converter.convertRight("no")) // Prints false
 println(converter.convertLeft(false)) // Prints "no"
 ```
-
-In the preceding code, `stringToBoolean` is a mono-converter that turns `"true"` and `"yes"` into `true` and turns
-`"false"` and `"no"` into `false`. Conversely, `booleanToString` turns `true` into `"yes"` and `false` into `"no"`.
-`stringToBoolean` and `booleanToString` are symmetrical (i.e., they perform the reverse mapping of each other) and so
-they may be combined into a bidirectional converter.
-
-The factory function `Converter` accepts two symmetrical mono-converters and returns a converter implementation that
-delegates to them. The resulting converter uses the first argument (`stringToBoolean`) for rightward conversion and the
-second argument (`booleanToString`) for leftward conversion.
 
 ## Composing converters
 
@@ -93,25 +95,26 @@ becomes the input to another:
 
 ![](docs/img/chaining-converter.png)
 
-The `+` operator is used to chain individual converters together:
+`ConverterChain` is used to chain individual converters together:
 
 ```kotlin
-operator fun <L, M, R> Converter<L, M>.plus(next: Converter<M, R>): Converter<L, R>
+open class ConverterChain<L, M, R>(
+    private val first: Converter<L, M>,
+    private val next: Converter<M, R>,
+) : Converter<L, R>
 ```
 
-Note that the result of chaining two converters is itself a new converter.
+The generic variable `M` represents the **middle** data type. Because a chained converter passes data from one delegate
+to the next, the joining types of the converters must be the same. In other words, the right type of the first converter
+and the left type of the next converter must match.
 
-This operator function introduces a new generic variable `M` which represents the **middle** data type. Because a
-chained converter passes data from one delegate to the next, the joining types of the converters must be the same. In
-other words, the left type of one converter and the right type of the other converter must match.
-
-The following example shows how to combine to existing converters:
+The following example shows how to combine two existing converters:
 
 ```kotlin
 val shortToInt: Converter<Short, Int> = ...
 val intToLong: Converter<Int, Long> = ...
 
-val shortToLong: Converter<Short, Long> = shortToInt + intToLong
+val shortToLong: Converter<Short, Long> = ConverterChain(shortToInt, intToLong)
 ```
 
 In the preceding example, `shortToLong` is a chained converter which converts rightward by turning `Short` into `Int`
@@ -119,14 +122,24 @@ by delegating to `shortToInt` and then turning the resulting `Int` into `Long` b
 it converts leftward by turning `Long` into `Int` by delegating to `intToLong` and then turning the resulting `Int` into
 `Short` by delegating to `shortToInt`.
 
-Because a chaining operation yields a new converter, it may be further chained with more converters. For example:
+Because `ConverterChain` is itself a `Converter`, it may be further chained with more converters:
 
 ```kotlin
 val byteToShort: Converter<Byte, Short> = ...
 val shortToInt: Converter<Short, Int> = ...
 val intToLong: Converter<Int, Long> = ...
 
-val byteToLong: Converter<Byte, Long> = byteToShort + shortToInt + intToLong
+val byteToLong: Converter<Byte, Long> = ConverterChain(ConverterChain(byteToShort, shortToInt), intToLong)
+```
+
+`ConverterChain` is also commonly used as a superclass for converters that are naturally expressed as a two-stage
+composition:
+
+```kotlin
+class CharValueConverter : ConverterChain<Char, String, AttributeValue>(
+    TextConverters.Char,
+    StringValueConverter,
+)
 ```
 
 ### Element mapping

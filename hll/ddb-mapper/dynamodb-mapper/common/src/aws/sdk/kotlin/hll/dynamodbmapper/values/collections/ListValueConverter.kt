@@ -5,9 +5,8 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.values.collections
 
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConverter
-import aws.sdk.kotlin.hll.mapping.core.converters.Converter
+import aws.sdk.kotlin.hll.mapping.core.converters.ConverterChain
 import aws.sdk.kotlin.hll.mapping.core.converters.collections.ListMappingConverter
-import aws.sdk.kotlin.hll.mapping.core.converters.plus
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 
 /**
@@ -17,16 +16,18 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
  * with another converter which handles mapping elements to [AttributeValue], such as by using the factory function
  * [ListValueConverter].
  */
-public val AttributeValueListValueConverter: ValueConverter<List<AttributeValue>> =
-    Converter(AttributeValue::L, AttributeValue::asL)
+public object AttributeValueListValueConverter : ValueConverter<List<AttributeValue>> {
+    override fun convertLeft(from: AttributeValue): List<AttributeValue> = from.asL()
+    override fun convertRight(from: List<AttributeValue>): AttributeValue = AttributeValue.L(from)
+}
 
 /**
- * Creates a new list converter using the given [delegate] as a delegate
+ * Converts between a [List] of [E] elements and
+ * [DynamoDB `L` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.Document.List)
  * @param E The type of elements in the list
  * @param delegate A converter for transforming between values of [E] and [AttributeValue]
  */
-@Suppress("ktlint:standard:function-naming")
-public fun <E> ListValueConverter(
+public class ListValueConverter<E>(
     delegate: ValueConverter<E>,
     attributeValueListValueConverter: ValueConverter<List<AttributeValue>> = AttributeValueListValueConverter,
-): ValueConverter<List<E>> = ListMappingConverter(delegate) + attributeValueListValueConverter
+) : ValueConverter<List<E>> by ConverterChain(ListMappingConverter(delegate), attributeValueListValueConverter)

@@ -6,7 +6,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.values.scalars
 
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConverter
 import aws.sdk.kotlin.hll.mapping.core.converters.Converter
-import aws.sdk.kotlin.hll.mapping.core.converters.plus
+import aws.sdk.kotlin.hll.mapping.core.converters.ConverterChain
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 
 /**
@@ -16,35 +16,45 @@ public object TextConverters {
     /**
      * Converts between [kotlin.CharArray] and [kotlin.String]
      */
-    public val CharArray: Converter<CharArray, String> =
-        Converter(kotlin.CharArray::concatToString, kotlin.String::toCharArray)
+    public object CharArray : Converter<kotlin.CharArray, kotlin.String> {
+        override fun convertRight(from: kotlin.CharArray): kotlin.String = from.concatToString()
+        override fun convertLeft(from: kotlin.String): kotlin.CharArray = from.toCharArray()
+    }
 
     /**
      * Converts between [kotlin.Char] and [kotlin.String]
      */
-    public val Char: Converter<Char, String> =
-        Converter(kotlin.Char::toString, kotlin.String::single)
+    public object Char : Converter<kotlin.Char, kotlin.String> {
+        override fun convertRight(from: kotlin.Char): kotlin.String = from.toString()
+        override fun convertLeft(from: kotlin.String): kotlin.Char = from.single()
+    }
 
     /**
      * Converts between [kotlin.String] and [kotlin.String]
      */
-    public val String: Converter<String, String> = Converter.identity()
+    public object String : Converter<kotlin.String, kotlin.String> {
+        override fun convertRight(from: kotlin.String): kotlin.String = from
+        override fun convertLeft(from: kotlin.String): kotlin.String = from
+    }
 }
 
 /**
  * Converts between [String] and
  * [DynamoDB `S` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.String)
  */
-public val StringValueConverter: ValueConverter<String> = Converter(AttributeValue::S, AttributeValue::asS)
+public object StringValueConverter : ValueConverter<String> {
+    override fun convertLeft(from: AttributeValue): String = from.asS()
+    override fun convertRight(from: String): AttributeValue = AttributeValue.S(from)
+}
 
 /**
  * Converts between [CharArray] and
  * [DynamoDB `S` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.String)
  */
-public val CharArrayValueConverter: ValueConverter<CharArray> = TextConverters.CharArray + StringValueConverter
+public object CharArrayValueConverter : ValueConverter<CharArray> by ConverterChain(TextConverters.CharArray, StringValueConverter)
 
 /**
  * Converts between [Char] and
  * [DynamoDB `S` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.String)
  */
-public val CharValueConverter: ValueConverter<Char> = TextConverters.Char + StringValueConverter
+public object CharValueConverter : ValueConverter<Char> by ConverterChain(TextConverters.Char, StringValueConverter)
