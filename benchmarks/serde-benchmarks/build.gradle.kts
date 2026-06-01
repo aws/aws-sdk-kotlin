@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.smithy.kotlin.http.auth.aws)
     implementation(libs.smithy.kotlin.http.client.engine.default)
     implementation(libs.smithy.kotlin.http.test)
+    implementation(libs.smithy.kotlin.smithy.test)
     implementation(libs.smithy.kotlin.serde)
     implementation(libs.smithy.kotlin.serde.json)
     implementation(libs.smithy.kotlin.serde.cbor)
