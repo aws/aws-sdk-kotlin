@@ -8,6 +8,7 @@ import aws.sdk.kotlin.gradle.codegen.smithyKotlinProjectionSrcDir
 
 plugins {
     alias(libs.plugins.aws.kotlin.repo.tools.smithybuild)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 description = "Support for AWS configuration"
@@ -58,6 +59,7 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation(libs.mockk)
+                implementation(libs.kaml)
             }
         }
 

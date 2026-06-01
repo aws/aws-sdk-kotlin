@@ -2509,6 +2509,12 @@
             "brazilName": "AwsSdkKotlinResiliencehub"
         },
         {
+            "sdkId": "resiliencehubv2",
+            "namespace": "aws.sdk.kotlin.services.resiliencehubv2",
+            "artifactName": "resiliencehubv2",
+            "brazilName": "AwsSdkKotlinResiliencehubv2"
+        },
+        {
             "sdkId": "savingsplans",
             "namespace": "aws.sdk.kotlin.services.savingsplans",
             "artifactName": "savingsplans",
