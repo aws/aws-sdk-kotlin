@@ -1,0 +1,5 @@
+{
+    "id": "40538b24-aa55-4e9f-908a-d72172d85edc",
+    "type": "feature",
+    "description": "Change `@DynamoDbItem` annotation argument type from `String` to `KClass<ItemConverter<*>>`"
+}

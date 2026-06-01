@@ -5,6 +5,7 @@
 
 package aws.sdk.kotlin.hll.codegen.model
 
+import aws.sdk.kotlin.hll.codegen.model.Types.Kotlin.String
 import aws.sdk.kotlin.runtime.InternalSdkApi
 
 /**
@@ -14,7 +15,6 @@ import aws.sdk.kotlin.runtime.InternalSdkApi
 public object Types {
     @InternalSdkApi
     public object Smithy {
-        public val ExperimentalApi: TypeRef = TypeRef("aws.smithy.kotlin.runtime", "ExperimentalApi")
         public val Instant: TypeRef = TypeRef("aws.smithy.kotlin.runtime.time", "Instant")
         public val Url: TypeRef = TypeRef("aws.smithy.kotlin.runtime.net.url", "Url")
         public val Document: TypeRef = TypeRef("aws.smithy.kotlin.runtime.content", "Document")
@@ -33,6 +33,7 @@ public object Types {
         public val Long: TypeRef = kotlin("Long")
         public val Number: TypeRef = kotlin("Number")
         public val OptIn: TypeRef = kotlin("OptIn")
+        public val Pair: TypeRef = kotlin("Pair")
         public val Short: TypeRef = kotlin("Short")
         public val String: TypeRef = kotlin("String")
         public val StringNullable: TypeRef = String.nullable()
@@ -40,12 +41,14 @@ public object Types {
         public val UInt: TypeRef = kotlin("UInt")
         public val ULong: TypeRef = kotlin("ULong")
         public val UShort: TypeRef = kotlin("UShort")
+        public val Unit: TypeRef = kotlin("Unit")
 
         @InternalSdkApi
         public object Collections {
             public val List: TypeRef = TypeRef(Pkg.Kotlin.Collections, "List")
             public val Map: TypeRef = TypeRef(Pkg.Kotlin.Collections, "Map")
             public val Set: TypeRef = TypeRef(Pkg.Kotlin.Collections, "Set")
+            public val setOf: TypeRef = TypeRef(Pkg.Kotlin.Collections, "setOf")
         }
 
         /**

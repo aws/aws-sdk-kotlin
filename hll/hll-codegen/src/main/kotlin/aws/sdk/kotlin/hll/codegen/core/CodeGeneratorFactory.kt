@@ -30,10 +30,13 @@ public class CodeGeneratorFactory(
      */
     public fun generator(fileName: String, pkg: String, codeGeneratorName: String): CodeGenerator {
         val imports = ImportDirectives()
+        val typeProcessor = TypeProcessor(pkg, imports)
         val processors = listOf(
             TemplateProcessor.Literal,
             TemplateProcessor.QuotedString,
-            TemplateProcessor.forType(pkg, imports),
+            typeProcessor.typeUsageProcessor,
+            typeProcessor.genericsListProcessor,
+            typeProcessor.typeDeclarationProcessor,
         )
         val engine = TemplateEngine(processors)
 
