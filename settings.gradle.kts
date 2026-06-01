@@ -58,14 +58,18 @@ include(":hll")
 include(":hll:hll-codegen")
 include(":hll:hll-mapping-core")
 include(":services")
-val endpointBenchmarkServices = listOf("s3", "lambda")
-if (endpointBenchmarkServices.all { it.isBootstrappedService }) {
-    include(":benchmarks:endpoint-resolution")
-} else {
-    val missing = endpointBenchmarkServices.filterNot { it.isBootstrappedService }
-    logger.warn("Skipping :benchmarks:endpoint-resolution because these service(s) are not bootstrapped: $missing")
+if (providers.gradleProperty("includeBenchmarks").orNull?.toBoolean() == true) {
+    val endpointBenchmarkServices = listOf("s3", "lambda")
+    if (endpointBenchmarkServices.all { it.isBootstrappedService }) {
+        include(":benchmarks:endpoint-resolution")
+    } else {
+        val missing = endpointBenchmarkServices.filterNot { it.isBootstrappedService }
+        logger.warn("Skipping :benchmarks:endpoint-resolution because these service(s) are not bootstrapped: $missing")
+    }
 }
-include(":benchmarks:serde-benchmarks")
+if (providers.gradleProperty("includeBenchmarks").orNull?.toBoolean() == true) {
+    include(":benchmarks:serde-benchmarks")
+}
 include(":tests")
 include(":tests:codegen")
 include(":tests:codegen:event-stream")
