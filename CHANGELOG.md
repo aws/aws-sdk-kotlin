@@ -1,5 +1,57 @@
 # Changelog
 
+## [1.6.86] - 06/02/2026
+
+### Features
+* (**cloudwatch**) Adding new BDD representation of endpoint ruleset
+* (**ec2**) Amazon EC2 now supports self-service cancellation of future-dated Capacity Reservations. A cancellation charge applies based on remaining commitment. Customers can generate a cancellation quote to review charges before confirming.
+* (**elasticache**) Amazon ElastiCache for Valkey now supports durability. This new capability is enabled through a Multi-AZ transactional log, enabling fast recovery and restart during failures.
+* (**georoutes**) Added Transit and Intermodal travel modes to CalculateRoutes. Plan routes using public transit (bus, subway, train, ferry) or combine transit with driving, taxi, and rental car segments in a single multi-modal route.
+* (**guardduty**) Amazon GuardDuty Runtime Monitoring now supports 3 new SensitiveFileModified finding types (Persistence, PrivilegeEscalation, DefenseEvasion) that detect when security-sensitive system files are modified on EC2 instances or containers, indicating potential compromise through file tampering.
+* (**keyspacesstreams**) Added iterator description to the GetRecords API response for Amazon Keyspaces Change Data Capture (CDC) streams, enabling consumers to track their current position within the stream.
+* (**lambda**) Adds configuration for tag propagation to Lambda-managed resources.
+* (**lexruntimeservice**) Adding new BDD representation of endpoint ruleset
+* (**managedblockchain**) Adding new BDD representation of endpoint ruleset
+* (**marketplacemetering**) Adding new BDD representation of endpoint ruleset
+* (**mediaconvert**) Adding new BDD representation of endpoint ruleset
+* (**medialive**) Adding new BDD representation of endpoint ruleset
+* (**mediastore**) Adding new BDD representation of endpoint ruleset
+* (**migrationhub**) Adding new BDD representation of endpoint ruleset
+* (**mturk**) Adding new BDD representation of endpoint ruleset
+* (**neptune**) Adding new BDD representation of endpoint ruleset
+* (**personalizeruntime**) Adding new BDD representation of endpoint ruleset
+* (**pi**) Adding new BDD representation of endpoint ruleset
+* (**pinpoint**) Adding new BDD representation of endpoint ruleset
+* (**pinpointemail**) Adding new BDD representation of endpoint ruleset
+* (**polly**) Adding new BDD representation of endpoint ruleset
+* (**ram**) Adding new BDD representation of endpoint ruleset
+* (**redshift**) Adding new BDD representation of endpoint ruleset
+* (**rekognition**) Adding new BDD representation of endpoint ruleset
+* (**resourcegroupstaggingapi**) Adding new BDD representation of endpoint ruleset
+* (**route53**) Adding new BDD representation of endpoint ruleset
+* (**route53domains**) Adding new BDD representation of endpoint ruleset
+* (**s3**) Adding new BDD representation of endpoint ruleset
+* (**sagemaker**) Amazon SageMaker Job is a new service to help you manage various workloads related to model fine tuning, evaluation etc. Two job categories are supported today, AgentRFT for multi-turn agentic reinforcement fine tuning, and AgentRFTEvaluation for evaluating base model or trained model from AgentRFT.
+* (**sagemakerjobruntime**) Amazon SageMaker Job Runtime is a new service for managing trajectory data during multi-turn customization jobs. It provides APIs to send inference requests to models during job execution, mark rollouts as complete, and submit reward values for training trajectories.
+* (**secretsmanager**) Adding new BDD representation of endpoint ruleset
+* (**servicecatalog**) Adding new BDD representation of endpoint ruleset
+* (**sfn**) Adding new BDD representation of endpoint ruleset
+* (**shield**) Adding new BDD representation of endpoint ruleset
+* (**snowball**) Adding new BDD representation of endpoint ruleset
+* (**sqs**) Adding new BDD representation of endpoint ruleset
+* (**ssm**) Adding new BDD representation of endpoint ruleset
+* (**sso**) Adding new BDD representation of endpoint ruleset
+* (**storagegateway**) Adding new BDD representation of endpoint ruleset
+* (**sts**) Adding new BDD representation of endpoint ruleset
+* (**swf**) Adding new BDD representation of endpoint ruleset
+* (**transcribe**) Release new Language locales including am-ET, es-MX, fa-AF, ht-HT, jv-ID, km-KH, my-MM, sq-AL, ne-NP. The commit shows past locales that have already been release which include cy-gb, ga-ie, gd-gb.
+* (**transfer**) Adding new BDD representation of endpoint ruleset
+* (**waf**) Adding new BDD representation of endpoint ruleset
+* (**xray**) Adding new BDD representation of endpoint ruleset
+
+### Documentation
+* (**iot**) Fleet indexing documentation update
+
 ## [1.6.85] - 06/01/2026
 
 ### Features

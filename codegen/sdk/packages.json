@@ -2029,6 +2029,12 @@
             "brazilName": "AwsSdkKotlinSagemakerEdge"
         },
         {
+            "sdkId": "SagemakerJobRuntime",
+            "namespace": "aws.sdk.kotlin.services.sagemakerjobruntime",
+            "artifactName": "sagemakerjobruntime",
+            "brazilName": "AwsSdkKotlinSagemakerjobruntime"
+        },
+        {
             "sdkId": "Scheduler",
             "namespace": "aws.sdk.kotlin.services.scheduler",
             "artifactName": "scheduler",
