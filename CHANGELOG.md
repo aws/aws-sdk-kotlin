@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.6.87] - 06/03/2026
+
+### Features
+* (**georoutes**) Add "standardRegionalEndpoints" back to fix 'Could not connect to the endpoint URL'
+
 ## [1.6.86] - 06/02/2026
 
 ### Features
