@@ -1,5 +1,43 @@
 # Changelog
 
+## [1.6.88] - 06/03/2026
+
+### Features
+* (**apigatewaymanagementapi**) Adding new BDD representation of endpoint ruleset
+* (**appconfigdata**) Adding new BDD representation of endpoint ruleset
+* (**appfabric**) Adding new BDD representation of endpoint ruleset
+* (**applicationautoscaling**) Adding new BDD representation of endpoint ruleset
+* (**arcregionswitch**) ARC Region Switch now supports three new execution blocks for multi-Region database workloads-Amazon Aurora Serverless scaling, Amazon Aurora Provisioned scaling, and Amazon Neptune Global Database failover.
+* (**cloudfront**) Adding new BDD representation of endpoint ruleset
+* (**cloudtraildata**) Adding new BDD representation of endpoint ruleset
+* (**cloudwatchlogs**) Adding new BDD representation of endpoint ruleset
+* (**computeoptimizer**) This release lets customers extend the lookback period for Amazon EBS volume and Amazon ECS rightsizing recommendations to 32 days.
+* (**connect**) SearchContacts Connect API now supports filtering contacts by the AI Agents involved in handling them
+* (**connectcampaigns**) Adding new BDD representation of endpoint ruleset
+* (**costexplorer**) Added support for target-coverage-based Savings Plans purchase analysis. The StartCommitmentPurchaseAnalysis API now accepts a new TARGET AVERAGE COVERAGE value for AnalysisType, as well as an optional SavingsPlansTargetCoverage field in SavingsPlansPurchaseAnalysisConfiguration
+* (**dax**) Adding new BDD representation of endpoint ruleset
+* (**directconnect**) Adding new BDD representation of endpoint ruleset
+* (**firehose**) Adding new BDD representation of endpoint ruleset
+* (**inspector2**) Inspector support for enhanced scanning
+* (**iotevents**) Adding new BDD representation of endpoint ruleset
+* (**iotsecuretunneling**) Adding new BDD representation of endpoint ruleset
+* (**kinesis**) Adding new BDD representation of endpoint ruleset
+* (**lakeformation**) Adding new BDD representation of endpoint ruleset
+* (**macie2**) Adding new BDD representation of endpoint ruleset
+* (**pinpointsmsvoice**) Adding new BDD representation of endpoint ruleset
+* (**rds**) Adding new BDD representation of endpoint ruleset
+* (**resourcegroups**) Adding new BDD representation of endpoint ruleset
+* (**route53profiles**) Adding new BDD representation of endpoint ruleset
+* (**s3outposts**) Adding new BDD representation of endpoint ruleset
+* (**securitylake**) Adding new BDD representation of endpoint ruleset
+* (**ses**) Adding new BDD representation of endpoint ruleset
+* (**snowdevicemanagement**) Adding new BDD representation of endpoint ruleset
+* (**socialmessaging**) Adding support for WhatsApp flow APIs and adding AccessDeniedByMetaException for Template APIs
+* (**transcribestreaming**) Adding new BDD representation of endpoint ruleset
+* (**vpclattice**) Adding new BDD representation of endpoint ruleset
+* (**wafregional**) Adding new BDD representation of endpoint ruleset
+* (**wisdom**) Adding new BDD representation of endpoint ruleset
+
 ## [1.6.87] - 06/03/2026
 
 ### Features
