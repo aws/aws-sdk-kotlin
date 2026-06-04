@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.6.89] - 06/04/2026
+
+### Features
+* (**amplifybackend**) Adding new BDD representation of endpoint ruleset
+* (**appflow**) Adding new BDD representation of endpoint ruleset
+* (**appintegrations**) Adding new BDD representation of endpoint ruleset
+* (**auditmanager**) Adding new BDD representation of endpoint ruleset
+* (**chimesdkvoice**) Adding new BDD representation of endpoint ruleset
+* (**cloudformation**) Adding new BDD representation of endpoint ruleset
+* (**configservice**) AWS Config now supports internal service-linked rules, allowing AWS service partners to deploy Config rules for customers and use the evaluation results to build enhanced features.
+* (**connectparticipant**) Adding new BDD representation of endpoint ruleset
+* (**costexplorer**) Adding new BDD representation of endpoint ruleset
+* (**ec2instanceconnect**) Adding new BDD representation of endpoint ruleset
+* (**efs**) Adding new BDD representation of endpoint ruleset
+* (**emr**) Added support for Spark Connect interactive sessions on Amazon EMR on EC2 with new APIs - StartSession, GetSession, GetSessionEndpoint, ListSessions, and TerminateSession. Added sessionEnabled field in RunJobFlow and DescribeCluster to enable Spark Connect endpoints on EMR clusters.
+* (**geomaps**) Adding new BDD representation of endpoint ruleset
+* (**glue**) AWS Glue Interactive Sessions now supports Apache Spark Connect, enabling remote Spark execution over gRPC with minimal client-side dependencies. Adds GetSessionEndpoint and GetDashboardUrl APIs. Modifies CreateSession now accepts SPARK CONNECT session type.
+* (**interconnect**) Adding new BDD representation of endpoint ruleset
+* (**ivs**) adds UpdateAdConfiguration operation to AWS IVS low-latency APIs
+* (**kendra**) Adding new BDD representation of endpoint ruleset
+* (**mediaconnect**) BDD bulk update change rollout
+* (**mediapackage**) Adding new BDD representation of endpoint ruleset
+* (**mediapackagevod**) Adding new BDD representation of endpoint ruleset
+* (**mq**) BDD bulk update change rollout
+* (**mwaaserverless**) Adding new BDD representation of endpoint ruleset
+* (**opensearchserverless**) Adding new BDD representation of endpoint ruleset
+* (**route53recoveryreadiness**) Adding new BDD representation of endpoint ruleset
+* (**s3files**) Adding new BDD representation of endpoint ruleset
+* (**sagemaker**) Adds the IncludedData parameter to DescribeModelCard and DescribeModelPackage. Set it to MetadataOnly to retrieve a model card without decrypt permission on the customer managed AWS KMS key (default AllData returns full content). Adds support for the MTRL Job resource in SageMaker Search.
+* (**sagemakerruntimehttp2**) Adding new BDD representation of endpoint ruleset
+* (**signerdata**) Adding new BDD representation of endpoint ruleset
+* (**sns**) Adding new BDD representation of endpoint ruleset
+* (**sustainability**) Adding new BDD representation of endpoint ruleset
+* (**taxsettings**) Adding new BDD representation of endpoint ruleset
+* (**uxc**) Adding new BDD representation of endpoint ruleset
+* (**wickr**) AWS Wickr now allows network administrators to configure a maximum session duration for non-SSO users in security groups, and display customizable consent popups to users at login for terms of use or compliance acknowledgements.
+* (**workdocs**) Adding new BDD representation of endpoint ruleset
+* (**workspaces**) Adding new BDD representation of endpoint ruleset
+
+### Documentation
+* (**guardduty**) Remove unsupported RDS field for filter
+
 ## [1.6.88] - 06/03/2026
 
 ### Features
