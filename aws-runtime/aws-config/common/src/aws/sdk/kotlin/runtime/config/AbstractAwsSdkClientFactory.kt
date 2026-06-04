@@ -15,7 +15,8 @@ import aws.sdk.kotlin.runtime.config.endpoints.resolveUseFips
 import aws.sdk.kotlin.runtime.config.profile.AwsProfile
 import aws.sdk.kotlin.runtime.config.profile.AwsSharedConfig
 import aws.sdk.kotlin.runtime.config.profile.loadAwsSharedConfig
-import aws.sdk.kotlin.runtime.config.retries.resolveRetryStrategy
+import aws.sdk.kotlin.runtime.config.retries.buildRetryStrategy
+import aws.sdk.kotlin.runtime.config.retries.resolveRetryConfig
 import aws.sdk.kotlin.runtime.config.useragent.resolveUserAgentAppId
 import aws.sdk.kotlin.runtime.region.resolveRegion
 import aws.sdk.kotlin.runtime.region.resolveSigV4aSigningRegionSet
@@ -36,6 +37,7 @@ import aws.smithy.kotlin.runtime.telemetry.trace.withSpan
 import aws.smithy.kotlin.runtime.util.LazyAsyncValue
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
+import kotlin.time.Duration
 
 /**
  * Abstract base class all AWS client companion objects inherit from
@@ -55,6 +57,19 @@ public abstract class AbstractAwsSdkClientFactory<
           TConfig : AwsSdkClientConfig,
           TConfigBuilder : SdkClientConfig.Builder<TConfig>,
           TConfigBuilder : AwsSdkClientConfig.Builder {
+
+    /**
+     * Service-specific default max attempts for the retry strategy.
+     * Override in generated code for services that require non-standard defaults (e.g., DynamoDB uses 4).
+     */
+    protected open val defaultMaxAttempts: Int? = null
+
+    /**
+     * Service-specific default initial delay for the retry strategy.
+     * Override in generated code for services that require non-standard defaults (e.g., DynamoDB uses 25ms).
+     */
+    protected open val defaultInitialDelay: Duration? = null
+
     /**
      * Construct a [TClient] by resolving the configuration from the current environment.
      */
@@ -75,7 +90,8 @@ public abstract class AbstractAwsSdkClientFactory<
             // As a DslBuilderProperty, the value of retryStrategy cannot be checked for nullability because it may have
             // been set using a DSL. Thus, set the resolved strategy _first_ to ensure it's used as the fallback.
             if (config is RetryStrategyClientConfig.Builder) {
-                config.retryStrategy = resolveRetryStrategy(profile = profile)
+                val retryConfig = resolveRetryConfig(platform, profile)
+                config.retryStrategy = buildRetryStrategy(retryConfig, defaultMaxAttempts, defaultInitialDelay)
             }
 
             block?.let(config::apply)

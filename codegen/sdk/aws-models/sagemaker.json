@@ -828,6 +828,12 @@
                     "traits": {
                         "smithy.api#enumValue": "ml.p5en.48xlarge"
                     }
+                },
+                "ML_P6_B200_48XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.p6-b200.48xlarge"
+                    }
                 }
             }
         },
@@ -3517,6 +3523,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ml.r6id.32xlarge"
+                    }
+                },
+                "ML_P5_4XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.p5.4xlarge"
                     }
                 }
             }
@@ -9943,10 +9955,42 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A human-readable description of the event.</p>"
                     }
+                },
+                "EventLevel": {
+                    "target": "com.amazonaws.sagemaker#ClusterEventLevel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The severity level of the event. Valid values are <code>Info</code>, <code>Warn</code>, and <code>Error</code>.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Detailed information about a specific event in a HyperPod cluster.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterEventLevel": {
+            "type": "enum",
+            "members": {
+                "INFO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Info"
+                    }
+                },
+                "WARN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Warn"
+                    }
+                },
+                "ERROR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Error"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The severity level for a HyperPod cluster event.</p>"
             }
         },
         "com.amazonaws.sagemaker#ClusterEventMaxResults": {
@@ -10053,10 +10097,36 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A brief, human-readable description of the event.</p>"
                     }
+                },
+                "EventLevel": {
+                    "target": "com.amazonaws.sagemaker#ClusterEventLevel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The severity level of the event. Valid values are <code>Info</code>, <code>Warn</code>, and <code>Error</code>.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>A summary of an event in a HyperPod cluster.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterFSxLustreDeletionPolicy": {
+            "type": "enum",
+            "members": {
+                "DELETE_IF_NOT_USED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DeleteIfNotUsed"
+                    }
+                },
+                "KEEP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Keep"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The deletion policy for the Amazon FSx for Lustre file system used in the shared environment of restricted instance groups (RIG).</p>"
             }
         },
         "com.amazonaws.sagemaker#ClusterFsxLustreConfig": {
@@ -10116,6 +10186,26 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Defines the configuration for attaching an Amazon FSx for OpenZFS file system to instances in a SageMaker HyperPod cluster instance group.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterImageVersionStatus": {
+            "type": "enum",
+            "members": {
+                "UP_TO_DATE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UpToDate"
+                    }
+                },
+                "UPDATE_AVAILABLE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UpdateAvailable"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The status of the Amazon Machine Image (AMI) version for the HyperPod cluster instance group, node, or cluster. The AMI version is determined at the instance group level, and all nodes within an instance group run the same AMI. The cluster-level status is aggregated across all instance groups.</p> <ul> <li> <p> <code>UpToDate</code>: The resource is running the latest available AMI version.</p> </li> <li> <p> <code>UpdateAvailable</code>: A newer AMI version is available for the resource.</p> </li> </ul>"
             }
         },
         "com.amazonaws.sagemaker#ClusterInstanceCount": {
@@ -10242,6 +10332,12 @@
                     "target": "com.amazonaws.sagemaker#ImageId",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Amazon Machine Image (AMI) desired for the instance group.</p>"
+                    }
+                },
+                "ImageVersionStatus": {
+                    "target": "com.amazonaws.sagemaker#ClusterImageVersionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the image version for the instance group. Indicates whether the instance group is running the latest image version or if an update is available.</p>"
                     }
                 },
                 "ActiveOperations": {
@@ -11864,6 +11960,12 @@
                         "smithy.api#documentation": "<p>The ID of the Amazon Machine Image (AMI) desired for the node.</p>"
                     }
                 },
+                "ImageVersionStatus": {
+                    "target": "com.amazonaws.sagemaker#ClusterImageVersionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the image version for the cluster node.</p>"
+                    }
+                },
                 "UltraServerInfo": {
                     "target": "com.amazonaws.sagemaker#UltraServerInfo",
                     "traits": {
@@ -12040,6 +12142,12 @@
                     "traits": {
                         "smithy.api#clientOptional": {},
                         "smithy.api#documentation": "<p>The private DNS hostname of the SageMaker HyperPod cluster node.</p>"
+                    }
+                },
+                "ImageVersionStatus": {
+                    "target": "com.amazonaws.sagemaker#ClusterImageVersionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the image version for the cluster node.</p>"
                     }
                 }
             },
@@ -12328,6 +12436,38 @@
                 }
             }
         },
+        "com.amazonaws.sagemaker#ClusterRestrictedInstanceGroupsConfig": {
+            "type": "structure",
+            "members": {
+                "SharedEnvironmentConfig": {
+                    "target": "com.amazonaws.sagemaker#ClusterSharedEnvironmentConfig",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The shared environment configuration for the restricted instance groups (RIG).</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for the restricted instance groups (RIG) in the SageMaker HyperPod cluster.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterRestrictedInstanceGroupsConfigOutput": {
+            "type": "structure",
+            "members": {
+                "SharedEnvironmentConfig": {
+                    "target": "com.amazonaws.sagemaker#ClusterSharedEnvironmentConfigDetails",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The shared environment configuration details for the restricted instance groups (RIG).</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The output configuration for the restricted instance groups (RIG) in the SageMaker HyperPod cluster.</p>"
+            }
+        },
         "com.amazonaws.sagemaker#ClusterSchedulerConfigArn": {
             "type": "string",
             "traits": {
@@ -12430,6 +12570,62 @@
             "type": "string",
             "traits": {
                 "smithy.api#pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9]){0,39}?$"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterSharedEnvironmentConfig": {
+            "type": "structure",
+            "members": {
+                "FSxLustreDeletionPolicy": {
+                    "target": "com.amazonaws.sagemaker#ClusterFSxLustreDeletionPolicy",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The deletion policy for the Amazon FSx for Lustre file system in the shared environment.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "FSxLustreConfig": {
+                    "target": "com.amazonaws.sagemaker#FSxLustreConfig",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>Configuration settings for an Amazon FSx for Lustre file system in the shared environment.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The shared environment configuration for the restricted instance groups (RIG).</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#ClusterSharedEnvironmentConfigDetails": {
+            "type": "structure",
+            "members": {
+                "CurrentFSxLustreConfig": {
+                    "target": "com.amazonaws.sagemaker#FSxLustreConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current Amazon FSx for Lustre file system configuration in the shared environment.</p>"
+                    }
+                },
+                "DesiredFSxLustreConfig": {
+                    "target": "com.amazonaws.sagemaker#FSxLustreConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The desired Amazon FSx for Lustre file system configuration in the shared environment.</p>"
+                    }
+                },
+                "CurrentFSxLustreDeletionPolicy": {
+                    "target": "com.amazonaws.sagemaker#ClusterFSxLustreDeletionPolicy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current deletion policy for the Amazon FSx for Lustre file system in the shared environment.</p>"
+                    }
+                },
+                "DesiredFSxLustreDeletionPolicy": {
+                    "target": "com.amazonaws.sagemaker#ClusterFSxLustreDeletionPolicy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The desired deletion policy for the Amazon FSx for Lustre file system in the shared environment.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The shared environment configuration details for the restricted instance groups (RIG).</p>"
             }
         },
         "com.amazonaws.sagemaker#ClusterSlurmConfig": {
@@ -14981,6 +15177,12 @@
                         "smithy.api#documentation": "<p>The specialized instance groups for training models like Amazon Nova to be created in the SageMaker HyperPod cluster.</p>"
                     }
                 },
+                "RestrictedInstanceGroupsConfig": {
+                    "target": "com.amazonaws.sagemaker#ClusterRestrictedInstanceGroupsConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration for the restricted instance groups (RIG) in the SageMaker HyperPod cluster.</p>"
+                    }
+                },
                 "VpcConfig": {
                     "target": "com.amazonaws.sagemaker#VpcConfig",
                     "traits": {
@@ -15756,6 +15958,12 @@
                     "target": "com.amazonaws.sagemaker#AppSecurityGroupManagement",
                     "traits": {
                         "smithy.api#documentation": "<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided. If setting up the domain for use with RStudio, this value must be set to <code>Service</code>.</p>"
+                    }
+                },
+                "HomeEfsFileSystemCreation": {
+                    "target": "com.amazonaws.sagemaker#HomeEfsFileSystemCreation",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to create a home EFS file system for the domain. Defaults to <code>Enabled</code>. Set to <code>Disabled</code> to skip EFS creation and reduce domain creation time. You can enable EFS later by calling <code>UpdateDomain</code>.</p>"
                     }
                 },
                 "TagPropagation": {
@@ -18217,6 +18425,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A list of key value pairs associated with the model group. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
                     }
+                },
+                "ManagedConfiguration": {
+                    "target": "com.amazonaws.sagemaker#ManagedConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The managed configuration of the model package group.</p>"
+                    }
                 }
             },
             "traits": {
@@ -18382,6 +18596,12 @@
                     "target": "com.amazonaws.sagemaker#ModelLifeCycle",
                     "traits": {
                         "smithy.api#documentation": "<p> A structure describing the current state of the model in its life cycle. </p>"
+                    }
+                },
+                "ManagedStorageType": {
+                    "target": "com.amazonaws.sagemaker#ManagedStorageType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The storage type of the model package.</p>"
                     }
                 }
             },
@@ -18701,7 +18921,7 @@
                 "PlatformIdentifier": {
                     "target": "com.amazonaws.sagemaker#PlatformIdentifier",
                     "traits": {
-                        "smithy.api#documentation": "<p>The platform identifier of the notebook instance runtime environment. The default value is <code>notebook-al2-v2</code>.</p>"
+                        "smithy.api#documentation": "<p>The platform identifier of the notebook instance runtime environment. The default value is <code>notebook-al2023-v1</code>.</p>"
                     }
                 },
                 "InstanceMetadataServiceConfiguration": {
@@ -25916,6 +26136,12 @@
                         "smithy.api#documentation": "<p>The specialized instance groups for training models like Amazon Nova to be created in the SageMaker HyperPod cluster.</p>"
                     }
                 },
+                "RestrictedInstanceGroupsConfig": {
+                    "target": "com.amazonaws.sagemaker#ClusterRestrictedInstanceGroupsConfigOutput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration for the restricted instance groups (RIG) in the SageMaker HyperPod cluster.</p>"
+                    }
+                },
                 "VpcConfig": {
                     "target": "com.amazonaws.sagemaker#VpcConfig"
                 },
@@ -27095,6 +27321,12 @@
                     "target": "com.amazonaws.sagemaker#AppSecurityGroupManagement",
                     "traits": {
                         "smithy.api#documentation": "<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided.</p>"
+                    }
+                },
+                "HomeEfsFileSystemCreation": {
+                    "target": "com.amazonaws.sagemaker#HomeEfsFileSystemCreation",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether a home EFS file system is created for the domain.</p>"
                     }
                 },
                 "TagPropagation": {
@@ -30732,6 +30964,12 @@
                         "smithy.api#documentation": "<p>The status of the model group.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "ManagedConfiguration": {
+                    "target": "com.amazonaws.sagemaker#ManagedConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The managed configuration of the model package group.</p>"
+                    }
                 }
             },
             "traits": {
@@ -30942,6 +31180,12 @@
                     "target": "com.amazonaws.sagemaker#ModelLifeCycle",
                     "traits": {
                         "smithy.api#documentation": "<p> A structure describing the current state of the model in its life cycle. </p>"
+                    }
+                },
+                "ManagedStorageType": {
+                    "target": "com.amazonaws.sagemaker#ManagedStorageType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The storage type of the model package.</p>"
                     }
                 }
             },
@@ -33454,7 +33698,7 @@
                 "TargetResources": {
                     "target": "com.amazonaws.sagemaker#SageMakerResourceNames",
                     "traits": {
-                        "smithy.api#documentation": "<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints, Studio apps) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> <li> <p>A training plan for Studio apps can be used to launch JupyterLab and Code Editor apps on reserved training plan capacity.</p> </li> </ul>"
                     }
                 },
                 "ReservedCapacitySummaries": {
@@ -37198,6 +37442,23 @@
                 }
             }
         },
+        "com.amazonaws.sagemaker#ExecutionRoleSessionNameMode": {
+            "type": "enum",
+            "members": {
+                "Static": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STATIC"
+                    }
+                },
+                "UserIdentity": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "USER_IDENTITY"
+                    }
+                }
+            }
+        },
         "com.amazonaws.sagemaker#ExecutionStatus": {
             "type": "enum",
             "members": {
@@ -39518,6 +39779,26 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Stores the holiday featurization attributes applicable to each item of time-series datasets during the training of a forecasting model. This allows the model to identify patterns associated with specific holidays.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#HomeEfsFileSystemCreation": {
+            "type": "enum",
+            "members": {
+                "Enabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Enabled"
+                    }
+                },
+                "Disabled": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Disabled"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Indicates whether a home EFS file system is created for the domain.</p>"
             }
         },
         "com.amazonaws.sagemaker#HookParameters": {
@@ -43993,6 +44274,12 @@
                         "smithy.api#documentation": "<p>Information about additional Elastic Network Interfaces (ENIs) associated with the instance.</p>"
                     }
                 },
+                "InstanceRequirementsEniConfigurations": {
+                    "target": "com.amazonaws.sagemaker#InstanceRequirementsEniConfigurations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ENI configurations for the instance types in the instance requirements, grouped by network interface category (for example, ENI-only or EFA with ENIs). At most one configuration per category.</p>"
+                    }
+                },
                 "CapacityReservation": {
                     "target": "com.amazonaws.sagemaker#CapacityReservation",
                     "traits": {
@@ -44142,6 +44429,32 @@
                 "smithy.api#length": {
                     "min": 1
                 }
+            }
+        },
+        "com.amazonaws.sagemaker#InstanceRequirementsEniConfiguration": {
+            "type": "structure",
+            "members": {
+                "CustomerEni": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the customer-managed Elastic Network Interface (ENI) associated with the instance type category.</p>"
+                    }
+                },
+                "AdditionalEnis": {
+                    "target": "com.amazonaws.sagemaker#AdditionalEnis",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Information about additional Elastic Network Interfaces (ENIs) associated with the instance type category.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The customer ENI and additional ENIs associated with a network interface category.</p>"
+            }
+        },
+        "com.amazonaws.sagemaker#InstanceRequirementsEniConfigurations": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.sagemaker#InstanceRequirementsEniConfiguration"
             }
         },
         "com.amazonaws.sagemaker#InstanceType": {
@@ -45183,6 +45496,18 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ml.g6.48xlarge"
+                    }
+                },
+                "ML_P5_4XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.p5.4xlarge"
+                    }
+                },
+                "ML_P5EN_48XLARGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml.p5en.48xlarge"
                     }
                 }
             }
@@ -55450,6 +55775,20 @@
                 "smithy.api#pattern": "^\\d+\\.\\d+$"
             }
         },
+        "com.amazonaws.sagemaker#ManagedConfiguration": {
+            "type": "structure",
+            "members": {
+                "ManagedStorageType": {
+                    "target": "com.amazonaws.sagemaker#ManagedStorageType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The storage type of the model package.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The managed configuration of a model package group.</p>"
+            }
+        },
         "com.amazonaws.sagemaker#ManagedInstanceScalingCooldownInMinutes": {
             "type": "integer",
             "traits": {
@@ -55514,6 +55853,17 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "DISABLED"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.sagemaker#ManagedStorageType": {
+            "type": "enum",
+            "members": {
+                "RESTRICTED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Restricted"
                     }
                 }
             }
@@ -58574,6 +58924,12 @@
                         "smithy.api#clientOptional": {},
                         "smithy.api#documentation": "<p>The status of the model group.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "ManagedConfiguration": {
+                    "target": "com.amazonaws.sagemaker#ManagedConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The managed configuration of the model package group.</p>"
                     }
                 }
             },
@@ -69170,7 +69526,7 @@
             "type": "structure",
             "members": {
                 "InstanceType": {
-                    "target": "com.amazonaws.sagemaker#InstanceType",
+                    "target": "com.amazonaws.sagemaker#ProductionVariantInstanceType",
                     "traits": {
                         "smithy.api#clientOptional": {},
                         "smithy.api#documentation": "<p>The instance type the model is deployed to.</p>",
@@ -70690,6 +71046,12 @@
                         "smithy.api#documentation": "<p>The availability zone for the reserved capacity.</p>"
                     }
                 },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.sagemaker#AvailabilityZoneId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Availability Zone ID of the reserved capacity.</p>"
+                    }
+                },
                 "DurationHours": {
                     "target": "com.amazonaws.sagemaker#ReservedCapacityDurationHours",
                     "traits": {
@@ -71135,6 +71497,12 @@
                     "target": "com.amazonaws.sagemaker#StudioLifecycleConfigArn",
                     "traits": {
                         "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the Lifecycle Configuration attached to the Resource.</p>"
+                    }
+                },
+                "TrainingPlanArn": {
+                    "target": "com.amazonaws.sagemaker#StudioResourceSpecTrainingPlanArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the SageMaker AI Training Plan to use for this app. When you specify a training plan, the app launches on reserved GPU capacity. This field is supported for JupyterLab and CodeEditor app types.</p> <p>For more information about how to reserve GPU capacity with SageMaker AI Training Plans, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/training-plan-utilization-for-studio-apps.html\">Using training plans in Studio applications</a>.</p>"
                     }
                 }
             },
@@ -73093,6 +73461,233 @@
                 "smithy.api#xmlNamespace": {
                     "uri": "http://sagemaker.amazonaws.com/doc/2017-05-13/"
                 },
+                "smithy.rules#endpointBdd": {
+                    "version": "1.1",
+                    "parameters": {
+                        "Region": {
+                            "builtIn": "AWS::Region",
+                            "required": false,
+                            "documentation": "The AWS region used to dispatch the request.",
+                            "type": "string"
+                        },
+                        "UseDualStack": {
+                            "builtIn": "AWS::UseDualStack",
+                            "required": true,
+                            "default": false,
+                            "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
+                            "type": "boolean"
+                        },
+                        "UseFIPS": {
+                            "builtIn": "AWS::UseFIPS",
+                            "required": true,
+                            "default": false,
+                            "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
+                            "type": "boolean"
+                        },
+                        "Endpoint": {
+                            "builtIn": "SDK::Endpoint",
+                            "required": false,
+                            "documentation": "Override the endpoint used to send this request",
+                            "type": "string"
+                        }
+                    },
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "aws.partition",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ],
+                            "assign": "PartitionResult"
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseFIPS"
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseDualStack"
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "supportsDualStack"
+                                    ]
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "supportsFIPS"
+                                    ]
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "name"
+                                    ]
+                                },
+                                "aws"
+                            ]
+                        },
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "name"
+                                    ]
+                                },
+                                "aws-us-gov"
+                            ]
+                        }
+                    ],
+                    "results": [
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": {
+                                    "ref": "Endpoint"
+                                },
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://api.sagemaker-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://api-fips.sagemaker.{Region}.amazonaws.com",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://api.sagemaker-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "FIPS is enabled but this partition does not support FIPS",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://api.sagemaker.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "DualStack is enabled but this partition does not support DualStack",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://api.sagemaker.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Missing Region",
+                            "type": "error"
+                        }
+                    ],
+                    "root": 2,
+                    "nodeCount": 15,
+                    "nodes": "/////wAAAAH/////AAAAAAAAAA4AAAADAAAAAQAAAAQF9eEMAAAAAgAAAAUF9eEMAAAAAwAAAAgAAAAGAAAABAAAAAcF9eELAAAABQX14QkF9eEKAAAABAAAAAwAAAAJAAAABgAAAAoF9eEIAAAABwX14QYAAAALAAAACAX14QYF9eEHAAAABQAAAA0F9eEFAAAABgX14QQF9eEFAAAAAwX14QEAAAAPAAAABAX14QIF9eED"
+                },
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
                     "parameters": {
@@ -74124,6 +74719,12 @@
                     "traits": {
                         "smithy.api#enumValue": "endpoint"
                     }
+                },
+                "STUDIO_APPS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "studio-apps"
+                    }
                 }
             }
         },
@@ -74775,7 +75376,7 @@
                 "TargetResources": {
                     "target": "com.amazonaws.sagemaker#SageMakerResourceNames",
                     "traits": {
-                        "smithy.api#documentation": "<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints, Studio apps) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> <li> <p>A training plan for Studio apps can be used to launch JupyterLab and Code Editor apps on reserved training plan capacity.</p> </li> </ul>"
                     }
                 },
                 "TrainingPlanArn": {
@@ -78068,6 +78669,17 @@
                 "target": "com.amazonaws.sagemaker#StudioLifecycleConfigDetails"
             }
         },
+        "com.amazonaws.sagemaker#StudioResourceSpecTrainingPlanArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "TrainingPlanArn variant for ResourceSpec that allows \"None\" to detach a training plan.\nBased on TrainingPlanArn (min:50, max:2048) but with min:0 and \"None\" in pattern.",
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:training-plan/.*|None)$"
+            }
+        },
         "com.amazonaws.sagemaker#StudioWebPortal": {
             "type": "enum",
             "members": {
@@ -78110,6 +78722,12 @@
                     "target": "com.amazonaws.sagemaker#HiddenSageMakerImageVersionAliasesList",
                     "traits": {
                         "smithy.api#documentation": "<p> The version aliases you are hiding from the Studio user interface. </p>"
+                    }
+                },
+                "ExecutionRoleSessionNameMode": {
+                    "target": "com.amazonaws.sagemaker#ExecutionRoleSessionNameMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The execution role session name mode. If this value is set to <code>USER_IDENTITY</code>, the session name of the execution role corresponds to the user's identity. For IAM domains, the session name is the IAM session name used to generate the presigned URL. For IAM Identity Center domains, the session name is the username of the associated IAM Identity Center user. If this value is set to <code>STATIC</code> or is not set, the session name defaults to <code>SageMaker</code>.</p>"
                     }
                 }
             },
@@ -80853,6 +81471,12 @@
                         "smithy.api#documentation": "<p>Resources, including ML compute instances and ML storage volumes, that are configured for model training.</p>"
                     }
                 },
+                "WarmPoolStatus": {
+                    "target": "com.amazonaws.sagemaker#WarmPoolStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the warm pool associated with the training job.</p>"
+                    }
+                },
                 "VpcConfig": {
                     "target": "com.amazonaws.sagemaker#VpcConfig",
                     "traits": {
@@ -81566,7 +82190,7 @@
                     "target": "com.amazonaws.sagemaker#SageMakerResourceNames",
                     "traits": {
                         "smithy.api#clientOptional": {},
-                        "smithy.api#documentation": "<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) for this training plan offering.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>",
+                        "smithy.api#documentation": "<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints, Studio apps) for this training plan offering.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> <li> <p>A training plan for Studio apps can be used to launch JupyterLab and Code Editor apps on reserved training plan capacity.</p> </li> </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -81824,7 +82448,7 @@
                 "TargetResources": {
                     "target": "com.amazonaws.sagemaker#SageMakerResourceNames",
                     "traits": {
-                        "smithy.api#documentation": "<p>The target resources (e.g., training jobs, HyperPod clusters, Endpoints) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The target resources (e.g., training jobs, HyperPod clusters, Endpoints, Studio apps) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> <li> <p>A training plan for Studio apps can be used to launch JupyterLab and Code Editor apps on reserved training plan capacity.</p> </li> </ul>"
                     }
                 },
                 "ReservedCapacitySummaries": {
@@ -84645,6 +85269,12 @@
                         "smithy.api#documentation": "<p>The specialized instance groups for training models like Amazon Nova to be created in the SageMaker HyperPod cluster.</p>"
                     }
                 },
+                "RestrictedInstanceGroupsConfig": {
+                    "target": "com.amazonaws.sagemaker#ClusterRestrictedInstanceGroupsConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration for the restricted instance groups (RIG) in the SageMaker HyperPod cluster.</p>"
+                    }
+                },
                 "TieredStorageConfig": {
                     "target": "com.amazonaws.sagemaker#ClusterTieredStorageConfig",
                     "traits": {
@@ -85273,6 +85903,12 @@
                     "target": "com.amazonaws.sagemaker#TagPropagation",
                     "traits": {
                         "smithy.api#documentation": "<p>Indicates whether custom tag propagation is supported for the domain. Defaults to <code>DISABLED</code>.</p>"
+                    }
+                },
+                "HomeEfsFileSystemCreation": {
+                    "target": "com.amazonaws.sagemaker#HomeEfsFileSystemCreation",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether to create a home EFS file system for the domain. You can change from <code>Disabled</code> to <code>Enabled</code> to provision EFS on demand, but you cannot change from <code>Enabled</code> to <code>Disabled</code>.</p>"
                     }
                 },
                 "VpcId": {

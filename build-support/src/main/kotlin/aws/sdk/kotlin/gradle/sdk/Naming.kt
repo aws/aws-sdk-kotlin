@@ -35,7 +35,8 @@ internal fun sdkIdToArtifactName(sdkId: String): String = sdkId.replace(" ", "")
  * Maps an sdkId from a model to the local filename to use. This logic has to match the logic used by
  * catapult! See AwsSdkCatapultWorkspaceTools:lib/source/merge/smithy-model-handler.ts
  */
-fun sdkIdToModelFilename(sdkId: String): String = sdkId.trim().replace("""[\s]+""".toRegex(), "-").lowercase()
+private val whitespacePattern = """\s+""".toRegex()
+fun sdkIdToModelFilename(sdkId: String): String = sdkId.trim().replace(whitespacePattern, "-").lowercase()
 
 // FIXME - replace with case utils from smithy-kotlin once we verify we can change the implementation
 private fun String.lowercaseAndCapitalize() = lowercase().replaceFirstChar(Char::uppercaseChar)

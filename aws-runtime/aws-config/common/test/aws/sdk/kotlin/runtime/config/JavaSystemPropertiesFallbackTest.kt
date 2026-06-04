@@ -11,6 +11,7 @@ import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class JavaSystemPropertiesFallbackTest {
     @Test
@@ -91,5 +92,34 @@ class JavaSystemPropertiesFallbackTest {
 
         val result = AwsSdkSetting.AwsSigV4aSigningRegionSet.resolve(platform)
         assertEquals("env-regions", result)
+    }
+
+    @Test
+    fun testNewRetriesSystemPropertyTakesPrecedence() {
+        val platform = TestPlatformProvider(
+            props = mapOf("aws.newRetries2026" to "true"),
+            env = mapOf("AWS_NEW_RETRIES_2026" to "false"),
+        )
+
+        val result = AwsSdkSetting.AwsNewRetries.resolve(platform)
+        assertTrue(result!!)
+    }
+
+    @Test
+    fun testNewRetriesEnvironmentFallback() {
+        val platform = TestPlatformProvider(
+            env = mapOf("AWS_NEW_RETRIES_2026" to "true"),
+        )
+
+        val result = AwsSdkSetting.AwsNewRetries.resolve(platform)
+        assertTrue(result!!)
+    }
+
+    @Test
+    fun testNewRetriesNullWhenNothingSet() {
+        val platform = TestPlatformProvider()
+
+        val result = AwsSdkSetting.AwsNewRetries.resolve(platform)
+        assertNull(result)
     }
 }
