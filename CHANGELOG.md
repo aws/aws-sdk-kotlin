@@ -1,5 +1,142 @@
 # Changelog
 
+## [1.6.89] - 06/04/2026
+
+### Features
+* (**amplifybackend**) Adding new BDD representation of endpoint ruleset
+* (**appflow**) Adding new BDD representation of endpoint ruleset
+* (**appintegrations**) Adding new BDD representation of endpoint ruleset
+* (**auditmanager**) Adding new BDD representation of endpoint ruleset
+* (**chimesdkvoice**) Adding new BDD representation of endpoint ruleset
+* (**cloudformation**) Adding new BDD representation of endpoint ruleset
+* (**configservice**) AWS Config now supports internal service-linked rules, allowing AWS service partners to deploy Config rules for customers and use the evaluation results to build enhanced features.
+* (**connectparticipant**) Adding new BDD representation of endpoint ruleset
+* (**costexplorer**) Adding new BDD representation of endpoint ruleset
+* (**ec2instanceconnect**) Adding new BDD representation of endpoint ruleset
+* (**efs**) Adding new BDD representation of endpoint ruleset
+* (**emr**) Added support for Spark Connect interactive sessions on Amazon EMR on EC2 with new APIs - StartSession, GetSession, GetSessionEndpoint, ListSessions, and TerminateSession. Added sessionEnabled field in RunJobFlow and DescribeCluster to enable Spark Connect endpoints on EMR clusters.
+* (**geomaps**) Adding new BDD representation of endpoint ruleset
+* (**glue**) AWS Glue Interactive Sessions now supports Apache Spark Connect, enabling remote Spark execution over gRPC with minimal client-side dependencies. Adds GetSessionEndpoint and GetDashboardUrl APIs. Modifies CreateSession now accepts SPARK CONNECT session type.
+* (**interconnect**) Adding new BDD representation of endpoint ruleset
+* (**ivs**) adds UpdateAdConfiguration operation to AWS IVS low-latency APIs
+* (**kendra**) Adding new BDD representation of endpoint ruleset
+* (**mediaconnect**) BDD bulk update change rollout
+* (**mediapackage**) Adding new BDD representation of endpoint ruleset
+* (**mediapackagevod**) Adding new BDD representation of endpoint ruleset
+* (**mq**) BDD bulk update change rollout
+* (**mwaaserverless**) Adding new BDD representation of endpoint ruleset
+* (**opensearchserverless**) Adding new BDD representation of endpoint ruleset
+* (**route53recoveryreadiness**) Adding new BDD representation of endpoint ruleset
+* (**s3files**) Adding new BDD representation of endpoint ruleset
+* (**sagemaker**) Adds the IncludedData parameter to DescribeModelCard and DescribeModelPackage. Set it to MetadataOnly to retrieve a model card without decrypt permission on the customer managed AWS KMS key (default AllData returns full content). Adds support for the MTRL Job resource in SageMaker Search.
+* (**sagemakerruntimehttp2**) Adding new BDD representation of endpoint ruleset
+* (**signerdata**) Adding new BDD representation of endpoint ruleset
+* (**sns**) Adding new BDD representation of endpoint ruleset
+* (**sustainability**) Adding new BDD representation of endpoint ruleset
+* (**taxsettings**) Adding new BDD representation of endpoint ruleset
+* (**uxc**) Adding new BDD representation of endpoint ruleset
+* (**wickr**) AWS Wickr now allows network administrators to configure a maximum session duration for non-SSO users in security groups, and display customizable consent popups to users at login for terms of use or compliance acknowledgements.
+* (**workdocs**) Adding new BDD representation of endpoint ruleset
+* (**workspaces**) Adding new BDD representation of endpoint ruleset
+
+### Documentation
+* (**guardduty**) Remove unsupported RDS field for filter
+
+## [1.6.88] - 06/03/2026
+
+### Features
+* (**apigatewaymanagementapi**) Adding new BDD representation of endpoint ruleset
+* (**appconfigdata**) Adding new BDD representation of endpoint ruleset
+* (**appfabric**) Adding new BDD representation of endpoint ruleset
+* (**applicationautoscaling**) Adding new BDD representation of endpoint ruleset
+* (**arcregionswitch**) ARC Region Switch now supports three new execution blocks for multi-Region database workloads-Amazon Aurora Serverless scaling, Amazon Aurora Provisioned scaling, and Amazon Neptune Global Database failover.
+* (**cloudfront**) Adding new BDD representation of endpoint ruleset
+* (**cloudtraildata**) Adding new BDD representation of endpoint ruleset
+* (**cloudwatchlogs**) Adding new BDD representation of endpoint ruleset
+* (**computeoptimizer**) This release lets customers extend the lookback period for Amazon EBS volume and Amazon ECS rightsizing recommendations to 32 days.
+* (**connect**) SearchContacts Connect API now supports filtering contacts by the AI Agents involved in handling them
+* (**connectcampaigns**) Adding new BDD representation of endpoint ruleset
+* (**costexplorer**) Added support for target-coverage-based Savings Plans purchase analysis. The StartCommitmentPurchaseAnalysis API now accepts a new TARGET AVERAGE COVERAGE value for AnalysisType, as well as an optional SavingsPlansTargetCoverage field in SavingsPlansPurchaseAnalysisConfiguration
+* (**dax**) Adding new BDD representation of endpoint ruleset
+* (**directconnect**) Adding new BDD representation of endpoint ruleset
+* (**firehose**) Adding new BDD representation of endpoint ruleset
+* (**inspector2**) Inspector support for enhanced scanning
+* (**iotevents**) Adding new BDD representation of endpoint ruleset
+* (**iotsecuretunneling**) Adding new BDD representation of endpoint ruleset
+* (**kinesis**) Adding new BDD representation of endpoint ruleset
+* (**lakeformation**) Adding new BDD representation of endpoint ruleset
+* (**macie2**) Adding new BDD representation of endpoint ruleset
+* (**pinpointsmsvoice**) Adding new BDD representation of endpoint ruleset
+* (**rds**) Adding new BDD representation of endpoint ruleset
+* (**resourcegroups**) Adding new BDD representation of endpoint ruleset
+* (**route53profiles**) Adding new BDD representation of endpoint ruleset
+* (**s3outposts**) Adding new BDD representation of endpoint ruleset
+* (**securitylake**) Adding new BDD representation of endpoint ruleset
+* (**ses**) Adding new BDD representation of endpoint ruleset
+* (**snowdevicemanagement**) Adding new BDD representation of endpoint ruleset
+* (**socialmessaging**) Adding support for WhatsApp flow APIs and adding AccessDeniedByMetaException for Template APIs
+* (**transcribestreaming**) Adding new BDD representation of endpoint ruleset
+* (**vpclattice**) Adding new BDD representation of endpoint ruleset
+* (**wafregional**) Adding new BDD representation of endpoint ruleset
+* (**wisdom**) Adding new BDD representation of endpoint ruleset
+
+## [1.6.87] - 06/03/2026
+
+### Features
+* (**georoutes**) Add "standardRegionalEndpoints" back to fix 'Could not connect to the endpoint URL'
+
+## [1.6.86] - 06/02/2026
+
+### Features
+* (**cloudwatch**) Adding new BDD representation of endpoint ruleset
+* (**ec2**) Amazon EC2 now supports self-service cancellation of future-dated Capacity Reservations. A cancellation charge applies based on remaining commitment. Customers can generate a cancellation quote to review charges before confirming.
+* (**elasticache**) Amazon ElastiCache for Valkey now supports durability. This new capability is enabled through a Multi-AZ transactional log, enabling fast recovery and restart during failures.
+* (**georoutes**) Added Transit and Intermodal travel modes to CalculateRoutes. Plan routes using public transit (bus, subway, train, ferry) or combine transit with driving, taxi, and rental car segments in a single multi-modal route.
+* (**guardduty**) Amazon GuardDuty Runtime Monitoring now supports 3 new SensitiveFileModified finding types (Persistence, PrivilegeEscalation, DefenseEvasion) that detect when security-sensitive system files are modified on EC2 instances or containers, indicating potential compromise through file tampering.
+* (**keyspacesstreams**) Added iterator description to the GetRecords API response for Amazon Keyspaces Change Data Capture (CDC) streams, enabling consumers to track their current position within the stream.
+* (**lambda**) Adds configuration for tag propagation to Lambda-managed resources.
+* (**lexruntimeservice**) Adding new BDD representation of endpoint ruleset
+* (**managedblockchain**) Adding new BDD representation of endpoint ruleset
+* (**marketplacemetering**) Adding new BDD representation of endpoint ruleset
+* (**mediaconvert**) Adding new BDD representation of endpoint ruleset
+* (**medialive**) Adding new BDD representation of endpoint ruleset
+* (**mediastore**) Adding new BDD representation of endpoint ruleset
+* (**migrationhub**) Adding new BDD representation of endpoint ruleset
+* (**mturk**) Adding new BDD representation of endpoint ruleset
+* (**neptune**) Adding new BDD representation of endpoint ruleset
+* (**personalizeruntime**) Adding new BDD representation of endpoint ruleset
+* (**pi**) Adding new BDD representation of endpoint ruleset
+* (**pinpoint**) Adding new BDD representation of endpoint ruleset
+* (**pinpointemail**) Adding new BDD representation of endpoint ruleset
+* (**polly**) Adding new BDD representation of endpoint ruleset
+* (**ram**) Adding new BDD representation of endpoint ruleset
+* (**redshift**) Adding new BDD representation of endpoint ruleset
+* (**rekognition**) Adding new BDD representation of endpoint ruleset
+* (**resourcegroupstaggingapi**) Adding new BDD representation of endpoint ruleset
+* (**route53**) Adding new BDD representation of endpoint ruleset
+* (**route53domains**) Adding new BDD representation of endpoint ruleset
+* (**s3**) Adding new BDD representation of endpoint ruleset
+* (**sagemaker**) Amazon SageMaker Job is a new service to help you manage various workloads related to model fine tuning, evaluation etc. Two job categories are supported today, AgentRFT for multi-turn agentic reinforcement fine tuning, and AgentRFTEvaluation for evaluating base model or trained model from AgentRFT.
+* (**sagemakerjobruntime**) Amazon SageMaker Job Runtime is a new service for managing trajectory data during multi-turn customization jobs. It provides APIs to send inference requests to models during job execution, mark rollouts as complete, and submit reward values for training trajectories.
+* (**secretsmanager**) Adding new BDD representation of endpoint ruleset
+* (**servicecatalog**) Adding new BDD representation of endpoint ruleset
+* (**sfn**) Adding new BDD representation of endpoint ruleset
+* (**shield**) Adding new BDD representation of endpoint ruleset
+* (**snowball**) Adding new BDD representation of endpoint ruleset
+* (**sqs**) Adding new BDD representation of endpoint ruleset
+* (**ssm**) Adding new BDD representation of endpoint ruleset
+* (**sso**) Adding new BDD representation of endpoint ruleset
+* (**storagegateway**) Adding new BDD representation of endpoint ruleset
+* (**sts**) Adding new BDD representation of endpoint ruleset
+* (**swf**) Adding new BDD representation of endpoint ruleset
+* (**transcribe**) Release new Language locales including am-ET, es-MX, fa-AF, ht-HT, jv-ID, km-KH, my-MM, sq-AL, ne-NP. The commit shows past locales that have already been release which include cy-gb, ga-ie, gd-gb.
+* (**transfer**) Adding new BDD representation of endpoint ruleset
+* (**waf**) Adding new BDD representation of endpoint ruleset
+* (**xray**) Adding new BDD representation of endpoint ruleset
+
+### Documentation
+* (**iot**) Fleet indexing documentation update
+
 ## [1.6.85] - 06/01/2026
 
 ### Features
