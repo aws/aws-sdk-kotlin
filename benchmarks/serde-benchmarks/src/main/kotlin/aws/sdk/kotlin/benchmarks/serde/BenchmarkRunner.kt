@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.benchmarks.serde
 
 import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
 
 /**
  * Discovers and runs all generated serde benchmark classes.
@@ -39,8 +40,7 @@ private suspend fun runBenchmarkClass(className: String): List<BenchmarkResult> 
     val instance = clazz.getDeclaredConstructor().newInstance()
     val method = clazz.getMethod("benchmarks", kotlin.coroutines.Continuation::class.java)
 
-    @Suppress("UNCHECKED_CAST")
-    val result = kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn<List<BenchmarkResult>> { cont ->
+    val result = suspendCoroutineUninterceptedOrReturn<List<BenchmarkResult>> { cont ->
         method.invoke(instance, cont)
     }
     return result
