@@ -8,7 +8,7 @@ aws-kotlin-repo-tools-version = "0.5.13"
 
 # libs
 coroutines-version = "1.11.0"
-atomicfu-version = "0.32.1"
+atomicfu-version = "0.33.0"
 binary-compatibility-validator-version = "0.18.1"
 
 # smithy-kotlin
@@ -23,7 +23,7 @@ kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.17"
 kotlinx-serialization-version = "1.11.0"
 kaml-version = "0.55.0"
-mockk-version = "1.14.9"
+mockk-version = "1.14.11"
 slf4j-version = "2.0.18"
 jsoup-version = "1.22.2"
 
