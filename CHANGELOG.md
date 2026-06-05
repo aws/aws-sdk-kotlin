@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.90] - 06/05/2026
+
+### Features
+* (**dynamodb**) Adding new BDD representation of endpoint ruleset
+* (**emrserverless**) Adds support for updating max capacity and custom fields while application is started
+* (**mediaconvert**) Adds support for configurable number of Clear Lead segments at the beginning of encrypted output. Adds support for multiple trickplay variants.
+* (**paymentcryptography**) Adds CloudFormation support for resource-based policies on AWS Payment Cryptography keys.
+* (**quicksight**) Adds support for Knowledge Base APIs and Index Capacity API
+* (**sagemaker**) This release adds support for MLflow experiment tracking in SageMaker inference optimization. CreateAIRecommendationJob and CreateAIBenchmarkJob now accept an optional OutputConfig.MlflowConfig (MLflow App ARN, experiment, run name) to stream benchmark metrics and artifacts to your own MLflow App.
+
 ## [1.6.89] - 06/04/2026
 
 ### Features
