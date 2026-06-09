@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.6.92] - 06/09/2026
+
+### Features
+* (**bedrock**) Adds support for the Amazon Bedrock account-level data retention APIs PutAccountDataRetention and GetAccountDataRetention.
+* (**bedrockagentcore**) Add RetryableConflictException (HTTP 409) to InvokeAgentRuntimeCommand and GetAgentCard to prevent orphaned VMs during concurrent session access. The SDK automatically retries this exception with backoff. Enforcement is not yet active and will be enabled in a future service update.
+* (**cloudwatch**) This release adds the APIs (AssociateDatasetKmsKey, DisassociateDatasetKmsKey, GetDataset) to manage encryption at rest for OpenTelemetry metrics in CloudWatch using AWS KMS customer managed keys.
+* (**dynamodbstreams**) Adding new BDD representation of endpoint ruleset
+* (**ec2**) Added TagFieldSpecifications to CreateFlowLogs and DescribeFlowLogs APIs. Customers can now specify tag keys in their Flow Logs subscriptions to capture associated EC2 resource tag values in their logs, enabling tag-based visibility.
+* (**iotsitewise**) Adding new BDD representation of endpoint ruleset
+* (**marketplacecommerceanalytics**) Adding new BDD representation of endpoint ruleset
+* (**odb**) Releases Autonomous Database Serverless APIs, autonomousDatabaseOciIntegrationIamRoles, linkedOciTenancyId, linkedOciCompartmentId, and subscriptionErrors fields in GetOciOnboardingStatus API response.
+* (**outposts**) Added AWS Outposts APIs for self-service Outposts quoting and ordering. New operations include CreateQuote, GetQuote, UpdateQuote, DeleteQuote, ListQuotes, and ListOrderableInstanceTypes.
+* (**timestreamquery**) Adding new BDD representation of endpoint ruleset
+* (**timestreamwrite**) Adding new BDD representation of endpoint ruleset
+
 ## [1.6.91] - 06/08/2026
 
 ### Features
