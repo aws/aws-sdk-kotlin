@@ -36,18 +36,54 @@ class S3EndpointResolutionBenchmark {
         result.getOrThrow()
     }
 
+    private val vanillaVirtualAddressingParams = S3EndpointParameters {
+        accelerate = false
+        bucket = "bucket-name"
+        forcePathStyle = false
+        region = "us-west-2"
+        useDualStack = false
+        useFips = false
+    }
+
+    private val vanillaPathStyleParams = S3EndpointParameters {
+        accelerate = false
+        bucket = "bucket-name"
+        forcePathStyle = true
+        region = "us-west-2"
+        useDualStack = false
+        useFips = false
+    }
+
+    private val dataPlaneShortZoneNameParams = S3EndpointParameters {
+        region = "us-east-1"
+        bucket = "mybucket--abcd-ab1--x-s3"
+        useFips = false
+        useDualStack = false
+        accelerate = false
+        useS3ExpressControlEndpoint = false
+    }
+
+    private val vanillaAccessPointArnParams = S3EndpointParameters {
+        accelerate = false
+        bucket = "arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint"
+        forcePathStyle = false
+        region = "us-west-2"
+        useDualStack = false
+        useFips = false
+    }
+
+    private val s3OutpostsVanillaParams = S3EndpointParameters {
+        region = "us-west-2"
+        useFips = false
+        useDualStack = false
+        accelerate = false
+        bucket = "arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-01234567890123456/accesspoint/reports"
+    }
+
     // vanilla virtual addressing@us-west-2
     @Benchmark
     fun vanillaVirtualAddressing(blackhole: Blackhole) {
-        val params = S3EndpointParameters {
-            accelerate = false
-            bucket = "bucket-name"
-            forcePathStyle = false
-            region = "us-west-2"
-            useDualStack = false
-            useFips = false
-        }
-        val result = suspend { provider.resolveEndpoint(params) }
+        val result = suspend { provider.resolveEndpoint(vanillaVirtualAddressingParams) }
             .startCoroutineUninterceptedOrReturn(completion)
         check(result !== COROUTINE_SUSPENDED) { "resolveEndpoint suspended unexpectedly" }
         blackhole.consume(result)
@@ -56,15 +92,7 @@ class S3EndpointResolutionBenchmark {
     // vanilla path style@us-west-2
     @Benchmark
     fun vanillaPathStyle(blackhole: Blackhole) {
-        val params = S3EndpointParameters {
-            accelerate = false
-            bucket = "bucket-name"
-            forcePathStyle = true
-            region = "us-west-2"
-            useDualStack = false
-            useFips = false
-        }
-        val result = suspend { provider.resolveEndpoint(params) }
+        val result = suspend { provider.resolveEndpoint(vanillaPathStyleParams) }
             .startCoroutineUninterceptedOrReturn(completion)
         check(result !== COROUTINE_SUSPENDED) { "resolveEndpoint suspended unexpectedly" }
         blackhole.consume(result)
@@ -73,15 +101,7 @@ class S3EndpointResolutionBenchmark {
     // Data Plane with short zone name
     @Benchmark
     fun dataPlaneShortZoneName(blackhole: Blackhole) {
-        val params = S3EndpointParameters {
-            region = "us-east-1"
-            bucket = "mybucket--abcd-ab1--x-s3"
-            useFips = false
-            useDualStack = false
-            accelerate = false
-            useS3ExpressControlEndpoint = false
-        }
-        val result = suspend { provider.resolveEndpoint(params) }
+        val result = suspend { provider.resolveEndpoint(dataPlaneShortZoneNameParams) }
             .startCoroutineUninterceptedOrReturn(completion)
         check(result !== COROUTINE_SUSPENDED) { "resolveEndpoint suspended unexpectedly" }
         blackhole.consume(result)
@@ -90,15 +110,7 @@ class S3EndpointResolutionBenchmark {
     // vanilla access point arn@us-west-2
     @Benchmark
     fun vanillaAccessPointArn(blackhole: Blackhole) {
-        val params = S3EndpointParameters {
-            accelerate = false
-            bucket = "arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint"
-            forcePathStyle = false
-            region = "us-west-2"
-            useDualStack = false
-            useFips = false
-        }
-        val result = suspend { provider.resolveEndpoint(params) }
+        val result = suspend { provider.resolveEndpoint(vanillaAccessPointArnParams) }
             .startCoroutineUninterceptedOrReturn(completion)
         check(result !== COROUTINE_SUSPENDED) { "resolveEndpoint suspended unexpectedly" }
         blackhole.consume(result)
@@ -107,14 +119,7 @@ class S3EndpointResolutionBenchmark {
     // S3 outposts vanilla test
     @Benchmark
     fun s3OutpostsVanilla(blackhole: Blackhole) {
-        val params = S3EndpointParameters {
-            region = "us-west-2"
-            useFips = false
-            useDualStack = false
-            accelerate = false
-            bucket = "arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-01234567890123456/accesspoint/reports"
-        }
-        val result = suspend { provider.resolveEndpoint(params) }
+        val result = suspend { provider.resolveEndpoint(s3OutpostsVanillaParams) }
             .startCoroutineUninterceptedOrReturn(completion)
         check(result !== COROUTINE_SUSPENDED) { "resolveEndpoint suspended unexpectedly" }
         blackhole.consume(result)

@@ -36,15 +36,22 @@ class LambdaEndpointResolutionBenchmark {
         result.getOrThrow()
     }
 
+    private val usEast1StandardParams = LambdaEndpointParameters {
+        region = "us-east-1"
+        useFips = false
+        useDualStack = false
+    }
+
+    private val usGovEast1FipsDualStackParams = LambdaEndpointParameters {
+        region = "us-gov-east-1"
+        useFips = true
+        useDualStack = true
+    }
+
     // For region us-east-1 with FIPS disabled and DualStack disabled
     @Benchmark
     fun usEast1Standard(blackhole: Blackhole) {
-        val params = LambdaEndpointParameters {
-            region = "us-east-1"
-            useFips = false
-            useDualStack = false
-        }
-        val result = suspend { provider.resolveEndpoint(params) }
+        val result = suspend { provider.resolveEndpoint(usEast1StandardParams) }
             .startCoroutineUninterceptedOrReturn(completion)
         check(result !== COROUTINE_SUSPENDED) { "resolveEndpoint suspended unexpectedly" }
         blackhole.consume(result)
@@ -53,12 +60,7 @@ class LambdaEndpointResolutionBenchmark {
     // For region us-gov-east-1 with FIPS enabled and DualStack enabled
     @Benchmark
     fun usGovEast1FipsDualStack(blackhole: Blackhole) {
-        val params = LambdaEndpointParameters {
-            region = "us-gov-east-1"
-            useFips = true
-            useDualStack = true
-        }
-        val result = suspend { provider.resolveEndpoint(params) }
+        val result = suspend { provider.resolveEndpoint(usGovEast1FipsDualStackParams) }
             .startCoroutineUninterceptedOrReturn(completion)
         check(result !== COROUTINE_SUSPENDED) { "resolveEndpoint suspended unexpectedly" }
         blackhole.consume(result)
