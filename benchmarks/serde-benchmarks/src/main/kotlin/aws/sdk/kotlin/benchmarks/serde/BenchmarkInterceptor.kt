@@ -11,6 +11,8 @@ import aws.smithy.kotlin.runtime.client.ResponseInterceptorContext
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
+import kotlin.time.Duration
+import kotlin.time.TimeSource
 
 /**
  * Captures precise timestamps around protocol serialization and deserialization only,
@@ -25,39 +27,35 @@ import aws.smithy.kotlin.runtime.http.response.HttpResponse
  * - End: [readAfterDeserialization] — immediately after the output object is produced
  */
 class BenchmarkInterceptor : HttpInterceptor {
-    var serializationStartNanos: Long = 0L
-        private set
-    var serializationEndNanos: Long = 0L
-        private set
-    var deserializationStartNanos: Long = 0L
-        private set
-    var deserializationEndNanos: Long = 0L
-        private set
+    private val timeSource = TimeSource.Monotonic
+
+    private var serializationStart: TimeSource.Monotonic.ValueTimeMark = timeSource.markNow()
+    private var serializationDuration: Duration = Duration.ZERO
+    private var deserializationStart: TimeSource.Monotonic.ValueTimeMark = timeSource.markNow()
+    private var deserializationDuration: Duration = Duration.ZERO
 
     fun reset() {
-        serializationStartNanos = 0L
-        serializationEndNanos = 0L
-        deserializationStartNanos = 0L
-        deserializationEndNanos = 0L
+        serializationDuration = Duration.ZERO
+        deserializationDuration = Duration.ZERO
     }
 
-    fun serializationNanos(): Long = serializationEndNanos - serializationStartNanos
+    fun serializationNanos(): Long = serializationDuration.inWholeNanoseconds
 
-    fun deserializationNanos(): Long = deserializationEndNanos - deserializationStartNanos
+    fun deserializationNanos(): Long = deserializationDuration.inWholeNanoseconds
 
     override fun readBeforeSerialization(context: RequestInterceptorContext<Any>) {
-        serializationStartNanos = System.nanoTime()
+        serializationStart = timeSource.markNow()
     }
 
     override fun readAfterSerialization(context: ProtocolRequestInterceptorContext<Any, HttpRequest>) {
-        serializationEndNanos = System.nanoTime()
+        serializationDuration = serializationStart.elapsedNow()
     }
 
     override fun readBeforeDeserialization(context: ProtocolResponseInterceptorContext<Any, HttpRequest, HttpResponse>) {
-        deserializationStartNanos = System.nanoTime()
+        deserializationStart = timeSource.markNow()
     }
 
     override fun readAfterDeserialization(context: ResponseInterceptorContext<Any, Any, HttpRequest, HttpResponse>) {
-        deserializationEndNanos = System.nanoTime()
+        deserializationDuration = deserializationStart.elapsedNow()
     }
 }
