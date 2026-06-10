@@ -12,8 +12,8 @@ import org.openjdk.jmh.annotations.State
 
 /**
  * Measures the overhead of different suspend function invocation mechanisms.
- * - [suspendLambdaCall]: startCoroutineUninterceptedOrReturn (Option B)
- * - [runBlockingCall]: runBlocking (Option A)
+ * - [suspendLambdaCall]: startCoroutineUninterceptedOrReturn
+ * - [runBlockingCall]: runBlocking
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
