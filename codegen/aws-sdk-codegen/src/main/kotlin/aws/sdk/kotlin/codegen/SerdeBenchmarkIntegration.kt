@@ -11,6 +11,7 @@ import aws.smithy.kotlin.codegen.core.RuntimeTypes
 import aws.smithy.kotlin.codegen.core.defaultName
 import aws.smithy.kotlin.codegen.core.withBlock
 import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.lang.KotlinTypes
 import aws.smithy.kotlin.codegen.model.expectShape
 import aws.smithy.kotlin.codegen.model.hasTrait
 import aws.smithy.kotlin.codegen.rendering.ShapeValueGenerator
@@ -112,8 +113,8 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
 
             write("")
-            withBlock("override suspend fun benchmarks(): List<#T> {", "}", AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
-                write("val results = mutableListOf<#T>()", AwsRuntimeTypes.Benchmarks.BenchmarkResult)
+            withBlock("override suspend fun benchmarks(): #T<#T> {", "}", KotlinTypes.Collections.List, AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
+                write("val results = #T<#T>()", KotlinTypes.Collections.mutableListOf, AwsRuntimeTypes.Benchmarks.BenchmarkResult)
                 for (testCase in testCases) {
                     val fieldName = "input_${sanitizeName(testCase.id)}"
 
@@ -166,8 +167,8 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
 
             write("")
-            withBlock("override suspend fun benchmarks(): List<#T> {", "}", AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
-                write("val results = mutableListOf<#T>()", AwsRuntimeTypes.Benchmarks.BenchmarkResult)
+            withBlock("override suspend fun benchmarks(): #T<#T> {", "}", KotlinTypes.Collections.List, AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
+                write("val results = #T<#T>()", KotlinTypes.Collections.mutableListOf, AwsRuntimeTypes.Benchmarks.BenchmarkResult)
                 for (testCase in testCases) {
                     val clientField = "client_${sanitizeName(testCase.id)}"
                     val inputArg = if (operation.input.isPresent) {
