@@ -4,6 +4,8 @@
  */
 package aws.sdk.kotlin.codegen
 
+import aws.smithy.kotlin.codegen.core.CodegenContext
+import aws.smithy.kotlin.codegen.core.KotlinDelegator
 import aws.smithy.kotlin.codegen.core.KotlinWriter
 import aws.smithy.kotlin.codegen.core.RuntimeTypes
 import aws.smithy.kotlin.codegen.core.defaultName
@@ -26,6 +28,10 @@ import software.amazon.smithy.rulesengine.traits.EndpointRuleSetTrait
 class SerdeBenchmarkIntegration :
     KotlinIntegration,
     SerdeBenchmarkGeneratorFactory {
+
+    private val generatedClassNames = mutableListOf<String>()
+    private var packageName: String = ""
+
     override fun renderRequestBenchmark(
         ctx: ProtocolGenerator.GenerationContext,
         writer: KotlinWriter,
@@ -33,6 +39,8 @@ class SerdeBenchmarkIntegration :
         className: String,
         testCases: List<HttpRequestTestCase>,
     ) {
+        packageName = ctx.settings.pkg.name
+        generatedClassNames.add(className)
         HttpProtocolSerdeBenchmarkGenerator(ctx, writer, operation).renderRequestBenchmarkClass(className, testCases)
     }
 
@@ -43,7 +51,21 @@ class SerdeBenchmarkIntegration :
         className: String,
         testCases: List<HttpResponseTestCase>,
     ) {
+        packageName = ctx.settings.pkg.name
+        generatedClassNames.add(className)
         HttpProtocolSerdeBenchmarkGenerator(ctx, writer, operation).renderResponseBenchmarkClass(className, testCases)
+    }
+
+    override fun writeAdditionalFiles(ctx: CodegenContext, delegator: KotlinDelegator) {
+        if (generatedClassNames.isEmpty()) return
+
+        delegator.useTestFileWriter("BenchmarkRegistration.kt", packageName) { writer ->
+            writer.withBlock("internal fun registerBenchmarks() {", "}") {
+                for (className in generatedClassNames.sorted()) {
+                    write("#T.register(#S) { #L() }", AwsRuntimeTypes.Benchmarks.BenchmarkRegistry, className, className)
+                }
+            }
+        }
     }
 }
 
@@ -65,7 +87,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
 
     fun renderRequestBenchmarkClass(className: String, testCases: List<HttpRequestTestCase>) {
         writer.write("")
-        writer.withBlock("class #L {", "}", className) {
+        writer.withBlock("class #L : #T {", "}", className, AwsRuntimeTypes.Benchmarks.SerdeBenchmark) {
             write("")
             write("private val interceptor = #T()", AwsRuntimeTypes.Benchmarks.BenchmarkInterceptor)
             write("")
@@ -90,7 +112,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
 
             write("")
-            withBlock("suspend fun benchmarks(): List<#T> {", "}", AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
+            withBlock("override suspend fun benchmarks(): List<#T> {", "}", AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
                 write("val results = mutableListOf<#T>()", AwsRuntimeTypes.Benchmarks.BenchmarkResult)
                 for (testCase in testCases) {
                     val fieldName = "input_${sanitizeName(testCase.id)}"
@@ -119,7 +141,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
 
     fun renderResponseBenchmarkClass(className: String, testCases: List<HttpResponseTestCase>) {
         writer.write("")
-        writer.withBlock("class #L {", "}", className) {
+        writer.withBlock("class #L : #T {", "}", className, AwsRuntimeTypes.Benchmarks.SerdeBenchmark) {
             write("")
             write("private val interceptor = #T()", AwsRuntimeTypes.Benchmarks.BenchmarkInterceptor)
 
@@ -144,7 +166,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
 
             write("")
-            withBlock("suspend fun benchmarks(): List<#T> {", "}", AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
+            withBlock("override suspend fun benchmarks(): List<#T> {", "}", AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
                 write("val results = mutableListOf<#T>()", AwsRuntimeTypes.Benchmarks.BenchmarkResult)
                 for (testCase in testCases) {
                     val clientField = "client_${sanitizeName(testCase.id)}"

@@ -72,7 +72,9 @@ object AwsRuntimeTypes {
         val BenchmarkHarness = symbol("BenchmarkHarness")
         val BenchmarkInterceptor = symbol("BenchmarkInterceptor")
         val BenchmarkMetadata = symbol("BenchmarkMetadata")
+        val BenchmarkRegistry = symbol("BenchmarkRegistry")
         val BenchmarkResult = symbol("BenchmarkResult")
+        val SerdeBenchmark = symbol("SerdeBenchmark")
     }
 
     object Http : RuntimeTypePackage(AwsKotlinDependency.AWS_HTTP) {
