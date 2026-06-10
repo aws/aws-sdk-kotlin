@@ -12,7 +12,6 @@ import org.openjdk.jmh.annotations.State
 
 /**
  * Measures the overhead of different suspend function invocation mechanisms.
- * - [directCall]: baseline (no suspend machinery)
  * - [suspendLambdaCall]: startCoroutineUninterceptedOrReturn (Option B)
  * - [runBlockingCall]: runBlocking (Option A)
  */

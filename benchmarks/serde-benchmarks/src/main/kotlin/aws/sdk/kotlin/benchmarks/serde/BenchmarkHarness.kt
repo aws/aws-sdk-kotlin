@@ -70,7 +70,6 @@ object BenchmarkHarness {
 
         // Flush garbage accumulated during warmup before measuring
         System.gc()
-        Thread.sleep(100)
 
         // Phase 2: Measurement — collect individual samples and track 1-second windows
         val samples = ArrayList<Long>(MAX_ITERATIONS.coerceAtMost(1_000_000))
