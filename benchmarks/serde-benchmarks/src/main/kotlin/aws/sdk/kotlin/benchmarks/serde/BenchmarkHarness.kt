@@ -6,8 +6,8 @@ package aws.sdk.kotlin.benchmarks.serde
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotlin.math.sqrt
 
 val WARMUP_SECONDS = System.getProperty("benchmark.warmupSeconds", "10").toLong()

@@ -4,12 +4,12 @@
  */
 package aws.sdk.kotlin.benchmarks.serde
 
+import kotlinx.coroutines.runBlocking
 import aws.sdk.kotlin.benchmarks.serde.awsjsonrpc10.registerBenchmarks as registerAwsJsonRpc10
 import aws.sdk.kotlin.benchmarks.serde.awsquery.registerBenchmarks as registerAwsQuery
 import aws.sdk.kotlin.benchmarks.serde.awsrestjson.registerBenchmarks as registerAwsRestJson
 import aws.sdk.kotlin.benchmarks.serde.awsrestxml.registerBenchmarks as registerAwsRestXml
 import aws.sdk.kotlin.benchmarks.serde.smithyrpcv2cbor.registerBenchmarks as registerSmithyRpcV2Cbor
-import kotlinx.coroutines.runBlocking
 
 /**
  * Runs all registered serde benchmarks.
