@@ -9,6 +9,7 @@ import aws.sdk.kotlin.gradle.codegen.smithyKotlinProjectionPath
 plugins {
     id(libs.plugins.kotlin.jvm.get().pluginId)
     alias(libs.plugins.aws.kotlin.repo.tools.smithybuild)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 data class BenchmarkProjection(val name: String, val serviceShapeId: String, val sdkId: String)
@@ -71,6 +72,7 @@ dependencies {
     codegen(libs.smithy.model)
     codegen(libs.smithy.aws.protocol.tests)
 
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.core)
     implementation(project(":aws-runtime:aws-core"))
     implementation(project(":aws-runtime:aws-config"))

@@ -4,6 +4,10 @@
  */
 package aws.sdk.kotlin.benchmarks.serde
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 import kotlin.math.sqrt
 
 val WARMUP_SECONDS = System.getProperty("benchmark.warmupSeconds", "10").toLong()
@@ -15,19 +19,31 @@ private val WARMUP_NANOS = WARMUP_SECONDS * 1_000_000_000L
 private val MEASUREMENT_NANOS = MEASUREMENT_SECONDS * 1_000_000_000L
 private const val WINDOW_NANOS = 1_000_000_000L // 1-second windows for std_dev calculation
 
-data class BenchmarkStats(
-    val iterations: Int,
+@Serializable
+data class BenchmarkResult(
+    val id: String,
+    val n: Int,
     val mean: Double,
     val p50: Double,
     val p90: Double,
     val p95: Double,
     val p99: Double,
-    val stdDev: Double,
+    @SerialName("std_dev") val stdDev: Double,
 )
 
-data class BenchmarkResult(
-    val id: String,
-    val stats: BenchmarkStats,
+@Serializable
+private data class BenchmarkMetadataJson(
+    val lang: String = "Kotlin",
+    val software: List<List<String>>,
+    val os: String,
+    val instance: String,
+    val precision: String = "-9",
+)
+
+@Serializable
+private data class BenchmarkReportJson(
+    val metadata: BenchmarkMetadataJson,
+    @SerialName("serde_benchmarks") val serdeBenchmarks: List<BenchmarkResult>,
 )
 
 object BenchmarkHarness {
@@ -94,13 +110,10 @@ object BenchmarkHarness {
         val sorted = samples.toLongArray()
         sorted.sort()
 
-        return BenchmarkResult(
-            id = id,
-            stats = computeStats(sorted, windowMeans),
-        )
+        return computeResult(id, sorted, windowMeans)
     }
 
-    private fun computeStats(sorted: LongArray, windowMeans: List<Double>): BenchmarkStats {
+    private fun computeResult(id: String, sorted: LongArray, windowMeans: List<Double>): BenchmarkResult {
         val n = sorted.size
         val sum = sorted.sum()
         val mean = sum.toDouble() / n
@@ -114,8 +127,9 @@ object BenchmarkHarness {
             0.0
         }
 
-        return BenchmarkStats(
-            iterations = n,
+        return BenchmarkResult(
+            id = id,
+            n = n,
             mean = mean,
             p50 = percentile(sorted, 50.0),
             p90 = percentile(sorted, 90.0),
@@ -134,34 +148,21 @@ object BenchmarkHarness {
         return sorted[lower] + fraction * (sorted[upper] - sorted[lower])
     }
 
-    fun toJson(metadata: BenchmarkMetadata, results: List<BenchmarkResult>): String = buildString {
-        appendLine("{")
-        appendLine("  \"metadata\": {")
-        appendLine("    \"lang\": \"Kotlin\",")
-        appendLine("    \"software\": [")
-        appendLine("      [\"smithy-kotlin\", \"${metadata.smithyKotlinVersion}\"],")
-        appendLine("      [\"AWS SDK for Kotlin\", \"${metadata.sdkVersion}\"]")
-        appendLine("    ],")
-        appendLine("    \"os\": \"${metadata.os}\",")
-        appendLine("    \"instance\": \"${metadata.instance}\",")
-        appendLine("    \"precision\": \"-9\"")
-        appendLine("  },")
-        appendLine("  \"serde_benchmarks\": [")
-        results.forEachIndexed { i, result ->
-            appendLine("    {")
-            appendLine("      \"id\": \"${result.id}\",")
-            appendLine("      \"n\": ${result.stats.iterations},")
-            appendLine("      \"mean\": ${result.stats.mean},")
-            appendLine("      \"p50\": ${result.stats.p50},")
-            appendLine("      \"p90\": ${result.stats.p90},")
-            appendLine("      \"p95\": ${result.stats.p95},")
-            appendLine("      \"p99\": ${result.stats.p99},")
-            appendLine("      \"std_dev\": ${result.stats.stdDev}")
-            append("    }")
-            if (i < results.size - 1) appendLine(",") else appendLine()
-        }
-        appendLine("  ]")
-        appendLine("}")
+    private val json = Json { prettyPrint = true }
+
+    fun toJson(metadata: BenchmarkMetadata, results: List<BenchmarkResult>): String {
+        val report = BenchmarkReportJson(
+            metadata = BenchmarkMetadataJson(
+                software = listOf(
+                    listOf("smithy-kotlin", metadata.smithyKotlinVersion),
+                    listOf("AWS SDK for Kotlin", metadata.sdkVersion),
+                ),
+                os = metadata.os,
+                instance = metadata.instance,
+            ),
+            serdeBenchmarks = results,
+        )
+        return json.encodeToString(report)
     }
 }
 
