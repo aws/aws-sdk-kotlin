@@ -96,7 +96,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             withBlock("private val client = #T {", "}", serviceSymbol) {
                 withBlock("httpClient = #T { _, request ->", "}", RuntimeTypes.HttpTest.TestEngine) {
                     if (isRpcV2Cbor()) {
-                        write("val respHeaders = #T().apply { append(#S, #S) }.build()", RuntimeTypes.Http.HeadersBuilder, "smithy-protocol", "rpc-v2-cbor")
+                        write("val respHeaders = #T { append(#S, #S) }", RuntimeTypes.Http.Headers, "smithy-protocol", "rpc-v2-cbor")
                         write("val resp = #T(#T.OK, respHeaders, #T.Empty)", RuntimeTypes.Http.Response.HttpResponse, RuntimeTypes.Http.StatusCode, RuntimeTypes.Http.HttpBody)
                     } else {
                         write("val resp = #T(#T.OK, #T.Empty, #T.Empty)", RuntimeTypes.Http.Response.HttpResponse, RuntimeTypes.Http.StatusCode, RuntimeTypes.Http.Headers, RuntimeTypes.Http.HttpBody)
@@ -261,7 +261,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
         writer.withBlock("private val #L = #T {", "}", fieldName, serviceSymbol) {
             withBlock("httpClient = #T { _, request ->", "}", RuntimeTypes.HttpTest.TestEngine) {
                 if (testCase.headers.isNotEmpty()) {
-                    withBlock("val respHeaders = #T().apply {", "}.build()", RuntimeTypes.Http.HeadersBuilder) {
+                    withBlock("val respHeaders = #T {", "}", RuntimeTypes.Http.Headers) {
                         for ((key, value) in testCase.headers) {
                             write("append(#S, #S)", key, value)
                         }
