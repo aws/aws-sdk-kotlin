@@ -9,6 +9,7 @@ import aws.sdk.kotlin.gradle.codegen.smithyKotlinProjectionPath
 plugins {
     id(libs.plugins.kotlin.jvm.get().pluginId)
     alias(libs.plugins.aws.kotlin.repo.tools.smithybuild)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 data class BenchmarkProjection(val name: String, val serviceShapeId: String, val sdkId: String)
@@ -71,6 +72,7 @@ dependencies {
     codegen(libs.smithy.model)
     codegen(libs.smithy.aws.protocol.tests)
 
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.core)
     implementation(project(":aws-runtime:aws-core"))
     implementation(project(":aws-runtime:aws-config"))
@@ -145,24 +147,14 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 
-// Register a JavaExec task for each generated benchmark main class
-val runBenchmarks = tasks.register("runBenchmarks") {
-    group = "benchmark"
-    description = "Run all serde benchmarks"
-    dependsOn("classes")
-}
-
 val asyncProfilerLib: String? = providers.gradleProperty("asyncProfiler.libPath").orNull
 
-// Discover and run all generated main classes
-// Each generated benchmark file has a main() function
 tasks.register<JavaExec>("runAllBenchmarks") {
     group = "benchmark"
     description = "Run all serde benchmarks sequentially"
     dependsOn("classes")
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("aws.sdk.kotlin.benchmarks.serde.BenchmarkRunnerKt")
-    // Pass system properties for benchmark configuration
     systemProperty("benchmark.warmupSeconds", project.findProperty("benchmark.warmupSeconds") ?: "10")
     systemProperty("benchmark.measurementSeconds", project.findProperty("benchmark.measurementSeconds") ?: "30")
     systemProperty("benchmark.minIterations", project.findProperty("benchmark.minIterations") ?: "1000")

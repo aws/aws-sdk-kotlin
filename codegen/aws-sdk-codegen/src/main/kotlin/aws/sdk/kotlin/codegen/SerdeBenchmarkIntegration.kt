@@ -4,11 +4,14 @@
  */
 package aws.sdk.kotlin.codegen
 
+import aws.smithy.kotlin.codegen.core.CodegenContext
+import aws.smithy.kotlin.codegen.core.KotlinDelegator
 import aws.smithy.kotlin.codegen.core.KotlinWriter
 import aws.smithy.kotlin.codegen.core.RuntimeTypes
 import aws.smithy.kotlin.codegen.core.defaultName
 import aws.smithy.kotlin.codegen.core.withBlock
 import aws.smithy.kotlin.codegen.integration.KotlinIntegration
+import aws.smithy.kotlin.codegen.lang.KotlinTypes
 import aws.smithy.kotlin.codegen.model.expectShape
 import aws.smithy.kotlin.codegen.model.hasTrait
 import aws.smithy.kotlin.codegen.rendering.ShapeValueGenerator
@@ -26,6 +29,10 @@ import software.amazon.smithy.rulesengine.traits.EndpointRuleSetTrait
 class SerdeBenchmarkIntegration :
     KotlinIntegration,
     SerdeBenchmarkGeneratorFactory {
+
+    private val generatedClassNames = mutableListOf<String>()
+    private var packageName: String = ""
+
     override fun renderRequestBenchmark(
         ctx: ProtocolGenerator.GenerationContext,
         writer: KotlinWriter,
@@ -33,6 +40,8 @@ class SerdeBenchmarkIntegration :
         className: String,
         testCases: List<HttpRequestTestCase>,
     ) {
+        packageName = ctx.settings.pkg.name
+        generatedClassNames.add(className)
         HttpProtocolSerdeBenchmarkGenerator(ctx, writer, operation).renderRequestBenchmarkClass(className, testCases)
     }
 
@@ -43,7 +52,21 @@ class SerdeBenchmarkIntegration :
         className: String,
         testCases: List<HttpResponseTestCase>,
     ) {
+        packageName = ctx.settings.pkg.name
+        generatedClassNames.add(className)
         HttpProtocolSerdeBenchmarkGenerator(ctx, writer, operation).renderResponseBenchmarkClass(className, testCases)
+    }
+
+    override fun writeAdditionalFiles(ctx: CodegenContext, delegator: KotlinDelegator) {
+        if (generatedClassNames.isEmpty()) return
+
+        delegator.useTestFileWriter("BenchmarkRegistration.kt", packageName) { writer ->
+            writer.withBlock("internal fun registerBenchmarks() {", "}") {
+                for (className in generatedClassNames.sorted()) {
+                    write("#T.register(#S) { #L() }", AwsRuntimeTypes.Benchmarks.BenchmarkRegistry, className, className)
+                }
+            }
+        }
     }
 }
 
@@ -65,7 +88,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
 
     fun renderRequestBenchmarkClass(className: String, testCases: List<HttpRequestTestCase>) {
         writer.write("")
-        writer.withBlock("class #L {", "}", className) {
+        writer.withBlock("class #L : #T {", "}", className, AwsRuntimeTypes.Benchmarks.SerdeBenchmark) {
             write("")
             write("private val interceptor = #T()", AwsRuntimeTypes.Benchmarks.BenchmarkInterceptor)
             write("")
@@ -73,7 +96,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             withBlock("private val client = #T {", "}", serviceSymbol) {
                 withBlock("httpClient = #T { _, request ->", "}", RuntimeTypes.HttpTest.TestEngine) {
                     if (isRpcV2Cbor()) {
-                        write("val respHeaders = #T().apply { append(#S, #S) }.build()", RuntimeTypes.Http.HeadersBuilder, "smithy-protocol", "rpc-v2-cbor")
+                        write("val respHeaders = #T { append(#S, #S) }", RuntimeTypes.Http.Headers, "smithy-protocol", "rpc-v2-cbor")
                         write("val resp = #T(#T.OK, respHeaders, #T.Empty)", RuntimeTypes.Http.Response.HttpResponse, RuntimeTypes.Http.StatusCode, RuntimeTypes.Http.HttpBody)
                     } else {
                         write("val resp = #T(#T.OK, #T.Empty, #T.Empty)", RuntimeTypes.Http.Response.HttpResponse, RuntimeTypes.Http.StatusCode, RuntimeTypes.Http.Headers, RuntimeTypes.Http.HttpBody)
@@ -90,8 +113,8 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
 
             write("")
-            withBlock("suspend fun benchmarks(): List<#T> {", "}", AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
-                write("val results = mutableListOf<#T>()", AwsRuntimeTypes.Benchmarks.BenchmarkResult)
+            withBlock("override suspend fun benchmarks(): #T<#T> {", "}", KotlinTypes.Collections.List, AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
+                write("val results = #T<#T>()", KotlinTypes.Collections.mutableListOf, AwsRuntimeTypes.Benchmarks.BenchmarkResult)
                 for (testCase in testCases) {
                     val fieldName = "input_${sanitizeName(testCase.id)}"
 
@@ -119,7 +142,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
 
     fun renderResponseBenchmarkClass(className: String, testCases: List<HttpResponseTestCase>) {
         writer.write("")
-        writer.withBlock("class #L {", "}", className) {
+        writer.withBlock("class #L : #T {", "}", className, AwsRuntimeTypes.Benchmarks.SerdeBenchmark) {
             write("")
             write("private val interceptor = #T()", AwsRuntimeTypes.Benchmarks.BenchmarkInterceptor)
 
@@ -144,8 +167,8 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
 
             write("")
-            withBlock("suspend fun benchmarks(): List<#T> {", "}", AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
-                write("val results = mutableListOf<#T>()", AwsRuntimeTypes.Benchmarks.BenchmarkResult)
+            withBlock("override suspend fun benchmarks(): #T<#T> {", "}", KotlinTypes.Collections.List, AwsRuntimeTypes.Benchmarks.BenchmarkResult) {
+                write("val results = #T<#T>()", KotlinTypes.Collections.mutableListOf, AwsRuntimeTypes.Benchmarks.BenchmarkResult)
                 for (testCase in testCases) {
                     val clientField = "client_${sanitizeName(testCase.id)}"
                     val inputArg = if (operation.input.isPresent) {
@@ -238,7 +261,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
         writer.withBlock("private val #L = #T {", "}", fieldName, serviceSymbol) {
             withBlock("httpClient = #T { _, request ->", "}", RuntimeTypes.HttpTest.TestEngine) {
                 if (testCase.headers.isNotEmpty()) {
-                    withBlock("val respHeaders = #T().apply {", "}.build()", RuntimeTypes.Http.HeadersBuilder) {
+                    withBlock("val respHeaders = #T {", "}", RuntimeTypes.Http.Headers) {
                         for ((key, value) in testCase.headers) {
                             write("append(#S, #S)", key, value)
                         }
