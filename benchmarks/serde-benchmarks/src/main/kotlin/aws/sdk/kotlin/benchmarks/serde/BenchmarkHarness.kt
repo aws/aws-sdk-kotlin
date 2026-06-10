@@ -148,7 +148,10 @@ object BenchmarkHarness {
         return sorted[lower] + fraction * (sorted[upper] - sorted[lower])
     }
 
-    private val json = Json { prettyPrint = true }
+    private val json = Json {
+        prettyPrint = true
+        encodeDefaults = true
+    }
 
     fun toJson(metadata: BenchmarkMetadata, results: List<BenchmarkResult>): String {
         val report = BenchmarkReportJson(
