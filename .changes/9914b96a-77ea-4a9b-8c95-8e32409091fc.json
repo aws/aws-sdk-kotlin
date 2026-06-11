@@ -1,5 +1,0 @@
-{
-    "id": "9914b96a-77ea-4a9b-8c95-8e32409091fc",
-    "type": "bugfix",
-    "description": "Upgrade to **smithy-kotlin** release [**v1.6.15**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.6.15) to pick up serde bug fixes"
-}

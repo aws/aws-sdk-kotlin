@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.94] - 06/11/2026
+
+### Features
+* (**bedrockagentcore**) Adds support to perform cross account data plane actions on an AgentCore Memory resource
+* (**bedrockagentcorecontrol**) Supports deterministic metadata for AgentCore Memory
+* (**eks**) Introduce new CreateCluster parameters for Amazon EKS local clusters on AWS Outposts. Added etcdInstanceType for configuring the EC2 instance type for dedicated etcd instances, and spreadLevel for configuring the placement group spread level for Kubernetes control plane and etcd instances.
+* (**healthlake**) Adds the UpdateFHIRDatastore API and adds analytics, NLP, and profile configuration support to CreateFHIRDatastore and DescribeFHIRDatastore.
+* (**neptune**) Amazon Neptune now supports IPv6 dual-stack networking. You can create and manage Neptune DB clusters accessible over both IPv4 and IPv6 by specifying NetworkType as DUAL in CreateDBCluster, ModifyDBCluster, RestoreDBClusterFromSnapshot, and RestoreDBClusterToPointInTime API operations
+* (**omics**) Adds support for workflowName in the ListRuns API response.
+* (**support**) Adding new BDD representation of endpoint ruleset
+
+### Fixes
+* Upgrade to **smithy-kotlin** release [**v1.6.15**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.6.15) to pick up serde bug fixes
+
 ## [1.6.93] - 06/10/2026
 
 ### Features
