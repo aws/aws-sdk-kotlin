@@ -14,4 +14,4 @@ internal data class UpdateExprImpl(
     override val delete: UpdateExpr.Clause,
 ) : UpdateExpr
 
-internal data class UpdateExprClauseImpl(override val updates: List<UpdateClauseExpr>) : UpdateExpr.Clause
+internal data class UpdateExprClauseImpl(override val updates: List<UpdateClauseExpr> = listOf()) : UpdateExpr.Clause

@@ -13,6 +13,14 @@ internal data class UpdateDslImpl(
     val add: UpdateAddImpl = UpdateAddImpl(),
     val delete: UpdateDeleteImpl = UpdateDeleteImpl(),
 ) : UpdateDsl {
+    constructor(updateExpr: UpdateExpr?) : this(updateExpr?.flatUpdates() ?: listOf())
+    constructor(updates: List<UpdateClauseExpr>) : this(
+        UpdateSetImpl(updates.filter { it.action == UpdateAction.SET }),
+        UpdateRemoveImpl(updates.filter { it.action == UpdateAction.REMOVE }),
+        UpdateAddImpl(updates.filter { it.action == UpdateAction.ADD }),
+        UpdateDeleteImpl(updates.filter { it.action == UpdateAction.DELETE }),
+    )
+
     override fun set(block: UpdateDsl.Set.() -> Unit) = set.block()
     override fun remove(block: UpdateDsl.Remove.() -> Unit) = remove.block()
     override fun add(block: UpdateDsl.Add.() -> Unit) = add.block()
@@ -26,8 +34,8 @@ internal data class UpdateDslImpl(
     )
 }
 
-internal abstract class UpdateClauseImpl(val action: UpdateAction) {
-    private val _updates = mutableListOf<UpdateClauseExpr>()
+internal abstract class UpdateClauseImpl(val action: UpdateAction, updates: List<UpdateClauseExpr> = listOf()) {
+    private val _updates = updates.toMutableList()
     val updates: List<UpdateClauseExpr> get() = _updates
 
     fun AttributePath.update(value: Expression) {
@@ -35,8 +43,8 @@ internal abstract class UpdateClauseImpl(val action: UpdateAction) {
     }
 }
 
-internal class UpdateSetImpl :
-    UpdateClauseImpl(UpdateAction.SET),
+internal class UpdateSetImpl(updates: List<UpdateClauseExpr> = listOf()) :
+    UpdateClauseImpl(UpdateAction.SET, updates),
     UpdateDsl.Set {
 
     override val attr = AttrImpl
@@ -66,8 +74,8 @@ internal class UpdateSetImpl :
     ): Expression = AdditiveExpr(AdditiveOperation.SUBTRACT, this, value)
 }
 
-internal class UpdateRemoveImpl :
-    UpdateClauseImpl(UpdateAction.REMOVE),
+internal class UpdateRemoveImpl(updates: List<UpdateClauseExpr> = listOf()) :
+    UpdateClauseImpl(UpdateAction.REMOVE, updates),
     UpdateDsl.Remove {
 
     override val attr = AttrImpl
@@ -75,8 +83,8 @@ internal class UpdateRemoveImpl :
     override fun AttributePath.unaryMinus() = update(LiteralExpr(null))
 }
 
-internal class UpdateAddImpl :
-    UpdateClauseImpl(UpdateAction.ADD),
+internal class UpdateAddImpl(updates: List<UpdateClauseExpr> = listOf()) :
+    UpdateClauseImpl(UpdateAction.ADD, updates),
     UpdateDsl.Add {
 
     override val attr: Attr = AttrImpl
@@ -84,11 +92,13 @@ internal class UpdateAddImpl :
     override fun AttributePath.plusAssign(value: Expression) = update(value)
 }
 
-internal class UpdateDeleteImpl :
-    UpdateClauseImpl(UpdateAction.DELETE),
+internal class UpdateDeleteImpl(updates: List<UpdateClauseExpr> = listOf()) :
+    UpdateClauseImpl(UpdateAction.DELETE, updates),
     UpdateDsl.Delete {
 
     override val attr: Attr = AttrImpl
 
     override fun AttributePath.minusAssign(value: Expression) = update(value)
 }
+
+private fun UpdateExpr.flatUpdates() = listOf(set, remove, add, delete).flatMap { it.updates }

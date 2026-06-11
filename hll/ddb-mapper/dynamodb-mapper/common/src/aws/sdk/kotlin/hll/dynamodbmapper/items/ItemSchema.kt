@@ -8,6 +8,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaCompositeKeyIm
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaPartitionKeyImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.attrs
 import aws.smithy.kotlin.runtime.collections.Attributes
+import aws.smithy.kotlin.runtime.collections.emptyAttributes
 
 /**
  * Defines a schema for handling objects of type [T], including an [ItemConverter] for converting between objects and
@@ -73,9 +74,15 @@ public sealed interface ItemSchema<T> {
  * @param PK The type of the partition key property, either [KeyType] or one of its specific derivations
  * @param converter The [ItemConverter] used to convert between objects and items
  * @param partitionKey The [KeySpec] for the partition key
+ * @param attributes An optional [Attributes] instance which may include additional metadata about the schema. If not
+ * provided, defaults to [emptyAttributes].
  */
 @Suppress("FunctionName")
-public fun <T, PK : KeyType> ItemSchema(converter: ItemConverter<T>, partitionKey: KeySpec<PK>): ItemSchema.PartitionKey<T, PK> = ItemSchemaPartitionKeyImpl(converter, partitionKey)
+public fun <T, PK : KeyType> ItemSchema(
+    converter: ItemConverter<T>,
+    partitionKey: KeySpec<PK>,
+    attributes: Attributes = emptyAttributes(),
+): ItemSchema.PartitionKey<T, PK> = ItemSchemaPartitionKeyImpl(converter, partitionKey, attributes)
 
 /**
  * Create a new item schema with a primary key consisting of a single partition key.
@@ -85,21 +92,29 @@ public fun <T, PK : KeyType> ItemSchema(converter: ItemConverter<T>, partitionKe
  * @param converter The [ItemConverter] used to convert between objects and items
  * @param partitionKey The [KeySpec] for the partition key
  * @param sortKey The [KeySpec] for the sort key
+ * @param attributes An optional [Attributes] instance which may include additional metadata about the schema. If not
+ * provided, defaults to [emptyAttributes].
  */
 @Suppress("FunctionName")
 public fun <T, PK : KeyType, SK : KeyType> ItemSchema(
     converter: ItemConverter<T>,
     partitionKey: KeySpec<PK>,
     sortKey: KeySpec<SK>,
-): ItemSchema.CompositeKey<T, PK, SK> = ItemSchemaCompositeKeyImpl(converter, partitionKey, sortKey)
+    attributes: Attributes = emptyAttributes(),
+): ItemSchema.CompositeKey<T, PK, SK> = ItemSchemaCompositeKeyImpl(converter, partitionKey, sortKey, attributes)
 
 /**
  * Associate this [ItemConverter] with a [KeySpec] for a partition key to form a complete [ItemSchema]
  * @param T The type of objects described by this schema
  * @param PK The type of the partition key property, either [KeyType] or one of its specific derivations
  * @param partitionKey The [KeySpec] that describes the partition key
+ * @param attributes An optional [Attributes] instance which may include additional metadata about the schema. If not
+ * provided, defaults to [emptyAttributes].
  */
-public fun <T, PK : KeyType> ItemConverter<T>.withKeySpec(partitionKey: KeySpec<PK>): ItemSchema.PartitionKey<T, PK> = ItemSchema(this, partitionKey)
+public fun <T, PK : KeyType> ItemConverter<T>.withKeySpec(
+    partitionKey: KeySpec<PK>,
+    attributes: Attributes = emptyAttributes(),
+): ItemSchema.PartitionKey<T, PK> = ItemSchema(this, partitionKey, attributes)
 
 /**
  * Associate this [ItemConverter] with [KeySpec] instances for a composite key to form a complete [ItemSchema]
@@ -108,8 +123,11 @@ public fun <T, PK : KeyType> ItemConverter<T>.withKeySpec(partitionKey: KeySpec<
  * @param SK The type of the sort key property, either [KeyType] or one of its specific derivations
  * @param partitionKey The [KeySpec] that describes the partition key
  * @param sortKey The [KeySpec] that describes the sort key
+ * @param attributes An optional [Attributes] instance which may include additional metadata about the schema. If not
+ * provided, defaults to [emptyAttributes].
  */
 public fun <T, PK : KeyType, SK : KeyType> ItemConverter<T>.withKeySpec(
     partitionKey: KeySpec<PK>,
     sortKey: KeySpec<SK>,
-): ItemSchema.CompositeKey<T, PK, SK> = ItemSchema(this, partitionKey, sortKey)
+    attributes: Attributes = emptyAttributes(),
+): ItemSchema.CompositeKey<T, PK, SK> = ItemSchema(this, partitionKey, sortKey, attributes)

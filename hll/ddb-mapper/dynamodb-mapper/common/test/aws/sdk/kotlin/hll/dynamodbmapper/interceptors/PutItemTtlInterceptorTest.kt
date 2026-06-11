@@ -4,19 +4,13 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.interceptors
 
-import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
-import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
-import aws.sdk.kotlin.hll.dynamodbmapper.items.internal.ItemSchemaPartitionKeyImpl
-import aws.sdk.kotlin.hll.dynamodbmapper.model.PersistenceSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.model.SchemaAttributes
-import aws.sdk.kotlin.hll.dynamodbmapper.model.buildItem
 import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.LReqContext
-import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.MapperContext
-import aws.sdk.kotlin.hll.mapping.core.converters.ConverterImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.testutils.testMapperContext
+import aws.sdk.kotlin.hll.dynamodbmapper.testutils.testSchema
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.PutItemRequest
-import aws.smithy.kotlin.runtime.collections.attributesOf
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.ManualClock
 import kotlin.test.Test
@@ -24,19 +18,19 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.time.Duration.Companion.hours
 
-class TtlInterceptorTest {
+class PutItemTtlInterceptorTest {
     @Test
     fun testPutItemWithSingleTtlField() {
         val testClock = ManualClock(Instant.fromEpochSeconds(0))
         val interceptor = TtlInterceptor(testClock)
-        val ttlFields = setOf("expiresAt" to 1.hours.inWholeSeconds)
+        val ttlFields = mapOf("expiresAt" to 1.hours.inWholeSeconds)
 
         val request = PutItemRequest {
             tableName = "test-table"
             item = mapOf("id" to AttributeValue.S("test-id"))
         }
 
-        val context = createTestContext(request, ttlFields)
+        val context = createContext(request, ttlFields)
         val result1 = interceptor.modifyBeforeInvocation(context) as PutItemRequest
         assertEquals(AttributeValue.N("3600"), result1.item?.get("expiresAt"))
 
@@ -50,7 +44,7 @@ class TtlInterceptorTest {
     fun testPutItemWithMultipleTtlFields() {
         val testClock = ManualClock(Instant.fromEpochSeconds(0))
         val interceptor = TtlInterceptor(testClock)
-        val ttlFields = setOf(
+        val ttlFields = mapOf(
             "expiresAt" to 1.hours.inWholeSeconds,
             "actuallyExpiresAt" to 2.hours.inWholeSeconds,
         )
@@ -60,7 +54,7 @@ class TtlInterceptorTest {
             item = mapOf("id" to AttributeValue.S("test-id"))
         }
 
-        val context = createTestContext(request, ttlFields)
+        val context = createContext(request, ttlFields)
         val result = interceptor.modifyBeforeInvocation(context) as PutItemRequest
 
         assertEquals(AttributeValue.N("3600"), result.item?.get("expiresAt"))
@@ -76,7 +70,7 @@ class TtlInterceptorTest {
             item = mapOf("id" to AttributeValue.S("test-id"))
         }
 
-        val context = createTestContext(request, emptySet())
+        val context = createContext(request)
         val result = interceptor.modifyBeforeInvocation(context)
 
         assertSame(request, result)
@@ -86,9 +80,9 @@ class TtlInterceptorTest {
     fun testNonPutItemRequest() {
         val interceptor = TtlInterceptor()
         val otherRequest = "not-a-put-request"
-        val ttlFields = setOf("expiresAt" to 3600L)
+        val ttlFields = mapOf("expiresAt" to 3600L)
 
-        val context = createTestContext(otherRequest, ttlFields)
+        val context = createContext(otherRequest, ttlFields)
         val result = interceptor.modifyBeforeInvocation(context)
 
         assertSame(otherRequest, result)
@@ -97,44 +91,25 @@ class TtlInterceptorTest {
     @Test
     fun testPutItemWithEmptyItem() {
         val interceptor = TtlInterceptor()
-        val ttlFields = setOf("expiresAt" to 3600L)
+        val ttlFields = mapOf("expiresAt" to 3600L)
 
         val request = PutItemRequest {
             tableName = "test-table"
             item = null
         }
 
-        val context = createTestContext(request, ttlFields)
+        val context = createContext(request, ttlFields)
         val result = interceptor.modifyBeforeInvocation(context)
 
         assertSame(request, result)
     }
+}
 
-    private fun createTestContext(
-        lowLevelRequest: Any,
-        ttlFields: Set<Pair<String, Long>>,
-    ): LReqContext<Any, ItemSchema<Any>, Any, Any> {
-        val attributes = attributesOf {
-            if (ttlFields.isNotEmpty()) {
-                SchemaAttributes.TtlFields to ttlFields
-            }
-        }
-
-        val converter: ItemConverter<Any> = ConverterImpl(convertRight = { buildItem { } }, convertLeft = { "" })
-
-        val schema = ItemSchemaPartitionKeyImpl(
-            converter = converter,
-            partitionKey = KeySpec.string("id"),
-            attributes = attributes,
-        )
-
-        val mapperContext = object : MapperContext<Any> {
-            override val persistenceSpec: PersistenceSpec<Any>
-                get() = error("Not needed for test")
-            override val operation: String
-                get() = error("Not needed for test")
-        }
-
-        return LReqContext("", schema, mapperContext, lowLevelRequest)
-    }
+private fun createContext(
+    lowLevelRequest: Any,
+    ttlFields: Map<String, Long>? = null,
+): LReqContext<Any, ItemSchema<Any>, Any, Any> {
+    val schema = testSchema { ttlFields?.let { SchemaAttributes.TtlFields to it } }
+    val mapperContext = testMapperContext()
+    return LReqContext("", schema, mapperContext, lowLevelRequest)
 }

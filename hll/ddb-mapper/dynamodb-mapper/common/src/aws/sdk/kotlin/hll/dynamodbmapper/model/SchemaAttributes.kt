@@ -13,7 +13,7 @@ public object SchemaAttributes {
     /**
      * Set of TTL fields, each containing field name and lifetime in seconds
      */
-    public val TtlFields: AttributeKey<Set<Pair<String, Long>>> = AttributeKey("aws.sdk.kotlin.hll.dynamodbmapper#TtlFields")
+    public val TtlFields: AttributeKey<Map<String, Long>> = AttributeKey("aws.sdk.kotlin.hll.dynamodbmapper#TtlFields")
 
     /**
      * Set of field names annotated with [DynamoDbCounter]

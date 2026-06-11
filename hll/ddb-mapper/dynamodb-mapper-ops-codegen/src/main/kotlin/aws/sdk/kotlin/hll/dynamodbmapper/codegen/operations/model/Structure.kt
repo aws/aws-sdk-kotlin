@@ -86,6 +86,7 @@ private fun deriveExpressionLiteral(llMember: Member, type: ExpressionLiteralTyp
         ExpressionLiteralType.Update -> DslInfo(
             interfaceType = MapperTypes.Expressions.UpdateDsl,
             implType = MapperTypes.Expressions.Internal.UpdateDslImpl,
+            implInvocationStyle = DslInvocationStyle.Constructor("update"),
             implFinalizer = ".toExpression()",
         )
     }

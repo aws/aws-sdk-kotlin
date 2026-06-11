@@ -4,8 +4,10 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.UpdateAddImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.UpdateExprClauseImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.UpdateExprImpl
+import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.UpdateSetImpl
 
 /**
  * Represents an
@@ -56,15 +58,15 @@ public interface UpdateExpr : Expression {
  * @param delete The `DELETE` clause of this expression
  */
 public fun UpdateExpr(
-    set: UpdateExpr.Clause,
-    remove: UpdateExpr.Clause,
-    add: UpdateExpr.Clause,
-    delete: UpdateExpr.Clause,
+    set: UpdateExpr.Clause = UpdateExprClauseImpl(),
+    remove: UpdateExpr.Clause = UpdateExprClauseImpl(),
+    add: UpdateExpr.Clause = UpdateExprClauseImpl(),
+    delete: UpdateExpr.Clause = UpdateExprClauseImpl(),
 ): UpdateExpr = UpdateExprImpl(set, remove, add, delete)
 
 /**
  * Creates an update expression clause
- * @param A list of update clause expressions which are associated with this clause
+ * @param updates A list of update clause expressions which are associated with this clause
  */
 public fun UpdateExpr.Companion.Clause(
     updates: List<UpdateClauseExpr>,
