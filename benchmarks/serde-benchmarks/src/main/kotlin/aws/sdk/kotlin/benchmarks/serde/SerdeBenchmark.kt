@@ -14,9 +14,11 @@ data class BenchmarkRegistryEntry(
 )
 
 object BenchmarkRegistry {
-    val entries: MutableList<BenchmarkRegistryEntry> = mutableListOf()
+    private val _entries = mutableListOf<BenchmarkRegistryEntry>()
+    val entries: List<BenchmarkRegistryEntry>
+        get() = _entries
 
     fun register(name: String, create: () -> SerdeBenchmark) {
-        entries.add(BenchmarkRegistryEntry(name, create))
+        _entries.add(BenchmarkRegistryEntry(name, create))
     }
 }

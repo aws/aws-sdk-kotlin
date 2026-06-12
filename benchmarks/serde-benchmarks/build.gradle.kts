@@ -103,13 +103,6 @@ dependencies {
     implementation(libs.smithy.kotlin.smithy.rpcv2.protocols)
 }
 
-tasks.generateSmithyProjections {
-    val sdkVersion: String by project
-    doFirst {
-        System.setProperty("smithy.kotlin.codegen.clientRuntimeVersion", sdkVersion)
-    }
-}
-
 // Stage generated sources (main + test/benchmark) into a single source set
 val stageGeneratedSources = tasks.register("stageGeneratedSources") {
     group = "codegen"
@@ -183,7 +176,7 @@ tasks.register<JavaExec>("runAllBenchmarks") {
     systemProperty("benchmark.maxIterations", project.findProperty("benchmark.maxIterations") ?: "10000000")
     systemProperty("benchmark.instance", project.findProperty("benchmark.instance") ?: "unknown")
     systemProperty("smithy.kotlin.version", libs.versions.smithy.kotlin.version.get())
-    systemProperty("aws.sdk.kotlin.version", project.property("sdkVersion").toString())
+    systemProperty("aws.sdk.kotlin.version", project.findProperty("sdkVersion") ?: "SNAPSHOT")
 
     if (asyncProfilerLib != null) {
         val profilesDir = project.layout.buildDirectory.dir("profiles")

@@ -20,8 +20,8 @@ fun main() = runBlocking {
     }
 
     val metadata = KotlinBenchmarkMetadata(
-        smithyKotlinVersion = System.getProperty("smithy.kotlin.version", "SNAPSHOT"),
-        sdkVersion = System.getProperty("aws.sdk.kotlin.version", "SNAPSHOT"),
+        smithyKotlinVersion = System.getProperty("smithy.kotlin.version"),
+        sdkVersion = System.getProperty("aws.sdk.kotlin.version"),
     )
     println()
     println(BenchmarkHarness.toJson(metadata, allResults))

@@ -12,10 +12,10 @@ import kotlin.math.sqrt
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
-val WARMUP_SECONDS = System.getProperty("benchmark.warmupSeconds", "10").toLong()
-val MEASUREMENT_SECONDS = System.getProperty("benchmark.measurementSeconds", "30").toLong()
-val MIN_ITERATIONS = System.getProperty("benchmark.minIterations", "1000").toInt()
-val MAX_ITERATIONS = System.getProperty("benchmark.maxIterations", "10000000").toInt()
+val WARMUP_SECONDS = System.getProperty("benchmark.warmupSeconds").toLong()
+val MEASUREMENT_SECONDS = System.getProperty("benchmark.measurementSeconds").toLong()
+val MIN_ITERATIONS = System.getProperty("benchmark.minIterations").toInt()
+val MAX_ITERATIONS = System.getProperty("benchmark.maxIterations").toInt()
 
 internal val WARMUP_DURATION = WARMUP_SECONDS.seconds
 internal val MEASUREMENT_DURATION = MEASUREMENT_SECONDS.seconds
@@ -170,5 +170,5 @@ data class KotlinBenchmarkMetadata(
     val smithyKotlinVersion: String,
     val sdkVersion: String,
     val os: String = "${System.getProperty("os.name")} ${System.getProperty("os.version")}",
-    val instance: String = System.getProperty("benchmark.instance", "unknown"),
+    val instance: String = System.getProperty("benchmark.instance"),
 )
