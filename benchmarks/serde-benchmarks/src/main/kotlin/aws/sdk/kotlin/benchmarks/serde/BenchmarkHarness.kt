@@ -77,7 +77,7 @@ object BenchmarkHarness {
         Thread.sleep(100)
 
         // Phase 2: Measurement — collect individual samples and track 1-second windows
-        val samples = ArrayList<Long>(MAX_ITERATIONS.coerceAtMost(1_000_000))
+        val samples = ArrayList<Long>(MAX_ITERATIONS)
         val windowMeans = ArrayList<Double>()
         val measureStart = timeSource.markNow()
         var windowMark = measureStart
