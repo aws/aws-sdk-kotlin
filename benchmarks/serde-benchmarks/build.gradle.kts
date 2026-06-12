@@ -128,6 +128,28 @@ val stageGeneratedSources = tasks.register("stageGeneratedSources") {
                 }
             }
         }
+
+        // Generate registerAllProtocols() from the projection list
+        val imports = benchmarkProjections.joinToString("\n") { proj ->
+            val pkg = proj.name.replace("-", "")
+            "import aws.sdk.kotlin.benchmarks.serde.$pkg.registerBenchmarks as register${proj.sdkId}"
+        }
+        val calls = benchmarkProjections.joinToString("\n") { proj ->
+            "    register${proj.sdkId}()"
+        }
+        val src = """
+            |package aws.sdk.kotlin.benchmarks.serde
+            |
+            |$imports
+            |
+            |internal fun registerAllProtocols() {
+            |$calls
+            |}
+        """.trimMargin()
+
+        val outDir = layout.buildDirectory.dir("generated-src/main/aws/sdk/kotlin/benchmarks/serde").get().asFile
+        outDir.mkdirs()
+        outDir.resolve("RegisterAllProtocols.kt").writeText(src)
     }
 }
 

@@ -34,7 +34,7 @@ data class BenchmarkResult(
 )
 
 @Serializable
-private data class KotlinBenchmarkMetadataJson(
+private data class BenchmarkMetadataJson(
     val lang: String = "Kotlin",
     val software: List<List<String>>,
     val os: String,
@@ -44,7 +44,7 @@ private data class KotlinBenchmarkMetadataJson(
 
 @Serializable
 private data class BenchmarkReportJson(
-    val metadata: KotlinBenchmarkMetadataJson,
+    val metadata: BenchmarkMetadataJson,
     @SerialName("serde_benchmarks") val serdeBenchmarks: List<BenchmarkResult>,
 )
 
@@ -152,7 +152,7 @@ object BenchmarkHarness {
 
     fun toJson(metadata: KotlinBenchmarkMetadata, results: List<BenchmarkResult>): String {
         val report = BenchmarkReportJson(
-            metadata = KotlinBenchmarkMetadataJson(
+            metadata = BenchmarkMetadataJson(
                 software = listOf(
                     listOf("smithy-kotlin", metadata.smithyKotlinVersion),
                     listOf("AWS SDK for Kotlin", metadata.sdkVersion),

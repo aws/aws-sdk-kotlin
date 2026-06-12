@@ -135,7 +135,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
         writer.withBlock("fun main() = #T {", "}", RuntimeTypes.KotlinxCoroutines.runBlocking) {
             write("val benchmark = #L()", className)
             write("val results = benchmark.benchmarks()")
-            write("val metadata = #T(smithyKotlinVersion = #S, sdkVersion = #S)", AwsRuntimeTypes.Benchmarks.BenchmarkMetadata, "SNAPSHOT", "SNAPSHOT")
+            write("val metadata = #T(smithyKotlinVersion = #S, sdkVersion = #S)", AwsRuntimeTypes.Benchmarks.KotlinBenchmarkMetadata, "SNAPSHOT", "SNAPSHOT")
             write("println(#T.toJson(metadata, results))", AwsRuntimeTypes.Benchmarks.BenchmarkHarness)
         }
     }
@@ -193,7 +193,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
         writer.withBlock("fun main() = #T {", "}", RuntimeTypes.KotlinxCoroutines.runBlocking) {
             write("val benchmark = #L()", className)
             write("val results = benchmark.benchmarks()")
-            write("val metadata = #T(smithyKotlinVersion = #S, sdkVersion = #S)", AwsRuntimeTypes.Benchmarks.BenchmarkMetadata, "SNAPSHOT", "SNAPSHOT")
+            write("val metadata = #T(smithyKotlinVersion = #S, sdkVersion = #S)", AwsRuntimeTypes.Benchmarks.KotlinBenchmarkMetadata, "SNAPSHOT", "SNAPSHOT")
             write("println(#T.toJson(metadata, results))", AwsRuntimeTypes.Benchmarks.BenchmarkHarness)
         }
     }
