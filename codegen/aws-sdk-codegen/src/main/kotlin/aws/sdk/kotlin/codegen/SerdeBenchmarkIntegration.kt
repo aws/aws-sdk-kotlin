@@ -31,7 +31,6 @@ class SerdeBenchmarkIntegration :
     SerdeBenchmarkGeneratorFactory {
 
     private val generatedClassNames = mutableListOf<String>()
-    private var packageName: String = ""
 
     override fun renderRequestBenchmark(
         ctx: ProtocolGenerator.GenerationContext,
@@ -40,7 +39,6 @@ class SerdeBenchmarkIntegration :
         className: String,
         testCases: List<HttpRequestTestCase>,
     ) {
-        packageName = ctx.settings.pkg.name
         generatedClassNames.add(className)
         HttpProtocolSerdeBenchmarkGenerator(ctx, writer, operation).renderRequestBenchmarkClass(className, testCases)
     }
@@ -52,7 +50,6 @@ class SerdeBenchmarkIntegration :
         className: String,
         testCases: List<HttpResponseTestCase>,
     ) {
-        packageName = ctx.settings.pkg.name
         generatedClassNames.add(className)
         HttpProtocolSerdeBenchmarkGenerator(ctx, writer, operation).renderResponseBenchmarkClass(className, testCases)
     }
@@ -60,7 +57,7 @@ class SerdeBenchmarkIntegration :
     override fun writeAdditionalFiles(ctx: CodegenContext, delegator: KotlinDelegator) {
         if (generatedClassNames.isEmpty()) return
 
-        delegator.useTestFileWriter("BenchmarkRegistration.kt", packageName) { writer ->
+        delegator.useTestFileWriter("BenchmarkRegistration.kt", ctx.settings.pkg.name) { writer ->
             writer.withBlock("internal fun registerBenchmarks() {", "}") {
                 for (className in generatedClassNames.sorted()) {
                     write("#T.register(#S) { #L() }", AwsRuntimeTypes.Benchmarks.BenchmarkRegistry, className, className)
@@ -131,19 +128,12 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
         }
 
-        writer.write("")
-        writer.withBlock("fun main() = #T {", "}", RuntimeTypes.KotlinxCoroutines.runBlocking) {
-            write("val benchmark = #L()", className)
-            write("val results = benchmark.benchmarks()")
-            write("val metadata = #T(smithyKotlinVersion = #S, sdkVersion = #S)", AwsRuntimeTypes.Benchmarks.KotlinBenchmarkMetadata, "SNAPSHOT", "SNAPSHOT")
-            write("println(#T.toJson(metadata, results))", AwsRuntimeTypes.Benchmarks.BenchmarkHarness)
-        }
+        renderMain(className)
     }
 
     fun renderResponseBenchmarkClass(className: String, testCases: List<HttpResponseTestCase>) {
         writer.write("")
         writer.withBlock("class #L : #T {", "}", className, AwsRuntimeTypes.Benchmarks.SerdeBenchmark) {
-            write("")
             write("private val interceptor = #T()", AwsRuntimeTypes.Benchmarks.BenchmarkInterceptor)
 
             for (testCase in testCases) {
@@ -189,11 +179,15 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
         }
 
+        renderMain(className)
+    }
+
+    private fun renderMain(className: String) {
         writer.write("")
         writer.withBlock("fun main() = #T {", "}", RuntimeTypes.KotlinxCoroutines.runBlocking) {
             write("val benchmark = #L()", className)
             write("val results = benchmark.benchmarks()")
-            write("val metadata = #T(smithyKotlinVersion = #S, sdkVersion = #S)", AwsRuntimeTypes.Benchmarks.KotlinBenchmarkMetadata, "SNAPSHOT", "SNAPSHOT")
+            write("val metadata = #T(smithyKotlinVersion = System.getProperty(#S), sdkVersion = System.getProperty(#S))", AwsRuntimeTypes.Benchmarks.KotlinBenchmarkMetadata, "smithy.kotlin.version", "aws.sdk.kotlin.version")
             write("println(#T.toJson(metadata, results))", AwsRuntimeTypes.Benchmarks.BenchmarkHarness)
         }
     }
@@ -239,7 +233,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
     }
 
     private fun renderResponseClientField(testCase: HttpResponseTestCase) {
-        val fieldName = "client_${sanitizeName(testCase.id)}"
+        val clientFieldName = "client_${sanitizeName(testCase.id)}"
         val bodyFieldName = "respBody_${sanitizeName(testCase.id)}"
 
         val body = testCase.body.orElse("").trim()
@@ -258,7 +252,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
         }
 
-        writer.withBlock("private val #L = #T {", "}", fieldName, serviceSymbol) {
+        writer.withBlock("private val #L = #T {", "}", clientFieldName, serviceSymbol) {
             withBlock("httpClient = #T { _, request ->", "}", RuntimeTypes.HttpTest.TestEngine) {
                 if (testCase.headers.isNotEmpty()) {
                     withBlock("val respHeaders = #T {", "}", RuntimeTypes.Http.Headers) {
