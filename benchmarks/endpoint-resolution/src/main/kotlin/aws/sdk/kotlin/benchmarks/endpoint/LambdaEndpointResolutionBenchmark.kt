@@ -7,7 +7,6 @@ package aws.sdk.kotlin.benchmarks.endpoint
 import aws.sdk.kotlin.services.lambda.endpoints.DefaultLambdaEndpointProvider
 import aws.sdk.kotlin.services.lambda.endpoints.LambdaEndpointParameters
 import kotlinx.benchmark.*
-import org.openjdk.jmh.annotations.State
 
 /**
  * Benchmarks for Lambda endpoint resolution.

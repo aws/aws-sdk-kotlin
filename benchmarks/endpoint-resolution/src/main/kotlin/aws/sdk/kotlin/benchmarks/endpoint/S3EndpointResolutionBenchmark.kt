@@ -7,7 +7,6 @@ package aws.sdk.kotlin.benchmarks.endpoint
 import aws.sdk.kotlin.services.s3.endpoints.DefaultS3EndpointProvider
 import aws.sdk.kotlin.services.s3.endpoints.S3EndpointParameters
 import kotlinx.benchmark.*
-import org.openjdk.jmh.annotations.State
 
 /**
  * Benchmarks for S3 endpoint resolution.
