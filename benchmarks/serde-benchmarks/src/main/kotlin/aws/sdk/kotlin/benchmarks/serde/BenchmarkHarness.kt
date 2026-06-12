@@ -34,7 +34,7 @@ data class BenchmarkResult(
 )
 
 @Serializable
-private data class BenchmarkMetadataJson(
+private data class KotlinBenchmarkMetadataJson(
     val lang: String = "Kotlin",
     val software: List<List<String>>,
     val os: String,
@@ -44,7 +44,7 @@ private data class BenchmarkMetadataJson(
 
 @Serializable
 private data class BenchmarkReportJson(
-    val metadata: BenchmarkMetadataJson,
+    val metadata: KotlinBenchmarkMetadataJson,
     @SerialName("serde_benchmarks") val serdeBenchmarks: List<BenchmarkResult>,
 )
 
@@ -78,7 +78,7 @@ object BenchmarkHarness {
 
         // Phase 2: Measurement — collect individual samples and track 1-second windows
         val samples = ArrayList<Long>(MAX_ITERATIONS)
-        val windowMeans = ArrayList<Double>()
+        val windowMeans = ArrayList<Double>(MEASUREMENT_SECONDS.toInt())
         val measureStart = timeSource.markNow()
         var windowMark = measureStart
         var windowSum = 0L
@@ -120,14 +120,9 @@ object BenchmarkHarness {
         val sum = sorted.sum()
         val mean = sum.toDouble() / n
 
-        // std_dev over 1-second window means (like JMH iteration means)
-        val stdDev = if (windowMeans.size > 1) {
-            val wmMean = windowMeans.average()
-            val variance = windowMeans.sumOf { (it - wmMean) * (it - wmMean) } / windowMeans.size
-            sqrt(variance)
-        } else {
-            0.0
-        }
+        val wmMean = windowMeans.average()
+        val variance = windowMeans.sumOf { (it - wmMean) * (it - wmMean) } / windowMeans.size
+        val stdDev = sqrt(variance)
 
         return BenchmarkResult(
             id = id,
@@ -155,9 +150,9 @@ object BenchmarkHarness {
         encodeDefaults = true
     }
 
-    fun toJson(metadata: BenchmarkMetadata, results: List<BenchmarkResult>): String {
+    fun toJson(metadata: KotlinBenchmarkMetadata, results: List<BenchmarkResult>): String {
         val report = BenchmarkReportJson(
-            metadata = BenchmarkMetadataJson(
+            metadata = KotlinBenchmarkMetadataJson(
                 software = listOf(
                     listOf("smithy-kotlin", metadata.smithyKotlinVersion),
                     listOf("AWS SDK for Kotlin", metadata.sdkVersion),
@@ -171,7 +166,7 @@ object BenchmarkHarness {
     }
 }
 
-data class BenchmarkMetadata(
+data class KotlinBenchmarkMetadata(
     val smithyKotlinVersion: String,
     val sdkVersion: String,
     val os: String = "${System.getProperty("os.name")} ${System.getProperty("os.version")}",

@@ -39,7 +39,7 @@ fun main() = runBlocking {
         println("  Completed ${results.size} test cases")
     }
 
-    val metadata = BenchmarkMetadata(
+    val metadata = KotlinBenchmarkMetadata(
         smithyKotlinVersion = System.getProperty("smithy.kotlin.version", "SNAPSHOT"),
         sdkVersion = System.getProperty("aws.sdk.kotlin.version", "SNAPSHOT"),
     )
