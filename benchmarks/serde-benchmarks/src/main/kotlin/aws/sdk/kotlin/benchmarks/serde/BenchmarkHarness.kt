@@ -15,9 +15,9 @@ val MEASUREMENT_SECONDS = System.getProperty("benchmark.measurementSeconds", "30
 val MIN_ITERATIONS = System.getProperty("benchmark.minIterations", "1000").toInt()
 val MAX_ITERATIONS = System.getProperty("benchmark.maxIterations", "10000000").toInt()
 
-private val WARMUP_NANOS = WARMUP_SECONDS * 1_000_000_000L
-private val MEASUREMENT_NANOS = MEASUREMENT_SECONDS * 1_000_000_000L
-private const val WINDOW_NANOS = 1_000_000_000L // 1-second windows for std_dev calculation
+internal val WARMUP_NANOS = WARMUP_SECONDS * 1_000_000_000L
+internal val MEASUREMENT_NANOS = MEASUREMENT_SECONDS * 1_000_000_000L
+internal const val WINDOW_NANOS = 1_000_000_000L
 
 @Serializable
 data class BenchmarkResult(
@@ -113,7 +113,7 @@ object BenchmarkHarness {
         return computeResult(id, sorted, windowMeans)
     }
 
-    private fun computeResult(id: String, sorted: LongArray, windowMeans: List<Double>): BenchmarkResult {
+    internal fun computeResult(id: String, sorted: LongArray, windowMeans: List<Double>): BenchmarkResult {
         val n = sorted.size
         val sum = sorted.sum()
         val mean = sum.toDouble() / n
