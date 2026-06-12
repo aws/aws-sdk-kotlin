@@ -28,7 +28,7 @@ class OverheadBenchmark {
 
     @Benchmark
     fun suspendLambdaCall(blackhole: Blackhole) {
-        blackhole.consume(resolveEndpointSync(benchmarkCompletion) { noOpResolve() })
+        blackhole.consume(resolveEndpointSync { noOpResolve() })
     }
 
     @Benchmark
