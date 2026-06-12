@@ -182,6 +182,8 @@ tasks.register<JavaExec>("runAllBenchmarks") {
     systemProperty("benchmark.minIterations", project.findProperty("benchmark.minIterations") ?: "1000")
     systemProperty("benchmark.maxIterations", project.findProperty("benchmark.maxIterations") ?: "10000000")
     systemProperty("benchmark.instance", project.findProperty("benchmark.instance") ?: "unknown")
+    systemProperty("smithy.kotlin.version", libs.versions.smithy.kotlin.version.get())
+    systemProperty("aws.sdk.kotlin.version", project.property("sdkVersion").toString())
 
     if (asyncProfilerLib != null) {
         val profilesDir = project.layout.buildDirectory.dir("profiles")
