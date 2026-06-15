@@ -13,24 +13,28 @@ import aws.smithy.kotlin.codegen.core.withBlock
 import aws.smithy.kotlin.codegen.integration.KotlinIntegration
 import aws.smithy.kotlin.codegen.lang.KotlinTypes
 import aws.smithy.kotlin.codegen.model.expectShape
+import aws.smithy.kotlin.codegen.model.getTrait
 import aws.smithy.kotlin.codegen.model.hasTrait
 import aws.smithy.kotlin.codegen.rendering.ShapeValueGenerator
 import aws.smithy.kotlin.codegen.rendering.endpoints.EndpointProviderGenerator
 import aws.smithy.kotlin.codegen.rendering.protocol.ProtocolGenerator
 import aws.smithy.kotlin.codegen.rendering.protocol.SerdeBenchmarkGeneratorFactory
 import aws.smithy.kotlin.codegen.rendering.protocol.defaultUnboxedValue
+import software.amazon.smithy.model.knowledge.TopDownIndex
 import software.amazon.smithy.model.shapes.OperationShape
 import software.amazon.smithy.model.shapes.StructureShape
 import software.amazon.smithy.model.traits.IdempotencyTokenTrait
 import software.amazon.smithy.protocoltests.traits.HttpRequestTestCase
+import software.amazon.smithy.protocoltests.traits.HttpRequestTestsTrait
 import software.amazon.smithy.protocoltests.traits.HttpResponseTestCase
+import software.amazon.smithy.protocoltests.traits.HttpResponseTestsTrait
 import software.amazon.smithy.rulesengine.traits.EndpointRuleSetTrait
+
+private const val SERDE_BENCHMARK_TAG = "serde-benchmark"
 
 class SerdeBenchmarkIntegration :
     KotlinIntegration,
     SerdeBenchmarkGeneratorFactory {
-
-    private val generatedClassNames = mutableListOf<String>()
 
     override fun renderRequestBenchmark(
         ctx: ProtocolGenerator.GenerationContext,
@@ -39,7 +43,6 @@ class SerdeBenchmarkIntegration :
         className: String,
         testCases: List<HttpRequestTestCase>,
     ) {
-        generatedClassNames.add(className)
         HttpProtocolSerdeBenchmarkGenerator(ctx, writer, operation).renderRequestBenchmarkClass(className, testCases)
     }
 
@@ -50,20 +53,44 @@ class SerdeBenchmarkIntegration :
         className: String,
         testCases: List<HttpResponseTestCase>,
     ) {
-        generatedClassNames.add(className)
         HttpProtocolSerdeBenchmarkGenerator(ctx, writer, operation).renderResponseBenchmarkClass(className, testCases)
     }
 
     override fun writeAdditionalFiles(ctx: CodegenContext, delegator: KotlinDelegator) {
-        if (generatedClassNames.isEmpty()) return
+        val classNames = benchmarkClassNames(ctx)
+        if (classNames.isEmpty()) return
 
         delegator.useTestFileWriter("BenchmarkRegistration.kt", ctx.settings.pkg.name) { writer ->
             writer.withBlock("internal fun registerBenchmarks() {", "}") {
-                for (className in generatedClassNames.sorted()) {
+                for (className in classNames) {
                     write("#T.register(#S) { #L() }", AwsRuntimeTypes.Benchmarks.BenchmarkRegistry, className, className)
                 }
             }
         }
+    }
+
+    private fun benchmarkClassNames(ctx: CodegenContext): List<String> {
+        val protocol = ctx.protocolGenerator?.protocol ?: return emptyList()
+        val topDownIndex = TopDownIndex.of(ctx.model)
+        val classNames = mutableListOf<String>()
+
+        for (operation in topDownIndex.getContainedOperations(ctx.settings.service)) {
+            val opName = operation.id.name.replaceFirstChar { it.uppercaseChar() }
+
+            val hasRequestBenchmarks = operation.getTrait<HttpRequestTestsTrait>()
+                ?.testCases?.any { it.protocol == protocol && SERDE_BENCHMARK_TAG in it.tags } == true
+            if (hasRequestBenchmarks) {
+                classNames.add("${opName}SerializationBenchmark")
+            }
+
+            val hasResponseBenchmarks = operation.getTrait<HttpResponseTestsTrait>()
+                ?.testCases?.any { it.protocol == protocol && SERDE_BENCHMARK_TAG in it.tags } == true
+            if (hasResponseBenchmarks) {
+                classNames.add("${opName}DeserializationBenchmark")
+            }
+        }
+
+        return classNames.sorted()
     }
 }
 
