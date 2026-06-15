@@ -8,7 +8,6 @@ import aws.smithy.kotlin.runtime.client.endpoints.Endpoint
 import aws.smithy.kotlin.runtime.net.url.Url
 import kotlinx.benchmark.*
 import kotlinx.coroutines.runBlocking
-import org.openjdk.jmh.annotations.State
 
 /**
  * Measures the overhead of different suspend function invocation mechanisms.
@@ -28,7 +27,7 @@ class OverheadBenchmark {
 
     @Benchmark
     fun suspendLambdaCall(blackhole: Blackhole) {
-        blackhole.consume(resolveEndpointSync(benchmarkCompletion) { noOpResolve() })
+        blackhole.consume(resolveEndpointSync { noOpResolve() })
     }
 
     @Benchmark

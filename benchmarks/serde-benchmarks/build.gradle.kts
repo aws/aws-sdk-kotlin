@@ -103,13 +103,6 @@ dependencies {
     implementation(libs.smithy.kotlin.smithy.rpcv2.protocols)
 }
 
-tasks.generateSmithyProjections {
-    val sdkVersion: String by project
-    doFirst {
-        System.setProperty("smithy.kotlin.codegen.clientRuntimeVersion", sdkVersion)
-    }
-}
-
 // Stage generated sources (main + test/benchmark) into a single source set
 val stageGeneratedSources = tasks.register("stageGeneratedSources") {
     group = "codegen"
@@ -128,6 +121,27 @@ val stageGeneratedSources = tasks.register("stageGeneratedSources") {
                 }
             }
         }
+
+        // Generate protocol registration map
+        val imports = benchmarkProjections.joinToString("\n") {
+            val pkg = it.name.replace("-", "")
+            "import aws.sdk.kotlin.benchmarks.serde.$pkg.registerBenchmarks as register${it.sdkId}"
+        }
+        val mapEntries = benchmarkProjections.joinToString("\n") {
+            "    \"${it.name}\" to ::register${it.sdkId},"
+        }
+
+        val outDir = layout.buildDirectory.dir("generated-src/main/aws/sdk/kotlin/benchmarks/serde").get().asFile
+        outDir.mkdirs()
+        outDir.resolve("ProtocolRegistrations.kt").writeText("""
+            |package aws.sdk.kotlin.benchmarks.serde
+            |
+            |$imports
+            |
+            |internal val protocolRegistrations: Map<String, () -> Unit> = mapOf(
+            |$mapEntries
+            |)
+        """.trimMargin())
     }
 }
 
@@ -149,9 +163,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 val asyncProfilerLib: String? = providers.gradleProperty("asyncProfiler.libPath").orNull
 
-tasks.register<JavaExec>("runAllBenchmarks") {
-    group = "benchmark"
-    description = "Run all serde benchmarks sequentially"
+fun JavaExec.configureBenchmarkTask() {
     dependsOn("classes")
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("aws.sdk.kotlin.benchmarks.serde.BenchmarkRunnerKt")
@@ -160,10 +172,33 @@ tasks.register<JavaExec>("runAllBenchmarks") {
     systemProperty("benchmark.minIterations", project.findProperty("benchmark.minIterations") ?: "1000")
     systemProperty("benchmark.maxIterations", project.findProperty("benchmark.maxIterations") ?: "10000000")
     systemProperty("benchmark.instance", project.findProperty("benchmark.instance") ?: "unknown")
+    systemProperty("smithy.kotlin.version", libs.versions.smithy.kotlin.version.get())
+    systemProperty("aws.sdk.kotlin.version", project.findProperty("sdkVersion") ?: "SNAPSHOT")
 
     if (asyncProfilerLib != null) {
         val profilesDir = project.layout.buildDirectory.dir("profiles")
         doFirst { profilesDir.get().asFile.mkdirs() }
         jvmArgs("-agentpath:$asyncProfilerLib=start,event=cpu,file=${profilesDir.get()}/serde-profile.jfr")
     }
+}
+
+tasks.register<JavaExec>("runAllBenchmarks") {
+    group = "benchmark"
+    description = "Run all serde benchmarks sequentially"
+    configureBenchmarkTask()
+}
+
+tasks.register<JavaExec>("runBenchmark") {
+    group = "benchmark"
+    description = "Run serde benchmarks for specific protocol(s). Use -Pbenchmark.protocol=aws-rest-json (comma-separated for multiple)"
+    configureBenchmarkTask()
+    val availableProtocols = benchmarkProjections.map { it.name }
+    val protocol = project.findProperty("benchmark.protocol") as? String
+        ?: error("benchmark.protocol property is required. Available: ${availableProtocols.joinToString()}")
+    val requested = protocol.split(",").map { it.trim() }
+    val invalid = requested.filter { req -> availableProtocols.none { it.contains(req, ignoreCase = true) } }
+    if (invalid.isNotEmpty()) {
+        error("Unknown protocol(s): ${invalid.joinToString()}. Available: ${availableProtocols.joinToString()}")
+    }
+    systemProperty("benchmark.protocol", protocol)
 }

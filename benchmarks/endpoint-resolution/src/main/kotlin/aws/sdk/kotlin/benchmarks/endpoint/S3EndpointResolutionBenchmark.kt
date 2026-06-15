@@ -7,7 +7,6 @@ package aws.sdk.kotlin.benchmarks.endpoint
 import aws.sdk.kotlin.services.s3.endpoints.DefaultS3EndpointProvider
 import aws.sdk.kotlin.services.s3.endpoints.S3EndpointParameters
 import kotlinx.benchmark.*
-import org.openjdk.jmh.annotations.State
 
 /**
  * Benchmarks for S3 endpoint resolution.
@@ -74,30 +73,30 @@ class S3EndpointResolutionBenchmark {
     // vanilla virtual addressing@us-west-2
     @Benchmark
     fun vanillaVirtualAddressing(blackhole: Blackhole) {
-        blackhole.consume(resolveEndpointSync(benchmarkCompletion) { provider.resolveEndpoint(vanillaVirtualAddressingParams) })
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(vanillaVirtualAddressingParams) })
     }
 
     // vanilla path style@us-west-2
     @Benchmark
     fun vanillaPathStyle(blackhole: Blackhole) {
-        blackhole.consume(resolveEndpointSync(benchmarkCompletion) { provider.resolveEndpoint(vanillaPathStyleParams) })
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(vanillaPathStyleParams) })
     }
 
     // Data Plane with short zone name
     @Benchmark
     fun dataPlaneShortZoneName(blackhole: Blackhole) {
-        blackhole.consume(resolveEndpointSync(benchmarkCompletion) { provider.resolveEndpoint(dataPlaneShortZoneNameParams) })
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(dataPlaneShortZoneNameParams) })
     }
 
     // vanilla access point arn@us-west-2
     @Benchmark
     fun vanillaAccessPointArn(blackhole: Blackhole) {
-        blackhole.consume(resolveEndpointSync(benchmarkCompletion) { provider.resolveEndpoint(vanillaAccessPointArnParams) })
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(vanillaAccessPointArnParams) })
     }
 
     // S3 outposts vanilla test
     @Benchmark
     fun s3OutpostsVanilla(blackhole: Blackhole) {
-        blackhole.consume(resolveEndpointSync(benchmarkCompletion) { provider.resolveEndpoint(s3OutpostsVanillaParams) })
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(s3OutpostsVanillaParams) })
     }
 }

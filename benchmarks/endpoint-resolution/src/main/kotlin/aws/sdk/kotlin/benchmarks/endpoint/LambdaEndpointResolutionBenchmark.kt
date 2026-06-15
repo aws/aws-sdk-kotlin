@@ -7,7 +7,6 @@ package aws.sdk.kotlin.benchmarks.endpoint
 import aws.sdk.kotlin.services.lambda.endpoints.DefaultLambdaEndpointProvider
 import aws.sdk.kotlin.services.lambda.endpoints.LambdaEndpointParameters
 import kotlinx.benchmark.*
-import org.openjdk.jmh.annotations.State
 
 /**
  * Benchmarks for Lambda endpoint resolution.
@@ -42,12 +41,12 @@ class LambdaEndpointResolutionBenchmark {
     // For region us-east-1 with FIPS disabled and DualStack disabled
     @Benchmark
     fun usEast1Standard(blackhole: Blackhole) {
-        blackhole.consume(resolveEndpointSync(benchmarkCompletion) { provider.resolveEndpoint(usEast1StandardParams) })
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(usEast1StandardParams) })
     }
 
     // For region us-gov-east-1 with FIPS enabled and DualStack enabled
     @Benchmark
     fun usGovEast1FipsDualStack(blackhole: Blackhole) {
-        blackhole.consume(resolveEndpointSync(benchmarkCompletion) { provider.resolveEndpoint(usGovEast1FipsDualStackParams) })
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(usGovEast1FipsDualStackParams) })
     }
 }

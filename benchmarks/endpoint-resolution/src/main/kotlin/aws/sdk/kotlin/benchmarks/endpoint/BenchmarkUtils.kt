@@ -10,11 +10,11 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
 import kotlin.coroutines.intrinsics.startCoroutineUninterceptedOrReturn
 
-val benchmarkCompletion = Continuation<Endpoint>(EmptyCoroutineContext) { result ->
+internal val completion = Continuation<Endpoint>(EmptyCoroutineContext) { result ->
     result.getOrThrow()
 }
 
-inline fun resolveEndpointSync(completion: Continuation<Endpoint>, crossinline block: suspend () -> Endpoint): Endpoint {
+internal inline fun resolveEndpointSync(crossinline block: suspend () -> Endpoint): Endpoint {
     val result = suspend { block() }
         .startCoroutineUninterceptedOrReturn(completion)
     check(result !== COROUTINE_SUSPENDED) { "resolveEndpoint suspended unexpectedly" }

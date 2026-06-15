@@ -71,7 +71,7 @@ object AwsRuntimeTypes {
     object Benchmarks : RuntimeTypePackage(AwsKotlinDependency.AWS_SERDE_BENCHMARKS) {
         val BenchmarkHarness = symbol("BenchmarkHarness")
         val BenchmarkInterceptor = symbol("BenchmarkInterceptor")
-        val BenchmarkMetadata = symbol("BenchmarkMetadata")
+        val KotlinBenchmarkMetadata = symbol("KotlinBenchmarkMetadata")
         val BenchmarkRegistry = symbol("BenchmarkRegistry")
         val BenchmarkResult = symbol("BenchmarkResult")
         val SerdeBenchmark = symbol("SerdeBenchmark")
