@@ -122,27 +122,26 @@ val stageGeneratedSources = tasks.register("stageGeneratedSources") {
             }
         }
 
-        // Generate registerAllProtocols() from the projection list
-        val imports = benchmarkProjections.joinToString("\n") { proj ->
-            val pkg = proj.name.replace("-", "")
-            "import aws.sdk.kotlin.benchmarks.serde.$pkg.registerBenchmarks as register${proj.sdkId}"
+        // Generate protocol registration map
+        val imports = benchmarkProjections.joinToString("\n") {
+            val pkg = it.name.replace("-", "")
+            "import aws.sdk.kotlin.benchmarks.serde.$pkg.registerBenchmarks as register${it.sdkId}"
         }
-        val calls = benchmarkProjections.joinToString("\n") { proj ->
-            "    register${proj.sdkId}()"
+        val mapEntries = benchmarkProjections.joinToString("\n") {
+            "    \"${it.name}\" to ::register${it.sdkId},"
         }
-        val src = """
+
+        val outDir = layout.buildDirectory.dir("generated-src/main/aws/sdk/kotlin/benchmarks/serde").get().asFile
+        outDir.mkdirs()
+        outDir.resolve("ProtocolRegistrations.kt").writeText("""
             |package aws.sdk.kotlin.benchmarks.serde
             |
             |$imports
             |
-            |internal fun registerAllProtocols() {
-            |$calls
-            |}
-        """.trimMargin()
-
-        val outDir = layout.buildDirectory.dir("generated-src/main/aws/sdk/kotlin/benchmarks/serde").get().asFile
-        outDir.mkdirs()
-        outDir.resolve("RegisterAllProtocols.kt").writeText(src)
+            |internal val protocolRegistrations: Map<String, () -> Unit> = mapOf(
+            |$mapEntries
+            |)
+        """.trimMargin())
     }
 }
 
@@ -164,9 +163,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 val asyncProfilerLib: String? = providers.gradleProperty("asyncProfiler.libPath").orNull
 
-tasks.register<JavaExec>("runAllBenchmarks") {
-    group = "benchmark"
-    description = "Run all serde benchmarks sequentially"
+fun JavaExec.configureBenchmarkTask() {
     dependsOn("classes")
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("aws.sdk.kotlin.benchmarks.serde.BenchmarkRunnerKt")
@@ -183,4 +180,25 @@ tasks.register<JavaExec>("runAllBenchmarks") {
         doFirst { profilesDir.get().asFile.mkdirs() }
         jvmArgs("-agentpath:$asyncProfilerLib=start,event=cpu,file=${profilesDir.get()}/serde-profile.jfr")
     }
+}
+
+tasks.register<JavaExec>("runAllBenchmarks") {
+    group = "benchmark"
+    description = "Run all serde benchmarks sequentially"
+    configureBenchmarkTask()
+}
+
+tasks.register<JavaExec>("runBenchmark") {
+    group = "benchmark"
+    description = "Run serde benchmarks for specific protocol(s). Use -Pbenchmark.protocol=aws-rest-json (comma-separated for multiple)"
+    configureBenchmarkTask()
+    val availableProtocols = benchmarkProjections.map { it.name }
+    val protocol = project.findProperty("benchmark.protocol") as? String
+        ?: error("benchmark.protocol property is required. Available: ${availableProtocols.joinToString()}")
+    val requested = protocol.split(",").map { it.trim() }
+    val invalid = requested.filter { req -> availableProtocols.none { it.contains(req, ignoreCase = true) } }
+    if (invalid.isNotEmpty()) {
+        error("Unknown protocol(s): ${invalid.joinToString()}. Available: ${availableProtocols.joinToString()}")
+    }
+    systemProperty("benchmark.protocol", protocol)
 }

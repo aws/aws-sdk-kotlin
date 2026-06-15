@@ -128,7 +128,6 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
         }
 
-        renderMain(className)
     }
 
     fun renderResponseBenchmarkClass(className: String, testCases: List<HttpResponseTestCase>) {
@@ -179,17 +178,6 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             }
         }
 
-        renderMain(className)
-    }
-
-    private fun renderMain(className: String) {
-        writer.write("")
-        writer.withBlock("fun main() = #T {", "}", RuntimeTypes.KotlinxCoroutines.runBlocking) {
-            write("val benchmark = #L()", className)
-            write("val results = benchmark.benchmarks()")
-            write("val metadata = #T(smithyKotlinVersion = System.getProperty(#S), sdkVersion = System.getProperty(#S))", AwsRuntimeTypes.Benchmarks.KotlinBenchmarkMetadata, "smithy.kotlin.version", "aws.sdk.kotlin.version")
-            write("println(#T.toJson(metadata, results))", AwsRuntimeTypes.Benchmarks.BenchmarkHarness)
-        }
     }
 
     private fun renderClientConfig() {

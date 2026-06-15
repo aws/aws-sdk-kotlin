@@ -7,7 +7,19 @@ package aws.sdk.kotlin.benchmarks.serde
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
-    registerAllProtocols()
+    val protocolFilter = System.getProperty("benchmark.protocol")
+    val filters = protocolFilter?.split(",")?.map { it.trim() }
+
+    val registrations = if (filters != null) {
+        protocolRegistrations.filterKeys { key -> filters.any { key.contains(it, ignoreCase = true) } }
+    } else {
+        protocolRegistrations
+    }
+
+    registrations.forEach { (name, register) ->
+        println("Registering protocol: $name")
+        register()
+    }
 
     val allResults = mutableListOf<BenchmarkResult>()
 
