@@ -133,7 +133,8 @@ val stageGeneratedSources = tasks.register("stageGeneratedSources") {
 
         val outDir = layout.buildDirectory.dir("generated-src/main/aws/sdk/kotlin/benchmarks/serde").get().asFile
         outDir.mkdirs()
-        outDir.resolve("ProtocolRegistrations.kt").writeText("""
+        outDir.resolve("ProtocolRegistrations.kt").writeText(
+            """
             |package aws.sdk.kotlin.benchmarks.serde
             |
             |$imports
@@ -141,7 +142,8 @@ val stageGeneratedSources = tasks.register("stageGeneratedSources") {
             |internal val protocolRegistrations: Map<String, () -> Unit> = mapOf(
             |$mapEntries
             |)
-        """.trimMargin())
+            """.trimMargin(),
+        )
     }
 }
 
