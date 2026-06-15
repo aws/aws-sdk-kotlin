@@ -57,7 +57,7 @@ object BenchmarkHarness {
      * - Measurement phase: run for MEASUREMENT_SECONDS (default 30s) or until MAX_ITERATIONS,
      *   whichever comes first. Must record at least MIN_ITERATIONS (default 1,000).
      */
-    internal inline suspend fun run(
+    internal suspend inline fun run(
         id: String,
         interceptor: BenchmarkInterceptor,
         extractNanos: (BenchmarkInterceptor) -> Long,

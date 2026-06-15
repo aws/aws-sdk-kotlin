@@ -154,7 +154,6 @@ private class HttpProtocolSerdeBenchmarkGenerator(
                 write("return results")
             }
         }
-
     }
 
     fun renderResponseBenchmarkClass(className: String, testCases: List<HttpResponseTestCase>) {
@@ -204,7 +203,6 @@ private class HttpProtocolSerdeBenchmarkGenerator(
                 write("return results")
             }
         }
-
     }
 
     private fun renderClientConfig() {
