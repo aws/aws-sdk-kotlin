@@ -7,11 +7,4 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.UpdateClauseExpr
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.UpdateExpr
 
-internal data class UpdateExprImpl(
-    override val set: UpdateExpr.Clause,
-    override val remove: UpdateExpr.Clause,
-    override val add: UpdateExpr.Clause,
-    override val delete: UpdateExpr.Clause,
-) : UpdateExpr
-
-internal data class UpdateExprClauseImpl(override val updates: List<UpdateClauseExpr> = listOf()) : UpdateExpr.Clause
+internal data class UpdateExprImpl(override val updates: List<UpdateClauseExpr>) : UpdateExpr

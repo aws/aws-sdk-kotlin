@@ -120,7 +120,7 @@ class TransactWriteItemsCounterInterceptorTest {
 
         val table = result.tables.single() as TransactWriteItemsRequestTable.PartitionKey<*, *>
         val update = assertNotNull(table.updates.single().update)
-        val updates = update.set.updates.associateBy { it.target.toString() }
+        val updates = update.updates.associateBy { it.target.toString() }
 
         assertEquals(2, updates.size)
         assertEquals(UpdateClauseExpr(UpdateAction.SET, AttributePath("foo"), LiteralExpr("bar")), updates["foo"])
@@ -164,7 +164,7 @@ class TransactWriteItemsCounterInterceptorTest {
         assertEquals(highLevelRequest, result)
 
         val table = (result as TransactWriteItemsRequest).tables.single() as TransactWriteItemsRequestTable.PartitionKey<*, *>
-        assertNull(table.updates.single().update.set.updates.associateBy { it.target.toString() }["counter1"])
+        assertNull(table.updates.single().update.updates.associateBy { it.target.toString() }["counter1"])
     }
 
     @Test

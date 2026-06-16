@@ -47,7 +47,7 @@ class UpdateItemCounterInterceptorTest {
         val result = interceptor.modifyBeforeSerialization(ctx).highLevelRequest as UpdateItemRequest.PartitionKey<KeyType.Key1<String>>
 
         val updateExpr = assertNotNull(result.update, "Found null update expression")
-        val updates = updateExpr.set.updates.associateBy { it.target.toString() }
+        val updates = updateExpr.updates.associateBy { it.target.toString() }
         assertEquals(4, updates.size)
 
         assertEquals(UpdateClauseExpr(UpdateAction.SET, AttributePath("foo"), LiteralExpr("bar")), updates["foo"])

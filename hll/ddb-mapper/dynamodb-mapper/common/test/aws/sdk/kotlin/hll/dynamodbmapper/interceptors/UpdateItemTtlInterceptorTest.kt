@@ -47,7 +47,7 @@ class UpdateItemTtlInterceptorTest {
         val result1 = interceptor.modifyBeforeSerialization(ctx).highLevelRequest as UpdateItemRequest.PartitionKey<KeyType.Key1<String>>
 
         val updateExpr1 = assertNotNull(result1.update, "Found null update expression")
-        val updates1 = updateExpr1.set.updates.associateBy { it.target.toString() }
+        val updates1 = updateExpr1.updates.associateBy { it.target.toString() }
         assertEquals(3, updates1.size)
 
         assertEquals(UpdateClauseExpr(UpdateAction.SET, AttributePath("foo"), LiteralExpr("bar")), updates1["foo"])
@@ -60,7 +60,7 @@ class UpdateItemTtlInterceptorTest {
         val result2 = interceptor.modifyBeforeSerialization(ctx).highLevelRequest as UpdateItemRequest.PartitionKey<KeyType.Key1<String>>
 
         val updateExpr2 = assertNotNull(result2.update, "Found null update expression")
-        val updates2 = updateExpr2.set.updates.associateBy { it.target.toString() }
+        val updates2 = updateExpr2.updates.associateBy { it.target.toString() }
         assertEquals(3, updates2.size)
 
         assertEquals(UpdateClauseExpr(UpdateAction.SET, AttributePath("foo"), LiteralExpr("bar")), updates2["foo"])

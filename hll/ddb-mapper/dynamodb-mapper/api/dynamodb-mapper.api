@@ -937,13 +937,6 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateDsl$Set$D
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr : aws/sdk/kotlin/hll/dynamodbmapper/expressions/Expression {
 	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Companion;
 	public fun accept (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/ExpressionVisitor;)Ljava/lang/Object;
-	public abstract fun getAdd ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;
-	public abstract fun getDelete ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;
-	public abstract fun getRemove ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;
-	public abstract fun getSet ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;
-}
-
-public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause {
 	public abstract fun getUpdates ()Ljava/util/List;
 }
 
@@ -955,9 +948,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Defa
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExprKt {
-	public static final fun Clause (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Companion;Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;
-	public static final fun UpdateExpr (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;
-	public static synthetic fun UpdateExpr$default (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr$Clause;ILjava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;
+	public static final fun UpdateExpr (Ljava/util/List;)Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/interceptors/CounterInterceptor : aws/sdk/kotlin/hll/dynamodbmapper/pipeline/Interceptor {
