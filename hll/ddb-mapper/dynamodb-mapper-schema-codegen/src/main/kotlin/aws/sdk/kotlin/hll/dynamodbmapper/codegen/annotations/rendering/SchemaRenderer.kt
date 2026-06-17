@@ -354,7 +354,7 @@ internal class SchemaRenderer(
                         require(lifetime > 0) { "@DynamoDbTtlSeconds must be positive, got $lifetime seconds on property ${prop.ddbName}" }
                         prop.simpleName.getShortName() to lifetime
                     }
-            }
+            }.toMap()
 
             // Handle Counter annotation
             val counterFields = properties.mapNotNull { prop ->
@@ -372,6 +372,13 @@ internal class SchemaRenderer(
             val hasAttributes = ttlFields.isNotEmpty() || counterFields.isNotEmpty()
 
             if (hasAttributes) {
+                if (ttlFields.isNotEmpty()) {
+                    val ttlFieldsCode = ttlFields.entries.joinToString { (fieldName, lifetime) ->
+                        format("#S to #LL", fieldName, lifetime)
+                    }
+                    write("private val ttlFields = #T(#L)", Types.Kotlin.Collections.mapOf, ttlFieldsCode)
+                }
+
                 withBlock(
                     "override val attributes: #T = #T {",
                     "}",
@@ -379,20 +386,16 @@ internal class SchemaRenderer(
                     Type.from(RuntimeTypes.Core.Collections.attributesOf),
                 ) {
                     if (ttlFields.isNotEmpty()) {
-                        writeInline("#T.#L to #T(", MapperTypes.Model.SchemaAttributes, "TtlFields", Types.Kotlin.Collections.setOf)
-                        ttlFields.forEachIndexed { index, (fieldName, lifetime) ->
-                            if (index > 0) writeInline(", ")
-                            writeInline("#T(#S, #LL)", Types.Kotlin.Pair, fieldName, lifetime)
-                        }
-                        write(")")
+                        write("#T.TtlFields to ttlFields", MapperTypes.Model.SchemaAttributes)
                     }
                     if (counterFields.isNotEmpty()) {
+                        val counterFieldsCode = counterFields.joinToString { format("#S", it) }
+
                         write(
-                            "#T.#L to #T(#L)",
+                            "#T.CounterFields to #T(#L)",
                             MapperTypes.Model.SchemaAttributes,
-                            "CounterFields",
                             Types.Kotlin.Collections.setOf,
-                            counterFields.joinToString(", ") { "\"$it\"" },
+                            counterFieldsCode,
                         )
                     }
                 }

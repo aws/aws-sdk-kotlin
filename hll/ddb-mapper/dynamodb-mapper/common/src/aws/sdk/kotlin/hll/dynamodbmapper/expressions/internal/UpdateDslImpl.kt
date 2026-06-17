@@ -7,36 +7,40 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal
 
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.*
 
-internal data class UpdateDslImpl(
-    val set: UpdateSetImpl = UpdateSetImpl(),
-    val remove: UpdateRemoveImpl = UpdateRemoveImpl(),
-    val add: UpdateAddImpl = UpdateAddImpl(),
-    val delete: UpdateDeleteImpl = UpdateDeleteImpl(),
+internal class UpdateDslImpl(
+    private val updates: MutableMap<AttributePath, UpdateClauseExpr> = mutableMapOf(),
 ) : UpdateDsl {
+    constructor(updateExpr: UpdateExpr?) : this(updateExpr?.updates ?: listOf())
+    constructor(updates: List<UpdateClauseExpr>) : this(updates.associateBy { it.target }.toMutableMap())
+
+    private val set = UpdateSetImpl(updates)
+    private val remove = UpdateRemoveImpl(updates)
+    private val add = UpdateAddImpl(updates)
+    private val delete = UpdateDeleteImpl(updates)
+
     override fun set(block: UpdateDsl.Set.() -> Unit) = set.block()
     override fun remove(block: UpdateDsl.Remove.() -> Unit) = remove.block()
     override fun add(block: UpdateDsl.Add.() -> Unit) = add.block()
     override fun delete(block: UpdateDsl.Delete.() -> Unit) = delete.block()
 
-    fun toExpression(): UpdateExpr = UpdateExpr(
-        UpdateExpr.Clause(set.updates),
-        UpdateExpr.Clause(remove.updates),
-        UpdateExpr.Clause(add.updates),
-        UpdateExpr.Clause(delete.updates),
-    )
+    fun toExpression(): UpdateExpr = UpdateExpr(updates.values.toList())
 }
 
-internal abstract class UpdateClauseImpl(val action: UpdateAction) {
-    private val _updates = mutableListOf<UpdateClauseExpr>()
-    val updates: List<UpdateClauseExpr> get() = _updates
-
+internal abstract class UpdateClauseImpl(
+    val action: UpdateAction,
+    private val updates: MutableMap<AttributePath, UpdateClauseExpr>,
+) {
     fun AttributePath.update(value: Expression) {
-        _updates += UpdateClauseExpr(action, this, value)
+        val clauseExp = UpdateClauseExpr(action, this, value)
+        val previousUpdate = updates.put(clauseExp.target, clauseExp)
+        if (previousUpdate != null) {
+            println("Warning: Replacing previous update of ${previousUpdate.target}") // FIXME log a proper warning
+        }
     }
 }
 
-internal class UpdateSetImpl :
-    UpdateClauseImpl(UpdateAction.SET),
+internal class UpdateSetImpl(updates: MutableMap<AttributePath, UpdateClauseExpr>) :
+    UpdateClauseImpl(UpdateAction.SET, updates),
     UpdateDsl.Set {
 
     override val attr = AttrImpl
@@ -66,8 +70,8 @@ internal class UpdateSetImpl :
     ): Expression = AdditiveExpr(AdditiveOperation.SUBTRACT, this, value)
 }
 
-internal class UpdateRemoveImpl :
-    UpdateClauseImpl(UpdateAction.REMOVE),
+internal class UpdateRemoveImpl(updates: MutableMap<AttributePath, UpdateClauseExpr>) :
+    UpdateClauseImpl(UpdateAction.REMOVE, updates),
     UpdateDsl.Remove {
 
     override val attr = AttrImpl
@@ -75,8 +79,8 @@ internal class UpdateRemoveImpl :
     override fun AttributePath.unaryMinus() = update(LiteralExpr(null))
 }
 
-internal class UpdateAddImpl :
-    UpdateClauseImpl(UpdateAction.ADD),
+internal class UpdateAddImpl(updates: MutableMap<AttributePath, UpdateClauseExpr>) :
+    UpdateClauseImpl(UpdateAction.ADD, updates),
     UpdateDsl.Add {
 
     override val attr: Attr = AttrImpl
@@ -84,8 +88,8 @@ internal class UpdateAddImpl :
     override fun AttributePath.plusAssign(value: Expression) = update(value)
 }
 
-internal class UpdateDeleteImpl :
-    UpdateClauseImpl(UpdateAction.DELETE),
+internal class UpdateDeleteImpl(updates: MutableMap<AttributePath, UpdateClauseExpr>) :
+    UpdateClauseImpl(UpdateAction.DELETE, updates),
     UpdateDsl.Delete {
 
     override val attr: Attr = AttrImpl

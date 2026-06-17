@@ -128,9 +128,10 @@ internal open class ParameterizingExpressionVisitor : ExpressionVisitor<String> 
     )
 
     override fun visit(expr: UpdateExpr): String = buildString {
-        fun appendClause(command: String, clause: UpdateExpr.Clause) {
-            val updates = clause.updates
-            if (updates.isNotEmpty()) {
+        val updates = expr.updates.groupBy { it.action }
+
+        fun appendClause(command: String, updates: List<UpdateClauseExpr>?) {
+            if (!updates.isNullOrEmpty()) {
                 append(command)
                 append(' ')
                 updates.joinTo(this) { it.accept() }
@@ -138,10 +139,10 @@ internal open class ParameterizingExpressionVisitor : ExpressionVisitor<String> 
             }
         }
 
-        appendClause("SET", expr.set)
-        appendClause("REMOVE", expr.remove)
-        appendClause("ADD", expr.add)
-        appendClause("DELETE", expr.delete)
+        appendClause("SET", updates[UpdateAction.SET])
+        appendClause("REMOVE", updates[UpdateAction.REMOVE])
+        appendClause("ADD", updates[UpdateAction.ADD])
+        appendClause("DELETE", updates[UpdateAction.DELETE])
     }.trim()
 
     override fun visit(expr: UpdateClauseExpr) = buildString {

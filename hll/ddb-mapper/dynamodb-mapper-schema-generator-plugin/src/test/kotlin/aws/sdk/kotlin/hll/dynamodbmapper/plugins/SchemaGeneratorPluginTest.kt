@@ -718,8 +718,9 @@ class SchemaGeneratorPluginTest {
             public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {
                 override val converter: UserConverter = UserConverter
                 override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
+                private val ttlFields = mapOf("expiresAt" to 86400L)
                 override val attributes: Attributes = attributesOf {
-                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 86400L))
+                    SchemaAttributes.TtlFields to ttlFields
                 }
             }
             """.trimIndent(),
@@ -753,8 +754,9 @@ class SchemaGeneratorPluginTest {
             public object MultipleTtlAnnotationsSchema : ItemSchema.PartitionKey<MultipleTtlAnnotations, KeyType.Key1<Int>> {
                 override val converter: MultipleTtlAnnotationsConverter = MultipleTtlAnnotationsConverter
                 override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
+                private val ttlFields = mapOf("expiresAt" to 3600L, "actuallyExpiresAt" to 7200L)
                 override val attributes: Attributes = attributesOf {
-                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 3600L), Pair("actuallyExpiresAt", 7200L))
+                    SchemaAttributes.TtlFields to ttlFields
                 }
             }
             """.trimIndent(),
@@ -788,8 +790,9 @@ class SchemaGeneratorPluginTest {
             public object UserWithCounterSchema : ItemSchema.PartitionKey<UserWithCounter, KeyType.Key1<Int>> {
                 override val converter: UserWithCounterConverter = UserWithCounterConverter
                 override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
+                private val ttlFields = mapOf("expiresAt" to 3600L)
                 override val attributes: Attributes = attributesOf {
-                    SchemaAttributes.TtlFields to setOf(Pair("expiresAt", 3600L))
+                    SchemaAttributes.TtlFields to ttlFields
                     SchemaAttributes.CounterFields to setOf("accessCount", "updateCount")
                 }
             }

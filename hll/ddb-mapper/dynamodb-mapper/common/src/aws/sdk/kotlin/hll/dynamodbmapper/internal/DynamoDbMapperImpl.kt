@@ -63,7 +63,7 @@ internal data class MapperConfigImpl(
 }
 
 internal class MapperConfigBuilderImpl : DynamoDbMapper.Config.Builder {
-    override var interceptors = mutableListOf<InterceptorAny>(
+    override var interceptors = mutableListOf(
         // Default interceptors
         TtlInterceptor(),
         CounterInterceptor(),
