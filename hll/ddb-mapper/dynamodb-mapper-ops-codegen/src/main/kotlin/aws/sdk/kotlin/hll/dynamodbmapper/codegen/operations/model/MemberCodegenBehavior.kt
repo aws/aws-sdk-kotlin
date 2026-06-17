@@ -301,7 +301,7 @@ private val transactWriteItemsRequestTables = CustomTransformation(
  * successfully matches with a member will be chosen.
  */
 private val rules = listOf(
-    // Deprecated expression members not to be carried forward into HLL
+    // Deprecated and/or unsupported expression members not to be carried forward into HLL
     Rule("conditionalOperator", llType("ConditionalOperator"), Drop),
     Rule("expected", Types.Kotlin.stringMap(llType("ExpectedAttributeValue")), Drop),
     Rule("queryFilter", Types.Kotlin.stringMap(llType("Condition")), Drop),
@@ -309,6 +309,7 @@ private val rules = listOf(
     Rule("keyConditions", Types.Kotlin.stringMap(llType("Condition")), Drop),
     Rule("attributesToGet", Types.Kotlin.list(Types.Kotlin.String), Drop),
     Rule("attributeUpdates", Types.Kotlin.stringMap(llType("AttributeValueUpdate")), Drop),
+    Rule("projectionExpression", Types.Kotlin.String, Drop),
 
     // Hoisted members
     Rule("tableName", Types.Kotlin.String, Hoist),
@@ -326,7 +327,7 @@ private val rules = listOf(
 
     // Expression literals
     Rule("keyConditionExpression", Types.Kotlin.String, ExpressionLiteral(KeyCondition)),
-    Rule("filterExpression", Types.Kotlin.String, ExpressionLiteral(Filter)),
+    Rule("filterExpression|conditionExpression".toRegex(), Types.Kotlin.String, ExpressionLiteral(Filter)),
     Rule("updateExpression", Types.Kotlin.String, ExpressionLiteral(Update)),
 
     // Expression arguments
