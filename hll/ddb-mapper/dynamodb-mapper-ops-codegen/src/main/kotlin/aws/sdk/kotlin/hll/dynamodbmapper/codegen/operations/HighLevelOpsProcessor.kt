@@ -15,6 +15,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.rendering.HighLevelR
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.getDeclaredFunctions
+import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
@@ -31,14 +32,20 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
     private val opAllowlist = environment.options["op-allowlist"]?.split(";")
     private val pkg = environment.options["pkg"] ?: MapperPkg.Hl.Ops.Base
 
-    private val ctx by lazy {
-        val codegenFactory = CodeGeneratorFactory(codeGenerator, logger) // FIXME Pass dependencies
-        RenderContext(logger, codegenFactory, pkg, "dynamodb-mapper-ops-codegen")
-    }
-
     override fun processImpl(resolver: Resolver): List<KSAnnotated> {
         logger.info("Scanning low-level DDB client for operations and types")
-        val operations = getOperations(resolver)
+        val operationFunctions = resolver
+            .getClassDeclarationByName<DynamoDbClient>()!!
+            .getDeclaredFunctions()
+            .filter(::allow)
+
+        val dependencyFiles = operationFunctions.mapNotNull { it.containingFile }
+        val codegenDeps = Dependencies(aggregating = false, sources = dependencyFiles.toList().toTypedArray())
+        logger.info("Found dependency files:\n${codegenDeps.originatingFiles.joinToString("\n") { it.filePath }}")
+
+        val codegenFactory = CodeGeneratorFactory(codeGenerator, logger, codegenDeps)
+        val ctx = RenderContext(logger, codegenFactory, pkg, "dynamodb-mapper-ops-codegen")
+        val operations = getOperations(resolver, ctx)
 
         logger.info("Rendering high-level operations and types for ${operations.map { it.name }}")
         HighLevelRenderer(ctx, operations).render()
@@ -59,7 +66,7 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
         return allowed ?: true
     }
 
-    private fun getOperations(resolver: Resolver): List<Operation> = resolver
+    private fun getOperations(resolver: Resolver, ctx: RenderContext): List<Operation> = resolver
         .getClassDeclarationByName<DynamoDbClient>()!!
         .getDeclaredFunctions()
         .filter(::allow)
