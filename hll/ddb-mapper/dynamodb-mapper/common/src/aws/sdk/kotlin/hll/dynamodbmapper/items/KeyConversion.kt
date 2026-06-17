@@ -157,7 +157,7 @@ internal fun <PK : KeyType, SK : KeyType> itemToCk(
  * @param schema The partition key schema
  * @param entity The entity from which to extract the key
  */
-internal fun <T, PK : KeyType> entityToPk(schema: ItemSchema.PartitionKey<T, PK>, entity: T): PK = // TODO make this more efficient
+internal fun <T, PK : KeyType> entityToPk(schema: ItemSchema.PartitionKey<T, PK>, entity: T): PK =
     schema.partitionKey.converter.convertLeft(schema.converter.convertRight(entity))
 
 /**
@@ -169,7 +169,6 @@ internal fun <T, PK : KeyType, SK : KeyType> entityToCk(
     schema: ItemSchema.CompositeKey<T, PK, SK>,
     entity: T,
 ): Pair<PK, SK> {
-    // TODO make this more efficient
     val fullItem = schema.converter.convertRight(entity)
     val pk = schema.partitionKey.converter.convertLeft(fullItem)
     val sk = schema.sortKey.converter.convertLeft(fullItem)

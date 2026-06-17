@@ -655,9 +655,6 @@ public interface FilterDsl {
      */
     public fun AttributePath.isBetween(min: ByteArray, max: ByteArray): BooleanExpr = isBetween(LiteralExpr(min), LiteralExpr(max))
 
-    // TODO The following overloads support [ClosedRange] but [OpenEndRange] also exists. DynamoDB expressions don't
-    //  support it directly but we may be able to cheese it with two inequalities ANDed together.
-
     /**
      * Creates a range expression for verifying this expression is in the given range
      * @param range The range to check

@@ -27,7 +27,6 @@ internal class OperationsTypeRenderer(
     private val operations: List<Operation>,
 ) : RendererBase(ctx, "${itemSourceKind.name}Operations") {
     private companion object {
-        // FIXME Support unsigned number types?
         val keyDataTypes = listOf(
             Types.Kotlin.Byte,
             Types.Kotlin.ByteArray,

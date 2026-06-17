@@ -61,8 +61,6 @@ public interface DynamoDbMapper : DynamoDbMapperOperations {
         schema: ItemSchema.CompositeKey<T, PK, SK>,
     ): Table.CompositeKey<T, PK, SK>
 
-    // TODO add multi-table operations like batchGetItem, transactWriteItems, etc.
-
     /**
      * The immutable configuration for a [DynamoDbMapper] instance
      */

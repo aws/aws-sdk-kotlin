@@ -91,10 +91,8 @@ internal sealed interface MemberCodegenBehavior {
  * Identifies a type of expression literal supported by DynamoDB APIs
  */
 internal enum class ExpressionLiteralType {
-    Condition,
     Filter,
     KeyCondition,
-    Projection,
     Update,
 }
 
@@ -330,10 +328,6 @@ private val rules = listOf(
     Rule("keyConditionExpression", Types.Kotlin.String, ExpressionLiteral(KeyCondition)),
     Rule("filterExpression", Types.Kotlin.String, ExpressionLiteral(Filter)),
     Rule("updateExpression", Types.Kotlin.String, ExpressionLiteral(Update)),
-
-    // TODO add support for remaining expression types
-    Rule("conditionExpression", Types.Kotlin.String, Drop),
-    Rule("projectionExpression", Types.Kotlin.String, Drop),
 
     // Expression arguments
     Rule("expressionAttributeNames", Types.Kotlin.stringMap(Types.Kotlin.String), ExpressionArguments(AttributeNames)),

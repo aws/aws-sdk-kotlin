@@ -154,7 +154,6 @@ internal class SchemaRenderer(
      * with our [ItemToValueConverter]
      */
     private fun renderValueConverter() {
-        // TODO Offer alternate serialization options besides AttributeValue.M?
         generatedAnnotation()
         write(
             "#Lval #L: #T = #T(#T, #T)",
