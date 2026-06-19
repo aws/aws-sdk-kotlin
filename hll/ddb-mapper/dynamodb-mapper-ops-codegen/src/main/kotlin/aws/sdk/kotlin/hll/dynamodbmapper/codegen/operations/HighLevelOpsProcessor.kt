@@ -45,7 +45,11 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
 
         val codegenFactory = CodeGeneratorFactory(codeGenerator, logger, codegenDeps)
         val ctx = RenderContext(logger, codegenFactory, pkg, "dynamodb-mapper-ops-codegen")
-        val operations = getOperations(resolver, ctx)
+
+        val operations = operationFunctions
+            .map(Operation::from)
+            .map { it.toHighLevel(ctx) }
+            .toList()
 
         logger.info("Rendering high-level operations and types for ${operations.map { it.name }}")
         HighLevelRenderer(ctx, operations).render()
@@ -65,12 +69,4 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
 
         return allowed ?: true
     }
-
-    private fun getOperations(resolver: Resolver, ctx: RenderContext): List<Operation> = resolver
-        .getClassDeclarationByName<DynamoDbClient>()!!
-        .getDeclaredFunctions()
-        .filter(::allow)
-        .map(Operation::from)
-        .map { it.toHighLevel(ctx) }
-        .toList()
 }

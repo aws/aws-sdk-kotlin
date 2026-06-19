@@ -6,12 +6,10 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.intersectKeys
 import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
-import aws.sdk.kotlin.hll.dynamodbmapper.util.av
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.BooleanValueConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import kotlinx.coroutines.channels.ProducerScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

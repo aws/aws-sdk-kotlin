@@ -135,7 +135,6 @@ internal fun <SK : KeyType> itemToSk(
  * @param schema The composite key schema
  * @param item The item containing the key value(s)
  */
-@JvmName("itemToCkNonNull")
 internal fun <PK : KeyType, SK : KeyType> itemToCk(
     schema: ItemSchema.CompositeKey<*, PK, SK>,
     item: Item,
