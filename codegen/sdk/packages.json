@@ -1207,6 +1207,18 @@
             "brazilName": "AwsSdkKotlinLambda"
         },
         {
+            "sdkId": "Lambda Core",
+            "namespace": "aws.sdk.kotlin.services.lambdacore",
+            "artifactName": "lambdacore",
+            "brazilName": "AwsSdkKotlinLambdaCore"
+        },
+        {
+            "sdkId": "Lambda Microvms",
+            "namespace": "aws.sdk.kotlin.services.lambdamicrovms",
+            "artifactName": "lambdamicrovms",
+            "brazilName": "AwsSdkKotlinLambdaMicrovms"
+        },
+        {
             "sdkId": "Launch Wizard",
             "namespace": "aws.sdk.kotlin.services.launchwizard",
             "artifactName": "launchwizard",
