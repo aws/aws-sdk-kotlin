@@ -12,8 +12,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.pipeline.internal.MapperContextImpl
  * @param T The type of objects being converted to/from DynamoDB items
  */
 public interface MapperContext<T> {
-    // TODO what other fields would be useful in here?
-
     /**
      * The metadata about an operation invocation
      */

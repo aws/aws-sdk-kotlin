@@ -121,7 +121,5 @@ public class BuilderRenderer(
             }
             blankLine()
         }
-
-        // TODO add DSL methods for low-level structure members
     }
 }

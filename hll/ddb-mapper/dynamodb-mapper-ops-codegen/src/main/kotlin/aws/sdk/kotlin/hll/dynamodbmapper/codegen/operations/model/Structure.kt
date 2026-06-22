@@ -68,9 +68,6 @@ private fun deriveExpressionLiteral(llMember: Member, type: ExpressionLiteralTyp
         ExpressionLiteralType.Filter -> MapperTypes.Expressions.BooleanExpr
         ExpressionLiteralType.KeyCondition -> MapperTypes.Expressions.KeyFilter
         ExpressionLiteralType.Update -> MapperTypes.Expressions.UpdateExpr
-
-        // TODO add support for other expression types
-        else -> return null
     }.nullable(llMember.type.nullable)
 
     val dslInfo = when (type) {

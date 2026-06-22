@@ -1240,12 +1240,34 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/items/KeyTypeKt {
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/items/SimpleItemConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
-	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;[Laws/sdk/kotlin/hll/dynamodbmapper/items/AttributeDescriptor;)V
+	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;[Laws/sdk/kotlin/hll/dynamodbmapper/items/AttributeDescriptor;Laws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;[Laws/sdk/kotlin/hll/dynamodbmapper/items/AttributeDescriptor;Laws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun convertLeft (Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;)Ljava/lang/Object;
 	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun convertRight (Ljava/lang/Object;)Laws/sdk/kotlin/hll/dynamodbmapper/model/Item;
 	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun getDescriptors ()Ljava/util/Map;
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling {
+}
+
+public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling$Custom : aws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling {
+	public abstract fun handleUnknown (Ljava/lang/String;Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;Ljava/lang/Object;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling$Ignore : aws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling$Ignore;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling$ThrowException : aws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/items/UnknownValueHandling$ThrowException;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/Index : aws/sdk/kotlin/hll/dynamodbmapper/model/IndexSpec, aws/sdk/kotlin/hll/dynamodbmapper/model/ItemSource, aws/sdk/kotlin/hll/dynamodbmapper/operations/IndexOperations {
@@ -1579,6 +1601,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/BatchWriteItemRe
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequest {
 	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequest$Companion;
+	public abstract fun getCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public abstract fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
 	public abstract fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
 	public abstract fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
@@ -1608,12 +1631,15 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemReques
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequestCompositeKeyBuilder {
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequest$CompositeKey;
+	public final fun condition (Lkotlin/jvm/functions/Function1;)V
+	public final fun getCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public final fun getPartitionKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
 	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
 	public final fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
 	public final fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
 	public final fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
 	public final fun getSortKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
+	public final fun setCondition (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;)V
 	public final fun setPartitionKey (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
 	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
 	public final fun setReturnItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;)V
@@ -1634,11 +1660,14 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemReques
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequestPartitionKeyBuilder {
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemRequest$PartitionKey;
+	public final fun condition (Lkotlin/jvm/functions/Function1;)V
+	public final fun getCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public final fun getPartitionKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
 	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
 	public final fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
 	public final fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
 	public final fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
+	public final fun setCondition (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;)V
 	public final fun setPartitionKey (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
 	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
 	public final fun setReturnItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;)V
@@ -1979,6 +2008,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/ItemSourceOperat
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/PutItemRequest {
 	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/PutItemRequest$Companion;
+	public abstract fun getCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public abstract fun getItem ()Ljava/lang/Object;
 	public abstract fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
 	public abstract fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
@@ -1992,11 +2022,14 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/PutItemRequest$C
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/PutItemRequestBuilder {
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/PutItemRequest;
+	public final fun condition (Lkotlin/jvm/functions/Function1;)V
+	public final fun getCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public final fun getItem ()Ljava/lang/Object;
 	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
 	public final fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
 	public final fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
 	public final fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
+	public final fun setCondition (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;)V
 	public final fun setItem (Ljava/lang/Object;)V
 	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
 	public final fun setReturnItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;)V
@@ -2793,6 +2826,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/TransactWriteIte
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest {
 	public static final field Companion Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$Companion;
+	public abstract fun getCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public abstract fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
 	public abstract fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
 	public abstract fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
@@ -2823,6 +2857,8 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemReques
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequestCompositeKeyBuilder {
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$CompositeKey;
+	public final fun condition (Lkotlin/jvm/functions/Function1;)V
+	public final fun getCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public final fun getPartitionKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
 	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
 	public final fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
@@ -2830,6 +2866,7 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemReques
 	public final fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
 	public final fun getSortKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
 	public final fun getUpdate ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;
+	public final fun setCondition (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;)V
 	public final fun setPartitionKey (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
 	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
 	public final fun setReturnItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;)V
@@ -2852,12 +2889,15 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemReques
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequestPartitionKeyBuilder {
 	public fun <init> ()V
 	public final fun build ()Laws/sdk/kotlin/hll/dynamodbmapper/operations/UpdateItemRequest$PartitionKey;
+	public final fun condition (Lkotlin/jvm/functions/Function1;)V
+	public final fun getCondition ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;
 	public final fun getPartitionKey ()Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;
 	public final fun getReturnConsumedCapacity ()Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;
 	public final fun getReturnItemCollectionMetrics ()Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;
 	public final fun getReturnValues ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValue;
 	public final fun getReturnValuesOnConditionCheckFailure ()Laws/sdk/kotlin/services/dynamodb/model/ReturnValuesOnConditionCheckFailure;
 	public final fun getUpdate ()Laws/sdk/kotlin/hll/dynamodbmapper/expressions/UpdateExpr;
+	public final fun setCondition (Laws/sdk/kotlin/hll/dynamodbmapper/expressions/BooleanExpr;)V
 	public final fun setPartitionKey (Laws/sdk/kotlin/hll/dynamodbmapper/items/KeyType;)V
 	public final fun setReturnConsumedCapacity (Laws/sdk/kotlin/services/dynamodb/model/ReturnConsumedCapacity;)V
 	public final fun setReturnItemCollectionMetrics (Laws/sdk/kotlin/services/dynamodb/model/ReturnItemCollectionMetrics;)V

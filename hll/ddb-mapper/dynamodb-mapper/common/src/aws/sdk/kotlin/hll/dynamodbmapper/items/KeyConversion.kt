@@ -135,30 +135,20 @@ internal fun <SK : KeyType> itemToSk(
  * @param schema The composite key schema
  * @param item The item containing the key value(s)
  */
-@JvmName("itemToCkNonNull")
 internal fun <PK : KeyType, SK : KeyType> itemToCk(
     schema: ItemSchema.CompositeKey<*, PK, SK>,
     item: Item,
 ): Pair<PK, SK> = itemToPk(schema, item) to itemToSk(schema, item)
 
 /**
- * Converts the given [Item] into a partition key and sort key with the given schema
- * @param schema The composite key schema
- * @param item The item containing the key value(s)
- */
-@JvmName("itemToCkNullable")
-internal fun <PK : KeyType, SK : KeyType> itemToCk(
-    schema: ItemSchema.CompositeKey<*, PK, SK>,
-    item: Item?,
-): Pair<PK, SK>? = item?.let { itemToPk(schema, item) to itemToSk(schema, item) }
-
-/**
  * Extracts the partition key an entity of type [T] using the given schema
  * @param schema The partition key schema
  * @param entity The entity from which to extract the key
  */
-internal fun <T, PK : KeyType> entityToPk(schema: ItemSchema.PartitionKey<T, PK>, entity: T): PK = // TODO make this more efficient
-    schema.partitionKey.converter.convertLeft(schema.converter.convertRight(entity))
+internal fun <T, PK : KeyType> entityToPk(schema: ItemSchema.PartitionKey<T, PK>, entity: T): PK = schema
+    .partitionKey
+    .converter
+    .convertLeft(schema.converter.convertRight(entity))
 
 /**
  * Extracts the composite key an entity of type [T] using the given schema
@@ -169,7 +159,6 @@ internal fun <T, PK : KeyType, SK : KeyType> entityToCk(
     schema: ItemSchema.CompositeKey<T, PK, SK>,
     entity: T,
 ): Pair<PK, SK> {
-    // TODO make this more efficient
     val fullItem = schema.converter.convertRight(entity)
     val pk = schema.partitionKey.converter.convertLeft(fullItem)
     val sk = schema.sortKey.converter.convertLeft(fullItem)

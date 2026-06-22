@@ -64,7 +64,7 @@ internal fun dynamicAv(value: Any?): AttributeValue = when (value) {
     is Map<*, *> -> av(value as Map<String, Any?>)
     is Number -> av(value)
     is Set<*> -> when (val type = value.firstOrNull()) { // Attempt to determine set type by first element
-        null -> av(value as Set<String>) // FIXME Is this a bad idea for the empty set case?
+        null -> av(value as Set<String>)
         is ByteArray -> av(value as Set<ByteArray>)
         is Number -> av(value as Set<Number>)
         is String -> av(value as Set<String>)
@@ -74,6 +74,7 @@ internal fun dynamicAv(value: Any?): AttributeValue = when (value) {
         is UShort -> av(value as Set<UShort>)
         else -> error("Unsupported set element type $type")
     }
+
     is String -> av(value)
     else -> error("Unsupported attribute value type ${value::class}")
 }

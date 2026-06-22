@@ -18,7 +18,7 @@ import com.google.devtools.ksp.processing.CodeGenerator as KSCodeGenerator
 public class CodeGeneratorFactory(
     private val ksCodeGenerator: KSCodeGenerator,
     private val logger: KSPLogger,
-    private val dependencies: Dependencies = Dependencies.ALL_FILES,
+    private val dependencies: Dependencies,
 ) {
     /**
      * Creates a new [CodeGenerator] backed by a [KSCodeGenerator]. The returned generator starts with no imports and
