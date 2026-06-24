@@ -1,0 +1,8 @@
+{
+  "id": "6f3e5a1b-4c92-4d8a-bf7e-9a1c3d5e7f2b",
+  "type": "feature",
+  "description": "Add StaticRegionProvider for explicitly setting a region via RegionProvider",
+  "issues": [
+    "aws/aws-sdk-kotlin#1005"
+  ]
+}
