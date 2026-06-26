@@ -59,7 +59,7 @@ class ResolveRetryStrategyTest {
                     """
                 [default]
                 max_attempts=$expectedMaxAttempts
-                """.trimIndent()
+                    """.trimIndent(),
                 ),
             ),
         )
@@ -100,11 +100,13 @@ class ResolveRetryStrategyTest {
         val platform = TestPlatformProvider.of(
             env = mapOf("AWS_CONFIG_FILE" to "config"),
             fs = mapOf(
-                "config" to TestFile("""
+                "config" to TestFile(
+                    """
                 [default]
                 max_attempts=$expectedMaxAttempts
                 retry_mode=$retryMode
-                """.trimIndent()),
+                    """.trimIndent(),
+                ),
             ),
         )
 
@@ -149,11 +151,13 @@ class ResolveRetryStrategyTest {
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to TestFile("""
+                "config" to TestFile(
+                    """
                 [default]
                 max_attempts=$expectedMaxAttempts
                 retry_mode=$retryMode
-                """.trimIndent()),
+                    """.trimIndent(),
+                ),
             ),
         )
 
@@ -206,11 +210,13 @@ class ResolveRetryStrategyTest {
                 AwsSdkSetting.AwsRetryMode.envVar to retryMode,
             ),
             fs = mapOf(
-                "config" to TestFile("""
+                "config" to TestFile(
+                    """
                 [default]
                 max_attempts=$expectedMaxAttempts
                 retry_mode=invalid-retry-mode-should-be-ignored
-                """.trimIndent()),
+                    """.trimIndent(),
+                ),
             ),
         )
 
@@ -231,11 +237,13 @@ class ResolveRetryStrategyTest {
                 AwsSdkSetting.AwsMaxAttempts.envVar to expectedMaxAttempts.toString(),
             ),
             fs = mapOf(
-                "config" to TestFile("""
+                "config" to TestFile(
+                    """
                 [default]
                 max_attempts=55
                 retry_mode=invalid-retry-mode-should-be-ignored
-                """.trimIndent()),
+                    """.trimIndent(),
+                ),
             ),
         )
 

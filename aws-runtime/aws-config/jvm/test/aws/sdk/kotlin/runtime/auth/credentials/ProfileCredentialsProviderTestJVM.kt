@@ -26,10 +26,12 @@ class ProfileCredentialsProviderTestJVM {
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to TestFile("""
+                "config" to TestFile(
+                    """
                 [default]
                 credential_process = awscreds-custom
-                """.trimIndent()),
+                    """.trimIndent(),
+                ),
                 "awscreds-custom" to TestFile("some-process"),
             ),
         )

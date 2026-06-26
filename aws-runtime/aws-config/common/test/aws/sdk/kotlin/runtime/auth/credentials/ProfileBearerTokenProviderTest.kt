@@ -32,20 +32,24 @@ class ProfileBearerTokenProviderTest {
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to TestFile("""
+                "config" to TestFile(
+                    """
                 [default]
                 sso_session = $sessionName
 
                 [sso-session $sessionName]
                 sso_start_url = https://test-url
                 sso_region = us-west-2
-                """.trimIndent()),
-                cachePath to TestFile("""
+                    """.trimIndent(),
+                ),
+                cachePath to TestFile(
+                    """
                 {
                     "accessToken": "cachedtoken",
                     "expiresAt": "2022-07-07T14:30:00Z"
                 }
-                """.trimIndent()),
+                    """.trimIndent(),
+                ),
             ),
         )
 
@@ -71,13 +75,15 @@ class ProfileBearerTokenProviderTest {
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to TestFile("""
+                "config" to TestFile(
+                    """
                 [default]
                 sso_session = $sessionName
 
                 [sso-session $sessionName]
                 sso_region = us-west-2
-                """.trimIndent()),
+                    """.trimIndent(),
+                ),
             ),
         )
 
@@ -102,13 +108,15 @@ class ProfileBearerTokenProviderTest {
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to TestFile("""
+                "config" to TestFile(
+                    """
                 [default]
                 sso_session = $sessionName
 
                 [sso-session $sessionName]
                 sso_start_url = https://test-url
-                """.trimIndent()),
+                    """.trimIndent(),
+                ),
             ),
         )
 
@@ -133,10 +141,12 @@ class ProfileBearerTokenProviderTest {
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to TestFile("""
+                "config" to TestFile(
+                    """
                 [default]
                 sso_session = $sessionName
-                """.trimIndent()),
+                    """.trimIndent(),
+                ),
             ),
         )
 
