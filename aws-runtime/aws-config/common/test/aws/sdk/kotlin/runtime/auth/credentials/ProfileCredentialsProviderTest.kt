@@ -16,6 +16,7 @@ import aws.smithy.kotlin.runtime.collections.attributesOf
 import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
 import aws.smithy.kotlin.runtime.net.Host
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -24,14 +25,14 @@ import kotlin.test.assertEquals
 class ProfileCredentialsProviderTest {
     @Test
     fun testDefaultProfile() = runTest {
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf("AWS_CONFIG_FILE" to "config"),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 aws_access_key_id = AKID-Default
                 aws_secret_access_key = Default-Secret
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
         val testEngine = TestConnection()
@@ -48,18 +49,18 @@ class ProfileCredentialsProviderTest {
 
     @Test
     fun testExplicitProfileOverride() = runTest {
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf("AWS_CONFIG_FILE" to "config"),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 aws_access_key_id = AKID-Default
                 aws_secret_access_key = Default-Secret
-                
+
                 [profile my-profile]
                 aws_access_key_id = AKID-Profile
                 aws_secret_access_key = Profile-Secret
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
         val testEngine = TestConnection()
@@ -77,21 +78,21 @@ class ProfileCredentialsProviderTest {
 
     @Test
     fun testProfileOverrideFromEnvironment() = runTest {
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "AWS_CONFIG_FILE" to "config",
                 "AWS_PROFILE" to "my-profile",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 aws_access_key_id = AKID-Default
                 aws_secret_access_key = Default-Secret
-                
+
                 [profile my-profile]
                 aws_access_key_id = AKID-Profile
                 aws_secret_access_key = Profile-Secret
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
         val testEngine = TestConnection()
@@ -111,22 +112,22 @@ class ProfileCredentialsProviderTest {
         // smoke test for assume role, more involved scenarios are tested through the default chain
 
         val testArn = "arn:aws:iam::1234567:role/test-role"
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "AWS_CONFIG_FILE" to "config",
                 "AWS_REGION" to "us-west-2",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 role_arn = $testArn
                 source_profile = B
-                
+
                 [profile B]
                 region = us-east-1
                 aws_access_key_id = AKID-Profile
                 aws_secret_access_key = Profile-Secret
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
         val testEngine = buildTestConnection {
@@ -157,13 +158,13 @@ class ProfileCredentialsProviderTest {
     @Test
     fun testExplicitRegion() = runTest {
         val testArn = "arn:aws:iam::1234567:role/test-role"
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "AWS_CONFIG_FILE" to "config",
                 "AWS_REGION" to "eu-west-3",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 role_arn = $testArn
                 source_profile = B
@@ -171,8 +172,8 @@ class ProfileCredentialsProviderTest {
                 [profile B]
                 aws_access_key_id = AKID-Profile
                 aws_secret_access_key = Profile-Secret
-                region = af-south-1 
-                """.trimIndent(),
+                region = af-south-1
+                """.trimIndent()),
             ),
         )
 
@@ -198,13 +199,13 @@ class ProfileCredentialsProviderTest {
     @Test
     fun testProfileRegion() = runTest {
         val testArn = "arn:aws:iam::1234567:role/test-role"
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "AWS_CONFIG_FILE" to "config",
                 "AWS_REGION" to "eu-west-3",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 role_arn = $testArn
                 region = us-west-2
@@ -213,7 +214,7 @@ class ProfileCredentialsProviderTest {
                 [profile B]
                 aws_access_key_id = AKID-Profile
                 aws_secret_access_key = Profile-Secret
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
 
@@ -239,13 +240,13 @@ class ProfileCredentialsProviderTest {
     @Test
     fun testAttributeRegion() = runTest {
         val testArn = "arn:aws:iam::1234567:role/test-role"
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "AWS_CONFIG_FILE" to "config",
                 "AWS_REGION" to "eu-west-3",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 role_arn = $testArn
                 source_profile = B
@@ -253,7 +254,7 @@ class ProfileCredentialsProviderTest {
                 [profile B]
                 aws_access_key_id = AKID-Profile
                 aws_secret_access_key = Profile-Secret
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
 
@@ -278,13 +279,13 @@ class ProfileCredentialsProviderTest {
     @Test
     fun testPlatformRegion() = runTest {
         val testArn = "arn:aws:iam::1234567:role/test-role"
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "AWS_CONFIG_FILE" to "config",
                 "AWS_REGION" to "us-west-2",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 role_arn = $testArn
                 source_profile = B
@@ -292,7 +293,7 @@ class ProfileCredentialsProviderTest {
                 [profile B]
                 aws_access_key_id = AKID-Profile
                 aws_secret_access_key = Profile-Secret
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
 
@@ -312,15 +313,15 @@ class ProfileCredentialsProviderTest {
 
     @Test
     fun testAccountId() = runTest {
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf("AWS_CONFIG_FILE" to "config"),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 aws_access_key_id = AKID-Default
                 aws_secret_access_key = Default-Secret
                 aws_account_id = 12345
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
         val testEngine = TestConnection()
@@ -338,7 +339,7 @@ class ProfileCredentialsProviderTest {
     @Test
     fun assumeRoleWithNamedProviderBusinessMetrics() = runTest {
         val testArn = "arn:aws:iam::1234567:role/test-role"
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "AWS_CONFIG_FILE" to "config",
                 "AWS_REGION" to "us-west-2",
@@ -346,11 +347,11 @@ class ProfileCredentialsProviderTest {
                 "AWS_SECRET_ACCESS_KEY" to "2",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 role_arn = $testArn
                 credential_source = Environment
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
         val testEngine = buildTestConnection {

@@ -8,6 +8,7 @@ package aws.sdk.kotlin.runtime.auth.credentials
 import aws.smithy.kotlin.runtime.httptest.TestEngine
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.ManualClock
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.test.runTest
@@ -25,26 +26,26 @@ class ProfileBearerTokenProviderTest {
         val expiresAt = Instant.fromIso8601("2022-07-07T14:30:00Z")
         val clock = ManualClock(expiresAt - 15.minutes)
 
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "HOME" to "/home",
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 sso_session = $sessionName
-                
+
                 [sso-session $sessionName]
                 sso_start_url = https://test-url
                 sso_region = us-west-2
-                """.trimIndent(),
-                cachePath to """
+                """.trimIndent()),
+                cachePath to TestFile("""
                 {
                     "accessToken": "cachedtoken",
                     "expiresAt": "2022-07-07T14:30:00Z"
                 }
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
 
@@ -64,19 +65,19 @@ class ProfileBearerTokenProviderTest {
         val expiresAt = Instant.fromIso8601("2022-07-07T14:30:00Z")
         val clock = ManualClock(expiresAt - 15.minutes)
 
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "HOME" to "/home",
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 sso_session = $sessionName
-                
+
                 [sso-session $sessionName]
                 sso_region = us-west-2
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
 
@@ -95,19 +96,19 @@ class ProfileBearerTokenProviderTest {
         val expiresAt = Instant.fromIso8601("2022-07-07T14:30:00Z")
         val clock = ManualClock(expiresAt - 15.minutes)
 
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "HOME" to "/home",
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 sso_session = $sessionName
-                
+
                 [sso-session $sessionName]
                 sso_start_url = https://test-url
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
 
@@ -126,16 +127,16 @@ class ProfileBearerTokenProviderTest {
         val expiresAt = Instant.fromIso8601("2022-07-07T14:30:00Z")
         val clock = ManualClock(expiresAt - 15.minutes)
 
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "HOME" to "/home",
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile("""
                 [default]
                 sso_session = $sessionName
-                """.trimIndent(),
+                """.trimIndent()),
             ),
         )
 

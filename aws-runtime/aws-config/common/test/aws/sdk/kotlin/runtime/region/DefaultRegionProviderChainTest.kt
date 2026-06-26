@@ -6,6 +6,7 @@
 package aws.sdk.kotlin.runtime.region
 
 import aws.sdk.kotlin.runtime.util.TestInstanceMetadataProvider
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.*
@@ -65,7 +66,7 @@ fun TestPlatformProvider.Companion.fromJsonNode(obj: JsonObject): TestPlatformPr
     val env = obj["env"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
     val props = obj["props"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
     val fs = obj["fs"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
-    return TestPlatformProvider(env, props, fs)
+    return TestPlatformProvider.of(env = env, props = props, fs = fs.mapValues { (_, v) -> TestFile(v) })
 }
 
 /**
