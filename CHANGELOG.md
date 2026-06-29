@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.6.103] - 06/29/2026
+
+### Features
+* (**appconfig**) AWS AppConfig introduces Experimentation tools - enhanced capabilities within AWS AppConfig that enable you to run AB tests, multivariate tests, and gradual feature rollouts across your application stack.
+* (**cloudwatch**) This release adds the API (PutLogAlarm) to manage a new CloudWatch resource, Log Based Alarms. Log Based Alarms allows customers to alarm directly on CloudWatch Logs query results.
+* (**connectcampaignsv2**) Adding new attributes to PutProfileOutboundRequest API that will create an outbound request call for the customer's Web Notification outbound campaign.
+* (**connecthealth**) Expand input validation to support Unicode characters and markdown table syntax.
+* (**ec2**) Adds support for the precision time strategy and a parentGroupId parameter on CreatePlacementGroup and DescribePlacementGroups. Precision time placement groups and cluster placement groups with a parent precision time placement group ensure instances launch on precision time capable hardware.
+* (**ecs**) Amazon ECS now supports customizable deployment circuit breaker configurations. Customers can now define the failure threshold or control the failure counting mechanism.
+* (**evs**) Amazon EVS introduces a VMware Cloud Foundation (VCF) self-deployed mode, along with new connectors to VCF components such as the Operations and SDDC managers to monitor coverage and usage.
+* (**glue**) Added the UpdateAsset operation to set the business name and description for an existing AWS Glue Data Catalog asset.
+* (**imagebuilder**) Adds support for AMI watermarks in Image Builder.
+* (**lambda**) Lambda now supports self-managed S3 buckets for Lambda code storage giving you the option for Lambda to reference a copy of your source code from your own S3 buckets. This allows you to maintain a single copy of your source code and manage your own code storage limits.
+* (**pcs**) Add support for in-place Slurm version upgrades on existing clusters by accepting scheduler.version in UpdateCluster.
+* (**pinpointsmsvoicev2**) This launch is an expansion of our Q1 RCS for business launch where we will release an API that supports rich media and interactive messaging elements.
+* (**resourceexplorer2**) Added CFN resource type fields for Search and ListSupportedResourceTypes responses. Added SLRec field for ServiceView
+* (**sagemakerfeaturestoreruntime**) Add support for ListRecords and BatchWriteRecord APIs to Feature Store.
+* (**vpclattice**) Amazon VPC Lattice now supports mutable idle timeout configuration on VPC Lattice Services
+* (**wafv2**) AWS WAF added support for associating AWS WAF web ACLs with Amazon Bedrock AgentCore Gateway resources. You can now use AssociateWebACL, DisassociateWebACL, GetWebACLForResource, and ListResourcesForWebACL to protect your AgentCore Gateways with AWS WAF.
+* [#1005](https://github.com/aws/aws-sdk-kotlin/issues/1005) Add StaticRegionProvider for explicitly setting a region via RegionProvider
+
+### Documentation
+* (**elasticache**) Updated documentation for the ApplyImmediately parameter in ModifyCacheCluster and ModifyReplicationGroup to clarify modification behavior.
+* (**rdsdata**) Updated documentation to remove Aurora Serverless V1 references.
+
 ## [1.6.102] - 06/23/2026
 
 ### Features
