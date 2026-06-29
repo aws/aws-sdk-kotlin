@@ -1045,18 +1045,6 @@
             "brazilName": "AwsSdkKotlinIotDataPlane"
         },
         {
-            "sdkId": "IoT Events",
-            "namespace": "aws.sdk.kotlin.services.iotevents",
-            "artifactName": "iotevents",
-            "brazilName": "AwsSdkKotlinIotEvents"
-        },
-        {
-            "sdkId": "IoT Events Data",
-            "namespace": "aws.sdk.kotlin.services.ioteventsdata",
-            "artifactName": "ioteventsdata",
-            "brazilName": "AwsSdkKotlinIotEventsData"
-        },
-        {
             "sdkId": "IoT Jobs Data Plane",
             "namespace": "aws.sdk.kotlin.services.iotjobsdataplane",
             "artifactName": "iotjobsdataplane",
@@ -1597,12 +1585,6 @@
             "brazilName": "AwsSdkKotlinPi"
         },
         {
-            "sdkId": "Panorama",
-            "namespace": "aws.sdk.kotlin.services.panorama",
-            "artifactName": "panorama",
-            "brazilName": "AwsSdkKotlinPanorama"
-        },
-        {
             "sdkId": "PartnerCentral Account",
             "namespace": "aws.sdk.kotlin.services.partnercentralaccount",
             "artifactName": "partnercentralaccount",
@@ -2129,12 +2111,6 @@
             "namespace": "aws.sdk.kotlin.services.signin",
             "artifactName": "signin",
             "brazilName": "AwsSdkKotlinSignin"
-        },
-        {
-            "sdkId": "SimSpaceWeaver",
-            "namespace": "aws.sdk.kotlin.services.simspaceweaver",
-            "artifactName": "simspaceweaver",
-            "brazilName": "AwsSdkKotlinSimspaceweaver"
         },
         {
             "sdkId": "SimpleDBv2",
