@@ -213,7 +213,7 @@ smithyBuild {
                 }
             }
 
-            // FIXME `IntrospectOAuth2TokenWithIAM` is not needed for any credentials provider and is only added because
+            // FIXME `CreateOauth2TokenWithIAM` is not needed for any credentials provider and is only added because
             //  of https://github.com/smithy-lang/smithy/issues/3190
             transforms = listOf(
                 """
@@ -222,7 +222,7 @@ smithyBuild {
                 "args": {
                     "operations": [
                         "com.amazonaws.signin#CreateOAuth2Token",
-                        "com.amazonaws.signin#IntrospectOAuth2TokenWithIAM"
+                        "com.amazonaws.signin#CreateOauth2TokenWithIAM"
                     ]
                 }
             }

@@ -1,5 +1,58 @@
 # Changelog
 
+## [1.6.104] - 06/30/2026
+
+### Features
+* (**acm**) AWS Certificate Manager now supports the Automatic Certificate Management Environment (ACME) protocol to issue public certificates. ACME is an industry-standard protocol for automating certificate lifecycle on customer-managed infrastructure such as on-premises servers and Kubernetes clusters.
+* (**autoscaling**) This release adds support for a new reservations-then-balanced capacity distribution strategy, which first attempts to launch instances into your Capacity Reservations and then balances remaining capacity across healthy Availability Zones.
+* (**cleanrooms**) Adds support for intermediate tables in AWS Clean Rooms collaborations.
+* (**cloudformation**) AWS CloudFormation adds a DeploymentConfig parameter to enable Express mode, which completes stack operations as soon as resource configuration is applied. Also adds a DisableValidation parameter to skip pre-deployment validation, which now runs automatically on CreateStack and UpdateStak.
+* (**cloudwatch**) Customers can configure alarms with wall-clock-aligned evaluation windows instead of sliding windows, with optional timezone support for daily or weekly periods
+* (**codebuild**) Adds support for host kernel selection for on-demand builds.
+* (**connect**) Amazon Connect - Added CreateAttachedFile and StartContactConversationalAnalyticsJob APIs to import call recordings and run conversational analytics.
+* (**datazone**) Amazon DataZone now supports SNOWFLAKE as a connection type in the CreateConnection API, enabling metadata and lineage retrieval from Snowflake databases. Specify snowflakeProperties with connection details, a Secrets Manager secret, an Athena spill bucket, and an identity mapping for Snowflake.
+* (**ec2**) Adds ModifyVpcEndpointPayerResponsibility API, which enables VPC endpoint service owners to modify the billing account for VPC endpoint usage charges at the individual endpoint level
+* (**eks**) Adds Kubernetes version rollback support, including the CancelUpdate operation to cancel an in-progress VersionRollback update, the RollbackConfig structure with a timeoutMinutes field, and the Cancellation structure surfaced via the new cancellation field on the Update object.
+* (**networkfirewall**) AWS Network Firewall now supports container associations for monitoring ECS and EKS workloads. You can create container associations to dynamically track the IP addresses of running containers in your Amazon ECS and Amazon EKS clusters.
+* (**observabilityadmin**) Organization and account level telemetry rule via Observability Admin and CloudWatch pipelines for metrics
+* (**partnercentralselling**) This release adds AwsMarketplaceSolutions and AwsMarketplaceProducts entity types to the Associate and Disassociate APIs, returns them in GetOpportunity, and adds AwsMarketplaceSolutionArn to ListSolutions ,letting partners link Marketplace listings directly to opportunities.
+* (**ssoadmin**) AWS IAM Identity Center now returns PrimaryRegion and Regions in the ListInstances response, providing information about replicated instances.
+* (**supportauthz**) New SDK release for SupportAuthZ.
+
+### Documentation
+* (**ecs**) Updated threshold configuration documentation.
+
+### Miscellaneous
+* Remove end-of-life service client: Panorama
+* Remove end-of-life service client: IoT Events Data
+* Remove end-of-life service client: IoT Events
+* Remove end-of-life service client: SimSpace Weaver
+
+## [1.6.103] - 06/29/2026
+
+### Features
+* (**appconfig**) AWS AppConfig introduces Experimentation tools - enhanced capabilities within AWS AppConfig that enable you to run AB tests, multivariate tests, and gradual feature rollouts across your application stack.
+* (**cloudwatch**) This release adds the API (PutLogAlarm) to manage a new CloudWatch resource, Log Based Alarms. Log Based Alarms allows customers to alarm directly on CloudWatch Logs query results.
+* (**connectcampaignsv2**) Adding new attributes to PutProfileOutboundRequest API that will create an outbound request call for the customer's Web Notification outbound campaign.
+* (**connecthealth**) Expand input validation to support Unicode characters and markdown table syntax.
+* (**ec2**) Adds support for the precision time strategy and a parentGroupId parameter on CreatePlacementGroup and DescribePlacementGroups. Precision time placement groups and cluster placement groups with a parent precision time placement group ensure instances launch on precision time capable hardware.
+* (**ecs**) Amazon ECS now supports customizable deployment circuit breaker configurations. Customers can now define the failure threshold or control the failure counting mechanism.
+* (**evs**) Amazon EVS introduces a VMware Cloud Foundation (VCF) self-deployed mode, along with new connectors to VCF components such as the Operations and SDDC managers to monitor coverage and usage.
+* (**glue**) Added the UpdateAsset operation to set the business name and description for an existing AWS Glue Data Catalog asset.
+* (**imagebuilder**) Adds support for AMI watermarks in Image Builder.
+* (**lambda**) Lambda now supports self-managed S3 buckets for Lambda code storage giving you the option for Lambda to reference a copy of your source code from your own S3 buckets. This allows you to maintain a single copy of your source code and manage your own code storage limits.
+* (**pcs**) Add support for in-place Slurm version upgrades on existing clusters by accepting scheduler.version in UpdateCluster.
+* (**pinpointsmsvoicev2**) This launch is an expansion of our Q1 RCS for business launch where we will release an API that supports rich media and interactive messaging elements.
+* (**resourceexplorer2**) Added CFN resource type fields for Search and ListSupportedResourceTypes responses. Added SLRec field for ServiceView
+* (**sagemakerfeaturestoreruntime**) Add support for ListRecords and BatchWriteRecord APIs to Feature Store.
+* (**vpclattice**) Amazon VPC Lattice now supports mutable idle timeout configuration on VPC Lattice Services
+* (**wafv2**) AWS WAF added support for associating AWS WAF web ACLs with Amazon Bedrock AgentCore Gateway resources. You can now use AssociateWebACL, DisassociateWebACL, GetWebACLForResource, and ListResourcesForWebACL to protect your AgentCore Gateways with AWS WAF.
+* [#1005](https://github.com/aws/aws-sdk-kotlin/issues/1005) Add StaticRegionProvider for explicitly setting a region via RegionProvider
+
+### Documentation
+* (**elasticache**) Updated documentation for the ApplyImmediately parameter in ModifyCacheCluster and ModifyReplicationGroup to clarify modification behavior.
+* (**rdsdata**) Updated documentation to remove Aurora Serverless V1 references.
+
 ## [1.6.102] - 06/23/2026
 
 ### Features
