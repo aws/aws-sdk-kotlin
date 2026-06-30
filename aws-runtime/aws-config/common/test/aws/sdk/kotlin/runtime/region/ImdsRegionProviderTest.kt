@@ -19,7 +19,7 @@ class ImdsRegionProviderTest {
 
     @Test
     fun testImdsDisabled() = runTest {
-        val platform = TestPlatformProvider(
+        val platform = TestPlatformProvider.of(
             env = mapOf(AwsSdkSetting.AwsEc2MetadataDisabled.envVar to "true"),
         )
 
@@ -47,7 +47,7 @@ class ImdsRegionProviderTest {
             clock = testClock
         }
 
-        val provider = ImdsRegionProvider(client = lazyOf(client), platformProvider = TestPlatformProvider())
+        val provider = ImdsRegionProvider(client = lazyOf(client), platformProvider = TestPlatformProvider.of())
         assertEquals("us-east-2", provider.getRegion())
         connection.assertRequests()
 

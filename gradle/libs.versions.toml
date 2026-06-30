@@ -1,10 +1,10 @@
 [versions]
-kotlin-version = "2.3.21"
+kotlin-version = "2.4.0"
 ksp-version = "2.3.9"
 
 dokka-version = "2.2.0"
 
-aws-kotlin-repo-tools-version = "0.5.13"
+aws-kotlin-repo-tools-version = "0.6.0"
 
 # libs
 coroutines-version = "1.11.0"
