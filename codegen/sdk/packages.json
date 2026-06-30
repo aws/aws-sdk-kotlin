@@ -2167,6 +2167,12 @@
             "brazilName": "AwsSdkKotlinSupportApp"
         },
         {
+            "sdkId": "SupportAuthZ",
+            "namespace": "aws.sdk.kotlin.services.supportauthz",
+            "artifactName": "supportauthz",
+            "brazilName": "AwsSdkKotlinSupportauthz"
+        },
+        {
             "sdkId": "Sustainability",
             "namespace": "aws.sdk.kotlin.services.sustainability",
             "artifactName": "sustainability",
