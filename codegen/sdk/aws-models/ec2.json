@@ -4516,6 +4516,9 @@
                     "target": "com.amazonaws.ec2#ModifyVpcEndpointConnectionNotification"
                 },
                 {
+                    "target": "com.amazonaws.ec2#ModifyVpcEndpointPayerResponsibility"
+                },
+                {
                     "target": "com.amazonaws.ec2#ModifyVpcEndpointServiceConfiguration"
                 },
                 {
@@ -102003,6 +102006,86 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.ec2#ModifyVpcEndpointPayerResponsibility": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.ec2#ModifyVpcEndpointPayerResponsibilityRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.ec2#ModifyVpcEndpointPayerResponsibilityResult"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Modifies the billing account for VPC endpoint usage/charges.</p>"
+            }
+        },
+        "com.amazonaws.ec2#ModifyVpcEndpointPayerResponsibilityRequest": {
+            "type": "structure",
+            "members": {
+                "DryRun": {
+                    "target": "com.amazonaws.ec2#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks whether you have the required permissions for the action, without actually making the request, \n   and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. \n   Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+                    }
+                },
+                "ServiceId": {
+                    "target": "com.amazonaws.ec2#VpcEndpointServiceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the VPC endpoint service.</p>"
+                    }
+                },
+                "VpcEndpointId": {
+                    "target": "com.amazonaws.ec2#VpcEndpointId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The ID of the VPC endpoint.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PayerResponsibility": {
+                    "target": "com.amazonaws.ec2#PayerResponsibilityType",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The Amazon Web Services account to which the usage of VPC endpoint is charged.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Scope": {
+                    "target": "com.amazonaws.ec2#PayerResponsibilityScope",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The scope of usage/charges for which the billing account is being modified.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.ec2#ModifyVpcEndpointPayerResponsibilityResult": {
+            "type": "structure",
+            "members": {
+                "VpcEndpointId": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "VpcEndpointId",
+                        "smithy.api#documentation": "<p>The ID of the VPC endpoint.</p>",
+                        "smithy.api#xmlName": "vpcEndpointId"
+                    }
+                },
+                "PayerResponsibilities": {
+                    "target": "com.amazonaws.ec2#PayerResponsibilitySet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PayerResponsibilitySet",
+                        "smithy.api#documentation": "<p>The payer responsibility settings for the VPC endpoint.</p>",
+                        "smithy.api#xmlName": "payerResponsibilitySet"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.ec2#ModifyVpcEndpointRequest": {
             "type": "structure",
             "members": {
@@ -107056,6 +107139,67 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ServiceOwner"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#PayerResponsibilityEntry": {
+            "type": "structure",
+            "members": {
+                "Scope": {
+                    "target": "com.amazonaws.ec2#PayerResponsibilityScope",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "Scope",
+                        "smithy.api#documentation": "<p>The scope of usage/charges.</p>",
+                        "smithy.api#xmlName": "scope"
+                    }
+                },
+                "PayerResponsibilityType": {
+                    "target": "com.amazonaws.ec2#PayerResponsibilityType",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PayerResponsibilityType",
+                        "smithy.api#documentation": "<p>The Amazon Web Services account to which the usage is charged.</p>",
+                        "smithy.api#xmlName": "payerResponsibilityType"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes a payer responsibility setting for a VPC endpoint.</p>"
+            }
+        },
+        "com.amazonaws.ec2#PayerResponsibilityScope": {
+            "type": "enum",
+            "members": {
+                "VpcEndpointCharges": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "vpc-endpoint-charges"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#PayerResponsibilitySet": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ec2#PayerResponsibilityEntry",
+                "traits": {
+                    "smithy.api#xmlName": "item"
+                }
+            }
+        },
+        "com.amazonaws.ec2#PayerResponsibilityType": {
+            "type": "enum",
+            "members": {
+                "VpcEndpointAccount": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "vpc-endpoint-account"
+                    }
+                },
+                "VpcEndpointServiceAccount": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "vpc-endpoint-service-account"
                     }
                 }
             }
@@ -136688,6 +136832,14 @@
                         "smithy.api#documentation": "<p>The Region where the service is hosted.</p>",
                         "smithy.api#xmlName": "serviceRegion"
                     }
+                },
+                "PayerResponsibilities": {
+                    "target": "com.amazonaws.ec2#PayerResponsibilitySet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PayerResponsibilitySet",
+                        "smithy.api#documentation": "<p>The payer responsibility settings for the endpoint.</p>",
+                        "smithy.api#xmlName": "payerResponsibilitySet"
+                    }
                 }
             },
             "traits": {
@@ -136904,6 +137056,14 @@
                         "aws.protocols#ec2QueryName": "VpcEndpointRegion",
                         "smithy.api#documentation": "<p>The Region of the endpoint.</p>",
                         "smithy.api#xmlName": "vpcEndpointRegion"
+                    }
+                },
+                "PayerResponsibilities": {
+                    "target": "com.amazonaws.ec2#PayerResponsibilitySet",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "PayerResponsibilitySet",
+                        "smithy.api#documentation": "<p>The payer responsibility settings for the endpoint.</p>",
+                        "smithy.api#xmlName": "payerResponsibilitySet"
                     }
                 }
             },
