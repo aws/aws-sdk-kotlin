@@ -125,6 +125,7 @@ private interface TestClient : SdkClient {
         RetryStrategyClientConfig by builder.buildRetryStrategyClientConfig() {
         override val clientName: String = builder.clientName
         override val logMode: LogMode = builder.logMode ?: LogMode.Default
+        override val logRedactedHeaders: Set<String> = builder.logRedactedHeaders ?: emptySet()
         override val region: String? = builder.region
         override var regionProvider: RegionProvider = builder.regionProvider ?: DefaultRegionProviderChain()
         override var useFips: Boolean = builder.useFips ?: false
@@ -138,6 +139,7 @@ private interface TestClient : SdkClient {
             RetryStrategyClientConfig.Builder by RetryStrategyClientConfigImpl.BuilderImpl() {
             override var clientName: String = "Test"
             override var logMode: LogMode? = LogMode.Default
+            override var logRedactedHeaders: Set<String>? = null
             override var region: String? = null
             override var regionProvider: RegionProvider? = null
             override var useFips: Boolean? = null
