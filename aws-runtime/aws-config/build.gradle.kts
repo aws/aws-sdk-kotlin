@@ -222,7 +222,7 @@ smithyBuild {
                 "args": {
                     "operations": [
                         "com.amazonaws.signin#CreateOAuth2Token",
-                        "com.amazonaws.signin#CreateOauth2TokenWithIAM"
+                        "com.amazonaws.signin#CreateOAuth2TokenWithIAM"
                     ]
                 }
             }
