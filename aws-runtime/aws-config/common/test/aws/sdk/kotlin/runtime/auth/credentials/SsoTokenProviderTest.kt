@@ -14,6 +14,7 @@ import aws.smithy.kotlin.runtime.httptest.buildTestConnection
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.ManualClock
 import aws.smithy.kotlin.runtime.util.MapFilesystem
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.test.runTest
@@ -74,9 +75,9 @@ class SsoTokenProviderTest {
                 val sessionName = "test-session"
                 val key = getCacheFilename(sessionName)
                 val cachePath = "/home/.aws/sso/cache/$key"
-                val testPlatform = TestPlatformProvider(
+                val testPlatform = TestPlatformProvider.of(
                     env = mapOf("HOME" to "/home"),
-                    fs = mapOf(cachePath to testCase.cachedTokenContent),
+                    fs = mapOf(cachePath to TestFile(testCase.cachedTokenContent)),
                 )
 
                 val refreshBufferWindow = 0.seconds

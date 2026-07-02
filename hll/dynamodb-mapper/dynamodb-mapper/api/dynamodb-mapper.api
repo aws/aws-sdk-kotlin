@@ -747,10 +747,12 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/IndexSpe
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/IndexSpec$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/model/IndexSpec {
 	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
+	public synthetic fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/IndexSpec$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/model/IndexSpec {
 	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+	public synthetic fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/Item : java/util/Map, kotlin/jvm/internal/markers/KMappedMarker {
@@ -788,10 +790,12 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/Persiste
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/PersistenceSpec$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/model/PersistenceSpec {
 	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
+	public synthetic fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/PersistenceSpec$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/model/PersistenceSpec {
 	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+	public synthetic fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/Table : aws/sdk/kotlin/hll/dynamodbmapper/model/ItemSource, aws/sdk/kotlin/hll/dynamodbmapper/model/TableSpec, aws/sdk/kotlin/hll/dynamodbmapper/operations/TableOperations {
@@ -813,10 +817,12 @@ public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/TableSpe
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/TableSpec$CompositeKey : aws/sdk/kotlin/hll/dynamodbmapper/model/TableSpec {
 	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$CompositeKey;
+	public synthetic fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema;
 }
 
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/model/TableSpec$PartitionKey : aws/sdk/kotlin/hll/dynamodbmapper/model/TableSpec {
 	public abstract fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema$PartitionKey;
+	public synthetic fun getSchema ()Laws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema;
 }
 
 public final class aws/sdk/kotlin/hll/dynamodbmapper/operations/DeleteItemKt {

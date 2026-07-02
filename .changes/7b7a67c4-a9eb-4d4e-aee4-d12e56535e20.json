@@ -1,0 +1,6 @@
+{
+    "id": "7b7a67c4-a9eb-4d4e-aee4-d12e56535e20",
+    "type": "misc",
+    "description": "**Breaking**: Update Kotlin version from 2.3.21 to 2.4.0",
+    "requiresMinorVersionBump": true
+}
