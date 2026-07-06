@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.6.106] - 07/02/2026
+
+### Features
+* (**cognitoidentityprovider**) Add support for provisioned limit management, enabling customers to view and update their provisioned API rate limits for Amazon Cognito User Pools programmatically through the new GetProvisionedLimit and UpdateProvisionedLimit APIs.
+* (**configservice**) AWS Config now supports tag-on-create for organization-managed Config rules and conformance packs through the PutOrganizationConfigRule and PutOrganizationConformancePack APIs.
+* (**customerprofiles**) Amazon Connect Customer Profiles adds support for diversityConfig to recommenderConfig which can be used for diversifying the recommendations. This release also includes model versioning support which helps customer to rollback trained models.
+* (**elementalinference**) Adding new BDD representation of endpoint ruleset
+* (**mediatailor**) Added dual-stack (IPv4 and IPv6) endpoint fields to SSAI and Channel Assembly API responses.
+* (**odb**) Updated model definitions for ODB service.
+* (**outposts**) Tighten Outpost site ContactPhoneNumber regex to perform phone number validation.
+
 ## [1.6.105] - 07/01/2026
 
 ### Features
