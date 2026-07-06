@@ -17,6 +17,7 @@ import aws.smithy.kotlin.runtime.httptest.buildTestConnection
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.ManualClock
 import aws.smithy.kotlin.runtime.time.epochMilliseconds
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.test.runTest
@@ -92,9 +93,9 @@ class SsoCredentialsProviderTest {
 
         val key = getCacheFilename("https://expired-token")
 
-        val testPlatform = TestPlatformProvider(
+        val testPlatform = TestPlatformProvider.of(
             env = mapOf("HOME" to "/home"),
-            fs = mapOf("/home/.aws/sso/cache/$key" to contents),
+            fs = mapOf("/home/.aws/sso/cache/$key" to TestFile(contents)),
         )
 
         val provider = SsoCredentialsProvider(
@@ -132,9 +133,9 @@ class SsoCredentialsProviderTest {
 
         val key = getCacheFilename("https://error-response")
 
-        val testPlatform = TestPlatformProvider(
+        val testPlatform = TestPlatformProvider.of(
             env = mapOf("HOME" to "/home"),
-            fs = mapOf("/home/.aws/sso/cache/$key" to contents),
+            fs = mapOf("/home/.aws/sso/cache/$key" to TestFile(contents)),
         )
 
         val provider = SsoCredentialsProvider(
@@ -187,9 +188,9 @@ class SsoCredentialsProviderTest {
 
         val key = getCacheFilename("https://success-response")
 
-        val testPlatform = TestPlatformProvider(
+        val testPlatform = TestPlatformProvider.of(
             env = mapOf("HOME" to "/home"),
-            fs = mapOf("/home/.aws/sso/cache/$key" to contents),
+            fs = mapOf("/home/.aws/sso/cache/$key" to TestFile(contents)),
         )
 
         val provider = SsoCredentialsProvider(

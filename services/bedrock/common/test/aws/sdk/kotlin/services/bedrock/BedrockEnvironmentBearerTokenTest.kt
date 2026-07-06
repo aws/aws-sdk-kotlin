@@ -39,7 +39,7 @@ class BedrockEnvironmentBearerTokenTest {
         }
     }
 
-    private val mockPlatformProvider = TestPlatformProvider(
+    private val mockPlatformProvider = TestPlatformProvider.of(
         env = mapOf("AWS_BEARER_TOKEN_BEDROCK" to "bedrock-token"),
     )
 
@@ -84,7 +84,7 @@ class BedrockEnvironmentBearerTokenTest {
 
         finalizeBearerTokenConfig(
             builder,
-            TestPlatformProvider(
+            TestPlatformProvider.of(
                 env = mapOf("AWS_BEARER_TOKEN_BEDROCK" to "env-bedrock-token"),
                 props = mapOf("aws.bearerTokenBedrock" to "sys-props-bedrock-token"),
             ),
