@@ -1,10 +1,10 @@
 [versions]
-kotlin-version = "2.3.21"
+kotlin-version = "2.4.0"
 ksp-version = "2.3.9"
 
 dokka-version = "2.2.0"
 
-aws-kotlin-repo-tools-version = "0.5.13"
+aws-kotlin-repo-tools-version = "0.6.0"
 
 # libs
 coroutines-version = "1.11.0"
@@ -12,7 +12,7 @@ atomicfu-version = "0.33.0"
 binary-compatibility-validator-version = "0.18.1"
 
 # smithy-kotlin
-smithy-kotlin-version = "1.6.15"
+smithy-kotlin-version = "1.7.0"
 
 # codegen
 smithy-version = "1.71.0"
