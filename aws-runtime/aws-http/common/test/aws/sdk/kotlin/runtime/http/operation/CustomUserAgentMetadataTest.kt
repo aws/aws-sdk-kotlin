@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 class CustomUserAgentMetadataTest {
     @Test
     fun testCustomMetadata() {
-        val provider = TestPlatformProvider()
+        val provider = TestPlatformProvider.of()
         val metadata = loadAwsUserAgentMetadataFromEnvironment(provider, ApiMetadata("Test Service", "1.2.3"))
         val customMetadata = CustomUserAgentMetadata()
 
@@ -59,7 +59,7 @@ class CustomUserAgentMetadataTest {
             "AWS_CUSTOM_METADATA_zab" to "xuq",
             "AWS_CUSTOM_METADATA_priority" to "envVars",
         )
-        val provider = TestPlatformProvider(env = envVars, props = props)
+        val provider = TestPlatformProvider.of(env = envVars, props = props)
         val metadata = CustomUserAgentMetadata.fromEnvironment(provider)
 
         val expected = mapOf(

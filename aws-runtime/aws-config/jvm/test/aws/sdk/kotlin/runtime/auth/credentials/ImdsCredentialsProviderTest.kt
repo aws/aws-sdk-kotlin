@@ -16,7 +16,7 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.minutes
 
 class ImdsCredentialsProviderTestJvm {
-    private val ec2MetadataEnabledPlatform = TestPlatformProvider()
+    private val ec2MetadataEnabledPlatform = TestPlatformProvider.of()
 
     // FIXME Refactor mocking for KMP
     // SDK can perform 3 successive requests with expired credentials. IMDS must only be called once.
