@@ -1,0 +1,21 @@
+name: SDK Version Check
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    branches:
+      - main
+      - '*-main'
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  sdk-version-check:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'merge_group' }}
+    steps:
+      - name: Check sdkVersion
+        uses: aws/aws-kotlin-repo-tools/.github/actions/sdk-version-check@main
