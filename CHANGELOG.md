@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.8.2] - 07/08/2026
+
+### Features
+* (**signin**) Adds support for OAuth 2.0 token operations in AWS Sign-In, CreateOAuth2TokenWithIAM (client credentials flow), IntrospectOAuth2TokenWithIAM (token inspection), and RevokeOAuth2TokenWithIAM (token revocation).
+
 ## [1.8.1] - 07/08/2026
 
 ### Features
