@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.1] - 07/08/2026
+
+### Features
+* (**appconfig**) Update ExperimentRun APIs to support ConflictExceptions.
+* #1460 (**aws-config**) Add support for `logRedactedHeaders` client config property to sanitize sensitive header values in debug logging
+* (**bedrockagentcorecontrol**) AgentCore Gateway now supports mapping allowed scopes to separate advertised scopes on the inbound authorizer.
+* (**ec2**) Replace Root Volume now supports a VolumeId parameter. This allows the customer to pass in a pre-prepared volume as the target root volume for an RRV workflow.
+* (**ecs**) Amazon ECS now automatically detects the correct CPU architecture for Express Mode services.
+* (**geoplaces**) Added AddressNamesMode, AddressNameTranslations, MobilityMode, PostalCodeMode, SecondaryAddresses, and DriveThrough features across Places V2 APIs to support address name formatting,  multilingual translations, travel-aware search, multi-city postal codes, and unit-level address resolution.
+* (**iotwireless**) Default session downlink transmission parameters have been added to the existing Multicast Group APIs. Explicit transmission parameters are no longer required when starting a multicast session during the FUOTA procedure.
+* (**resiliencehubv2**) Next Generation Resilience Hub now supports filtering and sorting failure mode assessments, resource type filtering in ListResources, cross-region and cross-account topology edges, data recovery achievability status, and more granular dependency discovery progress tracking.
+
 ## [1.8.0] - 07/07/2026
 
 ### Features

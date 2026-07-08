@@ -1,9 +1,0 @@
-{
-  "id": "ce77d728-ae6c-422e-8e75-17ea1ac82c88",
-  "type": "feature",
-  "description": "Add support for `logRedactedHeaders` client config property to sanitize sensitive header values in debug logging",
-  "issues": [
-    "#1460"
-  ],
-  "module": "aws-config"
-}
