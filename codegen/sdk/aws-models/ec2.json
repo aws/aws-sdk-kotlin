@@ -23148,7 +23148,7 @@
                 "target": "com.amazonaws.ec2#CreateReplaceRootVolumeTaskResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Replaces the EBS-backed root volume for a <code>running</code> instance with a new \n      volume that is restored to the original root volume's launch state, that is restored to a \n      specific snapshot taken from the original root volume, or that is restored from an AMI \n      that has the same key characteristics as that of the instance.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/replace-root.html\">Replace a root volume</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+                "smithy.api#documentation": "<p>Replaces the EBS-backed root volume for a <code>running</code> instance with a new \n      volume that is restored to the original root volume's launch state, that is restored to a \n      specific snapshot taken from the original root volume, that is restored from an AMI \n      that has the same key characteristics as that of the instance, or that is replaced by \n      a specified volume.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/replace-root.html\">Replace a root volume</a> in the <i>Amazon EC2 User Guide</i>.</p>"
             }
         },
         "com.amazonaws.ec2#CreateReplaceRootVolumeTaskRequest": {
@@ -23165,7 +23165,7 @@
                 "SnapshotId": {
                     "target": "com.amazonaws.ec2#SnapshotId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ID of the snapshot from which to restore the replacement root volume. The \n      specified snapshot must be a snapshot that you previously created from the original \n      root volume.</p>\n         <p>If you want to restore the replacement root volume to the initial launch state, \n      or if you want to restore the replacement root volume from an AMI, omit this \n      parameter.</p>"
+                        "smithy.api#documentation": "<p>The ID of the snapshot from which to restore the replacement root volume. The \n      specified snapshot must be a snapshot that you previously created from the original \n      root volume.</p>\n         <p>If you want to restore the replacement root volume to the initial launch state, \n      if you want to restore the replacement root volume from an AMI, or if you want to \n      replace the root volume with a specified volume, omit this parameter.</p>"
                     }
                 },
                 "ClientToken": {
@@ -23191,7 +23191,7 @@
                 "ImageId": {
                     "target": "com.amazonaws.ec2#ImageId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ID of the AMI to use to restore the root volume. The specified AMI must have the \n      same product code, billing information, architecture type, and virtualization type as \n      that of the instance.</p>\n         <p>If you want to restore the replacement volume from a specific snapshot, or if you want \n      to restore it to its launch state, omit this parameter.</p>"
+                        "smithy.api#documentation": "<p>The ID of the AMI to use to restore the root volume. The specified AMI must have the \n      same product code, billing information, architecture type, and virtualization type as \n      that of the instance.</p>\n         <p>If you want to restore the replacement volume from a specific snapshot, if you want \n      to restore it to its launch state, or if you want to replace the root volume with a \n      specified volume, omit this parameter.</p>"
                     }
                 },
                 "DeleteReplacedRootVolume": {
@@ -23204,6 +23204,12 @@
                     "target": "com.amazonaws.ec2#Long",
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download \n      the snapshot blocks from Amazon S3 to the replacement root volume. This is also known as \n      <i>volume initialization</i>. Specifying a volume initialization rate ensures that \n      the volume is initialized at a predictable and consistent rate after creation.</p>\n         <p>Omit this parameter if:</p>\n         <ul>\n            <li>\n               <p>You want to create the volume using fast snapshot restore. You must specify a snapshot \n          that is enabled for fast snapshot restore. In this case, the volume is fully initialized at \n          creation.</p>\n               <note>\n                  <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, \n            the volume will be initialized at the specified rate instead of fast snapshot restore.</p>\n               </note>\n            </li>\n            <li>\n               <p>You want to create a volume that is initialized at the default rate.</p>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\">\n      Initialize Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p>\n         <p>Valid range: 100 - 300 MiB/s</p>"
+                    }
+                },
+                "VolumeId": {
+                    "target": "com.amazonaws.ec2#VolumeId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the volume to use as the replacement root volume. The specified volume must \n      be in the same Availability Zone as the instance, must be in the <code>available</code>\n      state, and must not be attached to an instance. If the original root volume is encrypted,\n      the specified volume must also be encrypted.</p>\n         <p>If you want to restore the replacement root volume from a specific snapshot, an AMI, \n      or to its launch state, omit this parameter.</p>"
                     }
                 }
             },
