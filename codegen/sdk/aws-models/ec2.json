@@ -19539,6 +19539,30 @@
                         "smithy.api#documentation": "<p>The value is <code>windows</code> for Windows instances in an EC2 Fleet. Otherwise, the value is\n         blank.</p>",
                         "smithy.api#xmlName": "platform"
                     }
+                },
+                "AvailabilityZoneId": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZoneId",
+                        "smithy.api#documentation": "<p>The ID of the Availability Zone in which the instance was launched. For example,\n            <code>use2-az1</code>.</p>\n         <p>Supported only for fleets of type <code>instant</code>.</p>",
+                        "smithy.api#xmlName": "availabilityZoneId"
+                    }
+                },
+                "AvailabilityZone": {
+                    "target": "com.amazonaws.ec2#AvailabilityZoneName",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "AvailabilityZone",
+                        "smithy.api#documentation": "<p>The name of the Availability Zone in which the instance was launched. For example,\n            <code>us-east-2a</code>.</p>\n         <p>Supported only for fleets of type <code>instant</code>.</p>",
+                        "smithy.api#xmlName": "availabilityZone"
+                    }
+                },
+                "SubnetId": {
+                    "target": "com.amazonaws.ec2#SubnetId",
+                    "traits": {
+                        "aws.protocols#ec2QueryName": "SubnetId",
+                        "smithy.api#documentation": "<p>The ID of the subnet in which the instance was launched.</p>\n         <p>Supported only for fleets of type <code>instant</code>.</p>",
+                        "smithy.api#xmlName": "subnetId"
+                    }
                 }
             },
             "traits": {
@@ -19643,7 +19667,7 @@
                 "TagSpecifications": {
                     "target": "com.amazonaws.ec2#TagSpecificationList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The key-value pair for tagging the EC2 Fleet request on creation. For more information, see \n         <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#tag-resources\">Tag your resources</a>.</p>\n         <p>If the fleet type is <code>instant</code>, specify a resource type of <code>fleet</code> \n         to tag the fleet or <code>instance</code> to tag the instances at launch.</p>\n         <p>If the fleet type is <code>maintain</code> or <code>request</code>, specify a resource\n         type of <code>fleet</code> to tag the fleet. You cannot specify a resource type of\n            <code>instance</code>. To tag instances at launch, specify the tags in a <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#create-launch-template\">launch template</a>.</p>",
+                        "smithy.api#documentation": "<p>The key-value pair for tagging the EC2 Fleet request on creation. For more information, see \n         <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#tag-resources\">Tag your resources</a>.</p>\n         <p>If the fleet type is <code>instant</code>, specify a resource type of <code>fleet</code> \n         to tag the fleet, <code>instance</code> to tag the instances at launch,\n         <code>volume</code> to tag the volumes at launch, or <code>network-interface</code> to\n         tag the network interfaces at launch.</p>\n         <p>If the fleet type is <code>maintain</code> or <code>request</code>, specify a resource\n         type of <code>fleet</code> to tag the fleet. You cannot specify a resource type of\n            <code>instance</code>, <code>volume</code>, or <code>network-interface</code>. To tag instances at launch, specify the tags in a <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#create-launch-template\">launch template</a>.</p>",
                         "smithy.api#xmlName": "TagSpecification"
                     }
                 },
@@ -62992,6 +63016,43 @@
                 }
             }
         },
+        "com.amazonaws.ec2#FleetHttpTokensState": {
+            "type": "enum",
+            "members": {
+                "OPTIONAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "optional"
+                    }
+                },
+                "REQUIRED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "required"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#FleetIamInstanceProfileSpecificationRequest": {
+            "type": "structure",
+            "members": {
+                "Arn": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the instance profile.</p>"
+                    }
+                },
+                "Name": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the instance profile.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes an IAM instance profile. Supported only for fleets of type\n         <code>instant</code>.</p>"
+            }
+        },
         "com.amazonaws.ec2#FleetId": {
             "type": "string"
         },
@@ -63010,6 +63071,49 @@
                         "smithy.api#enumValue": "open"
                     }
                 }
+            }
+        },
+        "com.amazonaws.ec2#FleetInstanceMetadataEndpointState": {
+            "type": "enum",
+            "members": {
+                "DISABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "disabled"
+                    }
+                },
+                "ENABLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "enabled"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.ec2#FleetInstanceMetadataOptionsRequest": {
+            "type": "structure",
+            "members": {
+                "HttpTokens": {
+                    "target": "com.amazonaws.ec2#FleetHttpTokensState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether IMDSv2 is required.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>optional</code> - IMDSv2 is optional, which means that you can use either\n               IMDSv2 or IMDSv1.</p>\n            </li>\n            <li>\n               <p>\n                  <code>required</code> - IMDSv2 is required, which means that IMDSv1 is\n               disabled, and you must use IMDSv2.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "HttpPutResponseHopLimit": {
+                    "target": "com.amazonaws.ec2#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The desired HTTP PUT response hop limit for instance metadata requests. The larger the\n         number, the further instance metadata requests can travel.</p>\n         <p>Default: <code>1</code>\n         </p>\n         <p>Possible values: Integers from 1 to 64</p>"
+                    }
+                },
+                "HttpEndpoint": {
+                    "target": "com.amazonaws.ec2#FleetInstanceMetadataEndpointState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Enables or disables the HTTP metadata endpoint on your instances.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>enabled</code> - The HTTP metadata endpoint is enabled.</p>\n            </li>\n            <li>\n               <p>\n                  <code>disabled</code> - The HTTP metadata endpoint is disabled.</p>\n            </li>\n         </ul>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the metadata options for the instances. Supported only for fleets of type\n         <code>instant</code>.</p>"
             }
         },
         "com.amazonaws.ec2#FleetLaunchTemplateConfig": {
@@ -63239,11 +63343,29 @@
                         "smithy.api#documentation": "<p>The location where the instance launched, if applicable.</p>"
                     }
                 },
+                "KeyName": {
+                    "target": "com.amazonaws.ec2#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the key pair to use for the instances.</p>\n         <p>Supported only for fleets of type <code>instant</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html\">Amazon EC2 key pairs</a>\n         in the <i>Amazon EC2 User Guide</i>.</p>"
+                    }
+                },
                 "BlockDeviceMappings": {
                     "target": "com.amazonaws.ec2#FleetBlockDeviceMappingRequestList",
                     "traits": {
                         "smithy.api#documentation": "<p>The block device mappings, which define the EBS volumes and instance store volumes to\n         attach to the instance at launch.</p>\n         <p>Supported only for fleets of type <code>instant</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html\">Block device mappings\n            for volumes on Amazon EC2 instances</a> in the <i>Amazon EC2 User\n         Guide</i>.</p>",
                         "smithy.api#xmlName": "BlockDeviceMapping"
+                    }
+                },
+                "IamInstanceProfile": {
+                    "target": "com.amazonaws.ec2#FleetIamInstanceProfileSpecificationRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IAM instance profile to associate with the instances.</p>\n         <p>Supported only for fleets of type <code>instant</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html\">IAM roles for Amazon EC2</a>\n         in the <i>Amazon EC2 User Guide</i>.</p>"
+                    }
+                },
+                "MetadataOptions": {
+                    "target": "com.amazonaws.ec2#FleetInstanceMetadataOptionsRequest",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The metadata options for the instances.</p>\n         <p>Supported only for fleets of type <code>instant</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html\">Configure the\n            instance metadata service</a> in the <i>Amazon EC2 User Guide</i>.</p>"
                     }
                 },
                 "InstanceRequirements": {
@@ -63320,6 +63442,12 @@
                     "target": "com.amazonaws.ec2#String",
                     "traits": {
                         "smithy.api#documentation": "<p>The launch template version number, <code>$Latest</code>, or <code>$Default</code>. You must specify a value, otherwise the request fails.</p>\n         <p>If the value is <code>$Latest</code>, Amazon EC2 uses the latest version of the launch template.</p>\n         <p>If the value is <code>$Default</code>, Amazon EC2 uses the default version of the launch template.</p>"
+                    }
+                },
+                "LaunchTemplateSpecificationUserData": {
+                    "target": "com.amazonaws.ec2#SensitiveUserData",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The base64-encoded user data for instances launched by the fleet. User data is limited\n         to 16 KB, in raw form, before it is base64-encoded.</p>\n         <p>Supported only for fleets of type <code>instant</code>.</p>"
                     }
                 }
             },
