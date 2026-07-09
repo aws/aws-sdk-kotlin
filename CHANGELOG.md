@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.8.3] - 07/09/2026
+
+### Features
+* (**connect**) Amazon Connect - Added DeleteContactData API to support PII deletion of customer endpoint, additional email recipients and email subject.
+* (**ec2**) Added support for additional override parameters in CreateFleet, including LaunchTemplateSpecificationUserData, KeyName, IamInstanceProfile, and MetadataOptions. The CreateFleet response now also includes SubnetId, AvailabilityZone, and AvailabilityZoneId for launched instances.
+* (**guardduty**) Adding "AI Analyst" enum value for detector
+* (**ivs**) adds support for AWS IVS ad configuration APIs to allow for a postRollConfiguration object on the ad configuration resource
+* (**synthetics**) CloudWatch Synthetics adds support for customer managed KMS keys for canary environment variables. Customers can now encrypt their canary's Lambda function environment variables at rest using their own AWS KMS key, providing additional control over data protection.
+
 ## [1.8.2] - 07/08/2026
 
 ### Features
