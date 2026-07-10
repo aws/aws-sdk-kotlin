@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.8.4] - 07/10/2026
+
+### Features
+* (**cloudwatch**) CloudWatch now assigns a unique identifier to each anomaly detector. PutAnomalyDetector and DescribeAnomalyDetectors return this AnomalyDetectorId, which you can use to describe or delete a specific anomaly detector directly.
+* (**ec2**) New Amazon EC2 instances. M9g, M9gd, C9g, and C9gd on AWS Graviton5. C8in, M8in, and R8in add 600 Gbps network. C8ib, M8ib, and R8ib add 300 Gbps EBS. C8ine, M8ine, M8idn, R8idn, M8idb, and R8idb round out Intel Xeon 6. Mac-m3ultra with Apple M3 Ultra. G7 with NVIDIA RTX PRO 4500 Blackwell GPUs.
+* (**inspector2**) Support for 3 day and 7 day ECR re-scan durations
+* (**lambda**) Added TelemetryConfig support for Managed Instances Capacity Provider, enabling customers to configure system log level and custom log group for managed instance logging.
+* (**licensemanager**) Added the ResetUsage field to the CreateLicenseVersion API. When set to true, the entitlement usage counts for the license are reset to 0. If it is false or not specified, entitlement usage is left unchanged.
+* (**quicksight**) Provides CreateKnowledgeBase and UpdateKnowledgeBase APIs
+* (**sagemaker**) Release support for g4d, c6g, c7g, c8g instance types for SageMaker HyperPod
+
 ## [1.8.3] - 07/09/2026
 
 ### Features
