@@ -16,6 +16,7 @@ import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.ManualClock
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import io.kotest.matchers.string.shouldMatch
 import kotlinx.coroutines.test.runTest
@@ -64,9 +65,9 @@ class LoginCredentialsProviderTest {
 
         val key = getLoginCacheFilename("arn:aws:iam::0123456789012:user/Admin")
 
-        val testPlatform = TestPlatformProvider(
+        val testPlatform = TestPlatformProvider.of(
             env = mapOf("HOME" to "/home"),
-            fs = mapOf("/home/.aws/login/cache/$key" to contents),
+            fs = mapOf("/home/.aws/login/cache/$key" to TestFile(contents)),
         )
 
         val provider = LoginCredentialsProvider(
@@ -125,9 +126,9 @@ class LoginCredentialsProviderTest {
 
         val key = getLoginCacheFilename("arn:aws:iam::123456789:user/TestUser")
 
-        val testPlatform = TestPlatformProvider(
+        val testPlatform = TestPlatformProvider.of(
             env = mapOf("HOME" to "/home"),
-            fs = mapOf("/home/.aws/login/cache/$key" to contents),
+            fs = mapOf("/home/.aws/login/cache/$key" to TestFile(contents)),
         )
 
         val provider = LoginCredentialsProvider(

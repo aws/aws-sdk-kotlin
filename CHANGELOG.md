@@ -1,5 +1,90 @@
 # Changelog
 
+## [1.8.5] - 07/13/2026
+
+### Features
+* (**elasticsearchservice**) Adds support for the EngineMode and UseCase parameters on Amazon Elasticsearch Service domains, enabling GENERAL or OPTIMIZED engine modes and SEARCH, VECTOR, OBSERVABILITY, or MIXED usecases when creating and updating domain configurations.
+* (**gamelift**) Amazon GameLift Servers now includes fleet expiration for managed fleets. A managed fleet expires one year after creation, transitioning to EXPIRED status, emitting a FLEET EXPIRED event, and scaling to zero instances. Expired fleets cannot host new game sessions or increase capacity.
+* (**guardduty**) GuardDuty AI Protection is now publicly available. Findings include Bedrock guardrail details, model details, observation numbers, and continuous scan details. GuardrailArn and GuardrailVersion are deprecated in favor of the guardrails list.
+* (**lambda**) Add Java 8, 11 and 17 on AL2023 (java8.al2023, java11.al2023, java17.al2023) support to AWS Lambda.
+* (**redshiftserverless**) Add support for preserving datasharing, zero-ETL and S3 event integrations on snapshot restore to serverless namespace.
+
+## [1.8.4] - 07/10/2026
+
+### Features
+* (**cloudwatch**) CloudWatch now assigns a unique identifier to each anomaly detector. PutAnomalyDetector and DescribeAnomalyDetectors return this AnomalyDetectorId, which you can use to describe or delete a specific anomaly detector directly.
+* (**ec2**) New Amazon EC2 instances. M9g, M9gd, C9g, and C9gd on AWS Graviton5. C8in, M8in, and R8in add 600 Gbps network. C8ib, M8ib, and R8ib add 300 Gbps EBS. C8ine, M8ine, M8idn, R8idn, M8idb, and R8idb round out Intel Xeon 6. Mac-m3ultra with Apple M3 Ultra. G7 with NVIDIA RTX PRO 4500 Blackwell GPUs.
+* (**inspector2**) Support for 3 day and 7 day ECR re-scan durations
+* (**lambda**) Added TelemetryConfig support for Managed Instances Capacity Provider, enabling customers to configure system log level and custom log group for managed instance logging.
+* (**licensemanager**) Added the ResetUsage field to the CreateLicenseVersion API. When set to true, the entitlement usage counts for the license are reset to 0. If it is false or not specified, entitlement usage is left unchanged.
+* (**quicksight**) Provides CreateKnowledgeBase and UpdateKnowledgeBase APIs
+* (**sagemaker**) Release support for g4d, c6g, c7g, c8g instance types for SageMaker HyperPod
+
+## [1.8.3] - 07/09/2026
+
+### Features
+* (**connect**) Amazon Connect - Added DeleteContactData API to support PII deletion of customer endpoint, additional email recipients and email subject.
+* (**ec2**) Added support for additional override parameters in CreateFleet, including LaunchTemplateSpecificationUserData, KeyName, IamInstanceProfile, and MetadataOptions. The CreateFleet response now also includes SubnetId, AvailabilityZone, and AvailabilityZoneId for launched instances.
+* (**guardduty**) Adding "AI Analyst" enum value for detector
+* (**ivs**) adds support for AWS IVS ad configuration APIs to allow for a postRollConfiguration object on the ad configuration resource
+* (**synthetics**) CloudWatch Synthetics adds support for customer managed KMS keys for canary environment variables. Customers can now encrypt their canary's Lambda function environment variables at rest using their own AWS KMS key, providing additional control over data protection.
+
+## [1.8.2] - 07/08/2026
+
+### Features
+* (**signin**) Adds support for OAuth 2.0 token operations in AWS Sign-In, CreateOAuth2TokenWithIAM (client credentials flow), IntrospectOAuth2TokenWithIAM (token inspection), and RevokeOAuth2TokenWithIAM (token revocation).
+
+## [1.8.1] - 07/08/2026
+
+### Features
+* (**appconfig**) Update ExperimentRun APIs to support ConflictExceptions.
+* #1460 (**aws-config**) Add support for `logRedactedHeaders` client config property to sanitize sensitive header values in debug logging
+* (**bedrockagentcorecontrol**) AgentCore Gateway now supports mapping allowed scopes to separate advertised scopes on the inbound authorizer.
+* (**ec2**) Replace Root Volume now supports a VolumeId parameter. This allows the customer to pass in a pre-prepared volume as the target root volume for an RRV workflow.
+* (**ecs**) Amazon ECS now automatically detects the correct CPU architecture for Express Mode services.
+* (**geoplaces**) Added AddressNamesMode, AddressNameTranslations, MobilityMode, PostalCodeMode, SecondaryAddresses, and DriveThrough features across Places V2 APIs to support address name formatting,  multilingual translations, travel-aware search, multi-city postal codes, and unit-level address resolution.
+* (**iotwireless**) Default session downlink transmission parameters have been added to the existing Multicast Group APIs. Explicit transmission parameters are no longer required when starting a multicast session during the FUOTA procedure.
+* (**resiliencehubv2**) Next Generation Resilience Hub now supports filtering and sorting failure mode assessments, resource type filtering in ListResources, cross-region and cross-account topology edges, data recovery achievability status, and more granular dependency discovery progress tracking.
+
+## [1.8.0] - 07/07/2026
+
+### Features
+* (**configservice**) Added support for connecting AWS Config to third-party cloud service providers. New APIs include PutConnector, GetConnector, DeleteConnector, and ListConnectors for managing connectors, and PutThirdPartyServiceLinkedConfigurationRecorder for creating third-party service-linked recorders.
+* (**connect**) Adds support for CreateAuthCode and DeleteSession APIs.
+* (**ec2**) This launch surfaces the public SSM parameter associated with public AMIs in the AMI metadata.
+* (**inspector2**) This release extends vulnerability management to Azure VM, container registries and function apps. Adds support for per-member-account scan configuration settings.
+* (**lambda**) AWS Lambda Durable Functions now supports customer managed KMS keys. This allows customers to configure a KMS key in Durable Config to have all their durable execution data encrypted.
+* (**marketplacecatalog**) This release enhances the ListEntities API to support ResellerRole filter for ResaleAuthorization entity.
+* (**partnercentralrevenuemeasurement**) Add support for AWS Partner Central Revenue Measurement API for creating, managing, and tracking revenue attributions and marketplace revenue share allocations.
+* (**route53globalresolver**) Adds ListSharedDNSViews operation to list all DNS Views shared with caller using AWS Resource Access Manager. Also updates ListHostedZoneAssociations operation so that resource ARN param is optional, allowing caller to list all HostedZoneAssociations in account.
+* (**securityhub**) release SecurityHub MultiCloud integration with Azure
+* (**ssm**) Adding SSM Cloud Connector to support Azure Virtual Machines onboarding to AWS Systems Manager
+
+### Documentation
+* (**marketplacemetering**) The usage reporting window for the BatchMeterUsage API has been extended from 6 hours to 24 hours. Sellers can now submit usage records for up to 24 hours after a metered event occurs. The existing 6-hour grace period at the end of a billing cycle still applies.
+
+### Miscellaneous
+* **Breaking**: Update Kotlin version from 2.3.21 to 2.4.0
+
+## [1.6.107] - 07/06/2026
+
+### Features
+* (**billing**) Adds support for managing AWS account credits and billing preferences, including retrieving credit details, viewing per-month credit allocation history, redeeming promotional codes, and configuring credit sharing and billing preferences.
+* (**cloudwatchlogs**) Added PutStorageTierPolicy and GetStorageTierPolicy APIs to Amazon CloudWatch Logs. Customers can now configure account-level Intelligent Tiering to automatically optimize log storage costs by moving infrequently accessed data to lower-cost storage tiers.
+* (**mailmanager**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* (**opensearch**) This release introduces Saved Object Migration APIs, enabling users to migrate dashboards, visualizations, index patterns, and other saved objects from a data source into an Amazon OpenSearch Service application workspace with configurable export filters and conflict resolution strategies.
+
+## [1.6.106] - 07/02/2026
+
+### Features
+* (**cognitoidentityprovider**) Add support for provisioned limit management, enabling customers to view and update their provisioned API rate limits for Amazon Cognito User Pools programmatically through the new GetProvisionedLimit and UpdateProvisionedLimit APIs.
+* (**configservice**) AWS Config now supports tag-on-create for organization-managed Config rules and conformance packs through the PutOrganizationConfigRule and PutOrganizationConformancePack APIs.
+* (**customerprofiles**) Amazon Connect Customer Profiles adds support for diversityConfig to recommenderConfig which can be used for diversifying the recommendations. This release also includes model versioning support which helps customer to rollback trained models.
+* (**elementalinference**) Adding new BDD representation of endpoint ruleset
+* (**mediatailor**) Added dual-stack (IPv4 and IPv6) endpoint fields to SSAI and Channel Assembly API responses.
+* (**odb**) Updated model definitions for ODB service.
+* (**outposts**) Tighten Outpost site ContactPhoneNumber regex to perform phone number validation.
+
 ## [1.6.105] - 07/01/2026
 
 ### Features

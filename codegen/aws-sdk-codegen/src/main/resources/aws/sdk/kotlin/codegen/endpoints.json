@@ -2985,6 +2985,7 @@
           "ap-southeast-3" : { },
           "ap-southeast-4" : { },
           "ap-southeast-5" : { },
+          "ap-southeast-6" : { },
           "ap-southeast-7" : { },
           "ca-central-1" : { },
           "ca-west-1" : { },
@@ -5535,6 +5536,7 @@
           "ap-southeast-3" : { },
           "ap-southeast-4" : { },
           "ap-southeast-5" : { },
+          "ap-southeast-6" : { },
           "ca-central-1" : {
             "variants" : [ {
               "hostname" : "codepipeline-fips.ca-central-1.amazonaws.com",
@@ -28709,6 +28711,7 @@
       },
       "wisdom" : {
         "endpoints" : {
+          "af-south-1" : { },
           "ap-northeast-1" : { },
           "ap-northeast-2" : { },
           "ap-southeast-1" : { },
@@ -38910,6 +38913,13 @@
           "eu-isoe-west-1" : { }
         }
       },
+      "health" : {
+        "endpoints" : {
+          "eu-isoe-west-1" : {
+            "deprecated" : true
+          }
+        }
+      },
       "kinesis" : {
         "endpoints" : {
           "eu-isoe-west-1" : { }
@@ -39637,6 +39647,13 @@
           "us-isof-south-1" : { }
         },
         "isRegionalized" : true
+      },
+      "health" : {
+        "endpoints" : {
+          "us-isof-south-1" : {
+            "deprecated" : true
+          }
+        }
       },
       "iam" : {
         "endpoints" : {

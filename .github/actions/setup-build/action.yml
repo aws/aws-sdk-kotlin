@@ -5,12 +5,19 @@ description: >
 runs:
   using: composite
   steps:
+    - name: Extract aws-kotlin-repo-tools version
+      shell: bash
+      run: |
+        export AWS_KOTLIN_REPO_TOOLS_VERSION=$(grep '^aws-kotlin-repo-tools-version' ./gradle/libs.versions.toml | sed -E 's/.*= "(.*)"/\1/')
+        echo "Using aws-kotlin-repo-tools version $AWS_KOTLIN_REPO_TOOLS_VERSION"
+        echo "aws_kotlin_repo_tools_version=$AWS_KOTLIN_REPO_TOOLS_VERSION" >> $GITHUB_ENV
+
     - name: Checkout tools
       uses: actions/checkout@v4
       with:
         path: 'aws-kotlin-repo-tools'
         repository: 'aws/aws-kotlin-repo-tools'
-        ref: '0.4.2'
+        ref: ${{ env.aws_kotlin_repo_tools_version }}
         sparse-checkout: |
           .github
     - name: Checkout smithy-kotlin

@@ -10,6 +10,7 @@ import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetri
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetrics
 import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.time.Instant
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import io.mockk.coEvery
 import io.mockk.mockkStatic
@@ -20,16 +21,18 @@ import kotlin.test.assertEquals
 class ProfileCredentialsProviderTestJVM {
     @Test
     fun processBusinessMetrics() = runTest {
-        val testProvider = TestPlatformProvider(
+        val testProvider = TestPlatformProvider.of(
             env = mapOf(
                 "AWS_CONFIG_FILE" to "config",
             ),
             fs = mapOf(
-                "config" to """
+                "config" to TestFile(
+                    """
                 [default]
                 credential_process = awscreds-custom
-                """.trimIndent(),
-                "awscreds-custom" to "some-process",
+                    """.trimIndent(),
+                ),
+                "awscreds-custom" to TestFile("some-process"),
             ),
         )
         val testEngine = TestConnection()
