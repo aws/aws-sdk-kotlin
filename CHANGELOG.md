@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.8.5] - 07/13/2026
+
+### Features
+* (**elasticsearchservice**) Adds support for the EngineMode and UseCase parameters on Amazon Elasticsearch Service domains, enabling GENERAL or OPTIMIZED engine modes and SEARCH, VECTOR, OBSERVABILITY, or MIXED usecases when creating and updating domain configurations.
+* (**gamelift**) Amazon GameLift Servers now includes fleet expiration for managed fleets. A managed fleet expires one year after creation, transitioning to EXPIRED status, emitting a FLEET EXPIRED event, and scaling to zero instances. Expired fleets cannot host new game sessions or increase capacity.
+* (**guardduty**) GuardDuty AI Protection is now publicly available. Findings include Bedrock guardrail details, model details, observation numbers, and continuous scan details. GuardrailArn and GuardrailVersion are deprecated in favor of the guardrails list.
+* (**lambda**) Add Java 8, 11 and 17 on AL2023 (java8.al2023, java11.al2023, java17.al2023) support to AWS Lambda.
+* (**redshiftserverless**) Add support for preserving datasharing, zero-ETL and S3 event integrations on snapshot restore to serverless namespace.
+
 ## [1.8.4] - 07/10/2026
 
 ### Features
