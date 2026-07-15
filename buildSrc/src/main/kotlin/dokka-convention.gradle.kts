@@ -90,7 +90,13 @@ val jacksonVersion = libs.jackson.bom.get().version!!
 configurations.matching { it.name.startsWith("dokka") }.configureEach {
     resolutionStrategy.eachDependency {
         if (requested.group.startsWith("com.fasterxml.jackson")) {
-            useVersion(jacksonVersion)
+            if (requested.name == "jackson-annotations") {
+                // jackson-annotations dropped patch version from 2.20 onwards
+                // https://github.com/FasterXML/jackson-annotations/issues/294
+                useVersion(jacksonVersion.substringBeforeLast('.'))
+            } else {
+                useVersion(jacksonVersion)
+            }
         }
     }
 }
