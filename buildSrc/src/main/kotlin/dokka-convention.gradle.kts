@@ -2,12 +2,16 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
+// https://github.com/gradle/gradle/issues/15383
+import org.gradle.accessors.dm.LibrariesForLibs
 
 import aws.sdk.kotlin.dokka.TrimNavigation
 
 plugins {
     id("org.jetbrains.dokka")
 }
+
+val libs = rootProject.the<LibrariesForLibs>()
 
 dokka {
     val sdkVersion: String by project
@@ -79,6 +83,16 @@ dokka {
     dokkaPublications.html {
         val offline = properties["dokka.offlineMode"]?.toString()?.lowercase()?.toBooleanStrict() ?: false
         offlineMode.set(offline)
+    }
+}
+
+val jacksonVersion = libs.jackson.bom.get().version!!
+
+configurations.matching { it.name.startsWith("dokka") }.configureEach {
+    resolutionStrategy.eachDependency {
+        if (requested.group.startsWith("com.fasterxml.jackson")) {
+            useVersion(jacksonVersion)
+        }
     }
 }
 
