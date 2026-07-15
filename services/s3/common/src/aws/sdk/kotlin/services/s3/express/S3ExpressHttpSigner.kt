@@ -6,12 +6,10 @@ package aws.sdk.kotlin.services.s3.express
 
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awssigning.AwsSigningAttributes
-import aws.smithy.kotlin.runtime.auth.awssigning.HashSpecification
 import aws.smithy.kotlin.runtime.collections.toMutableAttributes
 import aws.smithy.kotlin.runtime.http.auth.HttpSigner
 import aws.smithy.kotlin.runtime.http.auth.SignHttpRequest
 import aws.smithy.kotlin.runtime.http.request.header
-import aws.smithy.kotlin.runtime.net.Scheme
 
 internal const val S3_EXPRESS_SESSION_TOKEN_HEADER = "X-Amz-S3session-Token"
 private const val SESSION_TOKEN_HEADER = "X-Amz-Security-Token"
@@ -39,17 +37,10 @@ internal class S3ExpressHttpSigner(
         val mutAttrs = signingRequest.signingAttributes.toMutableAttributes()
         mutAttrs[AwsSigningAttributes.OmitSessionToken] = true
 
-        // 3. use unsigned payload over HTTPS when no explicit hash specification is set
-        if (!mutAttrs.contains(AwsSigningAttributes.HashSpecification)) {
-            if (signingRequest.httpRequest.url.scheme == Scheme.HTTPS) {
-                mutAttrs[AwsSigningAttributes.HashSpecification] = HashSpecification.UnsignedPayload
-            }
-        }
-
-        // 4. call main signer
+        // 3. call main signer
         httpSigner.sign(signingRequest.copy(signingAttributes = mutAttrs))
 
-        // 5. remove session token header
+        // 4. remove session token header
         signingRequest.httpRequest.headers.remove(SESSION_TOKEN_HEADER)
     }
 }

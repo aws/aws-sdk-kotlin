@@ -66,6 +66,18 @@ class ClientConfigIntegration : KotlinIntegration {
             useSymbolWithNullableBuilder(KotlinTypes.Boolean, "true")
             documentation = "Flag to enable [aws-chunked](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html) content encoding."
         }
+
+        val PayloadSigningEnabled: ConfigProperty = ConfigProperty {
+            name = "payloadSigningEnabled"
+            useSymbolWithNullableBuilder(KotlinTypes.Boolean, "false")
+            documentation = """
+                Flag to control whether request payloads are signed (SHA-256 hash computed) before sending.
+                When `false` (default), payload signing is automatically disabled for HTTPS requests to improve
+                performance, since TLS already provides integrity protection. Payloads are always signed for
+                HTTP (non-TLS) requests regardless of this setting. Set to `true` to force payload signing
+                even over HTTPS.
+            """.trimIndent()
+        }
     }
 
     override fun preprocessModel(model: Model, settings: KotlinSettings): Model {
@@ -91,6 +103,7 @@ class ClientConfigIntegration : KotlinIntegration {
         UseArnRegionProp,
         DisableMrapProp,
         EnableAwsChunked,
+        PayloadSigningEnabled,
     )
 
     override val sectionWriters: List<SectionWriterBinding>
