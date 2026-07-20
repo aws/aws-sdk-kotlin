@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.8.10] - 07/20/2026
+
+### Features
+* (**bedrockagentcore**) Add W3C trace context headers (traceparent, tracestate, baggage) and X-Amzn-Trace-Id to InvokeHarness request for end-to-end observability propagation. Add toolResultMetadata to the streaming content block delta for MCP tool result meta delivery without oversized SSE frames.
+* (**bedrockagentcorecontrol**) This release adds support for specifying a connector version on Gateway targets to pin the connector's tool schema. It also introduces web-search connector version 1.2.0, which adds agent-side domain filtering, published date range filtering, and admin-side domain allowlisting.
+* (**inspector2**) Adds Windows path support for deep inspection. Fixes tag propagation for connector CloudFormation stack operations.
+* (**mediatailor**) This change adds api support for configuring ad decision server timeouts and concurrency fields on MediaTailor playback configurations
+* (**quicksight**) Adds support for custom permissions for Triggers, allowing administrators to control user access to Schedule, Inbound Email and Quick Event triggers.
+* (**sesv2**) Amazon SES introduces three new Pricing Plans (Essentials, Pro, Enterprise), which bundle SES features under one pricing umbrella.  The new PutAccountPricingAttributes API lets the user set the account's plan, while current plan retrievalif done through the new PricingAttributes field on GetAccount.
+
+### Documentation
+* (**marketplacemetering**) For new SaaS product integrations, CustomerIdentifier is not populated in ResolveCustomer responses and is not supported in BatchMeterUsage. Use CustomerAWSAccountId and LicenseArn instead.
+* (**organizations**) Updated InvalidInputException error documentation to clarify that the service validates free-text field values against common cross-site scripting (XSS) patterns.
+
 ## [1.8.9] - 07/17/2026
 
 ### Features
