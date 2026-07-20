@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.8.9] - 07/17/2026
+
+### Features
+* (**cognitoidentityprovider**) Amazon Cognito user pools now support sending SMS via AWS End User Messaging. A new EumsSms object in SmsConfigurationType lets you deliver MFA and verification texts through AWS End User Messaging, alongside the existing Amazon SNS option.
+* (**gameliftstreams**) Amazon GameLift Streams now supports assigning an IAM role to a stream session, enabling your application to securely access resources in your AWS account, such as Amazon S3 buckets and DynamoDB tables.
+* (**kinesisanalyticsv2**) Support for Flink 2.3 in Managed Service for Apache Flink
+* (**odb**) Adds support for sourcing Autonomous Database admin and wallet passwords from customer-managed AWS Secrets Manager secrets, including password source configuration and summaries, and enabling or disabling the OCI IAM service role for Secrets Manager integration via InitializeService.
+* (**rds**) Adds the AssociatedRoles parameter to CreateDBCluster, RestoreDBClusterFromSnapshot, RestoreDBClusterToPointInTime, and RestoreDBClusterFromS3, letting customers associate IAM roles with an Aurora DB cluster at create or restore time instead of calling AddRoleToDBCluster afterward.
+
+## [1.8.8] - 07/16/2026
+
+### Features
+* (**chimesdkvoice**) Marked CreateProxySession, DeleteProxySession, GetProxySession, ListProxySessions, UpdateProxySession, PutVoiceConnectorProxy, DeleteVoiceConnectorProxy, and GetVoiceConnectorProxy as deprecated.
+* (**emr**) Amazon EMR updates the Session object returned by GetSession API
+* (**omics**) Adds support for returning the task UUID (universally unique identifier) in GetRunTask and ListRunTasks responses
+* (**sagemaker**) Release support for g7 instance type for SageMaker inference endpoints.
+* (**sustainability**) Adds support for retrieving estimated water allocation data.
+
+### Documentation
+* (**redshift**) Amazon Redshift - Added support for rg.large and rg.12xlarge node types in CreateCluster, ModifyCluster, and ResizeCluster API operations.
+* (**s3**) Documentation update for removing the 30 day minimum restriction for transition to Standard-IA or OneZone-IA storage classes
+
 ## [1.8.7] - 07/15/2026
 
 ### Features
