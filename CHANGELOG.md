@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.8.12] - 07/22/2026
+
+### Features
+* (**amp**) Add CloudWatch dataset destinations for Amazon Managed Service for Prometheus collectors.
+* (**arcregionswitch**) Adds support for a client token in StartPlanExecution to make plan execution requests idempotent for safe retries.
+* (**cloudwatch**) Adds documented value constraints for CloudWatch Log Alarm scheduled query configuration fields, and makes LogGroupIdentifiers optional for log alarms.
+* (**guardduty**) Amazon GuardDuty now returns filter lifecycle metadata in GetFilter responses. The response includes createdAt and updatedAt timestamps and a version number that increments on each update, giving you visibility into when a filter was created and last modified.
+* (**observabilityadmin**) Enablement for ALB and Bedrock Knowledge Base logs via Observability Admin Telemetry Rule for account and organization level
+* (**partnercentralaccount**) Adds Qualifications Association APIs that enable partners to associate a subsidiary account's qualifications with a primary account. Once associated, qualifications are shared across all connected accounts and scorecards are consolidated. Partners can start and track association and disassociation.
+* (**pcs**) AWS PCS Node Lifecycle Actions provides a structured way to run custom scripts at defined points in a compute node's lifecycle directly through the AWS PCS compute node group API.
+* (**sesv2**) Launching DEED and MREP in US GOV
+
+### Documentation
+* (**elasticloadbalancingv2**) This adds CLI examples for the IpAddressType field on SourceIpConfig, enabling Network Load Balancer listener rules to match traffic based on whether the source IP is IPv4 or IPv6.
+
 ## [1.8.11] - 07/21/2026
 
 ### Features
