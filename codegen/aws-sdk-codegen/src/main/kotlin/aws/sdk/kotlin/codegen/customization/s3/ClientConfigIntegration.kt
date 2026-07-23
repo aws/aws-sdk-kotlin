@@ -71,11 +71,13 @@ class ClientConfigIntegration : KotlinIntegration {
             name = "payloadSigningEnabled"
             useSymbolWithNullableBuilder(KotlinTypes.Boolean, "false")
             documentation = """
-                Flag to control whether request payloads are signed (SHA-256 hash computed) before sending.
-                When `false` (default), payload signing is automatically disabled for HTTPS requests to improve
-                performance, since TLS already provides integrity protection. Payloads are always signed for
-                HTTP (non-TLS) requests regardless of this setting. Set to `true` to force payload signing
-                even over HTTPS.
+                Flag to control whether request payloads are signed for HTTPS requests. When `false` (the default),
+                payload signing is skipped over HTTPS to improve performance, since TLS already provides
+                integrity protection. Set to `true` to opt back into payload signing over HTTPS.
+
+                This flag only applies to HTTPS requests. Other settings — such as the operation's auth scheme,
+                the `unsignedPayload` trait, and `AwsHttpSigner.Config.isUnsignedPayload` — take precedence over
+                this flag.
             """.trimIndent()
         }
     }
