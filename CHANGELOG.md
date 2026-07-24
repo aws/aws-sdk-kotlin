@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.8.14] - 07/24/2026
+
+### Features
+* (**applicationinsights**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* (**artifact**) Added the PutComplianceInquiryFeedback API, enabling customers to submit feedback on compliance inquiry responses. Customers can rate responses as helpful or not helpful and provide optional reason codes and comments.
+* (**cognitoidentityprovider**) Amazon Cognito user pools now support the AdminGetUserAuthFactors operation, which lets administrators retrieve the configured authentication factors (such as password, SMS, email, and TOTP) available for a specific user in a user pool.
+* (**dynamodb**) Endpoint test standardizations
+* (**neptunegraph**) Update validations for Tag Keys and KMS Key ARNs.
+* (**rtbfabric**) The deprecated inboundLinksCount field has been removed from the GetResponderGateway API response. Customers who previously relied on this field should use linksRequestedCount instead.
+
+### Documentation
+* (**odb**) Documentation-only update to clarify the operation-specific valid values for the externalIdType field.
+
 ## [1.8.13] - 07/23/2026
 
 ### Features
