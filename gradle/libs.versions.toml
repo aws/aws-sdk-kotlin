@@ -3,7 +3,7 @@ kotlin-version = "2.4.0"
 ksp-version = "2.3.10"
 
 dokka-version = "2.2.0"
-jackson-bom-version = "2.21.5"
+jackson-bom-version = "2.22.1"
 
 aws-kotlin-repo-tools-version = "0.6.3"
 
@@ -16,7 +16,7 @@ binary-compatibility-validator-version = "0.18.1"
 smithy-kotlin-version = "1.7.2"
 
 # codegen
-smithy-version = "1.72.0"
+smithy-version = "1.72.1"
 
 # testing
 ddb-local-version = "2.6.1"

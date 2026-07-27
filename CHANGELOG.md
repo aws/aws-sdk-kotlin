@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.8.15] - 07/27/2026
+
+### Features
+* (**account**) This release adds support for the GetPrimaryEmailUpdateStatus API operation, which allows customers to retrieve the current status of a primary email address update request for an AWS account. The operation returns status information including whether the update is pending, completed, or failed.
+* (**bcmdataexports**) With this release, customers can configure their data exports to deliver CSV reports in ZIP compressed format.
+* (**cleanrooms**) This release adds support for the CR.8X worker type for SQL (32 vCPU)
+* (**cleanroomsml**) This release adds support for the CR.8X worker type for SQL (32 vCPU)
+* (**emrcontainers**) With this launch, you can now set concurrent job limits on a virtual cluster, giving you fine-grained control over how many job runs execute at once and how many can wait in queue.
+* (**glue**) Adds BatchGetDataQualityRulesetEvaluationRun API to retrieve multiple runs in one call, ObservationScope and ObservationMode parameters for anomaly detection, writing evaluation results to Data Catalog tables, and custom log group paths for recommendation runs.
+* (**partnercentralaccount**) Adds optional headquarters location to StartProfileUpdateTask, letting partners record their headquarters as an ISO 3166 country and subdivision code on their profile. When headquarters is provided, both the country and subdivision codes are required.
+* (**quicksight**) Added new Governance fields to Custom Permissions API to support Deny By Default functionality.
+* (**sagemaker**) This release adds LoRA adapters, training plans, and new instance types to SageMaker inference optimization. CreateAIRecommendationJob accepts optional AdapterSource and CreateOptimizationJob accepts optional TrainingPlanArns and the ml.g7e and ml.p6-b200 families.
+* (**securityagent**) AWS Security Agent adds a new task hours field that reflects the active work done for a task.
+
+## [1.8.14] - 07/24/2026
+
+### Features
+* (**applicationinsights**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* (**artifact**) Added the PutComplianceInquiryFeedback API, enabling customers to submit feedback on compliance inquiry responses. Customers can rate responses as helpful or not helpful and provide optional reason codes and comments.
+* (**cognitoidentityprovider**) Amazon Cognito user pools now support the AdminGetUserAuthFactors operation, which lets administrators retrieve the configured authentication factors (such as password, SMS, email, and TOTP) available for a specific user in a user pool.
+* (**dynamodb**) Endpoint test standardizations
+* (**neptunegraph**) Update validations for Tag Keys and KMS Key ARNs.
+* (**rtbfabric**) The deprecated inboundLinksCount field has been removed from the GetResponderGateway API response. Customers who previously relied on this field should use linksRequestedCount instead.
+
+### Documentation
+* (**odb**) Documentation-only update to clarify the operation-specific valid values for the externalIdType field.
+
+## [1.8.13] - 07/23/2026
+
+### Features
+* (**appstream**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* (**backupgateway**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* (**bcmpricingcalculator**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* (**bcmrecommendedactions**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* (**bedrockagentcore**) Adds support for the Bring Your Own Storage(BYOS) feature in AgentCore Browser and Code Interpreter. Enables mounting S3Files and EFS File Systems via Access points.
+* (**bedrockagentcorecontrol**) Adds support for the Bring Your Own Storage(BYOS) feature in AgentCore Browser and Code Interpreter. Enables mounting S3Files and EFS File Systems via Access points.
+* (**datazone**) Adds support for notebook sync with S3 ipynb files
+* (**gameliftstreams**) GameLift Streams now supports configuring a custom aspect ratio per stream session to accommodate different player devices. Supported aspect ratios include landscape, portrait, and square - delivering a full-screen experience without letterboxing or cropping.
+* (**kendraranking**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* (**mediapackagev2**) This release adds support for non-epoch-locked CMAF ingest in MediaPackageV2 channels.
+* (**quicksight**) Added new capabilities to custom permissions profiles to control access to Amazon Quick through the browser extension and Microsoft Word, Outlook, Excel, and PowerPoint add-ins.
+* (**redshiftdata**) This release include long polling provids a new parameter wait-time-seconds to 5 API operations, new API ListSessions, and a new parameter execution-mode to BatchExecuteStatement
+* (**sagemaker**) Release support for c6a, m6a, m6g, m7g, m8g instance types for SageMaker HyperPod
+* (**workspacesinstances**) This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+
 ## [1.8.12] - 07/22/2026
 
 ### Features
