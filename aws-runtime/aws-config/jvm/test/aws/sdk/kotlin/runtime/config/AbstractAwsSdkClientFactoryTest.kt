@@ -119,9 +119,11 @@ private interface TestClient : SdkClient {
     class Config private constructor(builder: Builder) :
         SdkClientConfig,
         AwsSdkClientConfig,
+        LogRedactionConfig,
         RetryStrategyClientConfig by builder.buildRetryStrategyClientConfig() {
         override val clientName: String = builder.clientName
         override val logMode: LogMode = builder.logMode ?: LogMode.Default
+        override val logRedactedHeaders: Set<String> = builder.logRedactedHeaders
         override val region: String? = builder.region
         override var regionProvider: RegionProvider = builder.regionProvider ?: DefaultRegionProviderChain()
         override var useFips: Boolean = builder.useFips ?: false
@@ -131,10 +133,12 @@ private interface TestClient : SdkClient {
         // new: inherits builder equivalents for Config base classes
         class Builder :
             AwsSdkClientConfig.Builder,
+            LogRedactionConfig.Builder,
             SdkClientConfig.Builder<Config>,
             RetryStrategyClientConfig.Builder by RetryStrategyClientConfigImpl.BuilderImpl() {
             override var clientName: String = "Test"
             override var logMode: LogMode? = LogMode.Default
+            override var logRedactedHeaders: MutableSet<String> = mutableSetOf()
             override var region: String? = null
             override var regionProvider: RegionProvider? = null
             override var useFips: Boolean? = null

@@ -3181,6 +3181,26 @@
                 "target": "smithy.api#String"
             }
         },
+        "com.amazonaws.datazone#CommitHash": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9]+$"
+            }
+        },
+        "com.amazonaws.datazone#CommitMessage": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 2048
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.datazone#CompletedAt": {
             "type": "timestamp"
         },
@@ -3497,6 +3517,12 @@
                         "smithy.api#documentation": "<p>The Amazon S3 properties of a connection.</p>"
                     }
                 },
+                "snowflakeProperties": {
+                    "target": "com.amazonaws.datazone#SnowflakePropertiesInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Snowflake-specific connection properties to use when creating the connection.</p>"
+                    }
+                },
                 "amazonQProperties": {
                     "target": "com.amazonaws.datazone#AmazonQPropertiesInput",
                     "traits": {
@@ -3589,6 +3615,12 @@
                         "smithy.api#documentation": "<p>The Amazon S3 properties of a connection.</p>"
                     }
                 },
+                "snowflakeProperties": {
+                    "target": "com.amazonaws.datazone#SnowflakePropertiesOutput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Snowflake-specific connection properties for an existing connection.</p>"
+                    }
+                },
                 "amazonQProperties": {
                     "target": "com.amazonaws.datazone#AmazonQPropertiesOutput",
                     "traits": {
@@ -3667,6 +3699,12 @@
                     "target": "com.amazonaws.datazone#S3PropertiesPatch",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon S3 properties of a connection properties patch.</p>"
+                    }
+                },
+                "snowflakeProperties": {
+                    "target": "com.amazonaws.datazone#SnowflakePropertiesPatch",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Snowflake-specific connection properties to update.</p>"
                     }
                 },
                 "amazonQProperties": {
@@ -3995,6 +4033,113 @@
                         "smithy.api#enumValue": "VPC"
                     }
                 }
+            }
+        },
+        "com.amazonaws.datazone#ConnectivityProperties": {
+            "type": "structure",
+            "members": {
+                "connectionProperties": {
+                    "target": "com.amazonaws.datazone#ConnectionProperties",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connection properties for this configuration.</p>"
+                    }
+                },
+                "physicalConnectionRequirements": {
+                    "target": "com.amazonaws.datazone#PhysicalConnectionRequirements",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The physical network requirements for the connection, such as the subnet, security group, and VPC settings needed to reach the data source.</p>"
+                    }
+                },
+                "name": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the connectivity configuration.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 41
+                        },
+                        "smithy.api#pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFF\\t]*$"
+                    }
+                },
+                "description": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the connectivity configuration.</p>",
+                        "smithy.api#length": {
+                            "max": 2048
+                        },
+                        "smithy.api#pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFF\\r\\n\\t]*$"
+                    }
+                },
+                "validateCredentials": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to validate credentials for the connectivity configuration. Defaults to true if not specified.</p>"
+                    }
+                },
+                "validateForComputeEnvironments": {
+                    "target": "com.amazonaws.datazone#ComputeEnvironmentsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The compute environments to use when validating connectivity. The service validates that the connection is reachable from each specified environment.</p>"
+                    }
+                },
+                "sparkProperties": {
+                    "target": "com.amazonaws.datazone#PropertyMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Spark properties for this configuration.</p>"
+                    }
+                },
+                "athenaProperties": {
+                    "target": "com.amazonaws.datazone#PropertyMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Athena properties for this configuration.</p>"
+                    }
+                },
+                "pythonProperties": {
+                    "target": "com.amazonaws.datazone#PropertyMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Python properties for this configuration.</p>"
+                    }
+                },
+                "authenticationConfiguration": {
+                    "target": "com.amazonaws.datazone#AuthenticationConfigurationInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The authentication settings for this configuration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the network and authentication settings for a connection, including connection credentials, physical network requirements, and compute-environment validation options.</p>"
+            }
+        },
+        "com.amazonaws.datazone#ConnectivityPropertiesPatch": {
+            "type": "structure",
+            "members": {
+                "description": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A description of the connectivity properties update.</p>",
+                        "smithy.api#length": {
+                            "max": 2048
+                        },
+                        "smithy.api#pattern": "^[\\S\\s]*$"
+                    }
+                },
+                "connectionProperties": {
+                    "target": "com.amazonaws.datazone#ConnectionProperties",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connection properties to update.</p>"
+                    }
+                },
+                "authenticationConfiguration": {
+                    "target": "com.amazonaws.datazone#AuthenticationConfigurationPatch",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The authentication settings to update.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the connectivity settings to update on an existing connection. Include only the fields you want to change.</p>"
             }
         },
         "com.amazonaws.datazone#CreateAccountPool": {
@@ -6652,7 +6797,7 @@
                 "environmentBlueprintIdentifier": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ID of the blueprint with which the environment is being created.</p>"
+                        "smithy.api#documentation": "<p>The ID of the blueprint with which the environment is being created.</p> <note> <p>This parameter is only valid for V1 domains. If provided for a V2 domain, the service returns a ValidationException.</p> </note>"
                     }
                 },
                 "deploymentOrder": {
@@ -7968,6 +8113,12 @@
                     "target": "com.amazonaws.datazone#NotebookError",
                     "traits": {
                         "smithy.api#documentation": "<p>The error details if the notebook creation failed.</p>"
+                    }
+                },
+                "gitMetadata": {
+                    "target": "com.amazonaws.datazone#GitMetadata",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Git metadata associated with the notebook.</p>"
                     }
                 }
             },
@@ -10913,6 +11064,9 @@
                     "target": "com.amazonaws.datazone#DeleteEnvironmentProfile"
                 },
                 {
+                    "target": "com.amazonaws.datazone#DeleteLineageEvent"
+                },
+                {
                     "target": "com.amazonaws.datazone#DeleteProject"
                 },
                 {
@@ -11127,6 +11281,9 @@
                 },
                 {
                     "target": "com.amazonaws.datazone#StartNotebookImport"
+                },
+                {
+                    "target": "com.amazonaws.datazone#StartNotebookSync"
                 },
                 {
                     "target": "com.amazonaws.datazone#TagResource"
@@ -13222,6 +13379,91 @@
         "com.amazonaws.datazone#DeleteGlossaryTermOutput": {
             "type": "structure",
             "members": {},
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.datazone#DeleteLineageEvent": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.datazone#DeleteLineageEventInput"
+            },
+            "output": {
+                "target": "com.amazonaws.datazone#DeleteLineageEventOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.datazone#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes the specified lineage event.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "DELETE",
+                    "uri": "/v2/domains/{domainIdentifier}/lineage/events/{identifier}"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.datazone#DeleteLineageEventInput": {
+            "type": "structure",
+            "members": {
+                "domainIdentifier": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the domain.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "identifier": {
+                    "target": "com.amazonaws.datazone#LineageEventIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the lineage event.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.datazone#DeleteLineageEventOutput": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.datazone#LineageEventIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the lineage event.</p>"
+                    }
+                },
+                "domainId": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the domain.</p>"
+                    }
+                },
+                "processingStatus": {
+                    "target": "com.amazonaws.datazone#LineageEventProcessingStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The progressing status of the lineage event.</p>"
+                    }
+                }
+            },
             "traits": {
                 "smithy.api#output": {}
             }
@@ -16058,6 +16300,15 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The file format for a notebook export in Amazon SageMaker Unified Studio.</p>"
+            }
+        },
+        "com.amazonaws.datazone#FileName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                }
             }
         },
         "com.amazonaws.datazone#Filter": {
@@ -20875,6 +21126,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The error details if the notebook is in a failed state.</p>"
                     }
+                },
+                "gitMetadata": {
+                    "target": "com.amazonaws.datazone#GitMetadata",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Git metadata associated with the notebook.</p>"
+                    }
                 }
             },
             "traits": {
@@ -22453,6 +22710,90 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.datazone#GitBranch": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.datazone#GitConnectionId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 40
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9_-]+$"
+            }
+        },
+        "com.amazonaws.datazone#GitMetadata": {
+            "type": "structure",
+            "members": {
+                "connectionId": {
+                    "target": "com.amazonaws.datazone#GitConnectionId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the Git connection.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "repository": {
+                    "target": "com.amazonaws.datazone#GitRepository",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the Git repository.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "branch": {
+                    "target": "com.amazonaws.datazone#GitBranch",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the Git branch.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "commitHash": {
+                    "target": "com.amazonaws.datazone#CommitHash",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The commit hash in the Git repository.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "fileName": {
+                    "target": "com.amazonaws.datazone#FileName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the file in the Git repository.</p>"
+                    }
+                },
+                "committedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of when the commit was made.</p>"
+                    }
+                },
+                "commitMessage": {
+                    "target": "com.amazonaws.datazone#CommitMessage",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The commit message associated with the Git commit.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Git metadata for a notebook sync operation in Amazon SageMaker Unified Studio. Contains information about the Git repository, branch, and commit associated with the notebook.</p>"
+            }
+        },
+        "com.amazonaws.datazone#GitRepository": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 512
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.datazone#GlobalParameterMap": {
             "type": "map",
             "key": {
@@ -23924,6 +24265,27 @@
                 "smithy.api#documentation": "<p>The details of the IAM user profile.</p>"
             }
         },
+        "com.amazonaws.datazone#IdentityMapping": {
+            "type": "structure",
+            "members": {
+                "usernameAttribute": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The username attribute used for the identity mapping.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "prefix": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The prefix used for the identity mapping.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the configuration for mapping user identities to Snowflake users, including the username attribute and optional prefix applied during the mapping.</p>"
+            }
+        },
         "com.amazonaws.datazone#Import": {
             "type": "structure",
             "members": {
@@ -24937,6 +25299,65 @@
                 "smithy.api#documentation": "<p>The SQL query run details of a data lineage run.</p>"
             }
         },
+        "com.amazonaws.datazone#LineageSyncInput": {
+            "type": "structure",
+            "members": {
+                "timezone": {
+                    "target": "com.amazonaws.datazone#Timezone",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timezone of the lineage sync schedule.</p>"
+                    }
+                },
+                "enabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether lineage sync is enabled.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "schedule": {
+                    "target": "com.amazonaws.datazone#LineageSyncScheduleCronString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The schedule of the lineage sync.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the settings for configuring lineage sync on a Snowflake connection, including the schedule, timezone, and enabled state.</p>"
+            }
+        },
+        "com.amazonaws.datazone#LineageSyncOutput": {
+            "type": "structure",
+            "members": {
+                "lineageJobId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the lineage sync job.</p>"
+                    }
+                },
+                "timezone": {
+                    "target": "com.amazonaws.datazone#Timezone",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timezone of the lineage sync schedule.</p>"
+                    }
+                },
+                "enabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether lineage sync is enabled.</p>"
+                    }
+                },
+                "schedule": {
+                    "target": "com.amazonaws.datazone#LineageSyncScheduleCronString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The schedule of the lineage sync.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the current state of lineage sync for a Snowflake connection, including the schedule, timezone, enabled state, and the ID of the associated lineage job.</p>"
+            }
+        },
         "com.amazonaws.datazone#LineageSyncSchedule": {
             "type": "structure",
             "members": {
@@ -24950,6 +25371,17 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The lineage sync schedule.</p>"
+            }
+        },
+        "com.amazonaws.datazone#LineageSyncScheduleCronString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The cron expression for the lineage sync schedule.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                },
+                "smithy.api#pattern": "^cron\\((\\b[0-5]?[0-9]\\b) ([*]|\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)$"
             }
         },
         "com.amazonaws.datazone#ListAccountPools": {
@@ -30267,6 +30699,9 @@
                 },
                 "error": {
                     "target": "com.amazonaws.datazone#NotebookError"
+                },
+                "gitMetadata": {
+                    "target": "com.amazonaws.datazone#GitMetadata"
                 }
             },
             "create": {
@@ -30730,6 +31165,20 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The notebook is archived.</p>",
                         "smithy.api#enumValue": "ARCHIVED"
+                    }
+                },
+                "SYNC_IN_PROGRESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The notebook sync is in progress.</p>",
+                        "smithy.api#enumValue": "SYNC_IN_PROGRESS"
+                    }
+                },
+                "SYNC_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The notebook sync failed.</p>",
+                        "smithy.api#enumValue": "SYNC_FAILED"
                     }
                 }
             },
@@ -36281,6 +36730,119 @@
                 }
             }
         },
+        "com.amazonaws.datazone#SnowflakePropertiesInput": {
+            "type": "structure",
+            "members": {
+                "connectivityProperties": {
+                    "target": "com.amazonaws.datazone#ConnectivityProperties",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectivity properties of the Snowflake connection.</p>"
+                    }
+                },
+                "snowflakeRole": {
+                    "target": "com.amazonaws.datazone#SnowflakeRole",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Snowflake role used to access Snowflake resources.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "identityMapping": {
+                    "target": "com.amazonaws.datazone#IdentityMapping",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identity mapping configuration for the Snowflake connection.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "lineageSync": {
+                    "target": "com.amazonaws.datazone#LineageSyncInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The lineage sync configuration for the Snowflake connection.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the Snowflake-specific settings required when creating or updating a connection, including the Snowflake role, identity mapping, and lineage sync configuration.</p>"
+            }
+        },
+        "com.amazonaws.datazone#SnowflakePropertiesOutput": {
+            "type": "structure",
+            "members": {
+                "snowflakeRole": {
+                    "target": "com.amazonaws.datazone#SnowflakeRole",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Snowflake role used to access Snowflake resources.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "identityMapping": {
+                    "target": "com.amazonaws.datazone#IdentityMapping",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identity mapping configuration for the Snowflake connection.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "lineageSync": {
+                    "target": "com.amazonaws.datazone#LineageSyncOutput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The lineage sync configuration for the Snowflake connection.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.datazone#ConnectionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the Snowflake connection.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "errorMessage": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An error message returned if the Snowflake connection failed to establish or validate.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the Snowflake-specific settings returned for an existing connection, including the current role, identity mapping, lineage sync state, and connection status.</p>"
+            }
+        },
+        "com.amazonaws.datazone#SnowflakePropertiesPatch": {
+            "type": "structure",
+            "members": {
+                "connectivityPropertiesPatch": {
+                    "target": "com.amazonaws.datazone#ConnectivityPropertiesPatch",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectivity properties patch of the Snowflake connection.</p>"
+                    }
+                },
+                "snowflakeRole": {
+                    "target": "com.amazonaws.datazone#SnowflakeRole",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Snowflake role used to access Snowflake resources.</p>"
+                    }
+                },
+                "lineageSync": {
+                    "target": "com.amazonaws.datazone#LineageSyncInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The lineage sync configuration for the Snowflake connection.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the Snowflake-specific settings to update on an existing connection. Include only the fields you want to change.</p>"
+            }
+        },
+        "com.amazonaws.datazone#SnowflakeRole": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The name of the Snowflake role to use for the connection.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9_$]+$"
+            }
+        },
         "com.amazonaws.datazone#SortFieldAccountPool": {
             "type": "enum",
             "members": {
@@ -37674,6 +38236,176 @@
                     "target": "smithy.api#Timestamp",
                     "traits": {
                         "smithy.api#documentation": "<p>The timestamp of when the notebook run completed.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.datazone#StartNotebookSync": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.datazone#StartNotebookSyncInput"
+            },
+            "output": {
+                "target": "com.amazonaws.datazone#StartNotebookSyncOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.datazone#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Starts a notebook sync in Amazon SageMaker Unified Studio. This operation syncs a notebook from a Git repository into a project.</p>",
+                "smithy.api#http": {
+                    "code": 201,
+                    "method": "POST",
+                    "uri": "/v2/domains/{domainIdentifier}/notebook-syncs"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.datazone#StartNotebookSyncInput": {
+            "type": "structure",
+            "members": {
+                "domainIdentifier": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the Amazon SageMaker Unified Studio domain in which to sync the notebook.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "owningProjectIdentifier": {
+                    "target": "com.amazonaws.datazone#ProjectId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the project that will own the synced notebook.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "sourceLocation": {
+                    "target": "com.amazonaws.datazone#SourceLocation",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The source location of the notebook to sync. This specifies the Amazon Simple Storage Service URI of the notebook file.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "gitMetadata": {
+                    "target": "com.amazonaws.datazone#GitMetadata",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Git metadata for the notebook sync, including repository, branch, and commit information.</p>"
+                    }
+                },
+                "notebookId": {
+                    "target": "com.amazonaws.datazone#NotebookId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of an existing notebook to sync. If not specified, a new notebook is created.</p>"
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.datazone#NotebookName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the notebook. The name must be between 1 and 256 characters.</p>"
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.datazone#Description",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the notebook.</p>"
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.datazone#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.datazone#StartNotebookSyncOutput": {
+            "type": "structure",
+            "members": {
+                "notebookId": {
+                    "target": "com.amazonaws.datazone#NotebookId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the synced notebook.</p>"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.datazone#NotebookStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the notebook sync.</p>"
+                    }
+                },
+                "domainId": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the Amazon SageMaker Unified Studio domain.</p>"
+                    }
+                },
+                "owningProjectId": {
+                    "target": "com.amazonaws.datazone#ProjectId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the project that owns the synced notebook.</p>"
+                    }
+                },
+                "sourceLocation": {
+                    "target": "com.amazonaws.datazone#SourceLocation",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The source location from which the notebook was synced.</p>"
+                    }
+                },
+                "gitMetadata": {
+                    "target": "com.amazonaws.datazone#GitMetadata",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Git metadata associated with the synced notebook.</p>"
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.datazone#NotebookName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the synced notebook.</p>"
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.datazone#Description",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the synced notebook.</p>"
+                    }
+                },
+                "createdAt": {
+                    "target": "com.amazonaws.datazone#CreatedAt",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of when the notebook sync was started.</p>"
+                    }
+                },
+                "createdBy": {
+                    "target": "com.amazonaws.datazone#CreatedBy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the user who started the notebook sync.</p>"
                     }
                 }
             },
@@ -42522,6 +43254,12 @@
                     "target": "com.amazonaws.datazone#NotebookError",
                     "traits": {
                         "smithy.api#documentation": "<p>The error details if the notebook is in a failed state.</p>"
+                    }
+                },
+                "gitMetadata": {
+                    "target": "com.amazonaws.datazone#GitMetadata",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Git metadata associated with the notebook.</p>"
                     }
                 }
             },

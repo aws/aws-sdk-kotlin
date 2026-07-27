@@ -1,21 +1,22 @@
 [versions]
-kotlin-version = "2.3.21"
-ksp-version = "2.3.9"
+kotlin-version = "2.4.0"
+ksp-version = "2.3.10"
 
 dokka-version = "2.2.0"
+jackson-bom-version = "2.22.1"
 
-aws-kotlin-repo-tools-version = "0.5.13"
+aws-kotlin-repo-tools-version = "0.6.3"
 
 # libs
 coroutines-version = "1.11.0"
-atomicfu-version = "0.32.1"
+atomicfu-version = "0.33.0"
 binary-compatibility-validator-version = "0.18.1"
 
 # smithy-kotlin
-smithy-kotlin-version = "1.6.14"
+smithy-kotlin-version = "1.7.2"
 
 # codegen
-smithy-version = "1.71.0"
+smithy-version = "1.72.1"
 
 # testing
 ddb-local-version = "3.3.0"
@@ -25,10 +26,11 @@ kotlinx-serialization-version = "1.11.0"
 kaml-version = "0.55.0"
 mockk-version = "1.14.9"
 slf4j-version = "2.0.18"
-mokkery-version = "3.3.0"
+mokkery-version = "3.4.2"
 jsoup-version = "1.22.2"
 
 [libraries]
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson-bom-version" }
 aws-kotlin-repo-tools-build-support = { module="aws.sdk.kotlin.gradle:build-support", version.ref = "aws-kotlin-repo-tools-version" }
 
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }

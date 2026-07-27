@@ -1045,18 +1045,6 @@
             "brazilName": "AwsSdkKotlinIotDataPlane"
         },
         {
-            "sdkId": "IoT Events",
-            "namespace": "aws.sdk.kotlin.services.iotevents",
-            "artifactName": "iotevents",
-            "brazilName": "AwsSdkKotlinIotEvents"
-        },
-        {
-            "sdkId": "IoT Events Data",
-            "namespace": "aws.sdk.kotlin.services.ioteventsdata",
-            "artifactName": "ioteventsdata",
-            "brazilName": "AwsSdkKotlinIotEventsData"
-        },
-        {
             "sdkId": "IoT Jobs Data Plane",
             "namespace": "aws.sdk.kotlin.services.iotjobsdataplane",
             "artifactName": "iotjobsdataplane",
@@ -1205,6 +1193,18 @@
             "namespace": "aws.sdk.kotlin.services.lambda",
             "artifactName": "lambda",
             "brazilName": "AwsSdkKotlinLambda"
+        },
+        {
+            "sdkId": "Lambda Core",
+            "namespace": "aws.sdk.kotlin.services.lambdacore",
+            "artifactName": "lambdacore",
+            "brazilName": "AwsSdkKotlinLambdaCore"
+        },
+        {
+            "sdkId": "Lambda Microvms",
+            "namespace": "aws.sdk.kotlin.services.lambdamicrovms",
+            "artifactName": "lambdamicrovms",
+            "brazilName": "AwsSdkKotlinLambdaMicrovms"
         },
         {
             "sdkId": "Launch Wizard",
@@ -1585,12 +1585,6 @@
             "brazilName": "AwsSdkKotlinPi"
         },
         {
-            "sdkId": "Panorama",
-            "namespace": "aws.sdk.kotlin.services.panorama",
-            "artifactName": "panorama",
-            "brazilName": "AwsSdkKotlinPanorama"
-        },
-        {
             "sdkId": "PartnerCentral Account",
             "namespace": "aws.sdk.kotlin.services.partnercentralaccount",
             "artifactName": "partnercentralaccount",
@@ -1607,6 +1601,12 @@
             "namespace": "aws.sdk.kotlin.services.partnercentralchannel",
             "artifactName": "partnercentralchannel",
             "brazilName": "AwsSdkKotlinPartnercentralChannel"
+        },
+        {
+            "sdkId": "PartnerCentral Revenue Measurement",
+            "namespace": "aws.sdk.kotlin.services.partnercentralrevenuemeasurement",
+            "artifactName": "partnercentralrevenuemeasurement",
+            "brazilName": "AwsSdkKotlinPartnercentralRevenueMeasurement"
         },
         {
             "sdkId": "PartnerCentral Selling",
@@ -2029,6 +2029,12 @@
             "brazilName": "AwsSdkKotlinSagemakerEdge"
         },
         {
+            "sdkId": "SagemakerJobRuntime",
+            "namespace": "aws.sdk.kotlin.services.sagemakerjobruntime",
+            "artifactName": "sagemakerjobruntime",
+            "brazilName": "AwsSdkKotlinSagemakerjobruntime"
+        },
+        {
             "sdkId": "Scheduler",
             "namespace": "aws.sdk.kotlin.services.scheduler",
             "artifactName": "scheduler",
@@ -2113,12 +2119,6 @@
             "brazilName": "AwsSdkKotlinSignin"
         },
         {
-            "sdkId": "SimSpaceWeaver",
-            "namespace": "aws.sdk.kotlin.services.simspaceweaver",
-            "artifactName": "simspaceweaver",
-            "brazilName": "AwsSdkKotlinSimspaceweaver"
-        },
-        {
             "sdkId": "SimpleDBv2",
             "namespace": "aws.sdk.kotlin.services.simpledbv2",
             "artifactName": "simpledbv2",
@@ -2171,6 +2171,12 @@
             "namespace": "aws.sdk.kotlin.services.supportapp",
             "artifactName": "supportapp",
             "brazilName": "AwsSdkKotlinSupportApp"
+        },
+        {
+            "sdkId": "SupportAuthZ",
+            "namespace": "aws.sdk.kotlin.services.supportauthz",
+            "artifactName": "supportauthz",
+            "brazilName": "AwsSdkKotlinSupportauthz"
         },
         {
             "sdkId": "Sustainability",
