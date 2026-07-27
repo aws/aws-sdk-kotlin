@@ -40,6 +40,5 @@ class S3SigningConfig : KotlinIntegration {
         writer.putIfAbsent(signingAttrs, "UseDoubleUriEncode", "false")
         writer.putIfAbsent(signingAttrs, "SignedBodyHeader", writer.format("#T.X_AMZ_CONTENT_SHA256", RuntimeTypes.Auth.Signing.AwsSigningCommon.AwsSignedBodyHeader))
         writer.putIfAbsent(signingAttrs, "EnableAwsChunked", "config.enableAwsChunked")
-        writer.putIfAbsent(signingAttrs, "PayloadSigningEnabled", "config.payloadSigningEnabled")
     }
 }
