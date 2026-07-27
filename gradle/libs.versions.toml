@@ -24,8 +24,9 @@ kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.17"
 kotlinx-serialization-version = "1.11.0"
 kaml-version = "0.55.0"
-mockk-version = "1.14.11"
+mockk-version = "1.14.9"
 slf4j-version = "2.0.18"
+mokkery-version = "3.4.2"
 jsoup-version = "1.22.2"
 
 [libraries]
