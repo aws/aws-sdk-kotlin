@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.8.16] - 07/28/2026
+
+### Features
+* (**bedrockagentcorecontrol**) AgentCore Identity now supports Private Key JWT client authentication for OAuth 2.0 credential providers. Agents can authenticate to identity provider token endpoints with a JWT client assertion signed by a customer-managed AWS KMS asymmetric key, eliminating the need for client secrets.
+* (**rolesanywhere**) Increases certificate string length for trust anchor source data to support new adjustable trust anchor limits.
+* (**trustedadvisor**) Adds ListRecommendationsForResource API and four CheckSummary fields (resourceArnQueryable, awsResourceTypes, checkGranularity, recommendationId) to retrieve recommendations for a given resource ARN.
+
+### Documentation
+* (**connect**) Documentation updates for SearchRules, AssociateRoutingProfileQueues, CreateRoutingProfile, AssociateContactWithUser CreateTaskTemplate, and UpdateTaskTemplate
+* (**datasync**) Adds Enhanced mode support for EFS and FSx Lustre locations without an agent, and for HDFS (TDE), Azure Blob, and object storage locations with an agent. HDFS Enhanced mode supports multiple NameNodes for High Availability. Enhanced mode agents can now be deployed on Microsoft Hyper-V.
+
 ## [1.8.15] - 07/27/2026
 
 ### Features
