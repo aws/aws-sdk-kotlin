@@ -3079,8 +3079,8 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/Attribut
 	public fun convertRight (Ljava/util/Map;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
 }
 
-public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/ByteArraySetConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
-	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/collections/ByteArraySetConverter;
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/ByteArraySetValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/collections/ByteArraySetValueConverter;
 	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Ljava/util/Set;
 	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
 	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
