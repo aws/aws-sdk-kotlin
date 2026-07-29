@@ -308,6 +308,7 @@ internal class SchemaRenderer(
     private val KSType.setValueConverter: Type
         get() = when (Type.from(this)) {
             Types.Kotlin.String -> MapperTypes.Values.Collections.StringSetValueConverter
+            Types.Kotlin.ByteArray -> MapperTypes.Values.Collections.ByteArraySetValueConverter
             Types.Kotlin.Char -> MapperTypes.Values.Collections.CharSetValueConverter
             Types.Kotlin.CharArray -> MapperTypes.Values.Collections.CharArraySetValueConverter
             Types.Kotlin.Byte -> MapperTypes.Values.Collections.ByteSetValueConverter

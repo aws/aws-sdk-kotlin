@@ -14,6 +14,7 @@ public class SetsTest {
         val sets = Sets(
             id = 1,
             setString = setOf("one", "two", "three"),
+            setByteArray = setOf(byteArrayOf(1, 2, 3), byteArrayOf(4, 5, 6)),
             setCharArray = setOf(charArrayOf('a', 'b'), charArrayOf('c', 'd')),
             setChar = setOf('x', 'y', 'z'),
             setByte = setOf(10, 20, 30),

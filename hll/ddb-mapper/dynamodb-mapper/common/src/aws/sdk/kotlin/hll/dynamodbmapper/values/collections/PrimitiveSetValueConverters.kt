@@ -15,7 +15,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
  * Converts between a [Set] of [ByteArray] elements and
  * [DynamoDB `BS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
  */
-public object ByteArraySetConverter : ValueConverter<Set<ByteArray>> {
+public object ByteArraySetValueConverter : ValueConverter<Set<ByteArray>> {
     override fun convertLeft(from: AttributeValue): Set<ByteArray> = from.asBs().toSet()
     override fun convertRight(from: Set<ByteArray>): AttributeValue = AttributeValue.Bs(from.toList())
 }

@@ -12,7 +12,7 @@ private val emptyNumberSet = AttributeValue.Ns(listOf())
 
 class SetValueConvertersTest : ValueConvertersTest() {
     @Test
-    fun testByteArraySetConverter() = given(ByteArraySetConverter) {
+    fun testByteArraySetConverter() = given(ByteArraySetValueConverter) {
         setOf(byteArrayOf(1, 1, 2, 3), byteArrayOf(5, 8), byteArrayOf(13, 21, 34, 55, 89)) inDdbIs theSame
         setOf<ByteArray>() inDdbIs AttributeValue.Bs(listOf())
     }

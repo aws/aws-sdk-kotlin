@@ -328,6 +328,7 @@ public object MapperTypes {
             public val StringSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "StringSetValueConverter")
             public val CharSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "CharSetValueConverter")
             public val CharArraySetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "CharArraySetValueConverter")
+            public val ByteArraySetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "ByteArraySetValueConverter")
 
             public val ByteSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "NumberSetValueConverters.Byte")
             public val DoubleSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "NumberSetValueConverters.Double")

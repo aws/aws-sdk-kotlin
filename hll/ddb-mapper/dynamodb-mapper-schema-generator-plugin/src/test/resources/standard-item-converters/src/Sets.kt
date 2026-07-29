@@ -15,6 +15,7 @@ public data class Sets(
      * Sets
      */
     var setString: Set<String>,
+    var setByteArray: Set<ByteArray>,
     var setCharArray: Set<CharArray>,
     var setChar: Set<Char>,
     var setByte: Set<Byte>,
@@ -36,6 +37,7 @@ public data class Sets(
 
         if (id != other.id) return false
         if (setString != other.setString) return false
+        if (!setByteArray.all { thisArray -> other.setByteArray.any { otherArray -> thisArray.contentEquals(otherArray) } }) return false
         if (setCharArray.size != other.setCharArray.size) return false
         if (!setCharArray.all { thisArray -> other.setCharArray.any { otherArray -> thisArray.contentEquals(otherArray) } }) return false
         if (setChar != other.setChar) return false
