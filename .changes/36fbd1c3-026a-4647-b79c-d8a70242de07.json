@@ -1,5 +1,0 @@
-{
-    "id": "36fbd1c3-026a-4647-b79c-d8a70242de07",
-    "type": "bugfix",
-    "description": "Remove explicit Gradle dependencies on Kotlin's standard library in all service clients"
-}
