@@ -1699,6 +1699,12 @@
             "brazilName": "AwsSdkKotlinPricing"
         },
         {
+            "sdkId": "Pricing Plan Manager",
+            "namespace": "aws.sdk.kotlin.services.pricingplanmanager",
+            "artifactName": "pricingplanmanager",
+            "brazilName": "AwsSdkKotlinPricingPlanManager"
+        },
+        {
             "sdkId": "Proton",
             "namespace": "aws.sdk.kotlin.services.proton",
             "artifactName": "proton",
