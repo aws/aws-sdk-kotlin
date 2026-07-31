@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.8.21] - 07/31/2026
+
+### Features
+* (**s3**) Add payloadSigningEnabled client config option to S3 (default: false) to skip SigV4 payload signing over HTTPS, reducing CPU overhead for large request bodies and matching other AWS SDKs
+
 ## [1.8.20] - 07/31/2026
 
 ### Features
