@@ -4,6 +4,8 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
+import kotlin.jvm.JvmName
+
 /**
  * Represents a sort key independent of schema
  */

@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 
 import aws.sdk.kotlin.hll.dynamodbmapper.util.dynamicAv
+import kotlin.jvm.JvmName
 
 /**
  * A DSL interface providing support for "low-level"

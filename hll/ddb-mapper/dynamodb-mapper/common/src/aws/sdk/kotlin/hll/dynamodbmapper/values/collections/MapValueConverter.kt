@@ -9,6 +9,7 @@ import aws.sdk.kotlin.hll.mapping.core.converters.Converter
 import aws.sdk.kotlin.hll.mapping.core.converters.ConverterChain
 import aws.sdk.kotlin.hll.mapping.core.converters.collections.MapMappingConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
+import kotlin.jvm.JvmName
 
 /**
  * Converts between [Map] and
