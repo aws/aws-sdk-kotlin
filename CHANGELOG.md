@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.8.19] - 07/31/2026
+
+### Features
+* (**bcmpricingcalculator**) Removing Smithy RPC v2 CBOR support that was added in previous SDK release.
+* (**bcmrecommendedactions**) Removing Smithy RPC v2 CBOR support that was added in previous SDK release.
+
+## [1.8.18] - 07/30/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Adds support for configuring models through the OpenResponses API for custom evaluators. CreateEvaluator and UpdateEvaluator now accept an OpenResponses model configuration for LLM-as-a-Judge evaluations.
+* (**iam**) Improved IAM Policy Simulator accuracy. Simulator now evaluates SCP conditions and resource scoping, returns explicitDeny for explicit SCP denials, and reports accurate cross-account decisions.
+* (**kafka**) Amazon MSK Express brokers now support streaming tables for Apache Iceberg, continuously materializing Apache Kafka topics as Iceberg tables in Amazon S3 Tables. Express brokers also now support data delivery to Amazon S3 general purpose buckets.
+* (**lambda**) Add Python3.15 (python3.15) and NodeJs 26 (nodejs26.x) support to AWS Lambda
+* (**networkfirewall**) Adds UPDATING field to Container Association Status
+* (**pricingplanmanager**) Adds support for Public PricingPlanManager SDK
+* (**sagemaker**) Adds support for g7 family instance types for SageMaker Studio JupyterLab and CodeEditor apps for IAD (us-east-1), PDX (us-west-2), CMH (us-east-2).
+* (**securityagent**) Adds support for providing a branch override when configured integrated repositories
+
 ## [1.8.17] - 07/29/2026
 
 ### Features
