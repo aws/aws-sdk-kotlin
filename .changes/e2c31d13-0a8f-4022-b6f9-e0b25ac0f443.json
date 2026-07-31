@@ -1,0 +1,6 @@
+{
+  "id": "e2c31d13-0a8f-4022-b6f9-e0b25ac0f443",
+  "type": "feature",
+  "description": "Add payloadSigningEnabled client config option to S3 (default: false) to skip SigV4 payload signing over HTTPS, reducing CPU overhead for large request bodies and matching other AWS SDKs",
+  "module": "s3"
+}

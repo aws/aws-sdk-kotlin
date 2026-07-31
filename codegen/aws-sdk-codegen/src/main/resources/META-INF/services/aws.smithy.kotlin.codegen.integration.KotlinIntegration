@@ -16,6 +16,7 @@ aws.sdk.kotlin.codegen.customization.flexiblechecksums.FlexibleChecksumsResponse
 aws.sdk.kotlin.codegen.customization.AddAwsSpanAttributes
 aws.sdk.kotlin.codegen.customization.s3.S3OperationErrorHandler
 aws.sdk.kotlin.codegen.customization.s3.S3SigningConfig
+aws.sdk.kotlin.codegen.customization.s3.S3PayloadSigningConfig
 aws.sdk.kotlin.codegen.customization.s3.S3ErrorMetadataIntegration
 aws.sdk.kotlin.codegen.customization.s3.ClientConfigIntegration
 aws.sdk.kotlin.codegen.customization.s3.ContinueIntegration
