@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.8.19] - 07/31/2026
+
+### Features
+* (**bcmpricingcalculator**) Removing Smithy RPC v2 CBOR support that was added in previous SDK release.
+* (**bcmrecommendedactions**) Removing Smithy RPC v2 CBOR support that was added in previous SDK release.
+
 ## [1.8.18] - 07/30/2026
 
 ### Features
