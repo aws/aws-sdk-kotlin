@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.8.20] - 07/31/2026
+
+### Features
+* (**amp**) Amazon Managed Service for Prometheus adds support for an Amazon OpenSearch Service exporter for managed collectors.
+* (**bedrockruntime**) Added support for mid-conversation tool changes in the Amazon Bedrock Converse and ConverseStream APIs
+* (**billing**) Adds GetEnterpriseSupportChargeSummary, GetEnterpriseSupportContractDetails, and ListEnterpriseSupportLinkedAccountCharges. These APIs provide first-time programmatic access to billing data for Enterprise Support usage previously only available upon request through AWS Concierge or Support.
+* (**cloudformation**) Adding enum for sensitive property to DriftIgnoredReason
+* (**cloudwatchlogs**) Amazon CloudWatch Logs now lets you create and update lookup tables directly from CloudWatch Logs query results by passing a queryId, and configure a lookup table as a scheduled query destination so it refreshes automatically with the latest query results on each run.
+* (**connectcampaignsv2**) Launching feature for abandonment rate pacing control for outbound campaigns.
+* (**datazone**) Adding support for enhanced Git experience in Sagemaker Unified Studio.
+* (**elementalinference**) AWS Elemental Inference now supports graphic composition on cropped video outputs, enabling branded graphics and other visual elements to be overlaid as part of the inference workflow.
+* (**marketplacecatalog**) This release enhances the ListEntities API to support TargetAgreementId, TargetAgreementIntent, and CreatedBySource filters for the Offer entity type.
+* (**networkfirewall**) Doc Updates for Container Attributes
+* (**outposts**) Adds the "EKS" value to the AWSServiceName enum and marks the Address field as sensitive.
+* (**quicksight**) Adding TopicV2 management APIs, adding possibility to use Topics in Analysis
+* (**rds**) Adds StorageOperationStatus and StorageOperationPercentProgress to DescribeDBInstances, letting you monitor RDS storage initialization and optimization progress.
+* (**resiliencehubv2**) Adding support for new testing capability in AWS Resilience Hub.
+* (**transcribestreaming**) This release adds a new optional TranscriptFormat parameter to the Amazon Transcribe streaming API, letting customers select spoken or written form for numeric and formatted output.
+* [#472](https://github.com/awslabs/aws-sdk-kotlin/issues/472) Release DynamoDB Mapper as GA. It is now feature-complete and suitable for use in production workloads.
+
 ## [1.8.19] - 07/31/2026
 
 ### Features
