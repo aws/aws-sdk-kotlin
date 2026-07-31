@@ -386,7 +386,7 @@ class EcsCredentialsProviderTest {
 
     @Test
     fun testAuthTokenIllegal() = runTest {
-        val token = "auth\r\ntoken"
+    listOf("auth\rtoken", "auth\ntoken", "auth\r\ntoken").forEach { token ->
         val engine = TestConnection()
 
         val testPlatform = TestPlatformProvider.of(
@@ -400,12 +400,13 @@ class EcsCredentialsProviderTest {
         assertFailsWith<CredentialsProviderException> {
             provider.resolve()
         }.message.shouldContain("Token contains illegal line break sequence.")
+      }
     }
 
     @Test
     fun testAuthTokenFileIllegal() = runTest {
+    listOf("auth\rtoken", "auth\ntoken", "auth\r\ntoken").forEach { token ->
         val tokenFile = "/path/to/token"
-        val token = "auth\r\ntoken"
         val engine = TestConnection()
 
         val testPlatform = TestPlatformProvider.of(
@@ -422,6 +423,7 @@ class EcsCredentialsProviderTest {
         assertFailsWith<CredentialsProviderException> {
             provider.resolve()
         }.message.shouldContain("Token contains illegal line break sequence.")
+      }
     }
 
     @Test
