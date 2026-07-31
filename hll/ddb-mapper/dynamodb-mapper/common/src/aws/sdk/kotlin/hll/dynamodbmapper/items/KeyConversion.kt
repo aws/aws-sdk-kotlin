@@ -6,6 +6,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.items
 
 import aws.sdk.kotlin.hll.dynamodbmapper.model.Item
 import aws.sdk.kotlin.hll.dynamodbmapper.model.toItem
+import kotlin.jvm.JvmName
 
 /**
  * Converts the given partition key to an [Item] with the given schema

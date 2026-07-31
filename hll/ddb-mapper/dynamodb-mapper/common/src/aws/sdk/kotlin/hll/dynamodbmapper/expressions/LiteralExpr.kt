@@ -7,6 +7,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.expressions
 import aws.sdk.kotlin.hll.dynamodbmapper.expressions.internal.LiteralExprImpl
 import aws.sdk.kotlin.hll.dynamodbmapper.util.av
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
+import kotlin.jvm.JvmName
 
 /**
  * Represents an expression that consists of a single literal value

@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.util
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
+import kotlin.jvm.JvmName
 
 internal val NULL_ATTR = AttributeValue.Null(true)
 
