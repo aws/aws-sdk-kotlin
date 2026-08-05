@@ -1,5 +1,59 @@
 # Changelog
 
+## [1.8.23] - 08/04/2026
+
+### Features
+* (**connect**) Amazon Connect Customer now supports up to 50 attachments per email, increased from the previous limit of 10. The individual maximum attachment size limit of 20 MB and the total email size limit of 25 MB still hold true.
+* (**dynamodb**) Vector indexes are a type of index in Amazon DynamoDB that enable similarity search on vector embedding stored in your table items. Vector indexes use approximate nearest neighbor search to find items whose vectors are most similar to a query vector that you provide.
+* (**ec2**) Amazon EC2 now supports Application Status Checks, a new status check that monitors your application's health through configurable HTTP(S) paths and ports, so you can detect and automatically respond to application-level impairments.
+* (**iam**) Updating endpoint generation logic
+* (**inspector2**) Adding Azure SBOM export capability.
+* (**partnercentralselling**) Partners can now create leads with only 5 required fields and free-text values for all other fields, reducing import friction. Engagement invitations now include enrichment data (propensity scores, lead readiness) directly in the response.
+* (**ssoadmin**) AWS IAM Identity Center now lets you create organization-level instances without enabling multi-account permissions. You can enable multi-account permissions during instance creation or later via console or API, which then provisions the necessary service-linked roles.
+* (**workspaces**) Added ClientExperiencePolicy to ClientProperties object for ModifyClientProperties and DescribeClientProperties APIs.
+
+### Documentation
+* (**dsql**) UpdateCluster now checks the RemovePeerCluster permission on the specific cluster being removed, not a wildcard and docs now clarify how to set kmsEncryptionKey so the cluster uses the AWS-owned key.
+* (**organizations**) Improved accuracy of CloudTrail event documentation for AWS Organizations membership operations.
+
+## [1.8.22] - 08/03/2026
+
+### Features
+* (**directconnect**) Added route visibility support for AWS Direct Connect, allowing customers to call ListVirtualInterfaceRoutes to view the BGP routes including AS path and BGP communities advertised over their virtual interfaces.
+* (**eksauth**) Added eksNodeName, instanceId, and zone optional parameters to the AssumeRoleForPodIdentity API.
+* (**mediaconvert**) Updates Kantar server URL validation to accept Fifty5Blue domain. Adds support for output to S3 Glacier Instant Retrieval.
+* (**networkfirewall**) This launch allows customers to use Network Firewall as an explicit Proxy and protect their workloads against threat of data exfiltration.
+* (**observabilityadmin**) Launch CMK support for Telemetry Enablement Organization and Account Rules.
+* (**timestreaminfluxdb**) This release adds support for customer-managed backup restore, and encryption of new DbInstances and DbClusters using customer-managed KMS keys.
+
+### Documentation
+* (**wafv2**) Updated descriptions for number of PreParseTextTransformations allowed per rule statement
+
+## [1.8.21] - 07/31/2026
+
+### Features
+* (**s3**) Add payloadSigningEnabled client config option to S3 (default: false) to skip SigV4 payload signing over HTTPS, reducing CPU overhead for large request bodies and matching other AWS SDKs
+
+## [1.8.20] - 07/31/2026
+
+### Features
+* (**amp**) Amazon Managed Service for Prometheus adds support for an Amazon OpenSearch Service exporter for managed collectors.
+* (**bedrockruntime**) Added support for mid-conversation tool changes in the Amazon Bedrock Converse and ConverseStream APIs
+* (**billing**) Adds GetEnterpriseSupportChargeSummary, GetEnterpriseSupportContractDetails, and ListEnterpriseSupportLinkedAccountCharges. These APIs provide first-time programmatic access to billing data for Enterprise Support usage previously only available upon request through AWS Concierge or Support.
+* (**cloudformation**) Adding enum for sensitive property to DriftIgnoredReason
+* (**cloudwatchlogs**) Amazon CloudWatch Logs now lets you create and update lookup tables directly from CloudWatch Logs query results by passing a queryId, and configure a lookup table as a scheduled query destination so it refreshes automatically with the latest query results on each run.
+* (**connectcampaignsv2**) Launching feature for abandonment rate pacing control for outbound campaigns.
+* (**datazone**) Adding support for enhanced Git experience in Sagemaker Unified Studio.
+* (**elementalinference**) AWS Elemental Inference now supports graphic composition on cropped video outputs, enabling branded graphics and other visual elements to be overlaid as part of the inference workflow.
+* (**marketplacecatalog**) This release enhances the ListEntities API to support TargetAgreementId, TargetAgreementIntent, and CreatedBySource filters for the Offer entity type.
+* (**networkfirewall**) Doc Updates for Container Attributes
+* (**outposts**) Adds the "EKS" value to the AWSServiceName enum and marks the Address field as sensitive.
+* (**quicksight**) Adding TopicV2 management APIs, adding possibility to use Topics in Analysis
+* (**rds**) Adds StorageOperationStatus and StorageOperationPercentProgress to DescribeDBInstances, letting you monitor RDS storage initialization and optimization progress.
+* (**resiliencehubv2**) Adding support for new testing capability in AWS Resilience Hub.
+* (**transcribestreaming**) This release adds a new optional TranscriptFormat parameter to the Amazon Transcribe streaming API, letting customers select spoken or written form for numeric and formatted output.
+* [#472](https://github.com/awslabs/aws-sdk-kotlin/issues/472) Release DynamoDB Mapper as GA. It is now feature-complete and suitable for use in production workloads.
+
 ## [1.8.19] - 07/31/2026
 
 ### Features

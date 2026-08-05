@@ -1,0 +1,8 @@
+{
+    "id": "2aef6767-a5dc-4853-876e-4da92a739254",
+    "type": "feature",
+    "description": "Bump **smithy-kotlin** version to [**v1.7.6**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.7.6) to pick up support for EMF telemetry provider",
+    "issues": [
+        "#1638"
+    ]
+}
