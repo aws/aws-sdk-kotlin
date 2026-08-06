@@ -104,7 +104,9 @@ public class TemplateEngine(processors: List<TemplateProcessor>) {
                         append(pos)
                     }
                     append(" is outside of args bounds ")
-                    append(args.indices)
+                    appendLine(args.indices)
+                    appendLine("""Full template: "$template"""")
+                    appendLine("Args: $args")
                 }
             }
 

@@ -14,7 +14,7 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: "0 7 * * 1-5"  # At 07:00 UTC (00:00 PST, 03:00 EST), Monday through Friday
+    - cron: "0 7 * * *"  # Every day at 07:00 UTC (00:00 Pacific Time, 03:00 Eastern Time)
 
 permissions:
   id-token: write

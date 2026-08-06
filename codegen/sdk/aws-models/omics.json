@@ -3833,6 +3833,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Optional configuration name to use for the workflow run.</p>"
                     }
+                },
+                "engineSettings": {
+                    "target": "com.amazonaws.omics#EngineSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Engine-specific settings for the workflow run. Use this field to specify configuration options that are specific to the workflow engine (for example, Nextflow profiles).</p>"
+                    }
+                },
+                "scratchStorageMode": {
+                    "target": "com.amazonaws.omics#ScratchStorageMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Optional configuration for enabling scratch ephemeral storage mounted at /tmp. If not specified, this will default to SHARED. This configuration is applicable only for CPU tasks. For tasks using GPUs, scratch storage is always LOCAL.</p>"
+                    }
                 }
             },
             "traits": {
@@ -8706,6 +8718,12 @@
                         "smithy.api#documentation": "<p>Configuration for run networking behavior. If absent, this will default to RESTRICTED.</p>"
                     }
                 },
+                "scratchStorageMode": {
+                    "target": "com.amazonaws.omics#ScratchStorageMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Optional configuration for enabling scratch ephemeral storage mounted at /tmp. If absent, this will default to SHARED. This configuration is applicable only for CPU tasks. For tasks using GPUs, scratch storage is always LOCAL.</p>"
+                    }
+                },
                 "configuration": {
                     "target": "com.amazonaws.omics#ConfigurationDetails",
                     "traits": {
@@ -9032,6 +9050,12 @@
                     "target": "com.amazonaws.omics#ImageDetails",
                     "traits": {
                         "smithy.api#documentation": "<p>Details about the container image that this task uses.</p>"
+                    }
+                },
+                "uuid": {
+                    "target": "com.amazonaws.omics#TaskUuid",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The universally unique identifier (UUID) for the workflow task.</p>"
                     }
                 }
             },
@@ -10848,6 +10872,12 @@
                     "target": "com.amazonaws.omics#TagMap",
                     "traits": {
                         "smithy.api#documentation": "<p>Per-run AWS tags. Merged with <code>defaultRunSetting.runTags</code>; values in this object take precedence when keys overlap.</p>"
+                    }
+                },
+                "engineSettings": {
+                    "target": "com.amazonaws.omics#EngineSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Per-run engine-specific settings. Use this field to specify configuration options that are specific to the workflow engine (for example, Nextflow profiles). Overrides <code>defaultRunSetting.engineSettings</code> for this run.</p>"
                     }
                 }
             },
@@ -17103,6 +17133,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the workflow version.</p>"
                     }
+                },
+                "workflowName": {
+                    "target": "com.amazonaws.omics#WorkflowName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the workflow.</p>"
+                    }
                 }
             },
             "traits": {
@@ -17583,6 +17619,25 @@
                         "documentation": "BOOLEAN type"
                     }
                 ]
+            }
+        },
+        "com.amazonaws.omics#ScratchStorageMode": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "name": "LOCAL",
+                        "value": "LOCAL"
+                    },
+                    {
+                        "name": "SHARED",
+                        "value": "SHARED"
+                    }
+                ],
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                }
             }
         },
         "com.amazonaws.omics#SecurityGroupId": {
@@ -19292,6 +19347,12 @@
                         "smithy.api#documentation": "<p>Optional configuration for run networking behavior. If not specified, this will default to RESTRICTED.</p>"
                     }
                 },
+                "scratchStorageMode": {
+                    "target": "com.amazonaws.omics#ScratchStorageMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Optional configuration for enabling scratch ephemeral storage mounted at /tmp. If not specified, this will default to SHARED. This configuration is applicable only for CPU tasks. For tasks using GPUs, scratch storage is always LOCAL.</p>"
+                    }
+                },
                 "configurationName": {
                     "target": "com.amazonaws.omics#ConfigurationName",
                     "traits": {
@@ -20014,6 +20075,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p> The instance type for a task.</p>"
                     }
+                },
+                "uuid": {
+                    "target": "com.amazonaws.omics#TaskUuid",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The universally unique identifier (UUID) for the workflow task.</p>"
+                    }
                 }
             },
             "traits": {
@@ -20114,6 +20181,16 @@
             "type": "timestamp",
             "traits": {
                 "smithy.api#timestampFormat": "date-time"
+            }
+        },
+        "com.amazonaws.omics#TaskUuid": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 128
+                },
+                "smithy.api#pattern": "^[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+$"
             }
         },
         "com.amazonaws.omics#ThrottlingException": {

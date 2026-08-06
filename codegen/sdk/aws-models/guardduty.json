@@ -1073,6 +1073,117 @@
                 "smithy.api#httpError": 400
             }
         },
+        "com.amazonaws.guardduty#BedrockGuardrail": {
+            "type": "structure",
+            "members": {
+                "Arn": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the Bedrock guardrail.</p>",
+                        "smithy.api#jsonName": "arn",
+                        "smithy.api#length": {
+                            "min": 0,
+                            "max": 2048
+                        },
+                        "smithy.api#pattern": "^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+$"
+                    }
+                },
+                "Version": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The version of the Bedrock guardrail.</p>",
+                        "smithy.api#jsonName": "version",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 8
+                        },
+                        "smithy.api#pattern": "^(([1-9][0-9]{0,7})|(DRAFT)|(ENFORCED))$"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about a Bedrock guardrail associated with a finding.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#BedrockGuardrailDetails": {
+            "type": "structure",
+            "members": {
+                "GuardrailArn": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "Use guardrails list instead",
+                            "since": "2026-07-13"
+                        },
+                        "smithy.api#documentation": "<p>The ARN of the Bedrock guardrail. This field is deprecated. Use the <code>guardrails</code> list instead.</p>",
+                        "smithy.api#jsonName": "guardrailArn",
+                        "smithy.api#length": {
+                            "min": 0,
+                            "max": 2048
+                        },
+                        "smithy.api#pattern": "^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+$"
+                    }
+                },
+                "GuardrailVersion": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#deprecated": {
+                            "message": "Use guardrails list instead",
+                            "since": "2026-07-13"
+                        },
+                        "smithy.api#documentation": "<p>The version of the Bedrock guardrail. This field is deprecated. Use the <code>guardrails</code> list instead.</p>",
+                        "smithy.api#jsonName": "guardrailVersion",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 8
+                        },
+                        "smithy.api#pattern": "^(([1-9][0-9]{0,7})|(DRAFT))$"
+                    }
+                },
+                "Guardrails": {
+                    "target": "com.amazonaws.guardduty#BedrockGuardrails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of Bedrock guardrails associated with the finding.</p>",
+                        "smithy.api#jsonName": "guardrails"
+                    }
+                },
+                "GuardrailAction": {
+                    "target": "com.amazonaws.guardduty#GuardrailAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether the guardrail intervened or not.</p>",
+                        "smithy.api#jsonName": "guardrailAction"
+                    }
+                },
+                "GuardrailSource": {
+                    "target": "com.amazonaws.guardduty#GuardrailSource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether the guardrail was applied on the input or output of the model invocation.</p>",
+                        "smithy.api#jsonName": "guardrailSource"
+                    }
+                },
+                "ContentPolicyFilters": {
+                    "target": "com.amazonaws.guardduty#ContentPolicyFilters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of content policy filters that matched during the guardrail evaluation.</p>",
+                        "smithy.api#jsonName": "contentPolicyFilters"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about the Bedrock guardrail that was involved in a finding.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#BedrockGuardrails": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.guardduty#BedrockGuardrail"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 10
+                }
+            }
+        },
         "com.amazonaws.guardduty#Behavior": {
             "type": "map",
             "key": {
@@ -1193,6 +1304,58 @@
                 "smithy.api#length": {
                     "min": 0,
                     "max": 64
+                }
+            }
+        },
+        "com.amazonaws.guardduty#CloudDetails": {
+            "type": "structure",
+            "members": {
+                "Provider": {
+                    "target": "com.amazonaws.guardduty#CloudProvider",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The cloud provider. Currently, only <code>AWS</code> is supported.</p>",
+                        "smithy.api#jsonName": "provider",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Region": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region in which the investigated resource resides.</p>",
+                        "smithy.api#jsonName": "region",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Account": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The Amazon Web Services account ID of the investigated resource.</p>",
+                        "smithy.api#jsonName": "account",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains details about the cloud environment associated with an investigation.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#CloudProvider": {
+            "type": "enum",
+            "members": {
+                "AWS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 50
                 }
             }
         },
@@ -1381,6 +1544,70 @@
                 "smithy.api#documentation": "<p>Contains information about the condition.</p>"
             }
         },
+        "com.amazonaws.guardduty#Confidence": {
+            "type": "enum",
+            "members": {
+                "UNKNOWN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Unknown"
+                    }
+                },
+                "LOW": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Low"
+                    }
+                },
+                "MEDIUM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Medium"
+                    }
+                },
+                "HIGH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "High"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 50
+                }
+            }
+        },
+        "com.amazonaws.guardduty#ConfidenceLevel": {
+            "type": "enum",
+            "members": {
+                "HIGH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "HIGH"
+                    }
+                },
+                "MEDIUM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MEDIUM"
+                    }
+                },
+                "LOW": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LOW"
+                    }
+                },
+                "NONE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NONE"
+                    }
+                }
+            }
+        },
         "com.amazonaws.guardduty#ConflictException": {
             "type": "structure",
             "members": {
@@ -1536,6 +1763,110 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.guardduty#Container"
+            }
+        },
+        "com.amazonaws.guardduty#ContentPolicyFilter": {
+            "type": "structure",
+            "members": {
+                "Type": {
+                    "target": "com.amazonaws.guardduty#ContentPolicyFilterType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of content that was filtered by the guardrail.</p>",
+                        "smithy.api#jsonName": "type"
+                    }
+                },
+                "Confidence": {
+                    "target": "com.amazonaws.guardduty#ConfidenceLevel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The confidence level that the content matched the filter.</p>",
+                        "smithy.api#jsonName": "confidence"
+                    }
+                },
+                "Action": {
+                    "target": "com.amazonaws.guardduty#ContentPolicyFilterAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The action taken by the guardrail filter.</p>",
+                        "smithy.api#jsonName": "action"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about a content policy filter that matched during a guardrail evaluation.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#ContentPolicyFilterAction": {
+            "type": "enum",
+            "members": {
+                "BLOCKED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BLOCKED"
+                    }
+                },
+                "NONE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NONE"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.guardduty#ContentPolicyFilterType": {
+            "type": "enum",
+            "members": {
+                "PROMPT_ATTACK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PROMPT_ATTACK"
+                    }
+                },
+                "JAILBREAK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "JAILBREAK"
+                    }
+                },
+                "HATE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "HATE"
+                    }
+                },
+                "INSULTS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INSULTS"
+                    }
+                },
+                "SEXUAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SEXUAL"
+                    }
+                },
+                "VIOLENCE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "VIOLENCE"
+                    }
+                },
+                "MISCONDUCT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MISCONDUCT"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.guardduty#ContentPolicyFilters": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.guardduty#ContentPolicyFilter"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 10
+                }
             }
         },
         "com.amazonaws.guardduty#ContinuousScanDetails": {
@@ -2435,6 +2766,84 @@
                         "smithy.api#clientOptional": {},
                         "smithy.api#documentation": "<p>The ID of the IPSet resource.</p>",
                         "smithy.api#jsonName": "ipSetId",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.guardduty#CreateInvestigation": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.guardduty#CreateInvestigationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.guardduty#CreateInvestigationResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.guardduty#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.guardduty#BadRequestException"
+                },
+                {
+                    "target": "com.amazonaws.guardduty#InternalServerErrorException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>This API is currently available as a preview. During the preview, you can initiate up to 10 investigations per account per day, with a total limit of 100 investigations per account. This feature is available in the following Amazon Web Services Regions: US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), and Asia Pacific (Tokyo).</p> <p>Initiates a GuardDuty investigation that automatically analyzes security findings, correlates related activity, performs account-level analysis, and produces a structured investigation summary with recommended next steps.</p> <p>Only the administrator account can create an investigation. Member accounts don't have permission to create investigations from their accounts.</p> <p>To use this operation, the <code>AI_ANALYST</code> feature must be enabled on your detector.</p> <p>This feature uses Amazon Bedrock models that leverage Cross-Region Inference (CRIS), which automatically selects the optimal Amazon Web Services Region within your geography to process the investigation analysis and generate the investigation report. This maximizes available compute resources, model availability, and delivers the best customer experience. Your data remains stored only in the Region where the investigation request originates, however, investigation data and summary results may be processed outside that Region. All data is transmitted encrypted across Amazon's secure network. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-investigation.html\">GuardDuty Investigation</a>.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/detector/{DetectorId}/investigation",
+                    "code": 202
+                }
+            }
+        },
+        "com.amazonaws.guardduty#CreateInvestigationRequest": {
+            "type": "structure",
+            "members": {
+                "DetectorId": {
+                    "target": "com.amazonaws.guardduty#DetectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the GuardDuty detector for the account in which the investigation is created.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "TriggerPrompt": {
+                    "target": "com.amazonaws.guardduty#TriggerPrompt",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>A natural-language description of what to investigate. For example:</p> <ul> <li> <p> <code>\"Investigate finding 1ab2c3d4e5f6a7b8c9d0e1f2a3b4c5d6 in account 123456789012\"</code> </p> </li> <li> <p> <code>\"Analyze findings in account with id 123456789012\"</code> </p> </li> <li> <p> <code>\"Analyze findings in my organization\"</code> </p> </li> </ul>",
+                        "smithy.api#jsonName": "triggerPrompt",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.guardduty#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The idempotency token for the create request.</p>",
+                        "smithy.api#idempotencyToken": {},
+                        "smithy.api#jsonName": "clientToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.guardduty#CreateInvestigationResponse": {
+            "type": "structure",
+            "members": {
+                "InvestigationId": {
+                    "target": "com.amazonaws.guardduty#InvestigationId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The unique identifier of the newly created investigation.</p>",
+                        "smithy.api#jsonName": "investigationId",
                         "smithy.api#required": {}
                     }
                 }
@@ -4662,6 +5071,18 @@
                     "traits": {
                         "smithy.api#enumValue": "RUNTIME_MONITORING"
                     }
+                },
+                "AI_PROTECTION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AI_PROTECTION"
+                    }
+                },
+                "AI_ANALYST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AI_ANALYST"
+                    }
                 }
             }
         },
@@ -4803,6 +5224,18 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "RUNTIME_MONITORING"
+                    }
+                },
+                "AI_PROTECTION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AI_PROTECTION"
+                    }
+                },
+                "AI_ANALYST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AI_ANALYST"
                     }
                 }
             }
@@ -6177,6 +6610,14 @@
                 }
             }
         },
+        "com.amazonaws.guardduty#FilterVersion": {
+            "type": "long",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1
+                }
+            }
+        },
         "com.amazonaws.guardduty#Finding": {
             "type": "structure",
             "members": {
@@ -6732,6 +7173,12 @@
                     "traits": {
                         "smithy.api#enumValue": "FARGATE_RUNTIME_MONITORING"
                     }
+                },
+                "AI_PROTECTION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AI_PROTECTION"
+                    }
                 }
             }
         },
@@ -7098,6 +7545,27 @@
                         "smithy.api#documentation": "<p>The tags of the filter resource.</p>",
                         "smithy.api#jsonName": "tags"
                     }
+                },
+                "CreatedAt": {
+                    "target": "com.amazonaws.guardduty#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the filter was created. This field is not available for filters that were created before the lifecycle metadata feature was enabled (legacy filters).</p>",
+                        "smithy.api#jsonName": "createdAt"
+                    }
+                },
+                "UpdatedAt": {
+                    "target": "com.amazonaws.guardduty#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the filter was last updated. For legacy filters, this field is present only after the filter has been updated at least once since the lifecycle metadata feature was enabled.</p>",
+                        "smithy.api#jsonName": "updatedAt"
+                    }
+                },
+                "Version": {
+                    "target": "com.amazonaws.guardduty#FilterVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The version of the filter. Every time the filter is updated, the version increments by 1. This field is not available for legacy filters that were created before the lifecycle metadata feature was enabled.</p>",
+                        "smithy.api#jsonName": "version"
+                    }
                 }
             },
             "traits": {
@@ -7382,6 +7850,78 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter. This field appears in the response only if it was provided during IPSet creation or update.</p>",
                         "smithy.api#jsonName": "expectedBucketOwner"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.guardduty#GetInvestigation": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.guardduty#GetInvestigationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.guardduty#GetInvestigationResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.guardduty#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.guardduty#BadRequestException"
+                },
+                {
+                    "target": "com.amazonaws.guardduty#InternalServerErrorException"
+                },
+                {
+                    "target": "com.amazonaws.guardduty#ResourceNotFoundException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>This API is currently available as a preview. This feature is available in the following Amazon Web Services Regions: US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), and Asia Pacific (Tokyo).</p> <p>Retrieves the results and status of a specific GuardDuty investigation.</p> <p>An administrator account can retrieve any investigation within the organization. Member accounts can only retrieve investigations that belong to them.</p>",
+                "smithy.api#http": {
+                    "method": "GET",
+                    "uri": "/detector/{DetectorId}/investigation/{InvestigationId}",
+                    "code": 200
+                }
+            }
+        },
+        "com.amazonaws.guardduty#GetInvestigationRequest": {
+            "type": "structure",
+            "members": {
+                "DetectorId": {
+                    "target": "com.amazonaws.guardduty#DetectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the GuardDuty detector associated with the investigation.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "InvestigationId": {
+                    "target": "com.amazonaws.guardduty#InvestigationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the investigation to retrieve.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.guardduty#GetInvestigationResponse": {
+            "type": "structure",
+            "members": {
+                "Investigation": {
+                    "target": "com.amazonaws.guardduty#Investigation",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The details and results of the requested investigation.</p>",
+                        "smithy.api#jsonName": "investigation",
+                        "smithy.api#required": {}
                     }
                 }
             },
@@ -8739,6 +9279,9 @@
                     "target": "com.amazonaws.guardduty#CreateFilter"
                 },
                 {
+                    "target": "com.amazonaws.guardduty#CreateInvestigation"
+                },
+                {
                     "target": "com.amazonaws.guardduty#CreateIPSet"
                 },
                 {
@@ -8838,6 +9381,9 @@
                     "target": "com.amazonaws.guardduty#GetFindingsStatistics"
                 },
                 {
+                    "target": "com.amazonaws.guardduty#GetInvestigation"
+                },
+                {
                     "target": "com.amazonaws.guardduty#GetInvitationsCount"
                 },
                 {
@@ -8893,6 +9439,9 @@
                 },
                 {
                     "target": "com.amazonaws.guardduty#ListFindings"
+                },
+                {
+                    "target": "com.amazonaws.guardduty#ListInvestigations"
                 },
                 {
                     "target": "com.amazonaws.guardduty#ListInvitations"
@@ -10179,6 +10728,40 @@
                 "smithy.api#pattern": "^arn:[A-Za-z_.-]{1,20}:guardduty:[A-Za-z0-9_/.-]{0,63}:\\d+:detector/[A-Za-z0-9_/.-]{32,264}$"
             }
         },
+        "com.amazonaws.guardduty#GuardrailAction": {
+            "type": "enum",
+            "members": {
+                "GUARDRAIL_INTERVENED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GUARDRAIL_INTERVENED"
+                    }
+                },
+                "NONE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NONE"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.guardduty#GuardrailSource": {
+            "type": "enum",
+            "members": {
+                "INPUT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INPUT"
+                    }
+                },
+                "OUTPUT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "OUTPUT"
+                    }
+                }
+            }
+        },
         "com.amazonaws.guardduty#HighestSeverityThreatDetails": {
             "type": "structure",
             "members": {
@@ -10648,6 +11231,336 @@
                 "smithy.api#documentation": "<p>An internal server error exception object.</p>",
                 "smithy.api#error": "server",
                 "smithy.api#httpError": 500
+            }
+        },
+        "com.amazonaws.guardduty#Investigation": {
+            "type": "structure",
+            "members": {
+                "InvestigationId": {
+                    "target": "com.amazonaws.guardduty#InvestigationId",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The unique identifier of the investigation.</p>",
+                        "smithy.api#jsonName": "investigationId",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.guardduty#InvestigationStatus",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The current status of the investigation. Possible values are <code>RUNNING</code>, <code>COMPLETED</code>, and <code>FAILED</code>.</p>",
+                        "smithy.api#jsonName": "status",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TriggerPrompt": {
+                    "target": "com.amazonaws.guardduty#TriggerPrompt",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The natural-language prompt that initiated this investigation.</p>",
+                        "smithy.api#jsonName": "triggerPrompt",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TriggeredBy": {
+                    "target": "com.amazonaws.guardduty#TriggeredBy",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The account that initiated the investigation.</p>",
+                        "smithy.api#jsonName": "triggeredBy",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Metadata": {
+                    "target": "com.amazonaws.guardduty#InvestigationMetadata",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Metadata about the product and version that produced the investigation.</p>",
+                        "smithy.api#jsonName": "metadata"
+                    }
+                },
+                "Cloud": {
+                    "target": "com.amazonaws.guardduty#CloudDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Details about the cloud environment in which the investigation was performed, including the provider, region, and account.</p>",
+                        "smithy.api#jsonName": "cloud"
+                    }
+                },
+                "RiskLevel": {
+                    "target": "com.amazonaws.guardduty#RiskLevel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The assessed risk level of the investigated threat. Possible values are <code>Info</code>, <code>Low</code>, <code>Medium</code>, <code>High</code>, and <code>Critical</code>.</p>",
+                        "smithy.api#jsonName": "riskLevel"
+                    }
+                },
+                "Risk": {
+                    "target": "com.amazonaws.guardduty#RiskDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A human-readable description of the assessed risk.</p>",
+                        "smithy.api#jsonName": "risk"
+                    }
+                },
+                "Confidence": {
+                    "target": "com.amazonaws.guardduty#Confidence",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The confidence level of the investigation's assessment. Possible values are <code>Unknown</code>, <code>Low</code>, <code>Medium</code>, and <code>High</code>.</p>",
+                        "smithy.api#jsonName": "confidence"
+                    }
+                },
+                "Summary": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A structured summary of the investigation findings, including affected resources, threat assessment, and recommended remediation steps.</p>",
+                        "smithy.api#jsonName": "summary"
+                    }
+                },
+                "StartTime": {
+                    "target": "com.amazonaws.guardduty#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp at which the investigation started.</p>",
+                        "smithy.api#jsonName": "startTime"
+                    }
+                },
+                "EndTime": {
+                    "target": "com.amazonaws.guardduty#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp at which the investigation completed.</p>",
+                        "smithy.api#jsonName": "endTime"
+                    }
+                },
+                "Error": {
+                    "target": "com.amazonaws.guardduty#InvestigationErrorDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Details about the error if the investigation status is <code>FAILED</code>.</p>",
+                        "smithy.api#jsonName": "error"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the details and results of a GuardDuty investigation.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#InvestigationErrorDetails": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 2048
+                }
+            }
+        },
+        "com.amazonaws.guardduty#InvestigationId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                },
+                "smithy.api#pattern": "^[a-fA-F0-9\\-]+$"
+            }
+        },
+        "com.amazonaws.guardduty#InvestigationMetadata": {
+            "type": "structure",
+            "members": {
+                "Version": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The version of the investigation engine that produced the results.</p>",
+                        "smithy.api#jsonName": "version",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Product": {
+                    "target": "com.amazonaws.guardduty#Product",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>Information about the product that produced the investigation.</p>",
+                        "smithy.api#jsonName": "product",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains metadata about the product and version that produced an investigation.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#InvestigationSortCriteria": {
+            "type": "structure",
+            "members": {
+                "AttributeName": {
+                    "target": "com.amazonaws.guardduty#InvestigationSortField",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The attribute by which to sort investigations.</p>",
+                        "smithy.api#jsonName": "attributeName"
+                    }
+                },
+                "OrderBy": {
+                    "target": "com.amazonaws.guardduty#OrderBy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The order in which the sorted results are to be displayed.</p>",
+                        "smithy.api#jsonName": "orderBy"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about the criteria used for sorting investigations.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#InvestigationSortField": {
+            "type": "enum",
+            "members": {
+                "START_TIME": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "START_TIME"
+                    }
+                },
+                "END_TIME": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "END_TIME"
+                    }
+                },
+                "STATUS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STATUS"
+                    }
+                },
+                "RISK_LEVEL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RISK_LEVEL"
+                    }
+                },
+                "CONFIDENCE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CONFIDENCE"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.guardduty#InvestigationStatus": {
+            "type": "enum",
+            "members": {
+                "RUNNING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RUNNING"
+                    }
+                },
+                "COMPLETED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "COMPLETED"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FAILED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 300
+                }
+            }
+        },
+        "com.amazonaws.guardduty#InvestigationSummaries": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.guardduty#InvestigationSummary"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 50
+                }
+            }
+        },
+        "com.amazonaws.guardduty#InvestigationSummary": {
+            "type": "structure",
+            "members": {
+                "InvestigationId": {
+                    "target": "com.amazonaws.guardduty#InvestigationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the investigation.</p>",
+                        "smithy.api#jsonName": "investigationId"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.guardduty#InvestigationStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the investigation.</p>",
+                        "smithy.api#jsonName": "status"
+                    }
+                },
+                "TriggerPrompt": {
+                    "target": "com.amazonaws.guardduty#TriggerPrompt",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The natural-language prompt that initiated this investigation.</p>",
+                        "smithy.api#jsonName": "triggerPrompt"
+                    }
+                },
+                "RiskLevel": {
+                    "target": "com.amazonaws.guardduty#RiskLevel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The assessed risk level of the investigated threat.</p>",
+                        "smithy.api#jsonName": "riskLevel"
+                    }
+                },
+                "Confidence": {
+                    "target": "com.amazonaws.guardduty#Confidence",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The confidence level of the investigation's assessment.</p>",
+                        "smithy.api#jsonName": "confidence"
+                    }
+                },
+                "Title": {
+                    "target": "com.amazonaws.guardduty#InvestigationTitle",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A short title summarizing the investigation.</p>",
+                        "smithy.api#jsonName": "title"
+                    }
+                },
+                "AccountId": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services account ID associated with the investigation.</p>",
+                        "smithy.api#jsonName": "accountId"
+                    }
+                },
+                "StartTime": {
+                    "target": "com.amazonaws.guardduty#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp at which the investigation started.</p>",
+                        "smithy.api#jsonName": "startTime"
+                    }
+                },
+                "EndTime": {
+                    "target": "com.amazonaws.guardduty#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp at which the investigation completed.</p>",
+                        "smithy.api#jsonName": "endTime"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains summary information about a GuardDuty investigation.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#InvestigationTitle": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 1024
+                }
             }
         },
         "com.amazonaws.guardduty#Invitation": {
@@ -12070,6 +12983,101 @@
                 },
                 "NextToken": {
                     "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The pagination parameter to be used on the next list operation to retrieve more items.</p>",
+                        "smithy.api#jsonName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.guardduty#ListInvestigations": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.guardduty#ListInvestigationsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.guardduty#ListInvestigationsResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.guardduty#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.guardduty#BadRequestException"
+                },
+                {
+                    "target": "com.amazonaws.guardduty#InternalServerErrorException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>This API is currently available as a preview. This feature is available in the following Amazon Web Services Regions: US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), and Asia Pacific (Tokyo).</p> <p>Returns a list of investigations associated with the specified GuardDuty detector.</p> <p>An administrator account sees all investigations across the organization. Member accounts see only the investigations that belong to them.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/detector/{DetectorId}/investigation/list",
+                    "code": 200
+                },
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "Investigations",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.guardduty#ListInvestigationsRequest": {
+            "type": "structure",
+            "members": {
+                "DetectorId": {
+                    "target": "com.amazonaws.guardduty#DetectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the GuardDuty detector whose investigations you want to list.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "SortCriteria": {
+                    "target": "com.amazonaws.guardduty#InvestigationSortCriteria",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Represents the criteria used for sorting investigations.</p>",
+                        "smithy.api#jsonName": "sortCriteria"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.guardduty#MaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>You can use this parameter to indicate the maximum number of items you want in the response. The default value is 50.</p>",
+                        "smithy.api#jsonName": "maxResults"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.guardduty#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of NextToken from the previous response to continue listing data.</p>",
+                        "smithy.api#jsonName": "nextToken"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.guardduty#ListInvestigationsResponse": {
+            "type": "structure",
+            "members": {
+                "Investigations": {
+                    "target": "com.amazonaws.guardduty#InvestigationSummaries",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>A list of investigation summaries associated with the specified detector.</p>",
+                        "smithy.api#jsonName": "investigations",
+                        "smithy.api#required": {}
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.guardduty#NextToken",
                     "traits": {
                         "smithy.api#documentation": "<p>The pagination parameter to be used on the next list operation to retrieve more items.</p>",
                         "smithy.api#jsonName": "nextToken"
@@ -13925,6 +14933,31 @@
                 }
             }
         },
+        "com.amazonaws.guardduty#ModelDetail": {
+            "type": "structure",
+            "members": {
+                "ModelId": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the AI model.</p>",
+                        "smithy.api#jsonName": "modelId",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 2048
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about the AI model involved in a finding.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#ModelDetails": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.guardduty#ModelDetail"
+            }
+        },
         "com.amazonaws.guardduty#Name": {
             "type": "string",
             "traits": {
@@ -14237,6 +15270,16 @@
                 "target": "com.amazonaws.guardduty#NetworkInterface"
             }
         },
+        "com.amazonaws.guardduty#NextToken": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9+/=_\\-]+$"
+            }
+        },
         "com.amazonaws.guardduty#NonEmptyString": {
             "type": "string",
             "traits": {
@@ -14281,6 +15324,12 @@
                 }
             }
         },
+        "com.amazonaws.guardduty#ObservationNumbers": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.guardduty#Long"
+            }
+        },
         "com.amazonaws.guardduty#ObservationTexts": {
             "type": "list",
             "member": {
@@ -14295,6 +15344,13 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The text that was unusual.</p>",
                         "smithy.api#jsonName": "text"
+                    }
+                },
+                "Number": {
+                    "target": "com.amazonaws.guardduty#ObservationNumbers",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The numeric values that were unusual.</p>",
+                        "smithy.api#jsonName": "number"
                     }
                 }
             },
@@ -14362,6 +15418,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "RUNTIME_MONITORING"
+                    }
+                },
+                "AI_PROTECTION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AI_PROTECTION"
                     }
                 }
             }
@@ -15210,6 +16272,30 @@
                 }
             }
         },
+        "com.amazonaws.guardduty#Product": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The name of the product.</p>",
+                        "smithy.api#jsonName": "name",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Feature": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The specific feature within the product that produced the investigation.</p>",
+                        "smithy.api#jsonName": "feature"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about the product that produced an investigation.</p>"
+            }
+        },
         "com.amazonaws.guardduty#ProductCode": {
             "type": "structure",
             "members": {
@@ -15264,6 +16350,18 @@
                     "traits": {
                         "smithy.api#enumValue": "RARE"
                     }
+                },
+                "COUNT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "COUNT"
+                    }
+                },
+                "AVERAGE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AVERAGE"
+                    }
                 }
             }
         },
@@ -15274,6 +16372,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "FREQUENCY"
+                    }
+                },
+                "VOLUME": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "VOLUME"
                     }
                 }
             }
@@ -15639,6 +16743,12 @@
                         "smithy.api#documentation": "<p>The name of the backup vault containing the recovery point.</p>",
                         "smithy.api#jsonName": "backupVaultName"
                     }
+                },
+                "ContinuousScanDetails": {
+                    "target": "com.amazonaws.guardduty#ScanConfigurationContinuousScanDetails",
+                    "traits": {
+                        "smithy.api#jsonName": "continuousScanDetails"
+                    }
                 }
             },
             "traits": {
@@ -15863,6 +16973,20 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Contains details about the backup recovery point that was scanned.</p>",
                         "smithy.api#jsonName": "recoveryPointDetails"
+                    }
+                },
+                "BedrockGuardrailDetails": {
+                    "target": "com.amazonaws.guardduty#BedrockGuardrailDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains information about the Bedrock guardrail that was involved in a finding.</p>",
+                        "smithy.api#jsonName": "bedrockGuardrailDetails"
+                    }
+                },
+                "ModelDetails": {
+                    "target": "com.amazonaws.guardduty#ModelDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains information about the AI models involved in a finding.</p>",
+                        "smithy.api#jsonName": "modelDetails"
                     }
                 }
             },
@@ -16203,6 +17327,56 @@
                 "smithy.api#length": {
                     "min": 0,
                     "max": 400
+                }
+            }
+        },
+        "com.amazonaws.guardduty#RiskDetails": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 1024
+                }
+            }
+        },
+        "com.amazonaws.guardduty#RiskLevel": {
+            "type": "enum",
+            "members": {
+                "INFO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Info"
+                    }
+                },
+                "LOW": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Low"
+                    }
+                },
+                "MEDIUM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Medium"
+                    }
+                },
+                "HIGH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "High"
+                    }
+                },
+                "CRITICAL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Critical"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 300
                 }
             }
         },
@@ -18966,6 +20140,15 @@
                 "smithy.api#documentation": "<p>Represents the reason the scan was triggered.</p>"
             }
         },
+        "com.amazonaws.guardduty#TriggerPrompt": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                }
+            }
+        },
         "com.amazonaws.guardduty#TriggerType": {
             "type": "enum",
             "members": {
@@ -18980,6 +20163,15 @@
                     "traits": {
                         "smithy.api#enumValue": "GUARDDUTY"
                     }
+                }
+            }
+        },
+        "com.amazonaws.guardduty#TriggeredBy": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 256
                 }
             }
         },
@@ -20417,6 +21609,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "RDS_DBI_PROTECTION_SERVERLESS"
+                    }
+                },
+                "AI_PROTECTION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AI_PROTECTION"
                     }
                 }
             }

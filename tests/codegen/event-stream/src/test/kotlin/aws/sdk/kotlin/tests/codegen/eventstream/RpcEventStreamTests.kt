@@ -97,7 +97,7 @@ class RpcEventStreamTests {
 
         val responseBody = flowOf(initialResponseMessage, eventStreamResponse)
             .encode()
-            .asEventStreamHttpBody(this)
+            .asEventStreamHttpBody()
         val builder = TestStreamOperationWithInitialRequestResponseResponse.Builder()
 
         deserializeTestStreamOperationWithInitialRequestResponseOperationBody(builder, responseBody.asHttpCall())
@@ -123,7 +123,7 @@ class RpcEventStreamTests {
 
         val responseBody = flowOf(eventStreamResponse)
             .encode()
-            .asEventStreamHttpBody(this)
+            .asEventStreamHttpBody()
 
         val builder = TestStreamOperationWithInitialRequestResponseResponse.Builder()
         deserializeTestStreamOperationWithInitialRequestResponseOperationBody(builder, responseBody.asHttpCall())

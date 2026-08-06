@@ -534,6 +534,12 @@
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
                     }
+                },
+                "identityCenterRegion": {
+                    "target": "com.amazonaws.deadline#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Region of the IAM Identity Center instance. If not provided, the service defaults to the Region of the farm.</p>"
+                    }
                 }
             },
             "traits": {
@@ -654,6 +660,12 @@
                         "smithy.api#documentation": "<p>The member's principal ID to associate with a fleet.</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
+                    }
+                },
+                "identityCenterRegion": {
+                    "target": "com.amazonaws.deadline#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Region of the IAM Identity Center instance. If not provided, the service defaults to the Region of the farm.</p>"
                     }
                 }
             },
@@ -784,6 +796,12 @@
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
                     }
+                },
+                "identityCenterRegion": {
+                    "target": "com.amazonaws.deadline#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Region of the IAM Identity Center instance. If not provided, the service defaults to the Region of the farm.</p>"
+                    }
                 }
             },
             "traits": {
@@ -904,6 +922,12 @@
                         "smithy.api#documentation": "<p>The member's principal ID to associate with the queue.</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
+                    }
+                },
+                "identityCenterRegion": {
+                    "target": "com.amazonaws.deadline#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Region of the IAM Identity Center instance. If not provided, the service defaults to the Region of the farm.</p>"
                     }
                 }
             },
@@ -14869,7 +14893,7 @@
                     }
                 },
                 "jobAttachmentSettings": {
-                    "target": "com.amazonaws.deadline#JobAttachmentSettings",
+                    "target": "com.amazonaws.deadline#JobDetailsJobAttachmentSettings",
                     "traits": {
                         "smithy.api#documentation": "<p>The job attachment settings.</p>"
                     }
@@ -14959,6 +14983,28 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The identifiers for a job.</p>"
+            }
+        },
+        "com.amazonaws.deadline#JobDetailsJobAttachmentSettings": {
+            "type": "structure",
+            "members": {
+                "s3BucketName": {
+                    "target": "com.amazonaws.deadline#S3BucketName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 bucket name.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "rootPrefix": {
+                    "target": "com.amazonaws.deadline#S3Prefix",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The root prefix.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The job attachment settings returned to workers for a job. These are the Amazon S3 bucket name and the Amazon S3 prefix.</p>"
             }
         },
         "com.amazonaws.deadline#JobEntity": {
@@ -27041,6 +27087,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "LICENSE"
+                    }
+                },
+                "PERSISTENT_VOLUME": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PERSISTENT_VOLUME"
                     }
                 }
             }

@@ -27,25 +27,14 @@ val sdkVersion: String by project
 val libraries = libs
 
 val optinAnnotations = listOf(
-    "aws.smithy.kotlin.runtime.ExperimentalApi",
     "aws.smithy.kotlin.runtime.InternalApi",
     "aws.sdk.kotlin.runtime.InternalSdkApi",
     "kotlin.RequiresOptIn",
 )
 
-private fun String.ensureSuffix(suffix: String): String = if (endsWith(suffix)) this else plus(suffix)
-
-val hllPreviewVersion = if (sdkVersion.contains("-SNAPSHOT")) { // e.g. 1.3.29-beta-SNAPSHOT
-    sdkVersion
-        .removeSuffix("-SNAPSHOT")
-        .ensureSuffix("-beta-SNAPSHOT")
-} else {
-    sdkVersion.ensureSuffix("-beta") // e.g. 1.3.29-beta
-}
-
 subprojects {
     group = "aws.sdk.kotlin"
-    version = hllPreviewVersion
+    version = sdkVersion
     configurePublishing("aws-sdk-kotlin")
 }
 
@@ -110,11 +99,11 @@ val projectsToIgnore = listOf(
     "dynamodb-mapper-codegen",
     "dynamodb-mapper-ops-codegen",
     "dynamodb-mapper-schema-codegen",
-    "dynamodb-mapper-schema-generator-plugin-test",
 ).filter { it in subprojects.map { it.name }.toSet() } // Some projects may not be in the build depending on bootstrapping
 
 apiValidation {
     ignoredProjects += projectsToIgnore
+    nonPublicMarkers += "aws.smithy.kotlin.runtime.GeneratedApi"
 }
 
 // Configure Dokka for subprojects
