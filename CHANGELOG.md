@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.8.24] - 08/05/2026
+
+### Features
+* (**acmpca**) Private Certificate Authority service now supports RSASSA-PSS signing algorithm.
+* (**bedrockagentcorecontrol**) Adding support for fine-grained access control for AgentCore Memory through managed AgentCore Gateway HTTP Connectors.
+* (**deadline**) AWS Deadline Cloud now reports persistent volume costs alongside compute and license costs. Customers can view per-fleet storage costs in Usage Explorer by selecting the Usage Type grouping, helping them better understand the costs of their infrastructure.
+* (**ecs**) New enum values added for Agent Connectivity issues
+* (**glue**) Added the PutDataCatalogExportConfiguration to export Glue Data Catalog metadata to systems tables stored in S3 Tables.
+* #1638 Bump **smithy-kotlin** version to [**v1.7.6**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.7.6) to pick up support for EMF telemetry provider
+
 ## [1.8.23] - 08/04/2026
 
 ### Features
