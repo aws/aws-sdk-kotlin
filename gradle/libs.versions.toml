@@ -19,7 +19,7 @@ smithy-kotlin-version = "1.7.6"
 smithy-version = "1.72.1"
 
 # testing
-ddb-local-version = "3.3.0"
+ddb-local-version = "3.3.1"
 kotest-version = "5.9.1"
 kotlinx-benchmark-version = "0.4.17"
 kotlinx-serialization-version = "1.11.0"
