@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.8.28] - 08/11/2026
+
+### Features
+* (**accountaccess**) Adds SDK support for AWS IAM account access manager, a feature that enables mapping of IAM roles to the users and groups in AWS IAM Identity Center.
+* (**bedrockagentcore**) Adding online eval arn as input for recommendation API
+* (**cleanrooms**) Adds support for exporting redacted query execution logs in AWS Clean Rooms
+* (**connect**) Seven new APIs for managing custom metrics, including create, describe, update, and delete. Using Custom Metrics, customers of Amazon Connect Customer can tailor analytics dashboards to their needs by applying custom thresholds, filters, and calculations to one or more out of the box measurements.
+* (**datazone**) GetSubscriptionGrant now returns materialized asset scope name for mapping Lake Formation data cell filters or Redshift views to subscription grants.
+* (**eks**) This feature would give customers the ability to selectively tune certain configurations of Kubernetes control plane components in an Amazon EKS cluster.
+
+### Documentation
+* (**clouddirectory**) Added an end-of-support notice to Amazon Cloud Directory public CLI reference documentation.
+* (**organizations**) Documentation update for AWS Organizations that clarifies valid input values for the HandshakePartyType parameter in the InviteAccountToOrganization. API ORGANIZATION is valid in responses only. valid input values are ACCOUNT and EMAIL
+* (**textract**) Amazon A2I entered maintenance mode in July 2026 and now rejects StartHumanLoop requests from accounts that it does not recognize as existing customers. This update adds a corresponding note to the HumanLoopConfig parameter documentation so that the API Reference and SDK docs explain this behavior.
+
 ## [1.8.27] - 08/10/2026
 
 ### Features

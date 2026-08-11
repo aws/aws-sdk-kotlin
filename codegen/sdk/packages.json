@@ -49,6 +49,12 @@
             "brazilName": "AwsSdkKotlinAccount"
         },
         {
+            "sdkId": "Account Access",
+            "namespace": "aws.sdk.kotlin.services.accountaccess",
+            "artifactName": "accountaccess",
+            "brazilName": "AwsSdkKotlinAccountAccess"
+        },
+        {
             "sdkId": "Agent Registry",
             "namespace": "aws.sdk.kotlin.services.agentregistry",
             "artifactName": "agentregistry",
