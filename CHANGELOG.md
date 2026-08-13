@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.8.30] - 08/13/2026
+
+### Features
+* (**acm**) This change allows customers to update their existing email-validated certificates to use the DNS validation method.
+* (**autoscaling**) Amazon EC2 Auto Scaling now supports terminating multiple instances in a single TerminateInstanceInAutoScalingGroup call via the new InstanceIds parameter, returning an Activities list. LaunchInstances now returns IdempotentCallInProgressFault for duplicate client tokens.
+* (**cleanrooms**) This release adds support for minimum aggregation thresholds and comparison controls to the Custom analysis rule type.
+* (**codecommit**) Added the GetBlobDifferences API operation, which returns line-level diffs between two blob versions without requiring a local clone. Returns structured hunks with context, additions, and deletions. Supports pagination for large diffs.
+* (**connect**) Adds the StartAssistantContact API to start chat contacts handled by an AI agent. Adds SegmentAttributes to StartWebRTCContact, and corrects its error response to now receive AccessDeniedException (previously returned as an internal server error due to a missing error declaration).
+* (**securityagent**) Add support for setting a maximum task-hour budget cap on penetration tests and code reviews, and for revalidating previously reported findings via a new REVALIDATION job type.
+
 ## [1.8.29] - 08/12/2026
 
 ### Features
