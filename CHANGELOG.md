@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.8.31] - 08/14/2026
+
+### Features
+* (**bedrockagentcore**) Add support for the Machine Payments Protocol (MPP) and x402 upto scheme payments protocol in Amazon Bedrock AgentCore Payments. Customers can now pay for MPP-gated resources and also pay services which requires upto scheme in x402
+* (**bedrockagentcorecontrol**) Adds AgentCore Payments support for CMK, Marketplace Subscriptions and QuickCreate
+* (**bedrockagentruntime**) Adds CheckIngestedDocumentAcl and GetIngestedDocumentAcl APIs to Amazon Bedrock Knowledge Bases. Customers can verify user access to documents based on ingested ACLs and retrieve full ACL details including allow and deny entries, enabling validation of ACL ingestion without test retrievals.
+* (**glue**) Added support for associating glossary terms with iterable form items, such as table columns.
+* (**mwaaserverless**) Adds support for Consuming code for MWAA Serverless
+* (**observabilityadmin**) CloudWatch Logs centralization rules now support tag propagation. You can configure a TagPropagationConfiguration on your centralization rule to automatically sync resource tags from source to destination log groups, with configurable conflict resolution strategies.
+* (**sagemaker**) Release support for g7.2xlarge, g7.4xlarge, g7.8xlarge, g7.12xlarge, g7.24xlarge, and g7.48xlarge instance types for SageMaker HyperPod
+
+### Documentation
+* (**redshift**) Amazon Redshift now unlocks a locked admin user account and resets the failed-login counter when you update the admin password using the ModifyCluster API. This option is available only when account lockout security is enabled.
+* (**redshiftserverless**) Amazon Redshift now unlocks a locked admin user account and resets the failed-login counter when you update the admin password using the UpdateNamespace API. This option is available only when account lockout security is enabled.
+
 ## [1.8.30] - 08/13/2026
 
 ### Features
