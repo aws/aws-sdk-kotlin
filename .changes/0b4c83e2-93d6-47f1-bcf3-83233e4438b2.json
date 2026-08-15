@@ -1,0 +1,6 @@
+{
+    "id": "0b4c83e2-93d6-47f1-bcf3-83233e4438b2",
+    "type": "bugfix",
+    "description": "Reject carriage return and line feed characters in ECS container authorization tokens",
+    "module": "aws-config"
+}
