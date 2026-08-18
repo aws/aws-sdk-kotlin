@@ -1,5 +1,57 @@
 # Changelog
 
+## [1.8.33] - 08/18/2026
+
+### Features
+* (**entityresolution**) Added ResourceNotFoundException to DeleteSchemaMapping, DeleteMatchingWorkflow, DeleteIdMappingWorkflow, and DeleteIdNamespace. These operations now return a 404 ResourceNotFoundException (previously a 200 Success) when the target resource does not exist.
+* (**marketplacecatalog**) Introducing two new APIs, DescribeAssessment and ListAssessments. These APIs expose validation issues on Marketplace resources. The validation issues are exposed via a newly created resource called Assessment.
+* (**medialive**) AWS Elemental MediaLive now supports SCTE-35 marker passthrough without IDR frame insertion for CMAF Ingest, MediaPackage V2, and transport stream outputs.
+* (**outposts**) AWS Outposts now supports VPC Endpoint configuration in CreatePrivateConnectivityConfig, enabling scoped private connectivity with provisioning role creation for secure outpost installations
+* (**workspaces**) Amazon WorkSpaces now supports nested virtualization, allowing you to run hypervisors and virtualization-based workloads within your WorkSpaces. You can enable or disable nested virtualization when creating a WorkSpace or by modifying an existing WorkSpace's properties.
+
+### Documentation
+* (**batch**) Update AWS Batch documentation with newer Fargate Supported configurations, notes, and fix broken Docker link re-directs.
+* (**ec2**) Doc release for CreateImage support for instances with local snapshots in Outpost
+
+## [1.8.32] - 08/17/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Adds implementations of third-party evaluators, both managed-as-a-service and as templates within custom evaluators.
+* (**bedrockagentruntime**) AgenticRetrieveStream API now supports Amazon Bedrock AgentCore Memory. Use the new memoryConfiguration parameter to continue a session from short-term memory and retrieve from long-term memory.
+* (**connect**) This release adds new APIs to create, describe, update, delete, and list extraction definitions, enabling customers to manage lifecycle of extraction definition resources. Additionally, this release adds new event sources for Rules related to ACW and new action to Extract Information.
+* (**drs**) AWS Elastic Disaster Recovery (AWS DRS) now offers Recovery Plans to recover multi-server applications in the right order in one action. Define the launch sequence once, with ordered steps and wait times, and DRS runs it automatically. Validate with non-disruptive drills and monitor in real time.
+* (**ecr**) Documentation update for the ECR PutReplicationConfiguration API to increase the replication rule limit from 10 to 25
+* (**geomaps**) Amazon Location Service now supports POI density and category filtering on dynamic maps. The GetStyleDescriptor API adds two optional parameters. PoiDensity (Off to VeryDense) controls POI volume, and PoiCategories filters by up to nine categories. Available on HERE and Grab map styles.
+* (**organizations**) Add new Transfer Responsibility error codes and document related CloudTrail events for accepting and terminating a Transfer Responsibility.
+
+### Fixes
+* (**aws-config**) Reject carriage return and line feed characters in ECS container authorization tokens
+
+## [1.8.31] - 08/14/2026
+
+### Features
+* (**bedrockagentcore**) Add support for the Machine Payments Protocol (MPP) and x402 upto scheme payments protocol in Amazon Bedrock AgentCore Payments. Customers can now pay for MPP-gated resources and also pay services which requires upto scheme in x402
+* (**bedrockagentcorecontrol**) Adds AgentCore Payments support for CMK, Marketplace Subscriptions and QuickCreate
+* (**bedrockagentruntime**) Adds CheckIngestedDocumentAcl and GetIngestedDocumentAcl APIs to Amazon Bedrock Knowledge Bases. Customers can verify user access to documents based on ingested ACLs and retrieve full ACL details including allow and deny entries, enabling validation of ACL ingestion without test retrievals.
+* (**glue**) Added support for associating glossary terms with iterable form items, such as table columns.
+* (**mwaaserverless**) Adds support for Consuming code for MWAA Serverless
+* (**observabilityadmin**) CloudWatch Logs centralization rules now support tag propagation. You can configure a TagPropagationConfiguration on your centralization rule to automatically sync resource tags from source to destination log groups, with configurable conflict resolution strategies.
+* (**sagemaker**) Release support for g7.2xlarge, g7.4xlarge, g7.8xlarge, g7.12xlarge, g7.24xlarge, and g7.48xlarge instance types for SageMaker HyperPod
+
+### Documentation
+* (**redshift**) Amazon Redshift now unlocks a locked admin user account and resets the failed-login counter when you update the admin password using the ModifyCluster API. This option is available only when account lockout security is enabled.
+* (**redshiftserverless**) Amazon Redshift now unlocks a locked admin user account and resets the failed-login counter when you update the admin password using the UpdateNamespace API. This option is available only when account lockout security is enabled.
+
+## [1.8.30] - 08/13/2026
+
+### Features
+* (**acm**) This change allows customers to update their existing email-validated certificates to use the DNS validation method.
+* (**autoscaling**) Amazon EC2 Auto Scaling now supports terminating multiple instances in a single TerminateInstanceInAutoScalingGroup call via the new InstanceIds parameter, returning an Activities list. LaunchInstances now returns IdempotentCallInProgressFault for duplicate client tokens.
+* (**cleanrooms**) This release adds support for minimum aggregation thresholds and comparison controls to the Custom analysis rule type.
+* (**codecommit**) Added the GetBlobDifferences API operation, which returns line-level diffs between two blob versions without requiring a local clone. Returns structured hunks with context, additions, and deletions. Supports pagination for large diffs.
+* (**connect**) Adds the StartAssistantContact API to start chat contacts handled by an AI agent. Adds SegmentAttributes to StartWebRTCContact, and corrects its error response to now receive AccessDeniedException (previously returned as an internal server error due to a missing error declaration).
+* (**securityagent**) Add support for setting a maximum task-hour budget cap on penetration tests and code reviews, and for revalidating previously reported findings via a new REVALIDATION job type.
+
 ## [1.8.29] - 08/12/2026
 
 ### Features
