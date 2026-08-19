@@ -10,7 +10,6 @@ import aws.sdk.kotlin.services.cloudwatch.getMetricData
 import aws.sdk.kotlin.services.cloudwatch.model.MetricDataQuery
 import aws.sdk.kotlin.services.cloudwatch.model.MetricDatum
 import aws.sdk.kotlin.services.cloudwatch.putMetricData
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.time.Instant
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -21,7 +20,6 @@ private const val METRIC_NAME = "foo"
 private const val METRIC_VALUE = 42.0
 
 class CloudwatchBenchmark : ServiceBenchmark<CloudWatchClient> {
-    @OptIn(ExperimentalApi::class)
     override suspend fun client() = CloudWatchClient.fromEnvironment {
         retryStrategy = Common.noRetries
         telemetryProvider = Common.telemetryProvider
