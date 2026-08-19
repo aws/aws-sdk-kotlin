@@ -1,5 +1,0 @@
-{
-    "id": "57d70ed1-0e4c-4afa-a020-c744cda74543",
-    "type": "bugfix",
-    "description": "`TelemetryProvider` and related types are no longer experimental"
-}
