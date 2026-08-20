@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.8.34] - 08/19/2026
+
+### Features
+* (**accountaccess**) Adds throttling exceptions to operation outputs that were previously inconsistent with other operations.
+* (**batch**) AWS Batch now supports managing CloudWatch Container Insights on compute environments via CreateComputeEnvironment and UpdateComputeEnvironment.
+* (**bedrockagentcore**) AgentCore Memory now supports Flexible Namespaces and Non-Conversational Payloads in CreateEvent API
+* (**bedrockagentcorecontrol**) AgentCore Memory now supports Flexible Namespaces
+* (**eks**) Adds support for EKS cluster certificate authorities (CA)
+* (**medialive**) AWS Elemental MediaLive now supports video cropping and output positioning. Use cropRectangle and outputPositionRectangle to position the encoded video within the output frame, with the surrounding area filled with black.
+* (**redshift**) Amazon Redshift enhanced System Table retention that allows customers to store their system table data directly in S3 Tables in customer's account instead of Redshift Managed Storage
+* (**redshiftserverless**) Amazon Redshift Enhanced System Table Retention that allows customers to store their system table data directly in S3 Tables in customer's account instead of Redshift Managed Storage
+* (**vpclattice**) Amazon VPC Lattice now supports modification of private DNS options on Service Network VPC Associations
+
+### Fixes
+* `TelemetryProvider` and related types are no longer experimental
+
 ## [1.8.33] - 08/18/2026
 
 ### Features
