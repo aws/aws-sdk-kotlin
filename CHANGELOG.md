@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.8.36] - 08/21/2026
+
+### Features
+* (**bedrockagentcore**) Increase spans count from 1k to 20k
+* (**bedrockagentcorecontrol**) Update Dataset schema to THIRDPARTYEVALUATIONV1
+* (**cloudwatch**) Allows customers to specify an initial warm up period to wait for metrics to arrive when creating metric or log alarms
+* (**devicefarm**) Added support to CreateRemoveAccessSession for selecting a server version on the mobile WebDriver endpoint.
+* (**kinesis**) Generate account endpoint for Kinesis Data Streams requests when the account ID is available
+
+### Documentation
+* (**backup**) Updating CLI Docs for Backup Audit Manager List Job Summaries APIs.
+* (**wafv2**) DataProtectionConfig field Key Documentation Update
+
 ## [1.8.35] - 08/20/2026
 
 ### Features
