@@ -21,7 +21,7 @@ smithy-version = "1.73.0"
 # testing
 ddb-local-version = "3.3.1"
 kotest-version = "5.9.1"
-kotlinx-benchmark-version = "0.4.18"
+kotlinx-benchmark-version = "0.4.19"
 kotlinx-serialization-version = "1.11.0"
 kaml-version = "0.55.0"
 mockk-version = "1.14.11"
