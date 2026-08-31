@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.8.43] - 08/31/2026
+
+### Features
+* (**agentregistry**) Release HTTP and AGUI descriptors to the dataplane model
+
 ## [1.8.42] - 08/31/2026
 
 ### Features
