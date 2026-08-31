@@ -15,7 +15,7 @@ env:
   ROLE_SESSION_DURATION_SECONDS: 10800
 
 jobs:
-  aws-sdk-pr-build:
+  pr-build:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     permissions:
