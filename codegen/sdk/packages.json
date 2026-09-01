@@ -1009,6 +1009,12 @@
             "brazilName": "AwsSdkKotlinIam"
         },
         {
+            "sdkId": "IAM Toolbox",
+            "namespace": "aws.sdk.kotlin.services.iamtoolbox",
+            "artifactName": "iamtoolbox",
+            "brazilName": "AwsSdkKotlinIamToolbox"
+        },
+        {
             "sdkId": "IVS RealTime",
             "namespace": "aws.sdk.kotlin.services.ivsrealtime",
             "artifactName": "ivsrealtime",

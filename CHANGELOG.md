@@ -1,5 +1,137 @@
 # Changelog
 
+## [1.8.44] - 09/01/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Online evaluation configurations now support up to 25 evaluators. CloudWatch Logs data sources for online evaluation now support up to 10 log groups.
+* (**ec2**) Update UserData and UploadPolicy shapes to use SecureBlob
+* (**guardduty**) Amazon GuardDuty now supports custom detection rules, including APIs to manage rule associations and organization-level configurations.
+* (**iotsitewise**) AWS IoT SiteWise Scenario Discovery now supports mounting Amazon S3 data directly into pipeline task containers via S3 Access Points, and configuring additional ephemeral storage per task. Mount configurations can be overridden at execution time. See the API guide for details.
+* (**kinesis**) Amazon Kinesis Data Streams now supports a dry run feature for data-plane APIs to validate the permissions and request parameters. If all checks complete successfully, the API returns a 'DryRunOperationException', confirming the request would have succeeded without the 'DryRun' parameter.
+* (**lambda**) AWS Lambda now provides configurable control over S3 direct access, allowing you to explicitly enable or disable how functions stream file reads directly from S3 buckets. This gives you flexibility to tune data access behavior based on your workload requirements, independent of memory size.
+* (**lightsail**) This release adds support for the Amazon Lightsail GetProfile API, which returns the profile for the specified account.
+* (**marketplaceagreement**) This release adds renewal support for AWS Marketplace private offers. Agreements report whether they renew and, if not, why. Renewal terms add price increases, renewal limits, renewal decision deadlines, and payment schedule templates. SearchAgreements adds filters.
+* (**marketplacediscovery**) GetOfferTerms now returns renewalTerm for offers with pre-authorized renewals, exposing maxRenewals, lockoutPeriod, adjustmentDeadline, priceIncrease (fixed percentage or percentage range), and termTemplates (renewal payment schedules). Enables buyers to view renewal pricing and terms.
+* (**mediaconvert**) Adds support for AAC passthrough. Adds ManifestCues option to support HLS manifest Cue marker passthrough. Adds playback device compatibility mode for DASH H.265 outputs. Adds TTML caption styling options. Adds interlace mode support for XAVC HD Intra CBG profile.
+* (**sesv2**) Added support for managing SMIME signing certificates for email identities, including associating, listing, and disassociating certificates. Added the UpdateConfigurationSet operation to configure message security options such as signing scheme.
+* (**taxsettings**) France and Monaco Additional Info changes
+
+## [1.8.43] - 08/31/2026
+
+### Features
+* (**agentregistry**) Release HTTP and AGUI descriptors to the dataplane model
+
+## [1.8.42] - 08/31/2026
+
+### Features
+* (**agentregistry**) AWS Agent Registry becomes Generally Available
+* (**agentregistrycontrol**) AWS Agent Registry becomes Generally Available
+* (**connect**) Added support for global routing on Amazon Connect Global Resiliency instances. New APIs GetCrossRegionRouting and UpdateCrossRegionRouting allow you to view and control cross-region contact routing between linked instances, so both Regions are active at all times.
+* (**customerprofiles**) This release introduces new APIs for segment membership events allowing segment definition membership events to be exported to a kinesis stream for downstream processing. Additionally, includes new calculated attribute statistic and 2 new segment dimension types.
+* (**devopsagent**) Adds support for Slack bidirectional communication configuration in AWS DevOps Agent agent spaces.
+* (**kafkaconnect**) Amazon MSK Connect now supports restarting newly created connectors via the asynchronous RestartConnector API. Restart all tasks or only failed tasks, while preserving configuration and committed offsets. This returns a connector operation ARN that you can track with DescribeConnectorOperation.
+* (**kinesis**) Adds support for data delivery to Amazon S3 Tables (Apache Iceberg) and general purpose Amazon S3 buckets with new CreateChannel, UpdateChannel, DeleteChannel, DescribeChannel, and ListChannels APIs for Amazon Kinesis Data Streams.
+* (**pinpointsmsvoicev2**) AWS End User Messaging SMS now returns ConditionalBehavior on DescribeRegistrationFieldDefinitions, allowing you to programmatically discover which registration fields are required, optional, or disallowed based on the values of other fields in the same form.
+* (**quicksight**) This release adds support for managing apps in Amazon QuickSight with ListApps, SearchApps, DescribeApp, DescribeAppPermissions, UpdateAppPermissions, and DeleteApp
+* (**sagemaker**) Amazon SageMaker Batch Transform now supports G6e instances, powered by NVIDIA L40S Tensor Core GPUs. G6e instances are the most cost-efficient GPU instances for deploying generative AI models and the highest-performance GPU instances for spatial computing workloads.
+* (**support**) AWS Support now allows up to 10 attachments (150 MB each) per case correspondence, up from 3 at 5 MB. Customers can share large diagnostic logs, heap dumps, and packet captures directly in cases to reduce back-and-forth and speed up resolution. Available in US East, US West, and Europe (Ireland).
+* (**workspacesinstances**) Amazon WorkSpaces Core managed instances now support nested virtualization. Customers can enable nested virtualization with supported instance types at launch via CpuOptions.NestedVirtualization in CreateWorkspaceInstance to run hypervisors and virtual machines inside their WorkSpaces Instance.
+
+### Documentation
+* (**controltower**) Updated the descriptions for the AWS Control Tower ListEnabledControls API parameters to make them more accurate and intuitive.
+
+## [1.8.41] - 08/28/2026
+
+### Features
+* (**bedrockagent**) Adds an optional syncSchedule field to CreateDataSource and UpdateDataSource for Managed Knowledge Bases data source connectors, so a data source can sync automatically on a daily, weekly, or monthly schedule.
+* (**bedrockagentcore**) AgentCore Memory now supports direct ingestion into long-term memory via IngestData API
+* (**cognitoidentityprovider**) Adds two new operations - GetClientToken which allows M2M auth through the SDK, and DescribeTermsByClient to find which Terms are associated with a user-pool client without knowing the Terms resource id.
+* (**ecs**) Amazon Elastic Container Service - This release adds support for early success criteria on ECS rolling deployments, letting deployment complete once a configurable percentage of tasks are healthy, with configurable BLOCKING (required) or DEFERRED (asynchronous) cleanup of previous service revisions.
+* (**healthlake**) New HealthLake API, RestoreFHIRDatastore, providing the capability to restore active datastores to a point in time within the last 30 days or recover a deleted datastore from the delete snapshot.
+* (**partnercentralselling**) Releasing PARC, new APN Program that lets sellers add solftware revenue details to aws opportunity summary
+
+## [1.8.40] - 08/27/2026
+
+### Features
+* (**cloudwatchlogs**) Added resultCount to QueryStatistics in GetQueryResults. This field returns the total number of output rows in the final result set, helping customers programmatically determine whether a query produced results after all operations including post-aggregation filters.
+* (**codedeploy**) Added a deploymentMode parameter to CreateDeployment. Set it to RESTART to restart an EC2 and on-premises fleet, using the last successful revision, honoring Deployment Configuration.
+* (**cognitoidentityprovider**) Adds the AdminDeleteSoftwareToken API operation, enabling administrators to remove a user's registered TOTP (software token) MFA configuration from a user pool.
+* (**datazone**) Add cascadeDelete to DeleteDomain. When specified, DataZone recursively deletes all projects, environments, subscriptions, and their underlying AWS resources before removing the domain. Deletion progress is reported via deleteProgress and resource failures via failureReasons on GetDomain.
+* (**ec2**) EC2 allows AMI owners to define compatible instance types on their AMIs, blocking RunInstances calls automatically for launches on non-permitted instance types.
+* (**lambdamicrovms**) Added InsufficientCapacityException to RunMicrovm for capacity-related failures. Added lifecycle status field (AVAILABLE, DEPRECATED) to ListManagedMicrovmImageVersions. Added ConflictException to CreateMicrovmAuthToken and CreateMicrovmShellAuthToken for unregistered MicroVMs.
+* (**rds**) Adding support for the full snapshot size, in bytes, of DB instance snapshots.
+
+### Documentation
+* (**opensearch**) Updating SDK and CLI documentation for AttachDataSource API.
+
+## [1.8.39] - 08/26/2026
+
+### Features
+* (**devopsagent**) AWS DevOps Agent now supports trigger filter groups for Release Readiness Review, letting you control when the capability auto-triggers based on webhook events and target branches.
+* (**ec2**) Adds deleting state to possible VPC States.
+* (**licensemanagerusersubscriptions**) Released support for License Expiry field in ListProductSubscriptions API
+* (**networkfirewall**) Adding new status enum for Firewalls.
+* (**sagemaker**) Amazon SageMaker AI now supports ml.g7 instances for model optimization. You can now run model optimization jobs on ml.g7 instances, in supported AWS Regions.
+
+## [1.8.38] - 08/25/2026
+
+### Features
+* (**autoscaling**) Adds support for Distribution Segments in mixed instances policies, providing ordered prioritization across On-Demand Capacity Reservations, Capacity Blocks, interruptible Capacity Reservations, and On-Demand capacity.
+* (**devopsagent**) Adds the UpdateApprovalAction API for resolving agent action approvals in AWS DevOps Agent agent spaces.
+* (**ec2**) Fleet feature to support Capacity Reservation Resource Groups with Amazon EC2 Capacity Blocks and interruptible Capacity Reservations
+* (**eks**) This feature would give customers the ability to tune TerminatedPodGcThreshold configuration in an Amazon EKS cluster.
+* (**evs**) EVS now supports i7i.metal-48xl EC2 bare metal instance type, delivering high random IOPS performance with real-time latency, ideal for IO intensive and latency-sensitive workloads such as transactional databases, real-time analytics, and AI ML pre-processing.
+* (**iamtoolbox**) AWS Identity and Access Management (IAM) announces access troubleshooter, helping you debug access denied errors faster. Supported error messages now include an identifier you can use to retrieve detailed evaluations of the policies considered and their results. Preview in US East (N. Virginia).
+* (**iot**) As part of this release, we are extending capability of AWS IoT Rules Engine to support IoT InfluxDB Action. The IoT InfluxDB action lets customers send messages from IoT sensors and applications to InfluxDB.
+
+### Documentation
+* (**marketplacemetering**) Updated documentation to clarify duplicate-billing prevention and BatchMeterUsage retry guidance
+
+## [1.8.37] - 08/24/2026
+
+### Features
+* (**bedrock**) Adds support for specifying an inference profile ID or ARN, or an application inference profile ARN as the target model in CreateAdvancedPromptOptimizationJob.
+* (**connect**) This release adds the ExtractedInformation segment to the ListRealtimeContactAnalysisSegmentsV2 API, enabling customers to retrieve information extracted from real-time contact analysis.
+* (**connectcontactlens**) This release adds the ExtractedInformation segment to the ListRealtimeContactAnalysisSegments API, enabling customers to retrieve information extracted from real-time contact analysis.
+* (**dsql**) Corrected the validation pattern on the ServiceName response field in the GetVpcEndpointServiceName API to match the values Amazon Aurora DSQL actually returns.
+* (**elementalinference**) Added support for the GetFixture API, enabling customers to retrieve the details of a fixture from its fixture ID, and added the access role ARN to the CreateFeed, GetFeed, and UpdateFeed responses.
+* (**kafka**) Amazon MSK Replicator now supports OAuth authentication when connecting to external Apache Kafka clusters, enabling customers to replicate data from clusters that require OAuth for client authentication. This new capability is supported in all AWS Regions where MSK Express brokers are available.
+* (**launchwizard**) Added accountConstraints and patternType to GetWorkload, ListWorkloads, GetWorkloadDeploymentPattern and ListWorkloadDeploymentPatterns for Launch Wizard
+* (**securityagent**) Adding private and self-signed certificate configuration support for penetration tests
+* (**timestreaminfluxdb**) Service-managed parameter groups now only apply optimized defaults to DB Clusters automatically. New field effectiveDbParameterGroupIdentifier surfaces the parameter group actually applied.
+
+### Documentation
+* (**batch**) Doc Update, Add note that UpdatePolicy applies only to EC2 managed compute environments
+
+## [1.8.36] - 08/21/2026
+
+### Features
+* (**bedrockagentcore**) Increase spans count from 1k to 20k
+* (**bedrockagentcorecontrol**) Update Dataset schema to THIRDPARTYEVALUATIONV1
+* (**cloudwatch**) Allows customers to specify an initial warm up period to wait for metrics to arrive when creating metric or log alarms
+* (**devicefarm**) Added support to CreateRemoveAccessSession for selecting a server version on the mobile WebDriver endpoint.
+* (**kinesis**) Generate account endpoint for Kinesis Data Streams requests when the account ID is available
+
+### Documentation
+* (**backup**) Updating CLI Docs for Backup Audit Manager List Job Summaries APIs.
+* (**wafv2**) DataProtectionConfig field Key Documentation Update
+
+## [1.8.35] - 08/20/2026
+
+### Features
+* (**amplify**) Increased the maximum allowed length from 255 to 4,096 characters to support longer access tokens.
+* (**arcregionswitch**) Adds support for Rds switchover read replica for Oracle databases in Region switch plans
+* (**batch**) AWS Batch now supports a new compute environment type that provides fully managed EC2 capacity with broader compute flexibility than Fargate, including GPU instances, bare metal, and specific instance type selection, without infrastructure management overhead.
+* (**cloudfront**) Added SigV4a as a supported signing protocol for Origin Access Control (OAC), enabling CloudFront to sign requests to Amazon S3 Multi-Region Access Point (S3-MRAP) origins.
+* (**directconnect**) This release adds custom route prefix pool allocations for Direct Connect. You can set IPv4 and IPv6 route prefix counts on private and transit virtual interfaces, and view pool size and unallocated counts on connections and LAGs, plus direct connect gateway attachment prefix allocation totals.
+* (**ec2**) EC2 marks UEFI instance metadata field as sensitive.
+* (**lambda**) Adds support for full JSON resource-based policies, enabling customers to create, retrieve, update, and delete function resource policies as complete JSON documents.
+* (**sagemaker**) Added IAM Identity Center (IdC) support to CreatePartnerApp and UpdatePartnerApp APIs. Added Customer Managed Key (CMK) support to CreateMlflowApp and DescribeMlflowApp.
+* (**sesv2**) Amazon SES now supports per-message tracking overrides. You can use the new ConfigurationOverrides parameter in SendEmail and SendBulkEmail to enable or disable open and click tracking for individual messages without changing your account-level or configuration set settings.
+
+### Documentation
+* (**pricingplanmanager**) Documentation update for the CreateSubscription API to correct the default value of the approval mode parameter. The default value for paid subscriptions is MANUAL, not IMMEDIATE as previously documented. The default value remains IMMEDIATE for FREE tier subscriptions.
+
 ## [1.8.34] - 08/19/2026
 
 ### Features
