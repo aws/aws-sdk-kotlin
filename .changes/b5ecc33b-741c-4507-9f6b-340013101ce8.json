@@ -1,5 +1,0 @@
-{
-    "id": "b5ecc33b-741c-4507-9f6b-340013101ce8",
-    "type": "feature",
-    "description": "Bump **smithy-kotlin** version to [**v1.7.9**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.7.9) to pick up serde performance improvements: pre-encoded field names and query literals cached on descriptors for CBOR, JSON, and form-url serialization; O(1) cached field-index lookups with an in-order cursor for JSON and CBOR deserialization; file-level hoisting of generated object/field descriptors so they're constructed once instead of per invocation; and fewer allocations in CBOR serde by encoding/decoding through free functions instead of intermediate wrapper objects"
-}
