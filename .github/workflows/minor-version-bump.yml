@@ -1,6 +1,8 @@
 name: Minor version bump check
 on:
   pull_request:
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   minor-version-bump-check:

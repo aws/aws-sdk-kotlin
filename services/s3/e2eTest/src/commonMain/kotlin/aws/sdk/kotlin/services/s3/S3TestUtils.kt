@@ -5,7 +5,6 @@
 package aws.sdk.kotlin.e2etest
 
 import aws.sdk.kotlin.services.s3.*
-import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.*
 import aws.sdk.kotlin.services.s3.model.BucketLocationConstraint
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
@@ -19,161 +18,106 @@ import aws.smithy.kotlin.runtime.http.complete
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.io.use
-import aws.smithy.kotlin.runtime.text.ensurePrefix
-import aws.smithy.kotlin.runtime.util.Uuid
+import aws.smithy.kotlin.runtime.time.Instant
+import aws.smithy.kotlin.runtime.time.TimestampFormat
+import aws.smithy.kotlin.runtime.util.asyncLazy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.seconds
 
 object S3TestUtils {
-
     const val DEFAULT_REGION = "us-west-2"
 
     // The E2E test account only has permission to operate on buckets with the prefix "s3-test-bucket-"
-    private const val TEST_BUCKET_PREFIX = "s3-test-bucket-"
+    private const val TEST_BUCKET_PREFIX = "s3-test-bucket"
 
-    private var sharedBucket: String? = null
-    private val bucketMutex = Mutex()
+    private const val S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX = "x-s3"
 
-    private val sharedDirectoryBuckets: MutableMap<String, String> = mutableMapOf()
-    private val directoryBucketMutex = Mutex()
-
-    suspend fun getOrCreateSharedBucket(client: S3Client, region: String = DEFAULT_REGION): String = sharedBucket ?: bucketMutex.withLock {
-        sharedBucket ?: getTestBucket(client, region).also { sharedBucket = it }
+    val testRunId by lazy {
+        Instant
+            .now()
+            .format(TimestampFormat.ISO_8601_CONDENSED)
+            .lowercase()
+            .also { println("Starting test run ID $it") }
     }
 
-    suspend fun cleanupSharedBucket(client: S3Client) {
-        sharedBucket?.let { bucket ->
-            deleteBucketContents(client, bucket)
-        }
-    }
-
-    suspend fun deleteSharedBucket(client: S3Client) {
-        sharedBucket?.let { bucket ->
-            deleteBucketAndAllContents(client, bucket)
-            sharedBucket = null
-        }
-    }
-
-    suspend fun getOrCreateSharedDirectoryBuckets(client: S3Client, suffix: String): List<String> = directoryBucketMutex.withLock {
-        (0 until 3).map { index ->
-            val key = "$suffix:$index"
-            sharedDirectoryBuckets[key] ?: getTestDirectoryBucket(client, suffix).also {
-                sharedDirectoryBuckets[key] = it
-            }
-        }
-    }
-
-    suspend fun cleanupSharedDirectoryBuckets(client: S3Client, suffix: String) {
-        (0 until 3).forEach { index ->
-            val key = "$suffix:$index"
-            sharedDirectoryBuckets[key]?.let { bucket ->
-                deleteBucketContents(client, bucket)
-            }
-        }
-    }
-
-    suspend fun deleteSharedDirectoryBuckets(client: S3Client, suffix: String) {
-        (0 until 3).forEach { index ->
-            val key = "$suffix:$index"
-            sharedDirectoryBuckets[key]?.let { bucket ->
-                deleteBucketAndAllContents(client, bucket)
-                sharedDirectoryBuckets.remove(key)
-            }
-        }
-    }
-
-    private const val S3_MAX_BUCKET_NAME_LENGTH = 63 // https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
-    private const val S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX = "--x-s3"
-
-    suspend fun getTestBucket(
+    suspend fun createTestBucket(
         client: S3Client,
-        region: String? = null,
-        accountId: String? = null,
-    ): String = getBucketWithPrefix(client, TEST_BUCKET_PREFIX, region, accountId)
+        suffix: String,
+        region: String = client.config.region!!,
+    ): String = createBucket(client, TEST_BUCKET_PREFIX, suffix, region)
 
-    suspend fun getBucketWithPrefix(
+    suspend fun createBucket(
         client: S3Client,
         prefix: String,
-        region: String? = null,
-        accountId: String? = null,
+        suffix: String,
+        region: String = client.config.region!!,
     ): String = withTimeout(60.seconds) {
-        val buckets = client.listBuckets()
-            .buckets
-            ?.mapNotNull { it.name }
+        val bucketName = "$prefix-$testRunId-$suffix"
+        println("Creating S3 bucket: $bucketName")
 
-        var testBucket = buckets?.firstOrNull { bucketName ->
-            bucketName.startsWith(prefix) &&
-                region?.let {
-                    client.getBucketLocation {
-                        bucket = bucketName
-                        expectedBucketOwner = accountId
-                    }.locationConstraint?.value == region
-                } ?: true
-        }
-
-        if (testBucket == null) {
-            testBucket = prefix + Uuid.random().toString()
-            println("Creating S3 bucket: $testBucket")
-
-            client.createBucket {
-                bucket = testBucket
-                createBucketConfiguration {
-                    locationConstraint = BucketLocationConstraint.fromValue(region ?: client.config.region!!)
-                }
+        client.createBucket {
+            bucket = bucketName
+            createBucketConfiguration {
+                locationConstraint = BucketLocationConstraint.fromValue(region)
             }
-
-            client.waitUntilBucketExists { bucket = testBucket }
-        } else {
-            println("Using existing S3 bucket: $testBucket")
         }
 
-        testBucket
+        client.waitUntilBucketExists { bucket = bucketName }
+
+        client.putBucketLifecycleConfiguration {
+            bucket = bucketName
+            lifecycleConfiguration {
+                rules = listOf(
+                    LifecycleRule {
+                        expiration { days = 1 }
+                        filter { this.prefix = "" }
+                        status = ExpirationStatus.Enabled
+                        id = "delete-old"
+                    },
+                )
+            }
+        }
+
+        bucketName
     }
 
-    suspend fun getTestDirectoryBucket(client: S3Client, suffix: String) = withTimeout(60.seconds) {
-        var testBucket = client.listBuckets()
-            .buckets
-            ?.mapNotNull { it.name }
-            ?.firstOrNull { it.startsWith(TEST_BUCKET_PREFIX) && it.endsWith(S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX) }
+    suspend fun createTestDirectoryBucket(
+        client: S3Client,
+        availabilityZone: String,
+        suffix: String,
+    ) = createDirectoryBucket(client, TEST_BUCKET_PREFIX, availabilityZone, suffix)
 
-        if (testBucket == null) {
-            // Adding S3 Express suffix surpasses the bucket name length limit... trim the UUID if needed
-            testBucket = TEST_BUCKET_PREFIX +
-                Uuid.random().toString().subSequence(0 until (S3_MAX_BUCKET_NAME_LENGTH - TEST_BUCKET_PREFIX.length - suffix.ensurePrefix("--").length)) +
-                suffix.ensurePrefix("--")
+    suspend fun createDirectoryBucket(
+        client: S3Client,
+        prefix: String,
+        availabilityZone: String,
+        suffix: String,
+    ) = withTimeout(60.seconds) {
+        val bucketName = "$prefix-$testRunId-$suffix--$availabilityZone--$S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX"
+        println("Creating S3 Express directory bucket: $bucketName")
 
-            println("Creating S3 Express directory bucket: $testBucket")
-
-            val availabilityZone = testBucket // s3-test-bucket-UUID--use1-az4--x-s3
-                .removeSuffix(S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX) // s3-test-bucket-UUID--use1-az4
-                .substringAfterLast("--") // use1-az4
-
-            client.createBucket {
-                bucket = testBucket
-                createBucketConfiguration {
-                    location = LocationInfo {
-                        type = LocationType.AvailabilityZone
-                        name = availabilityZone
-                    }
-                    bucket = BucketInfo {
-                        type = BucketType.Directory
-                        dataRedundancy = DataRedundancy.SingleAvailabilityZone
-                    }
+        client.createBucket {
+            bucket = bucketName
+            createBucketConfiguration {
+                location = LocationInfo {
+                    type = LocationType.AvailabilityZone
+                    name = availabilityZone
+                }
+                bucket = BucketInfo {
+                    type = BucketType.Directory
+                    dataRedundancy = DataRedundancy.SingleAvailabilityZone
                 }
             }
-        } else {
-            println("Using existing S3 Express directory bucket: $testBucket")
         }
 
-        testBucket
+        bucketName
     }
 
-    suspend fun deleteBucketAndAllContents(client: S3Client, bucketName: String): Unit = coroutineScope {
+    suspend fun deleteBucket(client: S3Client, bucketName: String): Unit = coroutineScope {
         deleteBucketContents(client, bucketName)
+        deleteMultiPartUploads(client, bucketName)
 
         try {
             println("Deleting S3 bucket: $bucketName")
@@ -188,7 +132,7 @@ object S3TestUtils {
         }
     }
 
-    suspend fun deleteBucketContents(client: S3Client, bucketName: String) = coroutineScope {
+    private suspend fun deleteBucketContents(client: S3Client, bucketName: String): Unit = coroutineScope {
         val scope = this
 
         try {
@@ -217,6 +161,18 @@ object S3TestUtils {
         }
     }
 
+    private suspend fun deleteMultiPartUploads(client: S3Client, bucketName: String) {
+        client.listMultipartUploads {
+            bucket = bucketName
+        }.uploads?.forEach { upload ->
+            client.abortMultipartUpload {
+                bucket = bucketName
+                key = upload.key
+                uploadId = upload.uploadId
+            }
+        }
+    }
+
     suspend fun responseCodeFromPut(engine: HttpClientEngine, presignedRequest: HttpRequest, content: String): Int {
         val request = HttpRequest(
             method = HttpMethod.PUT,
@@ -231,13 +187,22 @@ object S3TestUtils {
         return statusCode
     }
 
-    internal suspend fun getAccountId(): String {
-        val accountId = StsClient {
-            region = "us-west-2"
-        }.use {
-            it.getCallerIdentity().account
+    private val accountId = asyncLazy {
+        println("Getting account ID")
+
+        val accountId = StsClient { region = DEFAULT_REGION }.use { sts ->
+            sts.getCallerIdentity().account
         }
 
-        return checkNotNull(accountId) { "Unable to get AWS account ID" }
+        checkNotNull(accountId) { "Unable to get AWS account ID" }
+    }
+
+    internal suspend fun getAccountId(): String = accountId.get()
+
+    fun createClient(builder: S3Client.Config.Builder.() -> Unit = { }): S3Client = S3Client {
+        region = DEFAULT_REGION
+
+        // Apply builder block after setting default region in case of overrides
+        builder()
     }
 }

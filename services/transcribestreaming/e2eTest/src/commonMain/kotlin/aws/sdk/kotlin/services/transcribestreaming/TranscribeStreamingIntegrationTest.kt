@@ -8,11 +8,14 @@ import aws.sdk.kotlin.services.transcribestreaming.TranscribeStreamingClient
 import aws.sdk.kotlin.services.transcribestreaming.model.*
 import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.IgnoreNative
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
+@TestInstance(TestLifecycle.PER_CLASS)
 class TranscribeStreamingIntegrationTest {
     @IgnoreNative // FIXME Implement bidirectional streaming in CrtHttpEngine (JVM and Native)
     @Test

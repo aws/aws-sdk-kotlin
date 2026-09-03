@@ -6,8 +6,9 @@
 package aws.sdk.kotlin.runtime.region
 
 import aws.sdk.kotlin.runtime.util.TestInstanceMetadataProvider
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -15,6 +16,73 @@ import kotlin.test.assertEquals
 class DefaultRegionProviderChainTest {
     @Test
     fun testSuite() = runRegionProviderChainTestSuite(REGION_PROVIDER_CHAIN_TEST_SUITE)
+}
+
+private data class RegionProviderChainTest(
+    val name: String,
+    val platformProvider: TestPlatformProvider,
+    val instanceMetadataProvider: TestInstanceMetadataProvider,
+    val region: String?,
+    val targets: List<String> = emptyList(),
+)
+
+/**
+ * Parse a region-provider-chain test suite from a JSON string and run its assertions.
+ *
+ * This is a shared, reusable test runner so that both the common test suite and platform-specific
+ * test suites (e.g. JVM) can exercise the same machinery without duplicating logic.
+ */
+fun runRegionProviderChainTestSuite(testSuiteJson: String) = runTest {
+    val tests = Json.parseToJsonElement(testSuiteJson).jsonArray
+        .map { it.jsonObject }
+        .map {
+            val name = it["name"]!!.jsonPrimitive.content
+            val platform = TestPlatformProvider.fromJsonNode(it["platform"]!!.jsonObject)
+            val instanceMetadata = TestInstanceMetadataProvider.fromJsonNode(it["imds"]!!.jsonObject)
+            val region = it["region"]!!.jsonPrimitive.contentOrNull
+            RegionProviderChainTest(name, platform, instanceMetadata, region)
+        }
+
+    tests.forEach { test ->
+        val provider = DefaultRegionProviderChain(
+            platformProvider = test.platformProvider,
+            imdsClient = lazy { test.instanceMetadataProvider },
+        )
+        val actual = provider.getRegion()
+        assertEquals(test.region, actual, test.name)
+    }
+}
+
+/**
+ * Construct a [TestPlatformProvider] from a JSON node like:
+ *
+ * ```json
+ * {
+ *     "env": {
+ *         "ENV_VAR": "value"
+ *     },
+ *     "props": {
+ *         "aws.property": "value"
+ *     },
+ *     "fs": {
+ *         "filename": "contents"
+ *     }
+ * }
+ * ```
+ */
+fun TestPlatformProvider.Companion.fromJsonNode(obj: JsonObject): TestPlatformProvider {
+    val env = obj["env"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
+    val props = obj["props"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
+    val fs = obj["fs"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
+    return TestPlatformProvider.of(env = env, props = props, fs = fs.mapValues { (_, v) -> TestFile(v) })
+}
+
+/**
+ * Construct a [TestInstanceMetadataProvider] from a JSON object containing metadata as key-value pairs.
+ */
+fun TestInstanceMetadataProvider.Companion.fromJsonNode(obj: JsonObject): TestInstanceMetadataProvider {
+    val metadata = obj.jsonObject.mapValues { it.value.jsonPrimitive.content }
+    return TestInstanceMetadataProvider(metadata)
 }
 
 // language=JSON
@@ -84,6 +152,20 @@ private const val REGION_PROVIDER_CHAIN_TEST_SUITE = """
         "region": "us-east-1"
     },
     {
+        "name": "jvm system properties are favored over imds",
+        "platform": {
+            "env": {
+                "AWS_REGION": "us-east-2"
+            },
+            "props": {},
+            "fs": {}
+        },
+        "imds": {
+            "/latest/meta-data/placement/region": "us-east-1"
+        },
+        "region": "us-east-2"
+    },
+    {
         "name": "environment variables are favored over imds",
         "platform": {
             "env": {
@@ -115,82 +197,3 @@ private const val REGION_PROVIDER_CHAIN_TEST_SUITE = """
     }
 ]
 """
-
-private data class RegionProviderChainTest(
-    val name: String,
-    val platformProvider: TestPlatformProvider,
-    val instanceMetadataProvider: TestInstanceMetadataProvider,
-    val region: String?,
-    val targets: List<String> = emptyList(),
-)
-
-/*
- * Construct a [TestPlatformProvider] from a JSON node like:
- *
- * ```json
- * {
- *     "env": {
- *         "ENV_VAR": "value"
- *     },
- *     "props": {
- *         "aws.property": "value"
- *     },
- *     "fs": {
- *         "filename": "contents"
- *     }
- * }
- * ```
- */
-
-/**
- * Construct a [TestPlatformProvider] from a JSON node like:
- *
- * ```json
- * {
- *     "env": {
- *         "ENV_VAR": "value"
- *     },
- *     "props": {
- *         "aws.property": "value"
- *     },
- *     "fs": {
- *         "filename": "contents"
- *     }
- * }
- * ```
- */
-private fun TestPlatformProvider.Companion.fromJsonNode(obj: JsonObject): TestPlatformProvider {
-    val env = obj["env"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
-    val props = obj["props"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
-    val fs = obj["fs"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
-    return TestPlatformProvider(env, props, fs)
-}
-
-/**
- * Construct a [TestInstanceMetadataProvider] from a JSON object containing metadata as key-value pairs.
- */
-private fun TestInstanceMetadataProvider.Companion.fromJsonNode(obj: JsonObject): TestInstanceMetadataProvider {
-    val metadata = obj.jsonObject.mapValues { it.value.jsonPrimitive.content }
-    return TestInstanceMetadataProvider(metadata)
-}
-
-internal fun runRegionProviderChainTestSuite(testSuite: String) = runBlocking {
-    val tests = Json.parseToJsonElement(testSuite).jsonArray
-        .map { it.jsonObject }
-        .map {
-            val name = it["name"]!!.jsonPrimitive.content
-            val platform = TestPlatformProvider.fromJsonNode(it["platform"]!!.jsonObject)
-            val instanceMetadata = TestInstanceMetadataProvider.fromJsonNode(it["imds"]!!.jsonObject)
-            val region = it["region"]!!.jsonPrimitive.contentOrNull
-            RegionProviderChainTest(name, platform, instanceMetadata, region)
-        }
-
-    tests.forEach { test ->
-        val provider = DefaultRegionProviderChain(
-            platformProvider = test.platformProvider,
-            imdsClient = lazy { test.instanceMetadataProvider },
-        )
-        val actual = provider.getRegion()
-        assertEquals(test.region, actual, test.name)
-    }
-}

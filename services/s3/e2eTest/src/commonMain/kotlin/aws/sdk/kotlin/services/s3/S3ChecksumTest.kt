@@ -14,38 +14,38 @@ import aws.smithy.kotlin.runtime.hashing.crc32
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.RandomTempFile
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import kotlin.jvm.JvmStatic
-import kotlin.random.Random
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
+@TestInstance(TestLifecycle.PER_CLASS)
 class S3ChecksumTest {
-    companion object {
-        private lateinit var client: S3Client
-        private lateinit var testBucket: String
+    private val client = S3TestUtils.createClient()
+    private lateinit var testBucket: String
+    private fun testKey(suffix: String): String = "test-object-$suffix"
 
-        @BeforeAll
-        @JvmStatic
-        fun setup() = runBlocking {
-            client = S3Client { region = S3TestUtils.DEFAULT_REGION }
-            testBucket = S3TestUtils.getOrCreateSharedBucket(client, "us-west-2")
-        }
-
-        @AfterAll
-        @JvmStatic
-        fun cleanup() = runBlocking {
-            S3TestUtils.deleteSharedBucket(client)
-            client.close()
-        }
+    @BeforeAll
+    private fun setUp(): Unit = runBlocking {
+        testBucket = S3TestUtils.createTestBucket(client, "checksums")
     }
 
-    private fun testKey(): String = "test-object${Random.nextInt()}"
+    @AfterAll
+    private fun cleanUp(): Unit = runBlocking {
+        S3TestUtils.deleteBucket(client, testBucket)
+        client.close()
+    }
 
     @Test
     fun testPutObject() = runBlocking {
         val testBody = "Hello World"
-        val testKey = testKey()
+        val testKey = testKey("basic")
 
         client.putObject {
             bucket = testBucket
@@ -64,8 +64,8 @@ class S3ChecksumTest {
     }
 
     @Test
-    fun testPutObjectWithEmptyBody() = runBlocking {
-        val testKey = testKey()
+    fun testPutObjectWithEmptyBody(): Unit = runBlocking {
+        val testKey = testKey("empty")
         val testBody = ""
 
         client.putObject {
@@ -84,8 +84,8 @@ class S3ChecksumTest {
     }
 
     @Test
-    fun testPutObjectAwsChunkedEncoded() = runBlocking {
-        val testKey = testKey()
+    fun testPutObjectAwsChunkedEncoded(): Unit = runBlocking {
+        val testKey = testKey("chunked")
         val testBody = "Hello World"
 
         client.putObject {
@@ -105,10 +105,11 @@ class S3ChecksumTest {
     }
 
     @Test
-    fun testMultiPartUpload() = runBlocking<Unit> {
-        val testKey = testKey()
-        val partSize = 5 * 1024 * 1024
-        val contentSize: Long = 8 * 1024 * 1024
+    fun testMultiPartUpload(): Unit = runBlocking {
+        val testKey = testKey("multipart")
+
+        val partSize = 5 * 1024 * 1024 // 5 MB - min part size
+        val contentSize: Long = 8 * 1024 * 1024 // 2 parts
         val file = RandomTempFile(sizeInBytes = contentSize)
 
         val expectedChecksum = file.readBytes().crc32()
@@ -121,21 +122,23 @@ class S3ChecksumTest {
         val fileBytes = file.readBytes()
         val chunks = fileBytes.chunk(partSize).toList()
         val uploadedParts = chunks.mapIndexed { index, chunk ->
-            val adjustedIndex = index + 1
+            val adjustedIndex = index + 1 // index starts from 0 but partNumber needs to start from 1
 
-            client.uploadPart {
-                bucket = testBucket
-                key = testKey
-                partNumber = adjustedIndex
-                uploadId = testUploadId
-                body = ByteStream.fromBytes(chunk)
-            }.let {
-                CompletedPart {
+            async {
+                client.uploadPart {
+                    bucket = testBucket
+                    key = testKey
                     partNumber = adjustedIndex
-                    eTag = it.eTag
+                    uploadId = testUploadId
+                    body = ByteStream.fromBytes(chunk)
+                }.let {
+                    CompletedPart {
+                        partNumber = adjustedIndex
+                        eTag = it.eTag
+                    }
                 }
             }
-        }
+        }.awaitAll()
 
         client.completeMultipartUpload {
             bucket = testBucket
@@ -165,7 +168,7 @@ class S3ChecksumTest {
 
         val unsignedPutRequest = PutObjectRequest {
             bucket = testBucket
-            key = testKey()
+            key = testKey("presigned-auto-checksum")
         }
         val presignedPutRequest = client.presignPutObject(unsignedPutRequest, 60.seconds)
 
@@ -179,7 +182,7 @@ class S3ChecksumTest {
 
         val unsignedPutRequest = PutObjectRequest {
             bucket = testBucket
-            key = testKey()
+            key = testKey("presigned-provided-checksum")
             checksumCrc32 = "dBBx+Q=="
         }
         val presignedPutRequest = client.presignPutObject(unsignedPutRequest, 60.seconds)

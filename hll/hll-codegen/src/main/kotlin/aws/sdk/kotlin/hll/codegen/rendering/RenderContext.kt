@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.codegen.rendering
 
 import aws.sdk.kotlin.hll.codegen.core.CodeGeneratorFactory
+import aws.sdk.kotlin.hll.codegen.model.HasAttributes
 import aws.sdk.kotlin.runtime.InternalSdkApi
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.collections.emptyAttributes
@@ -24,8 +25,8 @@ public data class RenderContext(
     val codegenFactory: CodeGeneratorFactory,
     val pkg: String,
     val rendererName: String = "aws-sdk-kotlin-hll-codegen",
-    val attributes: Attributes = emptyAttributes(),
-)
+    override val attributes: Attributes = emptyAttributes(),
+) : HasAttributes
 
 public fun RenderContext.logging(message: String, symbol: KSNode? = null): Unit = logger.logging(message, symbol)
 public fun RenderContext.info(message: String, symbol: KSNode? = null): Unit = logger.info(message, symbol)

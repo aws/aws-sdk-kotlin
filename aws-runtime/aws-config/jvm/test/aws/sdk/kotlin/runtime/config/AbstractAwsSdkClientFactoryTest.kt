@@ -12,26 +12,22 @@ import aws.sdk.kotlin.runtime.region.DefaultRegionProviderChain
 import aws.smithy.kotlin.runtime.client.*
 import aws.smithy.kotlin.runtime.client.region.RegionProvider
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
+import aws.smithy.kotlin.runtime.testing.withEnvVars
+import aws.smithy.kotlin.runtime.testing.withSystemProperties
+import aws.smithy.kotlin.runtime.testing.withTempDir
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
-import io.kotest.extensions.system.withEnvironment
-import io.kotest.extensions.system.withSystemProperties
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.io.TempDir
-import java.nio.file.Path
-import kotlin.io.path.absolutePathString
-import kotlin.io.path.deleteIfExists
-import kotlin.io.path.writeText
-import kotlin.test.Ignore
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.writeString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.time.Duration.Companion.seconds
 
 class AbstractAwsSdkClientFactoryTest {
-    @JvmField
-    @TempDir
-    var tempDir: Path? = null
 
     @Test
     fun testFromEnvironmentFavorsExplicitConfig() = runTest {
@@ -60,35 +56,32 @@ class AbstractAwsSdkClientFactoryTest {
         }
     }
 
-    // FIXME java.lang.reflect.InaccessibleObjectException: Unable to make field private final java.util.Map java.util.Collections$UnmodifiableMap.m accessible: module java.base does not "opens java.util" to unnamed module @7ee7980d
-    @Ignore
     @Test
     fun testFromEnvironmentResolvesAppId() = runTest(
         timeout = 20.seconds,
     ) {
-        val credentialsFile = tempDir!!.resolve("credentials")
-        val configFile = tempDir!!.resolve("config")
+        withTempDir { dir ->
+            val credentialsFile = Path(dir, "credentials")
+            val configFile = Path(dir, "config")
 
-        configFile.writeText("[profile foo]\nsdk_ua_app_id = profile-app-id")
+            SystemFileSystem.sink(configFile).buffered().use { it.writeString("[profile foo]\nsdk_ua_app_id = profile-app-id") }
 
-        val testPlatform = mockPlatform(
-            pathSegment = PlatformProvider.System.filePathSeparator,
-            awsProfileEnv = "foo",
-            homeEnv = "/home/user",
-            awsConfigFileEnv = configFile.absolutePathString(),
-            awsSharedCredentialsFileEnv = credentialsFile.absolutePathString(),
-            os = PlatformProvider.System.osInfo(),
-        )
+            val testPlatform = mockPlatform(
+                pathSegment = PlatformProvider.System.filePathSeparator,
+                awsProfileEnv = "foo",
+                homeEnv = "/home/user",
+                awsConfigFileEnv = configFile.toString(),
+                awsSharedCredentialsFileEnv = credentialsFile.toString(),
+                os = PlatformProvider.System.osInfo(),
+            )
 
-        val sharedConfig = asyncLazy { loadAwsSharedConfig(testPlatform) }
-        val profile = asyncLazy { sharedConfig.get().activeProfile }
+            val sharedConfig = asyncLazy { loadAwsSharedConfig(testPlatform) }
+            val profile = asyncLazy { sharedConfig.get().activeProfile }
 
-        assertEquals("profile-app-id", resolveUserAgentAppId(testPlatform, profile))
+            assertEquals("profile-app-id", resolveUserAgentAppId(testPlatform, profile))
+        }
 
-        configFile.deleteIfExists()
-        credentialsFile.deleteIfExists()
-
-        withEnvironment(
+        withEnvVars(
             mapOf(
                 AwsSdkSetting.AwsAppId.envVars.first() to "env-app-id",
             ),
@@ -126,9 +119,11 @@ private interface TestClient : SdkClient {
     class Config private constructor(builder: Builder) :
         SdkClientConfig,
         AwsSdkClientConfig,
+        LogRedactionConfig,
         RetryStrategyClientConfig by builder.buildRetryStrategyClientConfig() {
         override val clientName: String = builder.clientName
         override val logMode: LogMode = builder.logMode ?: LogMode.Default
+        override val logRedactedHeaders: Set<String> = builder.logRedactedHeaders
         override val region: String? = builder.region
         override var regionProvider: RegionProvider = builder.regionProvider ?: DefaultRegionProviderChain()
         override var useFips: Boolean = builder.useFips ?: false
@@ -138,10 +133,12 @@ private interface TestClient : SdkClient {
         // new: inherits builder equivalents for Config base classes
         class Builder :
             AwsSdkClientConfig.Builder,
+            LogRedactionConfig.Builder,
             SdkClientConfig.Builder<Config>,
             RetryStrategyClientConfig.Builder by RetryStrategyClientConfigImpl.BuilderImpl() {
             override var clientName: String = "Test"
             override var logMode: LogMode? = LogMode.Default
+            override var logRedactedHeaders: MutableSet<String> = mutableSetOf()
             override var region: String? = null
             override var regionProvider: RegionProvider? = null
             override var useFips: Boolean? = null

@@ -180,6 +180,9 @@
                 "smithy.api#documentation": "<p> Defines criteria for selecting resources based on field values. </p>"
             }
         },
+        "com.amazonaws.observabilityadmin#AllRegions": {
+            "type": "boolean"
+        },
         "com.amazonaws.observabilityadmin#AwsResourceExplorerManagedViewArn": {
             "type": "string",
             "traits": {
@@ -256,6 +259,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Log specific configuration for centralization destination log groups.</p>"
                     }
+                },
+                "DestinationMetricsConfiguration": {
+                    "target": "com.amazonaws.observabilityadmin#DestinationMetricsConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Metric specific configuration for centralization destination metrics.</p>"
+                    }
                 }
             },
             "traits": {
@@ -282,6 +291,12 @@
                     "target": "com.amazonaws.observabilityadmin#SourceLogsConfiguration",
                     "traits": {
                         "smithy.api#documentation": "<p>Log specific configuration for centralization source log groups.</p>"
+                    }
+                },
+                "SourceMetricsConfiguration": {
+                    "target": "com.amazonaws.observabilityadmin#SourceMetricsConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Metric specific configuration for centralization source metrics.</p>"
                     }
                 }
             },
@@ -344,6 +359,18 @@
                     "target": "com.amazonaws.observabilityadmin#CentralizationFailureReason",
                     "traits": {
                         "smithy.api#documentation": "<p>The reason why an organization centralization rule is marked UNHEALTHY.</p>"
+                    }
+                },
+                "TagPropagationStatus": {
+                    "target": "com.amazonaws.observabilityadmin#TagPropagationStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The health status of tag propagation for this rule. This status is independent of the overall <code>RuleHealth</code> for log delivery. Returns <code>Healthy</code> when the most recent tag-propagation attempt succeeded, or <code>Unhealthy</code> when the most recent attempt failed.</p>"
+                    }
+                },
+                "TagPropagationFailureReason": {
+                    "target": "com.amazonaws.observabilityadmin#TagPropagationFailureReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason tag propagation is unhealthy for this rule. Only present when <code>TagPropagationStatus</code> is <code>Unhealthy</code>.</p>"
                     }
                 },
                 "DestinationAccountId": {
@@ -662,6 +689,7 @@
                     "requiredActions": [
                         "iam:PassRole",
                         "logs:PutPipelineRule",
+                        "cloudwatch:PutPipelineRule",
                         "observabilityadmin:TagResource",
                         "observabilityadmin:ListTagsForResource",
                         "observabilityadmin:GetTelemetryPipeline"
@@ -892,6 +920,15 @@
                 "smithy.api#documentation": "<p>Information about a data source associated with the telemetry pipeline. For CloudWatch Logs sources, this includes both a name and type extracted from the log event metadata. For third-party sources (such as S3), this includes only a name, with the type field left empty.</p>"
             }
         },
+        "com.amazonaws.observabilityadmin#DataSourceFilterString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2000
+                }
+            }
+        },
         "com.amazonaws.observabilityadmin#DataSources": {
             "type": "list",
             "member": {
@@ -1030,6 +1067,7 @@
                 "aws.iam#iamAction": {
                     "requiredActions": [
                         "logs:DeletePipelineRule",
+                        "cloudwatch:DeletePipelineRule",
                         "observabilityadmin:GetTelemetryPipeline"
                     ]
                 },
@@ -1179,10 +1217,30 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Configuration that specifies a naming pattern for destination log groups created during centralization. The pattern supports static text and dynamic variables that are replaced with source attributes when log groups are created.</p>"
                     }
+                },
+                "TagPropagationConfiguration": {
+                    "target": "com.amazonaws.observabilityadmin#TagPropagationConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the tag propagation configuration for this centralization rule. When present, <code>LogGroupNameConfiguration</code> must use a <code>LogGroupNamePattern</code> that contains <code>${source.logGroup}</code>, <code>${source.accountId}</code>, and <code>${source.region}</code>.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Configuration for centralization destination log groups, including encryption and backup settings.</p>"
+            }
+        },
+        "com.amazonaws.observabilityadmin#DestinationMetricsConfiguration": {
+            "type": "structure",
+            "members": {
+                "BackupConfiguration": {
+                    "target": "com.amazonaws.observabilityadmin#MetricsBackupConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Configuration defining the backup region for the metrics backup destination.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for centralization destination metrics, including backup settings.</p>"
             }
         },
         "com.amazonaws.observabilityadmin#DestinationType": {
@@ -1269,6 +1327,28 @@
                         "smithy.api#enumValue": "SKIP"
                     }
                 }
+            }
+        },
+        "com.amazonaws.observabilityadmin#EncryptionScope": {
+            "type": "enum",
+            "members": {
+                "ENCRYPTED_SOURCE_ONLY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Only destination log groups whose source log group is encrypted with a customer managed KMS key use the configured <code>KmsKeyArn</code>. This is the default behavior.</p>",
+                        "smithy.api#enumValue": "ENCRYPTED_SOURCE_ONLY"
+                    }
+                },
+                "NEW_DESTINATION_LOG_GROUPS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Every new destination log group created by this rule uses the configured <code>KmsKeyArn</code>, regardless of whether the source log group is encrypted with a customer managed key or Amazon Web Services owned encryption.</p>",
+                        "smithy.api#enumValue": "NEW_DESTINATION_LOG_GROUPS"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Determines which newly created destination log groups are encrypted with the configured KMS key.</p>"
             }
         },
         "com.amazonaws.observabilityadmin#EncryptionStrategy": {
@@ -1514,6 +1594,18 @@
                     "target": "com.amazonaws.observabilityadmin#CentralizationFailureReason",
                     "traits": {
                         "smithy.api#documentation": "<p>The reason why an organization centralization rule is marked UNHEALTHY.</p>"
+                    }
+                },
+                "TagPropagationStatus": {
+                    "target": "com.amazonaws.observabilityadmin#TagPropagationStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The health status of tag propagation for this rule. This status is independent of the overall <code>RuleHealth</code> for log delivery. Returns <code>Healthy</code> when the most recent tag-propagation attempt succeeded, or <code>Unhealthy</code> when the most recent attempt failed.</p>"
+                    }
+                },
+                "TagPropagationFailureReason": {
+                    "target": "com.amazonaws.observabilityadmin#TagPropagationFailureReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason tag propagation is unhealthy for this rule. Only present when <code>TagPropagationStatus</code> is <code>Unhealthy</code>.</p>"
                     }
                 },
                 "CentralizationRule": {
@@ -1772,6 +1864,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p> This field describes the reason for the failure status. The field will only be populated if <code>Status</code> is <code>FAILED_START</code> or <code>FAILED_STOP</code>. </p>"
                     }
+                },
+                "HomeRegion": {
+                    "target": "com.amazonaws.observabilityadmin#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The Amazon Web Services Region that is designated as the home region for multi-region telemetry evaluation for the organization. The home region is the single management point for all multi-region operations on this organization. This field is only present when multi-region telemetry evaluation is active. </p>"
+                    }
+                },
+                "RegionStatuses": {
+                    "target": "com.amazonaws.observabilityadmin#RegionStatuses",
+                    "traits": {
+                        "smithy.api#documentation": "<p> A list of per-region telemetry evaluation statuses for the organization. Each entry indicates the evaluation status for a specific spoke region included in the multi-region configuration. This field is only present when multi-region telemetry evaluation is active. </p>"
+                    }
                 }
             },
             "traits": {
@@ -1791,6 +1895,18 @@
                     "target": "com.amazonaws.observabilityadmin#FailureReason",
                     "traits": {
                         "smithy.api#documentation": "<p> Describes the reason for the failure status. The field will only be populated if <code>Status</code> is <code>FAILED_START</code> or <code>FAILED_STOP</code>. </p>"
+                    }
+                },
+                "HomeRegion": {
+                    "target": "com.amazonaws.observabilityadmin#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The Amazon Web Services Region that is designated as the home region for multi-region telemetry evaluation. The home region is the single management point for all multi-region operations on this account. This field is only present when multi-region telemetry evaluation is active. </p>"
+                    }
+                },
+                "RegionStatuses": {
+                    "target": "com.amazonaws.observabilityadmin#RegionStatuses",
+                    "traits": {
+                        "smithy.api#documentation": "<p> A list of per-region telemetry evaluation statuses. Each entry indicates the evaluation status for a specific spoke region included in the multi-region configuration. This field is only present when multi-region telemetry evaluation is active. </p>"
                     }
                 }
             },
@@ -1981,6 +2097,24 @@
                     "traits": {
                         "smithy.api#documentation": "<p> The configuration details of the organization telemetry rule. </p>"
                     }
+                },
+                "HomeRegion": {
+                    "target": "com.amazonaws.observabilityadmin#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The Amazon Web Services Region where the organization telemetry rule was originally created. For replicated rules in spoke regions, this indicates the region that manages the rule. For rules created without multi-region scope, this field is not present. </p>"
+                    }
+                },
+                "IsReplicated": {
+                    "target": "com.amazonaws.observabilityadmin#IsReplicated",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Indicates whether this organization telemetry rule is a replica that was created in this region through multi-region fan-out from the home region. Replicated rules cannot be directly updated or deleted in the spoke region. To modify a replicated rule, make changes in the home region. </p>"
+                    }
+                },
+                "RegionStatuses": {
+                    "target": "com.amazonaws.observabilityadmin#RegionStatuses",
+                    "traits": {
+                        "smithy.api#documentation": "<p> A list of per-region replication statuses for the organization telemetry rule. Each entry indicates the replication status of the rule in a specific spoke region. This field is only present for rules created with multi-region scope. </p>"
+                    }
                 }
             },
             "traits": {
@@ -2034,10 +2168,38 @@
                     "traits": {
                         "smithy.api#documentation": "<p> The configuration details of the telemetry rule. </p>"
                     }
+                },
+                "HomeRegion": {
+                    "target": "com.amazonaws.observabilityadmin#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The Amazon Web Services Region where the telemetry rule was originally created. For replicated rules in spoke regions, this indicates the region that manages the rule. For rules created without multi-region scope, this field is not present. </p>"
+                    }
+                },
+                "IsReplicated": {
+                    "target": "com.amazonaws.observabilityadmin#IsReplicated",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Indicates whether this telemetry rule is a replica that was created in this region through multi-region fan-out from the home region. Replicated rules cannot be directly updated or deleted in the spoke region. To modify a replicated rule, make changes in the home region. </p>"
+                    }
+                },
+                "RegionStatuses": {
+                    "target": "com.amazonaws.observabilityadmin#RegionStatuses",
+                    "traits": {
+                        "smithy.api#documentation": "<p> A list of per-region replication statuses for the telemetry rule. Each entry indicates the replication status of the rule in a specific spoke region. This field is only present for rules created with multi-region scope. </p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.observabilityadmin#IamRoleArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 20,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:aws[a-zA-Z-]*:iam::\\d{12}:role/[\\w+=,.@/-]+$"
             }
         },
         "com.amazonaws.observabilityadmin#IntegrationStatus": {
@@ -2121,6 +2283,19 @@
                 "smithy.api#documentation": "<p> The requested operation cannot be completed on the specified resource in the current state. </p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 400
+            }
+        },
+        "com.amazonaws.observabilityadmin#IsReplicated": {
+            "type": "boolean"
+        },
+        "com.amazonaws.observabilityadmin#KmsKeyArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:aws[a-zA-Z-]*:kms:[a-z0-9-]+:\\d{12}:key/(mrk-)?[a-f0-9-]+$"
             }
         },
         "com.amazonaws.observabilityadmin#LabelNameCondition": {
@@ -2920,12 +3095,12 @@
                 "LogTypes": {
                     "target": "com.amazonaws.observabilityadmin#LogTypes",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of log that the source is sending.</p>"
+                        "smithy.api#documentation": "<p>The types of logs to collect from the resource.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Configuration parameters for Amazon Bedrock AgentCore logging, including <code>logType</code> settings.</p>"
+                "smithy.api#documentation": "<p>The configuration parameters for log delivery, including <code>logType</code> settings. Applies to resource types that support configurable log delivery, such as Amazon Bedrock Knowledge Bases and Elastic Load Balancing Application Load Balancers.</p>"
             }
         },
         "com.amazonaws.observabilityadmin#LogGroupNameConfiguration": {
@@ -2934,7 +3109,7 @@
                 "LogGroupNamePattern": {
                     "target": "com.amazonaws.observabilityadmin#LogGroupNamePattern",
                     "traits": {
-                        "smithy.api#documentation": "<p>The pattern used to generate destination log group names during centralization. The pattern can contain static text and dynamic variables that are replaced with source attributes. If a variable cannot be resolved, it inherits the value from its parent variable in the hierarchy. The pattern must be between 1 and 512 characters.</p> <p>Supported variables:</p> <ul> <li> <p> <b>${source.logGroup}</b> — The original log group name from the source account.</p> </li> <li> <p> <b>${source.accountId}</b> — The AWS account ID where the log originated.</p> </li> <li> <p> <b>${source.region}</b> — The AWS Region where the log originated.</p> </li> <li> <p> <b>${source.org.id}</b> — The AWS Organization ID of the source account.</p> </li> <li> <p> <b>${source.org.ouId}</b> — The organizational unit ID of the source account.</p> </li> <li> <p> <b>${source.org.rootId}</b> — The organization Root ID.</p> </li> <li> <p> <b>${source.org.path}</b> — The organizational path from account to root.</p> </li> </ul>",
+                        "smithy.api#documentation": "<p>The pattern used to generate destination log group names during centralization. The pattern can contain static text and dynamic variables that are replaced with source attributes. If a variable cannot be resolved, it inherits the value from its parent variable in the hierarchy. The pattern must be between 1 and 512 characters.</p> <p>Supported variables:</p> <ul> <li> <p> <b>${source.logGroup}</b> — The original log group name from the source account.</p> </li> <li> <p> <b>${source.accountId}</b> — The Amazon Web Services account ID where the log originated.</p> </li> <li> <p> <b>${source.region}</b> — The Amazon Web Services Region where the log originated.</p> </li> <li> <p> <b>${source.org.id}</b> — The Amazon Web Services Organization ID of the source account.</p> </li> <li> <p> <b>${source.org.ouId}</b> — The organizational unit ID of the source account.</p> </li> <li> <p> <b>${source.org.rootId}</b> — The organization Root ID.</p> </li> <li> <p> <b>${source.org.path}</b> — The organizational path from account to root.</p> </li> </ul>",
                         "smithy.api#required": {}
                     }
                 }
@@ -2946,7 +3121,7 @@
         "com.amazonaws.observabilityadmin#LogGroupNamePattern": {
             "type": "string",
             "traits": {
-                "smithy.api#documentation": "<p>The pattern used to generate destination log group names during centralization. The pattern can contain static text and dynamic variables that are replaced with source attributes. If a variable cannot be resolved, it inherits the value from its parent variable in the hierarchy. The pattern must be between 1 and 512 characters.</p> <p>Supported variables:</p> <ul> <li> <p> <b>${source.logGroup}</b> — The original log group name from the source account.</p> </li> <li> <p> <b>${source.accountId}</b> — The AWS account ID where the log originated.</p> </li> <li> <p> <b>${source.region}</b> — The AWS Region where the log originated.</p> </li> <li> <p> <b>${source.org.id}</b> — The AWS Organization ID of the source account.</p> </li> <li> <p> <b>${source.org.ouId}</b> — The organizational unit ID of the source account.</p> </li> <li> <p> <b>${source.org.rootId}</b> — The organization Root ID.</p> </li> <li> <p> <b>${source.org.path}</b> — The organizational path from account to root.</p> </li> </ul>",
+                "smithy.api#documentation": "<p>The pattern used to generate destination log group names during centralization. The pattern can contain static text and dynamic variables that are replaced with source attributes. If a variable cannot be resolved, it inherits the value from its parent variable in the hierarchy. The pattern must be between 1 and 512 characters.</p> <p>Supported variables:</p> <ul> <li> <p> <b>${source.logGroup}</b> — The original log group name from the source account.</p> </li> <li> <p> <b>${source.accountId}</b> — The Amazon Web Services account ID where the log originated.</p> </li> <li> <p> <b>${source.region}</b> — The Amazon Web Services Region where the log originated.</p> </li> <li> <p> <b>${source.org.id}</b> — The Amazon Web Services Organization ID of the source account.</p> </li> <li> <p> <b>${source.org.ouId}</b> — The organizational unit ID of the source account.</p> </li> <li> <p> <b>${source.org.rootId}</b> — The organization Root ID.</p> </li> <li> <p> <b>${source.org.path}</b> — The organizational path from account to root.</p> </li> </ul>",
                 "smithy.api#length": {
                     "min": 1,
                     "max": 512
@@ -2968,7 +3143,52 @@
                     "traits": {
                         "smithy.api#enumValue": "USAGE_LOGS"
                     }
+                },
+                "SECURITY_FINDING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SECURITY_FINDING_LOGS"
+                    }
+                },
+                "ACCESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACCESS_LOGS"
+                    }
+                },
+                "CONNECTION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CONNECTION_LOGS"
+                    }
+                },
+                "S3_SERVER_ACCESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "S3_SERVER_ACCESS_LOGS"
+                    }
+                },
+                "ALB_ACCESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALB_ACCESS_LOGS"
+                    }
+                },
+                "ALB_CONNECTION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALB_CONNECTION_LOGS"
+                    }
+                },
+                "ALB_HEALTH_CHECK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALB_HEALTH_CHECK_LOGS"
+                    }
                 }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The following log types are supported for log delivery configuration:</p> <ul> <li> <p>APPLICATION_LOGS – Application-level logs.</p> </li> <li> <p>USAGE_LOGS – Resource usage logs.</p> </li> <li> <p>SECURITY_FINDING_LOGS – Security finding logs.</p> </li> <li> <p>ACCESS_LOGS – Access logs (such as Elastic Load Balancing access logs).</p> </li> <li> <p>CONNECTION_LOGS – Connection logs.</p> </li> <li> <p>S3_SERVER_ACCESS_LOGS – Amazon S3 server access logs.</p> </li> </ul>"
             }
         },
         "com.amazonaws.observabilityadmin#LogTypes": {
@@ -3039,10 +3259,16 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Conflict resolution strategy for centralization if the encryption strategy is set to CUSTOMER_MANAGED and the destination log group is encrypted with an AWS_OWNED KMS Key. ALLOW lets centralization go through while SKIP prevents centralization into the destination log group.</p>"
                     }
+                },
+                "EncryptionScope": {
+                    "target": "com.amazonaws.observabilityadmin#EncryptionScope",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Determines which newly created destination log groups are encrypted with the configured <code>KmsKeyArn</code> when <code>EncryptionStrategy</code> is <code>CUSTOMER_MANAGED</code>.</p> <p>If you set this to <code>ENCRYPTED_SOURCE_ONLY</code> (the default), only destination log groups whose source log group is encrypted with a customer managed KMS key use the configured <code>KmsKeyArn</code>. Destination log groups derived from Amazon Web Services owned encrypted source log groups remain Amazon Web Services owned encrypted.</p> <p>If you set this to <code>NEW_DESTINATION_LOG_GROUPS</code>, every new destination log group created by this rule uses the configured <code>KmsKeyArn</code>, regardless of the source log group's encryption posture.</p> <p>This field is not valid when <code>EncryptionStrategy</code> is <code>AWS_OWNED</code>.</p>"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Configuration for encrypting centralized log groups. This configuration is only applied to destination log groups for which the corresponding source log groups are encrypted using Customer Managed KMS Keys.</p>"
+                "smithy.api#documentation": "<p>Configuration for encrypting centralized destination log groups. By default, this configuration applies only to destination log groups whose corresponding source log groups are encrypted using customer managed KMS keys. To encrypt all destination log groups created by the rule, set <code>EncryptionScope</code> to <code>NEW_DESTINATION_LOG_GROUPS</code>.</p>"
             }
         },
         "com.amazonaws.observabilityadmin#LogsFilterString": {
@@ -3052,6 +3278,76 @@
                     "min": 1,
                     "max": 2000
                 }
+            }
+        },
+        "com.amazonaws.observabilityadmin#MetricsBackupConfiguration": {
+            "type": "structure",
+            "members": {
+                "Region": {
+                    "target": "com.amazonaws.observabilityadmin#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Metrics specific backup destination region within the primary destination account to which metrics data should be centralized.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for backing up centralized metrics data to a secondary region.</p>"
+            }
+        },
+        "com.amazonaws.observabilityadmin#MetricsFilterString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2000
+                }
+            }
+        },
+        "com.amazonaws.observabilityadmin#MskEnhancedMonitoringLevel": {
+            "type": "enum",
+            "members": {
+                "DEFAULT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DEFAULT"
+                    }
+                },
+                "PER_BROKER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PER_BROKER"
+                    }
+                },
+                "PER_TOPIC_PER_BROKER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PER_TOPIC_PER_BROKER"
+                    }
+                },
+                "PER_TOPIC_PER_PARTITION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PER_TOPIC_PER_PARTITION"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> Enumeration of supported enhanced monitoring levels for Amazon MSK clusters: DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION. </p>"
+            }
+        },
+        "com.amazonaws.observabilityadmin#MskMonitoringParameters": {
+            "type": "structure",
+            "members": {
+                "EnhancedMonitoring": {
+                    "target": "com.amazonaws.observabilityadmin#MskEnhancedMonitoringLevel",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The level of enhanced monitoring for the MSK cluster. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> Configuration parameters for Amazon MSK cluster monitoring, including enhanced monitoring level settings. </p>"
             }
         },
         "com.amazonaws.observabilityadmin#NextToken": {
@@ -3185,6 +3481,194 @@
                 "aws.protocols#restJson1": {},
                 "smithy.api#documentation": "<p> You can use Amazon CloudWatch Observability Admin to discover and understand the state of telemetry configuration in CloudWatch for your Amazon Web Services Organization or account. This simplifies the process of auditing your telemetry collection configurations across multiple resource types within your Amazon Web Services Organization or account. By providing a consolidated view, it allows you to easily review and manage telemetry settings, helping you ensure proper monitoring and data collection across your Amazon Web Services environment. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/telemetry-config-cloudwatch.html\">Auditing CloudWatch telemetry conﬁgurations</a> in the CloudWatch User Guide.</p> <p>For information on the permissions you need to use this API, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/auth-and-access-control-cw.html\">Identity and access management for Amazon CloudWatch</a> in the CloudWatch User Guide.</p>",
                 "smithy.api#title": "CloudWatch Observability Admin Service",
+                "smithy.rules#endpointBdd": {
+                    "version": "1.1",
+                    "parameters": {
+                        "Region": {
+                            "builtIn": "AWS::Region",
+                            "required": false,
+                            "documentation": "The AWS region used to dispatch the request.",
+                            "type": "string"
+                        },
+                        "UseDualStack": {
+                            "builtIn": "AWS::UseDualStack",
+                            "required": true,
+                            "default": false,
+                            "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
+                            "type": "boolean"
+                        },
+                        "UseFIPS": {
+                            "builtIn": "AWS::UseFIPS",
+                            "required": true,
+                            "default": false,
+                            "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
+                            "type": "boolean"
+                        },
+                        "Endpoint": {
+                            "builtIn": "SDK::Endpoint",
+                            "required": false,
+                            "documentation": "Override the endpoint used to send this request",
+                            "type": "string"
+                        }
+                    },
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "aws.partition",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ],
+                            "assign": "PartitionResult"
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseFIPS"
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseDualStack"
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "supportsDualStack"
+                                    ]
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "supportsFIPS"
+                                    ]
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "results": [
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": {
+                                    "ref": "Endpoint"
+                                },
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://observabilityadmin-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://observabilityadmin-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "FIPS is enabled but this partition does not support FIPS",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://observabilityadmin.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "DualStack is enabled but this partition does not support DualStack",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://observabilityadmin.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Missing Region",
+                            "type": "error"
+                        }
+                    ],
+                    "root": 2,
+                    "nodeCount": 13,
+                    "nodes": "/////wAAAAH/////AAAAAAAAAAwAAAADAAAAAQAAAAQF9eELAAAAAgAAAAUF9eELAAAAAwAAAAgAAAAGAAAABAAAAAcF9eEKAAAABQX14QgF9eEJAAAABAAAAAoAAAAJAAAABgX14QYF9eEHAAAABQAAAAsF9eEFAAAABgX14QQF9eEFAAAAAwX14QEAAAANAAAABAX14QIF9eED"
+                },
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
                     "parameters": {
@@ -3954,6 +4438,44 @@
                 }
             }
         },
+        "com.amazonaws.observabilityadmin#RegionStatus": {
+            "type": "structure",
+            "members": {
+                "Region": {
+                    "target": "com.amazonaws.observabilityadmin#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The Amazon Web Services Region code (for example, <code>eu-west-1</code> or <code>us-west-2</code>) that this status applies to. </p>"
+                    }
+                },
+                "Status": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The status of the operation in this region. For telemetry evaluation, valid values include <code>STARTING</code>, <code>RUNNING</code>, and <code>FAILED_START</code>. For telemetry rules, valid values include <code>PENDING</code>, <code>ACTIVE</code>, and <code>FAILED</code>. </p>"
+                    }
+                },
+                "FailureReason": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The reason for a failure status in this region. This field is only populated when <code>Status</code> indicates a failure. </p>"
+                    }
+                },
+                "RuleArn": {
+                    "target": "com.amazonaws.observabilityadmin#ResourceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the telemetry rule in this spoke region. This field is only present for telemetry rule region statuses and is populated when the rule has been successfully created in the spoke region (status is <code>ACTIVE</code>). </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p> Represents the status of a multi-region operation in a specific Amazon Web Services Region. This structure is used to report per-region progress for both telemetry evaluation and telemetry rule replication. </p>"
+            }
+        },
+        "com.amazonaws.observabilityadmin#RegionStatuses": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.observabilityadmin#RegionStatus"
+            }
+        },
         "com.amazonaws.observabilityadmin#Regions": {
             "type": "list",
             "member": {
@@ -4080,6 +4602,66 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "AWS::BedrockAgentCore::CodeInterpreter"
+                    }
+                },
+                "AWS_BEDROCK_AGENTCORE_GATEWAY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS::BedrockAgentCore::Gateway"
+                    }
+                },
+                "AWS_BEDROCK_AGENTCORE_MEMORY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS::BedrockAgentCore::Memory"
+                    }
+                },
+                "AWS_BEDROCK_AGENTCORE_WORKLOAD_IDENTITY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS::BedrockAgentCore::WorkloadIdentity"
+                    }
+                },
+                "AWS_SECURITY_HUB": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS::SecurityHub::Hub"
+                    }
+                },
+                "AWS_CLOUDFRONT_DISTRIBUTION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS::CloudFront::Distribution"
+                    }
+                },
+                "AWS_SECURITY_HUB_HUBV2": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS::SecurityHub::HubV2"
+                    }
+                },
+                "AWS_OTEL_ENRICHMENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS::CloudWatch::OTelEnrichment"
+                    }
+                },
+                "AWS_MSK_CLUSTER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS::MSK::Cluster"
+                    }
+                },
+                "AWS_S3_BUCKET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS::S3::Bucket"
+                    }
+                },
+                "AWS_BEDROCK_KNOWLEDGEBASE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AWS::Bedrock::KnowledgeBase"
                     }
                 }
             }
@@ -4209,6 +4791,25 @@
                 "smithy.api#httpError": 402
             }
         },
+        "com.amazonaws.observabilityadmin#SignalType": {
+            "type": "enum",
+            "members": {
+                "LOG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Log signal type. The pipeline processes log records.</p>",
+                        "smithy.api#enumValue": "LOG"
+                    }
+                },
+                "METRIC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Metric signal type. The pipeline processes metric records.</p>",
+                        "smithy.api#enumValue": "METRIC"
+                    }
+                }
+            }
+        },
         "com.amazonaws.observabilityadmin#SingleHeader": {
             "type": "structure",
             "members": {
@@ -4262,8 +4863,15 @@
                 "LogGroupSelectionCriteria": {
                     "target": "com.amazonaws.observabilityadmin#LogsFilterString",
                     "traits": {
-                        "smithy.api#documentation": "<p>The selection criteria that specifies which source log groups to centralize. The selection criteria uses the same format as OAM link filters.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": "*",
+                        "smithy.api#documentation": "<p>The selection criteria that specifies which source log groups to centralize. The selection criteria uses the same format as OAM link filters.</p>"
+                    }
+                },
+                "DataSourceSelectionCriteria": {
+                    "target": "com.amazonaws.observabilityadmin#DataSourceFilterString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The selection criteria that specifies which data sources to centralize. The selection criteria uses the same filter expression format as <code>LogGroupSelectionCriteria</code>, but operates on <code>DataSourceName</code> and <code>DataSourceType</code> operands. When both <code>LogGroupSelectionCriteria</code> and <code>DataSourceSelectionCriteria</code> are specified, a log event must match both criteria to be centralized.</p>"
                     }
                 },
                 "EncryptedLogGroupStrategy": {
@@ -4276,6 +4884,20 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Configuration for selecting and handling source log groups for centralization.</p>"
+            }
+        },
+        "com.amazonaws.observabilityadmin#SourceMetricsConfiguration": {
+            "type": "structure",
+            "members": {
+                "MetricsSelectionCriteria": {
+                    "target": "com.amazonaws.observabilityadmin#MetricsFilterString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The filter expression that selects which source metrics to centralize. Currently, only <code>*</code> (all metrics) is supported. Other values return a validation error.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for selecting source metrics for centralization.</p>"
             }
         },
         "com.amazonaws.observabilityadmin#Sources": {
@@ -4338,7 +4960,7 @@
         "com.amazonaws.observabilityadmin#StartTelemetryEvaluation": {
             "type": "operation",
             "input": {
-                "target": "smithy.api#Unit"
+                "target": "com.amazonaws.observabilityadmin#StartTelemetryEvaluationInput"
             },
             "output": {
                 "target": "smithy.api#Unit"
@@ -4368,7 +4990,7 @@
         "com.amazonaws.observabilityadmin#StartTelemetryEvaluationForOrganization": {
             "type": "operation",
             "input": {
-                "target": "smithy.api#Unit"
+                "target": "com.amazonaws.observabilityadmin#StartTelemetryEvaluationForOrganizationInput"
             },
             "output": {
                 "target": "smithy.api#Unit"
@@ -4393,6 +5015,46 @@
                     "method": "POST",
                     "uri": "/StartTelemetryEvaluationForOrganization"
                 }
+            }
+        },
+        "com.amazonaws.observabilityadmin#StartTelemetryEvaluationForOrganizationInput": {
+            "type": "structure",
+            "members": {
+                "Regions": {
+                    "target": "com.amazonaws.observabilityadmin#Regions",
+                    "traits": {
+                        "smithy.api#documentation": "<p> An optional list of Amazon Web Services Regions to include in multi-region telemetry evaluation for the organization. The current region is always implicitly included and must not be specified in this list. When provided, telemetry evaluation starts in the current region and propagates to all specified regions for the organization. Mutually exclusive with <code>AllRegions</code>. If neither <code>Regions</code> nor <code>AllRegions</code> is provided, the operation applies only to the current region. </p>"
+                    }
+                },
+                "AllRegions": {
+                    "target": "com.amazonaws.observabilityadmin#AllRegions",
+                    "traits": {
+                        "smithy.api#documentation": "<p> If set to <code>true</code>, telemetry evaluation for the organization starts in all Amazon Web Services Regions where Amazon CloudWatch Observability Admin is available in the current partition. The current region becomes the home region for managing multi-region evaluation for the organization. When new regions become available, evaluation automatically expands to include them. Mutually exclusive with <code>Regions</code>. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.observabilityadmin#StartTelemetryEvaluationInput": {
+            "type": "structure",
+            "members": {
+                "Regions": {
+                    "target": "com.amazonaws.observabilityadmin#Regions",
+                    "traits": {
+                        "smithy.api#documentation": "<p> An optional list of Amazon Web Services Regions to include in multi-region telemetry evaluation. The current region is always implicitly included and must not be specified in this list. When provided, telemetry evaluation starts in the current region and propagates to all specified regions. Mutually exclusive with <code>AllRegions</code>. If neither <code>Regions</code> nor <code>AllRegions</code> is provided, the operation applies only to the current region. </p>"
+                    }
+                },
+                "AllRegions": {
+                    "target": "com.amazonaws.observabilityadmin#AllRegions",
+                    "traits": {
+                        "smithy.api#documentation": "<p> If set to <code>true</code>, telemetry evaluation starts in all Amazon Web Services Regions where Amazon CloudWatch Observability Admin is available in the current partition. The current region becomes the home region for managing multi-region evaluation. When new regions become available, evaluation automatically expands to include them. Mutually exclusive with <code>Regions</code>. </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
             }
         },
         "com.amazonaws.observabilityadmin#Status": {
@@ -4553,6 +5215,32 @@
                 "target": "smithy.api#String"
             }
         },
+        "com.amazonaws.observabilityadmin#TagConflictResolutionStrategy": {
+            "type": "enum",
+            "members": {
+                "IN_SYNC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IN_SYNC"
+                    }
+                },
+                "ADD_ONLY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ADD_ONLY"
+                    }
+                },
+                "UPDATE_SYNC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPDATE_SYNC"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The strategy for resolving tag conflicts between source and destination log groups.</p> <ul> <li> <p> <code>ADD_ONLY</code> – Only adds new tags from the source without modifying existing destination tags.</p> </li> <li> <p> <code>UPDATE_SYNC</code> – Adds new tags and updates existing tags from the source. Does not remove destination tags that are absent from the source.</p> </li> <li> <p> <code>IN_SYNC</code> – Keeps destination tags fully synchronized with source tags, including removing destination tags that do not exist on the source.</p> </li> </ul>"
+            }
+        },
         "com.amazonaws.observabilityadmin#TagKey": {
             "type": "string",
             "traits": {
@@ -4598,6 +5286,67 @@
             },
             "value": {
                 "target": "smithy.api#String"
+            }
+        },
+        "com.amazonaws.observabilityadmin#TagPropagationConfiguration": {
+            "type": "structure",
+            "members": {
+                "DestinationRoleArn": {
+                    "target": "com.amazonaws.observabilityadmin#IamRoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of a customer-managed IAM role in the destination account. The service assumes this role to propagate tags to destination log groups. You must have <code>iam:PassRole</code> permission on this role.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TagConflictResolutionStrategy": {
+                    "target": "com.amazonaws.observabilityadmin#TagConflictResolutionStrategy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The strategy for resolving conflicts when a tag key exists on both the source and destination log groups. If not specified, defaults to <code>UPDATE_SYNC</code>.</p> <ul> <li> <p> <code>ADD_ONLY</code> – Only adds new tags from the source without modifying existing destination tags.</p> </li> <li> <p> <code>UPDATE_SYNC</code> – Adds new tags and updates existing tags from the source. Does not remove destination tags that are absent from the source.</p> </li> <li> <p> <code>IN_SYNC</code> – Keeps destination tags fully synchronized with source tags, including removing destination tags that do not exist on the source.</p> </li> </ul>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Specifies configuration for propagating resource tags from source log groups to centralized destination log groups. The service uses a customer-managed IAM role in the destination account to add, update, and remove tags on destination log groups.</p>"
+            }
+        },
+        "com.amazonaws.observabilityadmin#TagPropagationFailureReason": {
+            "type": "enum",
+            "members": {
+                "ROLE_NOT_ASSUMABLE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RoleNotAssumable"
+                    }
+                },
+                "ROLE_LACKS_PERMISSIONS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RoleLacksPermissions"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The reason tag propagation is unhealthy for a centralization rule.</p> <ul> <li> <p> <code>RoleNotAssumable</code> – The service cannot assume the destination role due to a trust policy or external ID misconfiguration.</p> </li> <li> <p> <code>RoleLacksPermissions</code> – The role was assumed successfully but the tag API call was denied by the role's permissions policy.</p> </li> </ul>"
+            }
+        },
+        "com.amazonaws.observabilityadmin#TagPropagationStatus": {
+            "type": "enum",
+            "members": {
+                "HEALTHY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Healthy"
+                    }
+                },
+                "UNHEALTHY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Unhealthy"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The health status of tag propagation for a centralization rule. This status is independent of the overall <code>RuleHealth</code> for log delivery.</p>"
             }
         },
         "com.amazonaws.observabilityadmin#TagResource": {
@@ -4779,7 +5528,19 @@
                 "LogDeliveryParameters": {
                     "target": "com.amazonaws.observabilityadmin#LogDeliveryParameters",
                     "traits": {
-                        "smithy.api#documentation": "<p>Configuration parameters specific to Amazon Bedrock AgentCore logging when Amazon Bedrock AgentCore is the resource type.</p>"
+                        "smithy.api#documentation": "<p>The configuration parameters for log delivery when the resource type supports configurable log types, such as Amazon Bedrock Knowledge Bases or Elastic Load Balancing Application Load Balancers.</p>"
+                    }
+                },
+                "MskMonitoringParameters": {
+                    "target": "com.amazonaws.observabilityadmin#MskMonitoringParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p> Configuration parameters specific to MSK monitoring when MSK is the resource type. </p>"
+                    }
+                },
+                "KmsKeyArn": {
+                    "target": "com.amazonaws.observabilityadmin#KmsKeyArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The Amazon Resource Name (ARN) of the customer-managed Amazon Web Services KMS key used to encrypt the log groups created during telemetry rule remediation. </p>"
                     }
                 }
             },
@@ -5072,7 +5833,7 @@
                 "ResourceType": {
                     "target": "com.amazonaws.observabilityadmin#ResourceType",
                     "traits": {
-                        "smithy.api#documentation": "<p> The type of Amazon Web Services resource to configure telemetry for (e.g., \"AWS::EC2::VPC\", \"AWS::EKS::Cluster\", \"AWS::WAFv2::WebACL\"). </p>"
+                        "smithy.api#documentation": "<p> The type of Amazon Web Services resource to configure telemetry for (for example, <code>AWS::EC2::VPC</code>, <code>AWS::EKS::Cluster</code>, <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>, or <code>AWS::Bedrock::KnowledgeBase</code>). </p>"
                     }
                 },
                 "TelemetryType": {
@@ -5104,6 +5865,24 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p> Criteria for selecting which resources the rule applies to, such as resource tags. </p>"
+                    }
+                },
+                "AllowFieldUpdates": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p> If set to <code>true</code>, Amazon CloudWatch Observability Admin detects and remediates configuration drift in telemetry resources that it manages. For example, if a VPC flow log's format, traffic type, or aggregation interval no longer matches the rule's destination configuration, the flow log is replaced with one that matches. Only Observability Admin-managed resources are updated; customer-created resources are never modified. Currently supported for <code>AWS::EC2::VPC</code> resources (VPC flow logs). </p>"
+                    }
+                },
+                "Regions": {
+                    "target": "com.amazonaws.observabilityadmin#Regions",
+                    "traits": {
+                        "smithy.api#documentation": "<p> An optional list of Amazon Web Services Regions where this telemetry rule should be replicated. When specified, the rule is created in the home region and automatically replicated to all listed regions. Mutually exclusive with <code>AllRegions</code>. </p>"
+                    }
+                },
+                "AllRegions": {
+                    "target": "com.amazonaws.observabilityadmin#AllRegions",
+                    "traits": {
+                        "smithy.api#documentation": "<p> If set to <code>true</code>, the telemetry rule is replicated to all Amazon Web Services Regions where Amazon CloudWatch Observability Admin is available in the current partition. When new regions become available, the rule automatically replicates to them. Mutually exclusive with <code>Regions</code>. </p>"
                     }
                 }
             },
@@ -5318,6 +6097,13 @@
                         "smithy.api#documentation": "<p>The pipeline configuration to test with the provided sample records.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "SignalType": {
+                    "target": "com.amazonaws.observabilityadmin#SignalType",
+                    "traits": {
+                        "smithy.api#default": "LOG",
+                        "smithy.api#documentation": "<p>The type of telemetry signal to test. If not specified, defaults to log processing.</p>"
+                    }
                 }
             },
             "traits": {
@@ -5509,6 +6295,7 @@
                         "iam:PassRole",
                         "logs:DeletePipelineRule",
                         "logs:PutPipelineRule",
+                        "cloudwatch:PutPipelineRule",
                         "observabilityadmin:GetTelemetryPipeline",
                         "observabilityadmin:ListTagsForResource",
                         "observabilityadmin:TagResource",

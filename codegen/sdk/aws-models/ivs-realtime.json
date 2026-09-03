@@ -228,6 +228,194 @@
                 },
                 "smithy.api#documentation": "<p>The Amazon Interactive Video Service (IVS) real-time API is REST compatible, using a standard HTTP \n\t  API and an AWS EventBridge event stream for responses. JSON is used for both requests and responses, \n\t  including errors.\n    </p>\n         <p>\n            <b>Key Concepts</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <b>Stage</b> — A virtual space where participants can exchange video in real time.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Participant token</b> — A token that authenticates a participant when they join a stage.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Participant object</b> — Represents participants (people) in the stage and\n            contains information about them. When a token is created, it includes a participant ID;\n            when a participant uses that token to join a stage, the participant is associated with\n            that participant ID. There is a 1:1 mapping between participant tokens and\n            participants.</p>\n            </li>\n         </ul>\n         <p>For server-side composition:</p>\n         <ul>\n            <li>\n               <p>\n                  <b>Composition process</b> — Composites participants\n            of a stage into a single video and forwards it to a set of outputs (e.g., IVS channels).\n            Composition operations support this process.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Composition</b> — Controls the look of the outputs,\n            including how participants are positioned in the video.</p>\n            </li>\n         </ul>\n         <p>For participant replication:</p>\n         <ul>\n            <li>\n               <p>\n                  <b>Source stage</b> — The stage where the participant originally joined, which is used as the source for \n\t\t\treplication.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Destination stage</b> — The stage to which the participant is replicated.\n\t\t\t\t</p>\n            </li>\n            <li>\n               <p>\n                  <b>Replicated participant</b> — A participant in a stage that is replicated to one or more destination stages.\n\t\t\t\t</p>\n            </li>\n            <li>\n               <p>\n                  <b>Replica participant</b> — A participant in a destination stage that is replicated from another stage \n\t\t\t(the source stage).</p>\n            </li>\n         </ul>\n         <p>For more information about your IVS live stream, also see <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/getting-started.html\">Getting Started with Amazon IVS Real-Time Streaming</a>.</p>\n         <p>\n            <b>Tagging</b>\n         </p>\n         <p>A <i>tag</i> is a metadata label that you assign to an AWS resource. A tag\n      comprises a <i>key</i> and a <i>value</i>, both set by you. For\n      example, you might set a tag as <code>topic:nature</code> to label a particular video\n      category. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a>\n      in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming\n      limits and requirements\"; Amazon IVS stages has no service-specific constraints beyond what is documented there.</p>\n         <p>Tags can help you identify and organize your AWS resources. For example, you can use the\n      same tag for different resources to indicate that they are related. You can also use tags to\n      manage access (see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html\">Access Tags</a>).</p>\n         <p>The Amazon IVS real-time API has these tag-related operations: <a>TagResource</a>, <a>UntagResource</a>, and\n      <a>ListTagsForResource</a>. The following resource supports tagging: Stage.</p>\n         <p>At most 50 tags can be applied to a resource.</p>",
                 "smithy.api#title": "Amazon Interactive Video Service RealTime",
+                "smithy.rules#endpointBdd": {
+                    "version": "1.1",
+                    "parameters": {
+                        "Region": {
+                            "builtIn": "AWS::Region",
+                            "required": false,
+                            "documentation": "The AWS region used to dispatch the request.",
+                            "type": "string"
+                        },
+                        "UseDualStack": {
+                            "builtIn": "AWS::UseDualStack",
+                            "required": true,
+                            "default": false,
+                            "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
+                            "type": "boolean"
+                        },
+                        "UseFIPS": {
+                            "builtIn": "AWS::UseFIPS",
+                            "required": true,
+                            "default": false,
+                            "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
+                            "type": "boolean"
+                        },
+                        "Endpoint": {
+                            "builtIn": "SDK::Endpoint",
+                            "required": false,
+                            "documentation": "Override the endpoint used to send this request",
+                            "type": "string"
+                        }
+                    },
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "aws.partition",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ],
+                            "assign": "PartitionResult"
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseFIPS"
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseDualStack"
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "supportsDualStack"
+                                    ]
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "supportsFIPS"
+                                    ]
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "results": [
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": {
+                                    "ref": "Endpoint"
+                                },
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://ivsrealtime-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://ivsrealtime-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "FIPS is enabled but this partition does not support FIPS",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://ivsrealtime.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "DualStack is enabled but this partition does not support DualStack",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://ivsrealtime.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Missing Region",
+                            "type": "error"
+                        }
+                    ],
+                    "root": 2,
+                    "nodeCount": 13,
+                    "nodes": "/////wAAAAH/////AAAAAAAAAAwAAAADAAAAAQAAAAQF9eELAAAAAgAAAAUF9eELAAAAAwAAAAgAAAAGAAAABAAAAAcF9eEKAAAABQX14QgF9eEJAAAABAAAAAoAAAAJAAAABgX14QYF9eEHAAAABQAAAAsF9eEFAAAABgX14QQF9eEFAAAAAwX14QEAAAANAAAABAX14QIF9eED"
+                },
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
                     "parameters": {
@@ -1408,6 +1596,13 @@
                     "traits": {
                         "smithy.api#default": false,
                         "smithy.api#documentation": "<p>Whether the stage allows insecure RTMP ingest. This must be set to <code>true</code>, if <code>ingestProtocol</code> is set to <code>RTMP</code>. Default: <code>false</code>. </p>"
+                    }
+                },
+                "redundantIngest": {
+                    "target": "com.amazonaws.ivsrealtime#RedundantIngest",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Indicates whether redundant ingest is enabled for the ingest configuration. Default: <code>false</code>.</p>"
                     }
                 },
                 "tags": {
@@ -3273,6 +3468,19 @@
                         "smithy.api#documentation": "<p>Customer-assigned name to help identify the participant using the IngestConfiguration;\n         this can be used to link a participant to a user in the customer’s own systems. This can be\n         any UTF-8 encoded text. <i>This field is exposed to all stage participants and\n            should not be used for personally identifying, confidential, or sensitive\n            information.</i>\n         </p>"
                     }
                 },
+                "redundantIngest": {
+                    "target": "com.amazonaws.ivsrealtime#RedundantIngest",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Indicates whether redundant ingest is enabled for the ingest configuration.</p>"
+                    }
+                },
+                "redundantIngestCredentials": {
+                    "target": "com.amazonaws.ivsrealtime#RedundantIngestCredentials",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of redundant ingest credentials, present only when <code>redundantIngest</code> is set to <code>true</code>.\n          See <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-rtmp-publishing.html#redundant-ingest\">Redundant Ingest</a> in\n\t  <i>IVS RTMP Publishing</i> for details.</p>"
+                    }
+                },
                 "attributes": {
                     "target": "com.amazonaws.ivsrealtime#ParticipantAttributes",
                     "traits": {
@@ -3389,6 +3597,13 @@
                     "target": "com.amazonaws.ivsrealtime#UserId",
                     "traits": {
                         "smithy.api#documentation": "<p>Customer-assigned name to help identify the participant using the IngestConfiguration;\n         this can be used to link a participant to a user in the customer’s own systems. This can be\n         any UTF-8 encoded text. <i>This field is exposed to all stage participants and\n            should not be used for personally identifying, confidential, or sensitive\n            information.</i>\n         </p>"
+                    }
+                },
+                "redundantIngest": {
+                    "target": "com.amazonaws.ivsrealtime#RedundantIngest",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Indicates whether redundant ingest is enabled for the ingest configuration.</p>"
                     }
                 }
             },
@@ -4635,6 +4850,19 @@
                     "traits": {
                         "smithy.api#documentation": "<p>ID of the session within the source stage, if <code>replicationType</code> is <code>REPLICA</code>.</p>"
                     }
+                },
+                "redundantIngest": {
+                    "target": "com.amazonaws.ivsrealtime#RedundantIngest",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Indicates whether redundant ingest is enabled for the participant.</p>"
+                    }
+                },
+                "ingestConfigurationArn": {
+                    "target": "com.amazonaws.ivsrealtime#IngestConfigurationArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The participant’s ingest configuration.</p>"
+                    }
                 }
             },
             "traits": {
@@ -4948,7 +5176,7 @@
                 "firstJoinTime": {
                     "target": "com.amazonaws.ivsrealtime#Time",
                     "traits": {
-                        "smithy.api#documentation": "<p>ISO 8601 timestamp (returned as a string) when the participant first joined the stage\n         session.</p>"
+                        "smithy.api#documentation": "<p>ISO 8601 timestamp (returned as a string) when the participant first joined the stage session.</p>"
                     }
                 },
                 "published": {
@@ -4986,6 +5214,19 @@
                     "target": "com.amazonaws.ivsrealtime#StageSessionId",
                     "traits": {
                         "smithy.api#documentation": "<p>ID of the session within the source stage, if <code>replicationType</code> is <code>REPLICA</code>.</p>"
+                    }
+                },
+                "redundantIngest": {
+                    "target": "com.amazonaws.ivsrealtime#RedundantIngest",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Indicates whether redundant ingest is enabled for the participant.</p>"
+                    }
+                },
+                "ingestConfigurationArn": {
+                    "target": "com.amazonaws.ivsrealtime#IngestConfigurationArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The participant’s ingest configuration.</p>"
                     }
                 }
             },
@@ -5564,6 +5805,38 @@
                         "name": "HLS"
                     }
                 ]
+            }
+        },
+        "com.amazonaws.ivsrealtime#RedundantIngest": {
+            "type": "boolean",
+            "traits": {
+                "smithy.api#default": false
+            }
+        },
+        "com.amazonaws.ivsrealtime#RedundantIngestCredential": {
+            "type": "structure",
+            "members": {
+                "participantId": {
+                    "target": "com.amazonaws.ivsrealtime#ParticipantId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>ID of the participant within the stage.</p>"
+                    }
+                },
+                "streamKey": {
+                    "target": "com.amazonaws.ivsrealtime#StreamKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Ingest-key value.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An object representing a redundant ingest credential.</p>"
+            }
+        },
+        "com.amazonaws.ivsrealtime#RedundantIngestCredentials": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.ivsrealtime#RedundantIngestCredential"
             }
         },
         "com.amazonaws.ivsrealtime#Replica": {
@@ -6227,49 +6500,49 @@
                 "accessControlAllowOrigin": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Origin\">Access-Control-Allow-Origin</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "Access-Control-Allow-Origin"
                     }
                 },
                 "accessControlExposeHeaders": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Expose-Headers\">Access-Control-Expose-Headers</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "Access-Control-Expose-Headers"
                     }
                 },
                 "cacheControl": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control\">Cache-Control</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "Cache-Control"
                     }
                 },
                 "contentSecurityPolicy": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy\">Content-Security-Policy</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "Content-Security-Policy"
                     }
                 },
                 "strictTransportSecurity": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security\">Strict-Transport-Security</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "Strict-Transport-Security"
                     }
                 },
                 "xContentTypeOptions": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Content-Type-Options\">X-Content-Type-Options</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "X-Content-Type-Options"
                     }
                 },
                 "xFrameOptions": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options\">X-Frame-Options</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "X-Frame-Options"
                     }
                 }
@@ -6401,49 +6674,49 @@
                 "accessControlAllowOrigin": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Origin\">Access-Control-Allow-Origin</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "Access-Control-Allow-Origin"
                     }
                 },
                 "accessControlExposeHeaders": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Expose-Headers\">Access-Control-Expose-Headers</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "Access-Control-Expose-Headers"
                     }
                 },
                 "cacheControl": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control\">Cache-Control</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "Cache-Control"
                     }
                 },
                 "contentSecurityPolicy": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy\">Content-Security-Policy</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "Content-Security-Policy"
                     }
                 },
                 "strictTransportSecurity": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security\">Strict-Transport-Security</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "Strict-Transport-Security"
                     }
                 },
                 "xContentTypeOptions": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Content-Type-Options\">X-Content-Type-Options</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "X-Content-Type-Options"
                     }
                 },
                 "xFrameOptions": {
                     "target": "com.amazonaws.ivsrealtime#String",
                     "traits": {
-                        "smithy.api#documentation": "<p/>",
+                        "smithy.api#documentation": "<p>See <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options\">X-Frame-Options</a> in the MDN Web Docs.</p>",
                         "smithy.api#httpHeader": "X-Frame-Options"
                     }
                 }
@@ -6811,6 +7084,13 @@
                     "target": "com.amazonaws.ivsrealtime#IngestConfigurationStageArn",
                     "traits": {
                         "smithy.api#documentation": "<p>Stage ARN that needs to be updated.</p>"
+                    }
+                },
+                "redundantIngest": {
+                    "target": "com.amazonaws.ivsrealtime#RedundantIngest",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Indicates whether redundant ingest is enabled for the ingest configuration. Default: <code>false</code>.</p>"
                     }
                 }
             },

@@ -42,7 +42,7 @@ class SuccessfulChecksumResponseTest {
 /**
  * Test the SDK throws exception on incorrect checksum values
  */
-class FailedChecksumResponseTest {
+class IncorrectChecksumResponseTest {
     private val incorrectChecksumValue = "Kaboom!"
 
     @Test

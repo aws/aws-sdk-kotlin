@@ -5,13 +5,12 @@
 
 package aws.sdk.kotlin.testing
 
-import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
 import aws.smithy.kotlin.runtime.http.engine.crt.CrtHttpEngine
 
-actual suspend fun withAllEngines(block: suspend (HttpClientEngine) -> Unit) {
+actual suspend fun withAllEngines(block: suspend (HttpEngineContext) -> Unit) {
     val engine = CrtHttpEngine()
     try {
-        block(engine)
+        block(HttpEngineContext("CRT", engine))
     } finally {
         engine.close()
     }

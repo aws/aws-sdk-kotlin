@@ -4,7 +4,6 @@
  */
 package aws.sdk.kotlin.e2etest
 
-import aws.sdk.kotlin.e2etest.S3TestUtils.responseCodeFromPut
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.DeleteObjectRequest
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
@@ -18,43 +17,38 @@ import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
 import aws.smithy.kotlin.runtime.http.toByteStream
-import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.runBlocking
-import kotlin.jvm.JvmStatic
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
+@TestInstance(TestLifecycle.PER_CLASS)
 class S3PresignerTest {
-    companion object {
-        private lateinit var client: S3Client
-        private lateinit var testBucket: String
+    private val client = S3TestUtils.createClient()
 
-        @BeforeAll
-        @JvmStatic
-        fun setup() = runBlocking {
-            client = S3Client {
-                region = S3TestUtils.DEFAULT_REGION
-            }
-            testBucket = S3TestUtils.getOrCreateSharedBucket(client)
-        }
+    private lateinit var testBucket: String
 
-        @AfterAll
-        @JvmStatic
-        fun cleanup(): Unit = runBlocking {
-            S3TestUtils.deleteSharedBucket(client)
-            client.close()
-        }
+    @BeforeAll
+    fun createResources(): Unit = runBlocking {
+        testBucket = S3TestUtils.createTestBucket(client, "presigning")
+    }
+
+    @AfterAll
+    fun cleanup(): Unit = runBlocking {
+        S3TestUtils.deleteBucket(client, testBucket)
+        client.close()
     }
 
     private suspend fun testPresign(client: S3Client) {
         val contents = "presign-test"
         val keyName = "foo$PRINTABLE_CHARS"
 
-        withAllEngines { engine ->
-            val httpClient = SdkHttpClient(engine)
+        withAllEngines { context ->
+            val httpClient = SdkHttpClient(context.engine)
 
             // PUT
             val unsignedPutRequest = PutObjectRequest {
@@ -63,7 +57,7 @@ class S3PresignerTest {
             }
             val presignedPutRequest = client.presignPutObject(unsignedPutRequest, 60.seconds)
 
-            responseCodeFromPut(engine, presignedPutRequest, contents)
+            S3TestUtils.responseCodeFromPut(presignedPutRequest, contents)
 
             // GET
             val unsignedGetRequest = GetObjectRequest {
@@ -93,16 +87,11 @@ class S3PresignerTest {
 
     @Test
     fun testPresignNormal() = runBlocking {
-        S3Client {
-            region = S3TestUtils.DEFAULT_REGION
-        }.use { testPresign(it) }
+        S3TestUtils.createClient().use { testPresign(it) }
     }
 
     @Test
     fun testPresignWithForcePathStyle() = runBlocking {
-        S3Client {
-            region = S3TestUtils.DEFAULT_REGION
-            forcePathStyle = true
-        }.use { testPresign(it) }
+        S3TestUtils.createClient { forcePathStyle = true }.use { testPresign(it) }
     }
 }
