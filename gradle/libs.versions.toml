@@ -27,7 +27,7 @@ kaml-version = "0.55.0"
 mockk-version = "1.14.11"
 slf4j-version = "2.0.18"
 mokkery-version = "3.4.2"
-jsoup-version = "1.23.1"
+jsoup-version = "1.23.2"
 
 [libraries]
 jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson-bom-version" }
