@@ -5,6 +5,15 @@ on:
   merge_group:
     types: [checks_requested]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+        default: ''
+    secrets:
+      CI_AWS_ROLE_ARN:
+        required: true
 
 concurrency:
   group: e2e-tests-${{ github.ref }}
@@ -29,7 +38,7 @@ jobs:
         uses: aws-actions/aws-codebuild-run-build@v1
         with:
           project-name: gh-aws-sdk-kotlin-e2e-tests
-          source-version-override: ${{ github.ref }}
+          source-version-override: ${{ inputs.ref || github.ref }}
 
       - name: Cancel
         if: ${{ cancelled() }}
