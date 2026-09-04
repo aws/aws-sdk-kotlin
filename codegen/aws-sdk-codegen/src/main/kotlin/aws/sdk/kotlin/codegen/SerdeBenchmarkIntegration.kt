@@ -14,6 +14,7 @@ import aws.smithy.kotlin.codegen.integration.KotlinIntegration
 import aws.smithy.kotlin.codegen.lang.KotlinTypes
 import aws.smithy.kotlin.codegen.model.expectShape
 import aws.smithy.kotlin.codegen.model.getTrait
+import aws.smithy.kotlin.codegen.model.hasStreamingMember
 import aws.smithy.kotlin.codegen.model.hasTrait
 import aws.smithy.kotlin.codegen.rendering.ShapeValueGenerator
 import aws.smithy.kotlin.codegen.rendering.endpoints.EndpointProviderGenerator
@@ -110,6 +111,13 @@ private class HttpProtocolSerdeBenchmarkGenerator(
             model.expectShape(operation.input.get()).members().any { it.hasTrait(IdempotencyTokenTrait.ID.name) }
     }
 
+    private val hasOutputStream: Boolean by lazy {
+        operation.output.isPresent &&
+            model.expectShape<StructureShape>(operation.output.get()).hasStreamingMember(model)
+    }
+
+    private val streamingBlock: String get() = if (hasOutputStream) " { }" else ""
+
     fun renderRequestBenchmarkClass(className: String, testCases: List<HttpRequestTestCase>) {
         writer.write("")
         writer.withBlock("class #L : #T {", "}", className, AwsRuntimeTypes.Benchmarks.SerdeBenchmark) {
@@ -148,7 +156,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
                             write("interceptor = interceptor,")
                             write("extractNanos = #T::serializationNanos,", AwsRuntimeTypes.Benchmarks.BenchmarkInterceptor)
                         }
-                        write("{ client.#L(#L) }", opName, fieldName)
+                        write("{ client.#L(#L)#L }", opName, fieldName, streamingBlock)
                     }
                 }
                 write("return results")
@@ -197,7 +205,7 @@ private class HttpProtocolSerdeBenchmarkGenerator(
                             write("interceptor = interceptor,")
                             write("extractNanos = #T::deserializationNanos,", AwsRuntimeTypes.Benchmarks.BenchmarkInterceptor)
                         }
-                        write("{ #L.#L(#L) }", clientField, opName, inputArg)
+                        write("{ #L.#L(#L)#L }", clientField, opName, inputArg, streamingBlock)
                     }
                 }
                 write("return results")

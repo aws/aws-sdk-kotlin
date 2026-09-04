@@ -15,11 +15,11 @@ plugins {
 data class BenchmarkProjection(val name: String, val serviceShapeId: String, val sdkId: String)
 
 val benchmarkProjections = listOf(
-    BenchmarkProjection("aws-rest-json", "com.amazonaws.sdk.benchmark#AwsRestJsonDataPlane", "RestJsonDataPlane"),
-    BenchmarkProjection("aws-json-rpc-1-0", "com.amazonaws.sdk.benchmark#AwsJsonRpc10DataPlane", "JsonRpc10DataPlane"),
-    BenchmarkProjection("smithy-rpc-v2-cbor", "com.amazonaws.sdk.benchmark#SmithyRpcV2CborDataPlane", "RpcCborDataPlane"),
-    BenchmarkProjection("aws-rest-xml", "com.amazonaws.sdk.benchmark#AwsRestXmlDataPlane", "RestXmlDataPlane"),
-    BenchmarkProjection("aws-query", "com.amazonaws.sdk.benchmark#AwsQueryDataPlane", "QueryDataPlane"),
+    BenchmarkProjection("aws-rest-json", "smithy.benchmark.serde#AwsRestJsonDataPlane", "RestJsonDataPlane"),
+    BenchmarkProjection("aws-json-rpc-1-0", "smithy.benchmark.serde#AwsJsonRpc10DataPlane", "JsonRpc10DataPlane"),
+    BenchmarkProjection("smithy-rpc-v2-cbor", "smithy.benchmark.serde#SmithyRpcV2CborDataPlane", "RpcCborDataPlane"),
+    BenchmarkProjection("aws-rest-xml", "smithy.benchmark.serde#AwsRestXmlDataPlane", "RestXmlDataPlane"),
+    BenchmarkProjection("aws-query", "smithy.benchmark.serde#AwsQueryDataPlane", "QueryDataPlane"),
 )
 
 // Path to the AwsSdkPerformanceBenchmarkModels model directory
