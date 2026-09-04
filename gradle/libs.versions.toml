@@ -1,9 +1,9 @@
 [versions]
 kotlin-version = "2.4.0"
-ksp-version = "2.3.10"
+ksp-version = "2.3.11"
 
 dokka-version = "2.2.0"
-jackson-bom-version = "2.22.1"
+jackson-bom-version = "2.22.2"
 
 aws-kotlin-repo-tools-version = "0.6.3"
 
@@ -13,21 +13,21 @@ atomicfu-version = "0.33.0"
 binary-compatibility-validator-version = "0.18.1"
 
 # smithy-kotlin
-smithy-kotlin-version = "1.7.6"
+smithy-kotlin-version = "1.7.9"
 
 # codegen
-smithy-version = "1.72.1"
+smithy-version = "1.73.0"
 
 # testing
-ddb-local-version = "3.3.0"
+ddb-local-version = "3.3.1"
 kotest-version = "5.9.1"
-kotlinx-benchmark-version = "0.4.17"
+kotlinx-benchmark-version = "0.4.19"
 kotlinx-serialization-version = "1.11.0"
 kaml-version = "0.55.0"
 mockk-version = "1.14.11"
 slf4j-version = "2.0.18"
 mokkery-version = "3.4.2"
-jsoup-version = "1.22.2"
+jsoup-version = "1.23.1"
 
 [libraries]
 jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson-bom-version" }

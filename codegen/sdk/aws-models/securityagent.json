@@ -117,6 +117,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A description of the actor.</p>"
                     }
+                },
+                "enableEmailMfa": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Whether email-based MFA is enabled for this actor.</p>"
+                    }
+                },
+                "mfaForwardingAddress": {
+                    "target": "com.amazonaws.securityagent#SensitiveEmailAddress",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Server-generated email forwarding address for receiving MFA codes.</p>"
+                    }
                 }
             },
             "traits": {
@@ -710,6 +722,12 @@
                     "target": "com.amazonaws.securityagent#IntegratedRepositoryList",
                     "traits": {
                         "smithy.api#documentation": "<p>The list of integrated repositories associated with the pentest.</p>"
+                    }
+                },
+                "trustedCaCertificates": {
+                    "target": "com.amazonaws.securityagent#TrustedCaCertificateList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The trust anchors used to validate target endpoint TLS certificates. Provide these for endpoints served by a private or internal certificate authority (CA), an intermediate CA, or a self-signed certificate.</p>"
                     }
                 }
             },
@@ -2432,6 +2450,43 @@
                 "smithy.api#documentation": "<p>A Bitbucket workspace slug that identifies a workspace.</p>"
             }
         },
+        "com.amazonaws.securityagent#CaCertificatePem": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>A PEM-encoded X.509 certificate.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 8192
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.securityagent#CaCertificateSource": {
+            "type": "union",
+            "members": {
+                "inlinePem": {
+                    "target": "com.amazonaws.securityagent#CaCertificatePem",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A PEM-encoded X.509 certificate supplied inline.</p>"
+                    }
+                },
+                "artifactId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The artifact ID of an uploaded certificate file.</p>"
+                    }
+                },
+                "s3Location": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 location URI of a customer-staged certificate.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The source of a trusted CA certificate. Exactly one member must be set.</p>"
+            }
+        },
         "com.amazonaws.securityagent#Category": {
             "type": "structure",
             "members": {
@@ -2711,6 +2766,12 @@
                         "smithy.api#documentation": "<p>The validation mode for the code review. Valid values are SIMULATED and DISABLED.</p>"
                     }
                 },
+                "maxTaskHours": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of billable task hours allowed for jobs started from this code review. If a job reaches the configured limit, it is gracefully stopped. If not set, jobs run to completion with no budget cap.</p>"
+                    }
+                },
                 "createdAt": {
                     "target": "smithy.api#Timestamp",
                     "traits": {
@@ -2824,6 +2885,12 @@
                     "target": "com.amazonaws.securityagent#CodeRemediationStrategy",
                     "traits": {
                         "smithy.api#documentation": "<p>The code remediation strategy for the code review job.</p>"
+                    }
+                },
+                "maxTaskHours": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of billable task hours allowed for this code review job. If the cumulative task hours reach this limit, the job is gracefully stopped.</p>"
                     }
                 },
                 "createdAt": {
@@ -3685,6 +3752,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The validation mode for the code review. Valid values are SIMULATED and DISABLED.</p>"
                     }
+                },
+                "maxTaskHours": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of billable task hours allowed for jobs started from this code review. Must be a positive number. If not set, jobs run to completion with no budget cap.</p>"
+                    }
                 }
             },
             "traits": {
@@ -3756,6 +3829,12 @@
                     "target": "com.amazonaws.securityagent#ValidationMode",
                     "traits": {
                         "smithy.api#documentation": "<p>The validation mode for the code review.</p>"
+                    }
+                },
+                "maxTaskHours": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of billable task hours configured for jobs started from this code review. Null if no budget cap is set.</p>"
                     }
                 }
             },
@@ -4014,6 +4093,12 @@
                     "target": "com.amazonaws.securityagent#SkillTypeList",
                     "traits": {
                         "smithy.api#documentation": "<p>A list of managed skills to disable for this pentest. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
+                    }
+                },
+                "maxTaskHours": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of billable task hours allowed for jobs started from this pentest. Must be a positive number. If not set, jobs run to completion with no budget cap.</p>"
                     }
                 }
             },
@@ -6080,6 +6165,18 @@
                         "smithy.api#documentation": "<p>The rationale provided by the alignment agent explaining how the finding was adjusted based on customer preferences.</p>"
                     }
                 },
+                "revalidationJobIds": {
+                    "target": "com.amazonaws.securityagent#StringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of pentest job identifiers for revalidation jobs that retested this finding.</p>"
+                    }
+                },
+                "originalFindingId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the original finding that this revalidation finding was produced from.</p>"
+                    }
+                },
                 "createdAt": {
                     "target": "smithy.api#Timestamp",
                     "traits": {
@@ -7544,6 +7641,28 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Status of a pentest job.</p>"
+            }
+        },
+        "com.amazonaws.securityagent#JobType": {
+            "type": "enum",
+            "members": {
+                "FULL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A full pentest job that executes all phases including scanning, managed execution, and guided exploration.</p>",
+                        "smithy.api#enumValue": "FULL"
+                    }
+                },
+                "REVALIDATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A targeted revalidation job that retests specific findings to determine whether they are still exploitable.</p>",
+                        "smithy.api#enumValue": "REVALIDATION"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The type of pentest job execution.</p>"
             }
         },
         "com.amazonaws.securityagent#KmsKeyId": {
@@ -9852,6 +9971,12 @@
                         "smithy.api#documentation": "<p>A list of managed skills to disable for this pentest. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
                     }
                 },
+                "maxTaskHours": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of billable task hours allowed for jobs started from this pentest. If a job reaches the configured limit, it is gracefully stopped. If not set, jobs run to completion with no budget cap.</p>"
+                    }
+                },
                 "createdAt": {
                     "target": "smithy.api#Timestamp",
                     "traits": {
@@ -10000,6 +10125,12 @@
                         "smithy.api#documentation": "<p>The list of integrated repositories associated with the pentest job.</p>"
                     }
                 },
+                "trustedCaCertificates": {
+                    "target": "com.amazonaws.securityagent#TrustedCaCertificateList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The trust anchors used to validate target endpoint TLS certificates during the pentest job.</p>"
+                    }
+                },
                 "codeRemediationStrategy": {
                     "target": "com.amazonaws.securityagent#CodeRemediationStrategy",
                     "traits": {
@@ -10016,6 +10147,24 @@
                     "target": "com.amazonaws.securityagent#SkillTypeList",
                     "traits": {
                         "smithy.api#documentation": "<p>A list of managed skills disabled for this pentest job. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
+                    }
+                },
+                "maxTaskHours": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of billable task hours allowed for this pentest job. If the cumulative task hours reach this limit, the job is gracefully stopped.</p>"
+                    }
+                },
+                "jobType": {
+                    "target": "com.amazonaws.securityagent#JobType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the pentest job. Valid values are FULL and REVALIDATION.</p>"
+                    }
+                },
+                "selectedFindingIds": {
+                    "target": "com.amazonaws.securityagent#StringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of finding identifiers selected for revalidation. Present only when jobType is REVALIDATION.</p>"
                     }
                 },
                 "createdAt": {
@@ -11879,6 +12028,12 @@
                 "smithy.api#documentation": "<p>Sensitive email address.</p>"
             }
         },
+        "com.amazonaws.securityagent#SensitiveEmailAddress": {
+            "type": "string",
+            "traits": {
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.securityagent#ServiceManagedInput": {
             "type": "structure",
             "members": {
@@ -12207,6 +12362,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The unique identifier of the pentest to start a job for.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "jobType": {
+                    "target": "com.amazonaws.securityagent#JobType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of pentest job to start. Valid values are FULL and REVALIDATION. When set to REVALIDATION, the selectedFindingIds parameter is required.</p>"
+                    }
+                },
+                "selectedFindingIds": {
+                    "target": "com.amazonaws.securityagent#StringList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of finding identifiers to revalidate. Required when jobType is REVALIDATION. Each finding must belong to the same agent space and pentest.</p>"
                     }
                 }
             },
@@ -14100,6 +14267,28 @@
                 "smithy.api#httpError": 429
             }
         },
+        "com.amazonaws.securityagent#TrustedCaCertificate": {
+            "type": "structure",
+            "members": {
+                "source": {
+                    "target": "com.amazonaws.securityagent#CaCertificateSource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The source that AWS Security Agent reads the certificate from.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A trust anchor used when validating a target endpoint's TLS certificate.</p>",
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.securityagent#TrustedCaCertificateList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.securityagent#TrustedCaCertificate"
+            }
+        },
         "com.amazonaws.securityagent#UntagResource": {
             "type": "operation",
             "input": {
@@ -14408,6 +14597,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The updated validation mode for the code review. Valid values are SIMULATED and DISABLED.</p>"
                     }
+                },
+                "maxTaskHours": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated maximum number of billable task hours allowed for jobs started from this code review.</p>"
+                    }
                 }
             },
             "traits": {
@@ -14479,6 +14674,12 @@
                     "target": "com.amazonaws.securityagent#ValidationMode",
                     "traits": {
                         "smithy.api#documentation": "<p>The validation mode for the code review.</p>"
+                    }
+                },
+                "maxTaskHours": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of billable task hours configured for jobs started from this code review. Null if no budget cap is set.</p>"
                     }
                 }
             },
@@ -14745,6 +14946,12 @@
                     "target": "com.amazonaws.securityagent#SkillTypeList",
                     "traits": {
                         "smithy.api#documentation": "<p>The updated list of managed skills to disable for this pentest. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
+                    }
+                },
+                "maxTaskHours": {
+                    "target": "smithy.api#Double",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated maximum number of billable task hours allowed for jobs started from this pentest.</p>"
                     }
                 }
             },

@@ -276,6 +276,105 @@
                 "smithy.api#documentation": "Aac Vbr Quality"
             }
         },
+        "com.amazonaws.medialive#AbWatermarkerIdLength": {
+            "type": "enum",
+            "members": {
+                "ID_2048": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ID_2048"
+                    }
+                },
+                "ID_512": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ID_512"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Ab Watermarker Id Length"
+            }
+        },
+        "com.amazonaws.medialive#AbWatermarkingCustomProfile": {
+            "type": "structure",
+            "members": {
+                "EmbeddingFrequency": {
+                    "target": "com.amazonaws.medialive#__doubleMin250Max5000",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The frequency with which watermarks will be embedded, in milliseconds.",
+                        "smithy.api#jsonName": "embeddingFrequency",
+                        "smithy.api#required": {}
+                    }
+                },
+                "SceneCut": {
+                    "target": "com.amazonaws.medialive#__doubleMinNegative1Max5",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The number of frames after scene-cut to embed the watermark.",
+                        "smithy.api#jsonName": "sceneCut",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TargetPsnr": {
+                    "target": "com.amazonaws.medialive#__doubleMin32Max46",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The target PSNR of the watermarked frame",
+                        "smithy.api#jsonName": "targetPsnr",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "The vendor-specified custom profile options"
+            }
+        },
+        "com.amazonaws.medialive#AbWatermarkingProfile": {
+            "type": "enum",
+            "members": {
+                "CAMCORDING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CAMCORDING"
+                    }
+                },
+                "CUSTOM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CUSTOM"
+                    }
+                },
+                "DEFAULT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DEFAULT"
+                    }
+                },
+                "HQ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "HQ"
+                    }
+                },
+                "MEZZANINE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MEZZANINE"
+                    }
+                },
+                "ROBUST": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ROBUST"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Ab Watermarking Profile"
+            }
+        },
         "com.amazonaws.medialive#Ac3AttenuationControl": {
             "type": "enum",
             "members": {
@@ -5099,6 +5198,76 @@
                 "smithy.api#documentation": "Cmaf Id3 Behavior"
             }
         },
+        "com.amazonaws.medialive#CmafIngestAbWatermarkerIrdetoSettings": {
+            "type": "structure",
+            "members": {
+                "AdditionalDestinationsAlternateDestinations": {
+                    "target": "com.amazonaws.medialive#__listOfOutputLocationRef",
+                    "traits": {
+                        "smithy.api#documentation": "The \"B\" pipeline renditions for the additional destinations.",
+                        "smithy.api#jsonName": "additionalDestinationsAlternateDestinations"
+                    }
+                },
+                "AlternateDestination": {
+                    "target": "com.amazonaws.medialive#OutputLocationRef",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The \"B\" pipeline renditions for the main destination.",
+                        "smithy.api#jsonName": "alternateDestination",
+                        "smithy.api#required": {}
+                    }
+                },
+                "CustomProfile": {
+                    "target": "com.amazonaws.medialive#AbWatermarkingCustomProfile",
+                    "traits": {
+                        "smithy.api#documentation": "The vendor-provided custom profile values.",
+                        "smithy.api#jsonName": "customProfile"
+                    }
+                },
+                "License": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "The name of the Secrets Manager secret containing the license file.",
+                        "smithy.api#jsonName": "license"
+                    }
+                },
+                "OperatorId": {
+                    "target": "com.amazonaws.medialive#__integerMin1Max511",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The vendor-provided Operator ID.",
+                        "smithy.api#jsonName": "operatorId",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PolyPeriod": {
+                    "target": "com.amazonaws.medialive#__integerMin1Max1000",
+                    "traits": {
+                        "smithy.api#documentation": "The number of segments per watermarking bit. The total duration of the watermarking bit\nshould be the LCM (least common multiple) of all segments sizes emitted by the downstream packager.",
+                        "smithy.api#jsonName": "polyPeriod"
+                    }
+                },
+                "Profile": {
+                    "target": "com.amazonaws.medialive#AbWatermarkingProfile",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The vendor-provided profile choice.",
+                        "smithy.api#jsonName": "profile",
+                        "smithy.api#required": {}
+                    }
+                },
+                "WatermarkIdLength": {
+                    "target": "com.amazonaws.medialive#AbWatermarkerIdLength",
+                    "traits": {
+                        "smithy.api#documentation": "The number of bits that compose the watermarking identifier to be embedded.",
+                        "smithy.api#jsonName": "watermarkIdLength"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "A/B Watermarker settings for CMAF Ingest output groups."
+            }
+        },
         "com.amazonaws.medialive#CmafIngestCaptionLanguageMapping": {
             "type": "structure",
             "members": {
@@ -5147,7 +5316,7 @@
                 "Scte35Type": {
                     "target": "com.amazonaws.medialive#Scte35Type",
                     "traits": {
-                        "smithy.api#documentation": "Type of scte35 track to add. none or scte35WithoutSegmentation",
+                        "smithy.api#documentation": "SCTE-35 insertion type. Option \"none\" indicates that a SCTE-35 marker will not be inserted, nor will an IDR be inserted at the SCTE-35 cue point, nor will the segment be segmented. Option \"scte35WithoutIdr\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, but MediaLive will not insert an IDR on that frame nor will it introduce a new segment boundary there if it wasn't already going to be one (this option is required for use with downstream multiview bitstream stitching workflows). Option \"scte35WithoutSegmentation\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, and an IDR will be inserted on that frame so that a downstream re-packager might split the segment there, but MediaLive itself will not introduce a new segment boundary there.",
                         "smithy.api#jsonName": "scte35Type"
                     }
                 },
@@ -5248,6 +5417,13 @@
                         "smithy.api#documentation": "Optional an array of additional destinational HTTP destinations for the OutputGroup outputs",
                         "smithy.api#jsonName": "additionalDestinations"
                     }
+                },
+                "WatermarkingSettings": {
+                    "target": "com.amazonaws.medialive#CmafIngestWatermarkingSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Specifies the type of watermarking technology to use.",
+                        "smithy.api#jsonName": "watermarkingSettings"
+                    }
                 }
             },
             "traits": {
@@ -5287,6 +5463,20 @@
             },
             "traits": {
                 "smithy.api#documentation": "Cmaf Ingest Segment Length Units"
+            }
+        },
+        "com.amazonaws.medialive#CmafIngestWatermarkingSettings": {
+            "type": "structure",
+            "members": {
+                "CmafIngestAbWatermarkerIrdetoSettings": {
+                    "target": "com.amazonaws.medialive#CmafIngestAbWatermarkerIrdetoSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "cmafIngestAbWatermarkerIrdetoSettings"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "A/B Watermarker settings for CMAF Ingest output groups."
             }
         },
         "com.amazonaws.medialive#CmafKLVBehavior": {
@@ -10273,7 +10463,7 @@
                         "minDelay": 5
                     },
                     "ChannelStopped": {
-                        "documentation": "Wait until a channel has is stopped",
+                        "documentation": "Wait until a channel is not running",
                         "acceptors": [
                             {
                                 "state": "success",
@@ -10299,6 +10489,32 @@
                                 "state": "retry",
                                 "matcher": {
                                     "errorType": "InternalServerErrorException"
+                                }
+                            },
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "State",
+                                        "expected": "DELETING",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "success",
+                                "matcher": {
+                                    "output": {
+                                        "path": "State",
+                                        "expected": "DELETED",
+                                        "comparator": "stringEquals"
+                                    }
+                                }
+                            },
+                            {
+                                "state": "failure",
+                                "matcher": {
+                                    "errorType": "NotFoundException"
                                 }
                             }
                         ],
@@ -25371,6 +25587,12 @@
                     "traits": {
                         "smithy.api#enumValue": "PASSTHROUGH"
                     }
+                },
+                "SCTE_35_WITHOUT_IDR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SCTE_35_WITHOUT_IDR"
+                    }
                 }
             },
             "traits": {
@@ -25713,7 +25935,7 @@
                 "Scte35Control": {
                     "target": "com.amazonaws.medialive#M2tsScte35Control",
                     "traits": {
-                        "smithy.api#documentation": "Optionally pass SCTE-35 signals from the input source to this output.",
+                        "smithy.api#documentation": "SCTE-35 control. Option \"none\" indicates that a SCTE-35 marker will not be inserted, nor will an IDR be inserted at the SCTE-35 cue point, nor will the segment be segmented. Option \"scte35WithoutIdr\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, but MediaLive will not insert an IDR on that frame nor will it introduce a new segment boundary there if it wasn't already going to be one (this option is required for use with downstream multiview bitstream stitching workflows). Option \"passthrough\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, and an IDR will be inserted on that frame, and MediaLive itself will introduce a new segment boundary there.",
                         "smithy.api#jsonName": "scte35Control"
                     }
                 },
@@ -27830,6 +28052,76 @@
                 "smithy.api#documentation": "Media Package Output Settings"
             }
         },
+        "com.amazonaws.medialive#MediaPackageV2AbWatermarkerIrdetoSettings": {
+            "type": "structure",
+            "members": {
+                "AdditionalDestinationsAlternateDestinations": {
+                    "target": "com.amazonaws.medialive#__listOfOutputLocationRef",
+                    "traits": {
+                        "smithy.api#documentation": "The \"B\" pipeline renditions for the additional destinations.",
+                        "smithy.api#jsonName": "additionalDestinationsAlternateDestinations"
+                    }
+                },
+                "AlternateDestination": {
+                    "target": "com.amazonaws.medialive#OutputLocationRef",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The \"B\" pipeline renditions for the main destination.",
+                        "smithy.api#jsonName": "alternateDestination",
+                        "smithy.api#required": {}
+                    }
+                },
+                "CustomProfile": {
+                    "target": "com.amazonaws.medialive#AbWatermarkingCustomProfile",
+                    "traits": {
+                        "smithy.api#documentation": "The vendor-provided custom profile values.",
+                        "smithy.api#jsonName": "customProfile"
+                    }
+                },
+                "License": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "The name of the Secrets Manager secret containing the license file.",
+                        "smithy.api#jsonName": "license"
+                    }
+                },
+                "OperatorId": {
+                    "target": "com.amazonaws.medialive#__integerMin1Max511",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The vendor-provided Operator ID.",
+                        "smithy.api#jsonName": "operatorId",
+                        "smithy.api#required": {}
+                    }
+                },
+                "PolyPeriod": {
+                    "target": "com.amazonaws.medialive#__integerMin1Max1000",
+                    "traits": {
+                        "smithy.api#documentation": "The number of segments per watermarking bit. The total duration of the watermarking bit\nshould be the LCM (least common multiple) of all segments sizes emitted by the downstream packager.",
+                        "smithy.api#jsonName": "polyPeriod"
+                    }
+                },
+                "Profile": {
+                    "target": "com.amazonaws.medialive#AbWatermarkingProfile",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "The vendor-provided profile choice.",
+                        "smithy.api#jsonName": "profile",
+                        "smithy.api#required": {}
+                    }
+                },
+                "WatermarkIdLength": {
+                    "target": "com.amazonaws.medialive#AbWatermarkerIdLength",
+                    "traits": {
+                        "smithy.api#documentation": "The number of bits that compose the watermarking identifier to be embedded.",
+                        "smithy.api#jsonName": "watermarkIdLength"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "A/B Watermarker settings for MediaPackage V2 output groups."
+            }
+        },
         "com.amazonaws.medialive#MediaPackageV2DestinationSettings": {
             "type": "structure",
             "members": {
@@ -27900,7 +28192,7 @@
                 "Scte35Type": {
                     "target": "com.amazonaws.medialive#Scte35Type",
                     "traits": {
-                        "smithy.api#documentation": "Type of scte35 track to add. none or scte35WithoutSegmentation",
+                        "smithy.api#documentation": "SCTE-35 insertion type. Option \"none\" indicates that a SCTE-35 marker will not be inserted, nor will an IDR be inserted at the SCTE-35 cue point, nor will the segment be segmented. Option \"scte35WithoutIdr\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, but MediaLive will not insert an IDR on that frame nor will it introduce a new segment boundary there if it wasn't already going to be one (this option is required for use with downstream multiview bitstream stitching workflows). Option \"scte35WithoutSegmentation\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, and an IDR will be inserted on that frame so that a downstream re-packager might split the segment there, but MediaLive itself will not introduce a new segment boundary there.",
                         "smithy.api#jsonName": "scte35Type"
                     }
                 },
@@ -27945,10 +28237,31 @@
                         "smithy.api#documentation": "Optional an array of additional destinational HTTP destinations for the OutputGroup outputs",
                         "smithy.api#jsonName": "additionalDestinations"
                     }
+                },
+                "WatermarkingSettings": {
+                    "target": "com.amazonaws.medialive#MediaPackageV2WatermarkingSettings",
+                    "traits": {
+                        "smithy.api#documentation": "Specifies the type of watermarking technology to use.",
+                        "smithy.api#jsonName": "watermarkingSettings"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "Media Package V2 Group Settings"
+            }
+        },
+        "com.amazonaws.medialive#MediaPackageV2WatermarkingSettings": {
+            "type": "structure",
+            "members": {
+                "MediaPackageV2AbWatermarkerIrdetoSettings": {
+                    "target": "com.amazonaws.medialive#MediaPackageV2AbWatermarkerIrdetoSettings",
+                    "traits": {
+                        "smithy.api#jsonName": "mediaPackageV2AbWatermarkerIrdetoSettings"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "A/B Watermarker settings for MediaPackage V2 output groups."
             }
         },
         "com.amazonaws.medialive#MediaResource": {
@@ -29096,7 +29409,7 @@
                 "Scte35Control": {
                     "target": "com.amazonaws.medialive#M2tsScte35Control",
                     "traits": {
-                        "smithy.api#documentation": "Optionally pass SCTE-35 signals from the input source to this output.",
+                        "smithy.api#documentation": "SCTE-35 control. Option \"none\" indicates that a SCTE-35 marker will not be inserted, nor will an IDR be inserted at the SCTE-35 cue point, nor will the segment be segmented. Option \"scte35WithoutIdr\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, but MediaLive will not insert an IDR on that frame nor will it introduce a new segment boundary there if it wasn't already going to be one (this option is required for use with downstream multiview bitstream stitching workflows). Option \"passthrough\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, and an IDR will be inserted on that frame, and MediaLive itself will introduce a new segment boundary there.",
                         "smithy.api#jsonName": "scte35Control"
                     }
                 },
@@ -29920,6 +30233,39 @@
                 "smithy.api#documentation": "Nielsen Naes Ii Nw"
             }
         },
+        "com.amazonaws.medialive#NielsenNwOnly": {
+            "type": "structure",
+            "members": {
+                "CheckDigitString": {
+                    "target": "com.amazonaws.medialive#__stringMin2Max2",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Enter the check digit string for the watermark",
+                        "smithy.api#jsonName": "checkDigitString",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Sid": {
+                    "target": "com.amazonaws.medialive#__doubleMin1Max65535",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Enter the Nielsen Source ID (SID) to include in the watermark",
+                        "smithy.api#jsonName": "sid",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Timezone": {
+                    "target": "com.amazonaws.medialive#NielsenWatermarkTimezones",
+                    "traits": {
+                        "smithy.api#documentation": "Choose the timezone for the time stamps in the watermark. If not provided,\nthe timestamps will be in Coordinated Universal Time (UTC)",
+                        "smithy.api#jsonName": "timezone"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Nielsen Nw Only"
+            }
+        },
         "com.amazonaws.medialive#NielsenPcmToId3TaggingState": {
             "type": "enum",
             "members": {
@@ -30070,6 +30416,13 @@
                     "traits": {
                         "smithy.api#documentation": "Complete these fields only if you want to insert watermarks of type Nielsen NAES II (N2) and Nielsen NAES VI (NW).",
                         "smithy.api#jsonName": "nielsenNaesIiNwSettings"
+                    }
+                },
+                "NielsenNwOnlySettings": {
+                    "target": "com.amazonaws.medialive#NielsenNwOnly",
+                    "traits": {
+                        "smithy.api#documentation": "Complete these fields only if you want to insert watermarks of type Nielsen NAES VI (NW) only,\nwithout inserting NAES II (N2) watermarks.",
+                        "smithy.api#jsonName": "nielsenNwOnlySettings"
                     }
                 }
             },
@@ -30521,6 +30874,13 @@
                     "traits": {
                         "smithy.api#documentation": "username for destination",
                         "smithy.api#jsonName": "username"
+                    }
+                },
+                "VirtualSourceAddress": {
+                    "target": "com.amazonaws.medialive#__string",
+                    "traits": {
+                        "smithy.api#documentation": "Specifies the source IP address for outbound multicast packets.",
+                        "smithy.api#jsonName": "virtualSourceAddress"
                     }
                 }
             },
@@ -33270,6 +33630,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "SCTE_35_WITHOUT_SEGMENTATION"
+                    }
+                },
+                "SCTE_35_WITHOUT_IDR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SCTE_35_WITHOUT_IDR"
                     }
                 }
             },
@@ -39852,6 +40218,20 @@
                         "smithy.api#documentation": "Output video width, in pixels. Must be an even number. For most codecs, you can leave this field and height blank in order to use the height and width (resolution) from the source. Note, however, that leaving blank is not recommended. For the Frame Capture codec, height and width are required.",
                         "smithy.api#jsonName": "width"
                     }
+                },
+                "CropRectangle": {
+                    "target": "com.amazonaws.medialive#VideoPositionRectangle",
+                    "traits": {
+                        "smithy.api#documentation": "Region of the input video to crop before scaling. If not specified, the entire input\nframe is used.\n\nNote: Unlike {@link outputPositionRectangle}, the bounds of cropRectangle are validated\nat ingest time by the encoder/scaler rather than at the API level, because the input\nresolution is not known until the source is probed. Field-level constraints on (x, y,\nwidth, height) defined on {@link VideoPositionRectangle} still apply.",
+                        "smithy.api#jsonName": "cropRectangle"
+                    }
+                },
+                "OutputPositionRectangle": {
+                    "target": "com.amazonaws.medialive#VideoPositionRectangle",
+                    "traits": {
+                        "smithy.api#documentation": "Position of the encoded video within the output frame. The area outside the rectangle\nis filled with black. If not specified, the video fills the entire output frame.\nWhen used, both {@link width} and {@link height} of the VideoDescription must be\nexplicitly specified so that the rectangle can be validated against the output frame.",
+                        "smithy.api#jsonName": "outputPositionRectangle"
+                    }
                 }
             },
             "traits": {
@@ -39908,6 +40288,50 @@
             },
             "traits": {
                 "smithy.api#documentation": "Video Description Scaling Behavior"
+            }
+        },
+        "com.amazonaws.medialive#VideoPositionRectangle": {
+            "type": "structure",
+            "members": {
+                "Height": {
+                    "target": "com.amazonaws.medialive#__integerMin2Max8192",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Height in pixels. Must be an even number.",
+                        "smithy.api#jsonName": "height",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Width": {
+                    "target": "com.amazonaws.medialive#__integerMin2Max8192",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Width in pixels. Must be an even number.",
+                        "smithy.api#jsonName": "width",
+                        "smithy.api#required": {}
+                    }
+                },
+                "X": {
+                    "target": "com.amazonaws.medialive#__integerMin0Max8190",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Left offset in pixels. Must be an even number.",
+                        "smithy.api#jsonName": "x",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Y": {
+                    "target": "com.amazonaws.medialive#__integerMin0Max8190",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "Top offset in pixels. Must be an even number.",
+                        "smithy.api#jsonName": "y",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "A rectangle defined by position (x, y) and dimensions (width, height) in pixels.\nUsed for output positioning and input cropping."
             }
         },
         "com.amazonaws.medialive#VideoSelector": {
@@ -40279,6 +40703,24 @@
                 "smithy.api#documentation": "Placeholder documentation for __doubleMin1Max65535"
             }
         },
+        "com.amazonaws.medialive#__doubleMin250Max5000": {
+            "type": "double",
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __doubleMin250Max5000"
+            }
+        },
+        "com.amazonaws.medialive#__doubleMin32Max46": {
+            "type": "double",
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __doubleMin32Max46"
+            }
+        },
+        "com.amazonaws.medialive#__doubleMinNegative1Max5": {
+            "type": "double",
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __doubleMinNegative1Max5"
+            }
+        },
         "com.amazonaws.medialive#__doubleMinNegative59Max0": {
             "type": "double",
             "traits": {
@@ -40441,6 +40883,12 @@
                 "smithy.api#documentation": "Placeholder documentation for __integerMin0Max8000000"
             }
         },
+        "com.amazonaws.medialive#__integerMin0Max8190": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __integerMin0Max8190"
+            }
+        },
         "com.amazonaws.medialive#__integerMin0Max8191": {
             "type": "integer",
             "traits": {
@@ -40507,6 +40955,12 @@
                 "smithy.api#documentation": "Placeholder documentation for __integerMin1Max10"
             }
         },
+        "com.amazonaws.medialive#__integerMin1Max1000": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max1000"
+            }
+        },
         "com.amazonaws.medialive#__integerMin1Max1000000": {
             "type": "integer",
             "traits": {
@@ -40567,6 +41021,12 @@
                 "smithy.api#documentation": "Placeholder documentation for __integerMin1Max51"
             }
         },
+        "com.amazonaws.medialive#__integerMin1Max511": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __integerMin1Max511"
+            }
+        },
         "com.amazonaws.medialive#__integerMin1Max6": {
             "type": "integer",
             "traits": {
@@ -40607,6 +41067,12 @@
             "type": "integer",
             "traits": {
                 "smithy.api#documentation": "Placeholder documentation for __integerMin25Max2000"
+            }
+        },
+        "com.amazonaws.medialive#__integerMin2Max8192": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __integerMin2Max8192"
             }
         },
         "com.amazonaws.medialive#__integerMin3": {
@@ -41399,6 +41865,15 @@
             },
             "traits": {
                 "smithy.api#documentation": "Placeholder documentation for __listOfOutputGroup"
+            }
+        },
+        "com.amazonaws.medialive#__listOfOutputLocationRef": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.medialive#OutputLocationRef"
+            },
+            "traits": {
+                "smithy.api#documentation": "Placeholder documentation for __listOfOutputLocationRef"
             }
         },
         "com.amazonaws.medialive#__listOfPipelineDetail": {
