@@ -32,7 +32,7 @@ private data class RegionProviderChainTest(
  * This is a shared, reusable test runner so that both the common test suite and platform-specific
  * test suites (e.g. JVM) can exercise the same machinery without duplicating logic.
  */
-fun runRegionProviderChainTestSuite(testSuiteJson: String) = runTest {
+internal fun runRegionProviderChainTestSuite(testSuiteJson: String) = runTest {
     val tests = Json.parseToJsonElement(testSuiteJson).jsonArray
         .map { it.jsonObject }
         .map {
@@ -150,20 +150,6 @@ private const val REGION_PROVIDER_CHAIN_TEST_SUITE = """
             "/latest/meta-data/placement/region": "us-east-1"
         },
         "region": "us-east-1"
-    },
-    {
-        "name": "jvm system properties are favored over imds",
-        "platform": {
-            "env": {
-                "AWS_REGION": "us-east-2"
-            },
-            "props": {},
-            "fs": {}
-        },
-        "imds": {
-            "/latest/meta-data/placement/region": "us-east-1"
-        },
-        "region": "us-east-2"
     },
     {
         "name": "environment variables are favored over imds",

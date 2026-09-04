@@ -32,12 +32,12 @@ class S3ChecksumTest {
     private fun testKey(suffix: String): String = "test-object-$suffix"
 
     @BeforeAll
-    private fun setUp(): Unit = runBlocking {
+    fun setUp(): Unit = runBlocking {
         testBucket = S3TestUtils.createTestBucket(client, "checksums")
     }
 
     @AfterAll
-    private fun cleanUp(): Unit = runBlocking {
+    fun cleanUp(): Unit = runBlocking {
         S3TestUtils.deleteBucket(client, testBucket)
         client.close()
     }

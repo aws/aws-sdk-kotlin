@@ -9,6 +9,7 @@ import aws.sdk.kotlin.services.sts.presigners.presignGetCallerIdentity
 import aws.sdk.kotlin.testing.withAllEngines
 import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.TestInstance
 import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.runBlocking

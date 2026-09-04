@@ -10,11 +10,12 @@ import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.http.HttpException
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlin.jvm.JvmStatic
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.seconds
 
@@ -22,26 +23,20 @@ import kotlin.time.Duration.Companion.seconds
  * Reproduces "unexpected end of stream" errors as seen in https://github.com/aws/aws-sdk-kotlin/issues/1214
  * and ensures they are resolved by OkHttp's retryOnConnectionFailure option
  */
+@TestInstance(TestLifecycle.PER_CLASS)
 class ConnectionResetTest {
-    companion object {
-        private lateinit var client: S3Client
-        private lateinit var testBucket: String
+    private val client = S3TestUtils.createClient()
+    private lateinit var testBucket: String
 
-        @BeforeAll
-        @JvmStatic
-        fun createResources() = runBlocking {
-            client = S3Client {
-                region = S3TestUtils.DEFAULT_REGION
-            }
-            testBucket = S3TestUtils.getOrCreateSharedBucket(client)
-        }
+    @BeforeAll
+    fun createResources(): Unit = runBlocking {
+        testBucket = S3TestUtils.createTestBucket(client, "conn-reset")
+    }
 
-        @AfterAll
-        @JvmStatic
-        fun cleanup() = runBlocking {
-            S3TestUtils.deleteSharedBucket(client)
-            client.close()
-        }
+    @AfterAll
+    fun cleanup(): Unit = runBlocking {
+        S3TestUtils.deleteBucket(client, testBucket)
+        client.close()
     }
 
     @Test

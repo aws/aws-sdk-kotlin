@@ -17,6 +17,7 @@ import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
 import aws.smithy.kotlin.runtime.http.toByteStream
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.TestInstance
@@ -57,7 +58,7 @@ class S3PresignerTest {
             }
             val presignedPutRequest = client.presignPutObject(unsignedPutRequest, 60.seconds)
 
-            S3TestUtils.responseCodeFromPut(presignedPutRequest, contents)
+            S3TestUtils.responseCodeFromPut(context.engine, presignedPutRequest, contents)
 
             // GET
             val unsignedGetRequest = GetObjectRequest {

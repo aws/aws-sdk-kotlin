@@ -33,6 +33,7 @@ object S3TestUtils {
     private const val TEST_BUCKET_PREFIX = "s3-test-bucket"
 
     private const val S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX = "x-s3"
+    private const val S3_MAX_BUCKET_NAME_LENGTH = 63 // https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
 
     val testRunId by lazy {
         Instant
@@ -96,6 +97,9 @@ object S3TestUtils {
         suffix: String,
     ) = withTimeout(60.seconds) {
         val bucketName = "$prefix-$testRunId-$suffix--$availabilityZone--$S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX"
+        require(bucketName.length <= S3_MAX_BUCKET_NAME_LENGTH) {
+            "S3 Express directory bucket name '$bucketName' is ${bucketName.length} chars, exceeding the $S3_MAX_BUCKET_NAME_LENGTH-char limit; shorten the suffix"
+        }
         println("Creating S3 Express directory bucket: $bucketName")
 
         client.createBucket {

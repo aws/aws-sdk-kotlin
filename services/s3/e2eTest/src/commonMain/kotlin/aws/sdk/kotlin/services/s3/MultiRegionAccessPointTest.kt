@@ -62,41 +62,44 @@ class MultiRegionAccessPointTest {
 
     @AfterAll
     fun cleanup(): Unit = runBlocking {
-        s3Control.deleteMultiRegionAccessPoint(multiRegionAccessPointName, accountId)
+        try {
+            s3Control.deleteMultiRegionAccessPoint(multiRegionAccessPointName, accountId)
 
-        val resp = s3Control.listMultiRegionAccessPointsPaginated {
-            accountId = this@MultiRegionAccessPointTest.accountId
-        }.toList().flatMap { it.accessPoints.orEmpty() }
+            val resp = s3Control.listMultiRegionAccessPointsPaginated {
+                accountId = this@MultiRegionAccessPointTest.accountId
+            }.toList().flatMap { it.accessPoints.orEmpty() }
 
-        val mrapManifest = buildString {
-            appendLine("Existing multi-region access points for account ID $accountId (${resp.size}):")
-            resp.forEach { accessPoint ->
-                appendLine("* ${accessPoint.name}:")
-                appendLine("  * Alias: ${accessPoint.alias}")
-                appendLine("  * Created: ${accessPoint.createdAt}")
-                appendLine("  * Status: ${accessPoint.status}")
+            val mrapManifest = buildString {
+                appendLine("Existing multi-region access points for account ID $accountId (${resp.size}):")
+                resp.forEach { accessPoint ->
+                    appendLine("* ${accessPoint.name}:")
+                    appendLine("  * Alias: ${accessPoint.alias}")
+                    appendLine("  * Created: ${accessPoint.createdAt}")
+                    appendLine("  * Status: ${accessPoint.status}")
 
-                val regions = accessPoint.regions.orEmpty()
-                appendLine("  * Regions (${regions.size}):")
+                    val regions = accessPoint.regions.orEmpty()
+                    appendLine("  * Regions (${regions.size}):")
 
-                regions.forEach { region ->
-                    appendLine("    * ${region.region}: ${region.bucket} (account ID ${region.bucketAccountId})")
+                    regions.forEach { region ->
+                        appendLine("    * ${region.region}: ${region.bucket} (account ID ${region.bucketAccountId})")
+                    }
                 }
             }
+            print(mrapManifest)
+        } finally {
+            runCatching { S3TestUtils.deleteBucket(s3West, usWestBucket) }
+            runCatching { S3TestUtils.deleteBucket(s3East, usEastBucket) }
+
+            s3West.close()
+            s3East.close()
+            s3Control.close()
         }
-        print(mrapManifest)
-
-        S3TestUtils.deleteBucket(s3West, usWestBucket)
-        S3TestUtils.deleteBucket(s3East, usEastBucket)
-
-        s3West.close()
-        s3East.close()
-        s3Control.close()
     }
 
     @Test
     fun testMultiRegionAccessPointOperation(): Unit = parameterized(
-        listOf(DefaultAwsSigner, CrtAwsSigner),
+        // .distinct() deduplicates DefaultAwsSigner and CrtAwsSigner, which are the same on Native
+        listOf(DefaultAwsSigner, CrtAwsSigner).distinct(),
     ) { signer ->
         runBlocking {
             println("Testing multi-region access point operations with $signer")

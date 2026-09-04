@@ -13,6 +13,7 @@ import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.TestInstance
@@ -102,7 +103,7 @@ class S3ExpressTest {
     }
 
     @Test
-    fun testChecksums() = runBlocking {
+    fun testChecksums(): Unit = runBlocking {
         val bucketName = testBuckets.first() // only need one bucket for this test
 
         val keysToDelete = listOf("checksums.txt", "delete-me.txt", "dont-forget-about-me.txt")
@@ -133,7 +134,7 @@ class S3ExpressTest {
     }
 
     @Test
-    fun testUploadPartContainsCRC32Checksum() = runBlocking {
+    fun testUploadPartContainsCRC32Checksum(): Unit = runBlocking {
         val testBucket = testBuckets.first()
         val testObject = "I-will-be-uploaded-in-parts-!"
 
@@ -146,8 +147,8 @@ class S3ExpressTest {
             key = testObject
         }.uploadId
 
-        var eTagPartOne: String?
-        var eTagPartTwo: String?
+        var eTagPartOne: String? = null
+        var eTagPartTwo: String? = null
 
         client.withConfig {
             interceptors += CRC32ChecksumValidatingInterceptor()

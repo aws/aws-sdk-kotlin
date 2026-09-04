@@ -42,7 +42,11 @@ class S3BucketOpsIntegrationTest {
 
     @AfterAll
     fun cleanup() = runBlocking {
-        S3TestUtils.deleteBucket(client, testBucket)
+        try {
+            S3TestUtils.deleteBucket(client, testBucket)
+        } finally {
+            client.close()
+        }
     }
 
     @Test
