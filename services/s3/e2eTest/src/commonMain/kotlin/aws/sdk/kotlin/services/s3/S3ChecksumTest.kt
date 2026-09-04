@@ -11,6 +11,8 @@ import aws.sdk.kotlin.services.s3.model.*
 import aws.sdk.kotlin.services.s3.presigners.presignPutObject
 import aws.smithy.kotlin.runtime.content.*
 import aws.smithy.kotlin.runtime.hashing.crc32
+import aws.smithy.kotlin.runtime.io.SdkSource
+import aws.smithy.kotlin.runtime.io.source
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.RandomTempFile
@@ -87,11 +89,19 @@ class S3ChecksumTest {
     fun testPutObjectAwsChunkedEncoded(): Unit = runBlocking {
         val testKey = testKey("chunked")
         val testBody = "Hello World"
+        val testBodyBytes = testBody.encodeToByteArray()
 
+        // Use a streaming (SourceContent) body with a known content length so the request
+        // is eligible for aws-chunked content encoding (a Buffer body from ByteStream.fromString
+        // is not), keeping streaming-payload signing + trailing-checksum coverage.
         client.putObject {
             bucket = testBucket
             key = testKey
-            body = ByteStream.fromString(testBody)
+            body = object : ByteStream.SourceStream() {
+                override fun readFrom(): SdkSource = testBodyBytes.source()
+                override val contentLength: Long = testBodyBytes.size.toLong()
+                override val isOneShot: Boolean = false
+            }
         }
 
         client.getObject(
