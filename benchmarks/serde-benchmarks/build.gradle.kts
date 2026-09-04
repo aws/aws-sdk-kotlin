@@ -175,6 +175,9 @@ fun JavaExec.configureBenchmarkTask() {
     systemProperty("smithy.kotlin.version", libs.versions.smithy.kotlin.version.get())
     systemProperty("aws.sdk.kotlin.version", project.findProperty("sdkVersion") ?: "SNAPSHOT")
 
+    // -Pbenchmark.outputFile=<path> archives the JSON report, e.g. for base-vs-head comparison in CI
+    project.findProperty("benchmark.outputFile")?.let { systemProperty("benchmark.outputFile", it) }
+
     if (asyncProfilerLib != null) {
         val profilesDir = project.layout.buildDirectory.dir("profiles")
         doFirst { profilesDir.get().asFile.mkdirs() }

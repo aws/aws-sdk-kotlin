@@ -5,8 +5,9 @@
 package aws.sdk.kotlin.benchmarks.serde
 
 import kotlinx.coroutines.runBlocking
+import java.io.File
 
-fun main() = runBlocking {
+fun main(): Unit = runBlocking {
     val protocolFilter = System.getProperty("benchmark.protocol")
     val filters = protocolFilter?.split(",")?.map { it.trim() }
 
@@ -35,6 +36,15 @@ fun main() = runBlocking {
         smithyKotlinVersion = System.getProperty("smithy.kotlin.version"),
         sdkVersion = System.getProperty("aws.sdk.kotlin.version"),
     )
+    val report = BenchmarkHarness.toJson(metadata, allResults)
     println()
-    println(BenchmarkHarness.toJson(metadata, allResults))
+    println(report)
+
+    // when set, the report is also written to disk so that runs can be archived and compared (e.g. by CI)
+    System.getProperty("benchmark.outputFile")?.let { path ->
+        val file = File(path)
+        file.parentFile?.mkdirs()
+        file.writeText(report)
+        println("Wrote report to ${file.absolutePath}")
+    }
 }

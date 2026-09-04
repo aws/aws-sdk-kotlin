@@ -1,0 +1,163 @@
+name: Serde benchmark comparison
+
+# Runs the serde benchmarks twice on the same runner — once at the PR's base commit, once at its head — and
+# compares the two. Opt-in only: shared runners are noisy and a full run takes a while, so this is not part of
+# the normal PR checks. Add the `run-serde-benchmarks` label to a PR, or dispatch it manually.
+on:
+  pull_request:
+    types: [ labeled, synchronize ]
+    branches:
+      - main
+      - '*-main'
+  workflow_dispatch:
+    inputs:
+      base-ref:
+        description: 'Git ref to compare against'
+        required: true
+        default: 'main'
+      protocols:
+        description: 'Comma-separated projections to run, or "all"'
+        required: false
+        default: 'all'
+      repetitions:
+        description: 'How many times to run each side (alternating base/head)'
+        required: false
+        default: '2'
+      warmup-seconds:
+        required: false
+        default: '5'
+      measurement-seconds:
+        required: false
+        default: '10'
+      threshold:
+        description: 'Percent slowdown that counts as a regression'
+        required: false
+        default: '10'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: serde-benchmarks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+  PROTOCOLS: ${{ inputs.protocols || 'all' }}
+  REPETITIONS: ${{ inputs.repetitions || '2' }}
+  WARMUP_SECONDS: ${{ inputs.warmup-seconds || '5' }}
+  MEASUREMENT_SECONDS: ${{ inputs.measurement-seconds || '10' }}
+  THRESHOLD: ${{ inputs.threshold || '10' }}
+
+jobs:
+  compare:
+    # label-gated on PRs so that ordinary pushes don't burn runner time
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.pull_request.labels.*.name, 'run-serde-benchmarks')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout head
+        uses: actions/checkout@v4
+        with:
+          path: head
+          fetch-depth: 0
+
+      - name: Check out base into a sibling worktree
+        id: base
+        working-directory: head
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            BASE_REF="${{ inputs.base-ref }}"
+            git fetch origin "$BASE_REF"
+            BASE_SHA=$(git rev-parse FETCH_HEAD)
+          else
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          fi
+          echo "Base commit: $BASE_SHA"
+          echo "sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
+          # a worktree keeps both checkouts backed by one clone, and as siblings neither picks up a
+          # ../smithy-kotlin composite build, so both sides resolve smithy-kotlin from their own version catalog
+          git worktree add ../base "$BASE_SHA"
+
+      - name: Configure JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: Verify both sides can build the benchmarks
+        run: |
+          for side in head base; do
+            if ! (cd "$side" && ./gradlew -q :benchmarks:serde-benchmarks:tasks > /dev/null 2>&1); then
+              echo "::error :::benchmarks:serde-benchmarks is not part of the build at $side. Both the base and" \
+                   "head commits need the benchmark models available (see benchmarks/serde-benchmarks/build.gradle.kts)."
+              exit 1
+            fi
+          done
+
+      - name: Run benchmarks
+        run: |
+          set -euo pipefail
+          mkdir -p reports
+          if [ "$PROTOCOLS" = "all" ]; then
+            TASK=":benchmarks:serde-benchmarks:runAllBenchmarks"
+            PROTOCOL_ARG=""
+          else
+            TASK=":benchmarks:serde-benchmarks:runBenchmark"
+            PROTOCOL_ARG="-Pbenchmark.protocol=$PROTOCOLS"
+          fi
+
+          # alternate the two sides so that any drift in runner performance over the job is shared by both
+          for rep in $(seq 1 "$REPETITIONS"); do
+            for side in base head; do
+              echo "::group::$side repetition $rep"
+              (cd "$side" && ./gradlew "$TASK" $PROTOCOL_ARG \
+                -Pbenchmark.warmupSeconds="$WARMUP_SECONDS" \
+                -Pbenchmark.measurementSeconds="$MEASUREMENT_SECONDS" \
+                -Pbenchmark.instance="github-${{ runner.os }}-${{ runner.arch }}" \
+                -Pbenchmark.outputFile="$GITHUB_WORKSPACE/reports/$side-$rep.json")
+              echo "::endgroup::"
+            done
+          done
+
+      - name: Compare
+        id: compare
+        run: |
+          python3 head/.github/scripts/compare-serde-benchmarks.py \
+            --base reports/base-*.json \
+            --head reports/head-*.json \
+            --metric p50 \
+            --threshold "$THRESHOLD" \
+            --output comparison.md
+          cat comparison.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: serde-benchmark-reports
+          path: |
+            reports/
+            comparison.md
+
+      - name: Comment on the pull request
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- serde-benchmark-comparison -->';
+            const body = marker + '\n' + fs.readFileSync('comparison.md', 'utf8');
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const existing = comments.find((c) => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
