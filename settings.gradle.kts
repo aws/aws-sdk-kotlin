@@ -72,11 +72,11 @@ if (endpointBenchmarkServices.all { it.isBootstrappedService }) {
     logger.warn("Skipping :benchmarks:endpoint-resolution because these service(s) are not bootstrapped: $missing")
 }
 
-if (providers.gradleProperty("benchmarkModelsDir").orNull != null) {
-    include(":benchmarks:serde-benchmarks")
-} else {
-    logger.warn("Skipping :benchmarks:serde-benchmarks because benchmarkModelsDir is not set")
-}
+// The serde benchmarks read their models from the Smithy-published benchmark models jar on the codegen classpath.
+// TODO: include unconditionally once that jar is published and wired up in
+//       benchmarks/serde-benchmarks/build.gradle.kts; until then the projections have no model source.
+// include(":benchmarks:serde-benchmarks")
+logger.warn("Skipping :benchmarks:serde-benchmarks until the Smithy benchmark models jar is published")
 include(":tests")
 include(":tests:codegen")
 include(":tests:codegen:event-stream")

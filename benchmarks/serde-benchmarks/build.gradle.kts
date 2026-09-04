@@ -22,17 +22,9 @@ val benchmarkProjections = listOf(
     BenchmarkProjection("aws-query", "smithy.benchmark.serde#AwsQueryDataPlane", "QueryDataPlane"),
 )
 
-// Path to the AwsSdkPerformanceBenchmarkModels model directory
-// Pass via: -PbenchmarkModelsDir=/path/to/AwsSdkPerformanceBenchmarkModels/.../model
-val benchmarkModelsDir: String? = project.findProperty("benchmarkModelsDir") as? String
-
 smithyBuild {
     benchmarkProjections.forEach { proj ->
         projections.register(proj.name) {
-            imports = listOf(
-                benchmarkModelsDir ?: error("benchmarkModelsDir property is required. Pass -PbenchmarkModelsDir=/path/to/model"),
-            )
-
             transforms = listOf(
                 """
                 {
@@ -71,6 +63,12 @@ dependencies {
     codegen(libs.smithy.cli)
     codegen(libs.smithy.model)
     codegen(libs.smithy.aws.protocol.tests)
+
+    // NOTE: The benchmark models are published to maven as a jar, this ensures that the benchmark models
+    // dependency is found when generating code such that the `includeServices` transform actually works
+    // TODO: uncomment once Smithy publishes the serde benchmark models, along with the version catalog entry
+    //       and the `include(":benchmarks:serde-benchmarks")` in settings.gradle.kts
+    // codegen(libs.smithy.serde.benchmark.models)
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.core)
@@ -190,17 +188,48 @@ tasks.register<JavaExec>("runAllBenchmarks") {
     configureBenchmarkTask()
 }
 
+// Per-projection entry points, mirroring the `testProtocol-<projection>` tasks of :codegen:protocol-tests
+benchmarkProjections.forEach { proj ->
+    tasks.register<JavaExec>("benchmarkProtocol-${proj.name}") {
+        group = "benchmark"
+        description = "Run serde benchmarks for the ${proj.name} projection"
+        configureBenchmarkTask()
+        systemProperty("benchmark.protocol", proj.name)
+    }
+}
+
+// Unlike `testAllProtocols`, this does not fan out to the per-projection tasks: all protocols are measured in a
+// single JVM so the results share one warmup regime and land in one report.
+tasks.register("benchmarkAllProtocols") {
+    group = "benchmark"
+    description = "Run the serde benchmarks for every projection"
+    dependsOn("runAllBenchmarks")
+}
+
+// Codegen-only verification: proves every projection generates code that compiles. Cheap enough for CI.
+tasks.register("verifyAllProtocols") {
+    group = "verification"
+    description = "Generate and compile the benchmark clients for every projection without running them"
+    dependsOn(tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>())
+}
+
 tasks.register<JavaExec>("runBenchmark") {
     group = "benchmark"
     description = "Run serde benchmarks for specific protocol(s). Use -Pbenchmark.protocol=aws-rest-json (comma-separated for multiple)"
     configureBenchmarkTask()
     val availableProtocols = benchmarkProjections.map { it.name }
-    val protocol = project.findProperty("benchmark.protocol") as? String
-        ?: error("benchmark.protocol property is required. Available: ${availableProtocols.joinToString()}")
-    val requested = protocol.split(",").map { it.trim() }
-    val invalid = requested.filter { req -> availableProtocols.none { it.contains(req, ignoreCase = true) } }
-    if (invalid.isNotEmpty()) {
-        error("Unknown protocol(s): ${invalid.joinToString()}. Available: ${availableProtocols.joinToString()}")
+    val requestedProtocols = providers.gradleProperty("benchmark.protocol")
+
+    // validated at execution time so that realizing this task (e.g. `gradlew tasks`, or any broad task graph in
+    // CI) doesn't fail just because the property is absent
+    doFirst {
+        val protocol = requestedProtocols.orNull
+            ?: error("benchmark.protocol property is required. Available: ${availableProtocols.joinToString()}")
+        val requested = protocol.split(",").map { it.trim() }
+        val invalid = requested.filter { req -> availableProtocols.none { it.contains(req, ignoreCase = true) } }
+        if (invalid.isNotEmpty()) {
+            error("Unknown protocol(s): ${invalid.joinToString()}. Available: ${availableProtocols.joinToString()}")
+        }
+        systemProperty("benchmark.protocol", protocol)
     }
-    systemProperty("benchmark.protocol", protocol)
 }
