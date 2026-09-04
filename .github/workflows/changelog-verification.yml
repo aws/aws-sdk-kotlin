@@ -1,6 +1,7 @@
 name: Changelog verification
 
 permissions:
+  contents: read
   id-token: write
 
 on:
@@ -9,10 +10,14 @@ on:
     branches:
       - main
       - '*-main'
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   changelog-verification:
     runs-on: ubuntu-latest
+    # no changelogs for merge queues or Dependabot version bumps
+    if: ${{ github.event_name != 'merge_group' && github.event.pull_request.user.login != 'dependabot[bot]' }}
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4

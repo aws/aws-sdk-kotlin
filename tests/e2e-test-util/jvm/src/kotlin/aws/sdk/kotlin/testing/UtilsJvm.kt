@@ -6,22 +6,25 @@
 package aws.sdk.kotlin.testing
 
 import aws.smithy.kotlin.runtime.InternalApi
-import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
+import aws.smithy.kotlin.runtime.http.engine.CloseableHttpClientEngine
 import aws.smithy.kotlin.runtime.http.engine.crt.CrtHttpEngine
 import aws.smithy.kotlin.runtime.http.engine.okhttp.OkHttpEngine
 import aws.smithy.kotlin.runtime.http.engine.okhttp4.OkHttp4Engine
 
+/**
+ * Run the [block] with each supported engine
+ */
 @OptIn(InternalApi::class)
-actual suspend fun withAllEngines(block: suspend (HttpClientEngine) -> Unit) {
-    val engines = listOf(
-        OkHttpEngine(),
-        OkHttp4Engine(),
-        CrtHttpEngine(),
+actual suspend fun withAllEngines(block: suspend (HttpEngineContext) -> Unit) {
+    val engines: List<Pair<String, CloseableHttpClientEngine>> = listOf(
+        "OkHttp" to OkHttpEngine(),
+        "OkHttp4" to OkHttp4Engine(),
+        "CRT" to CrtHttpEngine(),
     )
 
-    engines.forEach { engine ->
+    engines.forEach { (name, engine) ->
         engine.use {
-            block(engine)
+            block(HttpEngineContext(name, engine))
         }
     }
 }

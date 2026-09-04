@@ -4,73 +4,92 @@
  */
 package aws.sdk.kotlin.e2etest
 
-import aws.sdk.kotlin.e2etest.S3TestUtils.getAccountId
-import aws.sdk.kotlin.e2etest.S3TestUtils.getBucketWithPrefix
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.deleteObject
 import aws.sdk.kotlin.services.s3.putObject
 import aws.sdk.kotlin.services.s3.withConfig
-import aws.sdk.kotlin.services.s3control.S3ControlClient
-import aws.sdk.kotlin.services.s3control.createMultiRegionAccessPoint
-import aws.sdk.kotlin.services.s3control.deleteMultiRegionAccessPoint
-import aws.sdk.kotlin.services.s3control.describeMultiRegionAccessPointOperation
-import aws.sdk.kotlin.services.s3control.getMultiRegionAccessPoint
+import aws.sdk.kotlin.services.s3control.*
 import aws.sdk.kotlin.services.s3control.model.Region
-import aws.smithy.kotlin.runtime.auth.awssigning.AwsSigner
+import aws.sdk.kotlin.services.s3control.paginators.listMultiRegionAccessPointsPaginated
 import aws.smithy.kotlin.runtime.auth.awssigning.DefaultAwsSigner
 import aws.smithy.kotlin.runtime.auth.awssigning.crt.CrtAwsSigner
 import aws.smithy.kotlin.runtime.http.auth.SigV4AsymmetricAuthScheme
 import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
+import aws.smithy.kotlin.runtime.testing.parameterized
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import kotlin.jvm.JvmStatic
 import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-private const val MRAP_BUCKET_PREFIX = "s3-mrap-test-bucket-"
-private const val MULTI_REGION_ACCESS_POINT_NAME = "aws-sdk-for-kotlin-test-multi-region-access-point"
 private const val TEST_OBJECT_KEY = "test.txt"
 
-class MutliRegionAccessPointTest {
-    companion object {
-        private lateinit var s3West: S3Client
-        private lateinit var s3East: S3Client
-        private lateinit var s3Control: S3ControlClient
-        private lateinit var accountId: String
-        private lateinit var multiRegionAccessPointArn: String
-        private lateinit var usWestBucket: String
-        private lateinit var usEastBucket: String
+@TestInstance(TestLifecycle.PER_CLASS)
+class MultiRegionAccessPointTest {
+    private lateinit var s3West: S3Client
+    private lateinit var s3East: S3Client
+    private lateinit var s3Control: S3ControlClient
 
-        @BeforeAll
-        @JvmStatic
-        fun setup() = runBlocking {
-            s3West = S3Client { region = "us-west-2" }
-            s3East = S3Client { region = "us-east-2" }
-            s3Control = S3ControlClient { region = "us-west-2" }
+    private lateinit var accountId: String
+    private lateinit var multiRegionAccessPointName: String
+    private lateinit var multiRegionAccessPointArn: String
+    private lateinit var usWestBucket: String
+    private lateinit var usEastBucket: String
 
-            accountId = getAccountId()
-            usWestBucket = getBucketWithPrefix(s3West, MRAP_BUCKET_PREFIX, "us-west-2", accountId)
-            usEastBucket = getBucketWithPrefix(s3East, MRAP_BUCKET_PREFIX, "us-east-2", accountId)
+    @BeforeAll
+    fun setup(): Unit = runBlocking {
+        s3West = S3TestUtils.createClient { region = "us-west-2" }
+        s3East = S3TestUtils.createClient { region = "us-east-2" }
+        s3Control = S3ControlClient { region = "us-west-2" }
 
-            multiRegionAccessPointArn = s3Control.createMultiRegionAccessPoint(
-                MULTI_REGION_ACCESS_POINT_NAME,
-                accountId,
-                listOf(usWestBucket, usEastBucket),
-            )
-        }
+        accountId = S3TestUtils.getAccountId()
+        usWestBucket = S3TestUtils.createTestBucket(s3West, "mrap-west")
+        usEastBucket = S3TestUtils.createTestBucket(s3East, "mrap-east")
 
-        @AfterAll
-        @JvmStatic
-        fun cleanup() = runBlocking {
-            s3Control.deleteMultiRegionAccessPoint(MULTI_REGION_ACCESS_POINT_NAME, accountId)
+        multiRegionAccessPointName = "s3-test-mrap-${S3TestUtils.testRunId}"
+        multiRegionAccessPointArn = s3Control.createMultiRegionAccessPoint(
+            multiRegionAccessPointName,
+            accountId,
+            listOf(usWestBucket, usEastBucket),
+        )
+    }
 
-            S3TestUtils.deleteBucketAndAllContents(s3West, usWestBucket)
-            S3TestUtils.deleteBucketAndAllContents(s3East, usEastBucket)
+    @AfterAll
+    fun cleanup(): Unit = runBlocking {
+        try {
+            s3Control.deleteMultiRegionAccessPoint(multiRegionAccessPointName, accountId)
+
+            val resp = s3Control.listMultiRegionAccessPointsPaginated {
+                accountId = this@MultiRegionAccessPointTest.accountId
+            }.toList().flatMap { it.accessPoints.orEmpty() }
+
+            val mrapManifest = buildString {
+                appendLine("Existing multi-region access points for account ID $accountId (${resp.size}):")
+                resp.forEach { accessPoint ->
+                    appendLine("* ${accessPoint.name}:")
+                    appendLine("  * Alias: ${accessPoint.alias}")
+                    appendLine("  * Created: ${accessPoint.createdAt}")
+                    appendLine("  * Status: ${accessPoint.status}")
+
+                    val regions = accessPoint.regions.orEmpty()
+                    appendLine("  * Regions (${regions.size}):")
+
+                    regions.forEach { region ->
+                        appendLine("    * ${region.region}: ${region.bucket} (account ID ${region.bucketAccountId})")
+                    }
+                }
+            }
+            print(mrapManifest)
+        } finally {
+            runCatching { S3TestUtils.deleteBucket(s3West, usWestBucket) }
+            runCatching { S3TestUtils.deleteBucket(s3East, usEastBucket) }
 
             s3West.close()
             s3East.close()
@@ -79,32 +98,39 @@ class MutliRegionAccessPointTest {
     }
 
     @Test
-    fun testMultiRegionAccessPointOperation() = runBlocking {
-        // use .distinct() to deduplicate DefaultAwsSigner and CrtAwsSigner, which are the same on Native
-        listOf(DefaultAwsSigner, CrtAwsSigner).distinct().forEach { signer ->
-            testMultiRegionAccessPointOperation(signer)
-        }
-    }
+    fun testMultiRegionAccessPointOperation(): Unit = parameterized(
+        // .distinct() deduplicates DefaultAwsSigner and CrtAwsSigner, which are the same on Native
+        listOf(DefaultAwsSigner, CrtAwsSigner).distinct(),
+    ) { signer ->
+        runBlocking {
+            println("Testing multi-region access point operations with $signer")
 
-    private suspend fun testMultiRegionAccessPointOperation(signer: AwsSigner) {
-        println("Testing multi-region access point operations with $signer")
-
-        s3West.withConfig {
-            authSchemes = listOf(SigV4AsymmetricAuthScheme(signer))
-        }.use { s3SigV4a ->
-            s3SigV4a.putObject {
-                bucket = multiRegionAccessPointArn
-                key = TEST_OBJECT_KEY
+            val s3SigV4a = s3West.withConfig {
+                authSchemes = listOf(SigV4AsymmetricAuthScheme(signer))
             }
 
-            s3SigV4a.deleteObject {
-                bucket = multiRegionAccessPointArn
-                key = TEST_OBJECT_KEY
+            // Close the derived client so its share() on s3West's managed engine is released;
+            // otherwise the engine's SdkManagedGroup refcount never reaches zero and s3West's
+            // engine is never torn down (leaks CRT resources on Kotlin/Native).
+            s3SigV4a.use {
+                s3SigV4a.putObject {
+                    bucket = multiRegionAccessPointArn
+                    key = TEST_OBJECT_KEY
+                }
+
+                s3SigV4a.deleteObject {
+                    bucket = multiRegionAccessPointArn
+                    key = TEST_OBJECT_KEY
+                }
             }
         }
     }
 }
 
+/**
+ * Create a multi-region access point named [name] in account [accountId] with [buckets] buckets.
+ * @return the ARN of the multi-region access point that was created
+ */
 private suspend fun S3ControlClient.createMultiRegionAccessPoint(
     name: String,
     accountId: String,
@@ -124,13 +150,18 @@ private suspend fun S3ControlClient.createMultiRegionAccessPoint(
 
     waitUntilOperationCompletes("createMultiRegionAccessPoint", accountId, requestTokenArn, 10.minutes)
 
-    return getMultiRegionAccessPoint {
-        this.name = name
-        this.accountId = accountId
-    }.accessPoint?.alias?.let {
-        "arn:aws:s3::$accountId:accesspoint/$it"
-    } ?: throw IllegalStateException("Failed to get ARN for multi-region access point $name")
+    return getMultiRegionAccessPointArn(name, accountId)
 }
+
+private suspend fun S3ControlClient.getMultiRegionAccessPointArn(
+    name: String,
+    accountId: String,
+): String = getMultiRegionAccessPoint {
+    this.name = name
+    this.accountId = accountId
+}.accessPoint?.alias?.let {
+    "arn:aws:s3::$accountId:accesspoint/$it"
+} ?: throw IllegalStateException("Failed to get ARN for multi-region access point $name")
 
 private suspend fun S3ControlClient.deleteMultiRegionAccessPoint(
     name: String,
@@ -150,6 +181,9 @@ private suspend fun S3ControlClient.deleteMultiRegionAccessPoint(
     waitUntilOperationCompletes("deleteMultiRegionAccessPoint", accountId, requestTokenArn, 5.minutes)
 }
 
+/**
+ * Continuously poll the status of [requestTokenArn] until its status is "SUCCEEDED" or [timeout] duration has passed.
+ */
 private suspend fun S3ControlClient.waitUntilOperationCompletes(
     operation: String,
     accountId: String,
@@ -159,17 +193,20 @@ private suspend fun S3ControlClient.waitUntilOperationCompletes(
     var status: String? = null
 
     while (true) {
-        val latestStatus = describeMultiRegionAccessPointOperation {
+        val response = describeMultiRegionAccessPointOperation {
             this.accountId = accountId
             this.requestTokenArn = requestTokenArn
-        }.asyncOperation?.requestStatus
-
-        when (latestStatus) {
+        }
+        when (val latestStatus = response.asyncOperation?.requestStatus) {
             "SUCCEEDED" -> {
                 println("$operation operation succeeded.")
                 return@withTimeout
             }
-            "FAILED" -> throw IllegalStateException("$operation operation failed")
+            "FAILED" -> {
+                val code = response.asyncOperation?.responseDetails?.errorDetails?.code
+                val message = response.asyncOperation?.responseDetails?.errorDetails?.message
+                throw IllegalStateException("$operation operation failed. Code: $code. Message: $message")
+            }
             else -> {
                 if (status == null || latestStatus != status) {
                     println("Waiting for $operation to complete. Status: $latestStatus ")
@@ -178,6 +215,6 @@ private suspend fun S3ControlClient.waitUntilOperationCompletes(
             }
         }
 
-        delay(10.seconds)
+        delay(10.seconds) // Avoid constant status checks
     }
 }

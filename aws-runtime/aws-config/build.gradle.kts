@@ -52,13 +52,14 @@ kotlin {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.smithy.kotlin.http.test)
+                implementation(libs.smithy.kotlin.testing)
                 implementation(libs.kotlinx.serialization.json)
             }
         }
         jvmTest {
             dependencies {
                 implementation(libs.mockk)
-                implementation(libs.kotest.runner.junit5)
+                implementation(libs.kaml)
             }
         }
 
@@ -211,13 +212,16 @@ smithyBuild {
                 }
             }
 
+            // FIXME `CreateOauth2TokenWithIAM` is not needed for any credentials provider and is only added because
+            //  of https://github.com/smithy-lang/smithy/issues/3190
             transforms = listOf(
                 """
             {
                 "name": "awsSmithyKotlinIncludeOperations",
                 "args": {
                     "operations": [
-                        "com.amazonaws.signin#CreateOAuth2Token"
+                        "com.amazonaws.signin#CreateOAuth2Token",
+                        "com.amazonaws.signin#CreateOAuth2TokenWithIAM"
                     ]
                 }
             }

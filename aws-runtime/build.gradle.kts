@@ -50,6 +50,7 @@ subprojects {
                 dependencies {
                     implementation(libraries.kotest.assertions.core.jvm)
                     implementation(libraries.slf4j.simple)
+                    implementation(libraries.smithy.kotlin.testing)
                 }
             }
         }

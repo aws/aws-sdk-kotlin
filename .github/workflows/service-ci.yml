@@ -2,7 +2,17 @@ name: Service CI
 
 on:
   pull_request:
+  merge_group:
+    types: [checks_requested]
   workflow_dispatch:
+
+concurrency:
+  group: service-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build-sdk:
@@ -41,11 +51,3 @@ jobs:
             echo "Cancelling in-progress build: id=$BUILD_ID"
             aws codebuild stop-build --id $BUILD_ID
           fi
-
-concurrency:
-  group: service-ci-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  id-token: write
-  contents: read

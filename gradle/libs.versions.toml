@@ -1,33 +1,36 @@
 [versions]
-kotlin-version = "2.3.0"
-ksp-version = "2.3.4"
+kotlin-version = "2.4.0"
+ksp-version = "2.3.11"
 
-dokka-version = "2.0.0"
+dokka-version = "2.2.0"
+jackson-bom-version = "2.22.2"
 
-aws-kotlin-repo-tools-version = "0.5.7"
+aws-kotlin-repo-tools-version = "0.6.3"
 
 # libs
-coroutines-version = "1.10.2"
-atomicfu-version = "0.29.0"
-binary-compatibility-validator-version = "0.18.0"
+coroutines-version = "1.11.0"
+atomicfu-version = "0.33.0"
+binary-compatibility-validator-version = "0.18.1"
 
 # smithy-kotlin
-smithy-kotlin-version = "1.6.6"
+smithy-kotlin-version = "1.7.9"
 
 # codegen
-smithy-version = "1.67.0"
+smithy-version = "1.73.0"
 
 # testing
-ddb-local-version = "2.5.2"
-junit-version = "5.14.1"
+ddb-local-version = "3.3.1"
 kotest-version = "5.9.1"
-kotlinx-benchmark-version = "0.4.15"
-kotlinx-serialization-version = "1.9.0"
-mockk-version = "1.14.7"
-slf4j-version = "2.0.17"
-jsoup-version = "1.21.2"
+kotlinx-benchmark-version = "0.4.19"
+kotlinx-serialization-version = "1.11.0"
+kaml-version = "0.55.0"
+mockk-version = "1.14.11"
+slf4j-version = "2.0.18"
+mokkery-version = "3.4.2"
+jsoup-version = "1.23.1"
 
 [libraries]
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson-bom-version" }
 aws-kotlin-repo-tools-build-support = { module="aws.sdk.kotlin.gradle:build-support", version.ref = "aws-kotlin-repo-tools-version" }
 
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }
@@ -106,19 +109,16 @@ smithy-protocol-test-traits = { module = "software.amazon.smithy:smithy-protocol
 smithy-smoke-test-traits = { module = "software.amazon.smithy:smithy-smoke-test-traits", version.ref = "smithy-version" }
 smithy-aws-smoke-test-model = { module = "software.amazon.smithy:smithy-aws-smoke-test-model", version.ref = "smithy-version" }
 
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-version" }
-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-version" }
-
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup-version" }
 
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-version" }
 kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest-version" }
-kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest-version" }
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark-version" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-version" }
+kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml-version" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk-version" }
 
-ddb-local = { module = "com.amazonaws:DynamoDBLocal", version.ref = "ddb-local-version" }
+ddb-local = { module = "software.amazon.dynamodb:DynamoDBLocal", version.ref = "ddb-local-version" }
 
 [bundles]
 # bundle of smithy-kotlin dependencies all AWS service clients have
@@ -146,6 +146,7 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator-version" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
+mokkery = { id = "dev.mokkery", version.ref = "mokkery-version" }
 aws-kotlin-repo-tools-kmp = { id = "aws.sdk.kotlin.gradle.kmp", version.ref = "aws-kotlin-repo-tools-version" }
 aws-kotlin-repo-tools-smithybuild = { id = "aws.sdk.kotlin.gradle.smithybuild", version.ref = "aws-kotlin-repo-tools-version" }
-gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.1"}
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "2.1.1"}

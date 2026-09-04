@@ -16,34 +16,46 @@ import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.runBlocking
-import kotlin.jvm.JvmStatic
 import kotlin.test.*
 import kotlin.time.Duration.Companion.minutes
 
+/**
+ * Tests for S3 Express operations
+ */
+@TestInstance(TestLifecycle.PER_CLASS)
 class S3ExpressTest {
     companion object {
-        private lateinit var client: S3Client
-        private const val S3_EXPRESS_BUCKET_SUFFIX = "--usw2-az1--x-s3"
-        private lateinit var testBuckets: List<String>
+        private const val AVAILABILITY_ZONE = "usw2-az1" // us-west-2 availability zone 1
+    }
 
-        @BeforeAll
-        @JvmStatic
-        fun setup() = runBlocking {
-            client = S3Client { region = S3TestUtils.DEFAULT_REGION }
-            testBuckets = S3TestUtils.getOrCreateSharedDirectoryBuckets(client, S3_EXPRESS_BUCKET_SUFFIX)
+    private val client = S3TestUtils.createClient()
+
+    private lateinit var testBuckets: List<String>
+
+    @BeforeAll
+    fun setup(): Unit = runBlocking {
+        // create a few test buckets to test the credentials cache
+        testBuckets = (1..3).map { index ->
+            S3TestUtils.createTestDirectoryBucket(client, AVAILABILITY_ZONE, index.toString())
         }
+    }
 
-        @AfterAll
-        @JvmStatic
-        fun cleanup() = runBlocking {
-            S3TestUtils.deleteSharedDirectoryBuckets(client, S3_EXPRESS_BUCKET_SUFFIX)
+    @AfterAll
+    fun cleanup(): Unit = runBlocking {
+        try {
+            if (::testBuckets.isInitialized) {
+                testBuckets.forEach { bucket -> S3TestUtils.deleteBucket(client, bucket) }
+            }
+        } finally {
             client.close()
         }
     }
 
     @Test
-    fun testPutObject(): Unit = runBlocking {
+    fun testPutObject() = runBlocking {
         val content = "30 minutes, or it's free!"
         val keyName = "express.txt"
 
@@ -75,7 +87,7 @@ class S3ExpressTest {
 
     @Ignore
     @Test
-    fun testPresignedPutObject(): Unit = runBlocking {
+    fun testPresignedPutObject() = runBlocking {
         val content = "Presign this!"
         val keyName = "express-presigned.txt"
 
@@ -131,6 +143,7 @@ class S3ExpressTest {
         val testBucket = testBuckets.first()
         val testObject = "I-will-be-uploaded-in-parts-!"
 
+        // Parts need to be at least 5 MB
         val partOne = "Hello".repeat(1_048_576)
         val partTwo = "World".repeat(1_048_576)
 
