@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.47] - 09/04/2026
+
+### Features
+* (**bedrock**) New AWS REVIEW mode as supported data retention mode for Bedrock models
+* (**ec2**) Adds support for ValidateSecurityGroupQuotasForInterface, an API that specifically authorized AWS services use to validate security group rule quotas before creating an elastic network interface.
+* (**mediatailor**) Elemental MediaTailor now supports two new Monetization Functions lifecycle hooks, Post Ads Response and Pre Manifest Insertion, and a VAST Request function type that calls a VAST or VMAP ad server. This release also adds Yield Optimization with demand from Amazon Publisher Services.
+* (**servicequotas**) Service Quotas adds the AdjustableAtLevel property to QuotaContext, indicating whether a quota is adjustable at the account or resource level.
+
 ## [1.8.46] - 09/03/2026
 
 ### Features
