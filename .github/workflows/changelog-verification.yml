@@ -12,6 +12,15 @@ on:
       - '*-main'
   merge_group:
     types: [checks_requested]
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+        default: ''
+    secrets:
+      CI_AWS_ROLE_ARN:
+        required: true
 
 jobs:
   changelog-verification:
@@ -27,3 +36,5 @@ jobs:
 
       - name: Verify changelog
         uses: aws/aws-kotlin-repo-tools/.github/actions/changelog-verification@main
+        with:
+          ref: ${{ inputs.ref }}

@@ -8,6 +8,15 @@ on:
       - '*-main'
   merge_group:
     types: [checks_requested]
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+        default: ''
+    secrets:
+      CI_AWS_ROLE_ARN:
+        required: true
 
 # Allow one instance of this workflow per pull request, and cancel older runs when new changes are pushed
 concurrency:
@@ -29,6 +38,7 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.ref }}
           path: 'aws-sdk-kotlin'
 
       - name: Setup Build

@@ -1,0 +1,101 @@
+name: External PR CI (privileged)
+
+on:
+  pull_request_target:
+    types: [labeled, synchronize]
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+concurrency:
+  group: external-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      approved: ${{ steps.check.outputs.approved }}
+    steps:
+      - name: Revoke approval on new commits
+        if: ${{ github.event.action == 'synchronize' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr edit "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            --remove-label safe-to-test || true
+
+      - name: Determine whether to run
+        id: check
+        run: |
+          if [ "${{ github.event.action }}" == "labeled" ] \
+            && [ "${{ github.event.label.name }}" == "safe-to-test" ] \
+            && [ "${{ github.event.pull_request.head.repo.fork }}" == "true" ]; then
+            echo "approved=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  ci:
+    needs: gate
+    if: ${{ needs.gate.outputs.approved == 'true' }}
+    uses: ./.github/workflows/continuous-integration.yml
+    secrets: inherit
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+
+  reduced-ci:
+    needs: gate
+    if: ${{ needs.gate.outputs.approved == 'true' }}
+    uses: ./.github/workflows/continuous-integration-reduced.yml
+    secrets: inherit
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+
+  kat-transform:
+    needs: gate
+    if: ${{ needs.gate.outputs.approved == 'true' }}
+    uses: ./.github/workflows/kat-transform.yml
+    secrets: inherit
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+
+  service-ci:
+    needs: gate
+    if: ${{ needs.gate.outputs.approved == 'true' }}
+    uses: ./.github/workflows/service-ci.yml
+    secrets: inherit
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+
+  e2e-tests:
+    needs: gate
+    if: ${{ needs.gate.outputs.approved == 'true' }}
+    uses: ./.github/workflows/e2e-tests.yml
+    secrets: inherit
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+
+  changelog:
+    needs: gate
+    if: ${{ needs.gate.outputs.approved == 'true' }}
+    uses: ./.github/workflows/changelog-verification.yml
+    secrets: inherit
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+
+  required:
+    if: ${{ always() }}
+    needs: [ci, reduced-ci, kat-transform, service-ci, e2e-tests, changelog]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all caller jobs succeeded
+        run: |
+          if [ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]; then
+            echo "One or more required CI jobs failed or were cancelled."
+            exit 1
+          fi
+          echo "All required CI jobs succeeded."

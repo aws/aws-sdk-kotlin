@@ -1,0 +1,22 @@
+name: CI Required
+
+# Produces the aggregate `required` status context on the same-repo path under the
+# SAME name the privileged entrypoint (external-pr-ci.yml) produces, so a single
+# branch-protection rule ("required") covers both same-repo and fork-PR origins.
+#
+# Limitation: this job does NOT itself gate the individual same-repo checks (jvm,
+# all-platforms, verify-transform, build-sdk, e2e-tests, changelog-verification).
+# Those checks run via each workflow's own `pull_request` / `merge_group` triggers
+# and remain independently required. See .github/BRANCH_PROTECTION.md.
+
+on:
+  pull_request:
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  required:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Aggregate required (same-repo)
+        run: echo "Same-repo CI aggregate succeeded."
