@@ -91,16 +91,19 @@ class S3ChecksumTest {
         val testBody = "Hello World"
         val testBodyBytes = testBody.encodeToByteArray()
 
-        // Use a streaming (SourceContent) body with a known content length so the request
-        // is eligible for aws-chunked content encoding (a Buffer body from ByteStream.fromString
-        // is not), keeping streaming-payload signing + trailing-checksum coverage.
+        // Exercise aws-chunked streaming-payload signing + trailing checksums.
+        // isEligibleForAwsChunkedStreaming = SourceContent/ChannelContent && contentLength != null &&
+        // (isOneShot || contentLength > AWS_CHUNKED_THRESHOLD). A one-shot source with a known
+        // content length satisfies the isOneShot disjunct, so it is eligible at any size and
+        // FlexibleChecksumsRequestInterceptor routes it to calculateAwsChunkedStreamingChecksum
+        // (checksum computed during transmission as a trailer).
         client.putObject {
             bucket = testBucket
             key = testKey
             body = object : ByteStream.SourceStream() {
                 override fun readFrom(): SdkSource = testBodyBytes.source()
                 override val contentLength: Long = testBodyBytes.size.toLong()
-                override val isOneShot: Boolean = false
+                override val isOneShot: Boolean = true
             }
         }
 
