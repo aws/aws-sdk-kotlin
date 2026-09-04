@@ -14,6 +14,7 @@ import aws.sdk.kotlin.services.s3control.paginators.listMultiRegionAccessPointsP
 import aws.smithy.kotlin.runtime.auth.awssigning.DefaultAwsSigner
 import aws.smithy.kotlin.runtime.auth.awssigning.crt.CrtAwsSigner
 import aws.smithy.kotlin.runtime.http.auth.SigV4AsymmetricAuthScheme
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.TestInstance
@@ -108,14 +109,19 @@ class MultiRegionAccessPointTest {
                 authSchemes = listOf(SigV4AsymmetricAuthScheme(signer))
             }
 
-            s3SigV4a.putObject {
-                bucket = multiRegionAccessPointArn
-                key = TEST_OBJECT_KEY
-            }
+            // Close the derived client so its share() on s3West's managed engine is released;
+            // otherwise the engine's SdkManagedGroup refcount never reaches zero and s3West's
+            // engine is never torn down (leaks CRT resources on Kotlin/Native).
+            s3SigV4a.use {
+                s3SigV4a.putObject {
+                    bucket = multiRegionAccessPointArn
+                    key = TEST_OBJECT_KEY
+                }
 
-            s3SigV4a.deleteObject {
-                bucket = multiRegionAccessPointArn
-                key = TEST_OBJECT_KEY
+                s3SigV4a.deleteObject {
+                    bucket = multiRegionAccessPointArn
+                    key = TEST_OBJECT_KEY
+                }
             }
         }
     }

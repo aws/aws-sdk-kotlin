@@ -11,8 +11,12 @@ import aws.sdk.kotlin.services.s3.model.*
 import aws.sdk.kotlin.services.s3.presigners.presignPutObject
 import aws.smithy.kotlin.runtime.content.*
 import aws.smithy.kotlin.runtime.hashing.crc32
+import aws.smithy.kotlin.runtime.client.ProtocolRequestInterceptorContext
+import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
+import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.io.SdkSource
 import aws.smithy.kotlin.runtime.io.source
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.RandomTempFile
@@ -40,8 +44,13 @@ class S3ChecksumTest {
 
     @AfterAll
     fun cleanUp(): Unit = runBlocking {
-        S3TestUtils.deleteBucket(client, testBucket)
-        client.close()
+        try {
+            if (::testBucket.isInitialized) {
+                S3TestUtils.deleteBucket(client, testBucket)
+            }
+        } finally {
+            client.close()
+        }
     }
 
     @Test
@@ -97,15 +106,27 @@ class S3ChecksumTest {
         // content length satisfies the isOneShot disjunct, so it is eligible at any size and
         // FlexibleChecksumsRequestInterceptor routes it to calculateAwsChunkedStreamingChecksum
         // (checksum computed during transmission as a trailer).
-        client.putObject {
-            bucket = testBucket
-            key = testKey
-            body = object : ByteStream.SourceStream() {
-                override fun readFrom(): SdkSource = testBodyBytes.source()
-                override val contentLength: Long = testBodyBytes.size.toLong()
-                override val isOneShot: Boolean = true
+        //
+        // Round-tripping the body alone can't detect a regression to plain SigV4 (the object is
+        // identical either way), so an interceptor asserts the transmitted request actually carries
+        // the aws-chunked headers, and we assert the interceptor fired.
+        val chunkedAssertions = AwsChunkedAssertingInterceptor()
+
+        client.withConfig {
+            interceptors += chunkedAssertions
+        }.use { chunkedClient ->
+            chunkedClient.putObject {
+                bucket = testBucket
+                key = testKey
+                body = object : ByteStream.SourceStream() {
+                    override fun readFrom(): SdkSource = testBodyBytes.source()
+                    override val contentLength: Long = testBodyBytes.size.toLong()
+                    override val isOneShot: Boolean = true
+                }
             }
         }
+
+        assertTrue(chunkedAssertions.sawChunkedRequest, "Expected a PutObject request using aws-chunked encoding")
 
         client.getObject(
             GetObjectRequest {
@@ -114,6 +135,26 @@ class S3ChecksumTest {
             },
         ) { actual ->
             assertEquals(testBody, actual.body?.decodeToString() ?: "")
+        }
+    }
+
+    /**
+     * Verifies the transmitted request actually took the aws-chunked path: [setAwsChunkedHeaders]
+     * appends `Content-Encoding: aws-chunked` and the flexible-checksums path appends `x-amz-trailer`,
+     * both at signing time, so they're visible in [readAfterSigning].
+     */
+    private class AwsChunkedAssertingInterceptor : HttpInterceptor {
+        var sawChunkedRequest = false
+
+        override fun readAfterSigning(context: ProtocolRequestInterceptorContext<Any, HttpRequest>) {
+            val headers = context.protocolRequest.headers
+            if (headers.contains("Content-Encoding", "aws-chunked")) {
+                sawChunkedRequest = true
+                assertTrue(
+                    headers.contains("x-amz-trailer"),
+                    "aws-chunked request is missing the x-amz-trailer header (trailing checksum)",
+                )
+            }
         }
     }
 
@@ -169,7 +210,7 @@ class S3ChecksumTest {
             },
         ) { actual ->
             val actualChecksum = actual.body!!.toByteArray().crc32()
-            assertEquals(actualChecksum, expectedChecksum)
+            assertEquals(expectedChecksum, actualChecksum)
         }
 
         file.delete()

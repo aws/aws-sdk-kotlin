@@ -45,8 +45,13 @@ class S3ExpressTest {
 
     @AfterAll
     fun cleanup(): Unit = runBlocking {
-        testBuckets.forEach { bucket -> S3TestUtils.deleteBucket(client, bucket) }
-        client.close()
+        try {
+            if (::testBuckets.isInitialized) {
+                testBuckets.forEach { bucket -> S3TestUtils.deleteBucket(client, bucket) }
+            }
+        } finally {
+            client.close()
+        }
     }
 
     @Test

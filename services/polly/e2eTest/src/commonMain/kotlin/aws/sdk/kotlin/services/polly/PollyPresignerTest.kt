@@ -11,6 +11,7 @@ import aws.sdk.kotlin.services.polly.presigners.presignSynthesizeSpeech
 import aws.sdk.kotlin.testing.withAllEngines
 import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.testing.TestInstance
 import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.runBlocking
@@ -32,15 +33,17 @@ class PollyPresignerTest {
         }
 
         val client = PollyClient { region = "us-east-1" }
-        val presignedRequest = client.presignSynthesizeSpeech(unsignedRequest, 10.seconds)
+        client.use {
+            val presignedRequest = client.presignSynthesizeSpeech(unsignedRequest, 10.seconds)
 
-        withAllEngines { context ->
-            val httpClient = SdkHttpClient(context.engine)
+            withAllEngines { context ->
+                val httpClient = SdkHttpClient(context.engine)
 
-            val call = httpClient.call(presignedRequest)
-            call.complete()
+                val call = httpClient.call(presignedRequest)
+                call.complete()
 
-            assertEquals(200, call.response.status.value, "presigned Polly request failed for ${context.name} engine")
+                assertEquals(200, call.response.status.value, "presigned Polly request failed for ${context.name} engine")
+            }
         }
     }
 }

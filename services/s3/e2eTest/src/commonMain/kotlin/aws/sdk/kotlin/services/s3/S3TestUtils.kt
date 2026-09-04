@@ -20,6 +20,7 @@ import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.TimestampFormat
+import aws.smithy.kotlin.runtime.util.Uuid
 import aws.smithy.kotlin.runtime.util.asyncLazy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -36,10 +37,14 @@ object S3TestUtils {
     private const val S3_MAX_BUCKET_NAME_LENGTH = 63 // https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
 
     val testRunId by lazy {
-        Instant
+        val timestamp = Instant
             .now()
             .format(TimestampFormat.ISO_8601_CONDENSED)
             .lowercase()
+        // Append a short random suffix so concurrent suites (e.g. JVM and Kotlin/Native)
+        // that start in the same second don't collide on a shared bucket name and delete
+        // each other's buckets.
+        "$timestamp-${Uuid.random().toString().substringBefore('-')}"
             .also { println("Starting test run ID $it") }
     }
 
@@ -166,15 +171,31 @@ object S3TestUtils {
     }
 
     private suspend fun deleteMultiPartUploads(client: S3Client, bucketName: String) {
-        client.listMultipartUploads {
-            bucket = bucketName
-        }.uploads?.forEach { upload ->
-            client.abortMultipartUpload {
+        // ListMultipartUploads is not a modeled paginated operation, so page manually via the
+        // key-marker / upload-id-marker continuation tokens; an unpaginated single call would
+        // leave any uploads beyond the first page un-aborted, leaking the bucket permanently.
+        var nextKeyMarker: String? = null
+        var nextUploadIdMarker: String? = null
+        var isTruncated: Boolean
+        do {
+            val response = client.listMultipartUploads {
                 bucket = bucketName
-                key = upload.key
-                uploadId = upload.uploadId
+                keyMarker = nextKeyMarker
+                uploadIdMarker = nextUploadIdMarker
             }
-        }
+
+            response.uploads?.forEach { upload ->
+                client.abortMultipartUpload {
+                    bucket = bucketName
+                    key = upload.key
+                    uploadId = upload.uploadId
+                }
+            }
+
+            nextKeyMarker = response.nextKeyMarker
+            nextUploadIdMarker = response.nextUploadIdMarker
+            isTruncated = response.isTruncated == true
+        } while (isTruncated)
     }
 
     suspend fun responseCodeFromPut(engine: HttpClientEngine, presignedRequest: HttpRequest, content: String): Int {
