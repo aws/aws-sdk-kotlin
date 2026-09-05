@@ -102,6 +102,9 @@ smithy-aws-endpoints = { module = "software.amazon.smithy:smithy-aws-endpoints",
 smithy-aws-traits = { module = "software.amazon.smithy:smithy-aws-traits", version.ref = "smithy-version" }
 smithy-protocol-traits = { module = "software.amazon.smithy:smithy-protocol-traits", version.ref = "smithy-version" }
 smithy-aws-protocol-tests = { module = "software.amazon.smithy:smithy-aws-protocol-tests", version.ref = "smithy-version" }
+# TODO: enable once Smithy publishes the serde benchmark models and confirm the artifact name.
+#       Uncomment here and in benchmarks/serde-benchmarks/build.gradle.kts.
+# smithy-serde-benchmark-models = { module = "software.amazon.smithy:smithy-serde-benchmark-models", version.ref = "smithy-version" }
 smithy-aws-iam-traits = { module = "software.amazon.smithy:smithy-aws-iam-traits", version.ref = "smithy-version" }
 smithy-aws-cloudformation-traits = { module = "software.amazon.smithy:smithy-aws-cloudformation-traits", version.ref = "smithy-version" }
 smithy-model = { module = "software.amazon.smithy:smithy-model", version.ref = "smithy-version" }
