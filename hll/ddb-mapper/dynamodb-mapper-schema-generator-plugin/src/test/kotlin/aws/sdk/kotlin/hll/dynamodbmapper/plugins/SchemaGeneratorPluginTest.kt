@@ -813,4 +813,129 @@ class SchemaGeneratorPluginTest {
         val result = runner.build()
         assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
     }
+
+    @Test
+    fun testNestedItems() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test"))
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("nested/src/NestedItem")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas"
+
+        // The table item (@DynamoDbItem) generates a full schema and references the nested value converter
+        val personSchema = File(testProjectDir, "$basePath/PersonSchema.kt")
+        assertTrue(personSchema.exists())
+        val personContents = personSchema.readText()
+        assertContains(personContents, "public object PersonSchema : ItemSchema.PartitionKey<Person, KeyType.Key1<Int>>")
+        assertContains(personContents, "AddressValueConverter")
+
+        // The nested-only type (@DynamoDbMappable) generates a converter + value converter but NO schema or table accessor
+        val addressSchema = File(testProjectDir, "$basePath/AddressSchema.kt")
+        assertTrue(addressSchema.exists())
+        val addressContents = addressSchema.readText()
+        assertContains(addressContents, "public object AddressConverter : ItemConverter<Address>")
+        assertContains(addressContents, "public val AddressValueConverter:")
+        assertFalse(addressContents.contains("ItemSchema.PartitionKey"))
+        assertFalse(addressContents.contains("getAddressTable"))
+
+        // Round-trip conversion
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/NestedItemTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.createNewFile()
+        testFile.writeText(getResource("/nested/test/NestedItemTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testCrossPackageNesting() = withTestProject {
+        createClassFile("nested/crosspackage/Coordinates")
+        createClassFile("nested/crosspackage/Place")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        // Nested type in org.example.geo generates its value converter in that package's generated schemas
+        val coordinatesSchema = File(
+            testProjectDir,
+            "build/generated/ksp/main/kotlin/org/example/geo/dynamodbmapper/generatedschemas/CoordinatesSchema.kt",
+        )
+        assertTrue(coordinatesSchema.exists())
+        assertContains(coordinatesSchema.readText(), "public val CoordinatesValueConverter:")
+
+        // The referencing table item in org.example must reference the converter in the nested type's package
+        val placeSchema = File(
+            testProjectDir,
+            "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas/PlaceSchema.kt",
+        )
+        assertTrue(placeSchema.exists())
+        assertContains(
+            placeSchema.readText(),
+            "import org.example.geo.dynamodbmapper.generatedschemas.CoordinatesValueConverter",
+        )
+    }
+
+    @Test
+    fun testSelfReferentialNestingFails() = withTestProject {
+        createClassFile("nested/src/SelfReferential")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Cyclic nesting detected involving type 'org.example.TreeNode'")
+    }
+
+    @Test
+    fun testMutualCyclicNestingFails() = withTestProject {
+        createClassFile("nested/negative/MutualCycle")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Cyclic nesting detected")
+    }
+
+    @Test
+    fun testMappableOnAnnotationClassFails() = withTestProject {
+        createClassFile("nested/negative/MappableAnnotation")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "@DynamoDbMappable cannot be applied to annotation classes")
+    }
+
+    @Test
+    fun testNestedWithKeyFails() = withTestProject {
+        createClassFile("nested/negative/NestedWithKey")
+
+        val result = runner.buildAndFail()
+        assertContains(
+            result.output,
+            "is annotated with @DynamoDbPartitionKey. These annotations are only valid on a @DynamoDbItem table item",
+        )
+    }
+
+    @Test
+    fun testUnannotatedNestedTypeFails() = withTestProject {
+        createClassFile("nested/negative/UnannotatedNested")
+
+        val result = runner.buildAndFail()
+        assertContains(
+            result.output,
+            "If 'org.example.PlainThing' should be stored as a nested item, annotate it with @DynamoDbMappable",
+        )
+    }
+
+    @Test
+    fun testSetOfNestedTypeFails() = withTestProject {
+        createClassFile("nested/negative/SetOfNested")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Unsupported set element")
+    }
 }
