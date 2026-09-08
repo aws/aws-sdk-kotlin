@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.8.48] - 09/08/2026
+
+### Features
+* (**appflow**) Amazon AppFlow now supports key pair (RSA private key) authentication for the Snowflake connector. You can provide a privateKey in SnowflakeConnectorProfileCredentials, and password is no longer required. This is a non-breaking, additive change available via the AWS SDK and CLI.
+* (**cloudtrail**) Adds support for the RecursiveLogging trail setting, which suppresses recursive events generated when CloudTrail delivers logs to a trail's destinations.
+* (**connect**) Releasing workload types feature. A proper launch announcement or details will follow up.
+* (**ec2**) Adds the InterfaceTypes field to NetworkCardInfo in the DescribeInstanceTypes response. This field identifies the network interface types supported by each network card.
+* (**mgn**) This release adds support for configuring the EBS volume initialization rate and delete on termination behavior in launch configuration template
+* (**omics**) Added support for session policies in AWS HealthOmics Workflows, allowing customers to scope down IAM permissions for individual workflow runs without modifying the service role.
+* (**pinpointsmsvoicev2**) This feature will allow customers to specify an area-code when requesting a 10DLC number. Why it matters- Customers can now select a number that matches where their business is located.
+* (**s3**) Adds support for Amazon S3 Object Lock variable retention.  Existing S3 APIs that support S3 Object Lock parameters now support two new parameters EventHold and EventHoldDuration at the object level, and DefaultEventHoldDuration at the bucket level.
+* (**s3control**) Adds support for Amazon S3 Object Lock variable retention.  Existing S3 APIs that support S3 Object Lock parameters now support two new parameters EventHold and EventHoldDuration at the object level, and DefaultEventHoldDuration at the bucket level.
+* (**sagemaker**) Add support for InstancePreferences list for multiple instance type input support on SageMaker Training and Processing
+
 ## [1.8.47] - 09/04/2026
 
 ### Features
