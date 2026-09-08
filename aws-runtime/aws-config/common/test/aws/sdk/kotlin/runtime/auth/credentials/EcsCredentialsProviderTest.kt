@@ -11,6 +11,7 @@ import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetri
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderException
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.http.Headers
 import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpMethod
@@ -50,6 +51,7 @@ class EcsCredentialsProviderTest {
         expectedExpiration,
         "EcsContainer",
     ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_HTTP)
+        .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
 
     private fun ecsResponse(accountId: String? = null): HttpResponse {
         val payload = buildJsonObject {
@@ -579,6 +581,7 @@ class EcsCredentialsProviderTest {
             expectedExpiration,
             "EcsContainer",
             "12345",
+            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_HTTP)
         assertEquals(expected, actual)
         engine.assertRequests()

@@ -1,0 +1,6 @@
+{
+  "id": "3f5127ef-2c4a-4062-86e4-ed9dd56c8ecf",
+  "type": "feature",
+  "description": "Refresh cached credentials when a service rejects them as expired or invalid, instead of waiting for the next scheduled refresh",
+  "module": "aws-config"
+}

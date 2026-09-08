@@ -9,8 +9,12 @@ import aws.sdk.kotlin.runtime.config.imds.*
 import aws.sdk.kotlin.runtime.config.imds.DEFAULT_TOKEN_TTL_SECONDS
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
+import aws.smithy.kotlin.runtime.auth.awscredentials.CallerOwnsCredentialsRefresh
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderException
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
+import aws.smithy.kotlin.runtime.collections.attributesOf
+import aws.smithy.kotlin.runtime.collections.emptyAttributes
 import aws.smithy.kotlin.runtime.http.*
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngineBase
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngineConfig
@@ -129,6 +133,7 @@ class ImdsCredentialsProviderTest {
             expiration0,
             "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
+            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
         assertEquals(expected0, actual0)
 
         testClock.advance(1.seconds)
@@ -141,6 +146,7 @@ class ImdsCredentialsProviderTest {
             expiration1,
             "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
+            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
         assertEquals(expected1, actual1)
 
         connection.assertRequests()
@@ -198,6 +204,7 @@ class ImdsCredentialsProviderTest {
             expiration,
             "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
+            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
         assertEquals(expected, actual)
 
         connection.assertRequests()
@@ -337,6 +344,7 @@ class ImdsCredentialsProviderTest {
             expiration = Instant.fromEpochSeconds(1631935916),
             providerName = "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
+            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
 
         assertEquals(expected, actual)
 
@@ -405,6 +413,7 @@ class ImdsCredentialsProviderTest {
             expiration = Instant.fromEpochSeconds(1631935916),
             providerName = "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
+            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
 
         val provider = ImdsCredentialsProvider(
             profileOverride = "imds-test-role",
@@ -522,6 +531,7 @@ class ImdsCredentialsProviderTest {
             expiration = Instant.fromEpochSeconds(1631935916),
             providerName = "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
+            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
 
         val provider = ImdsCredentialsProvider(
             profileOverride = "imds-test-role",
@@ -579,5 +589,168 @@ class ImdsCredentialsProviderTest {
         assertFailsWith<CredentialsProviderException> {
             provider.resolve()
         }
+    }
+
+    // The next three cases cover the CallerOwnsCredentialsRefresh gate: when something above this provider is running
+    // the refresh lifecycle, this provider keeps no lifecycle state of its own.
+
+    @Test
+    fun testCallerOwnedRefreshPropagatesFailure() = runTest {
+        val testClock = ManualClock()
+        val connection = expiredCredentialsThenServerErrors(testClock)
+
+        val provider = ImdsCredentialsProvider(
+            profileOverride = "imds-test-role",
+            client = lazyOf(
+                ImdsClient {
+                    engine = connection
+                    clock = testClock
+                },
+            ),
+            clock = testClock,
+            platformProvider = ec2MetadataEnabledPlatform,
+        )
+        val callerOwnsRefresh = attributesOf { CallerOwnsCredentialsRefresh to true }
+
+        assertEquals(expiredImdsCredentials, provider.resolve(callerOwnsRefresh))
+
+        // The contrast with testUsesPreviousCredentialsOnServerError: nothing is retained to fall back to, because
+        // deciding whether to keep serving the previous value is the caller's cache's decision to make.
+        assertFailsWith<CredentialsProviderException> {
+            provider.resolve(callerOwnsRefresh)
+        }
+    }
+
+    @Test
+    fun testCallerOwnedRefreshKeepsNoStateBetweenResolves() = runTest {
+        val testClock = ManualClock()
+        val connection = buildTestConnection {
+            expect(
+                tokenRequest("http://169.254.169.254", DEFAULT_TOKEN_TTL_SECONDS),
+                tokenResponse(DEFAULT_TOKEN_TTL_SECONDS, "TOKEN_A"),
+            )
+            // two resolves, two credential requests - the already-past expiration does not put this provider into a
+            // refresh window that suppresses the second one
+            repeat(2) {
+                expect(
+                    imdsRequest(
+                        "http://169.254.169.254/latest/meta-data/iam/security-credentials/imds-test-role",
+                        "TOKEN_A",
+                    ),
+                    imdsResponse(EXPIRED_CREDENTIALS_PAYLOAD),
+                )
+            }
+        }
+
+        val provider = ImdsCredentialsProvider(
+            profileOverride = "imds-test-role",
+            client = lazyOf(
+                ImdsClient {
+                    engine = connection
+                    clock = testClock
+                },
+            ),
+            clock = testClock,
+            platformProvider = ec2MetadataEnabledPlatform,
+        )
+        val callerOwnsRefresh = attributesOf { CallerOwnsCredentialsRefresh to true }
+
+        // The past expiration is returned as-is both times, rather than being extended.
+        assertEquals(expiredImdsCredentials, provider.resolve(callerOwnsRefresh))
+        assertEquals(expiredImdsCredentials, provider.resolve(callerOwnsRefresh))
+
+        connection.assertRequests()
+    }
+
+    @Test
+    fun testUnsetCallerOwnedRefreshUsesShippedLifecycle() = runTest {
+        val testClock = ManualClock()
+        val connection = expiredCredentialsThenServerErrors(testClock)
+
+        val provider = ImdsCredentialsProvider(
+            profileOverride = "imds-test-role",
+            client = lazyOf(
+                ImdsClient {
+                    engine = connection
+                    clock = testClock
+                },
+            ),
+            clock = testClock,
+            platformProvider = ec2MetadataEnabledPlatform,
+        )
+
+        // The gate is opt-in: absent, and explicitly false, both mean this provider paces itself, so the second
+        // resolve falls back to the previously-served credentials instead of failing.
+        assertEquals(expiredImdsCredentials, provider.resolve(emptyAttributes()))
+        assertEquals(expiredImdsCredentials, provider.resolve(attributesOf { CallerOwnsCredentialsRefresh to false }))
+    }
+
+    private val expiredImdsCredentials = Credentials(
+        accessKeyId = "ASIARTEST",
+        secretAccessKey = "xjtest",
+        sessionToken = "IQote///test",
+        expiration = Instant.fromEpochSeconds(1631935916),
+        providerName = "IMDSv2",
+    ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
+        .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
+
+    /** Serves a token and one set of already-expired credentials, then fails every later request with a 500. */
+    private fun expiredCredentialsThenServerErrors(testClock: ManualClock) = object : HttpClientEngineBase("expiredThen500") {
+        var successfulCallCount = 0
+
+        override val config: HttpClientEngineConfig = HttpClientEngineConfig.Default
+
+        override suspend fun roundTrip(context: ExecutionContext, request: HttpRequest): HttpCall {
+            if (successfulCallCount >= 2) {
+                return HttpCall(
+                    HttpRequest(
+                        HttpMethod.GET,
+                        Url {
+                            scheme = Scheme.HTTP
+                            host = Host.parse("test")
+                            path.encoded = "/path/foo/bar"
+                        },
+                        Headers.Empty,
+                        HttpBody.Empty,
+                    ),
+                    HttpResponse(HttpStatusCode.InternalServerError, Headers.Empty, HttpBody.Empty),
+                    testClock.now(),
+                    testClock.now(),
+                )
+            }
+
+            successfulCallCount += 1
+            return when (successfulCallCount) {
+                1 -> HttpCall(
+                    tokenRequest("http://169.254.169.254", DEFAULT_TOKEN_TTL_SECONDS),
+                    tokenResponse(DEFAULT_TOKEN_TTL_SECONDS, "TOKEN_A"),
+                    testClock.now(),
+                    testClock.now(),
+                )
+                else -> HttpCall(
+                    imdsRequest(
+                        "http://169.254.169.254/latest/meta-data/iam/security-credentials/imds-test-role",
+                        "TOKEN_A",
+                    ),
+                    imdsResponse(EXPIRED_CREDENTIALS_PAYLOAD),
+                    testClock.now(),
+                    testClock.now(),
+                )
+            }
+        }
+    }
+
+    private companion object {
+        // expiration is 2021-09-18T03:31:56Z, which is in the past for every clock these tests use
+        const val EXPIRED_CREDENTIALS_PAYLOAD = """
+            {
+                "Code" : "Success",
+                "LastUpdated" : "2021-09-17T20:57:08Z",
+                "Type" : "AWS-HMAC",
+                "AccessKeyId" : "ASIARTEST",
+                "SecretAccessKey" : "xjtest",
+                "Token" : "IQote///test",
+                "Expiration" : "2021-09-18T03:31:56Z"
+            }"""
     }
 }

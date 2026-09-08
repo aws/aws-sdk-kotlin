@@ -67,11 +67,12 @@ class ProcessCredentialsProviderTest {
             ),
         )
 
+        // A process that states no expiration leaves it unset, rather than claiming a date in the year 275760.
         val expectedCredentials = Credentials(
             accessKeyId = "AccessKeyId",
             secretAccessKey = "SecretAccessKey",
             sessionToken = "SessionToken",
-            expiration = Instant.MAX_VALUE,
+            expiration = null,
             providerName = "Process",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_PROCESS)
 

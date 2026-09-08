@@ -1,0 +1,6 @@
+{
+  "id": "22439cf3-20e9-4385-b5c9-2f0bfd518d22",
+  "type": "bugfix",
+  "description": "Leave the expiration unset on credentials from a credential process that does not report one, instead of reporting an expiration in the year 275760 that suppressed refresh entirely",
+  "module": "aws-config"
+}
