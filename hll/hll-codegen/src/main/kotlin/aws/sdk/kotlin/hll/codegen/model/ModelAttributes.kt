@@ -6,6 +6,8 @@ package aws.sdk.kotlin.hll.codegen.model
 
 import aws.sdk.kotlin.runtime.InternalSdkApi
 import aws.smithy.kotlin.runtime.collections.AttributeKey
+import aws.smithy.kotlin.runtime.collections.Attributes
+import aws.smithy.kotlin.runtime.collections.MutableAttributes
 
 /**
  * Defines [AttributeKey] instances that relate to the data model of low-level to high-level codegen
@@ -13,9 +15,14 @@ import aws.smithy.kotlin.runtime.collections.AttributeKey
 @InternalSdkApi
 public object ModelAttributes {
     /**
-     * The types involved for a DSL-style method for working with a complex member, if applicable
+     * The types involved for DSL-style method(s) for working with a complex member, if applicable
      */
-    public val DslInfo: AttributeKey<DslInfo> = AttributeKey("aws.sdk.kotlin.hll#DslInfo")
+    public val Dsls: AttributeKey<List<DslInfo>> = AttributeKey("aws.sdk.kotlin.hll#Dsls")
+
+    /**
+     * Specifies whether the given API declaration (e.g., method, field, parameter, etc.) is generated.
+     */
+    public val GeneratedApi: AttributeKey<Boolean> = AttributeKey("aws.sdk.kotlin.hll.codegen#Generated")
 
     /**
      * For a given high-level [Member], this attribute key identifies the associated low-level [Member]
@@ -32,3 +39,12 @@ public object ModelAttributes {
      */
     public val LowLevelStructure: AttributeKey<Structure> = AttributeKey("aws.sdk.kotlin.hll#LowLevelStructure")
 }
+
+public val Attributes.generatedApi: Boolean
+    get() = this.getOrNull(ModelAttributes.GeneratedApi) ?: false
+
+public var MutableAttributes.generatedApi: Boolean
+    get() = this.getOrNull(ModelAttributes.GeneratedApi) ?: false
+    set(value) {
+        this.set(ModelAttributes.GeneratedApi, value)
+    }

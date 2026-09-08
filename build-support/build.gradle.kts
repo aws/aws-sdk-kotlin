@@ -25,9 +25,9 @@ dependencies {
     implementation(libs.smithy.protocol.traits)
     implementation(libs.kotlinx.serialization.json)
 
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.smithy.kotlin.testing)
+    testImplementation(libs.kotlinx.coroutines.core)
 }
 
 gradlePlugin {

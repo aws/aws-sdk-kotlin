@@ -6,12 +6,10 @@ package aws.sdk.kotlin.benchmarks.service.definitions
 
 import aws.sdk.kotlin.benchmarks.service.Common
 import aws.sdk.kotlin.services.sns.*
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 class SnsBenchmark : ServiceBenchmark<SnsClient> {
     private lateinit var arn: String
 
-    @OptIn(ExperimentalApi::class)
     override suspend fun client() = SnsClient.fromEnvironment {
         retryStrategy = Common.noRetries
         telemetryProvider = Common.telemetryProvider

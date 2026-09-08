@@ -22,7 +22,6 @@ dependencies {
     compileOnly(libs.dokka.core)
 
     testImplementation(libs.jsoup)
-    testImplementation(libs.junit.jupiter)
     testImplementation(libs.kotest.assertions.core.jvm)
     testImplementation(libs.kotlin.test.junit5)
 }

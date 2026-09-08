@@ -46,6 +46,13 @@ public val String.lowercaseFirstChar: String
     get() = replaceFirstChar { it.lowercaseChar() }
 
 /**
+ * Returns a string with the first letter uppercased (if applicable)
+ */
+@InternalSdkApi
+public val String.uppercaseFirstChar: String
+    get() = replaceFirstChar { it.uppercaseChar() }
+
+/**
  * Escapes and quotes a string such that it could be used in codegen
  */
 @InternalSdkApi

@@ -49,6 +49,24 @@
             "brazilName": "AwsSdkKotlinAccount"
         },
         {
+            "sdkId": "Account Access",
+            "namespace": "aws.sdk.kotlin.services.accountaccess",
+            "artifactName": "accountaccess",
+            "brazilName": "AwsSdkKotlinAccountAccess"
+        },
+        {
+            "sdkId": "Agent Registry",
+            "namespace": "aws.sdk.kotlin.services.agentregistry",
+            "artifactName": "agentregistry",
+            "brazilName": "AwsSdkKotlinAgentRegistry"
+        },
+        {
+            "sdkId": "Agent Registry Control",
+            "namespace": "aws.sdk.kotlin.services.agentregistrycontrol",
+            "artifactName": "agentregistrycontrol",
+            "brazilName": "AwsSdkKotlinAgentRegistryControl"
+        },
+        {
             "sdkId": "Amplify",
             "namespace": "aws.sdk.kotlin.services.amplify",
             "artifactName": "amplify",
@@ -691,6 +709,12 @@
             "brazilName": "AwsSdkKotlinDetective"
         },
         {
+            "sdkId": "DevOps Agent",
+            "namespace": "aws.sdk.kotlin.services.devopsagent",
+            "artifactName": "devopsagent",
+            "brazilName": "AwsSdkKotlinDevopsAgent"
+        },
+        {
             "sdkId": "DevOps Guru",
             "namespace": "aws.sdk.kotlin.services.devopsguru",
             "artifactName": "devopsguru",
@@ -985,6 +1009,12 @@
             "brazilName": "AwsSdkKotlinIam"
         },
         {
+            "sdkId": "IAM Toolbox",
+            "namespace": "aws.sdk.kotlin.services.iamtoolbox",
+            "artifactName": "iamtoolbox",
+            "brazilName": "AwsSdkKotlinIamToolbox"
+        },
+        {
             "sdkId": "IVS RealTime",
             "namespace": "aws.sdk.kotlin.services.ivsrealtime",
             "artifactName": "ivsrealtime",
@@ -1009,6 +1039,12 @@
             "brazilName": "AwsSdkKotlinInspector2"
         },
         {
+            "sdkId": "Interconnect",
+            "namespace": "aws.sdk.kotlin.services.interconnect",
+            "artifactName": "interconnect",
+            "brazilName": "AwsSdkKotlinInterconnect"
+        },
+        {
             "sdkId": "InternetMonitor",
             "namespace": "aws.sdk.kotlin.services.internetmonitor",
             "artifactName": "internetmonitor",
@@ -1031,18 +1067,6 @@
             "namespace": "aws.sdk.kotlin.services.iotdataplane",
             "artifactName": "iotdataplane",
             "brazilName": "AwsSdkKotlinIotDataPlane"
-        },
-        {
-            "sdkId": "IoT Events",
-            "namespace": "aws.sdk.kotlin.services.iotevents",
-            "artifactName": "iotevents",
-            "brazilName": "AwsSdkKotlinIotEvents"
-        },
-        {
-            "sdkId": "IoT Events Data",
-            "namespace": "aws.sdk.kotlin.services.ioteventsdata",
-            "artifactName": "ioteventsdata",
-            "brazilName": "AwsSdkKotlinIotEventsData"
         },
         {
             "sdkId": "IoT Jobs Data Plane",
@@ -1195,6 +1219,18 @@
             "brazilName": "AwsSdkKotlinLambda"
         },
         {
+            "sdkId": "Lambda Core",
+            "namespace": "aws.sdk.kotlin.services.lambdacore",
+            "artifactName": "lambdacore",
+            "brazilName": "AwsSdkKotlinLambdaCore"
+        },
+        {
+            "sdkId": "Lambda Microvms",
+            "namespace": "aws.sdk.kotlin.services.lambdamicrovms",
+            "artifactName": "lambdamicrovms",
+            "brazilName": "AwsSdkKotlinLambdaMicrovms"
+        },
+        {
             "sdkId": "Launch Wizard",
             "namespace": "aws.sdk.kotlin.services.launchwizard",
             "artifactName": "launchwizard",
@@ -1337,6 +1373,12 @@
             "namespace": "aws.sdk.kotlin.services.marketplacedeployment",
             "artifactName": "marketplacedeployment",
             "brazilName": "AwsSdkKotlinMarketplaceDeployment"
+        },
+        {
+            "sdkId": "Marketplace Discovery",
+            "namespace": "aws.sdk.kotlin.services.marketplacediscovery",
+            "artifactName": "marketplacediscovery",
+            "brazilName": "AwsSdkKotlinMarketplaceDiscovery"
         },
         {
             "sdkId": "Marketplace Entitlement Service",
@@ -1567,12 +1609,6 @@
             "brazilName": "AwsSdkKotlinPi"
         },
         {
-            "sdkId": "Panorama",
-            "namespace": "aws.sdk.kotlin.services.panorama",
-            "artifactName": "panorama",
-            "brazilName": "AwsSdkKotlinPanorama"
-        },
-        {
             "sdkId": "PartnerCentral Account",
             "namespace": "aws.sdk.kotlin.services.partnercentralaccount",
             "artifactName": "partnercentralaccount",
@@ -1589,6 +1625,12 @@
             "namespace": "aws.sdk.kotlin.services.partnercentralchannel",
             "artifactName": "partnercentralchannel",
             "brazilName": "AwsSdkKotlinPartnercentralChannel"
+        },
+        {
+            "sdkId": "PartnerCentral Revenue Measurement",
+            "namespace": "aws.sdk.kotlin.services.partnercentralrevenuemeasurement",
+            "artifactName": "partnercentralrevenuemeasurement",
+            "brazilName": "AwsSdkKotlinPartnercentralRevenueMeasurement"
         },
         {
             "sdkId": "PartnerCentral Selling",
@@ -1679,6 +1721,12 @@
             "namespace": "aws.sdk.kotlin.services.pricing",
             "artifactName": "pricing",
             "brazilName": "AwsSdkKotlinPricing"
+        },
+        {
+            "sdkId": "Pricing Plan Manager",
+            "namespace": "aws.sdk.kotlin.services.pricingplanmanager",
+            "artifactName": "pricingplanmanager",
+            "brazilName": "AwsSdkKotlinPricingPlanManager"
         },
         {
             "sdkId": "Proton",
@@ -1849,6 +1897,12 @@
             "brazilName": "AwsSdkKotlinS3Control"
         },
         {
+            "sdkId": "S3Files",
+            "namespace": "aws.sdk.kotlin.services.s3files",
+            "artifactName": "s3files",
+            "brazilName": "AwsSdkKotlinS3files"
+        },
+        {
             "sdkId": "S3Outposts",
             "namespace": "aws.sdk.kotlin.services.s3outposts",
             "artifactName": "s3outposts",
@@ -2005,6 +2059,12 @@
             "brazilName": "AwsSdkKotlinSagemakerEdge"
         },
         {
+            "sdkId": "SagemakerJobRuntime",
+            "namespace": "aws.sdk.kotlin.services.sagemakerjobruntime",
+            "artifactName": "sagemakerjobruntime",
+            "brazilName": "AwsSdkKotlinSagemakerjobruntime"
+        },
+        {
             "sdkId": "Scheduler",
             "namespace": "aws.sdk.kotlin.services.scheduler",
             "artifactName": "scheduler",
@@ -2021,6 +2081,12 @@
             "namespace": "aws.sdk.kotlin.services.securityir",
             "artifactName": "securityir",
             "brazilName": "AwsSdkKotlinSecurityIr"
+        },
+        {
+            "sdkId": "SecurityAgent",
+            "namespace": "aws.sdk.kotlin.services.securityagent",
+            "artifactName": "securityagent",
+            "brazilName": "AwsSdkKotlinSecurityagent"
         },
         {
             "sdkId": "SecurityHub",
@@ -2083,12 +2149,6 @@
             "brazilName": "AwsSdkKotlinSignin"
         },
         {
-            "sdkId": "SimSpaceWeaver",
-            "namespace": "aws.sdk.kotlin.services.simspaceweaver",
-            "artifactName": "simspaceweaver",
-            "brazilName": "AwsSdkKotlinSimspaceweaver"
-        },
-        {
             "sdkId": "SimpleDBv2",
             "namespace": "aws.sdk.kotlin.services.simpledbv2",
             "artifactName": "simpledbv2",
@@ -2141,6 +2201,18 @@
             "namespace": "aws.sdk.kotlin.services.supportapp",
             "artifactName": "supportapp",
             "brazilName": "AwsSdkKotlinSupportApp"
+        },
+        {
+            "sdkId": "SupportAuthZ",
+            "namespace": "aws.sdk.kotlin.services.supportauthz",
+            "artifactName": "supportauthz",
+            "brazilName": "AwsSdkKotlinSupportauthz"
+        },
+        {
+            "sdkId": "Sustainability",
+            "namespace": "aws.sdk.kotlin.services.sustainability",
+            "artifactName": "sustainability",
+            "brazilName": "AwsSdkKotlinSustainability"
         },
         {
             "sdkId": "TaxSettings",
@@ -2473,6 +2545,12 @@
             "brazilName": "AwsSdkKotlinResiliencehub"
         },
         {
+            "sdkId": "resiliencehubv2",
+            "namespace": "aws.sdk.kotlin.services.resiliencehubv2",
+            "artifactName": "resiliencehubv2",
+            "brazilName": "AwsSdkKotlinResiliencehubv2"
+        },
+        {
             "sdkId": "savingsplans",
             "namespace": "aws.sdk.kotlin.services.savingsplans",
             "artifactName": "savingsplans",
@@ -2501,6 +2579,12 @@
             "namespace": "aws.sdk.kotlin.services.tnb",
             "artifactName": "tnb",
             "brazilName": "AwsSdkKotlinTnb"
+        },
+        {
+            "sdkId": "uxc",
+            "namespace": "aws.sdk.kotlin.services.uxc",
+            "artifactName": "uxc",
+            "brazilName": "AwsSdkKotlinUxc"
         }
     ]
 }

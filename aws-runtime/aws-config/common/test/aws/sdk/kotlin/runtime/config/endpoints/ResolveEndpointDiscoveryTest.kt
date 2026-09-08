@@ -63,7 +63,7 @@ fun assertEpDiscovery(
     serviceRequiresEpDiscovery: Boolean,
     expected: Boolean,
 ) = runTest {
-    val provider = TestPlatformProvider(env, sysProps)
+    val provider = TestPlatformProvider.of(env = env, props = sysProps)
     val source = AwsConfigurationSource(Literals.DEFAULT_PROFILE, "", "")
 
     val profile = asyncLazy {

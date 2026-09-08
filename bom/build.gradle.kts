@@ -20,7 +20,7 @@ group = "aws.sdk.kotlin"
 version = sdkVersion
 description = "Provides a BOM"
 
-val evaluateAfter = listOf(":services", ":aws-runtime", ":tests", ":codegen")
+val evaluateAfter = listOf(":services", ":aws-runtime", ":tests", ":codegen", ":hll")
 evaluateAfter.forEach { evaluationDependsOn(it) }
 
 fun createBomConstraintsAndVersionCatalog() {
@@ -43,6 +43,7 @@ fun createBomConstraintsAndVersionCatalog() {
                     val prefix = when {
                         subproject.path.contains(":services") -> "services-"
                         subproject.path.contains(":aws-runtime") -> "runtime-"
+                        subproject.path.contains(":hll") && !subproject.name.startsWith("hll-") -> "hll-"
                         else -> ""
                     }
                     val alias = prefix + artifactId(target)

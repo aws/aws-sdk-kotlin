@@ -4,7 +4,6 @@
  */
 package aws.sdk.kotlin.e2etest
 
-import aws.sdk.kotlin.e2etest.S3TestUtils.getOrCreateSharedBucket
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.*
 import aws.sdk.kotlin.services.s3.putObject
@@ -27,12 +26,12 @@ class S3IntegrationTestJVM {
     @BeforeTest
     fun setUp() = runBlocking {
         client = S3Client { region = "us-west-2" }
-        testBucket = getOrCreateSharedBucket(client)
+        testBucket = S3TestUtils.createTestBucket(client, "integ-jvm")
     }
 
     @AfterTest
     fun cleanUp() = runBlocking {
-        S3TestUtils.deleteSharedBucket(client)
+        S3TestUtils.deleteBucket(client, testBucket)
         client.close()
     }
 

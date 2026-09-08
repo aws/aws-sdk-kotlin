@@ -246,7 +246,7 @@ fun testResolveEndpointUrl(
     envSuffix: String = "ELASTIC_BEANSTALK",
     sharedConfigKey: String = "elastic_beanstalk",
 ) = runTest {
-    val provider = TestPlatformProvider(env, sysProps)
+    val provider = TestPlatformProvider.of(env = env, props = sysProps)
     val source = AwsConfigurationSource(configProfile, "", "")
     val sharedConfig = asyncLazy { parse(Logger.None, FileType.CONFIGURATION, config).toSharedConfig(source) }
 

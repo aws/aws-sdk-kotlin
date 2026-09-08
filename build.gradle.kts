@@ -26,7 +26,7 @@ buildscript {
 
             FIXME: Figure out what broke our buildscript classpath, this is a temporary fix
              */
-            force("com.squareup.okhttp3:okhttp-coroutines:5.0.0-alpha.14")
+            force("com.squareup.okhttp3:okhttp-coroutines:5.5.0")
         }
     }
 }
@@ -51,14 +51,21 @@ allprojects {
         }
     }
 
-    if (testJavaVersion != null) {
-        tasks.withType<Test> {
+    tasks.withType<Test>().configureEach {
+        if (testJavaVersion != null) {
             val toolchains = project.extensions.getByType<JavaToolchainService>()
             javaLauncher.set(
                 toolchains.launcherFor {
                     languageVersion.set(testJavaVersion)
                 },
             )
+        }
+
+        if (testJavaVersion == null || testJavaVersion.asInt() >= 9) {
+            // Required to enable reflective access in testing in JDK 9+.
+            // See smithy-kotlin/runtime/testing/jvm/src/aws/smithy/kotlin/runtime/testing/SystemOverrides.kt for more
+            // info.
+            jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
         }
     }
 

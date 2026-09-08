@@ -7,7 +7,7 @@ package aws.sdk.kotlin.codegen.customization.s3
 import aws.sdk.kotlin.codegen.testutil.model
 import aws.smithy.kotlin.codegen.test.defaultSettings
 import aws.smithy.kotlin.codegen.test.newTestContext
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

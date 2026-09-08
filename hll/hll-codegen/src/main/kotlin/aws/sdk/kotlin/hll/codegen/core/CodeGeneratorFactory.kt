@@ -18,7 +18,7 @@ import com.google.devtools.ksp.processing.CodeGenerator as KSCodeGenerator
 public class CodeGeneratorFactory(
     private val ksCodeGenerator: KSCodeGenerator,
     private val logger: KSPLogger,
-    private val dependencies: Dependencies = Dependencies.ALL_FILES,
+    private val dependencies: Dependencies,
 ) {
     /**
      * Creates a new [CodeGenerator] backed by a [KSCodeGenerator]. The returned generator starts with no imports and
@@ -30,10 +30,13 @@ public class CodeGeneratorFactory(
      */
     public fun generator(fileName: String, pkg: String, codeGeneratorName: String): CodeGenerator {
         val imports = ImportDirectives()
+        val typeProcessor = TypeProcessor(pkg, imports)
         val processors = listOf(
             TemplateProcessor.Literal,
             TemplateProcessor.QuotedString,
-            TemplateProcessor.forType(pkg, imports),
+            typeProcessor.typeUsageProcessor,
+            typeProcessor.genericsListProcessor,
+            typeProcessor.typeDeclarationProcessor,
         )
         val engine = TemplateEngine(processors)
 

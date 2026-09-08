@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 class UserAgentTest {
     private val client = SdkHttpClient(TestEngine())
 
-    private fun initializeOp(platformProvider: PlatformProvider = TestPlatformProvider()) = SdkHttpOperation.build<Unit, HttpResponse> {
+    private fun initializeOp(platformProvider: PlatformProvider = TestPlatformProvider.of()) = SdkHttpOperation.build<Unit, HttpResponse> {
         serializeWith = HttpSerializer.Unit
         deserializeWith = HttpDeserializer.Identity
         operationName = "testOperation"
@@ -75,7 +75,7 @@ class UserAgentTest {
     @Test
     fun itMergesCustomMetadataWithExisting() = runTest {
         // see: https://github.com/awslabs/aws-sdk-kotlin/issues/694
-        val platform = TestPlatformProvider(
+        val platform = TestPlatformProvider.of(
             props = mapOf(
                 "aws.customMetadata.foo" to "bar",
                 "aws.customMetadata.baz" to "qux",
@@ -100,7 +100,7 @@ class UserAgentTest {
     @Test
     fun itDoesNotClobberExistingCustomMetadata() = runTest {
         // see: https://github.com/awslabs/aws-sdk-kotlin/issues/694
-        val platform = TestPlatformProvider(
+        val platform = TestPlatformProvider.of(
             props = mapOf(
                 "aws.customMetadata.foo" to "bar",
                 "aws.customMetadata.baz" to "qux",

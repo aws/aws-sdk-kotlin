@@ -4,9 +4,10 @@
  */
 package aws.sdk.kotlin.gradle.sdk
 
+import aws.smithy.kotlin.runtime.testing.withTempDir
+import kotlinx.coroutines.runBlocking
 import org.gradle.kotlin.dsl.extra
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import kotlin.test.*
 
@@ -64,60 +65,69 @@ class AwsServiceTest {
     }
 
     @Test
-    fun testFileToService(@TempDir tempDir: File) {
-        val tests = listOf(
-            BootstrapConfig.ALL,
-            // filename
-            BootstrapConfig("+test-gradle"),
-            BootstrapConfig("test-gradle"),
-            // artifact name
-            BootstrapConfig("+testgradle"),
-            BootstrapConfig("testgradle"),
-            // protocol
-            BootstrapConfig(null, "awsJson1_0"),
-        )
-
-        tests.forEach { bootstrap ->
-            val result = testWith(tempDir, bootstrap)
-            val expected = AwsService(
-                "gradle.test#TestService",
-                "aws.sdk.kotlin.services.testgradle2",
-                "1.2.3",
-                result.model,
-                "test-gradle",
-                "Test Gradle",
-                "1-alpha",
-                "test-gradle",
-                "The AWS SDK for Kotlin client for Test Gradle",
+    fun testFileToService() = runBlocking {
+        withTempDir { dir ->
+            val tempDir = File(dir.toString())
+            val tests = listOf(
+                BootstrapConfig.ALL,
+                // filename
+                BootstrapConfig("+test-gradle"),
+                BootstrapConfig("test-gradle"),
+                // artifact name
+                BootstrapConfig("+testgradle"),
+                BootstrapConfig("testgradle"),
+                // protocol
+                BootstrapConfig(null, "awsJson1_0"),
             )
-            assertEquals(expected, result.actual)
+
+            tests.forEach { bootstrap ->
+                val result = testWith(tempDir, bootstrap)
+                val expected = AwsService(
+                    "gradle.test#TestService",
+                    "aws.sdk.kotlin.services.testgradle2",
+                    "1.2.3",
+                    result.model,
+                    "test-gradle",
+                    "Test Gradle",
+                    "1-alpha",
+                    "test-gradle",
+                    "The AWS SDK for Kotlin client for Test Gradle",
+                )
+                assertEquals(expected, result.actual)
+            }
         }
     }
 
     @Test
-    fun testFileToServiceExclude(@TempDir tempDir: File) {
-        val tests = listOf(
-            // explicit exclude
-            BootstrapConfig("-test-gradle"),
-            BootstrapConfig("-testgradle"),
-            // explicit include without service under test
-            BootstrapConfig("other"),
-            // protocol exclude
-            BootstrapConfig(null, "-awsJson1_0"),
-        )
+    fun testFileToServiceExclude() = runBlocking {
+        withTempDir { dir ->
+            val tempDir = File(dir.toString())
+            val tests = listOf(
+                // explicit exclude
+                BootstrapConfig("-test-gradle"),
+                BootstrapConfig("-testgradle"),
+                // explicit include without service under test
+                BootstrapConfig("other"),
+                // protocol exclude
+                BootstrapConfig(null, "-awsJson1_0"),
+            )
 
-        tests.forEach { bootstrap ->
-            val result = testWith(tempDir, bootstrap)
-            assertNull(result.actual, "expected null for bootstrap with $bootstrap")
+            tests.forEach { bootstrap ->
+                val result = testWith(tempDir, bootstrap)
+                assertNull(result.actual, "expected null for bootstrap with $bootstrap")
+            }
         }
     }
 
     // FIXME - re-enable after migration
     // @Test
-    // fun testFileToServiceMissingPackageMetadata(@TempDir tempDir: File) {
-    //     val ex = assertFailsWith<IllegalStateException> {
-    //         testWith(tempDir, BootstrapConfig.ALL, PackageManifest(emptyList()))
+    // fun testFileToServiceMissingPackageMetadata() = runBlocking {
+    //     withTempDir { dir ->
+    //         val tempDir = File(dir.toString())
+    //         val ex = assertFailsWith<IllegalStateException> {
+    //             testWith(tempDir, BootstrapConfig.ALL, PackageManifest(emptyList()))
+    //         }
+    //         assertContains(ex.message!!, "unable to find package metadata for sdkId: Test Gradle")
     //     }
-    //     assertContains(ex.message!!, "unable to find package metadata for sdkId: Test Gradle")
     // }
 }

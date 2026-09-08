@@ -5,12 +5,10 @@
 package aws.sdk.kotlin.dokka
 
 import org.jsoup.Jsoup
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import java.io.File
+import kotlin.test.Test
 import kotlin.test.assertTrue
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DokkaAwsTest {
     @Test
     fun testLoadScripts() {

@@ -19,7 +19,7 @@ class SmokeTestE2ETest {
     fun successService() = runTest {
         val output = StringBuilder()
         val runner = aws.sdk.kotlin.test.codegen.smoketest.successService.smoketests.SmokeTestRunner(
-            TestPlatformProvider(),
+            TestPlatformProvider.of(),
             output,
         )
         val success = runner.runAllTests()
@@ -33,7 +33,7 @@ class SmokeTestE2ETest {
     fun failureService() = runTest {
         val output = StringBuilder()
         val runner = aws.sdk.kotlin.test.codegen.smoketest.failureService.smoketests.SmokeTestRunner(
-            TestPlatformProvider(),
+            TestPlatformProvider.of(),
             output,
         )
         val success = runner.runAllTests()
@@ -46,7 +46,7 @@ class SmokeTestE2ETest {
     fun exceptionService() = runTest {
         val output = StringBuilder()
         val runner = aws.sdk.kotlin.test.codegen.smoketest.exceptionService.smoketests.SmokeTestRunner(
-            TestPlatformProvider(),
+            TestPlatformProvider.of(),
             output,
         )
         val success = runner.runAllTests()
@@ -63,7 +63,7 @@ class SmokeTestE2ETest {
     fun successServiceSkipTags() = runTest {
         val output = StringBuilder()
         val runner = aws.sdk.kotlin.test.codegen.smoketest.successService.smoketests.SmokeTestRunner(
-            TestPlatformProvider(
+            TestPlatformProvider.of(
                 env = mapOf(AWS_SKIP_TAGS to "success"),
             ),
             output,
@@ -79,7 +79,7 @@ class SmokeTestE2ETest {
     fun successServiceServiceFilter() = runTest {
         val output = StringBuilder()
         val runner = aws.sdk.kotlin.test.codegen.smoketest.successService.smoketests.SmokeTestRunner(
-            TestPlatformProvider(
+            TestPlatformProvider.of(
                 env = mapOf(AWS_SERVICE_FILTER to "Failure"), // Only run tests for services with this SDK ID
             ),
             output,

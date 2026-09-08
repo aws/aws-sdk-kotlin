@@ -14,6 +14,7 @@ import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.ManualClock
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.*
@@ -110,12 +111,12 @@ class LoginTokenProviderTest {
             val loginSessionName = "arn:aws:sts::012345678910:assumed-role/Admin/admin"
 
             // Setup filesystem with cache files
-            val fs = mutableMapOf<String, String>()
+            val fs = mutableMapOf<String, TestFile>()
             testCase.cacheContents.forEach { (filename, content) ->
-                fs["/home/.aws/login/cache/$filename"] = content
+                fs["/home/.aws/login/cache/$filename"] = TestFile(content)
             }
 
-            val testPlatform = TestPlatformProvider(
+            val testPlatform = TestPlatformProvider.of(
                 env = mapOf("HOME" to "/home"),
                 fs = fs,
             )

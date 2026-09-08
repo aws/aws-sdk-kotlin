@@ -31,6 +31,7 @@ dependencies {
     implementation(libs.ksp.api)
     implementation(libs.smithy.kotlin.runtime.core)
     testImplementation(kotlin("test"))
+    implementation(libs.smithy.codegen.core) // for Symbol
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
@@ -46,5 +47,16 @@ publishing {
             from(components["java"])
             artifact(sourcesJar)
         }
+    }
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
+        showStackTraces = true
+        showExceptions = true
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
 }

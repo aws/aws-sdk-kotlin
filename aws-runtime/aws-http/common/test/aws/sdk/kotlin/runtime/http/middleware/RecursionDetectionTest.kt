@@ -48,7 +48,7 @@ class RecursionDetectionTest {
             serviceName = "TestService"
         }
 
-        val provider = TestPlatformProvider(env)
+        val provider = TestPlatformProvider.of(env = env)
         op.install(RecursionDetection(provider))
         op.roundTrip(client, Unit)
 

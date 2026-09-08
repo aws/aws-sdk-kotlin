@@ -32,8 +32,6 @@ dependencies {
     implementation(libs.smithy.smoke.test.traits)
     implementation(libs.smithy.kotlin.runtime.core)
 
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.kotest.assertions.core.jvm)
     testImplementation(libs.kotlin.test.junit5)
     testImplementation(libs.smithy.kotlin.codegen.testutils)

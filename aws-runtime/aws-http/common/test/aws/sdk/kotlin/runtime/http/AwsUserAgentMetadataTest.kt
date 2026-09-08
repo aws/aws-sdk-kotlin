@@ -18,7 +18,7 @@ class AwsUserAgentMetadataTest {
 
     @Test
     fun testUserAgent() {
-        val provider = TestPlatformProvider()
+        val provider = TestPlatformProvider.of()
         val ua = loadAwsUserAgentMetadataFromEnvironment(provider, ApiMetadata("Test Service", "1.2.3"))
         assertEquals("aws-sdk-kotlin/1.2.3", ua.userAgent)
     }
@@ -68,13 +68,13 @@ class AwsUserAgentMetadataTest {
     fun testFrameworkFromEnvironment() {
         val testEnvironments = listOf(
             EnvironmentTest(
-                TestPlatformProvider(
+                TestPlatformProvider.of(
                     env = mapOf(FRAMEWORK_METADATA_ENV to "amplify:1.2.3"),
                 ),
                 "lib/amplify#1.2.3",
             ),
             EnvironmentTest(
-                TestPlatformProvider(
+                TestPlatformProvider.of(
                     env = mapOf(FRAMEWORK_METADATA_ENV to "amplify:1.2.3"),
                     props = mapOf(FRAMEWORK_METADATA_PROP to "amplify:4.5.6"),
                 ),
@@ -91,13 +91,13 @@ class AwsUserAgentMetadataTest {
     fun testAppIdFromEnvironment() {
         val testEnvironments = listOf(
             EnvironmentTest(
-                TestPlatformProvider(
+                TestPlatformProvider.of(
                     env = mapOf(AWS_APP_ID_ENV to "app-id-1"),
                 ),
                 "app/app-id-1",
             ),
             EnvironmentTest(
-                TestPlatformProvider(
+                TestPlatformProvider.of(
                     env = mapOf(AWS_APP_ID_ENV to "app-id-1"),
                     props = mapOf(AWS_APP_ID_PROP to "app-id-2"),
                 ),
@@ -114,13 +114,13 @@ class AwsUserAgentMetadataTest {
     fun testExplicitAppId() {
         val testEnvironments = listOf(
             EnvironmentTest(
-                TestPlatformProvider(
+                TestPlatformProvider.of(
                     env = mapOf(AWS_APP_ID_ENV to "app-id-1"),
                 ),
                 "app/explicit-app-id",
             ),
             EnvironmentTest(
-                TestPlatformProvider(
+                TestPlatformProvider.of(
                     env = mapOf(AWS_APP_ID_ENV to "app-id-1"),
                     props = mapOf(AWS_APP_ID_PROP to "app-id-2"),
                 ),

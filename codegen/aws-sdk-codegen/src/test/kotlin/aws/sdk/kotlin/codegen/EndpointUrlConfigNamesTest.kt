@@ -760,16 +760,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_IOTDEVICEADVISOR"
   },
   {
-    "service_id": "IoT Events",
-    "services_section_name": "iot_events",
-    "service_envvar_name": "AWS_ENDPOINT_URL_IOT_EVENTS"
-  },
-  {
-    "service_id": "IoT Events Data",
-    "services_section_name": "iot_events_data",
-    "service_envvar_name": "AWS_ENDPOINT_URL_IOT_EVENTS_DATA"
-  },
-  {
     "service_id": "IoTFleetWise",
     "services_section_name": "iotfleetwise",
     "service_envvar_name": "AWS_ENDPOINT_URL_IOTFLEETWISE"
@@ -1093,11 +1083,6 @@ private const val TEST_SUITE_JSON = """
     "service_id": "Outposts",
     "services_section_name": "outposts",
     "service_envvar_name": "AWS_ENDPOINT_URL_OUTPOSTS"
-  },
-  {
-    "service_id": "Panorama",
-    "services_section_name": "panorama",
-    "service_envvar_name": "AWS_ENDPOINT_URL_PANORAMA"
   },
   {
     "service_id": "Personalize",
@@ -1637,8 +1622,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "InternetMonitor": "InternetMonitorClient",
   "mq": "MqClient",
   "Direct Connect": "DirectConnectClient",
-  "Panorama": "PanoramaClient",
-  "IoT Events": "IotEventsClient",
   "WAF Regional": "WafRegionalClient",
   "WAF": "WafClient",
   "ManagedBlockchain": "ManagedBlockchainClient",
@@ -1744,7 +1727,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "ECS": "EcsClient",
   "WorkSpaces": "WorkSpacesClient",
   "Elastic Load Balancing": "ElasticLoadBalancingClient",
-  "IoT Events Data": "IotEventsDataClient",
   "Storage Gateway": "StorageGatewayClient",
   "grafana": "GrafanaClient",
   "rbin": "RbinClient",
@@ -1766,7 +1748,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "Neptune": "NeptuneClient",
   "VerifiedPermissions": "VerifiedPermissionsClient",
   "Elastic Beanstalk": "ElasticBeanstalkClient",
-  "SimSpaceWeaver": "SimSpaceWeaverClient",
   "Transfer": "TransferClient",
   "SageMaker Metrics": "SageMakerMetricsClient",
   "CloudSearch Domain": "CloudSearchDomainClient",

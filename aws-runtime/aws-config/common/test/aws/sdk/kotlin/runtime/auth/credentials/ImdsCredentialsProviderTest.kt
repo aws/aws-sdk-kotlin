@@ -35,10 +35,10 @@ import kotlin.time.Duration.Companion.seconds
 
 class ImdsCredentialsProviderTest {
 
-    private val ec2MetadataDisabledPlatform = TestPlatformProvider(
+    private val ec2MetadataDisabledPlatform = TestPlatformProvider.of(
         env = mapOf(AwsSdkSetting.AwsEc2MetadataDisabled.envVar to "true"),
     )
-    private val ec2MetadataEnabledPlatform = TestPlatformProvider()
+    private val ec2MetadataEnabledPlatform = TestPlatformProvider.of()
 
     @Test
     fun testImdsDisabled() = runTest {

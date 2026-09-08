@@ -38,7 +38,7 @@ data class PackageSettings(
         @OptIn(ExperimentalSerializationApi::class)
         fun fromFile(sdkId: String, packageSettingsFile: File): PackageSettings {
             if (!packageSettingsFile.exists()) return PackageSettings(sdkId)
-            val settings = Json.decodeFromStream<PackageSettings>(packageSettingsFile.inputStream())
+            val settings = packageSettingsFile.inputStream().use { Json.decodeFromStream<PackageSettings>(it) }
             check(sdkId == settings.sdkId) { "${packageSettingsFile.absolutePath} `sdkId` from settings (${settings.sdkId}) does not match expected `$sdkId`" }
             return settings
         }

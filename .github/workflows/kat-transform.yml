@@ -6,6 +6,8 @@ on:
     branches:
       - main
       - '*-main'
+  merge_group:
+    types: [checks_requested]
 
 # Allow one instance of this workflow per pull request, and cancel older runs when new changes are pushed
 concurrency:

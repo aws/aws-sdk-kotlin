@@ -15,12 +15,12 @@ class JvmSystemPropRegionProviderTest {
 
     @Test
     fun testGetRegion() = runTest {
-        val provider = JvmSystemPropRegionProvider(TestPlatformProvider())
+        val provider = JvmSystemPropRegionProvider(TestPlatformProvider.of())
 
         assertNull(provider.getRegion())
 
         val provider2 = JvmSystemPropRegionProvider(
-            TestPlatformProvider(
+            TestPlatformProvider.of(
                 props = mapOf("aws.region" to "us-east-1"),
             ),
         )

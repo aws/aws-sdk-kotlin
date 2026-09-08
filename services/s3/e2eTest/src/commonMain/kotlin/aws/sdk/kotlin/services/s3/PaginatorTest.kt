@@ -4,7 +4,6 @@
  */
 package aws.sdk.kotlin.e2etest
 
-import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.abortMultipartUpload
 import aws.sdk.kotlin.services.s3.createMultipartUpload
 import aws.sdk.kotlin.services.s3.model.CompletedPart
@@ -13,35 +12,31 @@ import aws.sdk.kotlin.services.s3.uploadPart
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.testing.BeforeAll
+import aws.smithy.kotlin.runtime.testing.TestInstance
+import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import kotlin.jvm.JvmStatic
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.time.Duration.Companion.seconds
 
+@TestInstance(TestLifecycle.PER_CLASS)
 class PaginatorTest {
-    companion object {
-        private lateinit var client: S3Client
-        private lateinit var testBucket: String
+    private val client = S3TestUtils.createClient()
 
-        @BeforeAll
-        @JvmStatic
-        fun setups() = runBlocking {
-            client = S3Client {
-                region = S3TestUtils.DEFAULT_REGION
-            }
-            testBucket = S3TestUtils.getOrCreateSharedBucket(client)
-        }
+    private lateinit var testBucket: String
 
-        @AfterAll
-        @JvmStatic
-        fun cleanup() = runBlocking {
-            S3TestUtils.deleteSharedBucket(client)
-            client.close()
-        }
+    @BeforeAll
+    fun createResources(): Unit = runBlocking {
+        testBucket = S3TestUtils.createTestBucket(client, "pagination")
+    }
+
+    @AfterAll
+    fun cleanup() = runBlocking {
+        S3TestUtils.deleteBucket(client, testBucket)
+        client.close()
     }
 
     // ListParts has a strange pagination termination condition via [IsTerminated]. Verify it actually works correctly.

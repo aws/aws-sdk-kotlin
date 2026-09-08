@@ -25,35 +25,56 @@ class TemplateProcessorTest {
     }
 
     @Test
-    fun testType() {
+    fun testTypeVar() {
         val pkg = "foo.bar"
         val imports = ImportDirectives()
-        val processor = TemplateProcessor.forType(pkg, imports)
+        val processor = TypeProcessor(pkg, imports)
 
-        val typeVar = TypeVar("T")
-        assertEquals("T", processor.handler(typeVar))
+        assertEquals(TypeVar.T.shortName, processor.typeUsageProcessor.handler(TypeVar.T))
         assertEquals(0, imports.size)
+    }
+
+    @Test
+    fun testTypeRefInSamePackage() {
+        val pkg = "foo.bar"
+        val imports = ImportDirectives()
+        val processor = TypeProcessor(pkg, imports)
 
         val samePkgClass = TypeRef(pkg, "Apple")
-        assertEquals("Apple", processor.handler(samePkgClass))
+        assertEquals("Apple", processor.typeUsageProcessor.handler(samePkgClass))
         assertEquals(0, imports.size)
+    }
+
+    @Test
+    fun testTypeRefInAnotherPackage() {
+        val pkg = "foo.bar"
+        val imports = ImportDirectives()
+        val processor = TypeProcessor(pkg, imports)
 
         val otherPkg = "bar.foo"
         val otherPkgClass = TypeRef(otherPkg, "Banana")
-        assertEquals("Banana", processor.handler(otherPkgClass))
+        assertEquals("Banana", processor.typeUsageProcessor.handler(otherPkgClass))
         assertEquals(1, imports.size)
         assertContains(imports, ImportDirective(otherPkgClass))
 
         // Try again
-        assertEquals("Banana", processor.handler(otherPkgClass))
+        assertEquals("Banana", processor.typeUsageProcessor.handler(otherPkgClass))
         assertEquals(1, imports.size) // Size shouldn't have changed since class is already imported
+    }
+
+    @Test
+    fun testTypeRefWithArgs() {
+        val pkg = "foo.bar"
+        val otherPkg = "bar.foo"
+        val imports = ImportDirectives()
+        val processor = TypeProcessor(pkg, imports)
 
         val fig = TypeRef(otherPkg, "Fig")
         val elderberry = TypeRef(otherPkg, "Elderberry", genericArgs = listOf(TypeVar("E"), fig))
         val date = TypeRef(pkg, "Date")
         val cherry = TypeRef(otherPkg, "Cherry", genericArgs = listOf(date, elderberry))
-        assertEquals("Cherry<Date, Elderberry<E, Fig>>", processor.handler(cherry))
-        assertEquals(4, imports.size)
+        assertEquals("Cherry<Date, Elderberry<E, Fig>>", processor.typeUsageProcessor.handler(cherry))
+        assertEquals(3, imports.size)
         assertContains(imports, ImportDirective(cherry))
         assertContains(imports, ImportDirective(elderberry))
         assertContains(imports, ImportDirective(fig))

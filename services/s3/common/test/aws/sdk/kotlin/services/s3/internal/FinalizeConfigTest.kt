@@ -6,6 +6,7 @@ package aws.sdk.kotlin.services.s3.internal
 
 import aws.sdk.kotlin.runtime.config.profile.loadAwsSharedConfig
 import aws.sdk.kotlin.services.s3.S3Client
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
 import kotlinx.coroutines.test.runTest
@@ -18,9 +19,9 @@ class FinalizeConfigTest {
         val builder = S3Client.builder()
         builder.config.useArnRegion = false
         builder.config.disableMrap = true
-        val platform = TestPlatformProvider(
+        val platform = TestPlatformProvider.of(
             fs = mapOf(
-                "/users/test/.aws/config" to "[default]\ns3_use_arn_region = true\ns3_disable_multiregion_access_points = false",
+                "/users/test/.aws/config" to TestFile("[default]\ns3_use_arn_region = true\ns3_disable_multiregion_access_points = false"),
             ),
         )
         val sharedConfig = asyncLazy { loadAwsSharedConfig(platform) }
@@ -33,7 +34,7 @@ class FinalizeConfigTest {
     @Test
     fun testSystemProperties() = runTest {
         val builder = S3Client.builder()
-        val platform = TestPlatformProvider(
+        val platform = TestPlatformProvider.of(
             env = mapOf(
                 S3Setting.UseArnRegion.envVar to "false",
                 S3Setting.DisableMultiRegionAccessPoints.envVar to "true",
@@ -43,7 +44,7 @@ class FinalizeConfigTest {
                 S3Setting.DisableMultiRegionAccessPoints.sysProp to "false",
             ),
             fs = mapOf(
-                "/users/test/.aws/config" to "[default]\ns3_use_arn_region = false\ns3_disable_multiregion_access_points = true",
+                "/users/test/.aws/config" to TestFile("[default]\ns3_use_arn_region = false\ns3_disable_multiregion_access_points = true"),
             ),
         )
         val sharedConfig = asyncLazy { loadAwsSharedConfig(platform) }
@@ -56,13 +57,13 @@ class FinalizeConfigTest {
     @Test
     fun testEnvironmentVariables() = runTest {
         val builder = S3Client.builder()
-        val platform = TestPlatformProvider(
+        val platform = TestPlatformProvider.of(
             env = mapOf(
                 S3Setting.UseArnRegion.envVar to "false",
                 S3Setting.DisableMultiRegionAccessPoints.envVar to "true",
             ),
             fs = mapOf(
-                "/users/test/.aws/config" to "[default]\ns3_use_arn_region = true\ns3_disable_multiregion_access_points = false",
+                "/users/test/.aws/config" to TestFile("[default]\ns3_use_arn_region = true\ns3_disable_multiregion_access_points = false"),
             ),
         )
         val sharedConfig = asyncLazy { loadAwsSharedConfig(platform) }
@@ -75,9 +76,9 @@ class FinalizeConfigTest {
     @Test
     fun testProfile() = runTest {
         val builder = S3Client.builder()
-        val platform = TestPlatformProvider(
+        val platform = TestPlatformProvider.of(
             fs = mapOf(
-                "/users/test/.aws/config" to "[default]\ns3_use_arn_region = true\ns3_disable_multiregion_access_points = false",
+                "/users/test/.aws/config" to TestFile("[default]\ns3_use_arn_region = true\ns3_disable_multiregion_access_points = false"),
             ),
         )
         val sharedConfig = asyncLazy { loadAwsSharedConfig(platform) }

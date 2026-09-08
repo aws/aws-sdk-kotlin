@@ -96,7 +96,7 @@ class ResolveAuthSchemePreferenceTest {
         sysProps: Map<String, String> = mapOf(),
         profileContent: String = "",
     ): List<AuthSchemeId> {
-        val platform = TestPlatformProvider(env = env, props = sysProps)
+        val platform = TestPlatformProvider.of(env = env, props = sysProps)
         val source = AwsConfigurationSource("default", "", "")
         val profile = asyncLazy {
             parse(Logger.None, FileType.CONFIGURATION, profileContent).toSharedConfig(source).activeProfile

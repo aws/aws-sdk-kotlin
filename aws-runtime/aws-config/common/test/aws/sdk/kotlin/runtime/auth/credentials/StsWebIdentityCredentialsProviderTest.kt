@@ -18,6 +18,7 @@ import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.TimestampFormat
+import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.test.runTest
@@ -88,8 +89,8 @@ class StsWebIdentityCredentialsProviderTest {
             expect(StsTestUtils.stsRequest(expectedBody), stsResponse())
         }
 
-        val testPlatform = TestPlatformProvider(
-            fs = mapOf(TOKEN_PATH to TOKEN_VALUE),
+        val testPlatform = TestPlatformProvider.of(
+            fs = mapOf(TOKEN_PATH to TestFile(TOKEN_VALUE)),
         )
 
         val provider = StsWebIdentityCredentialsProvider(
@@ -126,8 +127,8 @@ class StsWebIdentityCredentialsProviderTest {
             expect(StsTestUtils.stsRequest(expectedBody), stsResponse())
         }
 
-        val testPlatform = TestPlatformProvider(
-            fs = mapOf(TOKEN_PATH to TOKEN_VALUE),
+        val testPlatform = TestPlatformProvider.of(
+            fs = mapOf(TOKEN_PATH to TestFile(TOKEN_VALUE)),
         )
 
         val provider = StsWebIdentityCredentialsProvider(
@@ -166,8 +167,8 @@ class StsWebIdentityCredentialsProviderTest {
             expect(HttpResponse(HttpStatusCode.BadRequest, Headers.Empty, HttpBody.fromBytes(errorResponseBody.encodeToByteArray())))
         }
 
-        val testPlatform = TestPlatformProvider(
-            fs = mapOf(TOKEN_PATH to TOKEN_VALUE),
+        val testPlatform = TestPlatformProvider.of(
+            fs = mapOf(TOKEN_PATH to TestFile(TOKEN_VALUE)),
         )
 
         val provider = StsWebIdentityCredentialsProvider(
@@ -187,7 +188,7 @@ class StsWebIdentityCredentialsProviderTest {
     fun testJwtTokenMissing() = runTest {
         val testEngine = TestConnection()
 
-        val testPlatform = TestPlatformProvider()
+        val testPlatform = TestPlatformProvider.of()
 
         val provider = StsWebIdentityCredentialsProvider(
             roleArn = StsTestUtils.ARN,
@@ -204,7 +205,7 @@ class StsWebIdentityCredentialsProviderTest {
 
     @Test
     fun testFromEnvironment() {
-        val tp1 = TestPlatformProvider(
+        val tp1 = TestPlatformProvider.of(
             env = mapOf(
                 "AWS_ROLE_ARN" to "my-role",
                 "AWS_WEB_IDENTITY_TOKEN_FILE" to "token-file-path",
@@ -216,7 +217,7 @@ class StsWebIdentityCredentialsProviderTest {
 
         // missing AWS_ROLE_ARN
         assertFailsWith<ProviderConfigurationException> {
-            val tp2 = TestPlatformProvider(
+            val tp2 = TestPlatformProvider.of(
                 env = mapOf(
                     "AWS_WEB_IDENTITY_TOKEN_FILE" to "token-file-path",
                     "AWS_REGION" to StsTestUtils.REGION,

@@ -12,11 +12,13 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.createOAuth2Token
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.AccessDeniedException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.OAuth2ErrorCode
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.withConfig
+import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.profile.normalizePath
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
 import aws.smithy.kotlin.runtime.client.ProtocolRequestInterceptorContext
 import aws.smithy.kotlin.runtime.collections.Attributes
+import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.hashing.ecdsaSecp256r1Rs
 import aws.smithy.kotlin.runtime.hashing.sha256
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
@@ -39,6 +41,7 @@ import aws.smithy.kotlin.runtime.time.TimestampFormat
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.SingleFlightGroup
 import aws.smithy.kotlin.runtime.util.Uuid
+import aws.smithy.kotlin.runtime.util.WriteType
 import kotlin.coroutines.coroutineContext
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.Base64.Default.UrlSafe
@@ -99,6 +102,9 @@ internal class LoginTokenProvider(
     // debounce concurrent requests for a token
     private val sfg = SingleFlightGroup<LoginToken>()
 
+    private val tokenFilePermissions = AwsSdkSetting.AwsRestrictFilePermissions.resolve(platformProvider)
+        ?: RestrictFilePermissions.USER_READ_WRITE
+
     override suspend fun resolve(attributes: Attributes): Credentials {
         val token = sfg.singleFlight { getToken(attributes) }
 
@@ -149,7 +155,12 @@ internal class LoginTokenProvider(
         val filepath = normalizePath(platformProvider.filepath(cacheDirectory, cacheKey), platformProvider)
         val contents = serializeLoginToken(refreshed)
         try {
-            platformProvider.writeFile(filepath, contents)
+            platformProvider.write(
+                filepath,
+                contents,
+                WriteType.OVERWRITE,
+                permissions = tokenFilePermissions.posixOctal,
+            )
         } catch (ex: Exception) {
             coroutineContext.debug<LoginTokenProvider>(ex) { "failed to write refreshed token back to disk at $filepath" }
             throw ex
