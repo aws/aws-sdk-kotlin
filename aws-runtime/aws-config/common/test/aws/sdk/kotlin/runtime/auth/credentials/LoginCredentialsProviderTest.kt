@@ -8,6 +8,7 @@ package aws.sdk.kotlin.runtime.auth.credentials
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.http.Headers
 import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
@@ -147,6 +148,7 @@ class LoginCredentialsProviderTest {
             expiration = expectedExpiration,
             providerName = "LOGIN",
             accountId = "123456789",
+            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_LOGIN)
 
         assertEquals(expected, actual)

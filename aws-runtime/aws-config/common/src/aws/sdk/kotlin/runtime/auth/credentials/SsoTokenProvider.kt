@@ -11,6 +11,7 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc.createToken
 import aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc.model.CreateTokenResponse
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.profile.normalizePath
+import aws.smithy.kotlin.runtime.ErrorMetadata
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.collections.emptyAttributes
 import aws.smithy.kotlin.runtime.config.resolve
@@ -264,5 +265,11 @@ internal fun JsonStreamWriter.writeNotNull(name: String, value: String?) {
 
 /**
  * An error associated with a cached SSO token from `~/.aws/sso/cache/`
+ *
+ * This is non-recoverable: the cached token is unusable and the customer must re-authenticate.
  */
-public class InvalidSsoTokenException(message: String, cause: Throwable? = null) : ConfigurationException(message, cause)
+public class InvalidSsoTokenException(message: String, cause: Throwable? = null) : ConfigurationException(message, cause) {
+    init {
+        sdkErrorMetadata.attributes[ErrorMetadata.NonRecoverable] = true
+    }
+}

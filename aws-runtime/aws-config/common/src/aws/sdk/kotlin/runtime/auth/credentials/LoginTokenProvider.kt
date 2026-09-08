@@ -14,8 +14,10 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.OAuth2Error
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.withConfig
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.profile.normalizePath
+import aws.smithy.kotlin.runtime.ErrorMetadata
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.client.ProtocolRequestInterceptorContext
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.config.resolve
@@ -115,6 +117,7 @@ internal class LoginTokenProvider(
             expiration = token.expiresAt,
             providerName = PROVIDER_NAME,
             accountId = token.accountId,
+            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         )
     }
 
@@ -457,4 +460,15 @@ internal fun serializeLoginToken(token: LoginToken): ByteArray = jsonStreamWrite
     endObject()
 }.bytes ?: error("serializing LoginToken failed")
 
-public class InvalidLoginTokenException(message: String, cause: Throwable? = null) : ConfigurationException(message, cause)
+/**
+ * An error associated with a cached login token from `~/.aws/login/cache/`
+ *
+ * This is non-recoverable: the cached token is unusable and the customer must re-authenticate. Every message this is
+ * raised with says so, including the expired-authorization-code case — retrying inside the process cannot obtain a
+ * fresh authorization code.
+ */
+public class InvalidLoginTokenException(message: String, cause: Throwable? = null) : ConfigurationException(message, cause) {
+    init {
+        sdkErrorMetadata.attributes[ErrorMetadata.NonRecoverable] = true
+    }
+}

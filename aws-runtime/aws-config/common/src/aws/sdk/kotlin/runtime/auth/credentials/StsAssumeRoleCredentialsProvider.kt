@@ -6,7 +6,9 @@
 package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.arns.Arn
+import aws.sdk.kotlin.runtime.auth.credentials.internal.NON_RECOVERABLE_STS_ERROR_CODES
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
+import aws.sdk.kotlin.runtime.auth.credentials.internal.nonRecoverable
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.StsClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.assumeRole
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.PolicyDescriptorType
@@ -133,7 +135,15 @@ public class StsAssumeRoleCredentialsProvider(
                     "STS is not activated in the requested region (${client.config.region}). Please check your configuration and activate STS in the target region if necessary",
                     ex,
                 )
-                else -> throw CredentialsProviderException("failed to assume role from STS", ex)
+                else -> {
+                    val wrapped = CredentialsProviderException("failed to assume role from STS", ex)
+                    // `?.let { it in ... }` rather than `in`, because the code is nullable and Set.contains is not.
+                    throw if (ex.serviceErrorCode()?.let { it in NON_RECOVERABLE_STS_ERROR_CODES } == true) {
+                        wrapped.nonRecoverable()
+                    } else {
+                        wrapped
+                    }
+                }
             }
         } finally {
             client.close()
@@ -150,6 +160,7 @@ public class StsAssumeRoleCredentialsProvider(
             expiration = roleCredentials.expiration,
             providerName = PROVIDER_NAME,
             accountId = accountId,
+            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_STS_ASSUME_ROLE)
     }
 
