@@ -1,0 +1,6 @@
+{
+    "id": "2810db5d-692f-4926-b46d-6b49a38e4796",
+    "type": "bugfix",
+    "description": "Charge the correct retry token cost for transient retries when the new retry behavior is enabled via the `AWS_NEW_RETRIES_2026` environment variable",
+    "module": "aws-config"
+}
