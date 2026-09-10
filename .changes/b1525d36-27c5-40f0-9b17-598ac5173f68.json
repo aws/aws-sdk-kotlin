@@ -1,0 +1,6 @@
+{
+    "id": "b1525d36-27c5-40f0-9b17-598ac5173f68",
+    "type": "feature",
+    "description": "Support the `AWS_LOGIN_CACHE_DIRECTORY` environment variable for overriding the AWS Login credentials cache directory.",
+    "module": "aws-config"
+}
