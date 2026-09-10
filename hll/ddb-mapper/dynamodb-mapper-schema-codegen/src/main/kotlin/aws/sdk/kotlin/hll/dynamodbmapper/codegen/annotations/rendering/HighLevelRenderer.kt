@@ -73,7 +73,7 @@ internal class HighLevelRenderer(
 
         // Build adjacency limited to edges between annotated (mappable) types.
         val adjacency = classesByName.mapValues { (_, decl) ->
-            decl.getAllProperties()
+            decl.getMappedProperties()
                 .flatMap { it.type.resolve().referencedTypeNames() }
                 .filter { it in classesByName }
                 .toSet()
@@ -104,7 +104,7 @@ internal class HighLevelRenderer(
             val name = requireNotNull(qualifiedName).asString()
 
             return annotatedClasses.any { otherClass ->
-                otherClass.getAllProperties().any { prop ->
+                otherClass.getMappedProperties().any { prop ->
                     // Recurse through the full type-argument tree so references nested inside collections
                     // (e.g. List<Map<String, Nested>>) are detected at any depth.
                     prop.type.resolve().referencesType(name)

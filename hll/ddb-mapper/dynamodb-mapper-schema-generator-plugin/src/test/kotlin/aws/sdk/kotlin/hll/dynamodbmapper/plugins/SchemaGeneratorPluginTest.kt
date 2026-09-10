@@ -894,11 +894,153 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
+    fun testNestedTableItem() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("nested/src/NestedTableItem")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas"
+
+        // The parent @DynamoDbItem generates a full schema and references the nested item's value converter
+        val productSchema = File(testProjectDir, "$basePath/ProductSchema.kt")
+        assertTrue(productSchema.exists())
+        val productContents = productSchema.readText()
+        assertContains(productContents, "public object ProductSchema : ItemSchema.PartitionKey<Product, KeyType.Key1<String>>")
+        assertContains(productContents, "ManufacturerValueConverter")
+
+        // The nested type is itself a @DynamoDbItem, so it ALSO generates its own schema, table accessor, and value converter
+        val manufacturerSchema = File(testProjectDir, "$basePath/ManufacturerSchema.kt")
+        assertTrue(manufacturerSchema.exists())
+        val manufacturerContents = manufacturerSchema.readText()
+        assertContains(manufacturerContents, "public object ManufacturerSchema : ItemSchema.PartitionKey<Manufacturer, KeyType.Key1<Int>>")
+        assertContains(manufacturerContents, "public fun DynamoDbMapper.getManufacturerTable")
+        assertContains(manufacturerContents, "public val ManufacturerValueConverter:")
+
+        // Round-trip conversion, including the nested item's key field serialized as a plain attribute
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/NestedTableItemTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.createNewFile()
+        testFile.writeText(getResource("/nested/test/NestedTableItemTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testNestedTableItemTtlAndCounterAreInert() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("nested/src/NestedItemWithTtlCounter")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas"
+
+        // The nested type's TTL/counter are captured only on its OWN schema attributes
+        val sessionSchema = File(testProjectDir, "$basePath/SessionSchema.kt").readText()
+        assertContains(sessionSchema, "SchemaAttributes.TtlFields to ttlFields")
+        assertContains(sessionSchema, "SchemaAttributes.CounterFields to setOf(\"accessCount\")")
+
+        // They do NOT propagate to the parent schema, so the TTL/counter interceptors (which read the operation's
+        // schema attributes) never act on the nested fields
+        val accountSchema = File(testProjectDir, "$basePath/AccountSchema.kt").readText()
+        assertContains(accountSchema, "override val attributes: Attributes = emptyAttributes()")
+        assertFalse(accountSchema.contains("TtlFields"))
+        assertFalse(accountSchema.contains("CounterFields"))
+
+        // Round-trip shows the nested TTL/counter fields serialize as ordinary, unchanged attributes
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/NestedItemWithTtlCounterTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.createNewFile()
+        testFile.writeText(getResource("/nested/test/NestedItemWithTtlCounterTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testDeeplyNestedMappable() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("nested/src/DeepNesting")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        // The deeply-nested reference is detected and the nested value converter is wired through List/Map/List
+        val holderSchema = File(
+            testProjectDir,
+            "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas/DeepListHolderSchema.kt",
+        ).readText()
+        assertContains(holderSchema, "ListValueConverter(MapValueConverter(")
+        assertContains(holderSchema, "ListValueConverter(LeafValueConverter)")
+
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/DeepNestingTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.createNewFile()
+        testFile.writeText(getResource("/nested/test/DeepNestingTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testDeeplyNestedSetOfMappableFails() = withTestProject {
+        createClassFile("nested/negative/DeepSetNesting")
+
+        // Set<SetLeaf> is a set of maps, which is unsupported even when nested inside List<Map<String, ...>>
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Unsupported set element")
+    }
+
+    @Test
     fun testMutualCyclicNestingFails() = withTestProject {
         createClassFile("nested/negative/MutualCycle")
 
         val result = runner.buildAndFail()
         assertContains(result.output, "Cyclic nesting detected")
+    }
+
+    @Test
+    fun testIgnoredAndPrivateSelfReferencesAreNotCyclic() = withTestProject {
+        createClassFile("nested/src/IgnoredCycle")
+
+        // Self-references exist only through an ignored and a private field, so this must build successfully.
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(
+            testProjectDir,
+            "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas/IgnoredCycleSchema.kt",
+        )
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+        // Neither the ignored nor the private self-referential field should be mapped
+        assertFalse(schemaContents.contains("ignoredParent"))
+        assertFalse(schemaContents.contains("privateParent"))
     }
 
     @Test
