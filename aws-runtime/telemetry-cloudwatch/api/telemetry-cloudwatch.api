@@ -1,0 +1,27 @@
+public final class aws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricExporter : aws/smithy/kotlin/runtime/telemetry/metrics/aggregation/MetricExporter {
+	public static final field Companion Laws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricExporter$Companion;
+	public synthetic fun <init> (Laws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricExporter$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun export (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun onAttach ()V
+	public fun shutdown (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class aws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricExporter$Builder {
+	public fun <init> ()V
+	public final fun getClient ()Laws/sdk/kotlin/services/cloudwatch/CloudWatchClient;
+	public final fun getLoggerProvider ()Laws/smithy/kotlin/runtime/telemetry/logging/LoggerProvider;
+	public final fun getMaxCallsPerUpload ()I
+	public final fun getNamespace ()Ljava/lang/String;
+	public final fun getStorageResolution ()I
+	public final fun setClient (Laws/sdk/kotlin/services/cloudwatch/CloudWatchClient;)V
+	public final fun setLoggerProvider (Laws/smithy/kotlin/runtime/telemetry/logging/LoggerProvider;)V
+	public final fun setMaxCallsPerUpload (I)V
+	public final fun setNamespace (Ljava/lang/String;)V
+	public final fun setStorageResolution (I)V
+}
+
+public final class aws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricExporter$Companion {
+	public final fun invoke (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricExporter;
+	public static synthetic fun invoke$default (Laws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricExporter$Companion;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Laws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricExporter;
+}
+
