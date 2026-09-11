@@ -20,7 +20,7 @@ on:
 
 # Allow one instance of this workflow per pull request, and cancel older runs when new changes are pushed
 concurrency:
-  group: kat-pr-${{ github.ref }}
+  group: kat-pr-${{ inputs.ref || github.ref }}
   cancel-in-progress: true
 
 permissions:

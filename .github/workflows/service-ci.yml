@@ -16,7 +16,7 @@ on:
         required: true
 
 concurrency:
-  group: service-ci-${{ github.ref }}
+  group: service-ci-${{ inputs.ref || github.ref }}
   cancel-in-progress: true
 
 permissions:
