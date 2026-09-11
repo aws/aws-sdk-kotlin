@@ -37,7 +37,7 @@ internal class HighLevelRenderer(
             if (qualifiedName != null && qualifiedName in cyclicClasses) {
                 logger.error(
                     "Cyclic nesting detected involving type '$qualifiedName'. Nesting " +
-                        "@DynamoDbItem/@DynamoDbMappabletypes in a reference cycle (including self-references) is " +
+                        "@DynamoDbItem/@DynamoDbMappable types in a reference cycle (including self-references) is " +
                         "not yet supported.",
                     annotated,
                 )

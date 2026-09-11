@@ -296,6 +296,7 @@ internal class SchemaRenderer(
                             "declared in the same module as the type that references it.",
                         decl,
                     )
+                    return
                 }
 
                 writeInline("#T", TypeRef(nestedConverterPackage(decl), "${decl.simpleName.asString()}ValueConverter"))
