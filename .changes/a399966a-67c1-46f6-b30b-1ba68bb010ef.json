@@ -1,0 +1,7 @@
+{
+    "id": "a399966a-67c1-46f6-b30b-1ba68bb010ef",
+    "type": "feature",
+    "description": "Add `@DynamoDbMappable` annotation to the DynamoDB Mapper schema generator, enabling data classes to be nested as attributes within `@DynamoDbItem` (and other `@DynamoDbMappable`) types in the same module",
+    "module": "dynamodb-mapper",
+    "requiresMinorVersionBump": true
+}
