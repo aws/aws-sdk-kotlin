@@ -149,4 +149,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery-version" }
 aws-kotlin-repo-tools-kmp = { id = "aws.sdk.kotlin.gradle.kmp", version.ref = "aws-kotlin-repo-tools-version" }
 aws-kotlin-repo-tools-smithybuild = { id = "aws.sdk.kotlin.gradle.smithybuild", version.ref = "aws-kotlin-repo-tools-version" }
-gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "2.1.1"}
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "2.2.0"}
