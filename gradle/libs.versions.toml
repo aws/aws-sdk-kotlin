@@ -26,7 +26,7 @@ kotlinx-serialization-version = "1.11.0"
 kaml-version = "0.55.0"
 mockk-version = "1.14.11"
 slf4j-version = "2.0.18"
-mokkery-version = "3.4.2"
+mokkery-version = "3.5.0"
 jsoup-version = "1.23.2"
 
 [libraries]
