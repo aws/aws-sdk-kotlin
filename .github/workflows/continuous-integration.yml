@@ -5,13 +5,22 @@ on:
   merge_group:
     types: [checks_requested]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+        default: ''
+    secrets:
+      CI_AWS_ROLE_ARN:
+        required: true
 
 permissions:
   id-token: write
   contents: read
 # Allow one instance of this workflow per pull request, and cancel older runs when new changes are pushed
 concurrency:
-  group: ci-pr-${{ github.ref }}
+  group: ci-pr-${{ inputs.ref || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -38,6 +47,7 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.ref }}
           path: 'aws-sdk-kotlin'
       - name: Setup Build
         uses: ./aws-sdk-kotlin/.github/actions/setup-build
@@ -99,6 +109,7 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.ref }}
           path: 'aws-sdk-kotlin'
       - name: Setup Build
         uses: ./aws-sdk-kotlin/.github/actions/setup-build
