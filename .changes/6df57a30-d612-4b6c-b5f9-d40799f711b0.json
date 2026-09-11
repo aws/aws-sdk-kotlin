@@ -1,7 +1,7 @@
 {
     "id": "6df57a30-d612-4b6c-b5f9-d40799f711b0",
     "type": "feature",
-    "description": "Add `telemetry-cloudwatch`, a `CloudWatchMetricExporter` that publishes SDK metrics to Amazon CloudWatch with `PutMetricData`. Requires no OpenTelemetry collector and no CloudWatch agent",
+    "description": "Add `telemetry-cloudwatch`, a module that publishes SDK metrics to Amazon CloudWatch",
     "module": "telemetry-cloudwatch",
     "issues": [
         "https://github.com/aws/aws-sdk-kotlin/issues/984"
