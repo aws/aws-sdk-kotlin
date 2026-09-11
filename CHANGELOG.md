@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.51] - 09/11/2026
+
+### Features
+* (**batch**) Added new bulk job APIs (CancelJobs, TerminateJobs, TerminateServiceJobs) and new fields on ListJobs and ListServiceJobs responses. This allows customers to cancel or terminate multiple jobs in a single request. ListJobs and ListServiceJobs responses now include isCancelled and isTerminated fields.
+* (**ecs**) This feature adds support for setting the cpu architecture type that should be used to launch tasks for an Express Gateway Service.
+* (**invoicing**) Add ListProcurementPortals and ListProcurementPortalSuppliers APIs to retrieve AWS-supported 3rd party procurement portals and their suppliers for e-invoice delivery and purchase order retrieval.
+* (**lightsail**) Amazon Lightsail now lets you serve website content from a private Lightsail bucket through a Lightsail distribution. This release adds enablePrivateOriginAccess to the CreateDistribution and UpdateDistribution actions, plus new defaultRootObject and customErrorResponses options.
+* (**mediaconvert**) Adds Dolby Vision metadata to Probe results, including profile, level, and presence of the RPU, base layer, and enhancement layer. Adds video sample and display aspect ratios. Adds the UnprocessableEntityException (HTTP 422) error to Probe for recognized but malformed or corrupt inputs.
+
+### Documentation
+* (**s3**) Updated S3 Object Lock Default Retention documentation.
+
 ## [1.8.50] - 09/10/2026
 
 ### Features
