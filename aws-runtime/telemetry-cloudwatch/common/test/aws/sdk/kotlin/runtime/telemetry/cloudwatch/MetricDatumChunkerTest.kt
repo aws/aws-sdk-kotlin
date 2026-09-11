@@ -22,7 +22,7 @@ import kotlin.test.assertTrue
  * onto the `MetricDatum` member that carries it.
  *
  * The limits are exact API constraints rather than tuning choices, so an off-by-one is a rejected
- * request — and a rejected request discards every datum batched with it, not just the offending one.
+ * request - and a rejected request discards every datum batched with it, not just the offending one.
  * Cheap to test, expensive to get wrong.
  */
 class MetricDatumChunkerTest {
@@ -38,7 +38,7 @@ class MetricDatumChunkerTest {
 
     /**
      * 400 distinct values exceed the 150 value-count pairs a single datum allows, so they must span
-     * several datums for the same metric and dimension set — which CloudWatch merges back together.
+     * several datums for the same metric and dimension set - which CloudWatch merges back together.
      *
      * The 3 is `ceil(400 / 150)`, and the trailing partial chunk of 100 is the interesting case: it
      * confirms the remainder is emitted rather than dropped.
@@ -62,7 +62,7 @@ class MetricDatumChunkerTest {
      * The 1000-datums-per-request limit, applied one level up: datums are grouped into requests.
      *
      * Distinct metric names so nothing merges and the count is unambiguous. Note this deliberately
-     * produces more requests than `maxCallsPerUpload` allows — the chunker's job is to batch
+     * produces more requests than `maxCallsPerUpload` allows - the chunker's job is to batch
      * correctly, and enforcing the cost cap is the exporter's, so these are tested separately.
      */
     @Test
@@ -84,7 +84,7 @@ class MetricDatumChunkerTest {
      * A `Summary` goes to `StatisticValues`, never to `Value`.
      *
      * Publishing the sum as `Value` instead would look correct on a `Sum` graph and be wrong on every
-     * other statistic — average, min, max, and sample count would all be lost or fabricated.
+     * other statistic - average, min, max, and sample count would all be lost or fabricated.
      */
     @Test
     fun testSummaryMapsToStatisticSet() {
@@ -113,7 +113,7 @@ class MetricDatumChunkerTest {
     }
 
     /**
-     * Shared datum fields — unit, timestamp, dimensions, storage resolution — are stamped from the
+     * Shared datum fields - unit, timestamp, dimensions, storage resolution - are stamped from the
      * instrument and the cycle rather than defaulted.
      *
      * The timestamp is the one to watch: taking "now" per datum instead of the cycle's timestamp
@@ -144,7 +144,7 @@ class MetricDatumChunkerTest {
     /**
      * Dimensions past the per-metric limit are truncated rather than costing the whole request.
      *
-     * Unreachable through the configured pipeline — the dimension allowlist caps this well below 30 —
+     * Unreachable through the configured pipeline - the dimension allowlist caps this well below 30 -
      * but a datum that violates the limit takes up to 999 unrelated datums down with it.
      */
     @Test

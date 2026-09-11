@@ -2,7 +2,6 @@ public final class aws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricE
 	public static final field Companion Laws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricExporter$Companion;
 	public synthetic fun <init> (Laws/sdk/kotlin/runtime/telemetry/cloudwatch/CloudWatchMetricExporter$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun export (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun onAttach ()V
 	public fun shutdown (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

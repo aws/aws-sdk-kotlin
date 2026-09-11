@@ -6,7 +6,7 @@ description = "CloudWatch metrics exporter for the AWS SDK for Kotlin"
 extra["displayName"] = "AWS :: SDK :: Kotlin :: Telemetry :: CloudWatch"
 extra["moduleName"] = "aws.sdk.kotlin.runtime.telemetry.cloudwatch"
 
-// Multiplatform atomics for the attach and shutdown guards, matching how aws-config gets them.
+// Multiplatform atomics for the shutdown guard, matching how aws-config gets them.
 apply(plugin = "org.jetbrains.kotlinx.atomicfu")
 
 kotlin {
@@ -22,7 +22,7 @@ kotlin {
                 api(project(":services:cloudwatch"))
 
                 // `api` because CloudWatchMetricExporter IS-A MetricExporter and is handed to
-                // SdkTelemetryProvider's builder; both types have to be visible to callers.
+                // AggregatingTelemetryProvider's builder; both types have to be visible to callers.
                 api(libs.smithy.kotlin.telemetry.metrics.aggregation)
             }
         }
