@@ -85,6 +85,14 @@ file("services").listFiles().forEach {
     }
 }
 
+// The CloudWatch metrics exporter publishes with PutMetricData, so it depends on the generated
+// CloudWatch client and can only be built when that service is bootstrapped.
+if ("cloudwatch".isBootstrappedService) {
+    include(":aws-runtime:telemetry-cloudwatch")
+} else {
+    logger.warn(":services:cloudwatch is not bootstrapped, skipping :aws-runtime:telemetry-cloudwatch")
+}
+
 if ("dynamodb".isBootstrappedService) {
     include(":hll:ddb-mapper")
     include(":hll:ddb-mapper:dynamodb-mapper")
