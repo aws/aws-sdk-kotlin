@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.9.0] - 09/14/2026
+
+### Features
+* (**aws-config**) Support the `AWS_LOGIN_CACHE_DIRECTORY` environment variable for overriding the AWS Login credentials cache directory.
+* (**billing**) Increased the maximum number of services returned in the supportEligibleSpendByService field of ListEnterpriseSupportLinkedAccountCharges
+* (**billingconductor**) This release adds support for custom volume tiering. You can now define custom tiers on a pricing rule's tiering configuration, where each tier specifies a usage range and the rate applied to usage in that range.
+* (**codedeploy**) AWS CodeDeploy now returns the deployment mode on GetDeployment and BatchGetDeployments. The new deploymentMode field on DeploymentInfo indicates whether a deployment used the standard deployment process or restarted the application using a previously installed revision (RESTART mode).
+* (**dynamodb-mapper**) Add `@DynamoDbMappable` annotation to the DynamoDB Mapper schema generator, enabling data classes to be nested as attributes within `@DynamoDbItem` (and other `@DynamoDbMappable`) types in the same module
+* (**glue**) Amazon Glue releasing the new API ListIntegrationTableProperties and adding IntegrationArn to TargetTableConfig
+* (**imagebuilder**) This release adds a dryRun option to Image Builder create APIs (except CreateImage), structured failure context on failed images including component and distribution failure details, and step retry attempt tracking.
+* (**sts**) Increases the maximum session token size to 4,096 bytes and removes the packed policy size limit. Adds SessionTokenSize and SessionTokenUtilization fields and a new MinimumSessionTokenSize parameter. PackedPolicySize is deprecated.
+
+### Fixes
+* (**aws-config**) Charge the correct retry token cost for transient retries when the new retry behavior is enabled via the `AWS_NEW_RETRIES_2026` environment variable
+
 ## [1.8.51] - 09/11/2026
 
 ### Features
