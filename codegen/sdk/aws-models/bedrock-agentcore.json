@@ -416,6 +416,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Use a completed batch evaluation as the source of agent traces.</p>"
                     }
+                },
+                "onlineEvaluation": {
+                    "target": "com.amazonaws.bedrockagentcore#OnlineEvaluationTraceConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Agent traces from an online evaluation configuration over a specified time range.</p>"
+                    }
                 }
             },
             "traits": {
@@ -480,6 +486,9 @@
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcore#BrowserSessionResource"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#CapacityProviderResource"
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcore#CodeInterpreterSessionResource"
@@ -2424,6 +2433,80 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcore#CapacityProviderArn": {
+            "type": "string",
+            "traits": {
+                "aws.api#arnReference": {
+                    "type": "AWS::BedrockAgentCore::CapacityProvider"
+                },
+                "smithy.api#pattern": "^arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:capacity-provider/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#CapacityProviderId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "Capacity provider identifier. Pattern matches MiskiModel definition.",
+                "smithy.api#length": {
+                    "min": 12,
+                    "max": 59
+                },
+                "smithy.api#pattern": "^[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#CapacityProviderResource": {
+            "type": "resource",
+            "identifiers": {
+                "capacityProviderId": {
+                    "target": "com.amazonaws.bedrockagentcore#CapacityProviderId"
+                }
+            },
+            "operations": [
+                {
+                    "target": "com.amazonaws.bedrockagentcore#DeleteCapacityProviderSession"
+                }
+            ]
+        },
+        "com.amazonaws.bedrockagentcore#CapacityProviderSessionStatus": {
+            "type": "enum",
+            "members": {
+                "PROVISIONING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Provisioning"
+                    }
+                },
+                "DEPROVISIONING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Deprovisioning"
+                    }
+                },
+                "ACTIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Active"
+                    }
+                },
+                "DELETING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Deleting"
+                    }
+                },
+                "DELETED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Deleted"
+                    }
+                },
+                "STOPPED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Stopped"
+                    }
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcore#Certificate": {
             "type": "structure",
             "members": {
@@ -2623,14 +2706,24 @@
                     }
                 },
                 "logGroupNames": {
-                    "target": "com.amazonaws.bedrockagentcore#EvaluationStringList",
+                    "target": "com.amazonaws.bedrockagentcore#LogGroupNameList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of CloudWatch log group names to read agent traces from. Maximum of 5 log groups.</p>",
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": [],
+                        "smithy.api#documentation": "<p>The list of CloudWatch log group names to read agent traces from. Maximum of 10 log groups.</p>",
+                        "smithy.api#length": {
+                            "max": 10
+                        }
+                    }
+                },
+                "logGroupNamePrefixes": {
+                    "target": "com.amazonaws.bedrockagentcore#LogGroupNamePrefixList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of CloudWatch log group name prefixes to read agent traces from. Specify this instead of <code>logGroupNames</code> to match log groups by prefix. Maximum of 5 prefixes. Specify either <code>logGroupNames</code> or <code>logGroupNamePrefixes</code>, not both. One of the two is required.</p>",
                         "smithy.api#length": {
                             "min": 1,
                             "max": 5
-                        },
-                        "smithy.api#required": {}
+                        }
                     }
                 },
                 "filterConfig": {
@@ -2696,17 +2789,32 @@
             "type": "structure",
             "members": {
                 "logGroupName": {
-                    "target": "smithy.api#String",
+                    "target": "com.amazonaws.bedrockagentcore#OptionalLogGroupName",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the CloudWatch log group where evaluation results will be written.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": "",
+                        "smithy.api#documentation": "<p>The name of the CloudWatch log group where evaluation results will be written. This value doesn't apply when <code>resultDestination</code> is <code>SOURCE_LOG_GROUP</code>, because results are written back to the trace source log group. The name can't be under the service-reserved <code>/aws/bedrock-agentcore/evaluations/</code> namespace, apart from the service-managed default group.</p>"
                     }
                 },
                 "logStreamName": {
-                    "target": "smithy.api#String",
+                    "target": "com.amazonaws.bedrockagentcore#LogStreamName",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the CloudWatch log stream where evaluation results will be written.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": "",
+                        "smithy.api#documentation": "<p>The name of the CloudWatch log stream where evaluation results will be written.</p>"
+                    }
+                },
+                "metricsNamespace": {
+                    "target": "com.amazonaws.bedrockagentcore#MetricsNamespace",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The CloudWatch metrics namespace where evaluation result metrics are published. If you omit this value, the service publishes metrics to <code>Bedrock-AgentCore/Evaluations</code>. This value can't begin with <code>AWS/</code>.</p>"
+                    }
+                },
+                "resultDestination": {
+                    "target": "com.amazonaws.bedrockagentcore#ResultDestination",
+                    "traits": {
+                        "smithy.api#default": "DEDICATED_LOG_GROUP",
+                        "smithy.api#documentation": "<p>The destination where evaluation results are written. Valid values:</p> <ul> <li> <p> <code>DEDICATED_LOG_GROUP</code> (default) – Writes results to a dedicated result log group.</p> </li> <li> <p> <code>SOURCE_LOG_GROUP</code> – Writes results back to the log group that the agent traces were read from. If you use this value, don't specify <code>logGroupName</code>.</p> </li> </ul>"
                     }
                 }
             },
@@ -3281,6 +3389,20 @@
                 "smithy.api#documentation": "<p>An event that contains incremental output from a command execution. This event streams standard output and standard error content as it becomes available during command execution.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcore#ContentSource": {
+            "type": "union",
+            "members": {
+                "inline": {
+                    "target": "com.amazonaws.bedrockagentcore#InlineMemoryContent",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The content included directly in the request.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The source of the content to ingest. Only inline content is supported.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcore#ContentStartEvent": {
             "type": "structure",
             "members": {},
@@ -3616,7 +3738,7 @@
                 "payload": {
                     "target": "com.amazonaws.bedrockagentcore#PayloadTypeList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The content payload of the event. This can include conversational data or binary content.</p>",
+                        "smithy.api#documentation": "<p>The content payload of the event. This can include conversational data, JSON data, or binary content.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -3643,6 +3765,12 @@
                     "target": "com.amazonaws.bedrockagentcore#ExtractionMode",
                     "traits": {
                         "smithy.api#documentation": "<p>Controls long-term memory extraction for this event. When set to <code>SKIP</code>, the event is stored in short-term memory but is excluded from long-term memory extraction. If not specified, the event is processed for extraction as usual.</p>"
+                    }
+                },
+                "extractionConfig": {
+                    "target": "com.amazonaws.bedrockagentcore#ExtractionConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The extraction configuration for long-term memory records. Use this parameter to specify namespace variable keys and their values for namespace substitution during extraction.</p>"
                     }
                 }
             },
@@ -3684,7 +3812,13 @@
                     "target": "com.amazonaws.bedrockagentcore#InternalServerException"
                 },
                 {
+                    "target": "com.amazonaws.bedrockagentcore#ResourceNotFoundException"
+                },
+                {
                     "target": "com.amazonaws.bedrockagentcore#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#SubscriptionRequiredException"
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcore#ThrottlingException"
@@ -3797,6 +3931,9 @@
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcore#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#SubscriptionRequiredException"
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcore#ThrottlingException"
@@ -3930,6 +4067,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The X402 payment payload.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "permit2AllowanceLimit": {
+                    "target": "com.amazonaws.bedrockagentcore#Permit2AllowanceLimit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum on-chain Permit2 allowance to grant before signing the payment authorization, in the asset's smallest denomination. This field is valid only for the <code>upto</code> (metered) scheme; supplying it for the <code>exact</code> scheme returns a validation error.</p> <p>When set, the service approves an ERC-20 allowance for this amount before processing the payment. The approval sets, rather than adds to, the wallet's allowance. Set this field only when the wallet needs approving, for example on its first <code>upto</code> payment, to avoid a redundant on-chain transaction. Omit the field to skip allowance handling. This is the default, and the only behavior for the <code>exact</code> scheme.</p>"
                     }
                 }
             },
@@ -4214,6 +4357,94 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.bedrockagentcore#DeleteCapacityProviderSession": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcore#DeleteCapacityProviderSessionRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcore#DeleteCapacityProviderSessionResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcore#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes a session associated with a capacity provider in Amazon Bedrock AgentCore and makes the session unavailable for further use. To delete a capacity provider session, specify both the capacity provider identifier and the session ID. After you delete a session, you cannot restart it.</p>",
+                "smithy.api#http": {
+                    "method": "DELETE",
+                    "uri": "/capacity-providers/{capacityProviderId}/sessions/{sessionId}",
+                    "code": 202
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#DeleteCapacityProviderSessionRequest": {
+            "type": "structure",
+            "members": {
+                "capacityProviderId": {
+                    "target": "com.amazonaws.bedrockagentcore#CapacityProviderId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the capacity provider associated with the session.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "sessionId": {
+                    "target": "com.amazonaws.bedrockagentcore#SessionId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the capacity provider session to delete.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#DeleteCapacityProviderSessionResponse": {
+            "type": "structure",
+            "members": {
+                "capacityProviderArn": {
+                    "target": "com.amazonaws.bedrockagentcore#CapacityProviderArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the capacity provider associated with the deleted session.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "sessionId": {
+                    "target": "com.amazonaws.bedrockagentcore#SessionId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the deleted capacity provider session.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcore#CapacityProviderSessionStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the capacity provider session. When the status is <code>Deleting</code>, the session is being deleted and is not available. When the status is <code>Deleted</code>, the session is no longer available.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.bedrockagentcore#DeleteEvent": {
             "type": "operation",
             "input": {
@@ -4364,6 +4595,13 @@
                         "smithy.api#documentation": "<p>The identifier of the memory record to delete.</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
+                    }
+                },
+                "namespace": {
+                    "target": "com.amazonaws.bedrockagentcore#Namespace",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The namespace of the memory record to delete. This value is used for IAM condition key authorization.</p>",
+                        "smithy.api#httpQuery": "namespace"
                     }
                 }
             },
@@ -5341,13 +5579,17 @@
                 "aws.api#arnReference": {
                     "type": "AWS::BedrockAgentCore::Evaluator"
                 },
-                "smithy.api#pattern": "^arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+$"
+                "smithy.api#pattern": "^arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/(Builtin|ThirdParty)\\.[a-zA-Z0-9._-]+$"
             }
         },
         "com.amazonaws.bedrockagentcore#EvaluatorId": {
             "type": "string",
             "traits": {
-                "smithy.api#pattern": "^(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})$"
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 111
+                },
+                "smithy.api#pattern": "^(Builtin\\.[a-zA-Z0-9._-]+|ThirdParty\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})$"
             }
         },
         "com.amazonaws.bedrockagentcore#EvaluatorList": {
@@ -5394,7 +5636,11 @@
         "com.amazonaws.bedrockagentcore#EvaluatorName": {
             "type": "string",
             "traits": {
-                "smithy.api#pattern": "^(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_]{0,47})$"
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 48
+                },
+                "smithy.api#pattern": "^(Builtin\\.[a-zA-Z0-9._-]+|ThirdParty\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_]{0,47})$"
             }
         },
         "com.amazonaws.bedrockagentcore#EvaluatorStatistics": {
@@ -5722,6 +5968,20 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Configuration for a customer-managed external proxy server. Includes server location, optional domain-based routing patterns, and authentication credentials.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#ExtractionConfig": {
+            "type": "structure",
+            "members": {
+                "namespaceVariables": {
+                    "target": "com.amazonaws.bedrockagentcore#NamespaceVariablesMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of <code>namespaceKeys</code> to their values. The service substitutes these values into <code>namespaceTemplates</code> during long-term memory extraction to control namespace hierarchy.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for extraction behavior. Use this structure to specify namespace variable keys and their values for namespace substitution during long-term memory extraction.</p>"
             }
         },
         "com.amazonaws.bedrockagentcore#ExtractionJob": {
@@ -6997,6 +7257,13 @@
                         "smithy.api#documentation": "<p>The identifier of the memory record to retrieve.</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
+                    }
+                },
+                "namespace": {
+                    "target": "com.amazonaws.bedrockagentcore#Namespace",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The namespace of the memory record to retrieve. This value is used for IAM condition key authorization.</p>",
+                        "smithy.api#httpQuery": "namespace"
                     }
                 }
             },
@@ -9601,6 +9868,153 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcore#IngestData": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcore#IngestDataInput"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcore#IngestDataOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcore#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ServiceException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ThrottledException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Submits content directly for ingestion to generate long-term memory records in a AgentCore Memory resource.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:IngestData</code> permission.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "POST",
+                    "uri": "/memories/{memoryId}/ingest"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#IngestDataInput": {
+            "type": "structure",
+            "members": {
+                "memoryId": {
+                    "target": "com.amazonaws.bedrockagentcore#MemoryId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the AgentCore Memory resource to ingest content into.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "source": {
+                    "target": "com.amazonaws.bedrockagentcore#ContentSource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The content to ingest. Only inline content is supported.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "contentTimestamp": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of when the content occurred.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "actorId": {
+                    "target": "com.amazonaws.bedrockagentcore#ActorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the actor associated with this content. An actor represents an entity that participates in sessions and generates content.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "sessionId": {
+                    "target": "com.amazonaws.bedrockagentcore#SessionId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the session that the content belongs to. If not provided, a session identifier is generated and returned in the response.</p>"
+                    }
+                },
+                "extractionConfig": {
+                    "target": "com.amazonaws.bedrockagentcore#ExtractionConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The extraction configuration for long-term memory records. Use this parameter to specify namespace variable keys and their values for namespace substitution during extraction.</p>"
+                    }
+                },
+                "metadata": {
+                    "target": "com.amazonaws.bedrockagentcore#MetadataMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key-value metadata to attach to the content.</p>"
+                    }
+                },
+                "clientToken": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, AgentCore ignores the request, but does not return an error.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#IngestDataOutput": {
+            "type": "structure",
+            "members": {
+                "sessionId": {
+                    "target": "com.amazonaws.bedrockagentcore#SessionId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the session that the service ingested the content into. This value echoes the session identifier from the request, or the identifier that the service generated when you did not provide one.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#IngestPayloadList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcore#IngestPayloadType"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 100
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#IngestPayloadType": {
+            "type": "union",
+            "members": {
+                "conversational": {
+                    "target": "com.amazonaws.bedrockagentcore#Conversational",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The conversational content for this payload item.</p>"
+                    }
+                },
+                "json": {
+                    "target": "com.amazonaws.bedrockagentcore#MemoryJsonData",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The JSON content for this payload item.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A single content payload item to ingest. A payload item contains either conversational or JSON content.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcore#InlineContent": {
             "type": "string",
             "traits": {
@@ -9637,6 +10051,21 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Inline ground truth data containing assertions, expected trajectories, and per-turn expected responses.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#InlineMemoryContent": {
+            "type": "structure",
+            "members": {
+                "payload": {
+                    "target": "com.amazonaws.bedrockagentcore#IngestPayloadList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of content payload items to ingest.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The content included directly in the request as one or more payload items.</p>"
             }
         },
         "com.amazonaws.bedrockagentcore#InputContentBlock": {
@@ -12574,6 +13003,52 @@
                 "target": "smithy.api#String"
             }
         },
+        "com.amazonaws.bedrockagentcore#LogGroupName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[.\\-_/#A-Za-z0-9]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#LogGroupNameList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcore#LogGroupName"
+            },
+            "traits": {
+                "smithy.api#documentation": "Length is constrained per member, because members relaxed from @required carry @default([])."
+            }
+        },
+        "com.amazonaws.bedrockagentcore#LogGroupNamePrefix": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "Prefix of a CloudWatch Logs log group name.",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 512
+                },
+                "smithy.api#pattern": "^[.\\-_/#A-Za-z0-9]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#LogGroupNamePrefixList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcore#LogGroupNamePrefix"
+            },
+            "traits": {
+                "smithy.api#documentation": "List of CloudWatch Logs log group name prefixes to source trace data from.",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 5
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#LogStreamName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "A log stream name. The pattern is CloudWatch Logs' own log stream name pattern, which already\nadmits the empty string; empty is the @default of members relaxed from @required and means\n\"no log stream\". No @length is applied, because CloudWatch's min of 1 would reject that default.",
+                "smithy.api#pattern": "^[^:*]*$"
+            }
+        },
         "com.amazonaws.bedrockagentcore#MaxLenString": {
             "type": "string",
             "traits": {
@@ -12652,6 +13127,28 @@
                     "min": 12
                 },
                 "smithy.api#pattern": "^(arn:(aws|aws-cn|aws-us-gov):bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:memory/)?[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MemoryJsonData": {
+            "type": "structure",
+            "members": {
+                "content": {
+                    "target": "com.amazonaws.bedrockagentcore#MemoryJsonDataContent",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The JSON content of the payload. Accepts any JSON value, including objects, arrays, strings, numbers, booleans, and null. The maximum size is 100 KB.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains non-conversational, JSON-formatted content for an event payload. JSON payloads are extracted into long-term memory.</p>",
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MemoryJsonDataContent": {
+            "type": "document",
+            "traits": {
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.bedrockagentcore#MemoryMetadataFilterExpression": {
@@ -12799,6 +13296,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The unique ID of the memory record to be deleted.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "namespace": {
+                    "target": "com.amazonaws.bedrockagentcore#Namespace",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The namespace of the memory record being deleted. This value is used for IAM condition key authorization.</p>"
                     }
                 }
             },
@@ -13103,6 +13606,12 @@
                         "smithy.api#documentation": "<p>The updated list of namespace identifiers for categorizing the memory record.</p>"
                     }
                 },
+                "sourceNamespaces": {
+                    "target": "com.amazonaws.bedrockagentcore#NamespacesList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The namespaces of the source memory record being updated. This value is used for IAM condition key authorization.</p>"
+                    }
+                },
                 "memoryStrategyId": {
                     "target": "com.amazonaws.bedrockagentcore#MemoryStrategyId",
                     "traits": {
@@ -13185,6 +13694,9 @@
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcore#GetMemoryRecord"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#IngestData"
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcore#ListActors"
@@ -13295,6 +13807,17 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Value associated with the <code>eventMetadata</code> key.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MetricsNamespace": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "CloudWatch metrics namespace for evaluation result metrics.",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9._#/:-]+$"
             }
         },
         "com.amazonaws.bedrockagentcore#MimeType": {
@@ -13573,6 +14096,78 @@
                 "smithy.api#documentation": "<p>The result of a mouse scroll action.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcore#MppPaymentCredential": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>Ready-to-send <code>Authorization: Payment &lt;base64url-token&gt;</code> value. This is a bearer-like payment credential and must not appear in logs, traces, or error messages.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 32768
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MppPaymentInput": {
+            "type": "structure",
+            "members": {
+                "version": {
+                    "target": "com.amazonaws.bedrockagentcore#Version",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The MPP protocol version, for example \"1\" or \"2\".</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "wwwAuthenticateHeaders": {
+                    "target": "com.amazonaws.bedrockagentcore#WwwAuthenticateHeaderList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The raw <code>WWW-Authenticate: Payment</code> header value from the 402 response, passed verbatim. Provide exactly one entry. The service uses this value to generate the payment credential.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "buyerPaysGasFees": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Authorizes the service to sign a payment whose blockchain network (gas) fees are charged to your wallet, on top of the payment amount.</p> <p>The challenge indicates who sponsors the network fees. When the challenge does not sponsor them, the service signs the payment only if this field is <code>true</code>. Otherwise it returns a validation error, so you can decide whether to pay the fees or obtain a challenge that sponsors them.</p> <p>Optional. When omitted or <code>false</code>, you decline to pay network fees. This field has no effect on challenges that already sponsor the fees.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the payment challenge from a 402 Payment Required response. Forward the raw <code>WWW-Authenticate: Payment</code> header value verbatim. In response, you receive a payment credential that satisfies the challenge. Provide exactly one challenge per request.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#MppPaymentOutput": {
+            "type": "structure",
+            "members": {
+                "version": {
+                    "target": "com.amazonaws.bedrockagentcore#Version",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The MPP protocol version, for example \"1\" or \"2\".</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "selectedPaymentId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The id of the challenge that was paid, echoed from the input challenge so you can correlate the result without decoding the credential.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 512
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentCredential": {
+                    "target": "com.amazonaws.bedrockagentcore#MppPaymentCredential",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Ready-to-send value for the <code>Authorization</code> header, in the form \"Payment &lt;base64url-token&gt;\". Attach this header and retry the original request. To inspect the full credential, base64url-decode the token.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the payment credential, ready to retry the request.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcore#Name": {
             "type": "string",
             "traits": {
@@ -13590,6 +14185,44 @@
                     "max": 1024
                 },
                 "smithy.api#pattern": "^[a-zA-Z0-9/*][a-zA-Z0-9-_/*]*(?::[a-zA-Z0-9-_/*]+)*[a-zA-Z0-9-_/*]*$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#NamespaceVariableName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The name of the namespace variable key. The name cannot be a built-in variable name (<code>actorId</code>, <code>sessionId</code>, or <code>memoryStrategyId</code>).</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 32
+                },
+                "smithy.api#pattern": "^(?!memoryStrategyId$|actorId$|sessionId$)[a-z][a-z0-9]*$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#NamespaceVariableValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The value of a namespace variable key.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                },
+                "smithy.api#pattern": "^[a-z0-9][a-z0-9-_]*$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#NamespaceVariablesMap": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.bedrockagentcore#NamespaceVariableName"
+            },
+            "value": {
+                "target": "com.amazonaws.bedrockagentcore#NamespaceVariableValue"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A map of <code>namespaceKeys</code> to their values for namespace substitution.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 5
+                }
             }
         },
         "com.amazonaws.bedrockagentcore#NamespacesList": {
@@ -13852,6 +14485,37 @@
                 "smithy.api#documentation": "<p>A reference to an existing online evaluation configuration to use as the data source for batch evaluation.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcore#OnlineEvaluationTraceConfig": {
+            "type": "structure",
+            "members": {
+                "onlineEvaluationConfigArn": {
+                    "target": "com.amazonaws.bedrockagentcore#OnlineEvaluationConfigArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the online evaluation configuration to reuse sessions from.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "startTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The start time of the time range. Only sessions evaluated at or after this timestamp are included.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "endTime": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The end time of the time range. Only sessions evaluated before this timestamp are included.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the configuration for reusing agent traces from an online evaluation configuration for recommendation analysis. Because online evaluation is a continuous stream, a time range specifies which evaluated sessions the recommendation includes.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcore#OperatorType": {
             "type": "enum",
             "members": {
@@ -13873,6 +14537,13 @@
                         "smithy.api#enumValue": "NOT_EXISTS"
                     }
                 }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#OptionalLogGroupName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "A log group name that may also be empty. The empty string is the @default of members that\nwere relaxed from @required, and carries the meaning \"no log group\" for that member.",
+                "smithy.api#pattern": "^$|^[.\\-_/#A-Za-z0-9]+$"
             }
         },
         "com.amazonaws.bedrockagentcore#OutputConfig": {
@@ -13914,6 +14585,12 @@
                     "target": "com.amazonaws.bedrockagentcore#MemoryDocument",
                     "traits": {
                         "smithy.api#documentation": "<p>The binary content of the payload.</p>"
+                    }
+                },
+                "json": {
+                    "target": "com.amazonaws.bedrockagentcore#MemoryJsonData",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The JSON content of the payload. Use this type to store non-conversational, JSON-formatted data, such as behavioral events, activity logs, or system events.</p>"
                     }
                 }
             },
@@ -14001,6 +14678,9 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Input for a crypto X402 payment.</p>"
                     }
+                },
+                "mpp": {
+                    "target": "com.amazonaws.bedrockagentcore#MppPaymentInput"
                 }
             },
             "traits": {
@@ -14156,6 +14836,12 @@
                     "traits": {
                         "smithy.api#enumValue": "DELETED"
                     }
+                },
+                "BLOCKED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BLOCKED"
+                    }
                 }
             },
             "traits": {
@@ -14267,6 +14953,9 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Output from a crypto X402 payment.</p>"
                     }
+                },
+                "mpp": {
+                    "target": "com.amazonaws.bedrockagentcore#MppPaymentOutput"
                 }
             },
             "traits": {
@@ -14532,6 +15221,12 @@
                     "traits": {
                         "smithy.api#enumValue": "CRYPTO_X402"
                     }
+                },
+                "MPP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MPP"
+                    }
                 }
             },
             "traits": {
@@ -14572,6 +15267,17 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcore#Permit2AllowanceLimit": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The maximum on-chain Permit2 allowance to grant, in the asset's smallest denomination. Pass the value as a numeric string. For example, \"1000000\" is 1 USDC at 6 decimals. To grant an unlimited allowance, pass the uint256 maximum, which is a 78-digit number.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 78
+                },
+                "smithy.api#pattern": "^[0-9]+$"
+            }
+        },
         "com.amazonaws.bedrockagentcore#PhoneNumber": {
             "type": "string",
             "traits": {
@@ -14603,7 +15309,13 @@
                     "target": "com.amazonaws.bedrockagentcore#InternalServerException"
                 },
                 {
+                    "target": "com.amazonaws.bedrockagentcore#ResourceNotFoundException"
+                },
+                {
                     "target": "com.amazonaws.bedrockagentcore#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcore#SubscriptionRequiredException"
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcore#ThrottlingException"
@@ -15537,6 +16249,26 @@
             "traits": {
                 "smithy.api#sensitive": {},
                 "smithy.api#streaming": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#ResultDestination": {
+            "type": "enum",
+            "members": {
+                "DEDICATED_LOG_GROUP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DEDICATED_LOG_GROUP"
+                    }
+                },
+                "SOURCE_LOG_GROUP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SOURCE_LOG_GROUP"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Where evaluation results are written: dedicated results log group (default) or the source log group."
             }
         },
         "com.amazonaws.bedrockagentcore#RetrieveMemoryRecords": {
@@ -16611,7 +17343,7 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 1,
-                    "max": 1000
+                    "max": 20000
                 },
                 "smithy.api#sensitive": {}
             }
@@ -16722,6 +17454,9 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The description of the batch evaluation.</p>"
                     }
+                },
+                "outputConfig": {
+                    "target": "com.amazonaws.bedrockagentcore#OutputConfig"
                 }
             },
             "traits": {
@@ -18024,6 +18759,42 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Stripe Privy token response containing appId, basicAuthToken, and optionally authorizationSignature.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#SubscriptionRequiredException": {
+            "type": "structure",
+            "members": {
+                "message": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "subscriptionUrl": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL to the Marketplace listing where you can subscribe.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 2048
+                        }
+                    }
+                },
+                "productName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the product that requires a Marketplace subscription.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 256
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Returned when you attempt a wallet operation against a Coinbase Marketplace connector whose account does not hold an active Marketplace subscription and is not within the legacy exception period. Subscribe to the Marketplace listing before you retry the operation.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 403
             }
         },
         "com.amazonaws.bedrockagentcore#SystemPromptConfig": {
@@ -19494,6 +20265,17 @@
                 "target": "com.amazonaws.bedrockagentcore#VariantResult"
             }
         },
+        "com.amazonaws.bedrockagentcore#Version": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>A protocol version identifier, as a bare numeric string. For example, \"1\" or \"2\".</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                },
+                "smithy.api#pattern": "^[0-9]+$"
+            }
+        },
         "com.amazonaws.bedrockagentcore#ViewPort": {
             "type": "structure",
             "members": {
@@ -19552,6 +20334,29 @@
                     "max": 131072
                 },
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcore#WwwAuthenticateHeader": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>A raw <code>WWW-Authenticate: Payment</code> header value from a 402 response, containing RFC 9110 auth-params such as <code>id</code>, <code>realm</code>, <code>method</code>, <code>intent</code>, and <code>request</code>. Pass this value in the request body, not as an HTTP header.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 16384
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#WwwAuthenticateHeaderList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcore#WwwAuthenticateHeader"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The raw WWW-Authenticate header value to fulfill. Provide exactly one entry.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1
+                }
             }
         }
     }

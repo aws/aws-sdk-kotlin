@@ -139,6 +139,24 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.socialmessaging#BusinessPublicKeyPem": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 8192
+                }
+            }
+        },
+        "com.amazonaws.socialmessaging#BusinessPublicKeySignatureStatus": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 20
+                }
+            }
+        },
         "com.amazonaws.socialmessaging#ButtonType": {
             "type": "string",
             "traits": {
@@ -150,6 +168,75 @@
         },
         "com.amazonaws.socialmessaging#CodeExpirationMinutes": {
             "type": "integer"
+        },
+        "com.amazonaws.socialmessaging#CreateWhatsAppDataset": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.socialmessaging#CreateWhatsAppDatasetInput"
+            },
+            "output": {
+                "target": "com.amazonaws.socialmessaging#CreateWhatsAppDatasetOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.socialmessaging#AccessDeniedByMetaException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#DependencyException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#InvalidParametersException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#ThrottledRequestException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Creates a Meta Conversions API dataset for a WhatsApp Business Account.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/v1/whatsapp/waba/dataset",
+                    "code": 200
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.socialmessaging#CreateWhatsAppDatasetInput": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.socialmessaging#LinkedWhatsAppBusinessAccountId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the WhatsApp Business Account to create a dataset for, formatted as <code>waba-01234567890123456789012345678901</code>.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "WabaId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.socialmessaging#CreateWhatsAppDatasetOutput": {
+            "type": "structure",
+            "members": {
+                "datasetId": {
+                    "target": "com.amazonaws.socialmessaging#WhatsAppDatasetId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Meta-generated dataset ID, a numeric string of 10 to 20 digits.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
         },
         "com.amazonaws.socialmessaging#CreateWhatsAppFlow": {
             "type": "operation",
@@ -229,6 +316,12 @@
                     "target": "com.amazonaws.socialmessaging#MetaFlowId",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of an existing Flow within the same WhatsApp Business Account to clone.</p>"
+                    }
+                },
+                "endpointUri": {
+                    "target": "com.amazonaws.socialmessaging#MetaFlowEndpointUri",
+                    "traits": {
+                        "smithy.api#documentation": "Optional HTTPS endpoint for a dynamic Flow, registered with Meta as the\nFlow's endpoint_uri and called by Meta directly. When omitted, the Flow\nhas no endpoint (static Flow). Meta only calls the endpoint when the\nFlow JSON also declares data_api_version. To verify that requests\noriginate from Meta, attach your own Meta app via UpdateWhatsAppFlow."
                     }
                 }
             },
@@ -1043,6 +1136,84 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.socialmessaging#GetWhatsAppBusinessPublicKey": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.socialmessaging#GetWhatsAppBusinessPublicKeyInput"
+            },
+            "output": {
+                "target": "com.amazonaws.socialmessaging#GetWhatsAppBusinessPublicKeyOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.socialmessaging#AccessDeniedByMetaException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#DependencyException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#InvalidParametersException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#ThrottledRequestException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "Retrieves the business public key for a phone number and its signature status.",
+                "smithy.api#http": {
+                    "method": "GET",
+                    "uri": "/v1/whatsapp/business-public-key",
+                    "code": 200
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.socialmessaging#GetWhatsAppBusinessPublicKeyInput": {
+            "type": "structure",
+            "members": {
+                "originationPhoneNumberId": {
+                    "target": "com.amazonaws.socialmessaging#WhatsAppPhoneNumberId",
+                    "traits": {
+                        "smithy.api#documentation": "The unique identifier of the phone number whose business public key to retrieve.",
+                        "smithy.api#httpQuery": "originationPhoneNumberId",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "OriginationPhoneNumberId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.socialmessaging#GetWhatsAppBusinessPublicKeyOutput": {
+            "type": "structure",
+            "members": {
+                "businessPublicKey": {
+                    "target": "com.amazonaws.socialmessaging#BusinessPublicKeyPem",
+                    "traits": {
+                        "smithy.api#documentation": "The stored RSA business public key (PEM), if present."
+                    }
+                },
+                "businessPublicKeySignatureStatus": {
+                    "target": "com.amazonaws.socialmessaging#BusinessPublicKeySignatureStatus",
+                    "traits": {
+                        "smithy.api#documentation": "Meta's signing status: \"VALID\" | \"MISMATCH\"."
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.socialmessaging#GetWhatsAppFlow": {
             "type": "operation",
             "input": {
@@ -1511,6 +1682,16 @@
                 "smithy.api#pattern": "^[A-Z]{2}$"
             }
         },
+        "com.amazonaws.socialmessaging#KmsKeyArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                },
+                "smithy.api#pattern": "^arn:aws[a-z-]*:kms:[a-z0-9-]+:[0-9]{12}:(key/.+|alias/.+)$"
+            }
+        },
         "com.amazonaws.socialmessaging#LibraryTemplateBodyInputs": {
             "type": "structure",
             "members": {
@@ -1723,6 +1904,12 @@
                         "smithy.api#documentation": "<p>The onboarding status for the Marketing Messages API. This value is fetched from Meta and indicates whether the WhatsApp Business Account is onboarded for Meta's Marketing Messages API.</p>"
                     }
                 },
+                "datasetId": {
+                    "target": "com.amazonaws.socialmessaging#WhatsAppDatasetId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Meta Conversions API dataset ID associated with this WhatsApp Business Account. This value is a numeric string of 10 to 20 digits. This field is not present when no dataset has been created for this account.</p>"
+                    }
+                },
                 "phoneNumbers": {
                     "target": "com.amazonaws.socialmessaging#WhatsAppPhoneNumberSummaryList",
                     "traits": {
@@ -1807,6 +1994,9 @@
             },
             "operations": [
                 {
+                    "target": "com.amazonaws.socialmessaging#CreateWhatsAppDataset"
+                },
+                {
                     "target": "com.amazonaws.socialmessaging#CreateWhatsAppFlow"
                 },
                 {
@@ -1853,6 +2043,9 @@
                 },
                 {
                     "target": "com.amazonaws.socialmessaging#PutWhatsAppBusinessAccountEventDestinations"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#SendWhatsAppConversionEvent"
                 },
                 {
                     "target": "com.amazonaws.socialmessaging#UpdateWhatsAppFlow"
@@ -1934,6 +2127,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The onboarding status for the Marketing Messages API. This value is fetched from Meta and indicates whether the WhatsApp Business Account is onboarded for Meta's Marketing Messages API.</p>"
                     }
+                },
+                "datasetId": {
+                    "target": "com.amazonaws.socialmessaging#WhatsAppDatasetId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Meta Conversions API dataset ID associated with this WhatsApp Business Account. This value is a numeric string of 10 to 20 digits. This field is not present when no dataset has been created for this account.</p>"
+                    }
                 }
             },
             "traits": {
@@ -1970,10 +2169,16 @@
                     "target": "com.amazonaws.socialmessaging#DeleteWhatsAppMessageMedia"
                 },
                 {
+                    "target": "com.amazonaws.socialmessaging#GetWhatsAppBusinessPublicKey"
+                },
+                {
                     "target": "com.amazonaws.socialmessaging#GetWhatsAppMessageMedia"
                 },
                 {
                     "target": "com.amazonaws.socialmessaging#PostWhatsAppMessageMedia"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#PutWhatsAppBusinessPublicKey"
                 },
                 {
                     "target": "com.amazonaws.socialmessaging#SendWhatsAppMessage"
@@ -3606,6 +3811,82 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.socialmessaging#PutWhatsAppBusinessPublicKey": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.socialmessaging#PutWhatsAppBusinessPublicKeyInput"
+            },
+            "output": {
+                "target": "com.amazonaws.socialmessaging#PutWhatsAppBusinessPublicKeyOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.socialmessaging#AccessDeniedByMetaException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#DependencyException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#InvalidParametersException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#ThrottledRequestException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "Sets the business public key used to encrypt the data exchanged with the endpoint of a data exchange Flow.",
+                "smithy.api#http": {
+                    "method": "PUT",
+                    "uri": "/v1/whatsapp/business-public-key",
+                    "code": 200
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.socialmessaging#PutWhatsAppBusinessPublicKeyInput": {
+            "type": "structure",
+            "members": {
+                "originationPhoneNumberId": {
+                    "target": "com.amazonaws.socialmessaging#WhatsAppPhoneNumberId",
+                    "traits": {
+                        "smithy.api#documentation": "The unique identifier of the phone number to associate with the business public key.",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "OriginationPhoneNumberId"
+                    }
+                },
+                "businessPublicKey": {
+                    "target": "com.amazonaws.socialmessaging#BusinessPublicKeyPem",
+                    "traits": {
+                        "smithy.api#documentation": "PEM-encoded RSA public key. Mutually exclusive with kmsKeyArn."
+                    }
+                },
+                "kmsKeyArn": {
+                    "target": "com.amazonaws.socialmessaging#KmsKeyArn",
+                    "traits": {
+                        "smithy.api#documentation": "Customer-managed KMS asymmetric RSA key ARN. Mutually exclusive with businessPublicKey."
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.socialmessaging#PutWhatsAppBusinessPublicKeyOutput": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.socialmessaging#RegistrationStatus": {
             "type": "enum",
             "members": {
@@ -3700,6 +3981,88 @@
             "traits": {
                 "smithy.api#documentation": "<p>You can use presigned URLs to grant time-limited access to objects in Amazon S3 without updating your bucket policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html\">Working with presigned URLs</a> in the <i>Amazon S3\n         User Guide</i>.</p>",
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.socialmessaging#SendWhatsAppConversionEvent": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.socialmessaging#SendWhatsAppConversionEventInput"
+            },
+            "output": {
+                "target": "com.amazonaws.socialmessaging#SendWhatsAppConversionEventOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.socialmessaging#AccessDeniedByMetaException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#DependencyException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#InvalidParametersException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.socialmessaging#ThrottledRequestException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Sends a conversion event to Meta's Conversions API for the specified WhatsApp Business Account dataset.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/v1/whatsapp/waba/dataset/events",
+                    "code": 200
+                }
+            }
+        },
+        "com.amazonaws.socialmessaging#SendWhatsAppConversionEventInput": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.socialmessaging#LinkedWhatsAppBusinessAccountId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the WhatsApp Business Account associated with the dataset, formatted as <code>waba-01234567890123456789012345678901</code>.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "WabaId"
+                    }
+                },
+                "datasetId": {
+                    "target": "com.amazonaws.socialmessaging#WhatsAppDatasetId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Meta-generated dataset ID to send the event to.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "eventData": {
+                    "target": "com.amazonaws.socialmessaging#WhatsAppConversionEventBlob",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The raw Meta Conversions API event payload as a JSON blob. See <a href=\"https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/server-event\">Meta's server event parameters</a> for the supported format.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.socialmessaging#SendWhatsAppConversionEventOutput": {
+            "type": "structure",
+            "members": {
+                "requestId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for the conversion event request.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.socialmessaging#SendWhatsAppMessage": {
@@ -5147,6 +5510,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The updated categories for the Flow.</p>"
                     }
+                },
+                "endpointUri": {
+                    "target": "com.amazonaws.socialmessaging#MetaFlowEndpointUri",
+                    "traits": {
+                        "smithy.api#documentation": "Optional HTTPS endpoint for a dynamic Flow, registered with Meta as the\nFlow's endpoint_uri and called by Meta directly. When omitted, the\nFlow's endpoint is unchanged."
+                    }
+                },
+                "metaAppId": {
+                    "target": "com.amazonaws.socialmessaging#MetaFlowApplicationId",
+                    "traits": {
+                        "smithy.api#documentation": "Optional Meta app ID to attach to the Flow. Meta signs data-exchange\nrequests with the attached app's secret, so attaching your own app is\nwhat enables X-Hub-Signature-256 and flow_token_signature verification\nat your endpoint. Meta requires the app to be owned by the same business\nthat owns the WABA. Attaching your own app is one-way: the service's\napp cannot be re-attached afterwards. When omitted, the attached app is\nunchanged. (Set via update because Meta ignores application_id at\ncreation time.)"
+                    }
                 }
             },
             "traits": {
@@ -5405,6 +5780,26 @@
                 "smithy.api#length": {
                     "max": 200
                 }
+            }
+        },
+        "com.amazonaws.socialmessaging#WhatsAppConversionEventBlob": {
+            "type": "blob",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1024000
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.socialmessaging#WhatsAppDatasetId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 10,
+                    "max": 20
+                },
+                "smithy.api#pattern": "^[0-9]+$"
             }
         },
         "com.amazonaws.socialmessaging#WhatsAppDisplayPhoneNumber": {
