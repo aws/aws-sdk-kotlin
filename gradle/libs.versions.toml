@@ -86,6 +86,7 @@ smithy-kotlin-smithy-rpcv2-protocols = { module = "aws.smithy.kotlin:smithy-rpcv
 smithy-kotlin-smithy-test = { module = "aws.smithy.kotlin:smithy-test", version.ref = "smithy-kotlin-version" }
 smithy-kotlin-telemetry-api = { module = "aws.smithy.kotlin:telemetry-api", version.ref = "smithy-kotlin-version" }
 smithy-kotlin-telemetry-defaults = { module = "aws.smithy.kotlin:telemetry-defaults", version.ref = "smithy-kotlin-version" }
+smithy-kotlin-telemetry-metrics-aggregation = { module = "aws.smithy.kotlin:telemetry-metrics-aggregation", version.ref = "smithy-kotlin-version" }
 smithy-kotlin-telemetry-provider-micrometer = { module = "aws.smithy.kotlin:telemetry-provider-micrometer", version.ref = "smithy-kotlin-version" }
 smithy-kotlin-telemetry-provider-otel = { module = "aws.smithy.kotlin:telemetry-provider-otel", version.ref = "smithy-kotlin-version" }
 smithy-kotlin-test-suite = { module = "aws.smithy.kotlin:test-suite", version.ref = "smithy-kotlin-version" }
