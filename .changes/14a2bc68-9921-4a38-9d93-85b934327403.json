@@ -1,0 +1,6 @@
+{
+    "id": "14a2bc68-9921-4a38-9d93-85b934327403",
+    "type": "bugfix",
+    "description": "Treat `SessionToken` as optional in process credentials responses, allowing a credential process to return long term credentials",
+    "module": "aws-config"
+}
