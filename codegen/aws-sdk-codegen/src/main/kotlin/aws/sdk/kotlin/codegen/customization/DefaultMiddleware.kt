@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.codegen.customization
 
 import aws.sdk.kotlin.codegen.middleware.AwsSpanInterceptorMiddleware
+import aws.sdk.kotlin.codegen.middleware.CredentialsInvalidationMiddleware
 import aws.sdk.kotlin.codegen.middleware.RecursionDetectionMiddleware
 import aws.sdk.kotlin.codegen.middleware.UserAgentMiddleware
 import aws.smithy.kotlin.codegen.integration.KotlinIntegration
@@ -23,5 +24,6 @@ class DefaultMiddleware : KotlinIntegration {
             UserAgentMiddleware(),
             RecursionDetectionMiddleware(),
             AwsSpanInterceptorMiddleware(),
+            CredentialsInvalidationMiddleware(),
         )
 }
