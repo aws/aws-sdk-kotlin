@@ -13,7 +13,8 @@ import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.operation.HttpOperationContext
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
-import aws.smithy.kotlin.runtime.telemetry.logging.trace
+import aws.smithy.kotlin.runtime.telemetry.logging.debug
+import aws.smithy.kotlin.runtime.telemetry.logging.warn
 import kotlin.coroutines.coroutineContext
 
 /**
@@ -43,6 +44,10 @@ public class CredentialsInvalidationInterceptor : HttpInterceptor {
         val errorCode = ex.sdkErrorMetadata.attributes.getOrNull(ServiceErrorMetadata.ErrorCode)
         if (errorCode !in INVALIDATION_ERROR_CODES) return context.response
 
+        coroutineContext.debug<CredentialsInvalidationInterceptor> {
+            "Credentials were rejected by the service with error code $errorCode"
+        }
+
         val identity = context.executionContext.getOrNull(HttpOperationContext.ResolvedIdentity)
         val provider = context.executionContext.getOrNull(HttpOperationContext.ResolvedIdentityProvider)
 
@@ -50,9 +55,10 @@ public class CredentialsInvalidationInterceptor : HttpInterceptor {
             try {
                 provider.invalidate(identity)
             } catch (invalidationFailure: Exception) {
-                // never let invalidation bookkeeping replace the service error the caller needs to see
-                coroutineContext.trace<CredentialsInvalidationInterceptor> {
-                    "failed to invalidate rejected credentials: ${invalidationFailure.message}"
+                // an implementation is not expected to throw here, so log loudly enough that the bug gets reported —
+                // but never let invalidation bookkeeping replace the service error the caller needs to see
+                coroutineContext.warn<CredentialsInvalidationInterceptor>(invalidationFailure) {
+                    "failed to invalidate rejected credentials"
                 }
             }
         }
