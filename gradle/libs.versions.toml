@@ -11,6 +11,7 @@ aws-kotlin-repo-tools-version = "0.6.3"
 coroutines-version = "1.11.0"
 atomicfu-version = "0.33.0"
 binary-compatibility-validator-version = "0.18.2"
+crac-version = "1.5.0"
 
 # smithy-kotlin
 smithy-kotlin-version = "1.7.10"
@@ -46,6 +47,7 @@ kotlinx-atomicfu-plugin = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plug
 
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines-version" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-version" }
+crac = { module = "org.crac:crac", version.ref = "crac-version" }
 
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp-version" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp-version" }
