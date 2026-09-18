@@ -318,7 +318,7 @@ public object MapperTypes {
 
     public object Values {
         public fun valueConverter(value: Type): TypeRef = TypeRef(MapperPkg.Hl.Values, "ValueConverter", genericArgs = listOf(value))
-        public val ItemToValueConverter: TypeRef = TypeRef(MapperPkg.Hl.Values, "ItemToValueConverter")
+        public val ItemValueConverter: TypeRef = TypeRef(MapperPkg.Hl.Values, "ItemValueConverter")
         public val NullableValueConverter: TypeRef = TypeRef(MapperPkg.Hl.Values, "NullableValueConverter")
 
         public object Collections {

@@ -121,6 +121,7 @@ internal fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
     }
 
     tokenBucket {
+        this.useNewRetries = true
         retryCost = STANDARD_RETRY_COST
         timeoutRetryCost = STANDARD_THROTTLING_RETRY_COST
     }

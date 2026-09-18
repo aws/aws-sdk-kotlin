@@ -12,7 +12,9 @@ import aws.smithy.kotlin.runtime.ClientException
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
 import aws.smithy.kotlin.runtime.retries.delay.ExponentialBackoffWithJitter
+import aws.smithy.kotlin.runtime.retries.delay.RetryCapacityExceededException
 import aws.smithy.kotlin.runtime.retries.delay.StandardRetryTokenBucket
+import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType
 import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
@@ -276,6 +278,34 @@ class ResolveRetryStrategyTest {
         assertEquals(STANDARD_RETRY_COST, bucketConfig.retryCost)
         assertEquals(STANDARD_THROTTLING_RETRY_COST, bucketConfig.timeoutRetryCost)
         assertTrue(strategy.config.enableLongPollingBackoff)
+    }
+
+    @Test
+    fun itChargesFullRetryCostForTransientRetriesWhenNewRetriesEnabled() = runTest {
+        // Regression test for the AWS_NEW_RETRIES_2026 propagation bug: the token bucket must charge
+        // STANDARD_RETRY_COST (14) — not STANDARD_THROTTLING_RETRY_COST (5) — for transient retries when the new
+        // behavior is enabled via the AWS setting rather than smithy-kotlin's SMITHY_NEW_RETRIES_2026.
+        val platform = TestPlatformProvider.of(
+            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
+        )
+
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
+        val bucket = strategy.config.tokenBucket
+
+        // Default bucket: maxCapacity=500, circuit-breaker mode, initialTryCost=0. Schedule transient retries until
+        // capacity is exhausted; the count reveals the per-retry cost.
+        var token = bucket.acquireToken()
+        var transientRetries = 0
+        val result = runCatching {
+            while (true) {
+                token = token.scheduleRetry(RetryErrorType.Transient)
+                transientRetries++
+            }
+        }
+
+        assertIs<RetryCapacityExceededException>(result.exceptionOrNull())
+        // 500 / 14 = 35 successful transient retries. Under the bug (cost 5) this would have been 100.
+        assertEquals(500 / STANDARD_RETRY_COST, transientRetries)
     }
 
     @Test

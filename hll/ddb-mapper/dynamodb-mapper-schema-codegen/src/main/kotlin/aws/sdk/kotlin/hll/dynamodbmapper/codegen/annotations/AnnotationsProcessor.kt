@@ -9,6 +9,7 @@ import aws.sdk.kotlin.hll.codegen.ksp.processors.HllKspProcessor
 import aws.sdk.kotlin.hll.codegen.rendering.RenderOptions.VisibilityAttribute
 import aws.sdk.kotlin.hll.codegen.rendering.Visibility
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbItem
+import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMappable
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.AnnotationsProcessorOptions.DestinationPackageAttribute
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.AnnotationsProcessorOptions.GenerateBuilderClassesAttribute
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.AnnotationsProcessorOptions.GenerateGetTableMethodAttribute
@@ -19,21 +20,32 @@ import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 
 private val annotationName = DynamoDbItem::class.qualifiedName!!
+private val mappableAnnotationName = DynamoDbMappable::class.qualifiedName!!
 
 public class AnnotationsProcessor(private val environment: SymbolProcessorEnvironment) : HllKspProcessor(environment) {
     private val logger = environment.logger
 
     override fun processImpl(resolver: Resolver): List<KSAnnotated> {
-        logger.info("Searching for symbols annotated with $annotationName")
-        val annotated = resolver.getSymbolsWithAnnotation(annotationName)
-        val invalid = annotated.filterNot { it.validate() }.toList()
+        logger.info("Searching for symbols annotated with $annotationName or $mappableAnnotationName")
+
+        // Discover both table items (@DynamoDbItem) and nested-only mappable types (@DynamoDbMappable). KSP's
+        // getSymbolsWithAnnotation only matches directly-applied annotations, so the meta-annotation on @DynamoDbItem
+        // is not expanded here; we query for both explicitly. A class annotated with @DynamoDbItem is not *directly*
+        // annotated with @DynamoDbMappable, so the two result sets are disjoint except when a user redundantly applies
+        // both -- distinctBy guards against rendering such a class twice.
+        val annotated = (
+            resolver.getSymbolsWithAnnotation(annotationName) +
+                resolver.getSymbolsWithAnnotation(mappableAnnotationName)
+            ).toList()
+
+        val invalid = annotated.filterNot { it.validate() }
         logger.info("Found invalid classes $invalid")
 
         val annotatedClasses = annotated
-            .toList()
             .also { logger.info("Found annotated classes: $it") }
             .filterIsInstance<KSClassDeclaration>()
             .filter { it.validate() }
+            .distinctBy { it.qualifiedName?.asString() }
 
         val dependencies = Dependencies(aggregating = true, *(annotatedClasses.mapNotNull { it.containingFile }.toTypedArray()))
         val codeGeneratorFactory = CodeGeneratorFactory(environment.codeGenerator, logger, dependencies)
