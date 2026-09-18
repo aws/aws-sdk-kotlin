@@ -1757,6 +1757,12 @@
                         "smithy.api#required": {}
                     }
                 },
+                "scopeName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the materialized asset scope.</p>"
+                    }
+                },
                 "errorMessage": {
                     "target": "smithy.api#String",
                     "traits": {
@@ -7993,6 +7999,12 @@
                         "smithy.api#documentation": "<p>The description of the notebook.</p>"
                     }
                 },
+                "type": {
+                    "target": "com.amazonaws.datazone#NotebookType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the notebook.</p>"
+                    }
+                },
                 "metadata": {
                     "target": "com.amazonaws.datazone#Metadata",
                     "traits": {
@@ -8060,6 +8072,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The status of the notebook.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.datazone#NotebookType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the notebook.</p>"
                     }
                 },
                 "description": {
@@ -12792,8 +12810,16 @@
                 "skipDeletionCheck": {
                     "target": "smithy.api#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specifies the optional flag to delete all child entities within the domain.</p>",
+                        "smithy.api#documentation": "<p>Specifies whether to skip the check that prevents deletion of a domain that still contains resources. When you use this parameter, Amazon DataZone deletes the domain but might not remove its associated resources, which can leave orphaned resources behind. To delete a domain and fully clean up its associated resources, use <code>cascadeDelete</code> instead. You can't use this parameter together with <code>cascadeDelete</code>.</p>",
                         "smithy.api#httpQuery": "skipDeletionCheck",
+                        "smithy.api#notProperty": {}
+                    }
+                },
+                "cascadeDelete": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to delete the domain along with all of its associated resources. When you use this parameter, Amazon DataZone deletes the domain and cleanly removes its associated resources without leaving orphaned resources behind. Amazon DataZone reports deletion progress in the <code>deleteProgress</code> field. Amazon DataZone reports any resources that it can't delete in the <code>failureReasons</code> field of the <code>GetDomain</code> response. You can't use this parameter together with <code>skipDeletionCheck</code>. If you don't specify a value, the default is <code>false</code>.</p>",
+                        "smithy.api#httpQuery": "cascadeDelete",
                         "smithy.api#notProperty": {}
                     }
                 }
@@ -13626,6 +13652,20 @@
             "members": {},
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.datazone#DeleteProgress": {
+            "type": "structure",
+            "members": {
+                "successfullyDeletedProjectCount": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of projects that Amazon DataZone successfully deleted during the domain deletion.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The progress of a domain deletion, including the number of projects that Amazon DataZone successfully deleted. Amazon DataZone returns this structure in the response to a <code>GetDomain</code> request while a cascade deletion is in progress.</p>"
             }
         },
         "com.amazonaws.datazone#DeleteProject": {
@@ -14694,6 +14734,12 @@
                 },
                 "serviceRole": {
                     "target": "com.amazonaws.datazone#RoleArn"
+                },
+                "failureReasons": {
+                    "target": "com.amazonaws.datazone#FailureReasonsList"
+                },
+                "deleteProgress": {
+                    "target": "com.amazonaws.datazone#DeleteProgress"
                 }
             },
             "create": {
@@ -16299,10 +16345,39 @@
                 "smithy.api#documentation": "<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
             }
         },
+        "com.amazonaws.datazone#FailureReason": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the resource that failed to delete.</p>"
+                    }
+                },
+                "message": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error message associated with the resource that failed to delete.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The details of a resource deletion failure during a cascade deletion of the domain.</p>"
+            }
+        },
         "com.amazonaws.datazone#FailureReasons": {
             "type": "list",
             "member": {
                 "target": "com.amazonaws.datazone#ProjectDeletionError"
+            }
+        },
+        "com.amazonaws.datazone#FailureReasonsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.datazone#FailureReason"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A list of <code>FailureReason</code> objects that describe the resources that Amazon DataZone could not delete during a cascade deletion. Amazon DataZone returns this list in the <code>failureReasons</code> field of the <code>GetDomain</code> response.</p>"
             }
         },
         "com.amazonaws.datazone#FileFormat": {
@@ -18520,6 +18595,18 @@
                     "target": "com.amazonaws.datazone#RoleArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The service role of the domain.</p>"
+                    }
+                },
+                "failureReasons": {
+                    "target": "com.amazonaws.datazone#FailureReasonsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of failure reasons for resources that Amazon DataZone could not delete during a cascade deletion of the domain.</p>"
+                    }
+                },
+                "deleteProgress": {
+                    "target": "com.amazonaws.datazone#DeleteProgress",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The progress of the current domain deletion, including the number of projects that Amazon DataZone successfully deleted.</p>"
                     }
                 }
             },
@@ -21072,6 +21159,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The status of the notebook.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.datazone#NotebookType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the notebook.</p>"
                     }
                 },
                 "description": {
@@ -28097,6 +28190,13 @@
                         "smithy.api#httpQuery": "status"
                     }
                 },
+                "type": {
+                    "target": "com.amazonaws.datazone#NotebookType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type to filter notebooks by.</p>",
+                        "smithy.api#httpQuery": "type"
+                    }
+                },
                 "nextToken": {
                     "target": "com.amazonaws.datazone#PaginationToken",
                     "traits": {
@@ -30808,6 +30908,9 @@
                 "status": {
                     "target": "com.amazonaws.datazone#NotebookStatus"
                 },
+                "type": {
+                    "target": "com.amazonaws.datazone#NotebookType"
+                },
                 "cellOrder": {
                     "target": "com.amazonaws.datazone#CellOrder"
                 },
@@ -31371,6 +31474,12 @@
                         "smithy.api#required": {}
                     }
                 },
+                "type": {
+                    "target": "com.amazonaws.datazone#NotebookType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the notebook.</p>"
+                    }
+                },
                 "description": {
                     "target": "com.amazonaws.datazone#Description",
                     "traits": {
@@ -31410,6 +31519,28 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.datazone#NotebookSummary"
+            }
+        },
+        "com.amazonaws.datazone#NotebookType": {
+            "type": "enum",
+            "members": {
+                "DATA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A data notebook.</p>",
+                        "smithy.api#enumValue": "DATA"
+                    }
+                },
+                "SQL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A SQL notebook.</p>",
+                        "smithy.api#enumValue": "SQL"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The type of a notebook in Amazon SageMaker Unified Studio.</p>"
             }
         },
         "com.amazonaws.datazone#NotificationOutput": {
@@ -43250,6 +43381,12 @@
                         "smithy.api#documentation": "<p>The updated ordered list of cells in the notebook.</p>"
                     }
                 },
+                "type": {
+                    "target": "com.amazonaws.datazone#NotebookType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated type of the notebook.</p>"
+                    }
+                },
                 "metadata": {
                     "target": "com.amazonaws.datazone#Metadata",
                     "traits": {
@@ -43323,6 +43460,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The status of the notebook.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.datazone#NotebookType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the notebook.</p>"
                     }
                 },
                 "description": {

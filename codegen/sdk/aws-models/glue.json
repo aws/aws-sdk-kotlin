@@ -661,6 +661,9 @@
                     "target": "com.amazonaws.glue#ListIntegrationResourceProperties"
                 },
                 {
+                    "target": "com.amazonaws.glue#ListIntegrationTableProperties"
+                },
+                {
                     "target": "com.amazonaws.glue#ListIterableForms"
                 },
                 {
@@ -2963,6 +2966,18 @@
                         "smithy.api#required": {}
                     }
                 },
+                "IterableFormName": {
+                    "target": "com.amazonaws.glue#IterableFormName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the iterable form. When specified along with <code>itemIdentifier</code>, the glossary terms are associated with an item within the iterable form rather than the asset itself.</p>"
+                    }
+                },
+                "ItemIdentifier": {
+                    "target": "com.amazonaws.glue#ItemIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the item within the iterable form. Required when <code>iterableFormName</code> is specified.</p>"
+                    }
+                },
                 "GlossaryTermIdentifiers": {
                     "target": "com.amazonaws.glue#GlossaryTermIdList",
                     "traits": {
@@ -2989,6 +3004,18 @@
                     "target": "com.amazonaws.glue#AssetId",
                     "traits": {
                         "smithy.api#documentation": "<p>The unique identifier of the asset.</p>"
+                    }
+                },
+                "IterableFormName": {
+                    "target": "com.amazonaws.glue#IterableFormName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the iterable form, if the association targets an item.</p>"
+                    }
+                },
+                "ItemIdentifier": {
+                    "target": "com.amazonaws.glue#ItemIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the item within the iterable form, if applicable.</p>"
                     }
                 },
                 "GlossaryTerms": {
@@ -15750,6 +15777,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the ruleset that was created by the recommendation run.</p>"
                     }
+                },
+                "RecommendationMode": {
+                    "target": "com.amazonaws.glue#RecommendationMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The mode that Glue Data Quality uses to recommend rules.</p>\n         <p>The default is <code>BASIC</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -16822,6 +16855,18 @@
                     "target": "com.amazonaws.glue#AssetId",
                     "traits": {
                         "smithy.api#documentation": "<p>The unique identifier of the asset.</p>"
+                    }
+                },
+                "IterableFormName": {
+                    "target": "com.amazonaws.glue#IterableFormName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the iterable form, if the deletion targets an item.</p>"
+                    }
+                },
+                "ItemIdentifier": {
+                    "target": "com.amazonaws.glue#ItemIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the item within the iterable form, if applicable.</p>"
                     }
                 }
             },
@@ -20036,6 +20081,18 @@
                         "smithy.api#required": {}
                     }
                 },
+                "IterableFormName": {
+                    "target": "com.amazonaws.glue#IterableFormName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the iterable form. When specified along with <code>itemIdentifier</code>, the glossary terms are disassociated from an item within the iterable form rather than the asset itself.</p>"
+                    }
+                },
+                "ItemIdentifier": {
+                    "target": "com.amazonaws.glue#ItemIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the item within the iterable form. Required when <code>iterableFormName</code> is specified.</p>"
+                    }
+                },
                 "GlossaryTermIdentifiers": {
                     "target": "com.amazonaws.glue#GlossaryTermIdList",
                     "traits": {
@@ -20062,6 +20119,18 @@
                     "target": "com.amazonaws.glue#AssetId",
                     "traits": {
                         "smithy.api#documentation": "<p>The unique identifier of the asset.</p>"
+                    }
+                },
+                "IterableFormName": {
+                    "target": "com.amazonaws.glue#IterableFormName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the iterable form, if the disassociation targets an item.</p>"
+                    }
+                },
+                "ItemIdentifier": {
+                    "target": "com.amazonaws.glue#ItemIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the item within the iterable form, if applicable.</p>"
                     }
                 },
                 "GlossaryTerms": {
@@ -22563,6 +22632,7 @@
                 }
             },
             "traits": {
+                "smithy.api#documentation": "<p>The asset metadata returned by the <code>GetAsset</code> operation.</p>",
                 "smithy.api#output": {}
             }
         },
@@ -24206,6 +24276,7 @@
                 }
             },
             "traits": {
+                "smithy.api#documentation": "<p>The export configuration returned by the <code>GetDataCatalogExportConfiguration</code> operation.</p>",
                 "smithy.api#output": {}
             }
         },
@@ -24555,7 +24626,7 @@
                 "Role": {
                     "target": "com.amazonaws.glue#RoleString",
                     "traits": {
-                        "smithy.api#documentation": "<p>An IAM role supplied to encrypt the results of the run.</p>"
+                        "smithy.api#documentation": "<p>The IAM role that Glue assumes to access resources for the run.</p>"
                     }
                 },
                 "NumberOfWorkers": {
@@ -24629,6 +24700,12 @@
                     "target": "com.amazonaws.glue#DataQualityRuleRecommendationRunAdditionalRunOptions",
                     "traits": {
                         "smithy.api#documentation": "<p>Additional run options you can specify for a recommendation run.</p>"
+                    }
+                },
+                "RecommendationMode": {
+                    "target": "com.amazonaws.glue#RecommendationMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The mode that Glue Data Quality uses to recommend rules.</p>\n         <p>The default is <code>BASIC</code>.</p>"
                     }
                 }
             },
@@ -32129,6 +32206,78 @@
         "com.amazonaws.glue#IntegrationString": {
             "type": "string"
         },
+        "com.amazonaws.glue#IntegrationTableProperties": {
+            "type": "structure",
+            "members": {
+                "ResourceArn": {
+                    "target": "com.amazonaws.glue#String512",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connection ARN of the source, or the database ARN of the target.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "TableName": {
+                    "target": "com.amazonaws.glue#String128",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the source table to be replicated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "SourceTableConfig": {
+                    "target": "com.amazonaws.glue#SourceTableConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A structure for the source table configuration.</p>"
+                    }
+                },
+                "TargetTableConfig": {
+                    "target": "com.amazonaws.glue#TargetTableConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A structure for the target table configuration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The properties of a single integration table, including the resource ARN, the table name, and the source or target table configuration.</p>"
+            }
+        },
+        "com.amazonaws.glue#IntegrationTablePropertiesFilter": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.glue#String128",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the filter. Supported filter keys are <code>SourceArn</code>, <code>TargetArn</code>, <code>SourceTableName</code>, and <code>TargetTableName</code>.</p>"
+                    }
+                },
+                "Values": {
+                    "target": "com.amazonaws.glue#IntegrationTablePropertiesFilterValues",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of filter values.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A key-value filter used to narrow the list of integration table properties returned by ListIntegrationTableProperties. Specify a filter key and one or more values to match.</p>"
+            }
+        },
+        "com.amazonaws.glue#IntegrationTablePropertiesFilterList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.glue#IntegrationTablePropertiesFilter"
+            }
+        },
+        "com.amazonaws.glue#IntegrationTablePropertiesFilterValues": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.glue#String128"
+            }
+        },
+        "com.amazonaws.glue#IntegrationTablePropertiesList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.glue#IntegrationTableProperties"
+            }
+        },
         "com.amazonaws.glue#IntegrationTagsList": {
             "type": "list",
             "member": {
@@ -35941,7 +36090,7 @@
             "type": "structure",
             "members": {
                 "Marker": {
-                    "target": "com.amazonaws.glue#String1024",
+                    "target": "com.amazonaws.glue#String4096",
                     "traits": {
                         "smithy.api#documentation": "<p>This is the pagination token for next page, initial value is <code>null</code>.</p>"
                     }
@@ -35973,9 +36122,90 @@
                     }
                 },
                 "Marker": {
-                    "target": "com.amazonaws.glue#String1024",
+                    "target": "com.amazonaws.glue#String4096",
                     "traits": {
                         "smithy.api#documentation": "<p>This is the pagination token for the next page.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.glue#ListIntegrationTableProperties": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#ListIntegrationTablePropertiesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#ListIntegrationTablePropertiesResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Lists the integration table properties in your account. This operation supports filtering and pagination.</p>"
+            }
+        },
+        "com.amazonaws.glue#ListIntegrationTablePropertiesRequest": {
+            "type": "structure",
+            "members": {
+                "Marker": {
+                    "target": "com.amazonaws.glue#String4096",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The pagination token for the next page of results. The initial value is <code>null</code>.</p>"
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.glue#IntegrationTablePropertiesFilterList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of filters. Supported filter keys are <code>SourceArn</code>, <code>TargetArn</code>, <code>SourceTableName</code>, and <code>TargetTableName</code>.</p>"
+                    }
+                },
+                "MaxRecords": {
+                    "target": "com.amazonaws.glue#IntegrationInteger",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of records to return in the response.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#ListIntegrationTablePropertiesResponse": {
+            "type": "structure",
+            "members": {
+                "IntegrationTablePropertiesList": {
+                    "target": "com.amazonaws.glue#IntegrationTablePropertiesList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of integration table properties meeting the filter criteria.</p>"
+                    }
+                },
+                "Marker": {
+                    "target": "com.amazonaws.glue#String4096",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The pagination token for the next page. Returns <code>null</code> if there are no more results.</p>"
                     }
                 }
             },
@@ -36297,7 +36527,7 @@
                 "TableName": {
                     "target": "com.amazonaws.glue#NameString",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the table for which statistics is generated.</p>"
+                        "smithy.api#documentation": "<p>The name of the materialized view.</p>"
                     }
                 },
                 "MaxResults": {
@@ -37617,7 +37847,10 @@
             "type": "structure",
             "members": {
                 "Message": {
-                    "target": "com.amazonaws.glue#MessageString"
+                    "target": "com.amazonaws.glue#MessageString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A message describing the problem.</p>"
+                    }
                 }
             },
             "traits": {
@@ -37649,7 +37882,7 @@
                 "TableName": {
                     "target": "com.amazonaws.glue#TableName",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the table for which statistics is generated.</p>"
+                        "smithy.api#documentation": "<p>The name of the materialized view.</p>"
                     }
                 },
                 "CatalogId": {
@@ -37661,7 +37894,7 @@
                 "Role": {
                     "target": "com.amazonaws.glue#Role",
                     "traits": {
-                        "smithy.api#documentation": "<p>The IAM role that the service assumes to generate statistics.</p>"
+                        "smithy.api#documentation": "<p>The IAM role that the service assumes to run the materialized view refresh task.</p>"
                     }
                 },
                 "Status": {
@@ -37728,7 +37961,10 @@
             "type": "structure",
             "members": {
                 "Message": {
-                    "target": "com.amazonaws.glue#MessageString"
+                    "target": "com.amazonaws.glue#MessageString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A message describing the problem.</p>"
+                    }
                 }
             },
             "traits": {
@@ -37746,7 +37982,10 @@
             "type": "structure",
             "members": {
                 "Message": {
-                    "target": "com.amazonaws.glue#MessageString"
+                    "target": "com.amazonaws.glue#MessageString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A message describing the problem.</p>"
+                    }
                 }
             },
             "traits": {
@@ -40651,6 +40890,9 @@
                     "target": "com.amazonaws.glue#ConcurrentModificationException"
                 },
                 {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
                     "target": "com.amazonaws.glue#InternalServiceException"
                 },
                 {
@@ -40985,6 +41227,7 @@
                 }
             },
             "traits": {
+                "smithy.api#documentation": "<p>The export configuration returned by the <code>PutDataCatalogExportConfiguration</code> operation.</p>",
                 "smithy.api#output": {}
             }
         },
@@ -41691,6 +41934,26 @@
                     "min": 1,
                     "max": 16
                 }
+            }
+        },
+        "com.amazonaws.glue#RecommendationMode": {
+            "type": "enum",
+            "members": {
+                "BASIC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BASIC"
+                    }
+                },
+                "ADVANCED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ADVANCED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Specifies the mode for how Glue Data Quality recommends rules.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>BASIC</code> uses an Glue job to analyze table data and recommend rules. This value is the default.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ADVANCED</code> uses Amazon Athena to analyze table data and Amazon Bedrock to recommend rules.</p>\n            </li>\n         </ul>"
             }
         },
         "com.amazonaws.glue#Record": {
@@ -45039,6 +45302,7 @@
                 }
             },
             "traits": {
+                "smithy.api#documentation": "<p>The search results returned by the <code>SearchAssets</code> operation.</p>",
                 "smithy.api#output": {}
             }
         },
@@ -47087,7 +47351,7 @@
                 "Role": {
                     "target": "com.amazonaws.glue#RoleString",
                     "traits": {
-                        "smithy.api#documentation": "<p>An IAM role supplied to encrypt the results of the run.</p>",
+                        "smithy.api#documentation": "<p>The IAM role that Glue assumes to access resources for the run.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/data-quality-authorization.html\">Configure IAM permissions for Glue Data Quality</a>.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -47125,6 +47389,12 @@
                     "target": "com.amazonaws.glue#DataQualityRuleRecommendationRunAdditionalRunOptions",
                     "traits": {
                         "smithy.api#documentation": "<p>Additional run options you can specify for a recommendation run.</p>"
+                    }
+                },
+                "RecommendationMode": {
+                    "target": "com.amazonaws.glue#RecommendationMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The mode that Glue Data Quality uses to recommend rules.</p>\n         <p>The default is <code>BASIC</code>.</p>"
                     }
                 }
             },
@@ -47676,7 +47946,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Starts a materialized view refresh task run, for a specified table and columns.</p>"
+                "smithy.api#documentation": "<p>Starts a materialized view refresh task run for a specified materialized view.</p>"
             }
         },
         "com.amazonaws.glue#StartMaterializedViewRefreshTaskRunRequest": {
@@ -47699,7 +47969,7 @@
                 "TableName": {
                     "target": "com.amazonaws.glue#NameString",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the table to generate run the materialized view refresh task.</p>",
+                        "smithy.api#documentation": "<p>The name of the materialized view to run the refresh task for.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -48531,7 +48801,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Stops a materialized view refresh task run, for a specified table and columns.</p>"
+                "smithy.api#documentation": "<p>Stops a materialized view refresh task run for a specified materialized view.</p>"
             }
         },
         "com.amazonaws.glue#StopMaterializedViewRefreshTaskRunRequest": {
@@ -48554,7 +48824,7 @@
                 "TableName": {
                     "target": "com.amazonaws.glue#NameString",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the table to generate statistics.</p>",
+                        "smithy.api#documentation": "<p>The name of the materialized view.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -48868,15 +49138,6 @@
                 "smithy.api#documentation": "<p>Specifies options related to data preview for viewing a sample of your data.</p>"
             }
         },
-        "com.amazonaws.glue#String1024": {
-            "type": "string",
-            "traits": {
-                "smithy.api#length": {
-                    "min": 1,
-                    "max": 1024
-                }
-            }
-        },
         "com.amazonaws.glue#String128": {
             "type": "string",
             "traits": {
@@ -48892,6 +49153,15 @@
                 "smithy.api#length": {
                     "min": 1,
                     "max": 2048
+                }
+            }
+        },
+        "com.amazonaws.glue#String4096": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 4096
                 }
             }
         },
@@ -49979,6 +50249,12 @@
                     "target": "com.amazonaws.glue#String128",
                     "traits": {
                         "smithy.api#documentation": "<p>The optional name of a target table.</p>"
+                    }
+                },
+                "IntegrationArn": {
+                    "target": "com.amazonaws.glue#String128",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the integration that owns this target table configuration.</p>"
                     }
                 }
             },
