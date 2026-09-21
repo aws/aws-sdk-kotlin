@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.9.5] - 09/21/2026
+
+### Features
+* (**bedrockagentcore**) Amazon Bedrock AgentCore Harness now supports lifecycle hooks for invocations and tool calls, with Lambda, SNS, and EventBridge targets. This release also adds apiBase for custom OpenAI-compatible endpoints.
+* (**bedrockagentcorecontrol**) Amazon Bedrock AgentCore Harness now supports lifecycle hooks for invocations and tool calls, with Lambda, SNS, and EventBridge targets. This release also adds apiBase for custom OpenAI-compatible endpoints
+* (**billingconductor**) Launching Auto Billing Transfer Billing Group Creation Preference feature
+* (**docdb**) Add support for CopyTagsToSnapshot field in CreateDbCluster, ModifyDbCluster, RestoreDbClusterFromSnapshot and RestoreDbClusterToPointInTime for DocumentDB.
+* (**sagemaker**) Add support for r6i, m8i, c8i, r8i instance types in Training and Processing
+* [#984](https://github.com/aws/aws-sdk-kotlin/issues/984) (**telemetry-cloudwatch**) Add `telemetry-cloudwatch`, a module that publishes SDK metrics to Amazon CloudWatch
+
 ## [1.9.4] - 09/18/2026
 
 ### Features
