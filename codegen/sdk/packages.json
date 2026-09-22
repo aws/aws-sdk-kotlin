@@ -463,6 +463,12 @@
             "brazilName": "AwsSdkKotlinCloudwatchLogs"
         },
         {
+            "sdkId": "CloudWatchOmni",
+            "namespace": "aws.sdk.kotlin.services.cloudwatchomni",
+            "artifactName": "cloudwatchomni",
+            "brazilName": "AwsSdkKotlinCloudwatchomni"
+        },
+        {
             "sdkId": "CodeBuild",
             "namespace": "aws.sdk.kotlin.services.codebuild",
             "artifactName": "codebuild",
