@@ -19,6 +19,12 @@ public object Pkg {
     }
 
     @InternalSdkApi
+    public object Java {
+        public val Base: String = "java"
+        public val Math: String = "$Base.math"
+    }
+
+    @InternalSdkApi
     public object Kotlinx {
         public val Base: String = "kotlinx"
 
