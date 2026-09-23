@@ -1,0 +1,6 @@
+{
+    "id": "c03562f6-94a4-4ca2-9cdc-765e091b7dcb",
+    "type": "feature",
+    "description": "Add DynamoDB mapper support for `BigDecimal` and `BigInteger` attributes (both the multiplatform `aws.smithy.kotlin.runtime.content` types and the JVM-only `java.math` types), stored as DynamoDB `N` values with full precision, including as scalars, list elements, map values, map keys, and set (`NS`) elements",
+    "module": "dynamodb-mapper"
+}

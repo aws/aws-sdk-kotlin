@@ -4,6 +4,8 @@
  */
 package org.example
 
+import aws.smithy.kotlin.runtime.content.BigDecimal
+import aws.smithy.kotlin.runtime.content.BigInteger
 import org.example.dynamodbmapper.generatedschemas.SetsConverter
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -27,6 +29,10 @@ public class SetsTest {
             setUInt = setOf(100u, 200u, 300u),
             setULong = setOf(1000uL, 2000uL, 3000uL),
             setUShort = setOf(1000u.toUShort(), 2000u.toUShort(), 3000u.toUShort()),
+            setBigDecimal = setOf(BigDecimal("-1.5"), BigDecimal("3.141592653589793238462643383279502884")),
+            setBigInteger = setOf(BigInteger("0"), BigInteger("99999999999999999999999999999999999999")),
+            setJvmBigDecimal = setOf(java.math.BigDecimal("-1.5"), java.math.BigDecimal("3.141592653589793238462643383279502884")),
+            setJvmBigInteger = setOf(java.math.BigInteger("0"), java.math.BigInteger("99999999999999999999999999999999999999")),
             nullableSet = null,
         )
 

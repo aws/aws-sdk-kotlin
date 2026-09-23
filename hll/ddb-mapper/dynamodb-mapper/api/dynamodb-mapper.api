@@ -3244,6 +3244,54 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/values/collections/StringSe
 	public fun convertRight (Ljava/util/Set;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
 }
 
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigDecimalSetValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigDecimalSetValueConverter;
+	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Ljava/util/Set;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/util/Set;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigDecimalToStringConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigDecimalToStringConverter;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertLeft (Ljava/lang/String;)Ljava/math/BigDecimal;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/math/BigDecimal;)Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigDecimalValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigDecimalValueConverter;
+	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Ljava/math/BigDecimal;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/math/BigDecimal;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigIntegerSetValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigIntegerSetValueConverter;
+	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Ljava/util/Set;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/util/Set;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigIntegerToStringConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigIntegerToStringConverter;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertLeft (Ljava/lang/String;)Ljava/math/BigInteger;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/math/BigInteger;)Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigIntegerValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BigIntegerValueConverter;
+	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Ljava/math/BigInteger;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/math/BigInteger;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
+}
+
 public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BooleanToStringConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
 	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/scalars/BooleanToStringConverter;
 	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
@@ -3514,6 +3562,54 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/TextConverte
 	public fun convertLeft (Ljava/lang/String;)Ljava/lang/String;
 	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun convertRight (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigDecimalSetValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigDecimalSetValueConverter;
+	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Ljava/util/Set;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/util/Set;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigDecimalToStringConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigDecimalToStringConverter;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertLeft (Ljava/lang/String;)Laws/smithy/kotlin/runtime/content/BigDecimal;
+	public fun convertRight (Laws/smithy/kotlin/runtime/content/BigDecimal;)Ljava/lang/String;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigDecimalValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigDecimalValueConverter;
+	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Laws/smithy/kotlin/runtime/content/BigDecimal;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Laws/smithy/kotlin/runtime/content/BigDecimal;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigIntegerSetValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigIntegerSetValueConverter;
+	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Ljava/util/Set;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Ljava/util/Set;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigIntegerToStringConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigIntegerToStringConverter;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertLeft (Ljava/lang/String;)Laws/smithy/kotlin/runtime/content/BigInteger;
+	public fun convertRight (Laws/smithy/kotlin/runtime/content/BigInteger;)Ljava/lang/String;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigIntegerValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public static final field INSTANCE Laws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/BigIntegerValueConverter;
+	public fun convertLeft (Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;)Laws/smithy/kotlin/runtime/content/BigInteger;
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertRight (Laws/smithy/kotlin/runtime/content/BigInteger;)Laws/sdk/kotlin/services/dynamodb/model/AttributeValue;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract class aws/sdk/kotlin/hll/dynamodbmapper/values/smithytypes/DocumentConverterBase {
