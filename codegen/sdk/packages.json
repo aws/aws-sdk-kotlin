@@ -1519,6 +1519,12 @@
             "brazilName": "AwsSdkKotlinNetworkFirewall"
         },
         {
+            "sdkId": "Network Security Manager",
+            "namespace": "aws.sdk.kotlin.services.networksecuritymanager",
+            "artifactName": "networksecuritymanager",
+            "brazilName": "AwsSdkKotlinNetworkSecurityManager"
+        },
+        {
             "sdkId": "NetworkFlowMonitor",
             "namespace": "aws.sdk.kotlin.services.networkflowmonitor",
             "artifactName": "networkflowmonitor",
