@@ -16,11 +16,13 @@ import aws.smithy.kotlin.runtime.collections.attributesOf
 import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
 import aws.smithy.kotlin.runtime.net.Host
+import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.hours
 
 class ProfileCredentialsProviderTest {
     @Test
@@ -393,5 +395,45 @@ class ProfileCredentialsProviderTest {
             ),
         )
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun testCachesBetweenResolutions() = runTest {
+        val testArn = "arn:aws:iam::1234567:role/test-role"
+        val testProvider = TestPlatformProvider.of(
+            env = mapOf(
+                "AWS_CONFIG_FILE" to "config",
+                "AWS_REGION" to "us-west-2",
+            ),
+            fs = mapOf(
+                "config" to TestFile(
+                    """
+                [default]
+                role_arn = $testArn
+                source_profile = B
+
+                [profile B]
+                aws_access_key_id = AKID-Profile
+                aws_secret_access_key = Profile-Secret
+                    """.trimIndent(),
+                ),
+            ),
+        )
+
+        // A single expectation covers both resolutions and both layers: this provider serves the second resolution
+        // from its own cache, and the role-chain provider it builds does not pace itself underneath it. An hour of
+        // lifetime keeps both resolutions inside the refresh window; there is no injectable clock here, so the
+        // expiration is stated relative to the real one.
+        val testEngine = buildTestConnection {
+            expect(StsTestUtils.stsResponse(testArn, expiration = Instant.now() + 1.hours))
+        }
+
+        val provider = ProfileCredentialsProvider(
+            platformProvider = testProvider,
+            httpClient = testEngine,
+        )
+
+        assertEquals(provider.resolve(), provider.resolve())
+        testEngine.assertRequests()
     }
 }
