@@ -6,11 +6,11 @@ package org.example
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbItem
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbPartitionKey
+import aws.smithy.kotlin.runtime.content.BigDecimal
+import aws.smithy.kotlin.runtime.content.BigInteger
 import aws.smithy.kotlin.runtime.content.Document
 import aws.smithy.kotlin.runtime.net.url.Url
 import aws.smithy.kotlin.runtime.time.Instant
-import aws.smithy.kotlin.runtime.content.BigDecimal
-import aws.smithy.kotlin.runtime.content.BigInteger
 
 enum class EnumAnimals {
     CAT,

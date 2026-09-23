@@ -4,9 +4,9 @@
  */
 package org.example
 
-import org.example.dynamodbmapper.generatedschemas.ListsConverter
 import aws.smithy.kotlin.runtime.content.BigDecimal
 import aws.smithy.kotlin.runtime.content.BigInteger
+import org.example.dynamodbmapper.generatedschemas.ListsConverter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

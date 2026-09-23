@@ -4,12 +4,12 @@
  */
 package org.example
 
+import aws.smithy.kotlin.runtime.content.BigDecimal
+import aws.smithy.kotlin.runtime.content.BigInteger
 import aws.smithy.kotlin.runtime.content.Document
 import aws.smithy.kotlin.runtime.net.url.Url
 import aws.smithy.kotlin.runtime.time.Instant
 import org.example.dynamodbmapper.generatedschemas.PrimitivesConverter
-import aws.smithy.kotlin.runtime.content.BigDecimal
-import aws.smithy.kotlin.runtime.content.BigInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

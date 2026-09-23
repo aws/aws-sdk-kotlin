@@ -16,5 +16,12 @@ class BigDecimalValueConverterTest : ValueConvertersTest() {
         BigDecimal("-1.41421") inDdbIs AttributeValue.N("-1.41421")
         BigDecimal("3.141592653589793238462643383279502884") inDdbIs
             AttributeValue.N("3.141592653589793238462643383279502884")
+
+        // The converter preserves the exact decimal string, including trailing zeroes and plain (non-exponent) form.
+        // DynamoDB itself trims trailing zeroes on the `N` type, but that happens server-side, not in the converter.
+        // Note: smithy content.BigDecimal equality normalizes scale (19.90 == 19.9), unlike java.math.BigDecimal whose
+        // equality is scale-sensitive (19.90 != 19.9). The value stored in DynamoDB is identical for both types.
+        BigDecimal("19.90") inDdbIs AttributeValue.N("19.90") whenGoing Direction.TO_ATTRIBUTE_VALUE
+        BigDecimal("1E+10") inDdbIs AttributeValue.N("10000000000") whenGoing Direction.TO_ATTRIBUTE_VALUE
     }
 }
