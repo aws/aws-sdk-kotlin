@@ -6,6 +6,8 @@ package org.example
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbItem
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbPartitionKey
+import aws.smithy.kotlin.runtime.content.BigDecimal
+import aws.smithy.kotlin.runtime.content.BigInteger
 
 @DynamoDbItem
 public data class Sets(
@@ -29,6 +31,10 @@ public data class Sets(
     var setUInt: Set<UInt>,
     var setULong: Set<ULong>,
     var setUShort: Set<UShort>,
+    var setBigDecimal: Set<BigDecimal>,
+    var setBigInteger: Set<BigInteger>,
+    var setJvmBigDecimal: Set<java.math.BigDecimal>,
+    var setJvmBigInteger: Set<java.math.BigInteger>,
     var nullableSet: Set<String>?,
 ) {
     override fun equals(other: Any?): Boolean {
@@ -51,6 +57,10 @@ public data class Sets(
         if (setUInt != other.setUInt) return false
         if (setULong != other.setULong) return false
         if (setUShort != other.setUShort) return false
+        if (setBigDecimal != other.setBigDecimal) return false
+        if (setBigInteger != other.setBigInteger) return false
+        if (setJvmBigDecimal != other.setJvmBigDecimal) return false
+        if (setJvmBigInteger != other.setJvmBigInteger) return false
 
         if (nullableSet != other.nullableSet) return false
 
