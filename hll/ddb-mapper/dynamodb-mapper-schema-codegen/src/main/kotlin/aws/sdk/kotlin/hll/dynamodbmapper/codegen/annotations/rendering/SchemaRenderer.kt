@@ -329,6 +329,11 @@ internal class SchemaRenderer(
                     Types.Smithy.Instant -> MapperTypes.Values.SmithyTypes.InstantValueConverter
                     Types.Smithy.Url -> MapperTypes.Values.SmithyTypes.UrlValueConverter
                     Types.Smithy.Document -> MapperTypes.Values.SmithyTypes.DocumentValueConverter
+                    Types.Smithy.BigDecimal -> MapperTypes.Values.SmithyTypes.BigDecimalValueConverter
+                    Types.Smithy.BigInteger -> MapperTypes.Values.SmithyTypes.BigIntegerValueConverter
+
+                    Types.Java.BigDecimal -> MapperTypes.Values.JavaMath.BigDecimalValueConverter
+                    Types.Java.BigInteger -> MapperTypes.Values.JavaMath.BigIntegerValueConverter
 
                     Types.Kotlin.Boolean -> MapperTypes.Values.Scalars.BooleanValueConverter
                     Types.Kotlin.String -> MapperTypes.Values.Scalars.StringValueConverter
@@ -397,6 +402,12 @@ internal class SchemaRenderer(
             Types.Kotlin.ULong -> MapperTypes.Values.Scalars.ULongToStringConverter
             Types.Kotlin.UShort -> MapperTypes.Values.Scalars.UShortToStringConverter
 
+            // Arbitrary-precision number
+            Types.Smithy.BigDecimal -> MapperTypes.Values.Scalars.BigDecimalToStringConverter
+            Types.Smithy.BigInteger -> MapperTypes.Values.Scalars.BigIntegerToStringConverter
+            Types.Java.BigDecimal -> MapperTypes.Values.JavaMath.BigDecimalToStringConverter
+            Types.Java.BigInteger -> MapperTypes.Values.JavaMath.BigIntegerToStringConverter
+
             // Boolean
             Types.Kotlin.Boolean -> MapperTypes.Values.Scalars.BooleanToStringConverter
             else -> error("Unsupported key type: $type")
@@ -422,6 +433,10 @@ internal class SchemaRenderer(
             Types.Kotlin.UInt -> MapperTypes.Values.Collections.UIntSetValueConverter
             Types.Kotlin.ULong -> MapperTypes.Values.Collections.ULongSetValueConverter
             Types.Kotlin.UShort -> MapperTypes.Values.Collections.UShortSetValueConverter
+            Types.Smithy.BigDecimal -> MapperTypes.Values.Collections.BigDecimalSetValueConverter
+            Types.Smithy.BigInteger -> MapperTypes.Values.Collections.BigIntegerSetValueConverter
+            Types.Java.BigDecimal -> MapperTypes.Values.JavaMath.BigDecimalSetValueConverter
+            Types.Java.BigInteger -> MapperTypes.Values.JavaMath.BigIntegerSetValueConverter
             else -> error("Unsupported set element $this")
         }
 
