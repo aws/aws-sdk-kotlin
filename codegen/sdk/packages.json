@@ -895,6 +895,12 @@
             "brazilName": "AwsSdkKotlinEventbridge"
         },
         {
+            "sdkId": "EventBridgeV2",
+            "namespace": "aws.sdk.kotlin.services.eventbridgev2",
+            "artifactName": "eventbridgev2",
+            "brazilName": "AwsSdkKotlinEventbridgev2"
+        },
+        {
             "sdkId": "FMS",
             "namespace": "aws.sdk.kotlin.services.fms",
             "artifactName": "fms",
