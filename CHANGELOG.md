@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.9.8] - 09/24/2026
+
+### Features
+* (**cloudwatch**) This release adds Create, Get, Update, and DeleteResourceMetricsConfiguration to enable detailed metric collection for an AWS resource, and adds UpdateOTelEnrichment plus include and exclude filters on StartOTelEnrichment so you can choose which metric namespaces CloudWatch enriches.
+* (**datazone**) Amazon DataZone now supports the TOOLING blueprint category on CreateEnvironmentBlueprint, UpdateEnvironmentBlueprint, GetEnvironmentBlueprint, and ListEnvironmentBlueprints, for custom tooling blueprints. CreateConnection now accepts roleArn in iamProperties.
+* (**dynamodb-mapper**) Add DynamoDB mapper support for `BigDecimal` and `BigInteger` attributes (both the multiplatform `aws.smithy.kotlin.runtime.content` types and the JVM-only `java.math` types), stored as DynamoDB `N` values with full precision, including as scalars, list elements, map values, map keys, and set (`NS`) elements
+* (**elasticache**) Added tagging support for ElastiCache Global DataStore.
+* (**eventbridge**) Adds a ManagedBy field to the DescribeEventBus and ListEventBuses responses, identifying the AWS service that created an event bus on your behalf.
+* (**eventbridgev2**) Introducing Amazon EventBridge enhanced Custom event bus, a new shareable event bus for organizational-scale event-driven applications feature ordered delivery, deduplication, open event formats, and cross-account bus sharing.
+* (**marketplacediscovery**) AWS Marketplace Discovery API now supports localized responses and SigV4a request signing. It returns new fulfillment details, including AMI architecture, EBS volume and security group information, SaaS quick-launch status, and SageMaker input and output MIME types.
+* (**redshiftdata**) Updates to the ListDatabases and WorkgroupName validation
+* (**securityagent**) Added support for Confluence export, enabling customers to publish security findings to Confluence pages.
+
+### Documentation
+* (**iot**) Fixed ListV2LoggingLevels and DeleteV2LoggingLevel documentation to include all supported target-types
+* (**route53resolver**) Documentation updates for Route 53 Resolver. Clarifies which Outpost Resolver operations apply to first-generation AWS Outposts and that Resolver is managed automatically on second-generation Outposts. Adds Local Network Interface subnet compatibility notes for Resolver endpoints.
+
 ## [1.9.7] - 09/23/2026
 
 ### Features
