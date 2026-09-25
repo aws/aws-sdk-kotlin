@@ -13,6 +13,10 @@ import aws.sdk.kotlin.runtime.util.testAttributes
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.copy
 import aws.smithy.kotlin.runtime.collections.attributesOf
+import aws.smithy.kotlin.runtime.http.Headers
+import aws.smithy.kotlin.runtime.http.HttpBody
+import aws.smithy.kotlin.runtime.http.HttpStatusCode
+import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
 import aws.smithy.kotlin.runtime.net.Host
@@ -393,5 +397,71 @@ class ProfileCredentialsProviderTest {
             ),
         )
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun testLoginSessionUsesConfiguredHttpClientAndPlatformProvider() = runTest {
+        val loginSession = "arn:aws:iam::123456789:user/TestUser"
+        // Expired cached token forces a refresh call to Signin
+        val cachedToken = """
+        {
+            "accessToken": {
+                "accessKeyId": "OLD_AKID",
+                "secretAccessKey": "old-secret",
+                "sessionToken": "old-session-token",
+                "accountId": "123456789",
+                "expiresAt": "2020-10-16T03:50:00Z"
+            },
+            "tokenType": "aws_sigv4",
+            "refreshToken": "refresh-token",
+            "clientId": "test-client-id",
+            "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIFDZHUzOG1Pzq+6F0mjMlOSp1syN9LRPBuHMoCFXTcXhoAoGCCqGSM49\nAwEHoUQDQgAE9qhj+KtcdHj1kVgwxWWWw++tqoh7H7UHs7oXh8jBbgF47rrYGC+t\ndjiIaHK3dBvvdE7MGj5HsepzLm3Kj91bqA==\n-----END EC PRIVATE KEY-----\n"
+        }
+        """.trimIndent()
+        val serviceResp = """
+        {
+            "accessToken": {
+                "accessKeyId": "AKID",
+                "secretAccessKey": "secret",
+                "sessionToken": "session-token"
+            },
+            "expiresIn": 3600,
+            "refreshToken": "new-refresh-token",
+            "tokenType": "aws_sigv4"
+        }
+        """.trimIndent()
+
+        // The cache file only exists in the test platform's filesystem, so resolving it proves platformProvider is used
+        val testProvider = TestPlatformProvider.of(
+            env = mapOf(
+                "HOME" to "/home",
+                "AWS_CONFIG_FILE" to "config",
+            ),
+            fs = mapOf(
+                "config" to TestFile(
+                    """
+                [default]
+                region = us-west-2
+                login_session = $loginSession
+                    """.trimIndent(),
+                ),
+                "/home/.aws/login/cache/${getLoginCacheFilename(loginSession)}" to TestFile(cachedToken),
+            ),
+        )
+        val testEngine = buildTestConnection {
+            expect(HttpResponse(HttpStatusCode.OK, Headers.Empty, HttpBody.fromBytes(serviceResp.encodeToByteArray())))
+        }
+
+        val provider = ProfileCredentialsProvider(
+            platformProvider = testProvider,
+            httpClient = testEngine,
+        )
+        val actual = provider.resolve()
+
+        assertEquals("AKID", actual.accessKeyId)
+        assertEquals("secret", actual.secretAccessKey)
+        assertEquals("session-token", actual.sessionToken)
+        testEngine.assertRequests()
+        assertEquals(1, testEngine.requests().size)
     }
 }
