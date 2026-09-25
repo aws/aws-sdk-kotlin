@@ -6,8 +6,10 @@
 package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
+import aws.sdk.kotlin.runtime.auth.credentials.internal.nonRecoverable
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sso.SsoClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sso.getRoleCredentials
+import aws.sdk.kotlin.runtime.auth.credentials.internal.sso.model.UnauthorizedException
 import aws.sdk.kotlin.runtime.config.AwsSdkClientOption
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
@@ -114,7 +116,11 @@ public class SsoCredentialsProvider public constructor(
                 accessToken = token.token
             }
         } catch (ex: Exception) {
-            throw CredentialsNotLoadedException("GetRoleCredentials operation failed", ex)
+            // GetRoleCredentials models exactly one error that a retry cannot fix, so no error-code list is needed.
+            // The other three - InvalidRequestException, ResourceNotFoundException and TooManyRequestsException -
+            // stay recoverable: the last is a throttle, and the first two can follow a transient misconfiguration.
+            val wrapped = CredentialsNotLoadedException("GetRoleCredentials operation failed", ex)
+            throw if (ex is UnauthorizedException) wrapped.nonRecoverable() else wrapped
         } finally {
             client.close()
         }
@@ -128,6 +134,7 @@ public class SsoCredentialsProvider public constructor(
             expiration = Instant.fromEpochMilliseconds(roleCredentials.expiration),
             PROVIDER_NAME,
             accountId = accountId,
+            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         )
 
         return if (ssoTokenProvider != null) {
