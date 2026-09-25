@@ -208,7 +208,10 @@ public class ProfileCredentialsProvider @InternalSdkApi constructor(
             credentialsBusinessMetrics.add(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE_LOGIN)
         }
 
-        is LeafProvider.Process -> ProcessCredentialsProvider(command).also {
+        is LeafProvider.Process -> ProcessCredentialsProvider(
+            credentialProcess = command,
+            platformProvider = platformProvider,
+        ).also {
             credentialsBusinessMetrics.add(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE_PROCESS)
         }
     }
