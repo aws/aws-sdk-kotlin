@@ -325,6 +325,8 @@ public object MapperTypes {
             public val ListValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "ListValueConverter")
             public val MapValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "MapValueConverter")
 
+            public fun enumSetValueConverter(enumType: Type): TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "EnumSetValueConverter", genericArgs = listOf(enumType))
+
             public val StringSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "StringSetValueConverter")
             public val CharSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "CharSetValueConverter")
 
@@ -348,6 +350,8 @@ public object MapperTypes {
 
         public object Scalars {
             public fun enumValueConverter(enumType: Type): TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "EnumValueConverter", genericArgs = listOf(enumType))
+
+            public fun enumToStringConverter(enumType: Type): TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "EnumToStringConverter", genericArgs = listOf(enumType))
 
             public val BooleanValueConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "BooleanValueConverter")
             public val ByteArrayValueConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "ByteArrayValueConverter")

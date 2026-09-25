@@ -3332,6 +3332,14 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/CharValueCon
 	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
 }
 
+public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/EnumToStringConverter : aws/sdk/kotlin/hll/mapping/core/converters/Converter {
+	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
+	public synthetic fun convertLeft (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun convertLeft (Ljava/lang/String;)Ljava/lang/Enum;
+	public fun convertRight (Ljava/lang/Enum;)Ljava/lang/String;
+	public synthetic fun convertRight (Ljava/lang/Object;)Ljava/lang/Object;
+}
+
 public final class aws/sdk/kotlin/hll/dynamodbmapper/values/scalars/EnumValueConverter : aws/sdk/kotlin/hll/mapping/core/converters/ConverterChain {
 	public fun <init> (Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
 }
