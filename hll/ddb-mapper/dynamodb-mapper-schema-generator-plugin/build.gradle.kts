@@ -94,6 +94,62 @@ tasks.test {
 val sdkVersion: String by project
 
 /**
+ * Strategy the generated plugin uses to place the schema-codegen KSP processor on a consumer's `ksp`
+ * configuration. The value is fixed here, at *this plugin's* build time (not the consumer's build), and baked
+ * into a generated `PROCESSOR_CLASSPATH_MODE` constant that [SchemaGeneratorPlugin] switches on:
+ *
+ *  - `resolved` (default): declare a Maven coordinate for the processor and let the consumer's build resolve it
+ *    from a repository. This is the behavior for repository-published builds.
+ *  - `provided`: the surrounding build environment supplies the processor and its full dependency closure on the
+ *    plugin's own runtime classpath; the plugin injects those files directly instead of resolving a coordinate.
+ *    Use this when the consumer build has no repository able to resolve the processor coordinate/closure.
+ *
+ * Controlled by the `aws.dynamodbmapper.schema.processor_classpath` Gradle property.
+ */
+val processorClasspathMode = (findProperty("aws.dynamodbmapper.schema.processor_classpath") as? String)?.lowercase() ?: "resolved"
+require(processorClasspathMode == "resolved" || processorClasspathMode == "provided") {
+    "Invalid value '$processorClasspathMode' for the `aws.dynamodbmapper.schema.processor_classpath` property; expected 'resolved' or 'provided'."
+}
+
+/**
+ * Generate a source constant recording [processorClasspathMode] so it is compiled into the published plugin jar
+ * and available to [SchemaGeneratorPlugin] at the consumer's build time.
+ */
+val generateProcessorClasspathMode by tasks.registering {
+    val outputDir = layout.buildDirectory.dir("generated/sources/processorClasspathMode/kotlin")
+    inputs.property("mode", processorClasspathMode)
+    outputs.dir(outputDir)
+    doLast {
+        val file = outputDir.get()
+            .file("aws/sdk/kotlin/hll/dynamodbmapper/plugins/ProcessorClasspathMode.kt")
+            .asFile
+        file.parentFile.mkdirs()
+        file.writeText(
+            """
+            |/*
+            | * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+            | * SPDX-License-Identifier: Apache-2.0
+            | */
+            |package aws.sdk.kotlin.hll.dynamodbmapper.plugins
+            |
+            |// Generated at build time from the `aws.dynamodbmapper.schema.processor_classpath` Gradle property.
+            |// Do not edit by hand.
+            |internal const val PROCESSOR_CLASSPATH_MODE: String = "$processorClasspathMode"
+            |
+            """.trimMargin(),
+        )
+    }
+}
+
+kotlin {
+    sourceSets.named("main") {
+        // Passing the task provider registers the generated dir as "built by" the task, so every consumer
+        // (compileKotlin, sourcesJar, ktlint, ...) inherits the dependency without a separate `dependsOn`.
+        kotlin.srcDir(generateProcessorClasspathMode)
+    }
+}
+
+/**
  * Create a file containing the sdkVersion to use as a resource
  * This saves us from having to manually change version numbers in multiple places
  */

@@ -7,7 +7,6 @@ package aws.sdk.kotlin.benchmarks.service.definitions
 import aws.sdk.kotlin.benchmarks.service.Common
 import aws.sdk.kotlin.services.s3.*
 import aws.sdk.kotlin.services.s3.model.BucketLocationConstraint
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.content.ByteStream
 
 class S3Benchmark : ServiceBenchmark<S3Client> {
@@ -18,7 +17,6 @@ class S3Benchmark : ServiceBenchmark<S3Client> {
         private const val CONTENTS = "test-contents"
     }
 
-    @OptIn(ExperimentalApi::class)
     override suspend fun client() = S3Client.fromEnvironment {
         retryStrategy = Common.noRetries
         telemetryProvider = Common.telemetryProvider

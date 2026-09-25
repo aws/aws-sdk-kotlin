@@ -49,6 +49,24 @@
             "brazilName": "AwsSdkKotlinAccount"
         },
         {
+            "sdkId": "Account Access",
+            "namespace": "aws.sdk.kotlin.services.accountaccess",
+            "artifactName": "accountaccess",
+            "brazilName": "AwsSdkKotlinAccountAccess"
+        },
+        {
+            "sdkId": "Agent Registry",
+            "namespace": "aws.sdk.kotlin.services.agentregistry",
+            "artifactName": "agentregistry",
+            "brazilName": "AwsSdkKotlinAgentRegistry"
+        },
+        {
+            "sdkId": "Agent Registry Control",
+            "namespace": "aws.sdk.kotlin.services.agentregistrycontrol",
+            "artifactName": "agentregistrycontrol",
+            "brazilName": "AwsSdkKotlinAgentRegistryControl"
+        },
+        {
             "sdkId": "Amplify",
             "namespace": "aws.sdk.kotlin.services.amplify",
             "artifactName": "amplify",
@@ -443,6 +461,12 @@
             "namespace": "aws.sdk.kotlin.services.cloudwatchlogs",
             "artifactName": "cloudwatchlogs",
             "brazilName": "AwsSdkKotlinCloudwatchLogs"
+        },
+        {
+            "sdkId": "CloudWatchOmni",
+            "namespace": "aws.sdk.kotlin.services.cloudwatchomni",
+            "artifactName": "cloudwatchomni",
+            "brazilName": "AwsSdkKotlinCloudwatchomni"
         },
         {
             "sdkId": "CodeBuild",
@@ -871,6 +895,12 @@
             "brazilName": "AwsSdkKotlinEventbridge"
         },
         {
+            "sdkId": "EventBridgeV2",
+            "namespace": "aws.sdk.kotlin.services.eventbridgev2",
+            "artifactName": "eventbridgev2",
+            "brazilName": "AwsSdkKotlinEventbridgev2"
+        },
+        {
             "sdkId": "FMS",
             "namespace": "aws.sdk.kotlin.services.fms",
             "artifactName": "fms",
@@ -989,6 +1019,12 @@
             "namespace": "aws.sdk.kotlin.services.iam",
             "artifactName": "iam",
             "brazilName": "AwsSdkKotlinIam"
+        },
+        {
+            "sdkId": "IAM Toolbox",
+            "namespace": "aws.sdk.kotlin.services.iamtoolbox",
+            "artifactName": "iamtoolbox",
+            "brazilName": "AwsSdkKotlinIamToolbox"
         },
         {
             "sdkId": "IVS RealTime",
@@ -1487,6 +1523,12 @@
             "namespace": "aws.sdk.kotlin.services.networkfirewall",
             "artifactName": "networkfirewall",
             "brazilName": "AwsSdkKotlinNetworkFirewall"
+        },
+        {
+            "sdkId": "Network Security Manager",
+            "namespace": "aws.sdk.kotlin.services.networksecuritymanager",
+            "artifactName": "networksecuritymanager",
+            "brazilName": "AwsSdkKotlinNetworkSecurityManager"
         },
         {
             "sdkId": "NetworkFlowMonitor",

@@ -6,6 +6,8 @@ package org.example
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbItem
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbPartitionKey
+import aws.smithy.kotlin.runtime.content.BigDecimal
+import aws.smithy.kotlin.runtime.content.BigInteger
 
 enum class EnumAnimals {
     CAT,
@@ -31,6 +33,10 @@ public data class Lists(
     var listUInt: List<UInt>,
     var listUShort: List<UShort>,
     var listULong: List<ULong>,
+    var listBigDecimal: List<BigDecimal>,
+    var listBigInteger: List<BigInteger>,
+    var listJvmBigDecimal: List<java.math.BigDecimal>,
+    var listJvmBigInteger: List<java.math.BigInteger>,
     var listEnum: List<EnumAnimals>,
     var nullableList: List<String>?,
     var listNullableElement: List<String?>,
@@ -58,6 +64,10 @@ public data class Lists(
         if (listUInt != other.listUInt) return false
         if (listUShort != other.listUShort) return false
         if (listULong != other.listULong) return false
+        if (listBigDecimal != other.listBigDecimal) return false
+        if (listBigInteger != other.listBigInteger) return false
+        if (listJvmBigDecimal != other.listJvmBigDecimal) return false
+        if (listJvmBigInteger != other.listJvmBigInteger) return false
         if (listEnum != other.listEnum) return false
         if (nullableList != other.nullableList) return false
         if (listNullableElement != other.listNullableElement) return false
