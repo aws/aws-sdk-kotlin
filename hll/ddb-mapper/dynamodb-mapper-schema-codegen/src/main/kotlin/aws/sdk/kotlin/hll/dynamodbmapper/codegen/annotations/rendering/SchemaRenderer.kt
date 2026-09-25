@@ -316,12 +316,23 @@ internal class SchemaRenderer(
                     checkNotNull(it.type?.resolve()) { "Failed to resolved argument type for $it" }
                 }
 
-                writeInline("#T(#T, ", MapperTypes.Values.Collections.MapValueConverter, keyType.mapKeyConverter)
+                if (keyType.isEnum) {
+                    writeInline("#T(#T(), ", MapperTypes.Values.Collections.MapValueConverter, MapperTypes.Values.Scalars.enumToStringConverter(Type.from(keyType)))
+                } else {
+                    writeInline("#T(#T, ", MapperTypes.Values.Collections.MapValueConverter, keyType.mapKeyConverter)
+                }
                 renderValueConverter(valueType)
                 writeInline(")")
             }
 
-            type.isGenericFor(Types.Kotlin.Collections.Set) -> writeInline("#T", ksType.singleArgument().setValueConverter)
+            type.isGenericFor(Types.Kotlin.Collections.Set) -> {
+                val setElementType = ksType.singleArgument()
+                if (setElementType.isEnum) {
+                    writeInline("#T()", MapperTypes.Values.Collections.enumSetValueConverter(Type.from(setElementType)))
+                } else {
+                    writeInline("#T", setElementType.setValueConverter)
+                }
+            }
 
             else -> writeInline(
                 "#T",

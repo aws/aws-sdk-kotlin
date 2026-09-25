@@ -34,6 +34,7 @@ public data class Maps(
     var mapStringListString: Map<String, List<String>>,
     var mapStringListMapStringString: Map<String, List<Map<String, String>>>,
     var mapEnum: Map<String, EnumAnimals>,
+    var mapEnumKey: Map<EnumAnimals, String>,
     var nullableMap: Map<String, String>?,
     var mapNullableValue: Map<String, String?>,
     var nullableMapNullableValue: Map<String, String?>?,

@@ -1,0 +1,6 @@
+{
+    "id": "4dced47a-8c74-475f-906d-863be0d38d62",
+    "type": "feature",
+    "description": "Add DynamoDB mapper support for enums as map keys and set elements, serialized by name to `S` (map key) and `SS` (set), consistent with existing enum support for scalars, list elements, and map values",
+    "module": "dynamodb-mapper"
+}

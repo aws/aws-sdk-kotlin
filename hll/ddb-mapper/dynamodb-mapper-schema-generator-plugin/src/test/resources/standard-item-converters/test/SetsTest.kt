@@ -33,6 +33,7 @@ public class SetsTest {
             setBigInteger = setOf(BigInteger("0"), BigInteger("99999999999999999999999999999999999999")),
             setJvmBigDecimal = setOf(java.math.BigDecimal("-1.5"), java.math.BigDecimal("3.141592653589793238462643383279502884")),
             setJvmBigInteger = setOf(java.math.BigInteger("0"), java.math.BigInteger("99999999999999999999999999999999999999")),
+            setEnum = setOf(EnumAnimals.CAT, EnumAnimals.SHEEP),
             nullableSet = null,
         )
 
