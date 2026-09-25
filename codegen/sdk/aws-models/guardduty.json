@@ -496,6 +496,58 @@
                 "smithy.api#documentation": "<p>Contains information about actions.</p>"
             }
         },
+        "com.amazonaws.guardduty#Activities": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.guardduty#Activity"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A list of activities that were observed for a signal.</p>",
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 100
+                }
+            }
+        },
+        "com.amazonaws.guardduty#Activity": {
+            "type": "structure",
+            "members": {
+                "Type": {
+                    "target": "com.amazonaws.guardduty#ActivityType",
+                    "traits": {
+                        "smithy.api#clientOptional": {},
+                        "smithy.api#documentation": "<p>The type of the observed activity.</p>",
+                        "smithy.api#jsonName": "type",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Api": {
+                    "target": "com.amazonaws.guardduty#ApiCall",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains information about the API call that was observed, when the activity type is <code>API_CALL</code>.</p>",
+                        "smithy.api#jsonName": "api"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about an activity, such as an API call, that was observed for a signal.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#ActivityType": {
+            "type": "enum",
+            "members": {
+                "API_CALL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The observed activity is an API call.</p>",
+                        "smithy.api#enumValue": "API_CALL"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The type of an observed activity.</p>"
+            }
+        },
         "com.amazonaws.guardduty#Actor": {
             "type": "structure",
             "members": {
@@ -855,6 +907,58 @@
             },
             "value": {
                 "target": "com.amazonaws.guardduty#AnomalyObject"
+            }
+        },
+        "com.amazonaws.guardduty#ApiCall": {
+            "type": "structure",
+            "members": {
+                "Operation": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the API operation that was invoked.</p>",
+                        "smithy.api#jsonName": "operation",
+                        "smithy.api#length": {
+                            "min": 0,
+                            "max": 512
+                        }
+                    }
+                },
+                "Service": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The service that the API operation was invoked against.</p>",
+                        "smithy.api#jsonName": "service",
+                        "smithy.api#length": {
+                            "min": 0,
+                            "max": 512
+                        }
+                    }
+                },
+                "Error": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error code that was returned, if the API call failed.</p>",
+                        "smithy.api#jsonName": "error",
+                        "smithy.api#length": {
+                            "min": 0,
+                            "max": 512
+                        }
+                    }
+                },
+                "UserAgent": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>User agent in the request to the API operation</p>",
+                        "smithy.api#jsonName": "userAgent",
+                        "smithy.api#length": {
+                            "min": 0,
+                            "max": 1024
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about an API call that was observed as part of an activity.</p>"
             }
         },
         "com.amazonaws.guardduty#ArchiveFindings": {
@@ -1351,6 +1455,40 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Contains information about the Bedrock guardrail that was involved in a finding.</p>"
+            }
+        },
+        "com.amazonaws.guardduty#BedrockGuardrailResource": {
+            "type": "structure",
+            "members": {
+                "Version": {
+                    "target": "com.amazonaws.guardduty#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The version of the Amazon Bedrock guardrail. Valid values are a numeric version, <code>DRAFT</code>, or <code>ENFORCED</code>.</p>",
+                        "smithy.api#jsonName": "version",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 8
+                        },
+                        "smithy.api#pattern": "^(([1-9][0-9]{0,7})|(DRAFT)|(ENFORCED))$"
+                    }
+                },
+                "GuardrailAction": {
+                    "target": "com.amazonaws.guardduty#GuardrailAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether the guardrail intervened during the model invocation.</p>",
+                        "smithy.api#jsonName": "guardrailAction"
+                    }
+                },
+                "GuardrailSource": {
+                    "target": "com.amazonaws.guardduty#GuardrailSource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether the guardrail was applied on the input or output of the model invocation.</p>",
+                        "smithy.api#jsonName": "guardrailSource"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains details about an Amazon Bedrock guardrail evaluated during a model invocation.</p>"
             }
         },
         "com.amazonaws.guardduty#BedrockGuardrails": {
@@ -7804,6 +7942,76 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "EC2_IMAGE"
+                    }
+                },
+                "BEDROCK_CUSTOM_MODEL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An Amazon Bedrock custom model fine-tuned by the customer.</p>",
+                        "smithy.api#enumValue": "BEDROCK_CUSTOM_MODEL"
+                    }
+                },
+                "BEDROCK_IMPORTED_MODEL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An Amazon Bedrock imported model brought in from an external source.</p>",
+                        "smithy.api#enumValue": "BEDROCK_IMPORTED_MODEL"
+                    }
+                },
+                "BEDROCK_PROVISIONED_MODEL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An Amazon Bedrock model with provisioned throughput.</p>",
+                        "smithy.api#enumValue": "BEDROCK_PROVISIONED_MODEL"
+                    }
+                },
+                "BEDROCK_CUSTOM_MODEL_DEPLOYMENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A deployment of an Amazon Bedrock custom model.</p>",
+                        "smithy.api#enumValue": "BEDROCK_CUSTOM_MODEL_DEPLOYMENT"
+                    }
+                },
+                "BEDROCK_INFERENCE_PROFILE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An Amazon Bedrock inference profile that routes model invocations across Regions.</p>",
+                        "smithy.api#enumValue": "BEDROCK_INFERENCE_PROFILE"
+                    }
+                },
+                "BEDROCK_APPLICATION_INFERENCE_PROFILE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An application-scoped Amazon Bedrock inference profile used to track invocation usage.</p>",
+                        "smithy.api#enumValue": "BEDROCK_APPLICATION_INFERENCE_PROFILE"
+                    }
+                },
+                "BEDROCK_PROMPT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A managed prompt stored in Amazon Bedrock Prompt Management.</p>",
+                        "smithy.api#enumValue": "BEDROCK_PROMPT"
+                    }
+                },
+                "BEDROCK_PROMPT_ROUTER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An Amazon Bedrock prompt router that selects a model per request.</p>",
+                        "smithy.api#enumValue": "BEDROCK_PROMPT_ROUTER"
+                    }
+                },
+                "BEDROCK_GUARDRAIL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An Amazon Bedrock guardrail evaluated during a model invocation.</p>",
+                        "smithy.api#enumValue": "BEDROCK_GUARDRAIL"
+                    }
+                },
+                "SAGEMAKER_ENDPOINT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An Amazon SageMaker inference endpoint.</p>",
+                        "smithy.api#enumValue": "SAGEMAKER_ENDPOINT"
                     }
                 }
             }
@@ -18550,6 +18758,13 @@
                         "smithy.api#documentation": "<p>Contains detailed information about the CloudFormation stack associated with the activity that prompted GuardDuty to generate a finding.</p>",
                         "smithy.api#jsonName": "cloudformationStack"
                     }
+                },
+                "BedrockGuardrail": {
+                    "target": "com.amazonaws.guardduty#BedrockGuardrailResource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains detailed information about the Amazon Bedrock guardrail associated with the activity that prompted GuardDuty to generate a finding.</p>",
+                        "smithy.api#jsonName": "bedrockGuardrail"
+                    }
                 }
             },
             "traits": {
@@ -20978,6 +21193,13 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Contains information about the indicators associated with the signals.</p>",
                         "smithy.api#jsonName": "signalIndicators"
+                    }
+                },
+                "Activities": {
+                    "target": "com.amazonaws.guardduty#Activities",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains information about the activities, such as API calls, that were observed for this signal.</p>",
+                        "smithy.api#jsonName": "activities"
                     }
                 }
             },

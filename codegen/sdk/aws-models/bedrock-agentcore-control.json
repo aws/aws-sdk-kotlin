@@ -595,6 +595,12 @@
                     "traits": {
                         "smithy.api#enumValue": "DELETING"
                     }
+                },
+                "DELETE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETE_FAILED"
+                    }
                 }
             }
         },
@@ -653,6 +659,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "DELETING"
+                    }
+                },
+                "DELETE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETE_FAILED"
                     }
                 }
             }
@@ -741,6 +753,9 @@
                     "min": 1
                 }
             }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#AllowedAudienceType": {
+            "type": "string"
         },
         "com.amazonaws.bedrockagentcorecontrol#AllowedClient": {
             "type": "string"
@@ -933,6 +948,9 @@
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcorecontrol#ConfigurationBundle"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortal"
                 },
                 {
                     "target": "com.amazonaws.bedrockagentcorecontrol#Dataset"
@@ -3382,12 +3400,22 @@
                 "logGroupNames": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#LogGroupNamesList",
                     "traits": {
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": [],
                         "smithy.api#documentation": "<p> The list of CloudWatch log group names to monitor for agent traces.</p>",
                         "smithy.api#length": {
-                            "min": 1,
                             "max": 10
-                        },
-                        "smithy.api#required": {}
+                        }
+                    }
+                },
+                "logGroupNamePrefixes": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#LogGroupNamePrefixList",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The list of CloudWatch log group name prefixes to monitor for agent traces. Specify this instead of <code>logGroupNames</code> to match log groups by prefix. Specify either <code>logGroupNames</code> or <code>logGroupNamePrefixes</code>, not both. One of the two is required. </p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 5
+                        }
                     }
                 },
                 "serviceNames": {
@@ -3410,10 +3438,24 @@
             "type": "structure",
             "members": {
                 "logGroupName": {
-                    "target": "com.amazonaws.bedrockagentcorecontrol#LogGroupName",
+                    "target": "com.amazonaws.bedrockagentcorecontrol#OptionalLogGroupName",
                     "traits": {
-                        "smithy.api#documentation": "<p> The name of the CloudWatch log group where evaluation results will be written. The log group will be created if it doesn't exist. </p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": "",
+                        "smithy.api#documentation": "<p> The name of the CloudWatch log group where evaluation results will be written. An existing log group is used as-is; otherwise the service creates it, which requires the evaluation execution role to grant <code>logs:CreateLogGroup</code> on the log group. Don't specify this value when <code>resultDestination</code> is <code>SOURCE_LOG_GROUP</code>. The name can't be under the service-reserved <code>/aws/bedrock-agentcore/evaluations/</code> namespace, apart from this configuration's own service-managed default group. </p>"
+                    }
+                },
+                "metricsNamespace": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#MetricsNamespace",
+                    "traits": {
+                        "smithy.api#documentation": "<p> The CloudWatch metrics namespace where evaluation result metrics are published. If you omit this value, the service publishes metrics to <code>Bedrock-AgentCore/Evaluations</code>. This value can't begin with <code>AWS/</code>. </p>"
+                    }
+                },
+                "resultDestination": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResultDestination",
+                    "traits": {
+                        "smithy.api#default": "DEDICATED_LOG_GROUP",
+                        "smithy.api#documentation": "<p> The destination where evaluation results are written. Valid values: </p> <ul> <li> <p> <code>DEDICATED_LOG_GROUP</code> (default) – Writes results to a dedicated result log group.</p> </li> <li> <p> <code>SOURCE_LOG_GROUP</code> – Writes results back to the log group that the agent traces were read from. If you use this value, don't specify <code>logGroupName</code>.</p> </li> </ul>"
                     }
                 }
             },
@@ -3828,6 +3870,50 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Coinbase CDP configuration output with secret ARNs.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpRotationTargets": {
+            "type": "structure",
+            "members": {
+                "secrets": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpSecrets",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The secrets to rotate. Specify at least one value. Each secret that you specify is rotated independently.</p> <ul> <li> <p> <code>API_KEY</code> - The API key that the payment connector uses to call Coinbase CDP. Rotate it as routine maintenance, or if you suspect that it is compromised.</p> </li> <li> <p> <code>WALLET_SECRET</code> - The wallet secret that signs transactions. Rotate it only if it is lost or compromised. Coinbase CDP allows one wallet secret per project, so it is replaced in place and signing can be briefly interrupted.</p> </li> </ul>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Specifies the service-managed Coinbase CDP secrets to rotate.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpSecret": {
+            "type": "enum",
+            "members": {
+                "API_KEY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "API_KEY"
+                    }
+                },
+                "WALLET_SECRET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "WALLET_SECRET"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpSecrets": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpSecret"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1
+                },
+                "smithy.api#uniqueItems": {}
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#ComponentConfiguration": {
@@ -4386,6 +4472,311 @@
                 "smithy.api#pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortal": {
+            "type": "resource",
+            "identifiers": {
+                "consentPortalId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdentifier"
+                }
+            },
+            "properties": {
+                "sources": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSources"
+                },
+                "consentPortalArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalArnType"
+                },
+                "createdAt": {
+                    "target": "smithy.api#Timestamp"
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalDescriptionType"
+                },
+                "executionRoleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ExecutionRoleArnType"
+                },
+                "idpConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdpConfig"
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalNameType"
+                },
+                "portalUrl": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PortalUrlType"
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalStatus"
+                },
+                "statusReason": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StatusReasonType"
+                },
+                "updatedAt": {
+                    "target": "smithy.api#Timestamp"
+                }
+            },
+            "create": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreateConsentPortal"
+            },
+            "read": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetConsentPortal"
+            },
+            "update": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdateConsentPortal"
+            },
+            "delete": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeleteConsentPortal"
+            },
+            "collectionOperations": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ListConsentPortals"
+                }
+            ]
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalArnType": {
+            "type": "string",
+            "traits": {
+                "aws.api#arnReference": {
+                    "type": "AWS::BedrockAgentCore::ConsentPortal"
+                },
+                "smithy.api#pattern": "^arn:aws[^:]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:consent-portal/[a-zA-Z0-9\\-_]{1,50}-[A-Za-z0-9]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalDescriptionType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "max": 512
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[a-zA-Z0-9\\-_]{1,50}-[A-Za-z0-9]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdentifier": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[a-zA-Z0-9\\-_]{1,50}-[A-Za-z0-9]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdpConfig": {
+            "type": "structure",
+            "members": {
+                "credentialProviderArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#OAuth2CredentialProviderArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the OAuth2 credential provider used to authenticate end users to the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "scopes": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AllowedScopesType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The OAuth2 scopes that the consent portal requests when authenticating end users.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "audience": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AllowedAudienceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The audience value that the consent portal includes when requesting tokens from the identity provider.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The identity provider configuration used to authenticate end users to the consent portal.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalNameType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 50
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9_-]{1,50}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSource": {
+            "type": "structure",
+            "members": {
+                "identifier": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSourceIdentifierType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the source resource. For an <code>agentcore-gateway</code> source, this is the gateway ID or its Amazon Resource Name (ARN).</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSourceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the source resource.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A resource served by the consent portal.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSourceIdentifierType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^([0-9a-z][-]?){1,100}-[0-9a-z]{10}$|^arn:aws(-[a-z-]+)?:bedrock-agentcore:[a-z0-9-]{1,20}:[0-9]{12}:gateway/([0-9a-z][-]?){1,48}-[a-z0-9]{10}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSourceType": {
+            "type": "enum",
+            "members": {
+                "AGENTCORE_GATEWAY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "agentcore-gateway"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The type of a consent portal source. Currently, we only support type <code>agentcore-gateway</code>.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSources": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSource"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The list of resources served by the consent portal.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalStatus": {
+            "type": "enum",
+            "members": {
+                "CREATING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CREATING"
+                    }
+                },
+                "ACTIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACTIVE"
+                    }
+                },
+                "UPDATING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPDATING"
+                    }
+                },
+                "UPDATE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPDATE_FAILED"
+                    }
+                },
+                "DELETING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETING"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FAILED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The lifecycle status of a consent portal.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSummaries": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSummary"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A list of consent portal summaries.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSummary": {
+            "type": "structure",
+            "members": {
+                "sources": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSources",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resources served by the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "consentPortalArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "consentPortalId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the consent portal.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "consentPortalId"
+                    }
+                },
+                "createdAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp for when the consent portal was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalDescriptionType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the consent portal.</p>"
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalNameType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "portalUrl": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PortalUrlType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL used to access the consent portal.</p>"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "updatedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp for when the consent portal was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Summary information about a consent portal.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#ConsolidationConfiguration": {
             "type": "union",
             "members": {
@@ -4753,6 +5144,12 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#TagsMap",
                     "traits": {
                         "smithy.api#documentation": "<p>A map of tag keys and values to assign to the agent runtime. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
+                    }
+                },
+                "platformVersion": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PlatformVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The version of the runtime platform to use for the AgentCore Runtime.</p>"
                     }
                 }
             },
@@ -5603,6 +6000,189 @@
                     "target": "smithy.api#Timestamp",
                     "traits": {
                         "smithy.api#documentation": "<p>The timestamp when the configuration bundle was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreateConsentPortal": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreateConsentPortalRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#CreateConsentPortalResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#controlPlane": {},
+                "smithy.api#documentation": "<p>Creates a new consent portal.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "uri": "/identities/CreateConsentPortal",
+                    "method": "POST"
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreateConsentPortalRequest": {
+            "type": "structure",
+            "members": {
+                "executionRoleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ExecutionRoleArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "idpConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdpConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalNameType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the consent portal. The name must be unique within your account.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "sources": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSources",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resources served by the consent portal. Currently, we only support type <code>agentcore-gateway</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalDescriptionType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the consent portal.</p>"
+                    }
+                },
+                "tags": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#TagsMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of tag keys and values to assign to the consent portal. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>",
+                        "smithy.api#notProperty": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CreateConsentPortalResponse": {
+            "type": "structure",
+            "members": {
+                "sources": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSources",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resources served by the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "consentPortalArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "consentPortalId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the consent portal.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "consentPortalId"
+                    }
+                },
+                "createdAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp for when the consent portal was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalDescriptionType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the consent portal.</p>"
+                    }
+                },
+                "executionRoleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ExecutionRoleArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "idpConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdpConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalNameType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "portalUrl": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PortalUrlType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL used to access the consent portal.</p>"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "statusReason": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StatusReasonType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A message that provides additional information about the current status of the consent portal.</p>"
+                    }
+                },
+                "updatedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp for when the consent portal was last updated.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -7007,6 +7587,12 @@
                         "smithy.api#documentation": "<p>The truncation configuration for managing conversation context when it exceeds model limits.</p>"
                     }
                 },
+                "hooks": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHooks",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The lifecycle hooks to run at defined points in the agent loop.</p>"
+                    }
+                },
                 "maxIterations": {
                     "target": "smithy.api#Integer",
                     "traits": {
@@ -7433,6 +8019,9 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Configuration for periodic batch evaluation clustering of insight results.</p>"
                     }
+                },
+                "outputConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#OutputConfig"
                 },
                 "evaluationExecutionRoleArn": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#RoleArn",
@@ -8911,6 +9500,20 @@
                         "smithy.api#enumValue": "CognitoOauth2"
                     }
                 }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#CredentialRotationConfig": {
+            "type": "union",
+            "members": {
+                "coinbaseCDP": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CoinbaseCdpRotationTargets",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The credentials to rotate for a Coinbase CDP payment connector.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Specifies the service-managed credentials to rotate. Provide the member that matches the payment connector's <code>type</code>.</p>"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#CredentialsProviderConfiguration": {
@@ -10563,6 +11166,71 @@
                     }
                 }
             },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeleteConsentPortal": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeleteConsentPortalRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#DeleteConsentPortalResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#controlPlane": {},
+                "smithy.api#documentation": "<p>Deletes a consent portal.</p>",
+                "smithy.api#http": {
+                    "code": 204,
+                    "uri": "/identities/DeleteConsentPortal",
+                    "method": "POST"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeleteConsentPortalRequest": {
+            "type": "structure",
+            "members": {
+                "consentPortalIdentifier": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the consent portal. You can specify either the consent portal ID or its Amazon Resource Name (ARN).</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "consentPortalId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#DeleteConsentPortalResponse": {
+            "type": "structure",
+            "members": {},
             "traits": {
                 "smithy.api#output": {}
             }
@@ -13754,6 +14422,12 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#ExecutionRoleArnType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^arn:aws(-[a-z-]+)?:iam::[0-9]{12}:role/[a-zA-Z0-9+=,.@\\-_/]+$"
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#ExtractionConfig": {
             "type": "union",
             "members": {
@@ -15255,6 +15929,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The capacity provider configuration for the AgentCore Runtime.</p>"
                     }
+                },
+                "platformVersion": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PlatformVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The version of the runtime platform used by the AgentCore Runtime.</p>"
+                    }
                 }
             },
             "traits": {
@@ -16180,6 +16860,150 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#KmsKeyArn",
                     "traits": {
                         "smithy.api#documentation": "<p>KMS key ARN used to encrypt component configurations, if CMK was provided.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetConsentPortal": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetConsentPortalRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#GetConsentPortalResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#controlPlane": {},
+                "smithy.api#documentation": "<p>Retrieves information about a consent portal.</p>",
+                "smithy.api#http": {
+                    "uri": "/identities/GetConsentPortal",
+                    "method": "POST"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetConsentPortalRequest": {
+            "type": "structure",
+            "members": {
+                "consentPortalIdentifier": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the consent portal. You can specify either the consent portal ID or its Amazon Resource Name (ARN).</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "consentPortalId"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#GetConsentPortalResponse": {
+            "type": "structure",
+            "members": {
+                "sources": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSources",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resources served by the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "consentPortalArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "consentPortalId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the consent portal.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "consentPortalId"
+                    }
+                },
+                "createdAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp for when the consent portal was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalDescriptionType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the consent portal.</p>"
+                    }
+                },
+                "executionRoleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ExecutionRoleArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "idpConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdpConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalNameType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "portalUrl": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PortalUrlType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL used to access the consent portal.</p>"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "statusReason": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StatusReasonType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A message that provides additional information about the current status of the consent portal.</p>"
+                    }
+                },
+                "updatedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp for when the consent portal was last updated.</p>",
+                        "smithy.api#required": {}
                     }
                 }
             },
@@ -17793,6 +18617,12 @@
                         "smithy.api#required": {}
                     }
                 },
+                "provisionMode": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorProvisionMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies how the payment connector was provisioned. Payment connectors that were created before this field was available return <code>MANUAL</code>.</p> <ul> <li> <p> <code>MANUAL</code> - You provided the credential provider configurations, so you own the credentials. Rotate them with the payment provider, then call <code>UpdatePaymentCredentialProvider</code>.</p> </li> <li> <p> <code>QUICK_CREATE</code> - AgentCore provisioned the credential provider for you, so the credentials are service-managed. You can rotate them with <code>RotatePaymentConnectorCredentials</code>.</p> </li> </ul>"
+                    }
+                },
                 "credentialProviderConfigurations": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#CredentialsProviderConfigurations",
                     "traits": {
@@ -17825,6 +18655,12 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorAuthorizationUrl",
                     "traits": {
                         "smithy.api#documentation": "<p>The URL that the user must open to complete OAuth consent. This field is only present when the payment connector status is <code>PENDING_AUTHENTICATION</code>.</p>"
+                    }
+                },
+                "credentialsUpdatedAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment connector's current service-managed credentials took effect. It is first set when the credentials are provisioned and is updated by each rotation. This field is present only for payment connectors with a <code>provisionMode</code> of <code>QUICK_CREATE</code>.</p>"
                     }
                 }
             },
@@ -19869,6 +20705,12 @@
                         "smithy.api#documentation": "<p>AgentCore Memory instance configuration for short and long term memory.</p>"
                     }
                 },
+                "hooks": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHooks",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The lifecycle hooks configured for the harness.</p>"
+                    }
+                },
                 "maxIterations": {
                     "target": "smithy.api#Integer",
                     "traits": {
@@ -19896,6 +20738,50 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Representation of a harness.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessAfterInvocationHook": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the hook.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "target": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookTarget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The target that receives the hook event.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for a hook that runs after an invocation completes.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessAfterToolCallHook": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the hook.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "target": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookTarget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The target that receives the hook event.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for a hook that runs after a tool call completes.</p>"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#HarnessAgentCoreBrowserConfig": {
@@ -20191,6 +21077,50 @@
                 "smithy.api#documentation": "<p>Configuration for an Amazon Bedrock model provider.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessBeforeInvocationHook": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the hook.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "target": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookTarget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The target that receives the hook event.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for a hook that runs before an invocation begins.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessBeforeToolCallHook": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the hook.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "target": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookTarget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The target that receives the hook event.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for a hook that runs before the agent calls a tool.</p>"
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#HarnessBrowserArn": {
             "type": "string",
             "traits": {
@@ -20426,6 +21356,17 @@
                 "smithy.api#documentation": "<p>The environment provider request configuration.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessEventBridgeBusArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The ARN of an Amazon EventBridge event bus.</p>",
+                "smithy.api#length": {
+                    "min": 20,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:aws(-[^:]+)?:events:[a-z0-9-]+:[0-9]{12}:event-bus/.+$"
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#HarnessGatewayOutboundAuth": {
             "type": "union",
             "members": {
@@ -20504,6 +21445,173 @@
                 "smithy.api#documentation": "<p>Configuration for a Google Gemini model provider. Requires an API key stored in AgentCore Identity.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessHook": {
+            "type": "union",
+            "members": {
+                "beforeInvocation": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessBeforeInvocationHook",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A hook that runs before an invocation begins.</p>"
+                    }
+                },
+                "afterInvocation": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessAfterInvocationHook",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A hook that runs after an invocation completes.</p>"
+                    }
+                },
+                "beforeToolCall": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessBeforeToolCallHook",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A hook that runs before the agent calls a tool.</p>"
+                    }
+                },
+                "afterToolCall": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessAfterToolCallHook",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A hook that runs after a tool call completes.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A lifecycle hook configuration. Specify one hook type.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessHookEventBridgeTarget": {
+            "type": "structure",
+            "members": {
+                "arn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessEventBridgeBusArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the Amazon EventBridge event bus to send hook events to.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for an Amazon EventBridge hook target.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessHookFailureMode": {
+            "type": "enum",
+            "members": {
+                "ALLOW": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies that the current action continues when the hook target fails.</p>",
+                        "smithy.api#enumValue": "allow"
+                    }
+                },
+                "DENY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies that the service denies the current action when the hook target fails.</p>",
+                        "smithy.api#enumValue": "deny"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The behavior when a synchronous hook target fails.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessHookLambdaTarget": {
+            "type": "structure",
+            "members": {
+                "arn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessLambdaFunctionArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the Lambda function to invoke.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "timeoutSeconds": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#default": 60,
+                        "smithy.api#documentation": "<p>The maximum number of seconds to wait for the Lambda function response. The default is 60 seconds.</p>",
+                        "smithy.api#range": {
+                            "min": 1,
+                            "max": 900
+                        }
+                    }
+                },
+                "failureMode": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookFailureMode",
+                    "traits": {
+                        "smithy.api#default": "deny",
+                        "smithy.api#documentation": "<p>The behavior when the Lambda function times out, returns an error, or returns an invalid response. The default is <code>DENY</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for an AWS Lambda hook target.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessHookName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The name of a lifecycle hook.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9_-]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessHookSnsTarget": {
+            "type": "structure",
+            "members": {
+                "arn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessSnsTopicArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the Amazon SNS topic to publish hook events to.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration for an Amazon SNS hook target.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessHookTarget": {
+            "type": "union",
+            "members": {
+                "lambda": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookLambdaTarget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Lambda hook target that invokes an AWS Lambda function synchronously and waits for its response.</p>"
+                    }
+                },
+                "sns": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookSnsTarget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An Amazon SNS hook target that publishes the hook event without waiting for a response.</p>"
+                    }
+                },
+                "eventBridge": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHookEventBridgeTarget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An Amazon EventBridge hook target that sends the hook event without waiting for a response.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The target that receives lifecycle hook events. Specify one target type.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessHooks": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHook"
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The lifecycle hooks configured to run at defined points in the agent loop.</p>",
+                "smithy.api#length": {
+                    "max": 20
+                },
+                "smithy.api#uniqueItems": {}
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#HarnessId": {
             "type": "string",
             "traits": {
@@ -20540,6 +21648,17 @@
                     "max": 4096
                 },
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessLambdaFunctionArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The ARN of an AWS Lambda function.</p>",
+                "smithy.api#length": {
+                    "min": 20,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:aws(-[^:]+)?:lambda:[a-z0-9-]+:[0-9]{12}:function:.+$"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#HarnessLiteLlmApiBase": {
@@ -20745,6 +21864,16 @@
                 "smithy.api#pattern": "^[a-zA-Z][a-zA-Z0-9_]{0,39}$"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessOpenAiApiBase": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 16383
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#HarnessOpenAiApiFormat": {
             "type": "enum",
             "members": {
@@ -20779,6 +21908,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of your OpenAI API key on AgentCore Identity.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "apiBase": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessOpenAiApiBase",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Optional custom endpoint URL for an OpenAI-compatible endpoint.</p>"
                     }
                 },
                 "maxTokens": {
@@ -21026,6 +22161,17 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Configuration for sliding window truncation strategy.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#HarnessSnsTopicArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The ARN of an Amazon SNS topic.</p>",
+                "smithy.api#length": {
+                    "min": 20,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:aws(-[^:]+)?:sns:[a-z0-9-]+:[0-9]{12}:.+$"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#HarnessStatus": {
@@ -23708,6 +24854,92 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#ListConsentPortals": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ListConsentPortalsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#ListConsentPortalsResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#controlPlane": {},
+                "smithy.api#documentation": "<p>Lists all of the consent portals in your account.</p>",
+                "smithy.api#http": {
+                    "uri": "/identities/ListConsentPortals",
+                    "method": "POST"
+                },
+                "smithy.api#paginated": {
+                    "inputToken": "nextToken",
+                    "outputToken": "nextToken",
+                    "pageSize": "maxResults",
+                    "items": "consentPortals"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ListConsentPortalsRequest": {
+            "type": "structure",
+            "members": {
+                "maxResults": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of consent portals to return in a single call.</p>",
+                        "smithy.api#range": {
+                            "min": 1,
+                            "max": 100
+                        }
+                    }
+                },
+                "nextToken": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A token to retrieve the next page of results. Use the value returned in a previous response to request the next page.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#ListConsentPortalsResponse": {
+            "type": "structure",
+            "members": {
+                "consentPortals": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSummaries",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of consent portals.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "nextToken": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The token to use in a subsequent request to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#ListDatasetExamples": {
             "type": "operation",
             "input": {
@@ -26372,6 +27604,30 @@
                 "smithy.api#pattern": "^[.\\-_/#A-Za-z0-9]+$"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#LogGroupNamePrefix": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "Prefix of a CloudWatch Logs log group name.",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 512
+                },
+                "smithy.api#pattern": "^[.\\-_/#A-Za-z0-9]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#LogGroupNamePrefixList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#LogGroupNamePrefix"
+            },
+            "traits": {
+                "smithy.api#documentation": "List of CloudWatch Logs log group name prefixes to source trace data from.",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 5
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#LogGroupNamesList": {
             "type": "list",
             "member": {
@@ -26666,7 +27922,7 @@
                 "mcpToolSchema": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#McpToolSchemaConfiguration",
                     "traits": {
-                        "smithy.api#documentation": "<p>The tool schema configuration for the MCP server target. Supported only when the credential provider is configured with an authorization code grant type. Dynamic tool discovery/synchronization will be disabled when target is configured with mcpToolSchema.</p>"
+                        "smithy.api#documentation": "<p>A static tool list for the MCP server target. It is supported for all credential providers. Dynamic tool discovery/synchronization will be disabled when a target is configured with mcpToolSchema.</p>"
                     }
                 },
                 "listingMode": {
@@ -27389,6 +28645,17 @@
                 }
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#MetricsNamespace": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "CloudWatch metrics namespace for evaluation result metrics.",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9._#/:-]+$"
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#MicrosoftOauth2ProviderConfigInput": {
             "type": "structure",
             "members": {
@@ -28031,6 +29298,15 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>OAuth2-specific authorization data, including the authorization URL and user identifier for the authorization session.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#OAuth2CredentialProviderArn": {
+            "type": "string",
+            "traits": {
+                "aws.api#arnReference": {
+                    "type": "AWS::BedrockAgentCore::OAuth2CredentialProvider"
+                },
+                "smithy.api#pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b|aws-iso-e|aws-iso-f|aws-eusc):bedrock-agentcore:[a-z0-9-]{1,32}:[0-9]{12}:token-vault/[a-zA-Z0-9_-]{1,64}/oauth2credentialprovider/[a-zA-Z0-9_-]{1,128}$"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#OAuthCredentialProvider": {
@@ -28757,6 +30033,13 @@
                 "smithy.api#documentation": "<p>The operating system and CPU architecture for capacity provider instances.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#OptionalLogGroupName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "A log group name that may also be empty. The empty string is the @default of members that\nwere relaxed from @required, and carries the meaning \"no log group\" for that member.",
+                "smithy.api#pattern": "^$|^[.\\-_/#A-Za-z0-9]+$"
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#OutputConfig": {
             "type": "structure",
             "members": {
@@ -28966,7 +30249,12 @@
             },
             "list": {
                 "target": "com.amazonaws.bedrockagentcorecontrol#ListPaymentConnectors"
-            }
+            },
+            "operations": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#RotatePaymentConnectorCredentials"
+                }
+            ]
         },
         "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorStatus": {
             "type": "enum",
@@ -29073,6 +30361,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The type of the payment connector, which determines the payment provider integration.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "provisionMode": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorProvisionMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies how the payment connector was provisioned. Payment connectors that were created before this field was available return <code>MANUAL</code>.</p> <ul> <li> <p> <code>MANUAL</code> - You provided the credential provider configurations, so you own the credentials.</p> </li> <li> <p> <code>QUICK_CREATE</code> - AgentCore provisioned the credential provider for you, so the credentials are service-managed and you can rotate them with <code>RotatePaymentConnectorCredentials</code>.</p> </li> </ul>"
                     }
                 },
                 "status": {
@@ -29550,6 +30844,16 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The permissions configuration for a capacity provider. This specifies the IAM role that AgentCore uses to manage the Amazon EC2 instances for the capacity provider on your behalf.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PlatformVersion": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 128
+                },
+                "smithy.api#pattern": "^[^\\s]+$"
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#Policies": {
@@ -30477,6 +31781,15 @@
             },
             "traits": {
                 "smithy.api#default": "FAIL_ON_ANY_FINDINGS"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#PortalUrlType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2000
+                }
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#PrincipalMatchOperator": {
@@ -31671,6 +32984,26 @@
                 "target": "com.amazonaws.bedrockagentcorecontrol#RestApiMethod"
             }
         },
+        "com.amazonaws.bedrockagentcorecontrol#ResultDestination": {
+            "type": "enum",
+            "members": {
+                "DEDICATED_LOG_GROUP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DEDICATED_LOG_GROUP"
+                    }
+                },
+                "SOURCE_LOG_GROUP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SOURCE_LOG_GROUP"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Where evaluation results are written: dedicated results log group (default) or the source log group."
+            }
+        },
         "com.amazonaws.bedrockagentcorecontrol#RetryableConflictException": {
             "type": "structure",
             "members": {
@@ -31749,6 +33082,118 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The configuration for the root volume of a capacity provider instance. Specify the amount of free space to guarantee on the root volume. The device name and delete-on-termination settings are fixed and cannot be changed.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#RotatePaymentConnectorCredentials": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#RotatePaymentConnectorCredentialsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#RotatePaymentConnectorCredentialsResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Replaces the service-managed credentials of a payment connector with newly issued credentials.</p> <p>Use this operation only for payment connectors with a <code>provisionMode</code> of <code>QUICK_CREATE</code>. For payment connectors with a <code>provisionMode</code> of <code>MANUAL</code>, call <code>UpdatePaymentCredentialProvider</code> instead after rotating credentials with the payment provider directly.</p> <p>The rotation finishes before the response is returned, and only one rotation runs at a time for a given payment connector. When it succeeds, the new credential is in effect and the payment connector stays in the <code>READY</code> state. When it fails, an error is returned, the payment connector and its existing credential are left unchanged, and you can retry the request.</p> <p>Rotation replaces the credential on the connector's credential provider, so every payment connector that uses that provider is affected. Replace any copy of the previous credential that you use outside AgentCore.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "POST",
+                    "uri": "/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}/rotate-credentials"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#RotatePaymentConnectorCredentialsRequest": {
+            "type": "structure",
+            "members": {
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the parent payment manager.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment connector whose credentials you want to rotate.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "credentialsToRotate": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#CredentialRotationConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The credentials to rotate. Specify the member that matches the payment connector's <code>type</code>. Each credential that you select is rotated independently.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#RotatePaymentConnectorCredentialsResponse": {
+            "type": "structure",
+            "members": {
+                "paymentConnectorId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the payment connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "paymentManagerId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentManagerId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the parent payment manager.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "lastUpdatedAt": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#DateTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the payment connector was last updated, which is when the rotation completed.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PaymentConnectorStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the payment connector, which is <code>READY</code> after a successful rotation.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.bedrockagentcorecontrol#RouteToTargetAction": {
@@ -33300,6 +34745,15 @@
             "traits": {
                 "smithy.api#length": {
                     "max": 2048
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#StatusReasonType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1024
                 }
             }
         },
@@ -35338,6 +36792,12 @@
                         "smithy.api#documentation": "<p>The updated capacity provider configuration for the AgentCore Runtime.</p>"
                     }
                 },
+                "platformVersion": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PlatformVersion",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated version of the runtime platform to use for the AgentCore Runtime.</p>"
+                    }
+                },
                 "clientToken": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#ClientToken",
                     "traits": {
@@ -35809,6 +37269,172 @@
                     "target": "smithy.api#Timestamp",
                     "traits": {
                         "smithy.api#documentation": "<p>The timestamp when the configuration bundle was updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdateConsentPortal": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdateConsentPortalRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.bedrockagentcorecontrol#UpdateConsentPortalResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#UnauthorizedException"
+                },
+                {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#controlPlane": {},
+                "smithy.api#documentation": "<p>Updates an existing consent portal.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "uri": "/identities/UpdateConsentPortal",
+                    "method": "POST"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdateConsentPortalRequest": {
+            "type": "structure",
+            "members": {
+                "consentPortalIdentifier": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the consent portal. You can specify either the consent portal ID or its Amazon Resource Name (ARN).</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "consentPortalId"
+                    }
+                },
+                "executionRoleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ExecutionRoleArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+                    }
+                },
+                "idpConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdpConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalDescriptionType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the consent portal.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.bedrockagentcorecontrol#UpdateConsentPortalResponse": {
+            "type": "structure",
+            "members": {
+                "sources": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalSources",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resources served by the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "consentPortalArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "consentPortalId": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the consent portal.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#resourceIdentifier": "consentPortalId"
+                    }
+                },
+                "createdAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp for when the consent portal was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "description": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalDescriptionType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The description of the consent portal.</p>"
+                    }
+                },
+                "executionRoleArn": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ExecutionRoleArnType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "idpConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalIdpConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalNameType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "portalUrl": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#PortalUrlType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL used to access the consent portal.</p>"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ConsentPortalStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the consent portal.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "statusReason": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#StatusReasonType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A message that provides additional information about the current status of the consent portal.</p>"
+                    }
+                },
+                "updatedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp for when the consent portal was last updated.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -36973,6 +38599,9 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#ResourceNotFoundException"
                 },
                 {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#ServiceQuotaExceededException"
+                },
+                {
                     "target": "com.amazonaws.bedrockagentcorecontrol#ThrottlingException"
                 },
                 {
@@ -37173,6 +38802,12 @@
                     "target": "com.amazonaws.bedrockagentcorecontrol#HarnessTruncationConfiguration",
                     "traits": {
                         "smithy.api#documentation": "<p>The truncation configuration for managing conversation context. If not specified, the existing value is retained.</p>"
+                    }
+                },
+                "hooks": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#HarnessHooks",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The lifecycle hooks to run at defined points in the agent loop. If specified, this replaces all existing hooks. If not specified, the existing hooks are retained.</p>"
                     }
                 },
                 "maxIterations": {
@@ -37597,6 +39232,9 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The updated clustering configuration for periodic batch evaluation.</p>"
                     }
+                },
+                "outputConfig": {
+                    "target": "com.amazonaws.bedrockagentcorecontrol#OutputConfig"
                 },
                 "evaluationExecutionRoleArn": {
                     "target": "com.amazonaws.bedrockagentcorecontrol#RoleArn",
