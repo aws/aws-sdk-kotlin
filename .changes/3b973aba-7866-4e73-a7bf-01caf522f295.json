@@ -1,0 +1,5 @@
+{
+    "id": "3b973aba-7866-4e73-a7bf-01caf522f295",
+    "type": "bugfix",
+    "description": "Fix `ProfileCredentialsProvider` not passing its configured `httpClient` and `platformProvider` to `LoginCredentialsProvider` for `login_session` profiles, and its `platformProvider` to `ProcessCredentialsProvider` for `credential_process` profiles"
+}

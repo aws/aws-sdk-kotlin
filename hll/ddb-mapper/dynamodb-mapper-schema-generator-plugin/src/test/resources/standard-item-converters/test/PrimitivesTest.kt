@@ -4,6 +4,8 @@
  */
 package org.example
 
+import aws.smithy.kotlin.runtime.content.BigDecimal
+import aws.smithy.kotlin.runtime.content.BigInteger
 import aws.smithy.kotlin.runtime.content.Document
 import aws.smithy.kotlin.runtime.net.url.Url
 import aws.smithy.kotlin.runtime.time.Instant
@@ -32,6 +34,10 @@ public class PrimitivesTest {
             uInt = UInt.MAX_VALUE,
             uShort = UShort.MAX_VALUE,
             uLong = ULong.MAX_VALUE,
+            bigDecimal = BigDecimal("3.141592653589793238462643383279502884"),
+            bigInteger = BigInteger("99999999999999999999999999999999999999"),
+            jvmBigDecimal = java.math.BigDecimal("3.141592653589793238462643383279502884"),
+            jvmBigInteger = java.math.BigInteger("99999999999999999999999999999999999999"),
             instant = Instant.now(),
             url = Url.parse("https://aws.amazon.com"),
             document = Document.Number(5),

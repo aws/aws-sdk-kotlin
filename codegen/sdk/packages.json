@@ -463,6 +463,12 @@
             "brazilName": "AwsSdkKotlinCloudwatchLogs"
         },
         {
+            "sdkId": "CloudWatchOmni",
+            "namespace": "aws.sdk.kotlin.services.cloudwatchomni",
+            "artifactName": "cloudwatchomni",
+            "brazilName": "AwsSdkKotlinCloudwatchomni"
+        },
+        {
             "sdkId": "CodeBuild",
             "namespace": "aws.sdk.kotlin.services.codebuild",
             "artifactName": "codebuild",
@@ -887,6 +893,12 @@
             "namespace": "aws.sdk.kotlin.services.eventbridge",
             "artifactName": "eventbridge",
             "brazilName": "AwsSdkKotlinEventbridge"
+        },
+        {
+            "sdkId": "EventBridgeV2",
+            "namespace": "aws.sdk.kotlin.services.eventbridgev2",
+            "artifactName": "eventbridgev2",
+            "brazilName": "AwsSdkKotlinEventbridgev2"
         },
         {
             "sdkId": "FMS",
@@ -1511,6 +1523,12 @@
             "namespace": "aws.sdk.kotlin.services.networkfirewall",
             "artifactName": "networkfirewall",
             "brazilName": "AwsSdkKotlinNetworkFirewall"
+        },
+        {
+            "sdkId": "Network Security Manager",
+            "namespace": "aws.sdk.kotlin.services.networksecuritymanager",
+            "artifactName": "networksecuritymanager",
+            "brazilName": "AwsSdkKotlinNetworkSecurityManager"
         },
         {
             "sdkId": "NetworkFlowMonitor",
