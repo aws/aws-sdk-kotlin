@@ -1030,6 +1030,15 @@ public final class aws/sdk/kotlin/hll/dynamodbmapper/items/HeterogeneousItemConv
 	public final fun getTypeMapper ()Lkotlin/jvm/functions/Function1;
 }
 
+public final class aws/sdk/kotlin/hll/dynamodbmapper/items/HeterogeneousItemConverter$Builder {
+	public final fun exactType (Ljava/lang/String;Lkotlin/reflect/KClass;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
+	public final fun instanceOf (Ljava/lang/String;Lkotlin/reflect/KClass;Laws/sdk/kotlin/hll/mapping/core/converters/Converter;)V
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/items/HeterogeneousItemConverterKt {
+	public static final fun HeterogeneousItemConverter (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/hll/dynamodbmapper/items/HeterogeneousItemConverter;
+}
+
 public abstract interface class aws/sdk/kotlin/hll/dynamodbmapper/items/ItemSchema {
 	public abstract fun getAttributes ()Laws/smithy/kotlin/runtime/collections/Attributes;
 	public abstract fun getConverter ()Laws/sdk/kotlin/hll/mapping/core/converters/Converter;
