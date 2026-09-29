@@ -1,6 +1,0 @@
-{
-    "id": "0f3bcfd8-344d-4fe9-8942-eb1acfc575df",
-    "type": "feature",
-    "description": "Add a class-based `HeterogeneousItemConverter` builder which registers sub-converters via `exactType<S>(typeName, converter)` and `instanceOf<S>(typeName, converter)`",
-    "module": "dynamodb-mapper"
-}

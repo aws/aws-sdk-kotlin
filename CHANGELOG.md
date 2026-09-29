@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.9.11] - 09/29/2026
+
+### Features
+* (**appstream**) Add support for NVIDIA GRID driver version metadata in Workspace Applications image responses through the new ImageSoftwareMetadata field.
+* (**bedrockagentruntime**) Amazon Bedrock Agentic Retrieve now supports the Bedrock Mantle (OpenAI Responses) endpoint via a new MantleFoundationModel configuration with an optional projectId.
+* (**deadline**) AWS Deadline Cloud now supports Docker software add-ons on service-managed fleets. Adds support for Open Job Description EXPR and Feature Bundle 1 job templates with typed job parameters and job, step, and parameter names up to 512 characters.
+* (**dynamodb-mapper**) Add a class-based `HeterogeneousItemConverter` builder which registers sub-converters via `exactType<S>(typeName, converter)` and `instanceOf<S>(typeName, converter)`
+* (**ec2**) Adds the LaunchStatus field to CapacityReservation in the DescribeCapacityReservations response. This field indicates whether you can currently launch instances into an UltraServer.
+* (**elasticache**) Amazon ElastiCache Serverless now supports public endpoints for Valkey caches. With the new Connection Type parameter, you can create a serverless cache accessible over the internet without any VPC configuration. Public endpoint caches require IAM authentication.
+* (**elementalinference**) Adds an extendedAnalysis setting to contextual metadata outputs to control detection of people, environments, brands, and on-screen text, and updates the summaryGeneration documentation.
+* (**glue**) Add support for Glue system-managed materialized views.
+* (**identitystore**) Add support for network access controls to restrict Identity Store API and SCIM access to trusted networks, optimistic locking for users and groups via resource revisions, and resource ARNs as identifiers in requests.
+* (**inspector2**) The ListFindingAggregations API now includes Low, Informational, and Untriaged counts alongside the existing severity counts in SeverityCounts.
+* (**mediatailor**) AWS Elemental MediaTailor now supports beaconing configuration on playback configurations. In Insights reporting mode, MediaTailor will now gather client side beaconing metrics. Set the reporting mode to Disabled to turn this off.
+* (**opensearch**) Amazon OpenSearch Service now supports advisory pre-validations for domain config changes. Non-critical checks now surface as warnings you can acknowledge (via the new AcceptedWarnings parameter) and proceed, instead of hard-blocking. Severity is reported in change-progress and dry-run results.
+* (**rds**) Adds the TargetResourceConfigurations parameter to CreateBlueGreenDeployment, letting you specify a target KMS key for each resource in the green environment.
+* (**sagemaker**) Adds support for cpu flex type instances on SageMaker Training and Processing. Also contains minor updates to DescribeTrainingPlan to support ARN inputs.
+* (**securityagent**) Adds support for Azure DevOps and Bitbucket Data Center integration providers.
+* (**sesv2**) Added Filter support for ListTenants, ListEmailIdentities, and ListConfigurationSets APIs.
+* (**transfer**) AWS Transfer Family now supports configuring up to three custom ports on public SFTP servers, instead of the single default port 22. You can also set each port's communication mode (server-talk-first or client-talk-first) so legacy and modern SFTP clients connect reliably.
+
+### Fixes
+* (**aws-config**) Treat `SessionToken` as optional in process credentials responses, allowing a credential process to return long term credentials
+* (**dynamodb-mapper**) Fix `HeterogeneousItemConverter` rejecting sub-converters typed to subtypes (e.g., generated item converters), silently overwriting the type attribute with conflicting sub-converter values, and throwing `IllegalStateException` instead of `IllegalArgumentException` for invalid items
+
 ## [1.9.10] - 09/28/2026
 
 ### Features

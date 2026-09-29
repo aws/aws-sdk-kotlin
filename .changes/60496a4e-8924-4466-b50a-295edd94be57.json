@@ -1,6 +1,0 @@
-{
-    "id": "60496a4e-8924-4466-b50a-295edd94be57",
-    "type": "bugfix",
-    "description": "Fix `HeterogeneousItemConverter` rejecting sub-converters typed to subtypes (e.g., generated item converters), silently overwriting the type attribute with conflicting sub-converter values, and throwing `IllegalStateException` instead of `IllegalArgumentException` for invalid items",
-    "module": "dynamodb-mapper"
-}
