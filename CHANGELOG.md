@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.9.12] - 09/30/2026
+
+### Features
+* (**account**) This release adds support for verifying an AWS account's primary contact phone number. SendPhoneNumberVerification sends a one-time code by SMS, VerifyPhoneNumber validates it, and GetContactInformation now returns the verification status.
+* (**batch**) AWS Batch adds support for Amazon EKS access entries on EKS compute environments through the new accessEntry setting in CreateComputeEnvironment and UpdateComputeEnvironment.
+* (**bedrock**) Amazon Bedrock Automated Reasoning policies now accept Unicode letters in identifier names such as type names, type value names, and variable names. You can now author policies in non-English languages using accented or non-Latin characters.
+* (**bedrockagentcorecontrol**) This release adds support for private certificate authorities on Amazon Bedrock AgentCore Gateway targets. The new certificateConfigurations parameter on CreateGatewayTarget and UpdateGatewayTarget references a PEM-encoded CA certificate in Amazon S3 or AWS Secrets Manager.
+* (**cloudwatchlogs**) Amazon CloudWatch Logs now supports an optional roleArn parameter on PutDeliveryDestination for X-Ray trace delivery destinations, specifying the IAM role to assume when delivering traces.
+* (**connect**) Amazon Connect Rules can now trigger in-app notifications to users as a rule action. Notification character limit was increased to 500 visible characters.
+* (**datazone**) Support for setting notebook run notification configurations
+* (**dynamodb**) Adds support for filtering exported table data using FilterExpression, ProjectionExpression and KeyConditionExpression with ExportTableToPointInTime.
+* (**ecs**) Releasing VPCL for BlueGreen ecs deployments.
+* (**globalaccelerator**) IpSets now include the Network Zone for each Static IP address.
+* (**glue**) Enable Catalog ID for crawler, column statistics and materialized views.
+* (**guardduty**) GuardDuty AWS Organizations policy integration. GetDetector and GetMemberDetectors now show whether a GuardDuty policy manages a feature.
+* (**observabilityadmin**) Enablement for Bedrock PaymentManager logs via Observability Admin Telemetry Rule
+* (**organizations**) Add support for policy operations on the GUARDDUTY POLICY policy type.
+* (**s3**) Amazon S3 adds a new optional S3 Inventory field, IntelligentTieringReferenceDate, reporting the reference date S3 Intelligent-Tiering uses to evaluate an object's tier-transition eligibility. The value is populated for objects in the Intelligent-Tiering storage class and left blank for others.
+* (**s3vectors**) Amazon S3 Vectors now supports metadata prefiltering, providing higher recall on filtered queries.
+* (**sagemaker**) This feature enables customers to modify their accounting database via API.
+
+### Documentation
+* (**agentregistry**) Minor doc update for the AWS Agent Registry Custom metadata SearchDiscoverableRegistryRecords API
+
 ## [1.9.11] - 09/29/2026
 
 ### Features
