@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.9.11] - 09/29/2026
+
+### Features
+* (**appstream**) Add support for NVIDIA GRID driver version metadata in Workspace Applications image responses through the new ImageSoftwareMetadata field.
+* (**bedrockagentruntime**) Amazon Bedrock Agentic Retrieve now supports the Bedrock Mantle (OpenAI Responses) endpoint via a new MantleFoundationModel configuration with an optional projectId.
+* (**deadline**) AWS Deadline Cloud now supports Docker software add-ons on service-managed fleets. Adds support for Open Job Description EXPR and Feature Bundle 1 job templates with typed job parameters and job, step, and parameter names up to 512 characters.
+* (**dynamodb-mapper**) Add a class-based `HeterogeneousItemConverter` builder which registers sub-converters via `exactType<S>(typeName, converter)` and `instanceOf<S>(typeName, converter)`
+* (**ec2**) Adds the LaunchStatus field to CapacityReservation in the DescribeCapacityReservations response. This field indicates whether you can currently launch instances into an UltraServer.
+* (**elasticache**) Amazon ElastiCache Serverless now supports public endpoints for Valkey caches. With the new Connection Type parameter, you can create a serverless cache accessible over the internet without any VPC configuration. Public endpoint caches require IAM authentication.
+* (**elementalinference**) Adds an extendedAnalysis setting to contextual metadata outputs to control detection of people, environments, brands, and on-screen text, and updates the summaryGeneration documentation.
+* (**glue**) Add support for Glue system-managed materialized views.
+* (**identitystore**) Add support for network access controls to restrict Identity Store API and SCIM access to trusted networks, optimistic locking for users and groups via resource revisions, and resource ARNs as identifiers in requests.
+* (**inspector2**) The ListFindingAggregations API now includes Low, Informational, and Untriaged counts alongside the existing severity counts in SeverityCounts.
+* (**mediatailor**) AWS Elemental MediaTailor now supports beaconing configuration on playback configurations. In Insights reporting mode, MediaTailor will now gather client side beaconing metrics. Set the reporting mode to Disabled to turn this off.
+* (**opensearch**) Amazon OpenSearch Service now supports advisory pre-validations for domain config changes. Non-critical checks now surface as warnings you can acknowledge (via the new AcceptedWarnings parameter) and proceed, instead of hard-blocking. Severity is reported in change-progress and dry-run results.
+* (**rds**) Adds the TargetResourceConfigurations parameter to CreateBlueGreenDeployment, letting you specify a target KMS key for each resource in the green environment.
+* (**sagemaker**) Adds support for cpu flex type instances on SageMaker Training and Processing. Also contains minor updates to DescribeTrainingPlan to support ARN inputs.
+* (**securityagent**) Adds support for Azure DevOps and Bitbucket Data Center integration providers.
+* (**sesv2**) Added Filter support for ListTenants, ListEmailIdentities, and ListConfigurationSets APIs.
+* (**transfer**) AWS Transfer Family now supports configuring up to three custom ports on public SFTP servers, instead of the single default port 22. You can also set each port's communication mode (server-talk-first or client-talk-first) so legacy and modern SFTP clients connect reliably.
+
+### Fixes
+* (**aws-config**) Treat `SessionToken` as optional in process credentials responses, allowing a credential process to return long term credentials
+* (**dynamodb-mapper**) Fix `HeterogeneousItemConverter` rejecting sub-converters typed to subtypes (e.g., generated item converters), silently overwriting the type attribute with conflicting sub-converter values, and throwing `IllegalStateException` instead of `IllegalArgumentException` for invalid items
+
+## [1.9.10] - 09/28/2026
+
+### Features
+* (**agentregistry**) AWS Agent Registry adds support for custom metadata. Discovery APIs now return custom metadata on registry records and support filtering by metadata fields. Semantic search includes custom metadata for improved relevance. Filter customMetadata fields using eq, ne, and in operators.
+* (**agentregistrycontrol**) AWS Agent Registry adds support for custom metadata. Define a typed metadata schema on your registry and attach structured key-value metadata to registry records. Schemas are additive only. Enforcement is progressive. Records show a compliance status computed against the current schema.
+* (**bedrockagentcorecontrol**) Amazon Bedrock AgentCore Gateway now supports returning the complete MCP tools list in a single response by disabling pagination for the tools list operation. This feature is available in limited preview.
+* (**billing**) Adds support for (a) listing Business Support account charges via ListBusinessSupportAccountCharges and (b) subscription history via ListBusinessSupportSubscriptionHistory through the AWS Billing API.
+* (**connect**) This release adds ConnectionTypes and ChatStreamingConfiguration to StartChatContact, and ConnectionCredentials, Websocket, and StreamingId to its response, so customers can request connection information and chat streaming in the same call that starts the chat.
+* (**dynamodb-mapper**) Added support for enums as map keys and set elements in DynamoDB Mapper, serialised by name to `S` (map key) and `SS` (set), consistent with existing enum support for scalars, list elements, and map values
+* (**ec2**) API changes to AWS Client VPN to support device posture assessment and Cedar authorization policies
+* (**eks**) An optional customer provided prefix used to construct the hostname of the Argo CD server endpoint for EKS Argo CD Capability.
+* (**fsx**) Amazon FSx has expanded the model-level maximum on the ThroughputCapacity, ThroughputCapacityPerHAPair, and Iops API parameters. Actual supported values are unchanged and depend on file system type and configuration.
+* (**glue**) Added a new exception to several batch APIs
+* (**guardduty**) Adding awsServiceName field to GuardDuty Findings
+* (**securityagent**) Run automated penetration tests directly from your CI-CD pipeline to scan code changes before they ship, gating deployments on the findings
+* (**ssm**) Add support for sharing SSM documents with organizations and OUs using RAM.
+
+### Fixes
+* Fix `ProfileCredentialsProvider` not passing its configured `httpClient` and `platformProvider` to `LoginCredentialsProvider` for `login_session` profiles, and its `platformProvider` to `ProcessCredentialsProvider` for `credential_process` profiles
+
 ## [1.9.9] - 09/25/2026
 
 ### Features

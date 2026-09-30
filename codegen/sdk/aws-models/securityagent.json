@@ -836,6 +836,130 @@
                 "smithy.api#documentation": "<p>Type of authentication provider.</p>"
             }
         },
+        "com.amazonaws.securityagent#AzureDevOpsIntegrationInput": {
+            "type": "structure",
+            "members": {
+                "code": {
+                    "target": "com.amazonaws.securityagent#AuthCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The OAuth 2.0 authorization code returned to your redirect URL after the connection is authorized.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "state": {
+                    "target": "com.amazonaws.securityagent#CsrfState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The CSRF state value returned by <code>InitiateProviderRegistration</code> and echoed back on the authorization redirect.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "organizationName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the Azure DevOps organization to connect, for example <code>my-org</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Connection details for an Azure DevOps integration.</p>"
+            }
+        },
+        "com.amazonaws.securityagent#AzureDevOpsOrganization": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>An Azure DevOps organization name.</p>"
+            }
+        },
+        "com.amazonaws.securityagent#AzureDevOpsRepositoryMetadata": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.securityagent#ProviderResourceName",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "providerResourceId": {
+                    "target": "com.amazonaws.securityagent#ProviderResourceId",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "organization": {
+                    "target": "com.amazonaws.securityagent#AzureDevOpsOrganization",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the Azure DevOps organization that owns the repository.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "project": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the Azure DevOps project that contains the repository.</p>"
+                    }
+                },
+                "projectId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The GUID of the Azure DevOps project that contains the repository.</p>"
+                    }
+                },
+                "accessType": {
+                    "target": "com.amazonaws.securityagent#AccessType"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Metadata for an integrated Azure DevOps repository.</p>"
+            }
+        },
+        "com.amazonaws.securityagent#AzureDevOpsRepositoryResource": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.securityagent#ProviderResourceName",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "organization": {
+                    "target": "com.amazonaws.securityagent#AzureDevOpsOrganization",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the Azure DevOps organization that owns the repository.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "project": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the Azure DevOps project that contains the repository.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An Azure DevOps repository integrated as a resource.</p>"
+            }
+        },
+        "com.amazonaws.securityagent#AzureDevOpsResourceCapabilities": {
+            "type": "structure",
+            "members": {
+                "leaveComments": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Whether to post code review comments on pull requests.</p>"
+                    }
+                },
+                "remediateCode": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Whether to create pull requests with automated fixes.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Capabilities for an integrated Azure DevOps repository.</p>"
+            }
+        },
         "com.amazonaws.securityagent#BatchCreateSecurityRequirementResult": {
             "type": "structure",
             "members": {
@@ -2370,6 +2494,35 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.securityagent#BitbucketDataCenterIntegrationInput": {
+            "type": "structure",
+            "members": {
+                "targetUrl": {
+                    "target": "com.amazonaws.securityagent#TargetUrl",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The HTTPS URL of your Bitbucket Data Center instance, for example <code>https://bitbucket.example.com</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "code": {
+                    "target": "com.amazonaws.securityagent#AuthCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The OAuth 2.0 authorization code returned to your redirect URL after the connection is authorized.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "state": {
+                    "target": "com.amazonaws.securityagent#CsrfState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The CSRF state value returned by <code>InitiateProviderRegistration</code> and echoed back on the authorization redirect.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Connection details for a self-managed Bitbucket Data Center integration.</p>"
+            }
+        },
         "com.amazonaws.securityagent#BitbucketInstallationId": {
             "type": "string",
             "traits": {
@@ -2559,6 +2712,20 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.securityagent#CiCdConfiguration": {
+            "type": "structure",
+            "members": {
+                "enabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Whether CI/CD pentesting is enabled for this pentest.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration that enables a pentest to run as part of a CI/CD pipeline, scoped to the code changes in each pipeline run.</p>"
+            }
+        },
         "com.amazonaws.securityagent#CleanUpStrategy": {
             "type": "enum",
             "members": {
@@ -2579,6 +2746,19 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Strategy for handling resources created during a pentest.</p>"
+            }
+        },
+        "com.amazonaws.securityagent#ClientId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>A client ID for an OAuth application registered on a self-managed provider instance.</p>"
+            }
+        },
+        "com.amazonaws.securityagent#ClientSecret": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>A client secret for an OAuth application registered on a self-managed provider instance.</p>",
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.securityagent#CloudWatchLog": {
@@ -3979,7 +4159,7 @@
                 "provider": {
                     "target": "com.amazonaws.securityagent#Provider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The integration provider. Currently, only GITHUB is supported.</p>",
+                        "smithy.api#documentation": "<p>The integration provider.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -4205,6 +4385,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The report-generation filters applied when the report is exported.</p>"
                     }
+                },
+                "cicdConfiguration": {
+                    "target": "com.amazonaws.securityagent#CiCdConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The CI/CD pentesting configuration to apply to the pentest.</p>"
+                    }
                 }
             },
             "traits": {
@@ -4281,6 +4467,12 @@
                     "target": "com.amazonaws.securityagent#ReportFilters",
                     "traits": {
                         "smithy.api#documentation": "<p>The report-generation filters applied when the report is exported.</p>"
+                    }
+                },
+                "cicdConfiguration": {
+                    "target": "com.amazonaws.securityagent#CiCdConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The CI/CD pentesting configuration applied to the pentest.</p>"
                     }
                 }
             },
@@ -6760,6 +6952,12 @@
                         "smithy.api#documentation": "<p>The HTTPS URL of the customer self-hosted instance, such as a GitHub Enterprise Server or self-managed GitLab instance. This value is absent for SaaS integrations.</p>"
                     }
                 },
+                "webhookUrl": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The payload URL of the integration's webhook, once it has been created. The signing secret is never returned on a read.</p>"
+                    }
+                },
                 "privateConnectionName": {
                     "target": "com.amazonaws.securityagent#PrivateConnectionName",
                     "traits": {
@@ -7356,8 +7554,32 @@
                 "provider": {
                     "target": "com.amazonaws.securityagent#Provider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The provider to initiate registration with. Currently, only GITHUB is supported.</p>",
+                        "smithy.api#documentation": "<p>The provider to initiate registration with.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "targetUrl": {
+                    "target": "com.amazonaws.securityagent#TargetUrl",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The HTTPS URL of a self-managed provider instance. Omit for SaaS providers.</p>"
+                    }
+                },
+                "organizationName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the organization to connect.</p>"
+                    }
+                },
+                "clientId": {
+                    "target": "com.amazonaws.securityagent#ClientId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The client ID of the OAuth application registered on your self-managed provider instance.</p>"
+                    }
+                },
+                "clientSecret": {
+                    "target": "com.amazonaws.securityagent#ClientSecret",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The client secret of the OAuth application registered on your self-managed provider instance.</p>"
                     }
                 }
             },
@@ -7460,6 +7682,12 @@
                 },
                 "confluenceDocument": {
                     "target": "com.amazonaws.securityagent#ConfluenceDocumentResource"
+                },
+                "azureDevOpsRepository": {
+                    "target": "com.amazonaws.securityagent#AzureDevOpsRepositoryResource",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Azure DevOps repository resource information.</p>"
+                    }
                 }
             },
             "traits": {
@@ -7513,6 +7741,12 @@
                 },
                 "confluenceDocument": {
                     "target": "com.amazonaws.securityagent#ConfluenceDocumentMetadata"
+                },
+                "azureDevOpsRepository": {
+                    "target": "com.amazonaws.securityagent#AzureDevOpsRepositoryMetadata",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Azure DevOps repository metadata.</p>"
+                    }
                 }
             },
             "traits": {
@@ -7608,6 +7842,9 @@
                 "targetUrl": {
                     "target": "com.amazonaws.securityagent#TargetUrl"
                 },
+                "webhookUrl": {
+                    "target": "smithy.api#String"
+                },
                 "privateConnectionName": {
                     "target": "com.amazonaws.securityagent#PrivateConnectionName"
                 }
@@ -7617,6 +7854,9 @@
             },
             "read": {
                 "target": "com.amazonaws.securityagent#GetIntegration"
+            },
+            "update": {
+                "target": "com.amazonaws.securityagent#UpdateIntegration"
             },
             "delete": {
                 "target": "com.amazonaws.securityagent#DeleteIntegration"
@@ -7670,6 +7910,12 @@
                     "target": "com.amazonaws.securityagent#TargetUrl",
                     "traits": {
                         "smithy.api#documentation": "<p>The HTTPS URL of the customer self-hosted instance, such as a GitHub Enterprise Server or self-managed GitLab instance. This value is absent for SaaS integrations.</p>"
+                    }
+                },
+                "webhookUrl": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The payload URL of the integration's webhook, once it has been created. The signing secret is never returned on a read.</p>"
                     }
                 },
                 "privateConnectionName": {
@@ -7793,6 +8039,13 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A targeted revalidation job that retests specific findings to determine whether they are still exploitable.</p>",
                         "smithy.api#enumValue": "REVALIDATION"
+                    }
+                },
+                "CICD": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A CI/CD pentest job that tests only the code changes in a single pipeline run, as determined by the scope changes supplied when the job is started.</p>",
+                        "smithy.api#enumValue": "CICD"
                     }
                 }
             },
@@ -8978,6 +9231,12 @@
                     "target": "com.amazonaws.securityagent#NextToken",
                     "traits": {
                         "smithy.api#documentation": "<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the nextToken value returned from the previous request.</p>"
+                    }
+                },
+                "jobType": {
+                    "target": "com.amazonaws.securityagent#JobType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Filters the returned pentest jobs to only those of the specified job type.</p>"
                     }
                 }
             },
@@ -10207,6 +10466,12 @@
                         "smithy.api#documentation": "<p>The report-generation filters applied when the report is exported.</p>"
                     }
                 },
+                "cicdConfiguration": {
+                    "target": "com.amazonaws.securityagent#CiCdConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The CI/CD pentesting configuration for this pentest. Present when the pentest is set up to run from a CI/CD pipeline.</p>"
+                    }
+                },
                 "createdAt": {
                     "target": "smithy.api#Timestamp",
                     "traits": {
@@ -10388,7 +10653,7 @@
                 "jobType": {
                     "target": "com.amazonaws.securityagent#JobType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of the pentest job. Valid values are FULL and REVALIDATION.</p>"
+                        "smithy.api#documentation": "<p>The type of the pentest job. Valid values are FULL, REVALIDATION, and CICD.</p>"
                     }
                 },
                 "selectedFindingIds": {
@@ -10402,6 +10667,27 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The destination for publishing scan reports to an integrated document provider.</p>"
                     }
+                },
+                "reportUrl": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL to view this pentest job's findings report in the console.</p>"
+                    }
+                },
+                "scopeResult": {
+                    "target": "com.amazonaws.securityagent#ScopeResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scoping outcome for this CI/CD pentest job. Present only for jobs of type CICD.</p>"
+                    }
+                },
+                "scopeChanges": {
+                    "target": "com.amazonaws.securityagent#ScopeChangeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The code changes that defined the scope of this CI/CD pentest job. Present only for jobs of type CICD.</p>"
+                    }
+                },
+                "cicdConfiguration": {
+                    "target": "com.amazonaws.securityagent#CiCdConfiguration"
                 },
                 "createdAt": {
                     "target": "smithy.api#Timestamp",
@@ -10475,6 +10761,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The date and time the pentest job was last updated, in UTC format.</p>",
                         "smithy.api#timestampFormat": "date-time"
+                    }
+                },
+                "jobType": {
+                    "target": "com.amazonaws.securityagent#JobType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the pentest job. Valid values are FULL, REVALIDATION, and CICD.</p>"
+                    }
+                },
+                "reportUrl": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL to view this pentest job's findings report in the console.</p>"
                     }
                 }
             },
@@ -10819,6 +11117,12 @@
                     "traits": {
                         "smithy.api#enumValue": "CONFLUENCE"
                     }
+                },
+                "AZURE_DEVOPS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AZURE_DEVOPS"
+                    }
                 }
             },
             "traits": {
@@ -10851,6 +11155,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The configuration for a Confluence integration.</p>"
                     }
+                },
+                "azureDevOps": {
+                    "target": "com.amazonaws.securityagent#AzureDevOpsIntegrationInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Azure DevOps-specific input for creating an integration.</p>"
+                    }
+                },
+                "bitbucketDataCenter": {
+                    "target": "com.amazonaws.securityagent#BitbucketDataCenterIntegrationInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Bitbucket Data Center-specific input for creating an integration.</p>"
+                    }
                 }
             },
             "traits": {
@@ -10874,6 +11190,12 @@
                 },
                 "confluence": {
                     "target": "com.amazonaws.securityagent#ConfluenceResourceCapabilities"
+                },
+                "azureDevOps": {
+                    "target": "com.amazonaws.securityagent#AzureDevOpsResourceCapabilities",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Azure DevOps-specific resource capabilities.</p>"
+                    }
                 }
             },
             "traits": {
@@ -11393,6 +11715,104 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.securityagent#S3BucketArn"
+            }
+        },
+        "com.amazonaws.securityagent#ScopeChange": {
+            "type": "structure",
+            "members": {
+                "integrationId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the integration for the source-code provider that hosts the repository.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "providerResourceId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The provider-specific identifier of the repository the change belongs to.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "baseCommitSha": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The commit SHA that the change is compared against. When omitted, the change is evaluated against the head commit alone.</p>"
+                    }
+                },
+                "headCommitSha": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The commit SHA at the tip of the change to be tested.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "triggerRunId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the CI/CD pipeline run that triggered this pentest job.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A code change in a CI/CD pipeline run that defines what a CI/CD pentest job tests. Each scope change identifies an integrated repository and the commit range for the change.</p>"
+            }
+        },
+        "com.amazonaws.securityagent#ScopeChangeList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.securityagent#ScopeChange"
+            }
+        },
+        "com.amazonaws.securityagent#ScopeDecision": {
+            "type": "enum",
+            "members": {
+                "IN_SCOPE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The code changes are in scope and are tested by the pentest job.</p>",
+                        "smithy.api#enumValue": "IN_SCOPE"
+                    }
+                },
+                "SCOPED_OUT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The code changes are out of scope and are not tested. No pentest is run for the changes.</p>",
+                        "smithy.api#enumValue": "SCOPED_OUT"
+                    }
+                },
+                "SCOPE_CONFLICT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The code changes could not be conclusively scoped because of a conflict in the scoping inputs.</p>",
+                        "smithy.api#enumValue": "SCOPE_CONFLICT"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The scoping decision for a CI/CD pentest job, indicating whether the supplied code changes are tested.</p>"
+            }
+        },
+        "com.amazonaws.securityagent#ScopeResult": {
+            "type": "structure",
+            "members": {
+                "decision": {
+                    "target": "com.amazonaws.securityagent#ScopeDecision",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scoping decision for the job's code changes.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "reason": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A human-readable explanation of the scoping decision.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The outcome of scoping a CI/CD pentest job's code changes, including the decision and the reason for it.</p>"
             }
         },
         "com.amazonaws.securityagent#SecretArn": {
@@ -12726,13 +13146,19 @@
                 "jobType": {
                     "target": "com.amazonaws.securityagent#JobType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of pentest job to start. Valid values are FULL and REVALIDATION. When set to REVALIDATION, the selectedFindingIds parameter is required.</p>"
+                        "smithy.api#documentation": "<p>The type of pentest job to start. Valid values are FULL, REVALIDATION, and CICD. When set to REVALIDATION, the selectedFindingIds parameter is required. When set to CICD, the scopeChanges parameter defines the code changes to test.</p>"
                     }
                 },
                 "selectedFindingIds": {
                     "target": "com.amazonaws.securityagent#StringList",
                     "traits": {
                         "smithy.api#documentation": "<p>The list of finding identifiers to revalidate. Required when jobType is REVALIDATION. Each finding must belong to the same agent space and pentest.</p>"
+                    }
+                },
+                "scopeChanges": {
+                    "target": "com.amazonaws.securityagent#ScopeChangeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The code changes that define the scope of a CI/CD pentest job. Provide this when starting a job with jobType CICD to test only the changes in the current pipeline run.</p>"
                     }
                 }
             },
@@ -15268,6 +15694,96 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.securityagent#UpdateIntegration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.securityagent#UpdateIntegrationInput"
+            },
+            "output": {
+                "target": "com.amazonaws.securityagent#UpdateIntegrationOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.securityagent#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.securityagent#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.securityagent#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.securityagent#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.securityagent#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.securityagent#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Creates an integration's webhook, or rotates the HMAC signing secret of an existing one. The secret is returned only once, in this response, and cannot be retrieved again.</p>",
+                "smithy.api#http": {
+                    "code": 200,
+                    "method": "POST",
+                    "uri": "/UpdateIntegration"
+                }
+            }
+        },
+        "com.amazonaws.securityagent#UpdateIntegrationInput": {
+            "type": "structure",
+            "members": {
+                "integrationId": {
+                    "target": "com.amazonaws.securityagent#IntegrationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the integration whose webhook you want to create or rotate.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "webhookAction": {
+                    "target": "com.amazonaws.securityagent#WebhookAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The action to perform on the integration's webhook.</p>",
+                        "smithy.api#notProperty": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Input for creating or rotating an integration's webhook.</p>",
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.securityagent#UpdateIntegrationOutput": {
+            "type": "structure",
+            "members": {
+                "integrationId": {
+                    "target": "com.amazonaws.securityagent#IntegrationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the integration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "webhookUrl": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The payload URL to configure on your provider instance. Returned when a webhook is created; unchanged by a rotate.</p>"
+                    }
+                },
+                "secret": {
+                    "target": "com.amazonaws.securityagent#WebhookSecret",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The HMAC signing secret for the webhook. Returned only once, in this response; it is never returned again.</p>",
+                        "smithy.api#notProperty": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Output for the UpdateIntegration operation.</p>",
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.securityagent#UpdatePentest": {
             "type": "operation",
             "input": {
@@ -15372,6 +15888,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The report-generation filters applied when the report is exported.</p>"
                     }
+                },
+                "cicdConfiguration": {
+                    "target": "com.amazonaws.securityagent#CiCdConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated CI/CD pentesting configuration to apply to the pentest.</p>"
+                    }
                 }
             },
             "traits": {
@@ -15448,6 +15970,12 @@
                     "target": "com.amazonaws.securityagent#ReportFilters",
                     "traits": {
                         "smithy.api#documentation": "<p>The report-generation filters applied when the report is exported.</p>"
+                    }
+                },
+                "cicdConfiguration": {
+                    "target": "com.amazonaws.securityagent#CiCdConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The CI/CD pentesting configuration applied to the pentest.</p>"
                     }
                 }
             },
@@ -16636,6 +17164,35 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.securityagent#VpcConfig"
+            }
+        },
+        "com.amazonaws.securityagent#WebhookAction": {
+            "type": "enum",
+            "members": {
+                "CREATE_IF_ABSENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Create the webhook if one does not already exist. Returns the payload URL and the signing secret.</p>",
+                        "smithy.api#enumValue": "CREATE_IF_ABSENT"
+                    }
+                },
+                "ROTATE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Generate a new signing secret for the existing webhook, keeping the same payload URL. Returns the new secret.</p>",
+                        "smithy.api#enumValue": "ROTATE"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The action to perform on an integration's webhook.</p>"
+            }
+        },
+        "com.amazonaws.securityagent#WebhookSecret": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>An HMAC signing secret for a provider webhook.</p>",
+                "smithy.api#sensitive": {}
             }
         }
     }
