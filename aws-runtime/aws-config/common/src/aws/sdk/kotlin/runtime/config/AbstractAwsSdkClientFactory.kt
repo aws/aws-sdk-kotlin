@@ -30,6 +30,7 @@ import aws.smithy.kotlin.runtime.client.config.CompressionClientConfig
 import aws.smithy.kotlin.runtime.client.config.HttpChecksumConfig
 import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.http.auth.HttpAuthConfig
+import aws.smithy.kotlin.runtime.http.config.HttpEngineConfig
 import aws.smithy.kotlin.runtime.telemetry.TelemetryConfig
 import aws.smithy.kotlin.runtime.telemetry.TelemetryProvider
 import aws.smithy.kotlin.runtime.telemetry.trace.withSpan
@@ -56,6 +57,11 @@ public abstract class AbstractAwsSdkClientFactory<
           TConfig : AwsSdkClientConfig,
           TConfigBuilder : SdkClientConfig.Builder<TConfig>,
           TConfigBuilder : AwsSdkClientConfig.Builder {
+
+    override fun finalizeConfig(builder: TClientBuilder) {
+        super.finalizeConfig(builder)
+        (builder.config as? HttpEngineConfig.Builder)?.configureCheckpointRestore()
+    }
 
     /**
      * Service-specific default max attempts for the retry strategy.
