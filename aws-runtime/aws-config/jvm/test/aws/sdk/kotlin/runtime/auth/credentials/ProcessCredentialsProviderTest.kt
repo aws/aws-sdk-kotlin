@@ -101,7 +101,9 @@ class ProcessCredentialsProviderTest {
             accessKeyId = "AccessKeyId",
             secretAccessKey = "SecretAccessKey",
             sessionToken = null,
-            expiration = Instant.MAX_VALUE,
+            // A credential process that reports no expiration leaves it unset; the caching provider re-reads such
+            // credentials on its own schedule rather than treating them as valid forever.
+            expiration = null,
             providerName = "Process",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_PROCESS)
 
