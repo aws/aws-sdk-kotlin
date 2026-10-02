@@ -17,6 +17,7 @@ import aws.smithy.kotlin.runtime.auth.awscredentials.*
 import aws.smithy.kotlin.runtime.client.SdkClientOption
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
+import aws.smithy.kotlin.runtime.identity.Identity
 import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import aws.smithy.kotlin.runtime.telemetry.telemetryProvider
 import aws.smithy.kotlin.runtime.time.Clock
@@ -43,19 +44,15 @@ private const val PROVIDER_NAME = "SSO"
  * information to load and retrieve temporary credentials using an access token from `~/.aws/sso/cache`.
  *
  * ```
- * val source = SsoCredentialsProvider(
+ * val ssoProvider = SsoCredentialsProvider(
  *     accountId = "123456789",
  *     roleName = "SsoReadOnlyRole",
  *     startUrl = "https://my-sso-portal.awsapps.com/start",
  *     ssoRegion = "us-east-2"
  * )
- *
- * // Wrap the provider with a caching provider to cache the credentials until their expiration time
- * val ssoProvider = CachedCredentialsProvider(source)
  * ```
- * It is important that you wrap the provider with [CachedCredentialsProvider] if you are programmatically constructing
- * the provider directly. This prevents your application from accessing the cached access token and requesting new
- * credentials each time the provider is used to source credentials.
+ * This provider caches and refreshes credentials internally, so it does not need to be wrapped in a caching provider.
+ * Close it when you are done with it to release the cache.
  *
  *
  * **Additional Resources**
@@ -82,13 +79,24 @@ public class SsoCredentialsProvider public constructor(
     public val httpClient: HttpClientEngine? = null,
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     private val clock: Clock = Clock.System,
-) : CredentialsProvider {
+) : CloseableCredentialsProvider,
+    RefreshAwareCredentialsProvider {
 
     private val ssoTokenProvider = ssoSessionName?.let { sessName ->
         SsoTokenProvider(sessName, startUrl, ssoRegion, httpClient = httpClient, platformProvider = platformProvider, clock = clock)
     }
 
-    override suspend fun resolve(attributes: Attributes): Credentials {
+    private val refresh = SelfManagedRefresh(::resolveUncached, clock = clock)
+
+    override suspend fun resolve(attributes: Attributes): Credentials = refresh.resolve(attributes)
+
+    override suspend fun invalidate(rejectedIdentity: Identity): Unit = refresh.invalidate(rejectedIdentity)
+
+    /**
+     * Calls `GetRoleCredentials` with no caching or pacing of its own. The caller's cache decides what a failure or an
+     * already-past expiration means.
+     */
+    private suspend fun resolveUncached(attributes: Attributes): Credentials {
         val logger = coroutineContext.logger<SsoCredentialsProvider>()
 
         val token = if (ssoTokenProvider != null) {
@@ -151,6 +159,14 @@ public class SsoCredentialsProvider public constructor(
         if (now > token.expiration) throw ProviderConfigurationException("The SSO session has expired. To refresh this SSO session run `aws sso login` with the corresponding profile.")
 
         return token
+    }
+
+    /**
+     * Releases the refresh lifecycle. The `SsoClient` each resolution builds is closed by that resolution, and the
+     * token provider holds nothing closeable, so there is nothing else to release here.
+     */
+    override fun close() {
+        refresh.close()
     }
 
     override fun toString(): String = this.simpleClassName

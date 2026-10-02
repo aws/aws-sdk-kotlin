@@ -192,4 +192,65 @@ class LoginCredentialsProviderTest {
 
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun testCachesBetweenResolutions() = runTest {
+        // `expiresIn` puts the credentials an hour ahead of the clock, so both resolutions below land well inside the
+        // refresh window.
+        val serviceResp = """
+        {
+            "accessToken": {
+                "accessKeyId": "AKID",
+                "secretAccessKey": "secret",
+                "sessionToken": "session-token"
+            },
+            "expiresIn": 3600,
+            "refreshToken": "new-refresh-token",
+            "tokenType": "aws_sigv4"
+        }
+        """
+
+        // A single expectation: a second token exchange would fail the connection assertion below.
+        val engine = buildTestConnection {
+            expect(
+                HttpResponse(HttpStatusCode.OK, Headers.Empty, HttpBody.fromBytes(serviceResp.encodeToByteArray())),
+            )
+        }
+
+        val testClock = ManualClock(epoch = Instant.fromIso8601("2020-10-16T03:56:00Z"))
+
+        val contents = """
+        {
+            "accessToken": {
+                "accessKeyId": "OLD_AKID",
+                "secretAccessKey": "old-secret",
+                "sessionToken": "old-session-token",
+                "accountId": "123456789",
+                "expiresAt": "2020-10-16T03:50:00Z"
+            },
+            "tokenType": "aws_sigv4",
+            "refreshToken": "refresh-token",
+            "clientId": "test-client-id",
+            "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIFDZHUzOG1Pzq+6F0mjMlOSp1syN9LRPBuHMoCFXTcXhoAoGCCqGSM49\nAwEHoUQDQgAE9qhj+KtcdHj1kVgwxWWWw++tqoh7H7UHs7oXh8jBbgF47rrYGC+t\ndjiIaHK3dBvvdE7MGj5HsepzLm3Kj91bqA==\n-----END EC PRIVATE KEY-----\n"
+        }
+        """
+
+        val key = getLoginCacheFilename("arn:aws:iam::123456789:user/TestUser")
+
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf("HOME" to "/home"),
+            fs = mapOf("/home/.aws/login/cache/$key" to TestFile(contents)),
+        )
+
+        val provider = LoginCredentialsProvider(
+            loginSession = "arn:aws:iam::123456789:user/TestUser",
+            region = "us-west-2",
+            httpClient = engine,
+            platformProvider = testPlatform,
+            clock = testClock,
+        )
+
+        assertEquals(provider.resolve(), provider.resolve())
+        engine.assertRequests()
+    }
 }
