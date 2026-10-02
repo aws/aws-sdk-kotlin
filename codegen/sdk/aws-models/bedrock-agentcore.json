@@ -2575,6 +2575,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The time range filter for selecting sessions to evaluate.</p>"
                     }
+                },
+                "sessionTraceIds": {
+                    "target": "com.amazonaws.bedrockagentcore#SessionTraceIdsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of session and trace ID pairs that restrict evaluation to specific traces within a session. If specified, only the listed traces are evaluated instead of the entire session.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2706,14 +2712,24 @@
                     }
                 },
                 "logGroupNames": {
-                    "target": "com.amazonaws.bedrockagentcore#EvaluationStringList",
+                    "target": "com.amazonaws.bedrockagentcore#LogGroupNameList",
                     "traits": {
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": [],
                         "smithy.api#documentation": "<p>The list of CloudWatch log group names to read agent traces from. Maximum of 10 log groups.</p>",
                         "smithy.api#length": {
-                            "min": 1,
                             "max": 10
-                        },
-                        "smithy.api#required": {}
+                        }
+                    }
+                },
+                "logGroupNamePrefixes": {
+                    "target": "com.amazonaws.bedrockagentcore#LogGroupNamePrefixList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of CloudWatch log group name prefixes to read agent traces from. Specify this instead of <code>logGroupNames</code> to match log groups by prefix. Maximum of 5 prefixes. Specify either <code>logGroupNames</code> or <code>logGroupNamePrefixes</code>, not both. One of the two is required.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 5
+                        }
                     }
                 },
                 "filterConfig": {
@@ -2779,17 +2795,32 @@
             "type": "structure",
             "members": {
                 "logGroupName": {
-                    "target": "smithy.api#String",
+                    "target": "com.amazonaws.bedrockagentcore#OptionalLogGroupName",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the CloudWatch log group where evaluation results will be written.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": "",
+                        "smithy.api#documentation": "<p>The name of the CloudWatch log group where evaluation results will be written. This value doesn't apply when <code>resultDestination</code> is <code>SOURCE_LOG_GROUP</code>, because results are written back to the trace source log group. The name can't be under the service-reserved <code>/aws/bedrock-agentcore/evaluations/</code> namespace, apart from the service-managed default group.</p>"
                     }
                 },
                 "logStreamName": {
-                    "target": "smithy.api#String",
+                    "target": "com.amazonaws.bedrockagentcore#LogStreamName",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the CloudWatch log stream where evaluation results will be written.</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#addedDefault": {},
+                        "smithy.api#default": "",
+                        "smithy.api#documentation": "<p>The name of the CloudWatch log stream where evaluation results will be written.</p>"
+                    }
+                },
+                "metricsNamespace": {
+                    "target": "com.amazonaws.bedrockagentcore#MetricsNamespace",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The CloudWatch metrics namespace where evaluation result metrics are published. If you omit this value, the service publishes metrics to <code>Bedrock-AgentCore/Evaluations</code>. This value can't begin with <code>AWS/</code>.</p>"
+                    }
+                },
+                "resultDestination": {
+                    "target": "com.amazonaws.bedrockagentcore#ResultDestination",
+                    "traits": {
+                        "smithy.api#default": "DEDICATED_LOG_GROUP",
+                        "smithy.api#documentation": "<p>The destination where evaluation results are written. Valid values:</p> <ul> <li> <p> <code>DEDICATED_LOG_GROUP</code> (default) – Writes results to a dedicated result log group.</p> </li> <li> <p> <code>SOURCE_LOG_GROUP</code> – Writes results back to the log group that the agent traces were read from. If you use this value, don't specify <code>logGroupName</code>.</p> </li> </ul>"
                     }
                 }
             },
@@ -8698,6 +8729,112 @@
                 "smithy.api#documentation": "<p>Configuration for a Google Gemini model provider. Requires an API key stored in AgentCore Identity.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcore#HarnessHookDecision": {
+            "type": "enum",
+            "members": {
+                "ALLOW": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "allow"
+                    }
+                },
+                "DENY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "deny"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#HarnessHookEvent": {
+            "type": "structure",
+            "members": {
+                "hookEventId": {
+                    "target": "com.amazonaws.bedrockagentcore#HarnessHookEventId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier for this hook event.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "name": {
+                    "target": "com.amazonaws.bedrockagentcore#HarnessHookName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the hook that ran.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.bedrockagentcore#HarnessHookEventType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of lifecycle hook event.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "decision": {
+                    "target": "com.amazonaws.bedrockagentcore#HarnessHookDecision",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The decision applied to the hook event. This field is present only for blocking Lambda targets.</p>"
+                    }
+                },
+                "reason": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The optional reason for the applied decision.</p>",
+                        "smithy.api#length": {
+                            "max": 1024
+                        }
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A lifecycle hook event emitted in the invocation stream for visibility into hook decisions.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#HarnessHookEventId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#HarnessHookEventType": {
+            "type": "enum",
+            "members": {
+                "BEFORE_TOOL_CALL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "before_tool_call"
+                    }
+                },
+                "AFTER_TOOL_CALL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "after_tool_call"
+                    }
+                },
+                "BEFORE_INVOCATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "before_invocation"
+                    }
+                },
+                "AFTER_INVOCATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "after_invocation"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#HarnessHookName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9_-]+$"
+            }
+        },
         "com.amazonaws.bedrockagentcore#HarnessInlineFunctionConfig": {
             "type": "structure",
             "members": {
@@ -8903,6 +9040,16 @@
                 "smithy.api#documentation": "<p>Specification of which model to use.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcore#HarnessOpenAiApiBase": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 16383
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.bedrockagentcore#HarnessOpenAiApiFormat": {
             "type": "enum",
             "members": {
@@ -8937,6 +9084,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of your OpenAI API key on AgentCore Identity.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "apiBase": {
+                    "target": "com.amazonaws.bedrockagentcore#HarnessOpenAiApiBase",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Optional custom endpoint URL for an OpenAI-compatible endpoint.</p>"
                     }
                 },
                 "maxTokens": {
@@ -9304,6 +9457,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "timeout_exceeded"
+                    }
+                },
+                "HOOK_STOPPED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hook_stopped"
                     }
                 }
             }
@@ -11410,6 +11569,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An error returned by the runtime container during agent execution.</p>"
                     }
+                },
+                "hookEvent": {
+                    "target": "com.amazonaws.bedrockagentcore#HarnessHookEvent",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A lifecycle hook event emitted when a configured hook runs.</p>"
+                    }
                 }
             },
             "traits": {
@@ -12978,6 +13143,52 @@
                 "target": "smithy.api#String"
             }
         },
+        "com.amazonaws.bedrockagentcore#LogGroupName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[.\\-_/#A-Za-z0-9]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#LogGroupNameList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcore#LogGroupName"
+            },
+            "traits": {
+                "smithy.api#documentation": "Length is constrained per member, because members relaxed from @required carry @default([])."
+            }
+        },
+        "com.amazonaws.bedrockagentcore#LogGroupNamePrefix": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "Prefix of a CloudWatch Logs log group name.",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 512
+                },
+                "smithy.api#pattern": "^[.\\-_/#A-Za-z0-9]+$"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#LogGroupNamePrefixList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcore#LogGroupNamePrefix"
+            },
+            "traits": {
+                "smithy.api#documentation": "List of CloudWatch Logs log group name prefixes to source trace data from.",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 5
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#LogStreamName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "A log stream name. The pattern is CloudWatch Logs' own log stream name pattern, which already\nadmits the empty string; empty is the @default of members relaxed from @required and means\n\"no log stream\". No @length is applied, because CloudWatch's min of 1 would reject that default.",
+                "smithy.api#pattern": "^[^:*]*$"
+            }
+        },
         "com.amazonaws.bedrockagentcore#MaxLenString": {
             "type": "string",
             "traits": {
@@ -13738,6 +13949,17 @@
                 "smithy.api#documentation": "<p>Value associated with the <code>eventMetadata</code> key.</p>"
             }
         },
+        "com.amazonaws.bedrockagentcore#MetricsNamespace": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "CloudWatch metrics namespace for evaluation result metrics.",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9._#/:-]+$"
+            }
+        },
         "com.amazonaws.bedrockagentcore#MimeType": {
             "type": "string",
             "traits": {
@@ -14455,6 +14677,13 @@
                         "smithy.api#enumValue": "NOT_EXISTS"
                     }
                 }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#OptionalLogGroupName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "A log group name that may also be empty. The empty string is the @default of members that\nwere relaxed from @required, and carries the meaning \"no log group\" for that member.",
+                "smithy.api#pattern": "^$|^[.\\-_/#A-Za-z0-9]+$"
             }
         },
         "com.amazonaws.bedrockagentcore#OutputConfig": {
@@ -16162,6 +16391,26 @@
                 "smithy.api#streaming": {}
             }
         },
+        "com.amazonaws.bedrockagentcore#ResultDestination": {
+            "type": "enum",
+            "members": {
+                "DEDICATED_LOG_GROUP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DEDICATED_LOG_GROUP"
+                    }
+                },
+                "SOURCE_LOG_GROUP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SOURCE_LOG_GROUP"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "Where evaluation results are written: dedicated results log group (default) or the source log group."
+            }
+        },
         "com.amazonaws.bedrockagentcore#RetrieveMemoryRecords": {
             "type": "operation",
             "input": {
@@ -17132,6 +17381,40 @@
                 "target": "com.amazonaws.bedrockagentcore#SessionSummary"
             }
         },
+        "com.amazonaws.bedrockagentcore#SessionTraceIds": {
+            "type": "structure",
+            "members": {
+                "sessionId": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the session that contains the traces to evaluate.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "traceIds": {
+                    "target": "com.amazonaws.bedrockagentcore#TraceIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of trace IDs within the session to evaluate.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A pairing of a session with the specific trace IDs to evaluate within that session. Use this to evaluate individual traces rather than an entire session.</p>"
+            }
+        },
+        "com.amazonaws.bedrockagentcore#SessionTraceIdsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcore#SessionTraceIds"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 500
+                }
+            }
+        },
         "com.amazonaws.bedrockagentcore#SessionType": {
             "type": "string",
             "traits": {
@@ -17345,6 +17628,9 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The description of the batch evaluation.</p>"
                     }
+                },
+                "outputConfig": {
+                    "target": "com.amazonaws.bedrockagentcore#OutputConfig"
                 }
             },
             "traits": {
@@ -19474,6 +19760,18 @@
                 "smithy.api#length": {
                     "min": 32,
                     "max": 32
+                }
+            }
+        },
+        "com.amazonaws.bedrockagentcore#TraceIdList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.bedrockagentcore#TraceId"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 100
                 }
             }
         },
