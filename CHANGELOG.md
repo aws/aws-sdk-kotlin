@@ -1,5 +1,58 @@
 # Changelog
 
+## [1.9.14] - 10/02/2026
+
+### Features
+* (**cognitoidentityprovider**) Amazon Cognito User Pools now supports the OIDC-standard authentication context class reference (ACR) and authentication methods reference (AMR) claims on issued access and Id tokens. Amazon Cognito User Pools also now supports step-up authentication via our existing authentication APIs.
+* (**glue**) Added refresh token grant type to Glue Connection supported OAuth 2.0 grant types
+* (**invoicing**) API and doc updates related to adding MarketplacePunchOutEnabled and MarketplacePunchOutPreference fields to ProcurementPortalPreferences related APIs
+* (**mediapackagev2**) Dynamic Multiview enables viewers to watch multiple live video streams in a single combined output. Static filter configuration allows users to configure endpoints with layouts and sources without using query parameters. The number of sources per multiview channel has been increased to 50.
+* (**pinpointsmsvoicev2**) AWS End User Messaging SMS CarrierLookup API now supports phone number cleansing on customer opt-in. when selected, the response includes the additional field "OriginalPhoneNumber". It can also return additional PhoneNumberType enums, VOIP and PREPAID.
+* (**securityagent**) Adds trigger filters that control which pull request events, target branches, and labels start an automatic code review.
+
+### Documentation
+* (**lambdaweb**) Documentation update for AWS Lambda Web Functions, clarifies that the LambdaWeb APIs are experimental and not yet available to external customers.
+
+## [1.9.13] - 10/01/2026
+
+### Features
+* (**bedrockagent**) Adds an optional textReadyAt field to ListIngestionJobs and GetIngestionJob for Managed Knowledge Bases data source sync jobs. The field denotes the timestamp at which all the documents in the scope of a sync job had their text content indexed and are available for retrieval.
+* (**cloudfront**) Added always-amz-auth as a supported signing behavior for Origin Access Control (OAC), enabling CloudFront to authenticate requests to Lambda-Web origins.
+* (**endusermessaging**) AWS End User Messaging now supports Brand profiles and Notify code configurations. Brand profiles capture your sender details once to reuse across phone number registrations. Notify code configurations let you define your OTP policy and delivery settings to send passcodes in minutes.
+* (**health**) Adds DescribeServiceLifecycle operation returning lifecycle information for AWS services, including end-of-support dates, version recommendations, and lifecycle events.
+* (**lambdaweb**) Lambda Web Functions GA launch. Lambda Web Functions enable customers to run web applications and API backends
+* (**quicksight**) This release adds HierarchyFilter support for Amazon QuickSight analysis and dashboard and 2 legged OAuth for databricks datasources.
+* (**sagemaker**) Release support for c8a.16xlarge and m8a.16xlarge instance types for SageMaker HyperPod
+* (**securityhub**) Adds GetRemediationsV2 and ListExposuresByRemediationV2 APIs. This feature allows customers to see their highest priority remediations for their Exposure findings. Remediations target key changes customers can make to resources to drive finding resolution.
+* (**transfer**) AWS Transfer Family Workflows adds support for the structuredLogDestinations option, enabling customers to specify a custom Amazon CloudWatch Logs log group for managed workflow execution logs.
+
+### Documentation
+* (**ec2**) This release launches the AMI tag sharing feature, which lets AMI owners share tags alongside their AMIs, eliminating the need to build and maintain custom tag replication workflows.
+
+## [1.9.12] - 09/30/2026
+
+### Features
+* (**account**) This release adds support for verifying an AWS account's primary contact phone number. SendPhoneNumberVerification sends a one-time code by SMS, VerifyPhoneNumber validates it, and GetContactInformation now returns the verification status.
+* (**batch**) AWS Batch adds support for Amazon EKS access entries on EKS compute environments through the new accessEntry setting in CreateComputeEnvironment and UpdateComputeEnvironment.
+* (**bedrock**) Amazon Bedrock Automated Reasoning policies now accept Unicode letters in identifier names such as type names, type value names, and variable names. You can now author policies in non-English languages using accented or non-Latin characters.
+* (**bedrockagentcorecontrol**) This release adds support for private certificate authorities on Amazon Bedrock AgentCore Gateway targets. The new certificateConfigurations parameter on CreateGatewayTarget and UpdateGatewayTarget references a PEM-encoded CA certificate in Amazon S3 or AWS Secrets Manager.
+* (**cloudwatchlogs**) Amazon CloudWatch Logs now supports an optional roleArn parameter on PutDeliveryDestination for X-Ray trace delivery destinations, specifying the IAM role to assume when delivering traces.
+* (**connect**) Amazon Connect Rules can now trigger in-app notifications to users as a rule action. Notification character limit was increased to 500 visible characters.
+* (**datazone**) Support for setting notebook run notification configurations
+* (**dynamodb**) Adds support for filtering exported table data using FilterExpression, ProjectionExpression and KeyConditionExpression with ExportTableToPointInTime.
+* (**ecs**) Releasing VPCL for BlueGreen ecs deployments.
+* (**globalaccelerator**) IpSets now include the Network Zone for each Static IP address.
+* (**glue**) Enable Catalog ID for crawler, column statistics and materialized views.
+* (**guardduty**) GuardDuty AWS Organizations policy integration. GetDetector and GetMemberDetectors now show whether a GuardDuty policy manages a feature.
+* (**observabilityadmin**) Enablement for Bedrock PaymentManager logs via Observability Admin Telemetry Rule
+* (**organizations**) Add support for policy operations on the GUARDDUTY POLICY policy type.
+* (**s3**) Amazon S3 adds a new optional S3 Inventory field, IntelligentTieringReferenceDate, reporting the reference date S3 Intelligent-Tiering uses to evaluate an object's tier-transition eligibility. The value is populated for objects in the Intelligent-Tiering storage class and left blank for others.
+* (**s3vectors**) Amazon S3 Vectors now supports metadata prefiltering, providing higher recall on filtered queries.
+* (**sagemaker**) This feature enables customers to modify their accounting database via API.
+
+### Documentation
+* (**agentregistry**) Minor doc update for the AWS Agent Registry Custom metadata SearchDiscoverableRegistryRecords API
+
 ## [1.9.11] - 09/29/2026
 
 ### Features
