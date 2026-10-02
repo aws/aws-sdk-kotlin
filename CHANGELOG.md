@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.9.14] - 10/02/2026
+
+### Features
+* (**cognitoidentityprovider**) Amazon Cognito User Pools now supports the OIDC-standard authentication context class reference (ACR) and authentication methods reference (AMR) claims on issued access and Id tokens. Amazon Cognito User Pools also now supports step-up authentication via our existing authentication APIs.
+* (**glue**) Added refresh token grant type to Glue Connection supported OAuth 2.0 grant types
+* (**invoicing**) API and doc updates related to adding MarketplacePunchOutEnabled and MarketplacePunchOutPreference fields to ProcurementPortalPreferences related APIs
+* (**mediapackagev2**) Dynamic Multiview enables viewers to watch multiple live video streams in a single combined output. Static filter configuration allows users to configure endpoints with layouts and sources without using query parameters. The number of sources per multiview channel has been increased to 50.
+* (**pinpointsmsvoicev2**) AWS End User Messaging SMS CarrierLookup API now supports phone number cleansing on customer opt-in. when selected, the response includes the additional field "OriginalPhoneNumber". It can also return additional PhoneNumberType enums, VOIP and PREPAID.
+* (**securityagent**) Adds trigger filters that control which pull request events, target branches, and labels start an automatic code review.
+
+### Documentation
+* (**lambdaweb**) Documentation update for AWS Lambda Web Functions, clarifies that the LambdaWeb APIs are experimental and not yet available to external customers.
+
 ## [1.9.13] - 10/01/2026
 
 ### Features
