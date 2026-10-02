@@ -82,6 +82,37 @@ class ProcessCredentialsProviderTest {
     }
 
     @Test
+    fun testSuccessWithLongTermCredentials() = runTest {
+        mockkStatic(::executeCommand)
+        coEvery { executeCommand(any(), any(), any(), any(), any()) }.returns(
+            Pair(
+                0,
+                """
+            {
+                "Version": 1,
+                "AccessKeyId": "AccessKeyId",
+                "SecretAccessKey": "SecretAccessKey"
+            }
+                """.trimIndent(),
+            ),
+        )
+
+        val expectedCredentials = Credentials(
+            accessKeyId = "AccessKeyId",
+            secretAccessKey = "SecretAccessKey",
+            sessionToken = null,
+            // A credential process that reports no expiration leaves it unset; the caching provider re-reads such
+            // credentials on its own schedule rather than treating them as valid forever.
+            expiration = null,
+            providerName = "Process",
+        ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_PROCESS)
+
+        val processCredentialsProvider = ProcessCredentialsProvider("anyString")
+        val actualCredentials = processCredentialsProvider.resolve()
+        assertEquals(expectedCredentials, actualCredentials)
+    }
+
+    @Test
     fun testMissingVersion() = runTest {
         mockkStatic(::executeCommand)
         coEvery { executeCommand(any(), any(), any(), any(), any()) }.returns(

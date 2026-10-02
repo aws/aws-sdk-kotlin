@@ -20,7 +20,9 @@ import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
  * * Any [ServiceException] with an `sdkErrorMetadata.errorCode` of:
  *   * `BandwidthLimitExceeded`
  *   * `EC2ThrottledException`
+ *   * `ExpiredToken`
  *   * `IDPCommunicationError` (only STS throws it)
+ *   * `InvalidToken`
  *   * `LimitExceededException`
  *   * `PriorRequestNotComplete`
  *   * `ProvisionedThroughputExceededException`
@@ -54,7 +56,9 @@ public open class AwsRetryPolicy : StandardRetryPolicy() {
         internal val knownErrorTypes = mapOf(
             "BandwidthLimitExceeded" to Throttling,
             "EC2ThrottledException" to Throttling,
+            "ExpiredToken" to Transient,
             "IDPCommunicationError" to Transient,
+            "InvalidToken" to Transient,
             "LimitExceededException" to Throttling,
             "PriorRequestNotComplete" to Throttling,
             "ProvisionedThroughputExceededException" to Throttling,

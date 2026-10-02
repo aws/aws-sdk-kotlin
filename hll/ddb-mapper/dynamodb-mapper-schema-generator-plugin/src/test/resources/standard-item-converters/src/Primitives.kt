@@ -6,6 +6,8 @@ package org.example
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbItem
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbPartitionKey
+import aws.smithy.kotlin.runtime.content.BigDecimal
+import aws.smithy.kotlin.runtime.content.BigInteger
 import aws.smithy.kotlin.runtime.content.Document
 import aws.smithy.kotlin.runtime.net.url.Url
 import aws.smithy.kotlin.runtime.time.Instant
@@ -45,6 +47,18 @@ public data class Primitives(
     var uLong: ULong,
 
     /**
+     * Arbitrary-precision numbers (Smithy content types, multiplatform)
+     */
+    var bigDecimal: BigDecimal,
+    var bigInteger: BigInteger,
+
+    /**
+     * Arbitrary-precision numbers (java.math types, JVM-only)
+     */
+    var jvmBigDecimal: java.math.BigDecimal,
+    var jvmBigInteger: java.math.BigInteger,
+
+    /**
      * Smithy types
      */
     var instant: Instant,
@@ -72,6 +86,10 @@ public data class Primitives(
         if (uInt != other.uInt) return false
         if (uShort != other.uShort) return false
         if (uLong != other.uLong) return false
+        if (bigDecimal != other.bigDecimal) return false
+        if (bigInteger != other.bigInteger) return false
+        if (jvmBigDecimal != other.jvmBigDecimal) return false
+        if (jvmBigInteger != other.jvmBigInteger) return false
         if (instant.epochSeconds != other.instant.epochSeconds) return false
         if (url != other.url) return false
         if (document != other.document) return false

@@ -3515,6 +3515,9 @@
                     "target": "com.amazonaws.glue#AlreadyExistsException"
                 },
                 {
+                    "target": "com.amazonaws.glue#ConcurrentModificationException"
+                },
+                {
                     "target": "com.amazonaws.glue#EntityNotFoundException"
                 },
                 {
@@ -3657,6 +3660,9 @@
             },
             "errors": [
                 {
+                    "target": "com.amazonaws.glue#ConcurrentModificationException"
+                },
+                {
                     "target": "com.amazonaws.glue#EntityNotFoundException"
                 },
                 {
@@ -3743,6 +3749,9 @@
                 "target": "com.amazonaws.glue#BatchDeleteTableResponse"
             },
             "errors": [
+                {
+                    "target": "com.amazonaws.glue#ConcurrentModificationException"
+                },
                 {
                     "target": "com.amazonaws.glue#EntityNotFoundException"
                 },
@@ -5060,6 +5069,9 @@
                 "target": "com.amazonaws.glue#BatchUpdatePartitionResponse"
             },
             "errors": [
+                {
+                    "target": "com.amazonaws.glue#ConcurrentModificationException"
+                },
                 {
                     "target": "com.amazonaws.glue#EntityNotFoundException"
                 },
@@ -10495,6 +10507,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies whether the crawler should use Lake Formation credentials for the crawler instead of the IAM role credentials.</p>"
                     }
+                },
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog in which the crawler's output is stored.</p>"
+                    }
                 }
             },
             "traits": {
@@ -11191,7 +11209,7 @@
                     }
                 },
                 "CatalogID": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog in which the database resides.</p>"
                     }
@@ -11410,6 +11428,12 @@
                     "target": "com.amazonaws.glue#TagsMap",
                     "traits": {
                         "smithy.api#documentation": "<p>The tags to use with this crawler request. You may use tags to limit access to the\n            crawler. For more information about tags in Glue, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/monitor-tags.html\">Amazon Web Services Tags in Glue</a> in the developer\n            guide.</p>"
+                    }
+                },
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog in which to store the crawler's output. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
                 }
             },
@@ -17238,6 +17262,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the table for which to delete column statistics.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
                 }
             },
@@ -23548,6 +23578,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A continuation token, if this is a continuation call.</p>"
                     }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
+                    }
                 }
             },
             "traits": {
@@ -23612,6 +23648,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the table for which to retrieve column statistics.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
                 }
             },
@@ -26799,7 +26841,7 @@
             "type": "structure",
             "members": {
                 "CatalogId": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>",
                         "smithy.api#required": {}
@@ -28673,6 +28715,12 @@
                     "target": "com.amazonaws.glue#AuditContext",
                     "traits": {
                         "smithy.api#documentation": "<p>A structure containing the Lake Formation <a href=\"https://docs.aws.amazon.com/glue/latest/webapi/API_AuditContext.html\">audit context</a>.</p>"
+                    }
+                },
+                "ResourceShareType": {
+                    "target": "com.amazonaws.glue#TableResourceShareType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies which tables the <code>GetTables</code> call returns. The allowable values are <code>FEDERATED</code> or <code>ALL</code>. </p>\n         <ul>\n            <li>\n               <p>If set to <code>FEDERATED</code>, returns only federated tables, which reference an entity outside the Glue Data Catalog.</p>\n            </li>\n            <li>\n               <p>If set to <code>ALL</code>, returns all tables in the database, both federated and non-federated. </p>\n            </li>\n         </ul>"
                     }
                 },
                 "IncludeStatusDetails": {
@@ -36512,7 +36560,7 @@
             "type": "structure",
             "members": {
                 "CatalogId": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>",
                         "smithy.api#required": {}
@@ -38838,6 +38886,9 @@
         },
         "com.amazonaws.glue#NullableInteger": {
             "type": "integer"
+        },
+        "com.amazonaws.glue#NullableLong": {
+            "type": "long"
         },
         "com.amazonaws.glue#NullableString": {
             "type": "string"
@@ -46837,6 +46888,39 @@
                 "smithy.api#documentation": "<p>Specifies a target that uses an Apache Spark connector.</p>"
             }
         },
+        "com.amazonaws.glue#SparkPipelineInfoKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 128
+                }
+            }
+        },
+        "com.amazonaws.glue#SparkPipelineInfoMap": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.glue#SparkPipelineInfoKey"
+            },
+            "value": {
+                "target": "com.amazonaws.glue#SparkPipelineInfoValue"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 50
+                }
+            }
+        },
+        "com.amazonaws.glue#SparkPipelineInfoValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 2048
+                }
+            }
+        },
         "com.amazonaws.glue#SparkSQL": {
             "type": "structure",
             "members": {
@@ -47130,7 +47214,7 @@
                     }
                 },
                 "CatalogID": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog where the table reside. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
@@ -47201,6 +47285,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the table for which to start a column statistic task run schedule.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
                 }
             },
@@ -47953,7 +48043,7 @@
             "type": "structure",
             "members": {
                 "CatalogId": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>",
                         "smithy.api#required": {}
@@ -48614,6 +48704,12 @@
                         "smithy.api#documentation": "<p>The name of the table.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
+                    }
                 }
             },
             "traits": {
@@ -48665,6 +48761,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the table for which to stop a column statistic task run schedule.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
                 }
             },
@@ -48808,7 +48910,7 @@
             "type": "structure",
             "members": {
                 "CatalogId": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>",
                         "smithy.api#required": {}
@@ -49229,6 +49331,97 @@
                 "target": "com.amazonaws.glue#NullableString"
             }
         },
+        "com.amazonaws.glue#SubObjectSourceType": {
+            "type": "enum",
+            "members": {
+                "HIVE_PARQUET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "HIVE_PARQUET"
+                    }
+                },
+                "HIVE_ORC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "HIVE_ORC"
+                    }
+                },
+                "HIVE_CSV": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "HIVE_CSV"
+                    }
+                },
+                "HIVE_JSON": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "HIVE_JSON"
+                    }
+                },
+                "PLAIN_PARQUET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PLAIN_PARQUET"
+                    }
+                },
+                "ICEBERG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ICEBERG"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.glue#SubObjectStatistics": {
+            "type": "structure",
+            "members": {
+                "SourceType": {
+                    "target": "com.amazonaws.glue#SubObjectSourceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The source type of the sub-object (for example, its table format), which identifies the\n      sub-object.</p>"
+                    }
+                },
+                "GlueVersionId": {
+                    "target": "com.amazonaws.glue#NullableString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Glue version ID of the sub-object that the statistics were captured for.</p>"
+                    }
+                },
+                "PartitionCount": {
+                    "target": "com.amazonaws.glue#NullableLong",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of sub-object partitions selected for that refresh. Not present for\n      unpartitioned sub-objects.</p>"
+                    }
+                },
+                "FileCount": {
+                    "target": "com.amazonaws.glue#NullableLong",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of sub-object data files selected for that refresh.</p>"
+                    }
+                },
+                "TotalFileBytes": {
+                    "target": "com.amazonaws.glue#NullableLong",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The total size, in bytes, of the data files counted by <code>FileCount</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Statistics for one sub-object referenced by a materialized view, recorded when the\n      materialized view was created or last fully refreshed. These values describe what that refresh\n      selected from the sub-object, which can be a subset of the table when the materialized view's\n      definition limits the data it reads. The fields present depend on the sub-object's format.</p>"
+            }
+        },
+        "com.amazonaws.glue#SubObjectsStatisticsList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.glue#SubObjectStatistics"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 250
+                }
+            }
+        },
         "com.amazonaws.glue#SupportedDialect": {
             "type": "structure",
             "members": {
@@ -49602,6 +49795,12 @@
                         "smithy.api#documentation": "<p>A <code>TableIdentifier</code> structure that describes a target table for resource linking.</p>"
                     }
                 },
+                "FederatedTable": {
+                    "target": "com.amazonaws.glue#FederatedTable",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A <code>FederatedTable</code> structure that references an entity outside the Glue Data Catalog. Specify this field to create a federated table, which points to a table in an external metastore instead of describing data managed in the Glue Data Catalog.</p>"
+                    }
+                },
                 "ViewDefinition": {
                     "target": "com.amazonaws.glue#ViewDefinitionInput",
                     "traits": {
@@ -49844,6 +50043,23 @@
                 "smithy.api#length": {
                     "min": 0,
                     "max": 128
+                }
+            }
+        },
+        "com.amazonaws.glue#TableResourceShareType": {
+            "type": "enum",
+            "members": {
+                "FEDERATED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FEDERATED"
+                    }
+                },
+                "ALL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALL"
+                    }
                 }
             }
         },
@@ -52056,7 +52272,7 @@
                     }
                 },
                 "CatalogID": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog in which the database resides.</p>"
                     }
@@ -52255,6 +52471,12 @@
                     "target": "com.amazonaws.glue#CrawlerSecurityConfiguration",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the <code>SecurityConfiguration</code> structure to be used by this\n      crawler.</p>"
+                    }
+                },
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog in which to store the crawler's output. If you omit this value, the existing value on the crawler is preserved.</p>"
                     }
                 }
             },
@@ -54683,6 +54905,12 @@
                         "smithy.api#documentation": "<p>You can set this flag as true to instruct the engine not to push user-provided operations into the logical plan of the view during query planning. However, setting this flag does not guarantee that the engine will comply. Refer to the engine's documentation to understand the guarantees provided, if any.</p>"
                     }
                 },
+                "IsManaged": {
+                    "target": "com.amazonaws.glue#NullableBoolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether the materialized view is managed by Glue.</p>"
+                    }
+                },
                 "Definer": {
                     "target": "com.amazonaws.glue#ArnString",
                     "traits": {
@@ -54726,10 +54954,22 @@
                         "smithy.api#documentation": "<p>List of the Apache Iceberg table versions referenced by the materialized view.</p>"
                     }
                 },
+                "SubObjectsStatistics": {
+                    "target": "com.amazonaws.glue#SubObjectsStatisticsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Statistics captured for each sub-object referenced by the materialized view as of its most\n      recent refresh, such as the source type, Glue version ID, and the partition,\n      file, and byte counts. Each entry describes one sub-object, identified by its source type.</p>"
+                    }
+                },
                 "Representations": {
                     "target": "com.amazonaws.glue#ViewRepresentationList",
                     "traits": {
                         "smithy.api#documentation": "<p>A list of representations.</p>"
+                    }
+                },
+                "SparkPipelineInfo": {
+                    "target": "com.amazonaws.glue#SparkPipelineInfoMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of key-value pairs containing Spark Declarative Pipelines (SDP) information for the\n      materialized view.</p>"
                     }
                 }
             },
@@ -54744,6 +54984,12 @@
                     "target": "com.amazonaws.glue#NullableBoolean",
                     "traits": {
                         "smithy.api#documentation": "<p>You can set this flag as true to instruct the engine not to push user-provided operations into the logical plan of the view during query planning. However, setting this flag does not guarantee that the engine will comply. Refer to the engine's documentation to understand the guarantees provided, if any.</p>"
+                    }
+                },
+                "IsManaged": {
+                    "target": "com.amazonaws.glue#NullableBoolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether the materialized view is managed by Glue.</p>"
                     }
                 },
                 "Definer": {
@@ -54793,6 +55039,18 @@
                     "target": "com.amazonaws.glue#ViewSubObjectVersionIdsList",
                     "traits": {
                         "smithy.api#documentation": "<p>List of the Apache Iceberg table versions referenced by the materialized view.</p>"
+                    }
+                },
+                "SubObjectsStatistics": {
+                    "target": "com.amazonaws.glue#SubObjectsStatisticsList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Statistics for each sub-object referenced by the materialized view, such as the source\n      type, Glue version ID, and the partition, file, and byte counts. Each entry\n      describes one sub-object, identified by its source type.</p>"
+                    }
+                },
+                "SparkPipelineInfo": {
+                    "target": "com.amazonaws.glue#SparkPipelineInfoMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of key-value pairs containing Spark Declarative Pipelines (SDP) information for the\n      materialized view.</p>"
                     }
                 }
             },
