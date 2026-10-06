@@ -9,6 +9,7 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetrics
 import aws.sdk.kotlin.runtime.util.toAwsCredentialsBusinessMetric
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderException
 import aws.smithy.kotlin.runtime.auth.awscredentials.copy
 import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.time.Instant
@@ -25,6 +26,7 @@ import java.io.File
 import java.nio.file.Paths
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 // TODO - refactor to make this work in common
@@ -252,6 +254,72 @@ class DefaultChainCredentialsProviderTest {
 
     @Test
     fun testPreferSystemProperties() = executeTest("prefer_system_properties")
+
+    @Test
+    fun testRefreshesCachedCredentialsAfterRestore() = runTest {
+        val environment = mutableMapOf(
+            "AWS_ACCESS_KEY_ID" to "before-access-key",
+            "AWS_SECRET_ACCESS_KEY" to "before-secret-key",
+        )
+        val platform = DefaultChainPlatformProvider(environment, emptyMap(), FsRootedAt(File(".")))
+        val provider = DefaultChainCredentialsProvider(platformProvider = platform, httpClient = TestConnection())
+
+        assertEquals("before-access-key", provider.resolve().accessKeyId)
+
+        environment["AWS_ACCESS_KEY_ID"] = "after-access-key"
+        environment["AWS_SECRET_ACCESS_KEY"] = "after-secret-key"
+        assertEquals("before-access-key", provider.resolve().accessKeyId)
+
+        provider.beforeCheckpoint()
+        provider.afterRestore()
+
+        assertEquals("after-access-key", provider.resolve().accessKeyId)
+        provider.close()
+    }
+
+    @Test
+    fun testCheckpointAndRestoreHooksArePairedAndIdempotent() = runTest {
+        val environment = mutableMapOf(
+            "AWS_ACCESS_KEY_ID" to "before-access-key",
+            "AWS_SECRET_ACCESS_KEY" to "before-secret-key",
+        )
+        val platform = DefaultChainPlatformProvider(environment, emptyMap(), FsRootedAt(File(".")))
+        val provider = DefaultChainCredentialsProvider(platformProvider = platform, httpClient = TestConnection())
+
+        assertEquals("before-access-key", provider.resolve().accessKeyId)
+        environment["AWS_ACCESS_KEY_ID"] = "after-access-key"
+        environment["AWS_SECRET_ACCESS_KEY"] = "after-secret-key"
+
+        provider.afterRestore()
+        assertEquals("before-access-key", provider.resolve().accessKeyId)
+
+        provider.beforeCheckpoint()
+        provider.beforeCheckpoint()
+        provider.afterRestore()
+        assertEquals("after-access-key", provider.resolve().accessKeyId)
+
+        environment["AWS_ACCESS_KEY_ID"] = "ignored-access-key"
+        provider.afterRestore()
+        assertEquals("after-access-key", provider.resolve().accessKeyId)
+        provider.close()
+    }
+
+    @Test
+    fun testResolveFailsDuringCheckpointAndClosePreventsRestore() = runTest {
+        val environment = mutableMapOf(
+            "AWS_ACCESS_KEY_ID" to "access-key",
+            "AWS_SECRET_ACCESS_KEY" to "secret-key",
+        )
+        val platform = DefaultChainPlatformProvider(environment, emptyMap(), FsRootedAt(File(".")))
+        val provider = DefaultChainCredentialsProvider(platformProvider = platform, httpClient = TestConnection())
+
+        provider.beforeCheckpoint()
+        assertFailsWith<CredentialsProviderException> { provider.resolve() }
+
+        provider.close()
+        provider.afterRestore()
+        assertFailsWith<CredentialsProviderException> { provider.resolve() }
+    }
 
     @Test
     fun testProfileName() = executeTest("profile_name")
