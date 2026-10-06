@@ -20,9 +20,10 @@ import kotlin.coroutines.coroutineContext
 /**
  * Target service error codes that indicate the credentials themselves were rejected, as opposed to the request
  * being unauthorized. `AccessDenied` is deliberately absent: it usually means the credentials are valid but the
- * principal lacks permission, and refreshing them would not help.
+ * principal lacks permission, and refreshing them would not help. `ExpiredTokenException` is absent too: services that
+ * model it use it for an expired token in the request payload, not for the credentials that signed the request.
  */
-private val INVALIDATION_ERROR_CODES = setOf("ExpiredToken", "ExpiredTokenException", "InvalidToken")
+private val INVALIDATION_ERROR_CODES = setOf("ExpiredToken", "InvalidToken")
 
 /**
  * Signals credential invalidation back to the identity provider when a target service rejects the credentials that
