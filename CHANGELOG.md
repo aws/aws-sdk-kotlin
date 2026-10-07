@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.9.15] - 10/06/2026
+
+### Features
+* (**lambdaweb**) Removes operations that are not yet generally available from the Lambda Web.
+
 ## [1.9.14] - 10/02/2026
 
 ### Features
