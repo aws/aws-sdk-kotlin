@@ -27,15 +27,24 @@ class AwsRetryPolicyTest {
     }
 
     @Test
-    fun testInvalidCredentialErrorsAreRetryable() {
-        // A service rejecting the request's credentials is retryable: the credentials are marked for refresh and
-        // resolved again on the next attempt, so the retry is signed with refreshed credentials rather than the
-        // rejected ones.
+    fun testInvalidCredentialErrorsAreRetriedWhenTheCredentialsWereMarkedForRefresh() {
+        listOf("ExpiredToken", "InvalidToken").forEach { errorCode ->
+            val ex = ServiceException()
+            ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = errorCode
+            ex.sdkErrorMetadata.attributes[CredentialsMarkedForRefresh] = true
+            val result = AwsRetryPolicy.Default.evaluate(Result.failure(ex))
+            assertEquals(RetryDirective.RetryError(RetryErrorType.Transient), result, "expected $errorCode to be retryable")
+        }
+    }
+
+    @Test
+    fun testInvalidCredentialErrorsAreNotRetriedOtherwise() {
+        // Without a refresh, a retry would be signed with the same rejected credentials and cannot succeed.
         listOf("ExpiredToken", "InvalidToken").forEach { errorCode ->
             val ex = ServiceException()
             ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = errorCode
             val result = AwsRetryPolicy.Default.evaluate(Result.failure(ex))
-            assertEquals(RetryDirective.RetryError(RetryErrorType.Transient), result, "expected $errorCode to be retryable")
+            assertEquals(RetryDirective.TerminateAndFail, result, "expected $errorCode not to be retried")
         }
     }
 
