@@ -7,6 +7,7 @@ package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
+import aws.sdk.kotlin.runtime.auth.credentials.internal.nonRecoverable
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.SigninClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.createOAuth2Token
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.AccessDeniedException
@@ -344,7 +345,7 @@ internal suspend fun readLoginTokenFromCache(cacheKey: String, platformProvider:
     val bytes = with(platformProvider) {
         val defaultCacheLocation = normalizePath(cacheDirectory, this)
         readFileOrNull(filepath(defaultCacheLocation, key))
-    } ?: throw ProviderConfigurationException("Invalid or missing login session cache. Run `aws login` to initiate a new session")
+    } ?: throw ProviderConfigurationException("Invalid or missing login session cache. Run `aws login` to initiate a new session").nonRecoverable()
     return deserializeLoginToken(bytes)
 }
 

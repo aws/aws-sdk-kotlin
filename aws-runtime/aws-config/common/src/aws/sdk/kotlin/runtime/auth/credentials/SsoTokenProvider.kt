@@ -6,6 +6,7 @@
 package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.ConfigurationException
+import aws.sdk.kotlin.runtime.auth.credentials.internal.nonRecoverable
 import aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc.SsoOidcClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc.createToken
 import aws.sdk.kotlin.runtime.auth.credentials.internal.ssooidc.model.CreateTokenResponse
@@ -159,7 +160,7 @@ internal suspend fun readTokenFromCache(cacheKey: String, platformProvider: Plat
     val bytes = with(platformProvider) {
         val defaultCacheLocation = normalizePath(filepath("~", ".aws", "sso", "cache"), this)
         readFileOrNull(filepath(defaultCacheLocation, key))
-    } ?: throw ProviderConfigurationException("Invalid or missing SSO session cache. Run `aws sso login` to initiate a new SSO session")
+    } ?: throw ProviderConfigurationException("Invalid or missing SSO session cache. Run `aws sso login` to initiate a new SSO session").nonRecoverable()
     return deserializeSsoToken(bytes)
 }
 internal fun getCacheFilename(cacheKey: String): String {

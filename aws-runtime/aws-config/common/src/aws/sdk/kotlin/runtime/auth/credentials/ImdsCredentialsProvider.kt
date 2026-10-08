@@ -5,6 +5,7 @@
 
 package aws.sdk.kotlin.runtime.auth.credentials
 
+import aws.sdk.kotlin.runtime.auth.credentials.internal.nonRecoverable
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.imds.EC2MetadataError
 import aws.sdk.kotlin.runtime.config.imds.ImdsClient
@@ -110,7 +111,7 @@ public class ImdsCredentialsProvider(
                 CODE_ASSUME_ROLE_UNAUTHORIZED_ACCESS -> throw ProviderConfigurationException(
                     "Incorrect IMDS/IAM configuration: [${resp.code}] ${resp.message}. " +
                         "Hint: Does this role have a trust relationship with EC2?",
-                )
+                ).nonRecoverable()
                 else -> throw CredentialsProviderException(
                     "Error retrieving credentials from IMDS: code=${resp.code}; ${resp.message}",
                 )
@@ -179,7 +180,7 @@ public class ImdsCredentialsProvider(
             }
             is JsonCredentialsResponse.Error -> {
                 when (resp.code) {
-                    CODE_ASSUME_ROLE_UNAUTHORIZED_ACCESS -> throw ProviderConfigurationException("Incorrect IMDS/IAM configuration: [${resp.code}] ${resp.message}. Hint: Does this role have a trust relationship with EC2?")
+                    CODE_ASSUME_ROLE_UNAUTHORIZED_ACCESS -> throw ProviderConfigurationException("Incorrect IMDS/IAM configuration: [${resp.code}] ${resp.message}. Hint: Does this role have a trust relationship with EC2?").nonRecoverable()
                     else -> throw CredentialsProviderException("Error retrieving credentials from IMDS: code=${resp.code}; ${resp.message}")
                 }
             }
