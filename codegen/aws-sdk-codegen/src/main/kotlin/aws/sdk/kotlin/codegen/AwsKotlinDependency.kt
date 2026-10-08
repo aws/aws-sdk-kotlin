@@ -39,6 +39,7 @@ object AwsKotlinDependency {
     val AWS_CONFIG = KotlinDependency(GradleConfiguration.Api, AWS_CLIENT_RT_ROOT_NS, AWS_CLIENT_RT_GROUP, "aws-config", AWS_CLIENT_RT_VERSION)
     val AWS_ENDPOINT = KotlinDependency(GradleConfiguration.Api, "$AWS_CLIENT_RT_ROOT_NS.endpoint", AWS_CLIENT_RT_GROUP, "aws-endpoint", AWS_CLIENT_RT_VERSION)
     val AWS_HTTP = KotlinDependency(GradleConfiguration.Implementation, "$AWS_CLIENT_RT_ROOT_NS.http", AWS_CLIENT_RT_GROUP, "aws-http", AWS_CLIENT_RT_VERSION)
+    val AWS_SERDE_BENCHMARKS = KotlinDependency(GradleConfiguration.Implementation, "aws.sdk.kotlin.benchmarks.serde", AWS_CLIENT_RT_GROUP, "serde-benchmarks", AWS_CLIENT_RT_VERSION)
 }
 
 // remap aws-sdk-kotlin dependencies to project notation
