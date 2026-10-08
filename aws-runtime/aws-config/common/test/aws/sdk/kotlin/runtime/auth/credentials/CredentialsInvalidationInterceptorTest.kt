@@ -5,9 +5,11 @@
 
 package aws.sdk.kotlin.runtime.auth.credentials
 
+import aws.sdk.kotlin.runtime.http.retries.CredentialsMarkedForRefresh
 import aws.smithy.kotlin.runtime.ServiceErrorMetadata
 import aws.smithy.kotlin.runtime.ServiceException
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.RefreshAwareCredentialsProvider
 import aws.smithy.kotlin.runtime.client.ResponseInterceptorContext
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.http.operation.HttpOperationContext
@@ -34,6 +36,47 @@ class CredentialsInvalidationInterceptorTest {
             rejected = rejectedIdentity
             if (failOnInvalidate) throw IllegalStateException("invalidation blew up")
         }
+    }
+
+    /** A provider that caches, so invalidating it means the next resolution refreshes. */
+    private class RecordingCachingProvider(private val failOnInvalidate: Boolean = false) : RefreshAwareCredentialsProvider {
+        var rejected: Identity? = null
+
+        override suspend fun resolve(attributes: Attributes): Credentials = error("not needed for test")
+
+        override suspend fun invalidate(rejectedIdentity: Identity) {
+            rejected = rejectedIdentity
+            if (failOnInvalidate) throw IllegalStateException("invalidation blew up")
+        }
+    }
+
+    @Test
+    fun testMarksTheFailureForRetryWhenTheProviderCaches() = runTest {
+        val ex = serviceException("ExpiredToken")
+
+        CredentialsInvalidationInterceptor().modifyBeforeAttemptCompletion(context(Result.failure(ex), credentials, RecordingCachingProvider()))
+
+        assertEquals(true, ex.sdkErrorMetadata.attributes.getOrNull(CredentialsMarkedForRefresh))
+    }
+
+    @Test
+    fun testDoesNotMarkTheFailureWhenTheProviderDoesNotCache() = runTest {
+        // Nothing would be refreshed, so a retry would be signed with the same rejected credentials.
+        val ex = serviceException("ExpiredToken")
+
+        CredentialsInvalidationInterceptor().modifyBeforeAttemptCompletion(context(Result.failure(ex), credentials, RecordingProvider()))
+
+        assertNull(ex.sdkErrorMetadata.attributes.getOrNull(CredentialsMarkedForRefresh))
+    }
+
+    @Test
+    fun testDoesNotMarkTheFailureWhenInvalidationFails() = runTest {
+        val ex = serviceException("ExpiredToken")
+        val provider = RecordingCachingProvider(failOnInvalidate = true)
+
+        CredentialsInvalidationInterceptor().modifyBeforeAttemptCompletion(context(Result.failure(ex), credentials, provider))
+
+        assertNull(ex.sdkErrorMetadata.attributes.getOrNull(CredentialsMarkedForRefresh))
     }
 
     @Test
