@@ -25,6 +25,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class SsoCredentialsProviderTest {
 
@@ -109,9 +110,11 @@ class SsoCredentialsProviderTest {
             clock = testClock,
         )
 
-        assertFailsWith<ProviderConfigurationException> {
+        val ex = assertFailsWith<ProviderConfigurationException> {
             provider.resolve()
-        }.message.shouldContain("The SSO session has expired")
+        }
+        ex.message.shouldContain("The SSO session has expired")
+        assertTrue(ex.sdkErrorMetadata.isNonRecoverable)
     }
 
     @Test
