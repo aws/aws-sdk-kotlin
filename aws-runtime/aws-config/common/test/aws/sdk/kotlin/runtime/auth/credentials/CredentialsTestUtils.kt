@@ -5,6 +5,7 @@
 
 package aws.sdk.kotlin.runtime.auth.credentials
 
+import aws.smithy.kotlin.runtime.auth.awscredentials.AcceptedPastExpirationKey
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehaviorKey
@@ -22,8 +23,22 @@ internal fun Credentials.withRefreshBehavior(behavior: CredentialsRefreshBehavio
 )
 
 /**
- * Drops the refresh-behavior declaration, for comparison against an expected value that does not model it.
+ * The attributes the IMDS provider attaches: static stability, and acceptance past expiration (see
+ * [AcceptedPastExpirationKey]).
+ */
+internal fun Credentials.withImdsRefreshAttributes(): Credentials = copy(
+    attributes = attributes.toMutableAttributes().apply {
+        set(CredentialsRefreshBehaviorKey, CredentialsRefreshBehavior.RefreshableWithStaticStability)
+        set(AcceptedPastExpirationKey, true)
+    },
+)
+
+/**
+ * Drops the refresh-behavior declarations, for comparison against an expected value that does not model it.
  */
 internal fun Credentials.withoutRefreshBehavior(): Credentials = copy(
-    attributes = attributes.toMutableAttributes().apply { remove(CredentialsRefreshBehaviorKey) },
+    attributes = attributes.toMutableAttributes().apply {
+        remove(CredentialsRefreshBehaviorKey)
+        remove(AcceptedPastExpirationKey)
+    },
 )
