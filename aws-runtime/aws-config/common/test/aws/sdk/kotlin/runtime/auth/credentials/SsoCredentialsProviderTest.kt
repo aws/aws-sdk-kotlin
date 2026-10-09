@@ -8,6 +8,7 @@ package aws.sdk.kotlin.runtime.auth.credentials
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.http.Headers
 import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
@@ -24,6 +25,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class SsoCredentialsProviderTest {
 
@@ -108,9 +110,11 @@ class SsoCredentialsProviderTest {
             clock = testClock,
         )
 
-        assertFailsWith<ProviderConfigurationException> {
+        val ex = assertFailsWith<ProviderConfigurationException> {
             provider.resolve()
-        }.message.shouldContain("The SSO session has expired")
+        }
+        ex.message.shouldContain("The SSO session has expired")
+        assertTrue(ex.sdkErrorMetadata.isNonRecoverable)
     }
 
     @Test
@@ -211,6 +215,7 @@ class SsoCredentialsProviderTest {
             expectedExpiration,
             "SSO",
             "123456789",
+            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_SSO_LEGACY)
         assertEquals(expected, actual)
     }

@@ -7,6 +7,7 @@ package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
+import aws.sdk.kotlin.runtime.auth.credentials.internal.nonRecoverable
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.SigninClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.createOAuth2Token
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.AccessDeniedException
@@ -14,8 +15,10 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.OAuth2Error
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.withConfig
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.profile.normalizePath
+import aws.smithy.kotlin.runtime.ErrorMetadata
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.client.ProtocolRequestInterceptorContext
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.config.resolve
@@ -115,6 +118,7 @@ internal class LoginTokenProvider(
             expiration = token.expiresAt,
             providerName = PROVIDER_NAME,
             accountId = token.accountId,
+            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         )
     }
 
@@ -341,7 +345,7 @@ internal suspend fun readLoginTokenFromCache(cacheKey: String, platformProvider:
     val bytes = with(platformProvider) {
         val defaultCacheLocation = normalizePath(cacheDirectory, this)
         readFileOrNull(filepath(defaultCacheLocation, key))
-    } ?: throw ProviderConfigurationException("Invalid or missing login session cache. Run `aws login` to initiate a new session")
+    } ?: throw ProviderConfigurationException("Invalid or missing login session cache. Run `aws login` to initiate a new session").nonRecoverable()
     return deserializeLoginToken(bytes)
 }
 
@@ -457,4 +461,15 @@ internal fun serializeLoginToken(token: LoginToken): ByteArray = jsonStreamWrite
     endObject()
 }.bytes ?: error("serializing LoginToken failed")
 
-public class InvalidLoginTokenException(message: String, cause: Throwable? = null) : ConfigurationException(message, cause)
+/**
+ * An error associated with a cached login token from `~/.aws/login/cache/`
+ *
+ * This is non-recoverable: the cached token is unusable and the customer must re-authenticate. Every message this is
+ * raised with says so, including the expired-authorization-code case — retrying inside the process cannot obtain a
+ * fresh authorization code.
+ */
+public class InvalidLoginTokenException(message: String, cause: Throwable? = null) : ConfigurationException(message, cause) {
+    init {
+        sdkErrorMetadata.attributes[ErrorMetadata.NonRecoverable] = true
+    }
+}

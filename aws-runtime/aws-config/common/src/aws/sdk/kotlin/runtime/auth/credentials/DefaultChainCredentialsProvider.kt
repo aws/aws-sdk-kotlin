@@ -13,6 +13,7 @@ import aws.smithy.kotlin.runtime.auth.awscredentials.*
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.http.engine.DefaultHttpEngine
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
+import aws.smithy.kotlin.runtime.identity.Identity
 import aws.smithy.kotlin.runtime.io.Closeable
 import aws.smithy.kotlin.runtime.io.closeIfCloseable
 import aws.smithy.kotlin.runtime.util.PlatformProvider
@@ -29,7 +30,8 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
  * 5. ECS (IAM roles for tasks) ([EcsCredentialsProvider])
  * 6. EC2 Instance Metadata (IMDSv2) ([ImdsCredentialsProvider])
  *
- * The chain is decorated with a [CachedCredentialsProvider].
+ * The chain is decorated with a [ResilientCachingCredentialsProvider], which caches the resolved credentials and
+ * refreshes them on the schedule the resolving provider declared for them.
  *
  * Closing the chain will close all child providers that implement [Closeable].
  *
@@ -46,7 +48,9 @@ public class DefaultChainCredentialsProvider constructor(
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     httpClient: HttpClientEngine? = null,
     public val region: String? = null,
-) : CloseableCredentialsProvider {
+) : CloseableCredentialsProvider,
+    // "I already hold a cache": carries invalidate, and stops anything above from wrapping this in a second one.
+    RefreshAwareCredentialsProvider {
 
     private val manageEngine = httpClient == null
     private val engine = httpClient ?: DefaultHttpEngine()
@@ -69,12 +73,15 @@ public class DefaultChainCredentialsProvider constructor(
         ),
     )
 
-    private val provider = CachedCredentialsProvider(chain)
+    private val provider = chain.resilientlyCached()
 
     override suspend fun resolve(attributes: Attributes): Credentials = provider.resolve(attributes)
 
+    override suspend fun invalidate(rejectedIdentity: Identity): Unit = provider.invalidate(rejectedIdentity)
+
     override fun close() {
-        provider.close()
+        // The cache closes the chain it wraps, so this is the same cascade as before.
+        provider.closeIfCloseable()
         if (manageEngine) {
             engine.closeIfCloseable()
         }

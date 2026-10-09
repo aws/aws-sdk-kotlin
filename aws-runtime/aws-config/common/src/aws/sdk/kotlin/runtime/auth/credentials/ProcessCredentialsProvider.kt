@@ -72,7 +72,11 @@ public class ProcessCredentialsProvider(
                     resp.accessKeyId,
                     resp.secretAccessKey,
                     resp.sessionToken,
-                    resp.expiration ?: Instant.MAX_VALUE,
+                    // A credential process that states no expiration leaves this null rather than claiming a date in
+                    // the year 275760. Pinning it to Instant.MAX_VALUE told every consumer the credentials never
+                    // expire, which suppresses refresh; a null expiration is re-read on the caching provider's own
+                    // cadence instead.
+                    resp.expiration,
                     PROVIDER_NAME,
                     resp.accountId,
                 ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_PROCESS)
