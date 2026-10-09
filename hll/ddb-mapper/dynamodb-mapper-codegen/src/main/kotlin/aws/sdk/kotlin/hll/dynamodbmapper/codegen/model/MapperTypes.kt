@@ -318,15 +318,20 @@ public object MapperTypes {
 
     public object Values {
         public fun valueConverter(value: Type): TypeRef = TypeRef(MapperPkg.Hl.Values, "ValueConverter", genericArgs = listOf(value))
-        public val ItemToValueConverter: TypeRef = TypeRef(MapperPkg.Hl.Values, "ItemToValueConverter")
+        public val ItemValueConverter: TypeRef = TypeRef(MapperPkg.Hl.Values, "ItemValueConverter")
         public val NullableValueConverter: TypeRef = TypeRef(MapperPkg.Hl.Values, "NullableValueConverter")
 
         public object Collections {
             public val ListValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "ListValueConverter")
             public val MapValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "MapValueConverter")
 
+            public fun enumSetValueConverter(enumType: Type): TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "EnumSetValueConverter", genericArgs = listOf(enumType))
+
             public val StringSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "StringSetValueConverter")
             public val CharSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "CharSetValueConverter")
+
+            public val BigDecimalSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "BigDecimalSetValueConverter")
+            public val BigIntegerSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "BigIntegerSetValueConverter")
             public val CharArraySetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "CharArraySetValueConverter")
             public val ByteArraySetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.CollectionValues, "ByteArraySetValueConverter")
 
@@ -345,6 +350,8 @@ public object MapperTypes {
 
         public object Scalars {
             public fun enumValueConverter(enumType: Type): TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "EnumValueConverter", genericArgs = listOf(enumType))
+
+            public fun enumToStringConverter(enumType: Type): TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "EnumToStringConverter", genericArgs = listOf(enumType))
 
             public val BooleanValueConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "BooleanValueConverter")
             public val ByteArrayValueConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "ByteArrayValueConverter")
@@ -368,6 +375,8 @@ public object MapperTypes {
             public val CharToStringConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "TextConverters.CharToString")
             public val StringToStringConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "TextConverters.String")
             public val ByteToStringConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "NumberToStringConverters.Byte")
+            public val BigDecimalToStringConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "BigDecimalToStringConverter")
+            public val BigIntegerToStringConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "BigIntegerToStringConverter")
             public val DoubleToStringConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "NumberToStringConverters.Double")
             public val FloatToStringConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "NumberToStringConverters.Float")
             public val IntToStringConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "NumberToStringConverters.Int")
@@ -383,6 +392,17 @@ public object MapperTypes {
             public val DocumentValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "DocumentValueConverter.Default")
             public val InstantValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "InstantValueConverter")
             public val UrlValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "UrlValueConverter")
+            public val BigDecimalValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "BigDecimalValueConverter")
+            public val BigIntegerValueConverter: TypeRef = TypeRef(MapperPkg.Hl.SmithyTypeValues, "BigIntegerValueConverter")
+        }
+
+        public object JavaMath {
+            public val BigDecimalValueConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "BigDecimalValueConverter")
+            public val BigIntegerValueConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "BigIntegerValueConverter")
+            public val BigDecimalSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "BigDecimalSetValueConverter")
+            public val BigIntegerSetValueConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "BigIntegerSetValueConverter")
+            public val BigDecimalToStringConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "BigDecimalToStringConverter")
+            public val BigIntegerToStringConverter: TypeRef = TypeRef(MapperPkg.Hl.ScalarValues, "BigIntegerToStringConverter")
         }
     }
 

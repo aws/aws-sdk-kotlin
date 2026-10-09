@@ -10,13 +10,16 @@ import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetri
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetrics
 import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.time.Instant
+import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import io.mockk.coEvery
 import io.mockk.mockkStatic
+import io.mockk.slot
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 class ProfileCredentialsProviderTestJVM {
     @Test
@@ -72,5 +75,37 @@ class ProfileCredentialsProviderTestJVM {
         )
 
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun processUsesConfiguredPlatformProvider() = runTest {
+        val testProvider = TestPlatformProvider.of(
+            env = mapOf("AWS_CONFIG_FILE" to "config"),
+            fs = mapOf("config" to TestFile("[default]\ncredential_process = awscreds-custom")),
+        )
+        val provider = ProfileCredentialsProvider(
+            platformProvider = testProvider,
+            httpClient = TestConnection(),
+        )
+
+        val capturedPlatformProvider = slot<PlatformProvider>()
+        mockkStatic(::executeCommand)
+        coEvery { executeCommand(any(), capture(capturedPlatformProvider), any(), any(), any()) }.returns(
+            Pair(
+                0,
+                """
+            {
+                "Version": 1,
+                "AccessKeyId": "AKID",
+                "SecretAccessKey": "secret",
+                "SessionToken": "session-token"
+            }
+                """.trimIndent(),
+            ),
+        )
+
+        provider.resolve()
+
+        assertSame(testProvider, capturedPlatformProvider.captured)
     }
 }
