@@ -133,7 +133,7 @@ class ImdsCredentialsProviderTest {
             expiration0,
             "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
-            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
+            .withImdsRefreshAttributes()
         assertEquals(expected0, actual0)
 
         testClock.advance(1.seconds)
@@ -146,7 +146,7 @@ class ImdsCredentialsProviderTest {
             expiration1,
             "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
-            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
+            .withImdsRefreshAttributes()
         assertEquals(expected1, actual1)
 
         connection.assertRequests()
@@ -204,7 +204,7 @@ class ImdsCredentialsProviderTest {
             expiration,
             "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
-            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
+            .withImdsRefreshAttributes()
         assertEquals(expected, actual)
 
         connection.assertRequests()
@@ -386,7 +386,7 @@ class ImdsCredentialsProviderTest {
             expiration = Instant.fromEpochSeconds(1631935916),
             providerName = "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
-            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
+            .withImdsRefreshAttributes()
 
         assertEquals(expected, actual)
 
@@ -455,7 +455,7 @@ class ImdsCredentialsProviderTest {
             expiration = Instant.fromEpochSeconds(1631935916),
             providerName = "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
-            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
+            .withImdsRefreshAttributes()
 
         val provider = ImdsCredentialsProvider(
             profileOverride = "imds-test-role",
@@ -573,7 +573,7 @@ class ImdsCredentialsProviderTest {
             expiration = Instant.fromEpochSeconds(1631935916),
             providerName = "IMDSv2",
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
-            .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
+            .withImdsRefreshAttributes()
 
         val provider = ImdsCredentialsProvider(
             profileOverride = "imds-test-role",
@@ -734,7 +734,7 @@ class ImdsCredentialsProviderTest {
         expiration = Instant.fromEpochSeconds(1631935916),
         providerName = "IMDSv2",
     ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
-        .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
+        .withImdsRefreshAttributes()
 
     /** Serves a token and one set of already-expired credentials, then fails every later request with a 500. */
     private fun expiredCredentialsThenServerErrors(testClock: ManualClock) = object : HttpClientEngineBase("expiredThen500") {
