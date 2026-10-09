@@ -547,6 +547,12 @@
                     "target": "com.amazonaws.glue#GetStatement"
                 },
                 {
+                    "target": "com.amazonaws.glue#GetSystemLogsForJobRun"
+                },
+                {
+                    "target": "com.amazonaws.glue#GetSystemLogsForSession"
+                },
+                {
                     "target": "com.amazonaws.glue#GetTable"
                 },
                 {
@@ -10507,6 +10513,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies whether the crawler should use Lake Formation credentials for the crawler instead of the IAM role credentials.</p>"
                     }
+                },
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog in which the crawler's output is stored.</p>"
+                    }
                 }
             },
             "traits": {
@@ -11203,7 +11215,7 @@
                     }
                 },
                 "CatalogID": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog in which the database resides.</p>"
                     }
@@ -11422,6 +11434,12 @@
                     "target": "com.amazonaws.glue#TagsMap",
                     "traits": {
                         "smithy.api#documentation": "<p>The tags to use with this crawler request. You may use tags to limit access to the\n            crawler. For more information about tags in Glue, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/monitor-tags.html\">Amazon Web Services Tags in Glue</a> in the developer\n            guide.</p>"
+                    }
+                },
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog in which to store the crawler's output. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
                 }
             },
@@ -17250,6 +17268,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the table for which to delete column statistics.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
                 }
             },
@@ -23560,6 +23584,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A continuation token, if this is a continuation call.</p>"
                     }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
+                    }
                 }
             },
             "traits": {
@@ -23624,6 +23654,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the table for which to retrieve column statistics.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
                 }
             },
@@ -26811,7 +26847,7 @@
             "type": "structure",
             "members": {
                 "CatalogId": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>",
                         "smithy.api#required": {}
@@ -28198,6 +28234,128 @@
                     "target": "com.amazonaws.glue#Statement",
                     "traits": {
                         "smithy.api#documentation": "<p>Returns the statement.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.glue#GetSystemLogsForJobRun": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#GetSystemLogsForJobRunRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#GetSystemLogsForJobRunResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationTimeoutException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves the system logs for a job run.</p>",
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.glue#GetSystemLogsForJobRunRequest": {
+            "type": "structure",
+            "members": {
+                "JobName": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the job.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "RunId": {
+                    "target": "com.amazonaws.glue#IdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the job run.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#GetSystemLogsForJobRunResponse": {
+            "type": "structure",
+            "members": {
+                "SystemLogsUrl": {
+                    "target": "com.amazonaws.glue#Url",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL to download the system logs for the job run.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.glue#GetSystemLogsForSession": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#GetSystemLogsForSessionRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#GetSystemLogsForSessionResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves the system logs for an interactive session.</p>",
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.glue#GetSystemLogsForSessionRequest": {
+            "type": "structure",
+            "members": {
+                "Id": {
+                    "target": "com.amazonaws.glue#NameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the session.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#GetSystemLogsForSessionResponse": {
+            "type": "structure",
+            "members": {
+                "SystemLogsUrl": {
+                    "target": "com.amazonaws.glue#Url",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL to download the system logs for the session.</p>"
                     }
                 }
             },
@@ -36530,7 +36688,7 @@
             "type": "structure",
             "members": {
                 "CatalogId": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>",
                         "smithy.api#required": {}
@@ -38938,6 +39096,12 @@
                     "traits": {
                         "smithy.api#enumValue": "JWT_BEARER"
                     }
+                },
+                "REFRESH_TOKEN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REFRESH_TOKEN"
+                    }
                 }
             }
         },
@@ -38947,7 +39111,7 @@
                 "OAuth2GrantType": {
                     "target": "com.amazonaws.glue#OAuth2GrantType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The OAuth2 grant type. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
+                        "smithy.api#documentation": "<p>The OAuth2 grant type. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, <code>REFRESH_TOKEN</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
                     }
                 },
                 "OAuth2ClientApplication": {
@@ -38979,7 +39143,7 @@
                 "OAuth2GrantType": {
                     "target": "com.amazonaws.glue#OAuth2GrantType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The OAuth2 grant type in the CreateConnection request. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
+                        "smithy.api#documentation": "<p>The OAuth2 grant type in the CreateConnection request. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, <code>REFRESH_TOKEN</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
                     }
                 },
                 "OAuth2ClientApplication": {
@@ -41812,7 +41976,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.</p>"
+                "smithy.api#documentation": "<p>A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.</p>\n         <p>For more information about how to utilize QuerySessionContext, see\n          <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/api-overview.html\">Lake Formation workflow for application integration API operations</a> in the developer guide.</p>"
             }
         },
         "com.amazonaws.glue#QuoteChar": {
@@ -47184,7 +47348,7 @@
                     }
                 },
                 "CatalogID": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog where the table reside. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
@@ -47255,6 +47419,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the table for which to start a column statistic task run schedule.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
                 }
             },
@@ -48007,7 +48177,7 @@
             "type": "structure",
             "members": {
                 "CatalogId": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>",
                         "smithy.api#required": {}
@@ -48668,6 +48838,12 @@
                         "smithy.api#documentation": "<p>The name of the table.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
+                    }
                 }
             },
             "traits": {
@@ -48719,6 +48895,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the table for which to stop a column statistic task run schedule.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "CatalogID": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
                     }
                 }
             },
@@ -48862,7 +49044,7 @@
             "type": "structure",
             "members": {
                 "CatalogId": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>",
                         "smithy.api#required": {}
@@ -52224,7 +52406,7 @@
                     }
                 },
                 "CatalogID": {
-                    "target": "com.amazonaws.glue#NameString",
+                    "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the Data Catalog in which the database resides.</p>"
                     }
@@ -52423,6 +52605,12 @@
                     "target": "com.amazonaws.glue#CrawlerSecurityConfiguration",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the <code>SecurityConfiguration</code> structure to be used by this\n      crawler.</p>"
+                    }
+                },
+                "CatalogId": {
+                    "target": "com.amazonaws.glue#CatalogIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Data Catalog in which to store the crawler's output. If you omit this value, the existing value on the crawler is preserved.</p>"
                     }
                 }
             },
@@ -54568,6 +54756,15 @@
         },
         "com.amazonaws.glue#UriString": {
             "type": "string"
+        },
+        "com.amazonaws.glue#Url": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 40000
+                }
+            }
         },
         "com.amazonaws.glue#UrlString": {
             "type": "string"
