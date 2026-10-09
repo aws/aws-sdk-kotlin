@@ -35,7 +35,7 @@ import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.minutes
 
 class ImdsCredentialsProviderTest {
 
@@ -56,8 +56,11 @@ class ImdsCredentialsProviderTest {
     @Test
     fun testSuccess() = runTest {
         val testClock = ManualClock(Instant.fromEpochMilliseconds(Instant.now().epochMilliseconds))
-        val expiration0 = Instant.fromEpochMilliseconds(testClock.now().epochMilliseconds)
-        val expiration1 = expiration0 + 2.seconds
+        // Both sets state a lifetime that is still ahead of the clock when they are vended, so each resolution is a
+        // genuine refresh. A set that arrives already expired is an availability signal, not a refresh, and is
+        // covered separately below.
+        val expiration0 = testClock.now() + 30.minutes
+        val expiration1 = expiration0 + 30.minutes
 
         val connection = buildTestConnection {
             expect(
@@ -136,7 +139,9 @@ class ImdsCredentialsProviderTest {
             .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
         assertEquals(expected0, actual0)
 
-        testClock.advance(1.seconds)
+        // A 30 minute lifetime puts the advisory deadline 15 minutes out, so this lands past it and the next
+        // resolution refreshes.
+        testClock.advance(20.minutes)
 
         val actual1 = provider.resolve()
         val expected1 = Credentials(

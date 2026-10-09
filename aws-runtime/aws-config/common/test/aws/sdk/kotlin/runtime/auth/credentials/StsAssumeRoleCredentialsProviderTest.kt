@@ -17,6 +17,7 @@ import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.httptest.CallAsserter
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
 import aws.smithy.kotlin.runtime.net.Host
+import aws.smithy.kotlin.runtime.time.Instant
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -24,6 +25,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.hours
 
 class StsAssumeRoleCredentialsProviderTest {
     private val sourceProvider = StaticCredentialsProvider {
@@ -214,5 +216,24 @@ class StsAssumeRoleCredentialsProviderTest {
         assertEquals(expected, actual)
         val req = testEngine.requests().first()
         assertEquals(Host.Domain("sts.us-west-2.amazonaws.com"), req.actual.url.host)
+    }
+
+    @Test
+    fun testCachesBetweenResolutions() = runTest {
+        // An hour of lifetime, so both resolutions below land well inside the refresh window. This provider has no
+        // injectable clock, so the expiration is stated relative to the real one.
+        val testEngine = buildTestConnection {
+            // A single expectation: a second `AssumeRole` call would fail the connection assertion below.
+            expect(StsTestUtils.stsResponse(expiration = Instant.now() + 1.hours))
+        }
+
+        val provider = StsAssumeRoleCredentialsProvider(
+            bootstrapCredentialsProvider = sourceProvider,
+            roleArn = StsTestUtils.ARN,
+            httpClient = testEngine,
+        )
+
+        assertEquals(provider.resolve(), provider.resolve())
+        testEngine.assertRequests()
     }
 }
