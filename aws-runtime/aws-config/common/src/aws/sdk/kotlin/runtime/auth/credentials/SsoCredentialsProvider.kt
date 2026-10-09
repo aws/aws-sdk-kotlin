@@ -156,7 +156,7 @@ public class SsoCredentialsProvider public constructor(
     private suspend fun legacyLoadTokenFile(): SsoToken {
         val token = readTokenFromCache(startUrl, platformProvider)
         val now = clock.now()
-        if (now > token.expiration) throw ProviderConfigurationException("The SSO session has expired. To refresh this SSO session run `aws sso login` with the corresponding profile.")
+        if (now > token.expiration) throw ProviderConfigurationException("The SSO session has expired. To refresh this SSO session run `aws sso login` with the corresponding profile.").nonRecoverable()
 
         return token
     }

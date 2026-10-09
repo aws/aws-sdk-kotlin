@@ -216,6 +216,48 @@ class ImdsCredentialsProviderTest {
     }
 
     @Test
+    fun testAssumeRoleUnauthorizedAccessIsNonRecoverable() = runTest {
+        val testClock = ManualClock()
+
+        val connection = buildTestConnection {
+            expect(
+                tokenRequest("http://169.254.169.254", DEFAULT_TOKEN_TTL_SECONDS),
+                tokenResponse(DEFAULT_TOKEN_TTL_SECONDS, "TOKEN_A"),
+            )
+            expect(
+                imdsRequest(
+                    "http://169.254.169.254/latest/meta-data/iam/security-credentials/imds-test-role",
+                    "TOKEN_A",
+                ),
+                imdsResponse(
+                    """
+                    {
+                        "Code" : "AssumeRoleUnauthorizedAccess",
+                        "Message" : "EC2 cannot assume the role imds-test-role.",
+                        "LastUpdated" : "2021-09-17T20:57:08Z"
+                    }
+                """,
+                ),
+            )
+        }
+
+        val client = ImdsClient {
+            engine = connection
+            clock = testClock
+        }
+
+        val provider = ImdsCredentialsProvider(
+            profileOverride = "imds-test-role",
+            client = lazyOf(client),
+            clock = testClock,
+            platformProvider = ec2MetadataEnabledPlatform,
+        )
+
+        val ex = assertFailsWith<ProviderConfigurationException> { provider.resolve() }
+        assertTrue(ex.sdkErrorMetadata.isNonRecoverable)
+    }
+
+    @Test
     fun testTokenFailure() = runTest {
         // when attempting to retrieve initial token, IMDS replied with 403, indicating IMDS is disabled or not allowed through permissions
         val connection = buildTestConnection {

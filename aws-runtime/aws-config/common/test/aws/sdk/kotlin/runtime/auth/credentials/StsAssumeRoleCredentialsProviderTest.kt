@@ -24,6 +24,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 class StsAssumeRoleCredentialsProviderTest {
@@ -165,6 +166,7 @@ class StsAssumeRoleCredentialsProviderTest {
 
         ex.message.shouldContain("STS is not activated in the requested region (us-west-2). Please check your configuration and activate STS in the target region if necessary")
         assertIs<RegionDisabledException>(ex.cause)
+        assertTrue(ex.sdkErrorMetadata.isNonRecoverable)
     }
 
     @Test

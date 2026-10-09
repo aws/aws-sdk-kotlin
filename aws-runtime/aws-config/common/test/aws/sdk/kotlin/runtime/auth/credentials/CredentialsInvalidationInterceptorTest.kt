@@ -5,9 +5,11 @@
 
 package aws.sdk.kotlin.runtime.auth.credentials
 
+import aws.sdk.kotlin.runtime.http.retries.CredentialsMarkedForRefresh
 import aws.smithy.kotlin.runtime.ServiceErrorMetadata
 import aws.smithy.kotlin.runtime.ServiceException
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.RefreshAwareCredentialsProvider
 import aws.smithy.kotlin.runtime.client.ResponseInterceptorContext
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.http.operation.HttpOperationContext
@@ -36,10 +38,51 @@ class CredentialsInvalidationInterceptorTest {
         }
     }
 
+    /** A provider that caches, so invalidating it means the next resolution refreshes. */
+    private class RecordingCachingProvider(private val failOnInvalidate: Boolean = false) : RefreshAwareCredentialsProvider {
+        var rejected: Identity? = null
+
+        override suspend fun resolve(attributes: Attributes): Credentials = error("not needed for test")
+
+        override suspend fun invalidate(rejectedIdentity: Identity) {
+            rejected = rejectedIdentity
+            if (failOnInvalidate) throw IllegalStateException("invalidation blew up")
+        }
+    }
+
+    @Test
+    fun testMarksTheFailureForRetryWhenTheProviderCaches() = runTest {
+        val ex = serviceException("ExpiredToken")
+
+        CredentialsInvalidationInterceptor().modifyBeforeAttemptCompletion(context(Result.failure(ex), credentials, RecordingCachingProvider()))
+
+        assertEquals(true, ex.sdkErrorMetadata.attributes.getOrNull(CredentialsMarkedForRefresh))
+    }
+
+    @Test
+    fun testDoesNotMarkTheFailureWhenTheProviderDoesNotCache() = runTest {
+        // Nothing would be refreshed, so a retry would be signed with the same rejected credentials.
+        val ex = serviceException("ExpiredToken")
+
+        CredentialsInvalidationInterceptor().modifyBeforeAttemptCompletion(context(Result.failure(ex), credentials, RecordingProvider()))
+
+        assertNull(ex.sdkErrorMetadata.attributes.getOrNull(CredentialsMarkedForRefresh))
+    }
+
+    @Test
+    fun testDoesNotMarkTheFailureWhenInvalidationFails() = runTest {
+        val ex = serviceException("ExpiredToken")
+        val provider = RecordingCachingProvider(failOnInvalidate = true)
+
+        CredentialsInvalidationInterceptor().modifyBeforeAttemptCompletion(context(Result.failure(ex), credentials, provider))
+
+        assertNull(ex.sdkErrorMetadata.attributes.getOrNull(CredentialsMarkedForRefresh))
+    }
+
     @Test
     fun testInvalidatesOnRejectedCredentials() = runTest {
         val provider = RecordingProvider()
-        val ex = serviceException("ExpiredTokenException")
+        val ex = serviceException("ExpiredToken")
         val context = context(Result.failure(ex), credentials, provider)
 
         val result = CredentialsInvalidationInterceptor().modifyBeforeAttemptCompletion(context)
@@ -51,7 +94,7 @@ class CredentialsInvalidationInterceptorTest {
 
     @Test
     fun testInvalidatesOnEveryRejectionCode() = runTest {
-        listOf("ExpiredToken", "ExpiredTokenException", "InvalidToken").forEach { code ->
+        listOf("ExpiredToken", "InvalidToken").forEach { code ->
             val provider = RecordingProvider()
             val context = context(Result.failure(serviceException(code)), credentials, provider)
 
@@ -70,6 +113,18 @@ class CredentialsInvalidationInterceptorTest {
 
         // AccessDenied usually means the credentials are fine and the principal lacks permission; refreshing them
         // would send the same request again with the same outcome.
+        assertNull(provider.rejected)
+    }
+
+    @Test
+    fun testIgnoresExpiredTokenException() = runTest {
+        val provider = RecordingProvider()
+        val context = context(Result.failure(serviceException("ExpiredTokenException")), credentials, provider)
+
+        CredentialsInvalidationInterceptor().modifyBeforeAttemptCompletion(context)
+
+        // Services that model ExpiredTokenException (STS web identity, SSO OIDC, EKS Auth, Marketplace Metering) use it
+        // for an expired token in the request payload; the credentials that signed the request are still valid.
         assertNull(provider.rejected)
     }
 

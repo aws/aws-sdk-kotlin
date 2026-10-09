@@ -150,7 +150,7 @@ public class StsAssumeRoleCredentialsProvider(
                 is RegionDisabledException -> throw ProviderConfigurationException(
                     "STS is not activated in the requested region (${client.config.region}). Please check your configuration and activate STS in the target region if necessary",
                     ex,
-                )
+                ).nonRecoverable()
                 else -> {
                     val wrapped = CredentialsProviderException("failed to assume role from STS", ex)
                     // `?.let { it in ... }` rather than `in`, because the code is nullable and Set.contains is not.
