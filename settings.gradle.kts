@@ -64,6 +64,19 @@ include(":hll")
 include(":hll:hll-codegen")
 include(":hll:hll-mapping-core")
 include(":services")
+val endpointBenchmarkServices = listOf("s3", "lambda")
+if (endpointBenchmarkServices.all { it.isBootstrappedService }) {
+    include(":benchmarks:endpoint-resolution")
+} else {
+    val missing = endpointBenchmarkServices.filterNot { it.isBootstrappedService }
+    logger.warn("Skipping :benchmarks:endpoint-resolution because these service(s) are not bootstrapped: $missing")
+}
+
+// The serde benchmarks read their models from the Smithy-published benchmark models jar on the codegen classpath.
+// TODO: include unconditionally once that jar is published and wired up in
+//       benchmarks/serde-benchmarks/build.gradle.kts; until then the projections have no model source.
+// include(":benchmarks:serde-benchmarks")
+logger.warn("Skipping :benchmarks:serde-benchmarks until the Smithy benchmark models jar is published")
 include(":tests")
 include(":tests:codegen")
 include(":tests:codegen:event-stream")
