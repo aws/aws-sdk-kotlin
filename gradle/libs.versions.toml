@@ -16,7 +16,7 @@ binary-compatibility-validator-version = "0.18.2"
 smithy-kotlin-version = "1.7.11"
 
 # codegen
-smithy-version = "1.73.0"
+smithy-version = "1.74.0"
 
 # testing
 ddb-local-version = "3.3.1"
