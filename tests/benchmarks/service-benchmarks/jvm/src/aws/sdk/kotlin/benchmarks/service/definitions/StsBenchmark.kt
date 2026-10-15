@@ -11,7 +11,6 @@ import aws.sdk.kotlin.services.iam.deleteRole
 import aws.sdk.kotlin.services.sts.StsClient
 import aws.sdk.kotlin.services.sts.assumeRole
 import aws.sdk.kotlin.services.sts.model.StsException
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.telemetry.TelemetryProvider
 import kotlinx.coroutines.delay
@@ -19,7 +18,6 @@ import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.seconds
 
 class StsBenchmark : ServiceBenchmark<StsClient> {
-    @OptIn(ExperimentalApi::class)
     override suspend fun client() = StsClient.fromEnvironment {
         retryStrategy = Common.noRetries
         telemetryProvider = Common.telemetryProvider

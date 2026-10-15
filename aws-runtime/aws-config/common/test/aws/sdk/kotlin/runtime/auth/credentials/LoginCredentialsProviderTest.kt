@@ -36,6 +36,45 @@ class LoginCredentialsProviderTest {
     }
 
     @Test
+    fun testResolveCacheDirFromEnv() {
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf("HOME" to "/home", "AWS_LOGIN_CACHE_DIRECTORY" to "/custom/cache/dir"),
+        )
+        assertEquals("/custom/cache/dir", resolveCacheDir(testPlatform))
+    }
+
+    @Test
+    fun testResolveCacheDirFromLegacyEnv() {
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf("HOME" to "/home", "AWS_LOGIN_IN_CACHE_DIRECTORY" to "/legacy/cache/dir"),
+        )
+        assertEquals("/legacy/cache/dir", resolveCacheDir(testPlatform))
+    }
+
+    @Test
+    fun testResolveCacheDirEnvTakesPrecedenceOverLegacy() {
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf(
+                "HOME" to "/home",
+                "AWS_LOGIN_CACHE_DIRECTORY" to "/custom/cache/dir",
+                "AWS_LOGIN_IN_CACHE_DIRECTORY" to "/legacy/cache/dir",
+            ),
+        )
+        assertEquals("/custom/cache/dir", resolveCacheDir(testPlatform))
+    }
+
+    @Test
+    fun testResolveCacheDirDefault() {
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf("HOME" to "/home"),
+        )
+        assertEquals(
+            testPlatform.filepath("~", ".aws", "login", "cache"),
+            resolveCacheDir(testPlatform),
+        )
+    }
+
+    @Test
     fun testExpiredToken() = runTest(
         // TODO: Figure out why this test takes so long to run on some developer machines (@aoperez)
         // TODO: Remove custom timeout

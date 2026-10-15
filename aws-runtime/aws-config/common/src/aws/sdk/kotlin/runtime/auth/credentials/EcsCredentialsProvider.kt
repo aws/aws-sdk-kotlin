@@ -116,7 +116,7 @@ public class EcsCredentialsProvider(
             ?: AwsSdkSetting.AwsContainerAuthorizationToken.resolve(platformProvider)
             ?: return null
 
-        if (token.contains("\r\n")) {
+        if (token.contains('\r') || token.contains('\n')) {
             throw CredentialsProviderException("Token contains illegal line break sequence.")
         }
 

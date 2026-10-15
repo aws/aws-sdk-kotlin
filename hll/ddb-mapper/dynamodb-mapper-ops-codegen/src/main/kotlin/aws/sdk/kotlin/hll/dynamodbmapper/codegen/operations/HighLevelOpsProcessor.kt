@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations
 
 import aws.sdk.kotlin.hll.codegen.core.CodeGeneratorFactory
+import aws.sdk.kotlin.hll.codegen.ksp.KspCodegenLogger
 import aws.sdk.kotlin.hll.codegen.ksp.processors.HllKspProcessor
 import aws.sdk.kotlin.hll.codegen.model.Operation
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
@@ -44,7 +45,7 @@ internal class HighLevelOpsProcessor(environment: SymbolProcessorEnvironment) : 
         logger.info("Found dependency files:\n${codegenDeps.originatingFiles.joinToString("\n") { it.filePath }}")
 
         val codegenFactory = CodeGeneratorFactory(codeGenerator, logger, codegenDeps)
-        val ctx = RenderContext(logger, codegenFactory, pkg, "dynamodb-mapper-ops-codegen")
+        val ctx = RenderContext(KspCodegenLogger(logger), codegenFactory, pkg, "dynamodb-mapper-ops-codegen")
 
         val operations = operationFunctions
             .map(Operation::from)
