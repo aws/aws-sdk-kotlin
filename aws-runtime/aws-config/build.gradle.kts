@@ -14,8 +14,6 @@ plugins {
 description = "Support for AWS configuration"
 extra["moduleName"] = "aws.sdk.kotlin.runtime.config"
 
-apply(plugin = "org.jetbrains.kotlinx.atomicfu")
-
 kotlin {
     sourceSets {
         commonMain {
@@ -56,10 +54,17 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
             }
         }
+        jvmMain {
+            dependencies {
+                implementation(libs.crac)
+                implementation(libs.smithy.kotlin.http.client.engine.okhttp)
+            }
+        }
         jvmTest {
             dependencies {
                 implementation(libs.mockk)
                 implementation(libs.kaml)
+                implementation(libs.smithy.kotlin.http.client.engine.okhttp4)
             }
         }
 
