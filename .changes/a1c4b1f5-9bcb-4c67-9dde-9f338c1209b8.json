@@ -1,0 +1,9 @@
+{
+    "id": "a1c4b1f5-9bcb-4c67-9dde-9f338c1209b8",
+    "type": "feature",
+    "description": "Add `@DynamoDbHeterogeneousType`, `@DynamoDbSubtype` and `@DynamoDbHeterogeneousAttribute` annotations, which generate `HeterogeneousItemConverter`-based converters, schemas and table accessors for families of types",
+    "module": "dynamodb-mapper",
+    "issues": [
+        "https://github.com/aws/aws-sdk-kotlin/issues/1880"
+    ]
+}

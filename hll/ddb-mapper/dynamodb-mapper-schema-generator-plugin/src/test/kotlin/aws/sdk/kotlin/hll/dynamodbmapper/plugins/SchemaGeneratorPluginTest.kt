@@ -1130,4 +1130,141 @@ class SchemaGeneratorPluginTest {
         assertContains(result.output, "@DynamoDbTtlSeconds must be positive, got -5 seconds on property expiresAt")
         assertContains(result.output, "Property 'accessCount' annotated with @DynamoDbCounter must be of type Int or Long, but was String")
     }
+
+    @Test
+    fun testHeterogeneousSealedFamily() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test"))
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("heterogeneous/src/Vehicles")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas"
+        val vehicleContents = File(testProjectDir, "$basePath/VehicleSchema.kt").readText()
+
+        // Registrations are ordered by name (no member descends from another); the nested family is one registration
+        assertContains(
+            vehicleContents,
+            """
+                @GeneratedApi
+                public object VehicleConverter : ItemConverter<Vehicle> by HeterogeneousItemConverter<Vehicle>(
+                    typeAttribute = "type",
+                    block = {
+                        instanceOf<Bike>("bike", BikeConverter)
+                        instanceOf<Car>("car", CarConverter)
+                        instanceOf<Truck>("truck", TruckConverter)
+                        instanceOf<Unicycle>("unicycle", UnicycleConverter)
+                    },
+                )
+            """.trimIndent(),
+        )
+        assertContains(vehicleContents, "public val VehicleValueConverter: ValueConverter<Vehicle> = ConverterChain(VehicleConverter, ItemValueConverter)")
+        assertContains(
+            vehicleContents,
+            """
+                @GeneratedApi
+                public object VehicleSchema : ItemSchema.PartitionKey<Vehicle, KeyType.Key1<Int>> {
+                    override val converter: VehicleConverter = VehicleConverter
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
+                    override val attributes: Attributes = emptyAttributes()
+                }
+            """.trimIndent(),
+        )
+        assertContains(vehicleContents, "public fun DynamoDbMapper.getVehicleTable(name: String): Table.PartitionKey<Vehicle, KeyType.Key1<Int>> = getTable(name, VehicleSchema)")
+
+        val truckContents = File(testProjectDir, "$basePath/TruckSchema.kt").readText()
+        assertContains(truckContents, "public object TruckConverter : ItemConverter<Truck> by HeterogeneousItemConverter<Truck>(")
+        assertContains(truckContents, "typeAttribute = \"truckType\",")
+        assertFalse(truckContents.contains("TruckSchema :"))
+
+        // Members get converters but no schemas of their own
+        val carContents = File(testProjectDir, "$basePath/CarSchema.kt").readText()
+        assertContains(carContents, "public object CarConverter : ItemConverter<Car> by SimpleItemConverter(")
+        assertFalse(carContents.contains("CarSchema :"))
+
+        val unicycleContents = File(testProjectDir, "$basePath/UnicycleSchema.kt").readText()
+        assertContains(unicycleContents, "builderFactory = { Unicycle },")
+        assertFalse(unicycleContents.contains("UnicycleBuilder"))
+
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/VehiclesTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.writeText(getResource("/heterogeneous/test/VehiclesTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testHeterogeneousOpenAndAdHocFamilies() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test"))
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("heterogeneous/src/Animals")
+        createClassFile("heterogeneous/src/Entities")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas"
+
+        // A subtype is registered before its supertype, and a self-registering base always comes last
+        val animalContents = File(testProjectDir, "$basePath/AnimalSchema.kt").readText()
+        val registrations = listOf(
+            "exactType<Puppy>(\"puppy\", PuppyConverter)",
+            "instanceOf<Dog>(\"dog\", DogConverter)",
+            "instanceOf<Animal>(\"animal\", AnimalBaseConverter)",
+        )
+        val positions = registrations.map { animalContents.indexOf(it) }
+        assertTrue(positions.all { it >= 0 } && positions == positions.sorted(), "Unexpected registrations in:\n$animalContents")
+        val animalBaseContents = File(testProjectDir, "$basePath/AnimalBaseConverter.kt").readText()
+        assertContains(animalBaseContents, "public object AnimalBaseConverter : ItemConverter<Animal> by SimpleItemConverter(")
+
+        // An ad-hoc family's value type is Any; TTL and counter attributes are merged across its members
+        val entitiesContents = File(testProjectDir, "$basePath/EntitiesSchema.kt").readText()
+        assertContains(entitiesContents, "public object EntitiesConverter : ItemConverter<Any> by HeterogeneousItemConverter<Any>(")
+        assertContains(entitiesContents, "public object EntitiesSchema : ItemSchema.CompositeKey<Any, KeyType.Key1<String>, KeyType.Key1<String>> {")
+        assertContains(entitiesContents, "private val ttlFields = mapOf(\"expiresAt\" to 3600L)")
+        assertContains(entitiesContents, "SchemaAttributes.CounterFields to setOf(\"version\")")
+
+        val auditContents = File(testProjectDir, "$basePath/AuditRecordSchema.kt").readText()
+        assertContains(auditContents, "EntitiesValueConverter,")
+        assertContains(auditContents, "ListValueConverter(EntitiesValueConverter),")
+
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/OpenAndAdHocFamiliesTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.writeText(getResource("/heterogeneous/test/OpenAndAdHocFamiliesTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testHeterogeneousFamilyProblemsAreReported() = withTestProject {
+        createClassFile("heterogeneous/negative/FamilyProblems")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "'org.example.Square' is a concrete subtype of sealed family 'org.example.Shape' but is not matched by any @DynamoDbSubtype registration")
+        assertContains(result.output, "Subtype 'org.example.DocB' has keys (partition [id: Int], sort []) but 'org.example.DocA' has keys (partition [id: String], sort [])")
+        assertContains(result.output, "Property 'kind' of 'org.example.Fish' maps to attribute 'kind', which collides with a type attribute of its family")
+        assertContains(result.output, "Type name 'pome' of 'org.example.Pear' is already registered in family 'org.example.Fruit' by 'org.example.Apple'")
+        assertContains(result.output, "typeName of subtype 'org.example.Plum' must not be blank")
+        assertContains(result.output, "Subtype 'org.example.Hammer' uses EXACT_TYPE but is abstract or an interface, so it can never match")
+        assertContains(result.output, "No @DynamoDbHeterogeneousType family found for subtype 'org.example.Thing'")
+        assertContains(result.output, "Family 'org.example.Things' must have at least one @DynamoDbSubtype")
+        assertContains(result.output, "Property 'n' is annotated with @DynamoDbHeterogeneousAttribute(org.example.Things::class) but holds no value of type 'kotlin.Any'")
+        assertContains(result.output, "TTL lifetime of property 'expiresAt' conflicts across family 'org.example.Session'")
+        assertContains(result.output, "@DynamoDbHeterogeneousType cannot be applied to 'org.example.Sealed' because it cannot have subtypes")
+    }
 }
