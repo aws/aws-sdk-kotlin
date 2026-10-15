@@ -1,0 +1,5 @@
+{
+  "id": "11db1325-cb41-4159-bd8d-64d45e9f4c6e",
+  "type": "feature",
+  "description": "Retry requests that a service rejects with `ExpiredToken` or `InvalidToken`. The rejected credentials are marked for refresh and identity is resolved again on the retry, so the retried request is signed with refreshed credentials"
+}

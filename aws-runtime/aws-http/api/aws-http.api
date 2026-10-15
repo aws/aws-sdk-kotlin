@@ -309,3 +309,7 @@ public final class aws/sdk/kotlin/runtime/http/retries/AwsRetryPolicy$Companion 
 	public final fun getDefault ()Laws/sdk/kotlin/runtime/http/retries/AwsRetryPolicy;
 }
 
+public final class aws/sdk/kotlin/runtime/http/retries/AwsRetryPolicyKt {
+	public static final fun getCredentialsMarkedForRefresh ()Laws/smithy/kotlin/runtime/collections/AttributeKey;
+}
+

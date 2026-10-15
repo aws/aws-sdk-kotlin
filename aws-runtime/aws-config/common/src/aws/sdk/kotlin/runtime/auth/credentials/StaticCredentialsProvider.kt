@@ -8,6 +8,7 @@ package aws.sdk.kotlin.runtime.auth.credentials
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.auth.awscredentials.simpleClassName
 import aws.smithy.kotlin.runtime.collections.Attributes
 
@@ -27,6 +28,7 @@ public class StaticCredentialsProvider(public val credentials: Credentials) : Cr
             builder.sessionToken,
             providerName = PROVIDER_NAME,
             accountId = builder.accountId,
+            refreshBehavior = CredentialsRefreshBehavior.NonRefreshable,
         ),
     )
 
