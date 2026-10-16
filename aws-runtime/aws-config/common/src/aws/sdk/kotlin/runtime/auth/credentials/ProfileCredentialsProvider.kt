@@ -23,6 +23,7 @@ import aws.smithy.kotlin.runtime.businessmetrics.BusinessMetric
 import aws.smithy.kotlin.runtime.businessmetrics.BusinessMetrics
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
+import aws.smithy.kotlin.runtime.identity.Identity
 import aws.smithy.kotlin.runtime.io.closeIfCloseable
 import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import aws.smithy.kotlin.runtime.time.TimestampFormat
@@ -39,8 +40,9 @@ import kotlin.coroutines.coroutineContext
  * This provider is part of the [DefaultChainCredentialsProvider] and usually consumed through that provider. However,
  * it can be instantiated and used standalone as well.
  *
- * NOTE: This provider does not implement any caching. It will reload and reparse the profile from the file system
- * when called. Use [CachedCredentialsProvider] to decorate the profile provider to get caching behavior.
+ * This provider caches and refreshes credentials internally, so it does not need to be wrapped in a caching provider.
+ * Each refresh reloads and reparses the profile from the file system, so a configuration change is picked up without
+ * restarting. Close it when you are done with it to release the cache.
  *
  * This provider supports several credentials formats:
  *
@@ -87,7 +89,8 @@ public class ProfileCredentialsProvider @InternalSdkApi constructor(
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     public val httpClient: HttpClientEngine? = null,
     public val configurationSource: AwsConfigurationSource? = null,
-) : CloseableCredentialsProvider {
+) : CloseableCredentialsProvider,
+    RefreshAwareCredentialsProvider {
     private val credentialsBusinessMetrics: MutableSet<BusinessMetric> = mutableSetOf()
 
     public constructor(
@@ -117,7 +120,20 @@ public class ProfileCredentialsProvider @InternalSdkApi constructor(
         "EcsContainer" to EcsCredentialsProvider(platformProvider, httpClient),
     )
 
-    override suspend fun resolve(attributes: Attributes): Credentials {
+    private val refresh = SelfManagedRefresh(::resolveUncached)
+
+    override suspend fun resolve(attributes: Attributes): Credentials = refresh.resolve(attributes)
+
+    override suspend fun invalidate(rejectedIdentity: Identity): Unit = refresh.invalidate(rejectedIdentity)
+
+    /**
+     * Re-reads the profile and walks the role chain with no caching or pacing of its own.
+     *
+     * The attributes arriving here already carry the caller-owns-refresh signal, which is what keeps the leaves this
+     * builds — and the long-lived entries in [namedProviders] — from pacing themselves underneath this provider's own
+     * cache.
+     */
+    private suspend fun resolveUncached(attributes: Attributes): Credentials {
         val logger = coroutineContext.logger<ProfileCredentialsProvider>()
         val sharedConfig = loadAwsSharedConfig(platformProvider, profileName, configurationSource)
         logger.debug { "Loading credentials from profile `${sharedConfig.activeProfile.name}`" }
@@ -151,6 +167,7 @@ public class ProfileCredentialsProvider @InternalSdkApi constructor(
     }
 
     override fun close() {
+        refresh.close()
         namedProviders.forEach { entry ->
             entry.value.closeIfCloseable()
         }

@@ -11,8 +11,11 @@ import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetr
 import aws.smithy.kotlin.runtime.auth.awscredentials.CloseableCredentialsProvider
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
+import aws.smithy.kotlin.runtime.auth.awscredentials.RefreshAwareCredentialsProvider
+import aws.smithy.kotlin.runtime.auth.awscredentials.SelfManagedRefresh
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
+import aws.smithy.kotlin.runtime.identity.Identity
 import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import aws.smithy.kotlin.runtime.time.Clock
 import aws.smithy.kotlin.runtime.util.PlatformProvider
@@ -35,14 +38,12 @@ import kotlin.coroutines.coroutineContext
  * the directory specified by the `AWS_LOGIN_CACHE_DIRECTORY` environment variable.
  *
  * ```
- * // Wrap the provider with a caching provider to cache the credentials until their expiration time
  * val loginProvider = LoginCredentialsProvider(
  *      loginSession = "my-login-session"
- * ).cached()
+ * )
  * ```
- * It is important that you wrap the provider with [CachedCredentialsProvider] if you are programmatically constructing
- * the provider directly. This prevents your application from accessing the cached access token and requesting new
- * credentials each time the provider is used to source credentials.
+ * This provider caches and refreshes credentials internally, so it does not need to be wrapped in a caching provider.
+ * Close it when you are done with it to release the cache and the underlying client.
  *
  * @param loginSession The Login Session from the profile
  * @param region The AWS region used to call the log in service.
@@ -57,11 +58,22 @@ public class LoginCredentialsProvider public constructor(
     public val httpClient: HttpClientEngine? = null,
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     private val clock: Clock = Clock.System,
-) : CloseableCredentialsProvider {
+) : CloseableCredentialsProvider,
+    RefreshAwareCredentialsProvider {
     private val cacheDirectory = resolveCacheDir(platformProvider)
     private val client = runBlocking { signinClient(region, httpClient) }
 
-    override suspend fun resolve(attributes: Attributes): Credentials {
+    private val refresh = SelfManagedRefresh(::resolveUncached, clock = clock)
+
+    override suspend fun resolve(attributes: Attributes): Credentials = refresh.resolve(attributes)
+
+    override suspend fun invalidate(rejectedIdentity: Identity): Unit = refresh.invalidate(rejectedIdentity)
+
+    /**
+     * Resolves through the login token provider with no caching or pacing of its own. The caller's cache decides what
+     * a failure or an already-past expiration means.
+     */
+    private suspend fun resolveUncached(attributes: Attributes): Credentials {
         val logger = coroutineContext.logger<LoginCredentialsProvider>()
 
         val loginTokenProvider =
@@ -82,6 +94,7 @@ public class LoginCredentialsProvider public constructor(
     }
 
     override fun close() {
+        refresh.close()
         client.close()
     }
 }
