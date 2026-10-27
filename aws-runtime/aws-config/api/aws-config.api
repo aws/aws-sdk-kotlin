@@ -79,7 +79,7 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/DefaultChainCredentia
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class aws/sdk/kotlin/runtime/auth/credentials/EcsCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider {
+public final class aws/sdk/kotlin/runtime/auth/credentials/EcsCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider, aws/smithy/kotlin/runtime/auth/awscredentials/RefreshAwareCredentialsProvider {
 	public fun <init> ()V
 	public fun <init> (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;)V
 	public synthetic fun <init> (Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -102,7 +102,7 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/EnvironmentCredential
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class aws/sdk/kotlin/runtime/auth/credentials/ImdsCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider {
+public final class aws/sdk/kotlin/runtime/auth/credentials/ImdsCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider, aws/smithy/kotlin/runtime/auth/awscredentials/RefreshAwareCredentialsProvider {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Lkotlin/Lazy;Laws/smithy/kotlin/runtime/util/PlatformEnvironProvider;Laws/smithy/kotlin/runtime/time/Clock;)V
 	public synthetic fun <init> (Ljava/lang/String;Lkotlin/Lazy;Laws/smithy/kotlin/runtime/util/PlatformEnvironProvider;Laws/smithy/kotlin/runtime/time/Clock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -130,7 +130,7 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/InvalidSsoTokenExcept
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
-public final class aws/sdk/kotlin/runtime/auth/credentials/LoginCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider {
+public final class aws/sdk/kotlin/runtime/auth/credentials/LoginCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider, aws/smithy/kotlin/runtime/auth/awscredentials/RefreshAwareCredentialsProvider {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/time/Clock;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/time/Clock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun close ()V
@@ -150,7 +150,7 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/ProcessCredentialsPro
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class aws/sdk/kotlin/runtime/auth/credentials/ProfileCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider {
+public final class aws/sdk/kotlin/runtime/auth/credentials/ProfileCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider, aws/smithy/kotlin/runtime/auth/awscredentials/RefreshAwareCredentialsProvider {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -181,9 +181,10 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissio
 	public static fun values ()[Laws/sdk/kotlin/runtime/auth/credentials/RestrictFilePermissions;
 }
 
-public final class aws/sdk/kotlin/runtime/auth/credentials/SsoCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider {
+public final class aws/sdk/kotlin/runtime/auth/credentials/SsoCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider, aws/smithy/kotlin/runtime/auth/awscredentials/RefreshAwareCredentialsProvider {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/time/Clock;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/time/Clock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun close ()V
 	public final fun getAccountId ()Ljava/lang/String;
 	public final fun getHttpClient ()Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;
 	public final fun getPlatformProvider ()Laws/smithy/kotlin/runtime/util/PlatformProvider;
@@ -236,11 +237,12 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/StaticCredentialsProv
 	public final fun invoke (Lkotlin/jvm/functions/Function1;)Laws/sdk/kotlin/runtime/auth/credentials/StaticCredentialsProvider;
 }
 
-public final class aws/sdk/kotlin/runtime/auth/credentials/StsAssumeRoleCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider {
+public final class aws/sdk/kotlin/runtime/auth/credentials/StsAssumeRoleCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider, aws/smithy/kotlin/runtime/auth/awscredentials/RefreshAwareCredentialsProvider {
 	public fun <init> (Laws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider;Laws/sdk/kotlin/runtime/auth/credentials/AssumeRoleParameters;Ljava/lang/String;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;)V
 	public synthetic fun <init> (Laws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider;Laws/sdk/kotlin/runtime/auth/credentials/AssumeRoleParameters;Ljava/lang/String;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Laws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLaws/smithy/kotlin/runtime/http/engine/HttpClientEngine;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Laws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLaws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun close ()V
 	public final fun getAssumeRoleParameters ()Laws/sdk/kotlin/runtime/auth/credentials/AssumeRoleParameters;
 	public final fun getBootstrapCredentialsProvider ()Laws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider;
 	public final fun getHttpClient ()Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;
@@ -250,12 +252,13 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/StsAssumeRoleCredenti
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class aws/sdk/kotlin/runtime/auth/credentials/StsWebIdentityCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CredentialsProvider {
+public final class aws/sdk/kotlin/runtime/auth/credentials/StsWebIdentityCredentialsProvider : aws/smithy/kotlin/runtime/auth/awscredentials/CloseableCredentialsProvider, aws/smithy/kotlin/runtime/auth/awscredentials/RefreshAwareCredentialsProvider {
 	public static final field Companion Laws/sdk/kotlin/runtime/auth/credentials/StsWebIdentityCredentialsProvider$Companion;
 	public fun <init> (Laws/sdk/kotlin/runtime/auth/credentials/AssumeRoleWithWebIdentityParameters;Ljava/lang/String;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;)V
 	public synthetic fun <init> (Laws/sdk/kotlin/runtime/auth/credentials/AssumeRoleWithWebIdentityParameters;Ljava/lang/String;Laws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLaws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLaws/smithy/kotlin/runtime/util/PlatformProvider;Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun close ()V
 	public final fun getHttpClient ()Laws/smithy/kotlin/runtime/http/engine/HttpClientEngine;
 	public final fun getPlatformProvider ()Laws/smithy/kotlin/runtime/util/PlatformProvider;
 	public final fun getRegion ()Ljava/lang/String;
