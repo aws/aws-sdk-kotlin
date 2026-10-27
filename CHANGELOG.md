@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.9.26] - 10/27/2026
+
+### Features
+* (**bedrockagentcorecontrol**) Adds the ResetTokenVaultKeyMaterial API, which restores a token vault whose customer managed key was deleted by moving it to an AWS owned key. The reset permanently deletes the stored OAuth 2.0 tokens, users must consent again. Adds on-behalf-of token exchange client authentication override option.
+* (**ec2**) EC2 AMIs can now show vulnerability data and be targeted directly for scanning.
+* (**ecs**) ECS now supports GPU sharing via NVIDIA Multi-Process Service (MPS) on ECS Managed Instances and ECS EC2, allowing multiple ECS tasks to share a single Nvidia GPU for improved utilization.
+* (**inspector2**) Adding support for Machine Image scan
+* (**licensemanager**) AWS License Manager now supports delegate grants for read-only visibility into license distributions. CreateGrant accepts a new GrantType (BuyerGrant or DelegateGrant) and a desired status at distribution time.
+* (**lightsail**) Added the attributeUpdates parameter to the Lightsail StartInstance API, which allows customers to update the attributes of a stopped instance when starting it.
+
 ## [1.9.25] - 10/26/2026
 
 ### Features
