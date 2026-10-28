@@ -1,5 +1,0 @@
-{
-    "id": "299e6606-560c-4b69-8902-14feed844e58",
-    "type": "bugfix",
-    "description": "Bump **smithy-kotlin** version to [**v1.7.12**](https://github.com/smithy-lang/smithy-kotlin/releases/tag/v1.7.12) to pick up event stream header validation improvements"
-}
