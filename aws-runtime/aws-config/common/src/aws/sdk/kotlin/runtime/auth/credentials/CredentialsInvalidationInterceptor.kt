@@ -21,11 +21,12 @@ import kotlin.coroutines.coroutineContext
 
 /**
  * Target service error codes that indicate the credentials themselves were rejected, as opposed to the request
- * being unauthorized. `AccessDenied` is deliberately absent: it usually means the credentials are valid but the
- * principal lacks permission, and refreshing them would not help. `ExpiredTokenException` is absent too: services that
- * model it use it for an expired token in the request payload, not for the credentials that signed the request.
+ * being unauthorized: `ExpiredToken`, and `ExpiredTokenException`, which JSON-protocol services such as DynamoDB return
+ * for expired credentials. They are matched on the error code alone, whatever the HTTP status. `AccessDenied` is
+ * deliberately absent: it usually means the credentials are valid but the principal lacks permission, and refreshing
+ * them would not help. `InvalidToken` is absent too: services return it for other tokens, not for expired credentials.
  */
-private val INVALIDATION_ERROR_CODES = setOf("ExpiredToken", "InvalidToken")
+private val INVALIDATION_ERROR_CODES = setOf("ExpiredToken", "ExpiredTokenException")
 
 /**
  * Signals credential invalidation back to the identity provider when a target service rejects the credentials that
