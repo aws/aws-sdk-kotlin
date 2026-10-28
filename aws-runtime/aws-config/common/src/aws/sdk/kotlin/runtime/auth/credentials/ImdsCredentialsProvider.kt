@@ -218,10 +218,10 @@ public class ImdsCredentialsProvider(
 }
 
 /**
- * IMDS credentials keep static stability, and the target services still accept them past their stated expiration, so
- * an already-expired IMDS response is used even when nothing is cached yet.
+ * IMDS credentials keep static stability, and are looked up again every 15 minutes, as they were behind the caching
+ * layer this provider was used with before, rather than only once they near expiration (see [PacedRefreshKey]).
  */
 private fun imdsCredentialAttributes() = attributesOf {
     CredentialsRefreshBehaviorKey to CredentialsRefreshBehavior.RefreshableWithStaticStability
-    AcceptedPastExpirationKey to true
+    PacedRefreshKey to true
 }
