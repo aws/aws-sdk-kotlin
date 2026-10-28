@@ -12,6 +12,7 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.SigninClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.createOAuth2Token
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.AccessDeniedException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.OAuth2ErrorCode
+import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.ValidationException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.withConfig
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.profile.normalizePath
@@ -241,6 +242,16 @@ internal class LoginTokenProvider(
                         }
                         else -> throw e
                     }
+                } else if (e is ValidationException) {
+                    // Sign-In rejected the refresh token itself as invalid, expired, revoked or malformed.
+                    throwTokenExpired(
+                        e,
+                        buildString {
+                            append("Unable to refresh credentials because the login session is no longer valid. ")
+                            append("Please reauthenticate using 'aws login'.")
+                        },
+                        requiresReauthentication = true,
+                    )
                 } else {
                     throw e
                 }
@@ -475,7 +486,8 @@ internal fun serializeLoginToken(token: LoginToken): ByteArray = jsonStreamWrite
  * An error associated with a cached login token from `~/.aws/login/cache/`
  *
  * Instances that need the customer to sign in again (a missing or malformed token, or a refresh the Sign-In service
- * rejects with `TOKEN_EXPIRED`, `USER_CREDENTIALS_CHANGED` or `INSUFFICIENT_PERMISSIONS`) are marked non-recoverable
+ * rejects with `TOKEN_EXPIRED`, `USER_CREDENTIALS_CHANGED`, `INSUFFICIENT_PERMISSIONS` or a `ValidationException`) are
+ * marked non-recoverable
  * where they are thrown. A token that expired because a refresh failed transiently is not.
  */
 public class InvalidLoginTokenException(message: String, cause: Throwable? = null) : ConfigurationException(message, cause)
