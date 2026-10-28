@@ -94,7 +94,7 @@ class CredentialsInvalidationInterceptorTest {
 
     @Test
     fun testInvalidatesOnEveryRejectionCode() = runTest {
-        listOf("ExpiredToken", "InvalidToken").forEach { code ->
+        listOf("ExpiredToken", "ExpiredTokenException").forEach { code ->
             val provider = RecordingProvider()
             val context = context(Result.failure(serviceException(code)), credentials, provider)
 
@@ -117,14 +117,13 @@ class CredentialsInvalidationInterceptorTest {
     }
 
     @Test
-    fun testIgnoresExpiredTokenException() = runTest {
+    fun testIgnoresInvalidToken() = runTest {
         val provider = RecordingProvider()
-        val context = context(Result.failure(serviceException("ExpiredTokenException")), credentials, provider)
+        val context = context(Result.failure(serviceException("InvalidToken")), credentials, provider)
 
         CredentialsInvalidationInterceptor().modifyBeforeAttemptCompletion(context)
 
-        // Services that model ExpiredTokenException (STS web identity, SSO OIDC, EKS Auth, Marketplace Metering) use it
-        // for an expired token in the request payload; the credentials that signed the request are still valid.
+        // Services return InvalidToken for other tokens, such as a pagination or task token, not for expired credentials.
         assertNull(provider.rejected)
     }
 

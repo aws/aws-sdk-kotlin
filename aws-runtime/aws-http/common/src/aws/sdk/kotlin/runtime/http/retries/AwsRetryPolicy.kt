@@ -17,7 +17,7 @@ import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
 
 /**
  * Set on a [ServiceException] whose rejected credentials were marked for refresh by a credentials provider that caches
- * them, so that a retry resolves refreshed credentials. [AwsRetryPolicy] retries `ExpiredToken` and `InvalidToken`
+ * them, so that a retry resolves refreshed credentials. [AwsRetryPolicy] retries `ExpiredToken` and `ExpiredTokenException`
  * only when this is set; otherwise the retry would be signed with the same rejected credentials.
  */
 @InternalSdkApi
@@ -30,7 +30,7 @@ public val CredentialsMarkedForRefresh: AttributeKey<Boolean> = AttributeKey("aw
  * * Any [ServiceException] with an `sdkErrorMetadata.errorCode` of:
  *   * `BandwidthLimitExceeded`
  *   * `EC2ThrottledException`
- *   * `ExpiredToken` and `InvalidToken`, only when the rejected credentials were marked for refresh (see
+ *   * `ExpiredToken` and `ExpiredTokenException`, only when the rejected credentials were marked for refresh (see
  *     [CredentialsMarkedForRefresh])
  *   * `IDPCommunicationError` (only STS throws it)
  *   * `LimitExceededException`
@@ -83,7 +83,7 @@ public open class AwsRetryPolicy : StandardRetryPolicy() {
             "TransactionInProgressException" to Throttling,
         )
 
-        internal val invalidCredentialErrorCodes = setOf("ExpiredToken", "InvalidToken")
+        internal val invalidCredentialErrorCodes = setOf("ExpiredToken", "ExpiredTokenException")
 
         internal val knownStatusCodes = mapOf(
             500 to Transient,
