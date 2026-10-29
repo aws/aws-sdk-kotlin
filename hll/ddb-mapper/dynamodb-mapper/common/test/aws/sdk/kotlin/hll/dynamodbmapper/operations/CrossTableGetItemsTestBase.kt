@@ -12,13 +12,12 @@ import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.ByteArrayValueConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 abstract class CrossTableGetItemsTestBase : DdbLocalTest() {
-    protected val shuttlesTableName = "shuttles-table"
+    protected val shuttlesTableName = "shuttles-table-$testRunId"
     protected data class Shuttle(var name: String = "", var launchYear: Int = 0)
     protected val shuttleConverter = SimpleItemConverter(
         ::Shuttle,
@@ -28,7 +27,7 @@ abstract class CrossTableGetItemsTestBase : DdbLocalTest() {
     )
     protected val shuttleSchema = ItemSchema(shuttleConverter, KeySpec.string("name"))
 
-    protected val hyperCarsTableName = "hypercars"
+    protected val hyperCarsTableName = "hypercars-$testRunId"
     protected data class HyperCar(var make: String = "", var model: String = "", var modelYear: Int = 0)
     protected val hyperCarConverter = SimpleItemConverter(
         ::HyperCar,
@@ -43,7 +42,7 @@ abstract class CrossTableGetItemsTestBase : DdbLocalTest() {
         sortKey = KeySpec.string("model"),
     )
 
-    protected val bigDataTableName = "bigdata"
+    protected val bigDataTableName = "bigdata-$testRunId"
     protected data class BigData(var id: String = "", var dataset: ByteArray = byteArrayOf()) {
         override fun equals(other: Any?) = other is BigData && other.id == id && other.dataset contentEquals dataset
         override fun hashCode() = id.hashCode() * dataset.contentHashCode()
@@ -58,8 +57,7 @@ abstract class CrossTableGetItemsTestBase : DdbLocalTest() {
     protected val bigDataIds = (0..<100).map { "id-${it.toString().padStart(2, '0')}" } // 100 items
     protected val bigPayload = ByteArray(300 * 1024) { it.toByte() } // 300KB each
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(
             shuttlesTableName,
             shuttleSchema,

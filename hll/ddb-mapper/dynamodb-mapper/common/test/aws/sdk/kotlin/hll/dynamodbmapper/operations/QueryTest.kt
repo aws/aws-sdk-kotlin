@@ -13,7 +13,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -21,7 +20,7 @@ import kotlin.test.assertContentEquals
 
 class QueryTest : DdbLocalTest() {
     companion object {
-        private const val TABLE_NAME = "query-test"
+        private val TABLE_NAME = "query-test-$testRunId"
         private const val TITLE_INDEX_NAME = "emps-by-title"
         private const val NAME_INDEX_NAME = "emps-by-name"
 
@@ -65,8 +64,7 @@ class QueryTest : DdbLocalTest() {
         private val titleSchema = ItemSchema(titleConverter, KeySpec.string("title"), KeySpec.string("name"))
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(
             name = TABLE_NAME,
             schema = namedEmpSchema,

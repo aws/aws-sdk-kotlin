@@ -9,7 +9,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.getItem
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,7 +16,7 @@ import kotlin.test.assertNotNull
 
 class UpdateItemTest : DdbLocalTest() {
     companion object {
-        private const val TABLE_NAME = "update-item-test"
+        private val TABLE_NAME = "update-item-test-$testRunId"
 
         private data class Entity(var id: Int = 0)
 
@@ -29,8 +28,7 @@ class UpdateItemTest : DdbLocalTest() {
         private val schema = ItemSchema(converter, KeySpec.int("id"))
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(
             TABLE_NAME,
             schema,

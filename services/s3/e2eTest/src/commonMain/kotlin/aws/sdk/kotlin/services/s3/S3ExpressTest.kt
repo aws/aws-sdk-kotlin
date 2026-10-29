@@ -14,10 +14,6 @@ import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.io.use
-import aws.smithy.kotlin.runtime.testing.AfterAll
-import aws.smithy.kotlin.runtime.testing.BeforeAll
-import aws.smithy.kotlin.runtime.testing.TestInstance
-import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.runBlocking
 import kotlin.test.*
 import kotlin.time.Duration.Companion.minutes
@@ -25,7 +21,6 @@ import kotlin.time.Duration.Companion.minutes
 /**
  * Tests for S3 Express operations
  */
-@TestInstance(TestLifecycle.PER_CLASS)
 class S3ExpressTest {
     companion object {
         private const val AVAILABILITY_ZONE = "usw2-az1" // us-west-2 availability zone 1
@@ -35,7 +30,7 @@ class S3ExpressTest {
 
     private lateinit var testBuckets: List<String>
 
-    @BeforeAll
+    @BeforeTest
     fun setup(): Unit = runBlocking {
         // create a few test buckets to test the credentials cache
         testBuckets = (1..3).map { index ->
@@ -43,7 +38,7 @@ class S3ExpressTest {
         }
     }
 
-    @AfterAll
+    @AfterTest
     fun cleanup(): Unit = runBlocking {
         try {
             if (::testBuckets.isInitialized) {

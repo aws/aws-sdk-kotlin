@@ -15,11 +15,7 @@ import aws.smithy.kotlin.runtime.http.HttpException
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.io.use
-import aws.smithy.kotlin.runtime.testing.AfterAll
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.RandomTempFile
-import aws.smithy.kotlin.runtime.testing.TestInstance
-import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import aws.smithy.kotlin.runtime.text.encoding.encodeToHex
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -30,20 +26,21 @@ import kotlin.test.*
 /**
  * Tests for bucket operations and presigner
  */
-@TestInstance(TestLifecycle.PER_CLASS)
 class S3BucketOpsIntegrationTest {
     private val client = S3TestUtils.createClient()
     private lateinit var testBucket: String
 
-    @BeforeAll
+    @BeforeTest
     fun createResources(): Unit = runBlocking {
         testBucket = S3TestUtils.createTestBucket(client, "integ-ops")
     }
 
-    @AfterAll
-    fun cleanup() = runBlocking {
+    @AfterTest
+    fun cleanup(): Unit = runBlocking {
         try {
-            S3TestUtils.deleteBucket(client, testBucket)
+            if (::testBucket.isInitialized) {
+                S3TestUtils.deleteBucket(client, testBucket)
+            }
         } finally {
             client.close()
         }

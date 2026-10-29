@@ -17,32 +17,29 @@ import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.io.SdkSource
 import aws.smithy.kotlin.runtime.io.source
 import aws.smithy.kotlin.runtime.io.use
-import aws.smithy.kotlin.runtime.testing.AfterAll
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.RandomTempFile
-import aws.smithy.kotlin.runtime.testing.TestInstance
-import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
-@TestInstance(TestLifecycle.PER_CLASS)
 class S3ChecksumTest {
     private val client = S3TestUtils.createClient()
     private lateinit var testBucket: String
     private fun testKey(suffix: String): String = "test-object-$suffix"
 
-    @BeforeAll
+    @BeforeTest
     fun setUp(): Unit = runBlocking {
         testBucket = S3TestUtils.createTestBucket(client, "checksums")
     }
 
-    @AfterAll
+    @AfterTest
     fun cleanUp(): Unit = runBlocking {
         try {
             if (::testBucket.isInitialized) {

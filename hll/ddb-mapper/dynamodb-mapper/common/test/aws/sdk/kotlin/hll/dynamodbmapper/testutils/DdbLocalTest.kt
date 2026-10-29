@@ -11,9 +11,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.toItem
 import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
-import aws.sdk.kotlin.services.dynamodb.deleteItem
 import aws.sdk.kotlin.services.dynamodb.deleteTable
-import aws.sdk.kotlin.services.dynamodb.describeTable
 import aws.sdk.kotlin.services.dynamodb.paginators.items
 import aws.sdk.kotlin.services.dynamodb.paginators.scanPaginated
 import aws.sdk.kotlin.services.dynamodb.waiters.waitUntilTableNotExists
@@ -23,12 +21,12 @@ import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.net.Host
 import aws.smithy.kotlin.runtime.net.Scheme
 import aws.smithy.kotlin.runtime.net.url.Url
-import aws.smithy.kotlin.runtime.testing.AfterAll
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.TestInstance
+import kotlinx.coroutines.test.runTest
 import kotlin.test.*
+import kotlin.uuid.Uuid
 
 /**
  * The base class for test classes which need DynamoDB Local running. This class provides a few convenience declarations
@@ -36,14 +34,24 @@ import kotlin.test.*
  * * [ddb] — An instance of a low-level [DynamoDbClient] utilizing the DynamoDB Local instance which may be used for
  *   setting up or verifying various mapper tests
  * * [createTable] — Creates a table for the given name/schema and optionally persists the given items into it. All
- *   tables created via this method will be automatically dropped when the test spec completes (whether successfully or
+ *   tables created via this method will be automatically dropped when each test completes (whether successfully or
  *   unsuccessfully).
  * * [mapper] — Returns a [DynamoDbMapper] instance utilizing the DynamoDB Local instance
+ *
+ * Fixtures are created and destroyed per test rather than per class because Kotlin/Native neither runs class-level
+ * hooks declared on instance methods nor shares an instance between tests. Subclasses provide fixtures by overriding
+ * [setUp] instead of declaring their own `@BeforeTest`/`@AfterTest` methods, whose ordering relative to this class's
+ * hooks differs between JVM and Native.
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class DdbLocalTest {
     companion object {
         private const val DOUBLE_TOLERANCE = 0.000001
+
+        /**
+         * A suffix unique to this test process, used to keep table names from colliding when multiple test tasks (e.g.,
+         * `jvmTest` and `linuxX64Test`) share the same DynamoDB Local instance
+         */
+        val testRunId = Uuid.random().toString()
 
         fun assertEquals(expected: Double, actual: Double?) {
             assertNotNull(actual)
@@ -95,7 +103,7 @@ abstract class DdbLocalTest {
 
     /**
      * Creates a table for the given name/schema and optionally persists the given items into it. All tables created via
-     * this method will be automatically dropped when the test spec completes (whether successfully or unsuccessfully).
+     * this method will be automatically dropped when each test completes (whether successfully or unsuccessfully).
      * @param name The name of the table to create
      * @param schema The schema for the table. This is used to derive the primary key and to map the [items] (if any).
      * @param items A collection of maps of strings to values which will be mapped and persisted to the new table before
@@ -109,7 +117,7 @@ abstract class DdbLocalTest {
 
     /**
      * Creates a table for the given name/schema and optionally persists the given items into it. All tables created via
-     * this method will be automatically dropped when the test spec completes (whether successfully or unsuccessfully).
+     * this method will be automatically dropped when each test completes (whether successfully or unsuccessfully).
      * @param name The name of the table to create
      * @param schema The schema for the table. This is used to derive the primary key and to map the [items] (if any).
      * @param items A collection of maps of strings to values which will be mapped and persisted to the new table before
@@ -123,7 +131,7 @@ abstract class DdbLocalTest {
 
     /**
      * Creates a table for the given name/schema and optionally persists the given items into it. All tables created via
-     * this method will be automatically dropped when the test spec completes (whether successfully or unsuccessfully).
+     * this method will be automatically dropped when each test completes (whether successfully or unsuccessfully).
      * @param name The name of the table to create
      * @param schema The schema for the table. This is used to derive the primary key and to map the [items] (if any).
      * @param gsis A map of GSI names to schemas
@@ -155,9 +163,16 @@ abstract class DdbLocalTest {
     ) = DynamoDbMapper(ddb ?: this.ddb, config)
 
     @BeforeTest
-    fun initializeTest() {
+    fun initializeTest() = runTest {
         requestInterceptor.enabled = true
+        setUp()
     }
+
+    /**
+     * Creates the fixtures (e.g., tables and seed items via [createTable]) needed by each test. Invoked before every
+     * test; anything created via [createTable] is dropped after every test.
+     */
+    protected open suspend fun setUp() { }
 
     /**
      * Executes requests on a low-level [DynamoDbClient] and _does not_ log any requests executed in [block]. (This
@@ -174,26 +189,21 @@ abstract class DdbLocalTest {
 
     protected suspend fun tableSize(tableName: String): Int = tableItems(tableName).size
 
-    protected suspend fun truncateTable(tableName: String) {
-        val items = tableItems(tableName)
-        lowLevelAccess {
-            val keyNames = describeTable { this.tableName = tableName }
-                .table
-                ?.keySchema
-                .orEmpty()
-                .map { it.attributeName }
-
-            items.forEach { item ->
-                deleteItem {
-                    key = item.filterKeys { it in keyNames }
-                    this.tableName = tableName
-                }
-            }
+    /**
+     * Runs after every test: verifies the requests sent by the mapper and then (even if verification fails) drops the
+     * tables created via [createTable] and closes the low-level client. These run from a single hook so their order is
+     * deterministic; cleanup requests go through [lowLevelAccess] so they're excluded from verification.
+     */
+    @AfterTest
+    fun tearDown() {
+        try {
+            verifyRequests()
+        } finally {
+            cleanUp()
         }
     }
 
-    @AfterTest
-    fun postVerify() {
+    private fun verifyRequests() {
         requests.forEach { req ->
             val uaString = requireNotNull(req.headers["User-Agent"]) {
                 "Missing User-Agent header for request $req"
@@ -215,17 +225,21 @@ abstract class DdbLocalTest {
         }
     }
 
-    @AfterAll
-    fun cleanUp() {
-        if (ddbHolder.isInitialized()) {
+    private fun cleanUp() {
+        if (!ddbHolder.isInitialized()) return
+
+        try {
             runBlocking {
-                tempTables.forEach { name ->
-                    ddb.deleteTable { tableName = name }
-                    ddb.waitUntilTableNotExists { tableName = name }
+                lowLevelAccess {
+                    tempTables.forEach { name ->
+                        deleteTable { tableName = name }
+                        waitUntilTableNotExists { tableName = name }
+                    }
                 }
             }
-
-            ddb.close()
+        } finally {
+            tempTables.clear()
+            ddb.close() // Unclosed clients keep CRT event loops alive, which hangs Native test binaries on exit
         }
     }
 }

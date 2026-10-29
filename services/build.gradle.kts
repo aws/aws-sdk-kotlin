@@ -6,6 +6,8 @@ import aws.sdk.kotlin.gradle.kmp.*
 import aws.sdk.kotlin.gradle.publishing.configurePublishing
 import aws.sdk.kotlin.gradle.util.typedProp
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.konan.target.HostManager
+import org.jetbrains.kotlin.konan.target.KonanTarget
 import java.time.LocalDateTime
 
 plugins {
@@ -170,7 +172,12 @@ subprojects {
 
             tasks.register("e2eTest") {
                 dependsOn("jvmE2eTest")
-                // dependsOn("nativeE2eTest") // FIXME Figure out how we want to run E2E tests (same task as JVM, different tasks, matrixed by target or just one Native target, etc.)
+
+                // Run Native E2E tests on a single target (the one matching a Linux x64 host) to bound CI time. Other
+                // targets can still be run individually via `nativeE2eTest` or `<target>E2eTest`.
+                if (HostManager.host == KonanTarget.LINUX_X64) {
+                    dependsOn(tasks.matching { it.name == "linuxX64E2eTest" })
+                }
             }
         }
 

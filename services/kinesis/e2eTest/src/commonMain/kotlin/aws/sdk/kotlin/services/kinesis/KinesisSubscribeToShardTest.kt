@@ -10,9 +10,6 @@ import aws.sdk.kotlin.services.kinesis.waiters.waitUntilStreamNotExists
 import aws.sdk.kotlin.testing.withAllEngines
 import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.retries.getOrThrow
-import aws.smithy.kotlin.runtime.testing.AfterAll
-import aws.smithy.kotlin.runtime.testing.TestInstance
-import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.TimestampFormat
 import kotlinx.coroutines.*
@@ -31,7 +28,6 @@ private val TEST_DATA = "Bees, bees, bees, bees!"
 /**
  * Tests for Kinesis SubscribeToShard (an RPC-bound protocol)
  */
-@TestInstance(TestLifecycle.PER_CLASS)
 class KinesisSubscribeToShardTest {
     private val client = KinesisClient { region = "us-east-1" }
 
@@ -43,7 +39,7 @@ class KinesisSubscribeToShardTest {
     private val testStreamName = "$STREAM_NAME_PREFIX-$testRunId"
     private val testConsumerName = "$STREAM_CONSUMER_NAME_PREFIX-$testRunId"
 
-    @AfterAll
+    @AfterTest
     fun cleanUp() {
         client.close()
     }

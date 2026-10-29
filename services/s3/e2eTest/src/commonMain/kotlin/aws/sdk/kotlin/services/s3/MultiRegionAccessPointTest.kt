@@ -15,15 +15,13 @@ import aws.smithy.kotlin.runtime.auth.awssigning.DefaultAwsSigner
 import aws.smithy.kotlin.runtime.auth.awssigning.crt.CrtAwsSigner
 import aws.smithy.kotlin.runtime.http.auth.SigV4AsymmetricAuthScheme
 import aws.smithy.kotlin.runtime.io.use
-import aws.smithy.kotlin.runtime.testing.AfterAll
-import aws.smithy.kotlin.runtime.testing.BeforeAll
-import aws.smithy.kotlin.runtime.testing.TestInstance
-import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import aws.smithy.kotlin.runtime.testing.parameterized
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -31,11 +29,10 @@ import kotlin.time.Duration.Companion.seconds
 
 private const val TEST_OBJECT_KEY = "test.txt"
 
-@TestInstance(TestLifecycle.PER_CLASS)
 class MultiRegionAccessPointTest {
-    private lateinit var s3West: S3Client
-    private lateinit var s3East: S3Client
-    private lateinit var s3Control: S3ControlClient
+    private val s3West = S3TestUtils.createClient { region = "us-west-2" }
+    private val s3East = S3TestUtils.createClient { region = "us-east-2" }
+    private val s3Control = S3ControlClient { region = "us-west-2" }
 
     private lateinit var accountId: String
     private lateinit var multiRegionAccessPointName: String
@@ -43,12 +40,8 @@ class MultiRegionAccessPointTest {
     private lateinit var usWestBucket: String
     private lateinit var usEastBucket: String
 
-    @BeforeAll
+    @BeforeTest
     fun setup(): Unit = runBlocking {
-        s3West = S3TestUtils.createClient { region = "us-west-2" }
-        s3East = S3TestUtils.createClient { region = "us-east-2" }
-        s3Control = S3ControlClient { region = "us-west-2" }
-
         accountId = S3TestUtils.getAccountId()
         usWestBucket = S3TestUtils.createTestBucket(s3West, "mrap-west")
         usEastBucket = S3TestUtils.createTestBucket(s3East, "mrap-east")
@@ -61,10 +54,14 @@ class MultiRegionAccessPointTest {
         )
     }
 
-    @AfterAll
+    @AfterTest
     fun cleanup(): Unit = runBlocking {
         try {
-            s3Control.deleteMultiRegionAccessPoint(multiRegionAccessPointName, accountId)
+            if (::multiRegionAccessPointArn.isInitialized) {
+                s3Control.deleteMultiRegionAccessPoint(multiRegionAccessPointName, accountId)
+            }
+
+            if (!::accountId.isInitialized) return@runBlocking
 
             val resp = s3Control.listMultiRegionAccessPointsPaginated {
                 accountId = this@MultiRegionAccessPointTest.accountId
@@ -88,8 +85,8 @@ class MultiRegionAccessPointTest {
             }
             print(mrapManifest)
         } finally {
-            runCatching { S3TestUtils.deleteBucket(s3West, usWestBucket) }
-            runCatching { S3TestUtils.deleteBucket(s3East, usEastBucket) }
+            if (::usWestBucket.isInitialized) runCatching { S3TestUtils.deleteBucket(s3West, usWestBucket) }
+            if (::usEastBucket.isInitialized) runCatching { S3TestUtils.deleteBucket(s3East, usEastBucket) }
 
             s3West.close()
             s3East.close()
