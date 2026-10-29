@@ -30,6 +30,7 @@ import aws.smithy.kotlin.runtime.time.TimestampFormat
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.SingleFlightGroup
 import aws.smithy.kotlin.runtime.util.WriteType
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -120,12 +121,14 @@ public class SsoTokenProvider(
         try {
             val contents = serializeSsoToken(refreshed)
 
-            platformProvider.write(
+            platformProvider.writeFile(
                 filepath,
                 contents,
                 WriteType.OVERWRITE,
                 permissions = tokenFilePermissions.posixOctal,
             )
+        } catch (ex: CancellationException) {
+            throw ex
         } catch (ex: Exception) {
             coroutineContext.debug<SsoTokenProvider>(ex) { "failed to write refreshed token back to disk at $filepath" }
         }

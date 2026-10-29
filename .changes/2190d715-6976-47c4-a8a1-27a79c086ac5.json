@@ -1,0 +1,8 @@
+{
+    "id": "2190d715-6976-47c4-a8a1-27a79c086ac5",
+    "type": "bugfix",
+    "description": "Write refreshed SSO and Login tokens without blocking the calling thread",
+    "issues": [
+        "https://github.com/smithy-lang/smithy-kotlin/issues/1743"
+    ]
+}
