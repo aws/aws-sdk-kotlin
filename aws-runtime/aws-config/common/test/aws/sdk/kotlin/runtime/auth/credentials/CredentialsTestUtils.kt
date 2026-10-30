@@ -5,10 +5,10 @@
 
 package aws.sdk.kotlin.runtime.auth.credentials
 
-import aws.smithy.kotlin.runtime.auth.awscredentials.AcceptedPastExpirationKey
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehaviorKey
+import aws.smithy.kotlin.runtime.auth.awscredentials.PacedRefreshKey
 import aws.smithy.kotlin.runtime.auth.awscredentials.copy
 import aws.smithy.kotlin.runtime.collections.toMutableAttributes
 
@@ -23,13 +23,12 @@ internal fun Credentials.withRefreshBehavior(behavior: CredentialsRefreshBehavio
 )
 
 /**
- * The attributes the IMDS provider attaches: static stability, and acceptance past expiration (see
- * [AcceptedPastExpirationKey]).
+ * The attributes the IMDS provider attaches: static stability, and a paced refresh (see [PacedRefreshKey]).
  */
 internal fun Credentials.withImdsRefreshAttributes(): Credentials = copy(
     attributes = attributes.toMutableAttributes().apply {
         set(CredentialsRefreshBehaviorKey, CredentialsRefreshBehavior.RefreshableWithStaticStability)
-        set(AcceptedPastExpirationKey, true)
+        set(PacedRefreshKey, true)
     },
 )
 
@@ -39,6 +38,6 @@ internal fun Credentials.withImdsRefreshAttributes(): Credentials = copy(
 internal fun Credentials.withoutRefreshBehavior(): Credentials = copy(
     attributes = attributes.toMutableAttributes().apply {
         remove(CredentialsRefreshBehaviorKey)
-        remove(AcceptedPastExpirationKey)
+        remove(PacedRefreshKey)
     },
 )
