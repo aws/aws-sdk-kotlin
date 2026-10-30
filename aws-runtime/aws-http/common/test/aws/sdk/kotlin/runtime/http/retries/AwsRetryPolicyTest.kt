@@ -28,7 +28,7 @@ class AwsRetryPolicyTest {
 
     @Test
     fun testInvalidCredentialErrorsAreRetriedWhenTheCredentialsWereMarkedForRefresh() {
-        listOf("ExpiredToken", "InvalidToken").forEach { errorCode ->
+        listOf("ExpiredToken", "ExpiredTokenException").forEach { errorCode ->
             val ex = ServiceException()
             ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = errorCode
             ex.sdkErrorMetadata.attributes[CredentialsMarkedForRefresh] = true
@@ -40,12 +40,20 @@ class AwsRetryPolicyTest {
     @Test
     fun testInvalidCredentialErrorsAreNotRetriedOtherwise() {
         // Without a refresh, a retry would be signed with the same rejected credentials and cannot succeed.
-        listOf("ExpiredToken", "InvalidToken").forEach { errorCode ->
+        listOf("ExpiredToken", "ExpiredTokenException").forEach { errorCode ->
             val ex = ServiceException()
             ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = errorCode
             val result = AwsRetryPolicy.Default.evaluate(Result.failure(ex))
             assertEquals(RetryDirective.TerminateAndFail, result, "expected $errorCode not to be retried")
         }
+    }
+
+    @Test
+    fun testInvalidTokenIsNotAnInvalidCredentialError() {
+        val ex = ServiceException()
+        ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = "InvalidToken"
+        ex.sdkErrorMetadata.attributes[CredentialsMarkedForRefresh] = true
+        assertEquals(RetryDirective.TerminateAndFail, AwsRetryPolicy.Default.evaluate(Result.failure(ex)))
     }
 
     @Test
