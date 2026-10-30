@@ -11,6 +11,7 @@ import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.retries.policy.RetryDirective
+import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -22,6 +23,28 @@ class AwsRetryPolicyTest {
             ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = errorCode
             val result = AwsRetryPolicy.Default.evaluate(Result.failure(ex))
             assertEquals(RetryDirective.RetryError(errorType), result)
+        }
+    }
+
+    @Test
+    fun testInvalidCredentialErrorsAreRetriedWhenTheCredentialsWereMarkedForRefresh() {
+        listOf("ExpiredToken", "InvalidToken").forEach { errorCode ->
+            val ex = ServiceException()
+            ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = errorCode
+            ex.sdkErrorMetadata.attributes[CredentialsMarkedForRefresh] = true
+            val result = AwsRetryPolicy.Default.evaluate(Result.failure(ex))
+            assertEquals(RetryDirective.RetryError(RetryErrorType.Transient), result, "expected $errorCode to be retryable")
+        }
+    }
+
+    @Test
+    fun testInvalidCredentialErrorsAreNotRetriedOtherwise() {
+        // Without a refresh, a retry would be signed with the same rejected credentials and cannot succeed.
+        listOf("ExpiredToken", "InvalidToken").forEach { errorCode ->
+            val ex = ServiceException()
+            ex.sdkErrorMetadata.attributes[ServiceErrorMetadata.ErrorCode] = errorCode
+            val result = AwsRetryPolicy.Default.evaluate(Result.failure(ex))
+            assertEquals(RetryDirective.TerminateAndFail, result, "expected $errorCode not to be retried")
         }
     }
 

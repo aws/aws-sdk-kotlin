@@ -6,7 +6,9 @@
 package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.arns.Arn
+import aws.sdk.kotlin.runtime.auth.credentials.internal.NON_RECOVERABLE_STS_ERROR_CODES
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
+import aws.sdk.kotlin.runtime.auth.credentials.internal.nonRecoverable
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.StsClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.assumeRoleWithWebIdentity
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.PolicyDescriptorType
@@ -138,7 +140,13 @@ public class StsWebIdentityCredentialsProvider(
             }
         } catch (ex: Exception) {
             logger.debug { "sts refused to grant assumed role credentials from web identity" }
-            throw CredentialsProviderException("STS failed to assume role from web identity", ex)
+            val wrapped = CredentialsProviderException("STS failed to assume role from web identity", ex)
+            // There is no RegionDisabledException branch here, so the code set is the only classification.
+            throw if (ex.serviceErrorCode()?.let { it in NON_RECOVERABLE_STS_ERROR_CODES } == true) {
+                wrapped.nonRecoverable()
+            } else {
+                wrapped
+            }
         } finally {
             client.close()
         }
@@ -154,6 +162,7 @@ public class StsWebIdentityCredentialsProvider(
             expiration = roleCredentials.expiration,
             providerName = PROVIDER_NAME,
             accountId = accountId,
+            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_STS_ASSUME_ROLE_WEB_ID)
     }
 

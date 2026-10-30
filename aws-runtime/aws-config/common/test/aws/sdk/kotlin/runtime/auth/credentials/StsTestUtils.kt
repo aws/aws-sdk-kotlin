@@ -6,6 +6,7 @@
 package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.http.Headers
 import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpMethod
@@ -35,6 +36,7 @@ object StsTestUtils {
         EPOCH + 15.minutes,
         "AssumeRoleProvider",
         "1234567",
+        refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
     )
 
     fun stsRequest(bodyParameters: Map<String, String>) = HttpRequestBuilder().apply {

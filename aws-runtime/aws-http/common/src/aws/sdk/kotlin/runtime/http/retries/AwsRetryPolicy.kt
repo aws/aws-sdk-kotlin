@@ -5,13 +5,23 @@
 
 package aws.sdk.kotlin.runtime.http.retries
 
+import aws.sdk.kotlin.runtime.InternalSdkApi
 import aws.smithy.kotlin.runtime.ServiceErrorMetadata
 import aws.smithy.kotlin.runtime.ServiceException
+import aws.smithy.kotlin.runtime.collections.AttributeKey
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.retries.policy.RetryDirective
 import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.Throttling
 import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.Transient
 import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
+
+/**
+ * Set on a [ServiceException] whose rejected credentials were marked for refresh by a credentials provider that caches
+ * them, so that a retry resolves refreshed credentials. [AwsRetryPolicy] retries `ExpiredToken` and `InvalidToken`
+ * only when this is set; otherwise the retry would be signed with the same rejected credentials.
+ */
+@InternalSdkApi
+public val CredentialsMarkedForRefresh: AttributeKey<Boolean> = AttributeKey("aws.sdk.kotlin#CredentialsMarkedForRefresh")
 
 /**
  * The standard policy for AWS service clients that defines which error conditions are retryable and how. This policy
@@ -20,6 +30,8 @@ import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
  * * Any [ServiceException] with an `sdkErrorMetadata.errorCode` of:
  *   * `BandwidthLimitExceeded`
  *   * `EC2ThrottledException`
+ *   * `ExpiredToken` and `InvalidToken`, only when the rejected credentials were marked for refresh (see
+ *     [CredentialsMarkedForRefresh])
  *   * `IDPCommunicationError` (only STS throws it)
  *   * `LimitExceededException`
  *   * `PriorRequestNotComplete`
@@ -71,6 +83,8 @@ public open class AwsRetryPolicy : StandardRetryPolicy() {
             "TransactionInProgressException" to Throttling,
         )
 
+        internal val invalidCredentialErrorCodes = setOf("ExpiredToken", "InvalidToken")
+
         internal val knownStatusCodes = mapOf(
             500 to Transient,
             502 to Transient,
@@ -84,8 +98,13 @@ public open class AwsRetryPolicy : StandardRetryPolicy() {
         else -> null
     }
 
-    private fun evaluateServiceException(ex: ServiceException): RetryDirective? = with(ex.sdkErrorMetadata) {
-        (knownErrorTypes[errorCode] ?: knownStatusCodes[statusCode])
+    private fun evaluateServiceException(ex: ServiceException): RetryDirective? {
+        val metadata = ex.sdkErrorMetadata
+        if (metadata.errorCode in invalidCredentialErrorCodes) {
+            val markedForRefresh = metadata.attributes.getOrNull(CredentialsMarkedForRefresh) == true
+            return if (markedForRefresh) RetryDirective.RetryError(Transient) else null
+        }
+        return (knownErrorTypes[metadata.errorCode] ?: knownStatusCodes[metadata.statusCode])
             ?.let { RetryDirective.RetryError(it) }
     }
 
