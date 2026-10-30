@@ -20,7 +20,6 @@ import aws.sdk.kotlin.runtime.config.retries.resolveRetryConfig
 import aws.sdk.kotlin.runtime.config.useragent.resolveUserAgentAppId
 import aws.sdk.kotlin.runtime.region.resolveRegion
 import aws.sdk.kotlin.runtime.region.resolveSigV4aSigningRegionSet
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.auth.awscredentials.SigV4aClientConfig
 import aws.smithy.kotlin.runtime.client.AbstractSdkClientFactory
 import aws.smithy.kotlin.runtime.client.RetryStrategyClientConfig
@@ -73,7 +72,6 @@ public abstract class AbstractAwsSdkClientFactory<
     /**
      * Construct a [TClient] by resolving the configuration from the current environment.
      */
-    @OptIn(ExperimentalApi::class)
     public suspend fun fromEnvironment(block: (TConfigBuilder.() -> Unit)? = null): TClient {
         val builder = builder()
         val config = builder.config

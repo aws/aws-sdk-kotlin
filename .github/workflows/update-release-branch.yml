@@ -98,7 +98,7 @@ jobs:
           # because CI is masking it
           ./gradlew -Paws.kotlin.native=false test jvmTest
       - name: Release Check - build an SDK client
-        if: env.MERGED_NEEDED == 'true'
+        if: env.MERGE_NEEDED == 'true'
         shell: bash
         run: |
           # Additionally generate and build a service client to confirm that codegen and build works
@@ -108,6 +108,8 @@ jobs:
       - name: Merge
         if: env.MERGE_NEEDED == 'true'
         shell: bash
+        env:
+          COMMIT_MESSAGE: ${{ inputs.commit_message }}
         run: |
           echo "merging main @ $main_sha into release @ $release_sha";
           
@@ -115,11 +117,13 @@ jobs:
           git stash -- gradle/wrapper/gradle-wrapper.properties
           
           git switch release;
-          input_message=${{ inputs.commit_message }}
-          message=${input_message:-"Merging main into release"}
+          message="$COMMIT_MESSAGE"
+          if [[ -z "${message//[[:space:]]/}" ]]; then
+            message="Merging main into release"
+          fi
           echo "message=$message"
           git merge -m "$message" main;
-          if [ "${{ env.DRY_RUN }}" == "true" ]; then
+          if [ "$DRY_RUN" == "true" ]; then
             echo "dry run, skipping push to remote";
             git log -n 10 --oneline;
           else

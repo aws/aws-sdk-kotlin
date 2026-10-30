@@ -7,7 +7,6 @@ package aws.sdk.kotlin.services.s3.express
 import aws.sdk.kotlin.services.s3.*
 import aws.sdk.kotlin.services.s3.S3Attributes
 import aws.sdk.kotlin.services.s3.S3Client
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.auth.awscredentials.CloseableCredentialsProvider
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.simpleClassName
@@ -97,7 +96,6 @@ internal class DefaultS3ExpressCredentialsProvider(
         credentialsCache.put(key, S3ExpressCredentialsCacheValue(it))
     }
 
-    @OptIn(ExperimentalApi::class)
     internal val S3Client.logger get() = config.telemetryProvider.loggerProvider.getLogger<DefaultS3ExpressCredentialsProvider>()
 
     override fun toString(): String = this.simpleClassName

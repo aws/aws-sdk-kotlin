@@ -29,6 +29,34 @@
         ]
     },
     "shapes": {
+        "com.amazonaws.marketplacecatalog#AMISecurityFilters": {
+            "type": "structure",
+            "members": {
+                "DeliveryOptionId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the delivery option whose AMI Security assessments you want to\n            list.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Filters that apply to assessments performed against the AMI Security framework.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#AMISecuritySummary": {
+            "type": "structure",
+            "members": {
+                "DeliveryOptionId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the delivery option that was evaluated.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The details of the resource assessed under the AMI Security framework.</p>"
+            }
+        },
         "com.amazonaws.marketplacecatalog#ARN": {
             "type": "string",
             "traits": {
@@ -53,6 +81,9 @@
                     "target": "com.amazonaws.marketplacecatalog#DeleteResourcePolicy"
                 },
                 {
+                    "target": "com.amazonaws.marketplacecatalog#DescribeAssessment"
+                },
+                {
                     "target": "com.amazonaws.marketplacecatalog#DescribeChangeSet"
                 },
                 {
@@ -60,6 +91,9 @@
                 },
                 {
                     "target": "com.amazonaws.marketplacecatalog#GetResourcePolicy"
+                },
+                {
+                    "target": "com.amazonaws.marketplacecatalog#ListAssessments"
                 },
                 {
                     "target": "com.amazonaws.marketplacecatalog#ListChangeSets"
@@ -685,325 +719,324 @@
                     ]
                 },
                 "smithy.rules#endpointTests": {
-                    "version": "1.0",
                     "testCases": [
                         {
                             "documentation": "For custom endpoint with region not set and fips disabled",
-                            "params": {
-                                "Endpoint": "https://example.com",
-                                "UseFIPS": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://example.com"
                                 }
+                            },
+                            "params": {
+                                "Endpoint": "https://example.com",
+                                "UseFIPS": false
                             }
                         },
                         {
                             "documentation": "For custom endpoint with fips enabled",
+                            "expect": {
+                                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+                            },
                             "params": {
                                 "Endpoint": "https://example.com",
                                 "UseFIPS": true
-                            },
-                            "expect": {
-                                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
                             }
                         },
                         {
                             "documentation": "For custom endpoint with fips disabled and dualstack enabled",
+                            "expect": {
+                                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+                            },
                             "params": {
                                 "Endpoint": "https://example.com",
                                 "UseFIPS": false,
                                 "UseDualStack": true
-                            },
-                            "expect": {
-                                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
                             }
                         },
                         {
                             "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
-                            "params": {
-                                "Region": "us-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog-marketplace.us-east-1.api.aws"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
                             "documentation": "For region us-east-1 with FIPS enabled and DualStack enabled",
-                            "params": {
-                                "Region": "us-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.us-east-1.api.aws"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
                             "documentation": "For region us-east-1 with FIPS enabled and DualStack disabled",
-                            "params": {
-                                "Region": "us-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.us-east-1.amazonaws.com"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region us-east-1 with FIPS disabled and DualStack disabled",
-                            "params": {
-                                "Region": "us-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace.us-east-1.amazonaws.com"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack enabled",
-                            "params": {
-                                "Region": "cn-northwest-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.cn-northwest-1.api.amazonwebservices.com.cn"
                                 }
+                            },
+                            "params": {
+                                "Region": "cn-northwest-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
                             "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack disabled",
-                            "params": {
-                                "Region": "cn-northwest-1",
-                                "UseFIPS": true,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.cn-northwest-1.amazonaws.com.cn"
                                 }
+                            },
+                            "params": {
+                                "Region": "cn-northwest-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack enabled",
-                            "params": {
-                                "Region": "cn-northwest-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace.cn-northwest-1.api.amazonwebservices.com.cn"
                                 }
+                            },
+                            "params": {
+                                "Region": "cn-northwest-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
                             "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack disabled",
-                            "params": {
-                                "Region": "cn-northwest-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace.cn-northwest-1.amazonaws.com.cn"
                                 }
+                            },
+                            "params": {
+                                "Region": "cn-northwest-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region eusc-de-east-1 with FIPS enabled and DualStack disabled",
-                            "params": {
-                                "Region": "eusc-de-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.eusc-de-east-1.amazonaws.eu"
                                 }
+                            },
+                            "params": {
+                                "Region": "eusc-de-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region eusc-de-east-1 with FIPS disabled and DualStack disabled",
-                            "params": {
-                                "Region": "eusc-de-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace.eusc-de-east-1.amazonaws.eu"
                                 }
+                            },
+                            "params": {
+                                "Region": "eusc-de-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.us-iso-east-1.c2s.ic.gov"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack disabled",
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace.us-iso-east-1.c2s.ic.gov"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.us-isob-east-1.sc2s.sgov.gov"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack disabled",
-                            "params": {
-                                "Region": "us-isob-east-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace.us-isob-east-1.sc2s.sgov.gov"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region eu-isoe-west-1 with FIPS enabled and DualStack disabled",
-                            "params": {
-                                "Region": "eu-isoe-west-1",
-                                "UseFIPS": true,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.eu-isoe-west-1.cloud.adc-e.uk"
                                 }
+                            },
+                            "params": {
+                                "Region": "eu-isoe-west-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region eu-isoe-west-1 with FIPS disabled and DualStack disabled",
-                            "params": {
-                                "Region": "eu-isoe-west-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace.eu-isoe-west-1.cloud.adc-e.uk"
                                 }
+                            },
+                            "params": {
+                                "Region": "eu-isoe-west-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region us-isof-south-1 with FIPS enabled and DualStack disabled",
-                            "params": {
-                                "Region": "us-isof-south-1",
-                                "UseFIPS": true,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.us-isof-south-1.csp.hci.ic.gov"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-isof-south-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region us-isof-south-1 with FIPS disabled and DualStack disabled",
-                            "params": {
-                                "Region": "us-isof-south-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace.us-isof-south-1.csp.hci.ic.gov"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-isof-south-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack enabled",
-                            "params": {
-                                "Region": "us-gov-west-1",
-                                "UseFIPS": true,
-                                "UseDualStack": true
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.us-gov-west-1.api.aws"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
                             "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack disabled",
-                            "params": {
-                                "Region": "us-gov-west-1",
-                                "UseFIPS": true,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace-fips.us-gov-west-1.amazonaws.com"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
                             "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack enabled",
-                            "params": {
-                                "Region": "us-gov-west-1",
-                                "UseFIPS": false,
-                                "UseDualStack": true
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace.us-gov-west-1.api.aws"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
                             "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack disabled",
-                            "params": {
-                                "Region": "us-gov-west-1",
-                                "UseFIPS": false,
-                                "UseDualStack": false
-                            },
                             "expect": {
                                 "endpoint": {
                                     "url": "https://catalog.marketplace.us-gov-west-1.amazonaws.com"
                                 }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1012,7 +1045,8 @@
                                 "error": "Invalid Configuration: Missing Region"
                             }
                         }
-                    ]
+                    ],
+                    "version": "1.0"
                 }
             }
         },
@@ -1295,6 +1329,135 @@
                         "smithy.api#enumValue": "Draft"
                     }
                 }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#AssessmentIdentifier": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^(assessment-[a-zA-Z0-9]+|arn:[a-zA-Z0-9-]+:[a-zA-Z0-9-]+:[a-zA-Z0-9-]*:[0-9]*:[a-zA-Z0-9-]+/Assessment/assessment-[a-zA-Z0-9]+)$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#AssessmentResult": {
+            "type": "enum",
+            "members": {
+                "PASS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PASS"
+                    }
+                },
+                "FAIL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FAIL"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#AssessmentSummary": {
+            "type": "structure",
+            "members": {
+                "AssessmentArn": {
+                    "target": "com.amazonaws.marketplacecatalog#ARN",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN associated with the assessment.</p>"
+                    }
+                },
+                "AssessmentId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the assessment.</p>"
+                    }
+                },
+                "FrameworkId": {
+                    "target": "com.amazonaws.marketplacecatalog#VersionedFrameworkId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the framework that was evaluated by this assessment, in the format\n            <code>frameworkId@version</code> (for example,\n            <code>AMISecurity@1.0</code>).</p>"
+                    }
+                },
+                "AssessmentTargetSummary": {
+                    "target": "com.amazonaws.marketplacecatalog#AssessmentTargetSummary",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Identifies the entity or change set that was assessed.</p>"
+                    }
+                },
+                "FrameworkSummary": {
+                    "target": "com.amazonaws.marketplacecatalog#FrameworkSummary",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The framework-specific details of the assessed resource. The set member corresponds\n            to the framework identified by <code>FrameworkId</code>.</p>"
+                    }
+                },
+                "AssessmentResult": {
+                    "target": "com.amazonaws.marketplacecatalog#AssessmentResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The overall result of the assessment.</p>"
+                    }
+                },
+                "CreatedAt": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time the assessment was created, in ISO 8601 format\n            (<code>2018-02-27T13:45:22Z</code>).</p>"
+                    }
+                },
+                "ExpiresAt": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time the assessment expires, in ISO 8601 format\n            (<code>2018-02-27T13:45:22Z</code>).</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Summarized information about an assessment.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#AssessmentSummaryList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#AssessmentSummary"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#AssessmentTargetFilter": {
+            "type": "structure",
+            "members": {
+                "EntityId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the entity whose assessments you want to list.</p>"
+                    }
+                },
+                "ChangeSetId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the change set that triggered the assessments you want to\n            list.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Filters assessment list results by the resource that was assessed. Provide an entity\n            identifier, a change set identifier, or both.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#AssessmentTargetSummary": {
+            "type": "structure",
+            "members": {
+                "EntityId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the entity that was assessed.</p>"
+                    }
+                },
+                "ChangeSetId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the change set that was assessed.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Identifies the entity or change set that was assessed.</p>"
             }
         },
         "com.amazonaws.marketplacecatalog#BatchDescribeEntities": {
@@ -2001,6 +2164,127 @@
                 }
             }
         },
+        "com.amazonaws.marketplacecatalog#ContainerSecurityFilters": {
+            "type": "structure",
+            "members": {
+                "DeliveryOptionId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the delivery option whose Container Security assessments you want\n            to list.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Filters that apply to assessments performed against the Container Security\n            framework.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ContainerSecuritySummary": {
+            "type": "structure",
+            "members": {
+                "DeliveryOptionId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the delivery option that was evaluated.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The details of the resource assessed under the Container Security framework.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ControlAssessment": {
+            "type": "structure",
+            "members": {
+                "ControlId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the control that was evaluated.</p>"
+                    }
+                },
+                "ControlAssessmentResult": {
+                    "target": "com.amazonaws.marketplacecatalog#ControlAssessmentResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The result of the control evaluation.</p>"
+                    }
+                },
+                "Errors": {
+                    "target": "com.amazonaws.marketplacecatalog#ControlErrorList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An array of <code>ControlError</code> objects associated with the control\n            evaluation.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The result of evaluating a single control as part of an assessment.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ControlAssessmentList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#ControlAssessment"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ControlAssessmentResult": {
+            "type": "enum",
+            "members": {
+                "PASS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PASS"
+                    }
+                },
+                "FAIL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FAIL"
+                    }
+                },
+                "NOT_EXECUTED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NOT_EXECUTED"
+                    }
+                },
+                "EXEMPTION_PASS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "EXEMPTION_PASS"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ControlError": {
+            "type": "structure",
+            "members": {
+                "Code": {
+                    "target": "com.amazonaws.marketplacecatalog#ErrorCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error code that identifies the type of error.</p>"
+                    }
+                },
+                "Message": {
+                    "target": "com.amazonaws.marketplacecatalog#ErrorMessage",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The message for the error.</p>"
+                    }
+                },
+                "Scope": {
+                    "target": "com.amazonaws.marketplacecatalog#ErrorScopeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of name-value pairs that identify the resource or attribute that the error\n            applies to.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An error reported during the evaluation of a single control.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ControlErrorList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#ControlError"
+            }
+        },
         "com.amazonaws.marketplacecatalog#DataProductEntityIdFilter": {
             "type": "structure",
             "members": {
@@ -2338,6 +2622,158 @@
         "com.amazonaws.marketplacecatalog#DeleteResourcePolicyResponse": {
             "type": "structure",
             "members": {},
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.marketplacecatalog#DescribeAssessment": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.marketplacecatalog#DescribeAssessmentRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.marketplacecatalog#DescribeAssessmentResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.marketplacecatalog#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.marketplacecatalog#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.marketplacecatalog#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.marketplacecatalog#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Returns the metadata and detailed results of a single assessment, including the\n            framework that was evaluated, the overall assessment result, and a paginated list of\n            individual control evaluation results.</p>\n         <p>To list available assessments before describing one, use the\n            <code>ListAssessments</code> action.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/DescribeAssessment",
+                    "code": 200
+                },
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "ControlAssessments",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#DescribeAssessmentMaxResultInteger": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1,
+                    "max": 100
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#DescribeAssessmentRequest": {
+            "type": "structure",
+            "members": {
+                "Catalog": {
+                    "target": "com.amazonaws.marketplacecatalog#Catalog",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code>\n         </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "AssessmentIdentifier": {
+                    "target": "com.amazonaws.marketplacecatalog#AssessmentIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the assessment to describe. You can provide either\n            the assessment ID (for example, <code>assessment-12345</code>) or the full\n            assessment ARN (for example,\n            <code>arn:aws:aws-marketplace:us-east-1::AWSMarketplace/Assessment/assessment-12345</code>).</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.marketplacecatalog#DescribeAssessmentMaxResultInteger",
+                    "traits": {
+                        "smithy.api#default": 50,
+                        "smithy.api#documentation": "<p>Specifies the upper limit of <code>ControlAssessment</code> elements returned on a\n            single page. If a value isn't provided, the default value is 50. Valid values range\n            from 1 to 100.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.marketplacecatalog#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The value of the next token, if it exists. <code>null</code> if there are no more\n            results.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.marketplacecatalog#DescribeAssessmentResponse": {
+            "type": "structure",
+            "members": {
+                "AssessmentArn": {
+                    "target": "com.amazonaws.marketplacecatalog#ARN",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN associated with the assessment.</p>"
+                    }
+                },
+                "AssessmentId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique ID of the assessment.</p>"
+                    }
+                },
+                "FrameworkId": {
+                    "target": "com.amazonaws.marketplacecatalog#VersionedFrameworkId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the framework that was evaluated by this assessment, in the format\n            <code>frameworkId@version</code> (for example,\n            <code>AMISecurity@1.0</code>).</p>"
+                    }
+                },
+                "AssessmentTargetSummary": {
+                    "target": "com.amazonaws.marketplacecatalog#AssessmentTargetSummary",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Identifies the entity or change set that was assessed.</p>"
+                    }
+                },
+                "FrameworkSummary": {
+                    "target": "com.amazonaws.marketplacecatalog#FrameworkSummary",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The framework-specific details of the assessed resource. The set member corresponds\n            to the framework identified by <code>FrameworkId</code>.</p>"
+                    }
+                },
+                "AssessmentResult": {
+                    "target": "com.amazonaws.marketplacecatalog#AssessmentResult",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The overall result of the assessment.</p>"
+                    }
+                },
+                "CreatedAt": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time the assessment was created, in ISO 8601 format\n            (<code>2018-02-27T13:45:22Z</code>).</p>"
+                    }
+                },
+                "ExpiresAt": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time the assessment expires, in ISO 8601 format\n            (<code>2018-02-27T13:45:22Z</code>).</p>"
+                    }
+                },
+                "ControlAssessments": {
+                    "target": "com.amazonaws.marketplacecatalog#ControlAssessmentList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An array of <code>ControlAssessment</code> objects, each containing the result of an\n            individual control evaluated as part of the assessment.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.marketplacecatalog#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The value of the next token, if it exists. <code>null</code> if there are no more\n            results.</p>"
+                    }
+                }
+            },
             "traits": {
                 "smithy.api#output": {}
             }
@@ -2778,6 +3214,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An object that contains summary information about the offer set.</p>"
                     }
+                },
+                "ExpressPrivateOfferConfigurationSummary": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationSummary",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An object that contains summary information about the express private offer configuration.</p>"
+                    }
+                },
+                "SubsidiaryAuthorizationSummary": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummary",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An object that contains summary information about the subsidiary authorization, such as its\n           status and authorized resource, when the entity type is\n           <code>SubsidiaryAuthorization</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2847,6 +3295,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A filter for offer sets.</p>"
                     }
+                },
+                "ExpressPrivateOfferConfigurationFilters": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationFilters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter for express private offer configurations.</p>"
+                    }
+                },
+                "SubsidiaryAuthorizationFilters": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationFilters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter for subsidiary authorizations.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2900,10 +3360,32 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A sort for offer sets.</p>"
                     }
+                },
+                "ExpressPrivateOfferConfigurationSort": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationSort",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A sort for express private offer configurations.</p>"
+                    }
+                },
+                "SubsidiaryAuthorizationSort": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSort",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A sort for subsidiary authorizations.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Object containing all the sort fields per entity type.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ErrorCode": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                },
+                "smithy.api#pattern": "^[A-Z_]+$"
             }
         },
         "com.amazonaws.marketplacecatalog#ErrorCodeString": {
@@ -2942,6 +3424,41 @@
                 "target": "com.amazonaws.marketplacecatalog#ErrorDetail"
             }
         },
+        "com.amazonaws.marketplacecatalog#ErrorMessage": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ErrorScope": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.marketplacecatalog#ScopeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the resource field the error applies to (for example,\n            <code>AMI_ID</code>, <code>FILE_PATH</code>, or <code>PACKAGE_NAME</code>).</p>"
+                    }
+                },
+                "Value": {
+                    "target": "com.amazonaws.marketplacecatalog#ScopeValue",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The value of the resource field the error applies to.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A name-value pair that identifies the resource or attribute that a\n            <code>ControlError</code> applies to.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ErrorScopeList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#ErrorScope"
+            }
+        },
         "com.amazonaws.marketplacecatalog#Errors": {
             "type": "map",
             "key": {
@@ -2961,6 +3478,216 @@
                 "smithy.api#pattern": "^(.)+$"
             }
         },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationEntityIdFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationEntityIdFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of <code>EntityId</code> values to filter on.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for the <code>EntityId</code> of an express private offer configuration.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationEntityIdFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationEntityIdString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationEntityIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationFilters": {
+            "type": "structure",
+            "members": {
+                "EntityId": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationEntityIdFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>You can filter on the <code>EntityId</code> of an express private offer configuration.</p>"
+                    }
+                },
+                "ProductId": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationProductIdFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>You can filter on the <code>ProductId</code> of an express private offer configuration.</p>"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationStateFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The state of the express private offer configuration to filter on. Valid values are the following:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ACTIVE</code> – The configuration is active and you can use it to generate offers.</p>\n            </li>\n            <li>\n               <p>\n                  <code>INACTIVE</code> – The configuration is deprecated or deleted.</p>\n            </li>\n         </ul>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter fields for the express private offer configuration entity.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationProductIdFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationProductIdFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of <code>ProductId</code> values to filter on.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for the <code>ProductId</code> of an express private offer configuration.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationProductIdFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationProductIdString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationProductIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationSort": {
+            "type": "structure",
+            "members": {
+                "SortBy": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationSortBy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The field to sort by. Valid values are <code>EntityId</code>, <code>LastModifiedDate</code>, <code>ProductId</code>, and <code>State</code>.</p>"
+                    }
+                },
+                "SortOrder": {
+                    "target": "com.amazonaws.marketplacecatalog#SortOrder",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The sorting order. Valid values are <code>ASCENDING</code> and <code>DESCENDING</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The sort fields for express private offer configurations.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationSortBy": {
+            "type": "enum",
+            "members": {
+                "EntityId": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "EntityId"
+                    }
+                },
+                "LastModifiedDate": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LastModifiedDate"
+                    }
+                },
+                "ProductId": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ProductId"
+                    }
+                },
+                "State": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "State"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationStateFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationStateFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of <code>State</code> values to filter on. Valid values are <code>ACTIVE</code> and <code>INACTIVE</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for the <code>State</code> of an express private offer configuration.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationStateFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationStateString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationStateString": {
+            "type": "enum",
+            "members": {
+                "ACTIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACTIVE"
+                    }
+                },
+                "INACTIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INACTIVE"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationSummary": {
+            "type": "structure",
+            "members": {
+                "ProductId": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationProductIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The product ID associated with the express private offer configuration.</p>"
+                    }
+                },
+                "State": {
+                    "target": "com.amazonaws.marketplacecatalog#ExpressPrivateOfferConfigurationStateString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The state of the express private offer configuration. Valid values are the following:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ACTIVE</code> – The configuration is active and you can use it to generate offers.</p>\n            </li>\n            <li>\n               <p>\n                  <code>INACTIVE</code> – The configuration is deprecated or deleted.</p>\n            </li>\n         </ul>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Summarized information about an express private offer configuration.</p>"
+            }
+        },
         "com.amazonaws.marketplacecatalog#FailureCode": {
             "type": "enum",
             "members": {
@@ -2976,6 +3703,16 @@
                         "smithy.api#enumValue": "SERVER_FAULT"
                     }
                 }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#FieldName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9\\-_\\.\\/]+$"
             }
         },
         "com.amazonaws.marketplacecatalog#Filter": {
@@ -3028,6 +3765,56 @@
                     "max": 255
                 },
                 "smithy.api#pattern": "^(.)+$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#FrameworkFilters": {
+            "type": "union",
+            "members": {
+                "AMISecurityFilters": {
+                    "target": "com.amazonaws.marketplacecatalog#AMISecurityFilters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Filters that apply to assessments performed against the AMI Security framework.</p>"
+                    }
+                },
+                "ContainerSecurityFilters": {
+                    "target": "com.amazonaws.marketplacecatalog#ContainerSecurityFilters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Filters that apply to assessments performed against the Container Security\n            framework.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Framework-specific filters used to scope <code>ListAssessments</code> results. Set\n            exactly one member, corresponding to the framework you want to filter by.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#FrameworkId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[\\w\\-@]+$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#FrameworkSummary": {
+            "type": "union",
+            "members": {
+                "AMISecuritySummary": {
+                    "target": "com.amazonaws.marketplacecatalog#AMISecuritySummary",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The details of the resource assessed under the AMI Security framework.</p>"
+                    }
+                },
+                "ContainerSecuritySummary": {
+                    "target": "com.amazonaws.marketplacecatalog#ContainerSecuritySummary",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The details of the resource assessed under the Container Security framework.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The framework-specific details of the assessed resource. Exactly one member is set,\n            corresponding to the framework that was assessed.</p>"
             }
         },
         "com.amazonaws.marketplacecatalog#GetResourcePolicy": {
@@ -3146,6 +3933,118 @@
         },
         "com.amazonaws.marketplacecatalog#JsonDocumentType": {
             "type": "document"
+        },
+        "com.amazonaws.marketplacecatalog#ListAssessments": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.marketplacecatalog#ListAssessmentsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.marketplacecatalog#ListAssessmentsResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.marketplacecatalog#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.marketplacecatalog#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.marketplacecatalog#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.marketplacecatalog#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Returns a paginated list of assessments associated with an entity or change set in\n            AWS Marketplace. An <i>assessment</i> is the result of evaluating a\n            product or change set against a framework, such as AMI Security or Container\n            Security.</p>\n         <p>Use the <code>AssessmentTargetFilter</code> to scope results to a specific entity or\n            change set, and use <code>FrameworkFilters</code> to scope results to a single\n            framework. To retrieve detailed control-level results for an individual assessment, use\n            the <code>DescribeAssessment</code> action.</p>\n         <p>Results are sorted by assessment creation time in descending order.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/ListAssessments",
+                    "code": 200
+                },
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "AssessmentSummaryList",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ListAssessmentsMaxResultInteger": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1,
+                    "max": 100
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ListAssessmentsRequest": {
+            "type": "structure",
+            "members": {
+                "Catalog": {
+                    "target": "com.amazonaws.marketplacecatalog#Catalog",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code>\n         </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "FrameworkId": {
+                    "target": "com.amazonaws.marketplacecatalog#FrameworkId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of a framework. When specified, only assessments performed\n            against this framework are returned. For example, <code>AMISecurity</code>.</p>"
+                    }
+                },
+                "AssessmentTargetFilter": {
+                    "target": "com.amazonaws.marketplacecatalog#AssessmentTargetFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Filters the list of assessments to those performed against a specific entity or\n            change set.</p>"
+                    }
+                },
+                "FrameworkFilters": {
+                    "target": "com.amazonaws.marketplacecatalog#FrameworkFilters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Framework-specific filters. Set exactly one member to filter results to assessments\n            performed against that framework.</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.marketplacecatalog#ListAssessmentsMaxResultInteger",
+                    "traits": {
+                        "smithy.api#default": 20,
+                        "smithy.api#documentation": "<p>Specifies the upper limit of the elements on a single page. If a value isn't provided,\n            the default value is 20. Valid values range from 1 to 100.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.marketplacecatalog#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The value of the next token, if it exists. <code>null</code> if there are no more\n            results.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ListAssessmentsResponse": {
+            "type": "structure",
+            "members": {
+                "AssessmentSummaryList": {
+                    "target": "com.amazonaws.marketplacecatalog#AssessmentSummaryList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An array of <code>AssessmentSummary</code> objects.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.marketplacecatalog#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The value of the next token, if it exists. <code>null</code> if there are no more\n            results.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
         },
         "com.amazonaws.marketplacecatalog#ListChangeSets": {
             "type": "operation",
@@ -3314,7 +4213,7 @@
                 "EntityType": {
                     "target": "com.amazonaws.marketplacecatalog#EntityType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of entities to\n            retrieve. Valid\n            values are: <code>AmiProduct</code>, <code>ContainerProduct</code>,\n                <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>,\n                <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>,\n                <code>Offer</code>, <code>OfferSet</code>, <code>Seller</code>,\n            <code>ResaleAuthorization</code>, <code>Solution</code>.</p>",
+                        "smithy.api#documentation": "<p>The type of entities to\n            retrieve. Valid\n            values are: <code>AmiProduct</code>, <code>ContainerProduct</code>,\n                <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>,\n                <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>,\n                <code>Offer</code>, <code>OfferSet</code>, <code>Seller</code>,\n            <code>ResaleAuthorization</code>, <code>Solution</code>,\n                <code>SubsidiaryAuthorization</code>.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -3738,9 +4637,9 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 1,
-                    "max": 2048
+                    "max": 4096
                 },
-                "smithy.api#pattern": "^[\\w+=.:@\\-\\/]$"
+                "smithy.api#pattern": "^[\\w+=.:@\\-\\/]+$"
             }
         },
         "com.amazonaws.marketplacecatalog#OfferAvailabilityEndDateFilter": {
@@ -5318,10 +6217,58 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Allows filtering on the <code>ResellerRole</code> of a ResaleAuthorization.</p>"
                     }
+                },
+                "SourceAuthorization": {
+                    "target": "com.amazonaws.marketplacecatalog#ResaleAuthorizationSourceAuthorizationFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>SourceAuthorization</code> of a ResaleAuthorization.</p>"
+                    }
+                },
+                "IssuerAccountId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResaleAuthorizationIssuerAccountIdFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>IssuerAccountId</code> of a ResaleAuthorization.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Object containing all the filter fields for resale authorization entity. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ResaleAuthorizationIssuerAccountIdFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#ResaleAuthorizationIssuerAccountIdFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>IssuerAccountId</code> of a ResaleAuthorization with list input.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>IssuerAccountId</code> of a ResaleAuthorization.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ResaleAuthorizationIssuerAccountIdFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#ResaleAuthorizationIssuerAccountIdString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ResaleAuthorizationIssuerAccountIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 12,
+                    "max": 12
+                },
+                "smithy.api#pattern": "^\\d{12}$"
             }
         },
         "com.amazonaws.marketplacecatalog#ResaleAuthorizationLastModifiedDateFilter": {
@@ -5901,7 +6848,61 @@
                     "traits": {
                         "smithy.api#enumValue": "LastModifiedDate"
                     }
+                },
+                "ResellerRole": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ResellerRole"
+                    }
+                },
+                "SourceAuthorization": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SourceAuthorization"
+                    }
+                },
+                "IssuerAccountId": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IssuerAccountId"
+                    }
                 }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ResaleAuthorizationSourceAuthorizationFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#ResaleAuthorizationSourceAuthorizationFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allows filtering on the <code>SourceAuthorization</code> of a ResaleAuthorization with list input.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Allows filtering on the <code>SourceAuthorization</code> of a ResaleAuthorization.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ResaleAuthorizationSourceAuthorizationFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#ResaleAuthorizationSourceAuthorizationString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ResaleAuthorizationSourceAuthorizationString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^(.)+$"
             }
         },
         "com.amazonaws.marketplacecatalog#ResaleAuthorizationStatusFilter": {
@@ -6026,6 +7027,18 @@
                     "target": "com.amazonaws.marketplacecatalog#ResaleAuthorizationResellerRoleString",
                     "traits": {
                         "smithy.api#documentation": "<p>The reseller role of the ResaleAuthorization.</p>"
+                    }
+                },
+                "SourceAuthorization": {
+                    "target": "com.amazonaws.marketplacecatalog#ResaleAuthorizationSourceAuthorizationString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The source authorization of the ResaleAuthorization.</p>"
+                    }
+                },
+                "IssuerAccountId": {
+                    "target": "com.amazonaws.marketplacecatalog#ResaleAuthorizationIssuerAccountIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The issuer account ID of the ResaleAuthorization.</p>"
                     }
                 }
             },
@@ -6382,6 +7395,24 @@
                 }
             }
         },
+        "com.amazonaws.marketplacecatalog#ScopeName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 50
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ScopeValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1024
+                }
+            }
+        },
         "com.amazonaws.marketplacecatalog#ServiceQuotaExceededException": {
             "type": "structure",
             "members": {
@@ -6547,6 +7578,548 @@
             },
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationCreatedDateFilter": {
+            "type": "structure",
+            "members": {
+                "DateRange": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationCreatedDateFilterDateRange",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A date range to filter by. The operation returns subsidiary authorizations with creation dates\n            that fall within this range.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for the date a subsidiary authorization was created.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationCreatedDateFilterDateRange": {
+            "type": "structure",
+            "members": {
+                "AfterValue": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The start date (inclusive) of the date range. The operation returns subsidiary authorizations\n            created on or after this date.</p>"
+                    }
+                },
+                "BeforeValue": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The end date (inclusive) of the date range. The operation returns subsidiary authorizations\n            created on or before this date.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A date range for filtering subsidiary authorizations by creation date.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationEntityIdFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationEntityIdFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of entity IDs to filter by. The operation returns subsidiary authorizations with an\n            entity ID that matches any value in this list. You can include up to 10 entity IDs in\n            this list.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for subsidiary authorization entity IDs. Each ID begins with <code>subauthz-</code>\n            followed by 13 alphanumeric characters.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationEntityIdFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationEntityIdString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationEntityIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationFilters": {
+            "type": "structure",
+            "members": {
+                "EntityId": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationEntityIdFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter that matches subsidiary authorizations by entity ID.</p>"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationStatusFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter that matches subsidiary authorizations by status.</p>"
+                    }
+                },
+                "ResourceId": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceIdFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter that matches subsidiary authorizations by the ID of the authorized resource.</p>"
+                    }
+                },
+                "ResourceName": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceNameFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter that matches subsidiary authorizations by the name of the authorized resource.</p>"
+                    }
+                },
+                "Name": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationNameFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter that matches subsidiary authorizations by name.</p>"
+                    }
+                },
+                "SubsidiaryAccountId": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSubsidiaryAccountIdFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter that matches subsidiary authorizations by the AWS account ID of the subsidiary\n            account.</p>"
+                    }
+                },
+                "CreatedDate": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationCreatedDateFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter that matches subsidiary authorizations by creation date.</p>"
+                    }
+                },
+                "LastModifiedDate": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationLastModifiedDateFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A filter that matches subsidiary authorizations by last modified date.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filters that you can use with the <code>ListEntities</code> operation to filter subsidiary\n            authorizations. You can filter by <code>EntityId</code>, <code>Status</code>,\n            <code>ResourceId</code>, <code>ResourceName</code>, <code>Name</code>,\n            <code>SubsidiaryAccountId</code>, <code>CreatedDate</code>, and\n            <code>LastModifiedDate</code>. You can add only one wildcard filter in a single\n            <code>ListEntities</code> request.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationLastModifiedDateFilter": {
+            "type": "structure",
+            "members": {
+                "DateRange": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationLastModifiedDateFilterDateRange",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A date range to filter by. The operation returns subsidiary authorizations with last modified\n            dates that fall within this range.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for the date a subsidiary authorization was last modified.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationLastModifiedDateFilterDateRange": {
+            "type": "structure",
+            "members": {
+                "AfterValue": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The start date (inclusive) of the date range. The operation returns subsidiary authorizations\n            last modified on or after this date.</p>"
+                    }
+                },
+                "BeforeValue": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The end date (inclusive) of the date range. The operation returns subsidiary authorizations\n            last modified on or before this date.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A date range for filtering subsidiary authorizations by last modified date.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationNameFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationNameFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of names to filter by. The operation returns subsidiary authorizations with a name that\n            matches any value in this list. You can include up to 10 names in this list.</p>"
+                    }
+                },
+                "WildCardValue": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationNameFilterWildcard",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A partial name to filter by. The operation returns subsidiary authorizations whose\n            name contains this value. The value must be at least 3 characters.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for subsidiary authorization names.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationNameFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationNameString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationNameFilterWildcard": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 3,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^(.)+$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationNameString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^(.)+$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceIdFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceIdFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of resource IDs to filter by. The operation returns subsidiary authorizations for\n            resources with an ID that matches any value in this list. You can include up to 10\n            resource IDs in this list.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for the IDs of resources that subsidiary authorizations apply to.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceIdFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceIdString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^(.)+$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceNameFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceNameFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of resource names to filter by. The operation returns subsidiary authorizations for\n            resources with a name that matches any value in this list. You can include up to 10\n            resource names in this list.</p>"
+                    }
+                },
+                "WildCardValue": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceNameFilterWildcard",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A partial resource name to filter by. The operation returns subsidiary authorizations\n            for resources whose name contains this value. The value must be at least 3\n            characters.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for the names of resources that subsidiary authorizations apply to.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceNameFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceNameString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceNameFilterWildcard": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 3,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^(.)+$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationResourceNameString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^(.)+$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSort": {
+            "type": "structure",
+            "members": {
+                "SortBy": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSortBy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The field to sort subsidiary authorizations by. Valid values are <code>EntityId</code>,\n            <code>Status</code>, <code>ResourceId</code>, <code>SubsidiaryAccountId</code>,\n            <code>CreatedDate</code>, and <code>LastModifiedDate</code>.</p>"
+                    }
+                },
+                "SortOrder": {
+                    "target": "com.amazonaws.marketplacecatalog#SortOrder",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The sorting order. Can be <code>ASCENDING</code> or <code>DESCENDING</code>. The\n            default value is <code>DESCENDING</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Specifies the field to sort subsidiary authorizations by and the order (ascending or\n            descending) to apply.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSortBy": {
+            "type": "enum",
+            "members": {
+                "EntityId": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "EntityId"
+                    }
+                },
+                "Status": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Status"
+                    }
+                },
+                "ResourceId": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ResourceId"
+                    }
+                },
+                "SubsidiaryAccountId": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SubsidiaryAccountId"
+                    }
+                },
+                "CreatedDate": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CreatedDate"
+                    }
+                },
+                "LastModifiedDate": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LastModifiedDate"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationStatusFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationStatusFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of statuses to filter by. The operation returns subsidiary authorizations with a status\n    that matches a value in this list. Valid values are:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>Draft</code> - The subsidiary authorization was created but not yet released.\n                    The subsidiary account can't see it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>Active</code> - The subsidiary account can use the subsidiary authorization to\n                    create offers for the authorized product.</p>\n            </li>\n            <li>\n               <p>\n                  <code>Restricted</code> - The subsidiary authorization was discarded while in\n                    <code>Draft</code> or revoked while <code>Active</code>. It can't be used to create new\n                    offers. This status is final.</p>\n            </li>\n         </ul>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for subsidiary authorization statuses.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationStatusFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationStatusString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationStatusString": {
+            "type": "enum",
+            "members": {
+                "Draft": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Draft"
+                    }
+                },
+                "Active": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Active"
+                    }
+                },
+                "Restricted": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Restricted"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSubsidiaryAccountIdFilter": {
+            "type": "structure",
+            "members": {
+                "ValueList": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSubsidiaryAccountIdFilterValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of AWS account IDs to filter by. The operation returns subsidiary authorizations whose\n            subsidiary account ID matches any value in this list. You can include up to 10 account\n            IDs in this list.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The filter for the AWS account IDs of subsidiary accounts.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSubsidiaryAccountIdFilterValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSubsidiaryAccountIdString"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSubsidiaryAccountIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 12,
+                    "max": 12
+                },
+                "smithy.api#pattern": "^[0-9]{12}$"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummary": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummaryNameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the subsidiary authorization.</p>"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummaryStatusString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the subsidiary authorization. Valid values are:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>Draft</code> - The subsidiary authorization was created but not yet released.\n                    The subsidiary account can't see it.</p>\n            </li>\n            <li>\n               <p>\n                  <code>Active</code> - The subsidiary account can use the subsidiary authorization to\n                    create offers for the authorized product.</p>\n            </li>\n            <li>\n               <p>\n                  <code>Restricted</code> - The subsidiary authorization was discarded while in\n                    <code>Draft</code> or revoked while <code>Active</code>. It can't be used to create new\n                    offers. This status is final.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "ResourceId": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummaryResourceIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the resource that the subsidiary authorization applies to. Currently, this is always\n            a product ID, such as <code>prod-example123</code>.</p>"
+                    }
+                },
+                "ResourceName": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummaryResourceNameString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the resource that the subsidiary authorization applies to. Currently, this is\n            always a product name.</p>"
+                    }
+                },
+                "SubsidiaryAccountId": {
+                    "target": "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummarySubsidiaryAccountIdString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The 12-digit AWS account ID of the subsidiary account.</p>"
+                    }
+                },
+                "CreatedDate": {
+                    "target": "com.amazonaws.marketplacecatalog#DateTimeISO8601",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date the subsidiary authorization was created.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An object that contains summary information about a subsidiary authorization, including its\n            name, status, authorized resource, subsidiary account, and creation date. A subsidiary\n            authorization lets a seller authorize one of its subsidiary accounts to create offers\n            for one of its products.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummaryNameString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummaryResourceIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummaryResourceNameString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummaryStatusString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#SubsidiaryAuthorizationSummarySubsidiaryAccountIdString": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 12,
+                    "max": 12
+                },
+                "smithy.api#pattern": "^[0-9]{12}$"
             }
         },
         "com.amazonaws.marketplacecatalog#Tag": {
@@ -6759,12 +8332,97 @@
             "members": {
                 "Message": {
                     "target": "com.amazonaws.marketplacecatalog#ExceptionMessageContent"
+                },
+                "ValidationExceptionFieldList": {
+                    "target": "com.amazonaws.marketplacecatalog#ValidationExceptionFieldList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of detailed entries describing the request fields that failed\n            validation. Present when the failure can be attributed to one or more specific\n            fields.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>An error occurred during validation.</p>\n         <p>HTTP status code: 422</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 422
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ValidationExceptionField": {
+            "type": "structure",
+            "members": {
+                "Reason": {
+                    "target": "com.amazonaws.marketplacecatalog#ValidationExceptionReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason the field failed validation.</p>"
+                    }
+                },
+                "EntityType": {
+                    "target": "com.amazonaws.marketplacecatalog#EntityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The entity type the failing field applies to, if the field is on a\n            specific entity. For example, <code>AmiProduct@1.0</code>.</p>"
+                    }
+                },
+                "EntityId": {
+                    "target": "com.amazonaws.marketplacecatalog#EntityId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The entity identifier the failing field applies to, if the field is on a\n            specific entity.</p>"
+                    }
+                },
+                "ChangeType": {
+                    "target": "com.amazonaws.marketplacecatalog#ChangeType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The change type the failing field applies to, if the field is part of a\n            change request. For example, <code>AddDeliveryOptions</code>.</p>"
+                    }
+                },
+                "Field": {
+                    "target": "com.amazonaws.marketplacecatalog#FieldName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the request field that failed validation, expressed as a\n            JSON path (for example, <code>Details.DeliveryOptions[0].Type</code>).</p>"
+                    }
+                },
+                "Message": {
+                    "target": "com.amazonaws.marketplacecatalog#ExceptionMessageContent",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A human-readable message describing why the field failed\n            validation.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Detailed information about a single request field that failed\n            validation, including the field's location, the reason it failed, and a\n            human-readable message.</p>"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ValidationExceptionFieldList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.marketplacecatalog#ValidationExceptionField"
+            }
+        },
+        "com.amazonaws.marketplacecatalog#ValidationExceptionReason": {
+            "type": "enum",
+            "members": {
+                "UNKNOWN_OPERATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UnknownOperation"
+                    }
+                },
+                "CANNOT_PARSE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CannotParse"
+                    }
+                },
+                "FIELD_VALIDATION_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FieldValidationFailed"
+                    }
+                },
+                "OTHER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Other"
+                    }
+                }
             }
         },
         "com.amazonaws.marketplacecatalog#ValueList": {
@@ -6777,6 +8435,16 @@
                     "min": 1,
                     "max": 10
                 }
+            }
+        },
+        "com.amazonaws.marketplacecatalog#VersionedFrameworkId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[\\w\\-@.]+$"
             }
         },
         "com.amazonaws.marketplacecatalog#VisibilityValue": {

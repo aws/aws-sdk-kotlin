@@ -7,7 +7,6 @@ package aws.sdk.kotlin.benchmarks.service.definitions
 import aws.sdk.kotlin.benchmarks.service.Common
 import aws.sdk.kotlin.services.cloudwatchevents.*
 import aws.sdk.kotlin.services.cloudwatchevents.model.PutEventsRequestEntry
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.time.Instant
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -15,7 +14,6 @@ import kotlin.time.Duration.Companion.milliseconds
 class CloudwatchEventsBenchmark : ServiceBenchmark<CloudWatchEventsClient> {
     private lateinit var eventBus: String
 
-    @OptIn(ExperimentalApi::class)
     override suspend fun client() = CloudWatchEventsClient.fromEnvironment {
         retryStrategy = Common.noRetries
         telemetryProvider = Common.telemetryProvider

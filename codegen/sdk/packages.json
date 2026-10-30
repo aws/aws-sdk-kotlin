@@ -49,6 +49,24 @@
             "brazilName": "AwsSdkKotlinAccount"
         },
         {
+            "sdkId": "Account Access",
+            "namespace": "aws.sdk.kotlin.services.accountaccess",
+            "artifactName": "accountaccess",
+            "brazilName": "AwsSdkKotlinAccountAccess"
+        },
+        {
+            "sdkId": "Agent Registry",
+            "namespace": "aws.sdk.kotlin.services.agentregistry",
+            "artifactName": "agentregistry",
+            "brazilName": "AwsSdkKotlinAgentRegistry"
+        },
+        {
+            "sdkId": "Agent Registry Control",
+            "namespace": "aws.sdk.kotlin.services.agentregistrycontrol",
+            "artifactName": "agentregistrycontrol",
+            "brazilName": "AwsSdkKotlinAgentRegistryControl"
+        },
+        {
             "sdkId": "Amplify",
             "namespace": "aws.sdk.kotlin.services.amplify",
             "artifactName": "amplify",
@@ -445,6 +463,12 @@
             "brazilName": "AwsSdkKotlinCloudwatchLogs"
         },
         {
+            "sdkId": "CloudWatchOmni",
+            "namespace": "aws.sdk.kotlin.services.cloudwatchomni",
+            "artifactName": "cloudwatchomni",
+            "brazilName": "AwsSdkKotlinCloudwatchomni"
+        },
+        {
             "sdkId": "CodeBuild",
             "namespace": "aws.sdk.kotlin.services.codebuild",
             "artifactName": "codebuild",
@@ -593,6 +617,12 @@
             "namespace": "aws.sdk.kotlin.services.connectparticipant",
             "artifactName": "connectparticipant",
             "brazilName": "AwsSdkKotlinConnectparticipant"
+        },
+        {
+            "sdkId": "Continuum",
+            "namespace": "aws.sdk.kotlin.services.continuum",
+            "artifactName": "continuum",
+            "brazilName": "AwsSdkKotlinContinuum"
         },
         {
             "sdkId": "ControlCatalog",
@@ -859,6 +889,12 @@
             "brazilName": "AwsSdkKotlinElementalinference"
         },
         {
+            "sdkId": "EndUserMessaging",
+            "namespace": "aws.sdk.kotlin.services.endusermessaging",
+            "artifactName": "endusermessaging",
+            "brazilName": "AwsSdkKotlinEndusermessaging"
+        },
+        {
             "sdkId": "EntityResolution",
             "namespace": "aws.sdk.kotlin.services.entityresolution",
             "artifactName": "entityresolution",
@@ -869,6 +905,12 @@
             "namespace": "aws.sdk.kotlin.services.eventbridge",
             "artifactName": "eventbridge",
             "brazilName": "AwsSdkKotlinEventbridge"
+        },
+        {
+            "sdkId": "EventBridgeV2",
+            "namespace": "aws.sdk.kotlin.services.eventbridgev2",
+            "artifactName": "eventbridgev2",
+            "brazilName": "AwsSdkKotlinEventbridgev2"
         },
         {
             "sdkId": "FMS",
@@ -989,6 +1031,12 @@
             "namespace": "aws.sdk.kotlin.services.iam",
             "artifactName": "iam",
             "brazilName": "AwsSdkKotlinIam"
+        },
+        {
+            "sdkId": "IAM Toolbox",
+            "namespace": "aws.sdk.kotlin.services.iamtoolbox",
+            "artifactName": "iamtoolbox",
+            "brazilName": "AwsSdkKotlinIamToolbox"
         },
         {
             "sdkId": "IVS RealTime",
@@ -1205,6 +1253,12 @@
             "namespace": "aws.sdk.kotlin.services.lambdamicrovms",
             "artifactName": "lambdamicrovms",
             "brazilName": "AwsSdkKotlinLambdaMicrovms"
+        },
+        {
+            "sdkId": "Lambda Web",
+            "namespace": "aws.sdk.kotlin.services.lambdaweb",
+            "artifactName": "lambdaweb",
+            "brazilName": "AwsSdkKotlinLambdaWeb"
         },
         {
             "sdkId": "Launch Wizard",
@@ -1487,6 +1541,12 @@
             "namespace": "aws.sdk.kotlin.services.networkfirewall",
             "artifactName": "networkfirewall",
             "brazilName": "AwsSdkKotlinNetworkFirewall"
+        },
+        {
+            "sdkId": "Network Security Manager",
+            "namespace": "aws.sdk.kotlin.services.networksecuritymanager",
+            "artifactName": "networksecuritymanager",
+            "brazilName": "AwsSdkKotlinNetworkSecurityManager"
         },
         {
             "sdkId": "NetworkFlowMonitor",
@@ -2029,6 +2089,12 @@
             "brazilName": "AwsSdkKotlinSagemakerRuntimeHttp2"
         },
         {
+            "sdkId": "SageMakerTrainingSessionRuntime",
+            "namespace": "aws.sdk.kotlin.services.sagemakertrainingsessionruntime",
+            "artifactName": "sagemakertrainingsessionruntime",
+            "brazilName": "AwsSdkKotlinSagemakertrainingsessionruntime"
+        },
+        {
             "sdkId": "Sagemaker Edge",
             "namespace": "aws.sdk.kotlin.services.sagemakeredge",
             "artifactName": "sagemakeredge",
@@ -2407,18 +2473,6 @@
             "brazilName": "AwsSdkKotlinEvs"
         },
         {
-            "sdkId": "finspace",
-            "namespace": "aws.sdk.kotlin.services.finspace",
-            "artifactName": "finspace",
-            "brazilName": "AwsSdkKotlinFinspace"
-        },
-        {
-            "sdkId": "finspace data",
-            "namespace": "aws.sdk.kotlin.services.finspacedata",
-            "artifactName": "finspacedata",
-            "brazilName": "AwsSdkKotlinFinspaceData"
-        },
-        {
             "sdkId": "fis",
             "namespace": "aws.sdk.kotlin.services.fis",
             "artifactName": "fis",
@@ -2549,12 +2603,6 @@
             "namespace": "aws.sdk.kotlin.services.synthetics",
             "artifactName": "synthetics",
             "brazilName": "AwsSdkKotlinSynthetics"
-        },
-        {
-            "sdkId": "tnb",
-            "namespace": "aws.sdk.kotlin.services.tnb",
-            "artifactName": "tnb",
-            "brazilName": "AwsSdkKotlinTnb"
         },
         {
             "sdkId": "uxc",

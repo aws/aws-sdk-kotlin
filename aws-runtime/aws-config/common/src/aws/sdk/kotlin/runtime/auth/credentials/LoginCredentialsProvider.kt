@@ -86,7 +86,7 @@ public class LoginCredentialsProvider public constructor(
     }
 }
 
-internal fun resolveCacheDir(platformProvider: PlatformProvider) = platformProvider.getenv("AWS_LOGIN_IN_CACHE_DIRECTORY") ?: platformProvider.filepath("~", ".aws", "login", "cache")
+internal fun resolveCacheDir(platformProvider: PlatformProvider) = platformProvider.getenv("AWS_LOGIN_CACHE_DIRECTORY") ?: platformProvider.getenv("AWS_LOGIN_IN_CACHE_DIRECTORY") ?: platformProvider.filepath("~", ".aws", "login", "cache")
 
 internal suspend fun signinClient(providedRegion: String? = null, providedHttpClient: HttpClientEngine? = null) = SigninClient.fromEnvironment {
     region = providedRegion

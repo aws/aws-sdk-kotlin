@@ -21,21 +21,16 @@ public class InvalidJsonCredentialsException(message: String, cause: Throwable? 
  */
 internal sealed class JsonCredentialsResponse {
     /**
-     * Credentials that can expire
+     * Credentials that can expire. A null [sessionToken] indicates long term credentials which do not expire (e.g.
+     * static credentials returned by a credential process).
      */
     data class SessionCredentials(
         val accessKeyId: String,
         val secretAccessKey: String,
-        val sessionToken: String,
+        val sessionToken: String?,
         val expiration: Instant?,
         val accountId: String? = null,
     ) : JsonCredentialsResponse()
-
-    // TODO - add support for static credentials
-    //  {
-    //    "AccessKeyId" : "MUA...",
-    //    "SecretAccessKey" : "/7PC5om...."
-    //  }
 
     // TODO - add support for assume role credentials
     //   {
@@ -139,7 +134,8 @@ internal fun deserializeJsonCredentials(deserializer: Deserializer): JsonCredent
 /**
  * Deserialize credentials coming from process credentials. Used by [ProcessCredentialsProvider].
  * The difference between this and [deserializeJsonCredentials] is that process credentials _must_ provide a version field,
- * the session token field is called `SessionToken` instead of `Token`, and the expiration field is optional.
+ * the session token field is called `SessionToken` instead of `Token`, and the session token and expiration fields are
+ * optional.
  */
 @Suppress("ktlint:standard:property-naming")
 internal fun deserializeJsonProcessCredentials(deserializer: Deserializer): JsonCredentialsResponse {
@@ -187,8 +183,7 @@ internal fun deserializeJsonProcessCredentials(deserializer: Deserializer): Json
 
     if (accessKeyId == null) throw InvalidJsonCredentialsException("missing field `${ACCESS_KEY_ID_DESCRIPTOR.serialName}`")
     if (secretAccessKey == null) throw InvalidJsonCredentialsException("missing field `${SECRET_ACCESS_KEY_ID_DESCRIPTOR.serialName}`")
-    if (sessionToken == null) throw InvalidJsonCredentialsException("missing field `${SESSION_TOKEN_DESCRIPTOR.serialName}`")
     if (version == null) throw InvalidJsonCredentialsException("missing field `${VERSION_DESCRIPTOR.serialName}`")
     if (version != 1) throw InvalidJsonCredentialsException("version $version is not supported")
-    return JsonCredentialsResponse.SessionCredentials(accessKeyId!!, secretAccessKey!!, sessionToken!!, expiration, accountId)
+    return JsonCredentialsResponse.SessionCredentials(accessKeyId!!, secretAccessKey!!, sessionToken, expiration, accountId)
 }

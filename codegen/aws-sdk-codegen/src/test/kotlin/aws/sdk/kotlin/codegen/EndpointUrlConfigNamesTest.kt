@@ -600,16 +600,6 @@ private const val TEST_SUITE_JSON = """
     "service_envvar_name": "AWS_ENDPOINT_URL_EVIDENTLY"
   },
   {
-    "service_id": "finspace",
-    "services_section_name": "finspace",
-    "service_envvar_name": "AWS_ENDPOINT_URL_FINSPACE"
-  },
-  {
-    "service_id": "finspace data",
-    "services_section_name": "finspace_data",
-    "service_envvar_name": "AWS_ENDPOINT_URL_FINSPACE_DATA"
-  },
-  {
     "service_id": "Firehose",
     "services_section_name": "firehose",
     "service_envvar_name": "AWS_ENDPOINT_URL_FIREHOSE"
@@ -1539,9 +1529,7 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "EC2": "Ec2Client",
   "Lex Models V2": "LexModelsV2Client",
   "Account": "AccountClient",
-  "tnb": "TnbClient",
   "CodeGuru Security": "CodeGuruSecurityClient",
-  "finspace data": "FinspaceDataClient",
   "SageMaker": "SageMakerClient",
   "Athena": "AthenaClient",
   "CodeGuru Reviewer": "CodeGuruReviewerClient",
@@ -1634,7 +1622,6 @@ private const val JAVA_CLIENT_NAMES_JSON = """
   "billingconductor": "BillingconductorClient",
   "ServiceDiscovery": "ServiceDiscoveryClient",
   "DLM": "DlmClient",
-  "finspace": "FinspaceClient",
   "CodeDeploy": "CodeDeployClient",
   "AmplifyBackend": "AmplifyBackendClient",
   "IoT 1Click Projects": "Iot1ClickProjectsClient",
