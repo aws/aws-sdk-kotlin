@@ -1,0 +1,6 @@
+{
+    "id": "83e166be-7a38-4db5-b7ea-719fd1016427",
+    "type": "feature",
+    "description": "Add AWS Lambda SnapStart support for default SDK resources",
+    "module": "aws-config"
+}
