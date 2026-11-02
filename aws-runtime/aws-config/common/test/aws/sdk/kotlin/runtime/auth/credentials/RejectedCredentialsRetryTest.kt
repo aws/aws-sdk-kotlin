@@ -8,6 +8,7 @@ package aws.sdk.kotlin.runtime.auth.credentials
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.StsClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.assumeRole
+import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.ExpiredTokenException
 import aws.smithy.kotlin.runtime.ServiceException
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
@@ -32,13 +33,13 @@ import kotlin.time.Duration.Companion.hours
  * resolved its credentials caches them, and the retry is signed with refreshed credentials.
  */
 class RejectedCredentialsRetryTest {
-    private fun expiredToken() = HttpResponse(
+    private fun expiredToken(code: String = "ExpiredToken") = HttpResponse(
         HttpStatusCode.BadRequest,
         Headers.Empty,
         HttpBody.fromBytes(
             """
             <ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
-              <Error><Type>Sender</Type><Code>ExpiredToken</Code><Message>The security token included in the request is expired</Message></Error>
+              <Error><Type>Sender</Type><Code>$code</Code><Message>The security token included in the request is expired</Message></Error>
               <RequestId>err</RequestId>
             </ErrorResponse>
             """.trimIndent().encodeToByteArray(),
@@ -84,6 +85,32 @@ class RejectedCredentialsRetryTest {
         }
 
         assertEquals(listOf("AKID1", "AKID2"), signingKeys(engine.requests()))
+    }
+
+    @Test
+    fun testAnErrorTheOperationModelsIsNotRetried() = runTest {
+        // AssumeRole models ExpiredTokenException for a token in its input, not for the credentials that signed it.
+        val engine = buildTestConnection {
+            expect(expiredToken("ExpiredTokenException"))
+            expect(StsTestUtils.stsResponse())
+        }
+        val source = CountingSource()
+
+        StsClient {
+            region = "us-east-1"
+            credentialsProvider = source.resilientlyCached()
+            httpClient = engine
+        }.use { client ->
+            assertFailsWith<ExpiredTokenException> {
+                client.assumeRole {
+                    roleArn = StsTestUtils.ARN
+                    roleSessionName = "session"
+                }
+            }
+        }
+
+        assertEquals(listOf("AKID1"), signingKeys(engine.requests()), "one attempt, not refreshed")
+        assertEquals(1, source.calls)
     }
 
     @Test
