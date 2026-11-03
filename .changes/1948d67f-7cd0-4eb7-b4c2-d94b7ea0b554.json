@@ -1,0 +1,5 @@
+{
+  "id": "1948d67f-7cd0-4eb7-b4c2-d94b7ea0b554",
+  "type": "bugfix",
+  "description": "Write `java.math.BigDecimal` values with very large scales in scientific notation in the DynamoDB Mapper"
+}
