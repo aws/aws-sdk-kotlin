@@ -274,14 +274,11 @@ class S3BucketOpsIntegrationTest {
         }.use {
             // The request is expected to fail because we don't have the proper infrastructure set up for the request
             // (S3 Access Point, Lambda Function, etc.)
-            val ex = assertFailsWith<HttpException> {
+            // The host itself is verified by the interceptor. The error message depends on the engine and the host's DNS
+            // resolver, so only the exception type is checked.
+            assertFailsWith<HttpException> {
                 it.writeGetObjectResponse {}
             }
-            // JVM error message contains the host, Native error message is generic DNS error
-            assertTrue(
-                ex.message!!.contains(expectedHost) || ex.message!!.contains("Host name was invalid for dns resolution"),
-                "Expected error message to contain either '$expectedHost' or 'Host name was invalid for dns resolution', but got: ${ex.message}",
-            )
         }
     }
 
