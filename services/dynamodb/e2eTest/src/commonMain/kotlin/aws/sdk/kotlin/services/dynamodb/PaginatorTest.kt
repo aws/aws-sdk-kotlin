@@ -7,23 +7,20 @@ package aws.sdk.kotlin.services.dynamodb
 import aws.sdk.kotlin.services.dynamodb.model.*
 import aws.sdk.kotlin.services.dynamodb.paginators.scanPaginated
 import aws.sdk.kotlin.services.dynamodb.waiters.waitUntilTableExists
-import aws.smithy.kotlin.runtime.testing.AfterAll
-import aws.smithy.kotlin.runtime.testing.BeforeAll
-import aws.smithy.kotlin.runtime.testing.TestInstance
-import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import aws.smithy.kotlin.runtime.util.Uuid
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
-@TestInstance(TestLifecycle.PER_CLASS)
 class PaginatorTest {
     private val client = DynamoDbClient { region = "us-west-2" }
     private val table = "testTable-${Uuid.random()}"
 
-    @BeforeAll
+    @BeforeTest
     fun setUp(): Unit = runBlocking {
         if (!client.tableExists(table)) {
             client.createTable {
@@ -61,14 +58,17 @@ class PaginatorTest {
         }
     }
 
-    @AfterAll
+    @AfterTest
     fun cleanUp(): Unit = runBlocking {
-        if (client.tableExists(table)) {
-            client.deleteTable {
-                tableName = table
+        try {
+            if (client.tableExists(table)) {
+                client.deleteTable {
+                    tableName = table
+                }
             }
+        } finally {
+            client.close()
         }
-        client.close()
     }
 
     @Test

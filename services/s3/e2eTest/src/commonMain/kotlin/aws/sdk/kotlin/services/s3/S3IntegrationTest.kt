@@ -15,11 +15,7 @@ import aws.smithy.kotlin.runtime.http.HttpException
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.io.use
-import aws.smithy.kotlin.runtime.testing.AfterAll
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.testing.RandomTempFile
-import aws.smithy.kotlin.runtime.testing.TestInstance
-import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import aws.smithy.kotlin.runtime.text.encoding.encodeToHex
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -30,20 +26,21 @@ import kotlin.test.*
 /**
  * Tests for bucket operations and presigner
  */
-@TestInstance(TestLifecycle.PER_CLASS)
 class S3BucketOpsIntegrationTest {
     private val client = S3TestUtils.createClient()
     private lateinit var testBucket: String
 
-    @BeforeAll
+    @BeforeTest
     fun createResources(): Unit = runBlocking {
         testBucket = S3TestUtils.createTestBucket(client, "integ-ops")
     }
 
-    @AfterAll
-    fun cleanup() = runBlocking {
+    @AfterTest
+    fun cleanup(): Unit = runBlocking {
         try {
-            S3TestUtils.deleteBucket(client, testBucket)
+            if (::testBucket.isInitialized) {
+                S3TestUtils.deleteBucket(client, testBucket)
+            }
         } finally {
             client.close()
         }
@@ -277,14 +274,11 @@ class S3BucketOpsIntegrationTest {
         }.use {
             // The request is expected to fail because we don't have the proper infrastructure set up for the request
             // (S3 Access Point, Lambda Function, etc.)
-            val ex = assertFailsWith<HttpException> {
+            // The host itself is verified by the interceptor. The error message depends on the engine and the host's DNS
+            // resolver, so only the exception type is checked.
+            assertFailsWith<HttpException> {
                 it.writeGetObjectResponse {}
             }
-            // JVM error message contains the host, Native error message is generic DNS error
-            assertTrue(
-                ex.message!!.contains(expectedHost) || ex.message!!.contains("Host name was invalid for dns resolution"),
-                "Expected error message to contain either '$expectedHost' or 'Host name was invalid for dns resolution', but got: ${ex.message}",
-            )
         }
     }
 

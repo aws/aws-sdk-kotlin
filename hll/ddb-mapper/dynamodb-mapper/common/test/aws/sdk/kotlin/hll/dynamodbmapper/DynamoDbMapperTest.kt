@@ -21,7 +21,6 @@ import aws.smithy.kotlin.runtime.client.ProtocolRequestInterceptorContext
 import aws.smithy.kotlin.runtime.collections.get
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -30,7 +29,7 @@ import kotlin.test.assertTrue
 
 class DynamoDbMapperTest : DdbLocalTest() {
     companion object {
-        private const val TABLE_NAME = "dummy"
+        private val TABLE_NAME = "dummy-$testRunId"
 
         private data class DummyData(var foo: String = "", var bar: Int = 0)
 
@@ -44,8 +43,7 @@ class DynamoDbMapperTest : DdbLocalTest() {
         private val dummySchema = ItemSchema(dummyConverter, KeySpec.string("foo"), KeySpec.int("bar"))
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(TABLE_NAME, dummySchema)
     }
 

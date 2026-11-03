@@ -18,30 +18,32 @@ import aws.smithy.kotlin.runtime.http.SdkHttpClient
 import aws.smithy.kotlin.runtime.http.complete
 import aws.smithy.kotlin.runtime.http.toByteStream
 import aws.smithy.kotlin.runtime.io.use
-import aws.smithy.kotlin.runtime.testing.AfterAll
-import aws.smithy.kotlin.runtime.testing.BeforeAll
-import aws.smithy.kotlin.runtime.testing.TestInstance
-import aws.smithy.kotlin.runtime.testing.TestLifecycle
 import kotlinx.coroutines.runBlocking
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
-@TestInstance(TestLifecycle.PER_CLASS)
 class S3PresignerTest {
     private val client = S3TestUtils.createClient()
 
     private lateinit var testBucket: String
 
-    @BeforeAll
+    @BeforeTest
     fun createResources(): Unit = runBlocking {
         testBucket = S3TestUtils.createTestBucket(client, "presigning")
     }
 
-    @AfterAll
+    @AfterTest
     fun cleanup(): Unit = runBlocking {
-        S3TestUtils.deleteBucket(client, testBucket)
-        client.close()
+        try {
+            if (::testBucket.isInitialized) {
+                S3TestUtils.deleteBucket(client, testBucket)
+            }
+        } finally {
+            client.close()
+        }
     }
 
     private suspend fun testPresign(client: S3Client) {

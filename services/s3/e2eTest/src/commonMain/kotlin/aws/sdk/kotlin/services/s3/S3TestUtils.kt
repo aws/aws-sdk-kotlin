@@ -54,13 +54,18 @@ object S3TestUtils {
         region: String = client.config.region!!,
     ): String = createBucket(client, TEST_BUCKET_PREFIX, suffix, region)
 
+    // Tests create and delete buckets per test, so every bucket gets a distinct name. Reusing a just-deleted name can
+    // fail with S3's "conflicting conditional operation" error. Test execution is sequential on JVM and Native.
+    private var bucketCount = 0
+    private fun nextBucketOrdinal(): Int = ++bucketCount
+
     suspend fun createBucket(
         client: S3Client,
         prefix: String,
         suffix: String,
         region: String = client.config.region!!,
     ): String = withTimeout(60.seconds) {
-        val bucketName = "$prefix-$testRunId-$suffix"
+        val bucketName = "$prefix-$testRunId-$suffix-${nextBucketOrdinal()}"
         println("Creating S3 bucket: $bucketName")
 
         client.createBucket {
@@ -101,7 +106,7 @@ object S3TestUtils {
         availabilityZone: String,
         suffix: String,
     ) = withTimeout(60.seconds) {
-        val bucketName = "$prefix-$testRunId-$suffix--$availabilityZone--$S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX"
+        val bucketName = "$prefix-$testRunId-$suffix-${nextBucketOrdinal()}--$availabilityZone--$S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX"
         require(bucketName.length <= S3_MAX_BUCKET_NAME_LENGTH) {
             "S3 Express directory bucket name '$bucketName' is ${bucketName.length} chars, exceeding the $S3_MAX_BUCKET_NAME_LENGTH-char limit; shorten the suffix"
         }
