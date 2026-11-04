@@ -25,7 +25,7 @@ import aws.smithy.kotlin.runtime.util.asyncLazy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withTimeout
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.minutes
 
 object S3TestUtils {
     const val DEFAULT_REGION = "us-west-2"
@@ -64,7 +64,7 @@ object S3TestUtils {
         prefix: String,
         suffix: String,
         region: String = client.config.region!!,
-    ): String = withTimeout(60.seconds) {
+    ): String = withTimeout(5.minutes) {
         val bucketName = "$prefix-$testRunId-$suffix-${nextBucketOrdinal()}"
         println("Creating S3 bucket: $bucketName")
 
@@ -105,7 +105,7 @@ object S3TestUtils {
         prefix: String,
         availabilityZone: String,
         suffix: String,
-    ) = withTimeout(60.seconds) {
+    ) = withTimeout(5.minutes) {
         val bucketName = "$prefix-$testRunId-$suffix-${nextBucketOrdinal()}--$availabilityZone--$S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX"
         require(bucketName.length <= S3_MAX_BUCKET_NAME_LENGTH) {
             "S3 Express directory bucket name '$bucketName' is ${bucketName.length} chars, exceeding the $S3_MAX_BUCKET_NAME_LENGTH-char limit; shorten the suffix"

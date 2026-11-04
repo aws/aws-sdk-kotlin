@@ -29,7 +29,33 @@ internal sealed interface ItemConverterSpec {
      * attributes' value converters are the user's concern, so they are never resolved.
      */
     data class UserProvided(override val converter: TypeRef) : ItemConverterSpec
+
+    /**
+     * A `HeterogeneousItemConverter` generated for a family. The generated object is named after [converter]'s short
+     * name.
+     * @param typeAttribute The attribute storing each item's type name
+     * @param registrations The family's registrations, already in the order they must be registered
+     */
+    data class Heterogeneous(
+        override val converter: TypeRef,
+        val typeAttribute: String,
+        val registrations: List<SubtypeRegistration>,
+    ) : ItemConverterSpec
 }
+
+/**
+ * A single registration within a [ItemConverterSpec.Heterogeneous] converter
+ * @param typeName The value stored in the type attribute for matching objects
+ * @param type The registered class
+ * @param exact Whether objects must be exactly of [type] (`exactType`) rather than instances of it (`instanceOf`)
+ * @param converter The item converter for matching objects
+ */
+internal data class SubtypeRegistration(
+    val typeName: String,
+    val type: TypeRef,
+    val exact: Boolean,
+    val converter: TypeRef,
+)
 
 /**
  * An attribute descriptor within a generated item converter

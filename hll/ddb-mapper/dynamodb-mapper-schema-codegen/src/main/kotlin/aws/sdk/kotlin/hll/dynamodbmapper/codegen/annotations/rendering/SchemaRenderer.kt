@@ -28,7 +28,7 @@ import aws.smithy.kotlin.codegen.core.RuntimeTypes
 internal class SchemaRenderer(
     private val ctx: RenderContext,
     private val item: MappedItem,
-) : RendererBase(ctx, "${item.name}Schema") {
+) : RendererBase(ctx, item.fileName) {
     private val className = item.name
     private val classType = item.type
 
@@ -40,7 +40,11 @@ internal class SchemaRenderer(
     override fun generate() {
         item.builder?.let(::renderBuilder)
 
-        (item.itemConverter as? ItemConverterSpec.Generated)?.let(::renderItemConverter)
+        when (val converter = item.itemConverter) {
+            is ItemConverterSpec.Generated -> renderItemConverter(converter)
+            is ItemConverterSpec.Heterogeneous -> renderHeterogeneousConverter(converter)
+            is ItemConverterSpec.UserProvided -> { }
+        }
 
         item.valueConverter?.let(::renderItemValueConverter)
 
@@ -74,6 +78,9 @@ internal class SchemaRenderer(
             if (builder != null) {
                 write("builderFactory = ::#L,", builder.name)
                 write("build = #L::build,", builder.name)
+            } else if (item.isObject) {
+                write("builderFactory = { $className },")
+                write("build = { this },")
             } else {
                 write("builderFactory = { $className() },")
                 write("build = { this },")
@@ -81,6 +88,35 @@ internal class SchemaRenderer(
 
             withBlock("descriptors = arrayOf(", "),") {
                 converter.attributes.forEach(::renderAttributeDescriptor)
+            }
+        }
+        blankLine()
+    }
+
+    /**
+     * Render a family's converter, registering each member in the order given by the IR
+     */
+    private fun renderHeterogeneousConverter(converter: ItemConverterSpec.Heterogeneous) {
+        generatedAnnotation()
+        withBlock(
+            "#Lobject #L : #T by #T(",
+            ")",
+            ctx.attributes.visibility,
+            converter.converter.shortName,
+            MapperTypes.Items.itemConverter(classType),
+            MapperTypes.Items.heterogeneousItemConverter(classType),
+        ) {
+            write("typeAttribute = #S,", converter.typeAttribute)
+            withBlock("block = {", "},") {
+                converter.registrations.forEach { registration ->
+                    write(
+                        "#L<#T>(#S, #T)",
+                        if (registration.exact) "exactType" else "instanceOf",
+                        registration.type,
+                        registration.typeName,
+                        registration.converter,
+                    )
+                }
             }
         }
         blankLine()
@@ -109,10 +145,15 @@ internal class SchemaRenderer(
         ctx.logger.info("Rendering an attribute descriptor for ${prop.name}")
         withBlock("#T(", "),", MapperTypes.Items.AttributeDescriptor) {
             write("#S,", prop.ddbName) // key
-            write("#L,", "$className::${prop.name}") // getter
 
-            // setter
-            write("#L,", "${item.builder?.name ?: className}::${prop.name}::set")
+            if (item.isObject) {
+                // A bound reference (`Obj::prop`) has the wrong shape for a getter, and an object is never mutated
+                write("{ obj: #L -> obj.#L },", className, prop.name) // getter
+                write("{ },") // setter
+            } else {
+                write("#L,", "$className::${prop.name}") // getter
+                write("#L,", "${item.builder?.name ?: className}::${prop.name}::set") // setter
+            }
 
             // converter
             renderValueConverter(attribute.converter)
