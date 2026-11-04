@@ -32,6 +32,7 @@ jsoup-version = "1.23.2"
 [libraries]
 jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson-bom-version" }
 aws-kotlin-repo-tools-build-support = { module="aws.sdk.kotlin.gradle:build-support", version.ref = "aws-kotlin-repo-tools-version" }
+aws-kotlin-repo-tools-dokka-lazy-load = { module = "aws.sdk.kotlin.gradle:dokka-lazy-load", version.ref = "aws-kotlin-repo-tools-version" }
 
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-version" }
