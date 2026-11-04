@@ -5,8 +5,11 @@
 
 package aws.sdk.kotlin.runtime.http.retries
 
+import aws.sdk.kotlin.runtime.InternalSdkApi
 import aws.smithy.kotlin.runtime.ServiceErrorMetadata
 import aws.smithy.kotlin.runtime.ServiceException
+import aws.smithy.kotlin.runtime.ServiceException.ErrorType
+import aws.smithy.kotlin.runtime.http.HttpStatusCode
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.retries.policy.RetryDirective
 import aws.smithy.kotlin.runtime.retries.policy.RetryErrorType.Throttling
@@ -40,6 +43,11 @@ import aws.smithy.kotlin.runtime.retries.policy.StandardRetryPolicy
  *   * 502 (Bad Gateway)
  *   * 503 (Service Unavailable)
  *   * 504 (Gateway Timeout)
+ * * Any [ServiceException] with an `sdkErrorMetadata.statusCode` of 429 (Too Many Requests) that was not matched to a
+ *   modeled error (its `sdkErrorMetadata.errorType` is [ErrorType.Unknown]), which is retried as throttling. The
+ *   retryable and throttling traits of a modeled error take precedence over this rule. For `awsQueryCompatible`
+ *   services, an `x-amzn-query-error` header can set the error type of an unmodeled error, in which case this rule
+ *   does not apply.
  *
  * If none of those conditions match, this policy delegates to [StandardRetryPolicy]. See that class's documentation for
  * more information about how it evaluates exceptions.
@@ -85,10 +93,37 @@ public open class AwsRetryPolicy : StandardRetryPolicy() {
     }
 
     private fun evaluateServiceException(ex: ServiceException): RetryDirective? = with(ex.sdkErrorMetadata) {
-        (knownErrorTypes[errorCode] ?: knownStatusCodes[statusCode])
+        (knownErrorTypes[errorCode] ?: knownStatusCodes[statusCode] ?: unmodeledThrottle())
             ?.let { RetryDirective.RetryError(it) }
     }
 
+    /**
+     * An HTTP 429 response whose error was not matched to a modeled error is treated as throttling. Modeled errors set
+     * their own error type, so they are left to [StandardRetryPolicy].
+     */
+    private fun ServiceErrorMetadata.unmodeledThrottle() = if (retriesUnmodeledThrottling && statusCode == HttpStatusCode.TooManyRequests.value && errorType == ErrorType.Unknown) Throttling else null
+
+    /**
+     * Whether an HTTP 429 response that was not matched to a modeled error is retried as throttling
+     */
+    internal open val retriesUnmodeledThrottling: Boolean
+        get() = true
+
     private val ServiceErrorMetadata.statusCode: Int?
         get() = (protocolResponse as? HttpResponse)?.status?.value
+}
+
+/**
+ * The [AwsRetryPolicy] for the legacy retry mode. It differs from [AwsRetryPolicy.Default] in two ways:
+ *
+ * * An HTTP 429 response that was not matched to a modeled error is not retried unless another rule applies
+ * * A retryable [ServiceException] marked as throttling is evaluated by its `sdkErrorMetadata.errorType` first
+ */
+@InternalSdkApi
+public object LegacyAwsRetryPolicy : AwsRetryPolicy() {
+    override val throttlingOverridesErrorType: Boolean
+        get() = false
+
+    override val retriesUnmodeledThrottling: Boolean
+        get() = false
 }

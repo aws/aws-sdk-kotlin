@@ -309,3 +309,7 @@ public final class aws/sdk/kotlin/runtime/http/retries/AwsRetryPolicy$Companion 
 	public final fun getDefault ()Laws/sdk/kotlin/runtime/http/retries/AwsRetryPolicy;
 }
 
+public final class aws/sdk/kotlin/runtime/http/retries/LegacyAwsRetryPolicy : aws/sdk/kotlin/runtime/http/retries/AwsRetryPolicy {
+	public static final field INSTANCE Laws/sdk/kotlin/runtime/http/retries/LegacyAwsRetryPolicy;
+}
+

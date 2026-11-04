@@ -12,7 +12,6 @@ import aws.sdk.kotlin.runtime.config.profile.AwsProfile
 import aws.sdk.kotlin.runtime.config.profile.loadAwsSharedConfig
 import aws.sdk.kotlin.runtime.config.profile.maxAttempts
 import aws.sdk.kotlin.runtime.config.profile.retryMode
-import aws.smithy.kotlin.runtime.CoreSettings
 import aws.smithy.kotlin.runtime.client.config.RetryMode
 import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
@@ -30,26 +29,27 @@ internal const val STANDARD_SCALE_FACTOR = 2.0
 internal const val STANDARD_RETRY_COST = 14
 internal const val STANDARD_THROTTLING_RETRY_COST = 5
 
+// Legacy retry defaults, used only when the legacy retry mode is configured
+internal val LEGACY_INITIAL_DELAY = 10.milliseconds
+internal const val LEGACY_SCALE_FACTOR = 1.5
+internal const val LEGACY_RETRY_COST = 5
+internal const val LEGACY_TIMEOUT_RETRY_COST = 10
+
 /**
  * Resolved retry configuration sourced from environment variables and profile settings.
  */
 internal data class ResolvedRetryConfig(
     val maxAttempts: Int?,
     val retryMode: RetryMode,
-    val useNewRetries: Boolean,
 )
 
 /**
- * Resolve the retry configuration (max attempts, retry mode, and new retries flag) from environment variables
- * and profile settings.
+ * Resolve the retry configuration (max attempts and retry mode) from environment variables and profile settings.
  */
 internal suspend fun resolveRetryConfig(
     platformProvider: PlatformProvider,
     profile: LazyAsyncValue<AwsProfile>,
 ): ResolvedRetryConfig {
-    val useNewRetries = AwsSdkSetting.AwsNewRetries.resolve(platformProvider)
-        ?: CoreSettings.resolveNewRetriesEnabled(platformProvider)
-
     val maxAttempts = AwsSdkSetting.AwsMaxAttempts.resolve(platformProvider)
         ?: profile.get().maxAttempts
 
@@ -61,7 +61,7 @@ internal suspend fun resolveRetryConfig(
         ?: profile.get().retryMode
         ?: RetryMode.STANDARD
 
-    return ResolvedRetryConfig(maxAttempts, retryMode, useNewRetries)
+    return ResolvedRetryConfig(maxAttempts, retryMode)
 }
 
 /**
@@ -83,36 +83,28 @@ internal fun buildRetryStrategy(
     defaultMaxAttempts: Int?,
     defaultInitialDelay: Duration?,
 ): RetryStrategy {
-    val factory = when (config.retryMode) {
-        RetryMode.STANDARD, RetryMode.LEGACY -> StandardRetryStrategy
-        RetryMode.ADAPTIVE -> AdaptiveRetryStrategy
-    }
+    val configuredMaxAttempts = config.maxAttempts
 
-    return factory {
-        configureRetryDefaults(
-            configuredMaxAttempts = config.maxAttempts,
-            useNewRetries = config.useNewRetries,
-            defaultMaxAttempts = defaultMaxAttempts,
-            defaultInitialDelay = defaultInitialDelay,
-        )
+    return when (config.retryMode) {
+        RetryMode.STANDARD -> StandardRetryStrategy {
+            configureRetryDefaults(configuredMaxAttempts, defaultMaxAttempts, defaultInitialDelay)
+        }
+        RetryMode.ADAPTIVE -> AdaptiveRetryStrategy {
+            configureRetryDefaults(configuredMaxAttempts, defaultMaxAttempts, defaultInitialDelay)
+        }
+        RetryMode.LEGACY -> StandardRetryStrategy { configureLegacyRetryDefaults(configuredMaxAttempts) }
     }
 }
 
 /**
- * Configures the retry strategy builder with the resolved max attempts and, when new retries are enabled,
- * all standard defaults as defined in the New Retry Behavior.
+ * Configures the retry strategy builder with the resolved max attempts and the standard retry behavior: a 50 ms base
+ * delay (or the service's default), a 2.0 scale factor, the standard token costs, and long-polling backoff.
  */
 internal fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
     configuredMaxAttempts: Int? = null,
-    useNewRetries: Boolean = false,
     defaultMaxAttempts: Int? = null,
     defaultInitialDelay: Duration? = null,
 ) {
-    if (!useNewRetries) {
-        configuredMaxAttempts?.let { maxAttempts = it }
-        return
-    }
-
     enableLongPollingBackoff = true
 
     delayProvider {
@@ -129,4 +121,27 @@ internal fun StandardRetryStrategy.Config.Builder.configureRetryDefaults(
     maxAttempts = configuredMaxAttempts
         ?: defaultMaxAttempts
         ?: StandardRetryStrategy.Config.DEFAULT_MAX_ATTEMPTS
+}
+
+/**
+ * Configures the retry strategy builder with the legacy retry behavior: a 10 ms base delay, a 1.5 scale factor,
+ * the legacy token costs, and no long-polling backoff. Service-specific defaults are not applied.
+ */
+internal fun StandardRetryStrategy.Config.Builder.configureLegacyRetryDefaults(
+    configuredMaxAttempts: Int? = null,
+) {
+    enableLongPollingBackoff = false
+
+    delayProvider {
+        initialDelay = LEGACY_INITIAL_DELAY
+        scaleFactor = LEGACY_SCALE_FACTOR
+    }
+
+    tokenBucket {
+        this.useNewRetries = false
+        retryCost = LEGACY_RETRY_COST
+        timeoutRetryCost = LEGACY_TIMEOUT_RETRY_COST
+    }
+
+    maxAttempts = configuredMaxAttempts ?: StandardRetryStrategy.Config.DEFAULT_MAX_ATTEMPTS
 }

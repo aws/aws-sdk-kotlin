@@ -1,0 +1,6 @@
+{
+  "id": "ebd67eb6-9f18-468b-bfe5-0c401f20d0e2",
+  "type": "feature",
+  "description": "⚠ **IMPORTANT**: Make the new retry behavior the default and remove the `AWS_NEW_RETRIES_2026` opt-in. The `standard` and `adaptive` retry modes now use a 50 ms base delay, a scale factor of 2.0, a retry cost of 14 tokens, a throttling retry cost of 5 tokens, and long-polling backoff, and they retry unmodeled HTTP 429 responses as throttling errors. To keep the previous retry behavior, set the retry mode to `legacy` (for example, `AWS_RETRY_MODE=legacy`) and create clients with `fromEnvironment()`.",
+  "requiresMinorVersionBump": true
+}
