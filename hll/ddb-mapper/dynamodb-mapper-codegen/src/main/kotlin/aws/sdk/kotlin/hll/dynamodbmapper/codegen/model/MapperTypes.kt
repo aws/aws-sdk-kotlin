@@ -130,6 +130,8 @@ public object MapperTypes {
         public fun itemConverter(objectType: TypeRef): TypeRef = TypeRef(MapperPkg.Hl.Items, "ItemConverter", genericArgs = listOf(objectType))
 
         public val SimpleItemConverter: TypeRef = TypeRef(MapperPkg.Hl.Items, "SimpleItemConverter")
+
+        public fun heterogeneousItemConverter(objectType: TypeRef): TypeRef = TypeRef(MapperPkg.Hl.Items, "HeterogeneousItemConverter", genericArgs = listOf(objectType))
     }
 
     public object Model {
