@@ -411,13 +411,7 @@ internal fun deserializeLoginToken(json: ByteArray): LoginToken {
                     "idToken" -> idToken = lexer.nextTokenOf<JsonToken.String>().value
                     "clientId" -> clientId = lexer.nextTokenOf<JsonToken.String>().value
                     "dpopKey" -> dpopKey = lexer.nextTokenOf<JsonToken.String>().value
-                    // optional field: a value that isn't a string is skipped and treated as missing
-                    "signInRegion" -> signInRegion = if (lexer.peek() is JsonToken.String) {
-                        lexer.nextTokenOf<JsonToken.String>().value
-                    } else {
-                        lexer.skipNext()
-                        null
-                    }
+                    "signInRegion" -> signInRegion = lexer.nextTokenOf<JsonToken.String>().value
                     else -> lexer.skipNext()
                 }
                 else -> error("expected either key or end of object")

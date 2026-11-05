@@ -233,18 +233,11 @@ class LoginTokenProviderTest {
     }
 
     @Test
-    fun testDeserializeWithNullSignInRegion() {
-        val token = deserializeLoginToken(tokenJson("\"signInRegion\": null").encodeToByteArray())
-        assertNull(token.signInRegion)
-        assertEquals("AKID", token.accessKeyId)
-    }
-
-    @Test
-    fun testDeserializeWithNonStringSignInRegionIsIgnored() {
-        listOf("42", "true", "{\"a\": \"b\"}", "[\"us-west-2\"]").forEach { value ->
-            val token = deserializeLoginToken(tokenJson("\"signInRegion\": $value").encodeToByteArray())
-            assertNull(token.signInRegion, "signInRegion: $value")
-            assertEquals("refresh", token.refreshToken, "signInRegion: $value")
+    fun testDeserializeWithNonStringSignInRegionFails() {
+        listOf("null", "42", "true", "{\"a\": \"b\"}", "[\"us-west-2\"]").forEach { value ->
+            assertFailsWith<InvalidLoginTokenException>("signInRegion: $value") {
+                deserializeLoginToken(tokenJson("\"signInRegion\": $value").encodeToByteArray())
+            }
         }
     }
 
