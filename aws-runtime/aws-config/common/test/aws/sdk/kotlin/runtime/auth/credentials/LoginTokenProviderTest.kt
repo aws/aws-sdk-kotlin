@@ -205,6 +205,98 @@ class LoginTokenProviderTest {
             }
         }
     }
+
+    private fun tokenJson(signInRegionLine: String? = null, expiresAt: String = "2020-01-01T00:00:00Z"): String = """
+    {
+        "accessToken": {
+            "accessKeyId": "AKID",
+            "secretAccessKey": "secret",
+            "sessionToken": "session",
+            "accountId": "012345678901",
+            "expiresAt": "$expiresAt"
+        },
+        "clientId": "arn:aws:signin:::devtools/same-device",
+        "refreshToken": "refresh",${signInRegionLine?.let { "\n        $it," } ?: ""}
+        "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
+    }
+    """
+
+    @Test
+    fun testDeserializeWithoutSignInRegion() {
+        assertNull(deserializeLoginToken(tokenJson().encodeToByteArray()).signInRegion)
+    }
+
+    @Test
+    fun testDeserializeWithSignInRegion() {
+        val token = deserializeLoginToken(tokenJson("\"signInRegion\": \"eu-central-1\"").encodeToByteArray())
+        assertEquals("eu-central-1", token.signInRegion)
+    }
+
+    @Test
+    fun testDeserializeWithNullSignInRegion() {
+        val token = deserializeLoginToken(tokenJson("\"signInRegion\": null").encodeToByteArray())
+        assertNull(token.signInRegion)
+        assertEquals("AKID", token.accessKeyId)
+    }
+
+    @Test
+    fun testDeserializeWithNonStringSignInRegionIsIgnored() {
+        listOf("42", "true", "{\"a\": \"b\"}", "[\"us-west-2\"]").forEach { value ->
+            val token = deserializeLoginToken(tokenJson("\"signInRegion\": $value").encodeToByteArray())
+            assertNull(token.signInRegion, "signInRegion: $value")
+            assertEquals("refresh", token.refreshToken, "signInRegion: $value")
+        }
+    }
+
+    @Test
+    fun testSerializeWithoutSignInRegionOmitsField() {
+        val token = deserializeLoginToken(tokenJson().encodeToByteArray())
+        val json = Json.parseToJsonElement(serializeLoginToken(token).decodeToString()).jsonObject
+        assertFalse(json.containsKey("signInRegion"))
+    }
+
+    @Test
+    fun testSignInRegionRoundTrip() {
+        val token = deserializeLoginToken(tokenJson("\"signInRegion\": \"eu-central-1\"").encodeToByteArray())
+        val json = Json.parseToJsonElement(serializeLoginToken(token).decodeToString()).jsonObject
+        assertEquals("eu-central-1", json["signInRegion"]?.jsonPrimitive?.content)
+        assertEquals(token, deserializeLoginToken(serializeLoginToken(token)))
+    }
+
+    @Test
+    fun testRefreshKeepsSignInRegionInCache() = runTest {
+        val loginSessionName = "arn:aws:sts::012345678910:assumed-role/Admin/admin"
+        val filename = getLoginCacheFilename(loginSessionName)
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf("HOME" to "/home"),
+            fs = mapOf("/home/.aws/login/cache/$filename" to TestFile(tokenJson("\"signInRegion\": \"eu-central-1\""))),
+        )
+        val body = """
+        {"accessToken":{"accessKeyId":"NEWKEY","secretAccessKey":"newSecret","sessionToken":"newSession"},
+        "refreshToken":"new_refresh","expiresIn":900}
+        """
+        val httpClient = buildTestConnection {
+            expect(HttpResponse(HttpStatusCode.OK, Headers.Empty, HttpBody.fromBytes(body.encodeToByteArray())))
+        }
+        val tokenProvider = LoginTokenProvider(
+            loginSessionName = loginSessionName,
+            region = "us-west-2",
+            refreshBufferWindow = 0.seconds,
+            httpClient = httpClient,
+            platformProvider = testPlatform,
+            clock = ManualClock(Instant.fromIso8601("2025-11-19T00:00:00Z")),
+            cacheDirectory = resolveCacheDir(testPlatform),
+            client = signinClient("us-west-2", providedHttpClient = httpClient),
+        )
+
+        assertEquals("NEWKEY", tokenProvider.resolve().accessKeyId)
+        assertTrue(httpClient.requests().single().actual.url.host.toString().contains("eu-central-1"))
+
+        val written = assertNotNull(testPlatform.readFileOrNull("/home/.aws/login/cache/$filename")).decodeToString()
+        val json = Json.parseToJsonElement(written).jsonObject
+        assertEquals("eu-central-1", json["signInRegion"]?.jsonPrimitive?.content)
+        assertEquals("new_refresh", json["refreshToken"]?.jsonPrimitive?.content)
+    }
 }
 
 // Note to implementer: these test cases are copied from SEP: https://code.amazon.com/packages/AwsDrSeps/blobs/aadc5f3e3212c3b0a29a2ab6b1ce8dc548f7cfff/--/seps/accepted/shared/login/login-provider-test-cases.json
