@@ -7,6 +7,7 @@ package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.smithy.kotlin.runtime.auth.awscredentials.CallerHasCachedCredentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CallerOwnsCredentialsRefresh
+import aws.smithy.kotlin.runtime.auth.awscredentials.CallerRejectedAccessKeyId
 import aws.smithy.kotlin.runtime.auth.awscredentials.isNonRecoverableCredentialsError
 import aws.smithy.kotlin.runtime.auth.awscredentials.resilientlyCached
 import aws.smithy.kotlin.runtime.collections.attributesOf
@@ -29,6 +30,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
@@ -164,6 +166,93 @@ class LoginRefreshFailureTest {
 
         assertTrue(ex.isNonRecoverableCredentialsError(), "a rejected refresh token needs the customer to sign in again")
         assertTrue(ex.message!!.contains("aws login"), ex.message)
+    }
+
+    private fun refreshed() = HttpResponse(
+        HttpStatusCode.OK,
+        Headers.Empty,
+        HttpBody.fromBytes(
+            """
+            {
+              "accessToken": { "accessKeyId": "NEWKEY", "secretAccessKey": "newSecret", "sessionToken": "newSessionToken" },
+              "refreshToken": "new_refresh_token",
+              "expiresIn": 900
+            }
+            """.trimIndent().encodeToByteArray(),
+        ),
+    )
+
+    private fun rejecting(accessKeyId: String) = attributesOf {
+        CallerOwnsCredentialsRefresh to true
+        CallerHasCachedCredentials to true
+        CallerRejectedAccessKeyId to accessKeyId
+    }
+
+    @Test
+    fun testATokenOutsideItsRefreshWindowIsNotRefreshed() = runTest {
+        val clock = ManualClock(epoch)
+        // No Sign-In response is scripted: a call would fail the test.
+        val creds = provider(clock, 1.hours, buildTestConnection { }).resolve(underWarmCache)
+
+        assertEquals("OLDKEY", creds.accessKeyId)
+    }
+
+    @Test
+    fun testRejectedCredentialsAreRefreshedBeforeTheRefreshWindow() = runTest {
+        val clock = ManualClock(epoch)
+        val connection = buildTestConnection { expect(refreshed()) }
+
+        val creds = provider(clock, 1.hours, connection).resolve(rejecting("OLDKEY"))
+
+        assertEquals("NEWKEY", creds.accessKeyId, "the rejected credentials are the token's, so the token is refreshed")
+        connection.assertRequests()
+    }
+
+    @Test
+    fun testARejectionOfOtherCredentialsDoesNotRefresh() = runTest {
+        val clock = ManualClock(epoch)
+        val creds = provider(clock, 1.hours, buildTestConnection { }).resolve(rejecting("SOMEOTHERKEY"))
+
+        assertEquals("OLDKEY", creds.accessKeyId)
+    }
+
+    @Test
+    fun testThroughTheCacheAnInvalidationProducesNewCredentials() = runTest {
+        val clock = ManualClock(epoch)
+        val connection = buildTestConnection { expect(refreshed()) }
+        val cache = provider(clock, 1.hours, connection).resilientlyCached(clock = clock)
+
+        val rejected = cache.resolve()
+        assertEquals("OLDKEY", rejected.accessKeyId)
+
+        cache.invalidate(rejected)
+        assertEquals("NEWKEY", cache.resolve().accessKeyId, "not the rejected credentials again")
+        connection.assertRequests()
+    }
+
+    @Test
+    fun testRejectedCredentialsAreNotHandedBackWhenTheRefreshFails() = runTest {
+        val clock = ManualClock(epoch)
+        val connection = buildTestConnection { expect(failedRefresh()) }
+
+        val ex = assertFailsWith<Exception> { provider(clock, 1.hours, connection).resolve(rejecting("OLDKEY")) }
+
+        assertFalse(ex.isNonRecoverableCredentialsError(), "a transient failure is recoverable: the cache keeps its credentials and backs off")
+    }
+
+    @Test
+    fun testRejectedCredentialsWhoseRefreshSignInRejectsAreNonRecoverable() = runTest {
+        val clock = ManualClock(epoch)
+        val invalidGrant = HttpResponse(
+            HttpStatusCode.BadRequest,
+            Headers { append("x-amzn-errortype", "ValidationException") },
+            HttpBody.fromBytes("""{"error":"INVALID_REQUEST","message":"invalid grant"}""".encodeToByteArray()),
+        )
+        val connection = buildTestConnection { expect(invalidGrant) }
+
+        val ex = assertFailsWith<InvalidLoginTokenException> { provider(clock, 1.hours, connection).resolve(rejecting("OLDKEY")) }
+
+        assertTrue(ex.isNonRecoverableCredentialsError())
     }
 
     @Test
