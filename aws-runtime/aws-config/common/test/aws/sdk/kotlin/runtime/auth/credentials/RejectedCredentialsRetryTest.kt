@@ -6,13 +6,16 @@
 package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
+import aws.sdk.kotlin.runtime.auth.credentials.internal.manage
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.StsClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.assumeRole
 import aws.sdk.kotlin.runtime.auth.credentials.internal.sts.model.ExpiredTokenException
+import aws.smithy.kotlin.runtime.ClientException
 import aws.smithy.kotlin.runtime.ServiceException
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
+import aws.smithy.kotlin.runtime.auth.awscredentials.ResilientCachingCredentialsProvider
 import aws.smithy.kotlin.runtime.auth.awscredentials.resilientlyCached
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.http.Headers
@@ -111,6 +114,67 @@ class RejectedCredentialsRetryTest {
 
         assertEquals(listOf("AKID1"), signingKeys(engine.requests()), "one attempt, not refreshed")
         assertEquals(1, source.calls)
+    }
+
+    @Test
+    fun testARejectedRequestIsRetriedThroughTheClientsManagedDefaultProvider() = runTest {
+        // A client with no credentials provider set wraps its default chain with manage(), as generated code does.
+        val engine = buildTestConnection {
+            expect(expiredToken())
+            expect(StsTestUtils.stsResponse())
+        }
+        val source = CountingSource()
+
+        StsClient {
+            region = "us-east-1"
+            credentialsProvider = ResilientCachingCredentialsProvider(source).manage()
+            httpClient = engine
+        }.use { client ->
+            client.assumeRole {
+                roleArn = StsTestUtils.ARN
+                roleSessionName = "session"
+            }
+        }
+
+        assertEquals(listOf("AKID1", "AKID2"), signingKeys(engine.requests()))
+    }
+
+    @Test
+    fun testARejectedRequestIsRetriedWithTheCachedCredentialsDuringTheBackoff() = runTest {
+        val engine = buildTestConnection {
+            expect(expiredToken())
+            expect(StsTestUtils.stsResponse())
+        }
+        // The refresh after the rejection fails, so the backoff starts and the retry is signed with the cached
+        // credentials.
+        val source = object : CredentialsProvider {
+            var calls = 0
+            override suspend fun resolve(attributes: Attributes): Credentials {
+                calls++
+                if (calls > 1) throw ClientException("credential source unavailable")
+                return credentials(
+                    accessKeyId = "AKID1",
+                    secretAccessKey = "secret",
+                    sessionToken = "token",
+                    expiration = Instant.now() + 2.hours,
+                    refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
+                )
+            }
+        }
+
+        StsClient {
+            region = "us-east-1"
+            credentialsProvider = ResilientCachingCredentialsProvider(source).manage()
+            httpClient = engine
+        }.use { client ->
+            client.assumeRole {
+                roleArn = StsTestUtils.ARN
+                roleSessionName = "session"
+            }
+        }
+
+        assertEquals(listOf("AKID1", "AKID1"), signingKeys(engine.requests()), "retried, with the cached credentials")
+        assertEquals(2, source.calls, "one failed refresh; the backoff covers the retry")
     }
 
     @Test
