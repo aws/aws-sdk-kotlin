@@ -7,7 +7,9 @@ package aws.sdk.kotlin.hll.dynamodbmapper.values.scalars
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConvertersTest
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import java.math.BigDecimal
+import java.math.BigInteger
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class BigDecimalValueConverterTest : ValueConvertersTest() {
     @Test
@@ -23,5 +25,29 @@ class BigDecimalValueConverterTest : ValueConvertersTest() {
         // whose equality normalizes scale (19.90 == 19.9). The value stored in DynamoDB is identical for both types.
         BigDecimal("19.90") inDdbIs AttributeValue.N("19.90") whenGoing Direction.TO_ATTRIBUTE_VALUE
         BigDecimal("1E+10") inDdbIs AttributeValue.N("10000000000") whenGoing Direction.TO_ATTRIBUTE_VALUE
+    }
+
+    @Test
+    fun testLargeScaleUsesScientificNotation() = given(BigDecimalValueConverter) {
+        // Values with an absolute scale up to 1000 keep the plain form
+        BigDecimal("1E-1000") inDdbIs AttributeValue.N("0." + "0".repeat(999) + "1") whenGoing Direction.TO_ATTRIBUTE_VALUE
+        BigDecimal("1E+1000") inDdbIs AttributeValue.N("1" + "0".repeat(1000)) whenGoing Direction.TO_ATTRIBUTE_VALUE
+
+        // Beyond that, scientific notation keeps the string bounded by the digit count rather than the scale
+        BigDecimal("1E-1001") inDdbIs AttributeValue.N("1E-1001")
+        BigDecimal("1E+1001") inDdbIs AttributeValue.N("1E+1001")
+        BigDecimal("1E-20000000") inDdbIs AttributeValue.N("1E-20000000")
+        BigDecimal("1E+20000000") inDdbIs AttributeValue.N("1E+20000000")
+
+        BigDecimal(BigInteger.ONE, Int.MAX_VALUE) inDdbIs AttributeValue.N("1E-2147483647") whenGoing
+            Direction.TO_ATTRIBUTE_VALUE
+        BigDecimal(BigInteger.ONE, Int.MIN_VALUE) inDdbIs AttributeValue.N("1E+2147483648") whenGoing
+            Direction.TO_ATTRIBUTE_VALUE
+    }
+
+    @Test
+    fun testLargeScaleRoundTrips() {
+        val value = BigDecimal("1E-20000000")
+        assertEquals(value, BigDecimalToStringConverter.convertLeft(BigDecimalToStringConverter.convertRight(value)))
     }
 }
