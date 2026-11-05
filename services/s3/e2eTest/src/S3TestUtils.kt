@@ -25,7 +25,7 @@ import java.io.OutputStreamWriter
 import java.net.URL
 import java.util.*
 import javax.net.ssl.HttpsURLConnection
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.minutes
 
 object S3TestUtils {
     const val DEFAULT_REGION = "us-west-2"
@@ -54,7 +54,7 @@ object S3TestUtils {
         prefix: String,
         suffix: String,
         region: String = client.config.region!!,
-    ): String = withTimeout(60.seconds) {
+    ): String = withTimeout(5.minutes) {
         val bucketName = "$prefix-$testRunId-$suffix"
         println("Creating S3 bucket: $bucketName")
 
@@ -95,7 +95,7 @@ object S3TestUtils {
         prefix: String,
         availabilityZone: String,
         suffix: String,
-    ) = withTimeout(60.seconds) {
+    ) = withTimeout(5.minutes) {
         val bucketName = "$prefix-$testRunId-$suffix--$availabilityZone--$S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX"
         println("Creating S3 Express directory bucket: $bucketName")
 

@@ -1009,10 +1009,16 @@
                     "target": "com.amazonaws.devopsagent#ResourceNotFoundException"
                 },
                 {
+                    "target": "com.amazonaws.devopsagent#ServiceQuotaExceededException"
+                },
+                {
                     "target": "com.amazonaws.devopsagent#ValidationException"
                 }
             ],
             "traits": {
+                "aws.iam#conditionKeys": [
+                    "aidevops:ServiceType"
+                ],
                 "aws.iam#iamAction": {
                     "documentation": "Grants permission to associate service"
                 },
@@ -2381,6 +2387,17 @@
                 "smithy.api#pattern": "^[a-zA-Z0-9-_]+$"
             }
         },
+        "com.amazonaws.devopsagent#CustomHeaderNames": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.devopsagent#CustomHeaderName"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 3
+                }
+            }
+        },
         "com.amazonaws.devopsagent#CustomHeaderValue": {
             "type": "string",
             "traits": {
@@ -3325,13 +3342,19 @@
                     "aidevops:TargetAgentSpaceArn": {
                         "type": "ARN",
                         "documentation": "Filters access by the target AgentSpace ARN on the request. Set by the service from the request context, not supplied by the caller."
+                    },
+                    "aidevops:ServiceType": {
+                        "type": "String",
+                        "documentation": "Filters access by the type of service in the association, such as github, slack, aws or sourceAws. Set by the service from the association's configuration, not supplied by the caller."
                     }
                 },
                 "aws.iam#serviceResolvedConditionKeys": [
                     "aidevops:SourceAgentSpaceArn",
                     "aidevops:TargetAgentSpaceArn",
+                    "aidevops:ServiceType",
                     "aidevops:SourceAgentSpaceArn",
-                    "aidevops:TargetAgentSpaceArn"
+                    "aidevops:TargetAgentSpaceArn",
+                    "aidevops:ServiceType"
                 ],
                 "aws.iam#supportedPrincipalTypes": [
                     "Root",
@@ -3782,6 +3805,9 @@
                 }
             ],
             "traits": {
+                "aws.iam#conditionKeys": [
+                    "aidevops:ServiceType"
+                ],
                 "aws.iam#iamAction": {
                     "documentation": "Grants permission to disassociate service"
                 },
@@ -4430,6 +4456,9 @@
                         "smithy.api#documentation": "<p>Monthly on-demand hours usage and limit for an account</p>"
                     }
                 },
+                "monthlyAccountGraderHours": {
+                    "target": "com.amazonaws.devopsagent#UsageMetric"
+                },
                 "usagePeriodStartTime": {
                     "target": "com.amazonaws.devopsagent#DateTime",
                     "traits": {
@@ -4494,6 +4523,14 @@
                         "smithy.api#documentation": "<p>The unique identifier of the AgentSpace</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
+                    }
+                },
+                "includedData": {
+                    "target": "com.amazonaws.devopsagent#IncludedData",
+                    "traits": {
+                        "smithy.api#documentation": "<p>How much data to include in the response.</p>",
+                        "smithy.api#httpQuery": "includedData",
+                        "smithy.api#notProperty": {}
                     }
                 }
             },
@@ -4864,6 +4901,9 @@
             ],
             "traits": {
                 "aws.api#dataPlane": {},
+                "aws.iam#conditionKeys": [
+                    "aidevops:ServiceType"
+                ],
                 "aws.iam#iamAction": {
                     "documentation": "Grants permission to get association"
                 },
@@ -5976,6 +6016,26 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.devopsagent#IncludedData": {
+            "type": "enum",
+            "members": {
+                "METADATA_ONLY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "METADATA_ONLY"
+                    }
+                },
+                "ALL_DATA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALL_DATA"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>How much data to include in the response. Defaults to ALL_DATA.</p>"
+            }
+        },
         "com.amazonaws.devopsagent#InternalServerException": {
             "type": "structure",
             "members": {
@@ -6209,6 +6269,14 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Token for the next page of results.</p>",
                         "smithy.api#httpQuery": "nextToken"
+                    }
+                },
+                "includedData": {
+                    "target": "com.amazonaws.devopsagent#IncludedData",
+                    "traits": {
+                        "smithy.api#documentation": "<p>How much data to include in the response.</p>",
+                        "smithy.api#httpQuery": "includedData",
+                        "smithy.api#notProperty": {}
                     }
                 }
             },
@@ -8054,6 +8122,9 @@
                 }
             ],
             "traits": {
+                "aws.iam#conditionKeys": [
+                    "aidevops:ServiceType"
+                ],
                 "aws.iam#iamAction": {
                     "documentation": "Grants permission to list webhooks for association"
                 },
@@ -8181,6 +8252,12 @@
                         "smithy.api#documentation": "<p>MCP server configuration with Bearer token (RFC 6750).</p>"
                     }
                 },
+                "customHeaders": {
+                    "target": "com.amazonaws.devopsagent#MCPServerCustomHeadersConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>MCP server configuration with one or more custom authentication headers.</p>"
+                    }
+                },
                 "authorizationDiscovery": {
                     "target": "com.amazonaws.devopsagent#MCPServerAuthorizationDiscoveryConfig",
                     "traits": {
@@ -8237,6 +8314,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Bearer token authentication (RFC 6750).</p>",
                         "smithy.api#enumValue": "bearer-token"
+                    }
+                },
+                "CUSTOM_HEADERS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "custom-headers"
                     }
                 }
             },
@@ -8295,6 +8378,24 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Configuration for Model Context Protocol (MCP) server integration.</p>"
+            }
+        },
+        "com.amazonaws.devopsagent#MCPServerCustomHeadersConfig": {
+            "type": "structure",
+            "members": {
+                "headers": {
+                    "target": "com.amazonaws.devopsagent#CustomHeaders",
+                    "traits": {
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 3
+                        },
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for authenticating to an MCP server with custom HTTP headers.</p>"
             }
         },
         "com.amazonaws.devopsagent#MCPServerDatadogConfiguration": {
@@ -8734,6 +8835,86 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>List of MCP tool names available for the association.</p>"
+            }
+        },
+        "com.amazonaws.devopsagent#MSTeamsChannel": {
+            "type": "structure",
+            "members": {
+                "channelName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the Microsoft Teams channel.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "channelId": {
+                    "target": "com.amazonaws.devopsagent#MSTeamsChannelId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the Microsoft Teams channel, for example 19:abc123def456@thread.tacv2.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Represents a channel in a Microsoft Teams team that the DevOps Agent service can send notifications to.</p>"
+            }
+        },
+        "com.amazonaws.devopsagent#MSTeamsChannelId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                }
+            }
+        },
+        "com.amazonaws.devopsagent#MSTeamsConfiguration": {
+            "type": "structure",
+            "members": {
+                "teamId": {
+                    "target": "com.amazonaws.devopsagent#Guid",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the Microsoft Teams team to connect to the DevOps Agent service.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "teamName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the Microsoft Teams team to connect to the DevOps Agent service.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "transmissionTarget": {
+                    "target": "com.amazonaws.devopsagent#MSTeamsTransmissionTarget",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Microsoft Teams channels that receive agent notifications.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for connecting a Microsoft Teams team to the DevOps Agent service. Use this configuration to specify which team to connect and how to route agent notifications to channels within that team.</p>"
+            }
+        },
+        "com.amazonaws.devopsagent#MSTeamsTransmissionTarget": {
+            "type": "structure",
+            "members": {
+                "opsOncallTarget": {
+                    "target": "com.amazonaws.devopsagent#MSTeamsChannel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Microsoft Teams channel that receives notifications from the On-call Agent.</p>"
+                    }
+                },
+                "opsSRETarget": {
+                    "target": "com.amazonaws.devopsagent#MSTeamsChannel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Microsoft Teams channel that receives notifications from the SRE Agent.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Specifies the Microsoft Teams channels that receive different types of agent notifications.</p>"
             }
         },
         "com.amazonaws.devopsagent#MaxIpv4AddressesPerEni": {
@@ -10248,6 +10429,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>If the MCP server uses API key authentication, these details are provided.</p>"
                     }
+                },
+                "customHeaderNames": {
+                    "target": "com.amazonaws.devopsagent#CustomHeaderNames",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configured custom authentication header names when the MCP server uses custom-header authentication. Secret values are not returned.</p>"
+                    }
                 }
             },
             "traits": {
@@ -11653,6 +11840,12 @@
                         "smithy.api#enumValue": "azuredevops"
                     }
                 },
+                "MS_TEAMS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "msteams"
+                    }
+                },
                 "DYNATRACE": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -11866,6 +12059,12 @@
                     "target": "com.amazonaws.devopsagent#RemoteAgentSigV4Configuration",
                     "traits": {
                         "smithy.api#documentation": "<p>Remote A2A agent integration configuration (SigV4 auth).</p>"
+                    }
+                },
+                "msteams": {
+                    "target": "com.amazonaws.devopsagent#MSTeamsConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The configuration for connecting a Microsoft Teams team to the DevOps Agent service.</p>"
                     }
                 },
                 "releaseManagement": {
@@ -13839,16 +14038,25 @@
             },
             "errors": [
                 {
+                    "target": "com.amazonaws.devopsagent#ConflictException"
+                },
+                {
                     "target": "com.amazonaws.devopsagent#InternalServerException"
                 },
                 {
                     "target": "com.amazonaws.devopsagent#ResourceNotFoundException"
                 },
                 {
+                    "target": "com.amazonaws.devopsagent#ServiceQuotaExceededException"
+                },
+                {
                     "target": "com.amazonaws.devopsagent#ValidationException"
                 }
             ],
             "traits": {
+                "aws.iam#conditionKeys": [
+                    "aidevops:ServiceType"
+                ],
                 "aws.iam#iamAction": {
                     "documentation": "Grants permission to update association"
                 },

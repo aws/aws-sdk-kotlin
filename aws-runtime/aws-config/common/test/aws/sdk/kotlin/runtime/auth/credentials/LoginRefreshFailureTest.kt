@@ -146,6 +146,27 @@ class LoginRefreshFailureTest {
     }
 
     @Test
+    fun testAnInvalidRefreshTokenIsNonRecoverable() = runTest {
+        val clock = ManualClock(epoch)
+        val invalidGrant = HttpResponse(
+            HttpStatusCode.BadRequest,
+            Headers { append("x-amzn-errortype", "ValidationException") },
+            HttpBody.fromBytes(
+                """{"error":"INVALID_REQUEST","message":"The provided authorization grant is invalid, expired, revoked, or malformed"}"""
+                    .encodeToByteArray(),
+            ),
+        )
+        val connection = buildTestConnection { expect(invalidGrant) }
+        val p = provider(clock, 3.minutes, connection)
+        clock.advance(4.minutes)
+
+        val ex = assertFailsWith<InvalidLoginTokenException> { p.resolve(underWarmCache) }
+
+        assertTrue(ex.isNonRecoverableCredentialsError(), "a rejected refresh token needs the customer to sign in again")
+        assertTrue(ex.message!!.contains("aws login"), ex.message)
+    }
+
+    @Test
     fun testAnExpiredAuthorizationCodeIsRecoverable() = runTest {
         val clock = ManualClock(epoch)
         val connection = buildTestConnection { expect(rejectedRefresh("AUTHCODE_EXPIRED")) }

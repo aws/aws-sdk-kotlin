@@ -619,6 +619,12 @@
             "brazilName": "AwsSdkKotlinConnectparticipant"
         },
         {
+            "sdkId": "Continuum",
+            "namespace": "aws.sdk.kotlin.services.continuum",
+            "artifactName": "continuum",
+            "brazilName": "AwsSdkKotlinContinuum"
+        },
+        {
             "sdkId": "ControlCatalog",
             "namespace": "aws.sdk.kotlin.services.controlcatalog",
             "artifactName": "controlcatalog",
@@ -2083,6 +2089,12 @@
             "brazilName": "AwsSdkKotlinSagemakerRuntimeHttp2"
         },
         {
+            "sdkId": "SageMakerTrainingSessionRuntime",
+            "namespace": "aws.sdk.kotlin.services.sagemakertrainingsessionruntime",
+            "artifactName": "sagemakertrainingsessionruntime",
+            "brazilName": "AwsSdkKotlinSagemakertrainingsessionruntime"
+        },
+        {
             "sdkId": "Sagemaker Edge",
             "namespace": "aws.sdk.kotlin.services.sagemakeredge",
             "artifactName": "sagemakeredge",
@@ -2461,18 +2473,6 @@
             "brazilName": "AwsSdkKotlinEvs"
         },
         {
-            "sdkId": "finspace",
-            "namespace": "aws.sdk.kotlin.services.finspace",
-            "artifactName": "finspace",
-            "brazilName": "AwsSdkKotlinFinspace"
-        },
-        {
-            "sdkId": "finspace data",
-            "namespace": "aws.sdk.kotlin.services.finspacedata",
-            "artifactName": "finspacedata",
-            "brazilName": "AwsSdkKotlinFinspaceData"
-        },
-        {
             "sdkId": "fis",
             "namespace": "aws.sdk.kotlin.services.fis",
             "artifactName": "fis",
@@ -2603,12 +2603,6 @@
             "namespace": "aws.sdk.kotlin.services.synthetics",
             "artifactName": "synthetics",
             "brazilName": "AwsSdkKotlinSynthetics"
-        },
-        {
-            "sdkId": "tnb",
-            "namespace": "aws.sdk.kotlin.services.tnb",
-            "artifactName": "tnb",
-            "brazilName": "AwsSdkKotlinTnb"
         },
         {
             "sdkId": "uxc",
