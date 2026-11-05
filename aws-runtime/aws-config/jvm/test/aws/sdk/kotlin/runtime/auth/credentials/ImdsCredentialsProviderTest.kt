@@ -20,13 +20,34 @@ class ImdsCredentialsProviderTestJvm {
     private val ec2MetadataEnabledPlatform = TestPlatformProvider.of()
 
     // FIXME Refactor mocking for KMP
-    // SDK can perform 3 successive requests with expired credentials. IMDS must only be called once.
+    // SDK can perform 3 successive requests with expired credentials. The expired first response is cached and returned,
+    // the next request refreshes it, and IMDS returning expired credentials again is a failed refresh: the cached
+    // credentials are kept and the refresh backoff applies, so the third request does not call IMDS.
     @Test
-    fun testSuccessiveRequestsOnlyCallIMDSOnce() = runTest {
+    fun testSuccessiveRequestsWithExpiredCredentialsBackOff() = runTest {
         val connection = buildTestConnection {
             expect(
                 tokenRequest("http://169.254.169.254", DEFAULT_TOKEN_TTL_SECONDS),
                 tokenResponse(DEFAULT_TOKEN_TTL_SECONDS, "TOKEN_A"),
+            )
+            expect(
+                imdsRequest(
+                    "http://169.254.169.254/latest/meta-data/iam/security-credentials/imds-test-role",
+                    "TOKEN_A",
+                ),
+                imdsResponse(
+                    """
+                    {
+                        "Code" : "Success",
+                        "LastUpdated" : "2021-09-17T20:57:08Z",
+                        "Type" : "AWS-HMAC",
+                        "AccessKeyId" : "ASIARTEST",
+                        "SecretAccessKey" : "xjtest",
+                        "Token" : "IQote///test",
+                        "Expiration" : "2021-09-18T03:31:56Z"
+                    }
+                """,
+                ),
             )
             expect(
                 imdsRequest(
@@ -70,8 +91,8 @@ class ImdsCredentialsProviderTestJvm {
             provider.resolve()
         }
 
-        // make sure ImdsClient only gets called once
-        coVerify(exactly = 1) {
+        // the first request and the refresh on the second; the backoff covers the third
+        coVerify(exactly = 2) {
             client.get(any())
         }
     }
