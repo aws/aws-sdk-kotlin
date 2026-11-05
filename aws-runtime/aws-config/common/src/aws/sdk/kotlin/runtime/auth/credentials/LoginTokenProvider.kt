@@ -18,6 +18,7 @@ import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.profile.normalizePath
 import aws.smithy.kotlin.runtime.auth.awscredentials.CallerHasCachedCredentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CallerOwnsCredentialsRefresh
+import aws.smithy.kotlin.runtime.auth.awscredentials.CallerRejectedAccessKeyId
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
@@ -127,8 +128,11 @@ internal class LoginTokenProvider(
 
     private suspend fun getToken(attributes: Attributes): LoginToken {
         val token = readLoginTokenFromCache(loginSessionName, platformProvider, cacheDirectory)
+        // The credentials are this token's access token, so when a target service rejected them only a new token can
+        // replace them: the token is refreshed even before its refresh window, and never handed back on failure.
+        val rejected = attributes.getOrNull(CallerRejectedAccessKeyId) == token.accessKeyId
 
-        if (clock.now() < (token.expiresAt - refreshBufferWindow)) {
+        if (!rejected && clock.now() < (token.expiresAt - refreshBufferWindow)) {
             coroutineContext.debug<LoginTokenProvider> { "using cached token for login-session: $loginSessionName" }
             return token
         }
@@ -145,7 +149,7 @@ internal class LoginTokenProvider(
                 if (e.isNonRecoverableCredentialsError()) throw e
                 if (stillValid && attributes.getOrNull(CallerHasCachedCredentials) == true) throw e
             }
-            if (stillValid) {
+            if (stillValid && !rejected) {
                 coroutineContext.debug<LoginTokenProvider> { "refresh token failed, original token is still valid until ${token.expiresAt} for login-session: $loginSessionName, re-using" }
                 return token
             }
