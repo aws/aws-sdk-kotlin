@@ -83,6 +83,9 @@ internal class FamilyModelBuilder(
             metadata = metadata,
             generateGetTable = family.isTable && ctx.attributes[AnnotationsProcessorOptions.GenerateGetTableMethodAttribute],
             destinationPkg = destinationPackage(base, ctx),
+            // An ad-hoc family's signatures name only `Any`, never its marker object (validateFamily rejects registering
+            // one as a subtype of another family)
+            visibility = generatedVisibility(if (family.isAdHoc) emptySequence() else sequenceOf(base), ctx),
         )
 
         return listOfNotNull(familyItem, baseItem)
