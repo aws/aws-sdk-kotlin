@@ -1,0 +1,9 @@
+{
+    "id": "c99e36aa-7fe1-4522-b5d8-2f06677d91b3",
+    "type": "feature",
+    "description": "Add support for Kotlin/Native targets: `linuxX64`, `linuxArm64`, `macosX64`, `macosArm64`, `iosArm64`, `iosX64`, `iosSimulatorArm64` and `mingwX64`",
+    "issues": [
+        "https://github.com/aws/aws-sdk-kotlin/issues/229"
+    ],
+    "requiresMinorVersionBump": true
+}
