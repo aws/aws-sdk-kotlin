@@ -201,7 +201,65 @@ jobs:
           name: test-reports-macos
           path: '**/build/reports'
 
-  # JVM and protocol tests on every OS; Native is covered by the linux and macos jobs and stays off on Windows
+  # build and test for targets: jvm, mingwX64
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Set start timestamp
+        id: start
+        shell: bash
+        run: echo "timestamp=$(date +%s)" >> "$GITHUB_OUTPUT"
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          path: 'aws-sdk-kotlin'
+      - name: Setup Build
+        uses: ./aws-sdk-kotlin/.github/actions/setup-build
+      - name: Configure Gradle
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        with:
+          working-directory: ./aws-sdk-kotlin
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
+          aws-region: us-west-2
+      - name: Setup kat
+        uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
+      - name: Build and Test on Windows
+        working-directory: ./aws-sdk-kotlin
+        shell: bash
+        run: |
+          ./gradlew apiCheck
+          ./gradlew build --stacktrace
+      - name: Calculate duration
+        id: end
+        if: always()
+        shell: bash
+        run: |
+          now=$(date +%s)
+          duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
+          echo "duration=$duration" >> "$GITHUB_OUTPUT"
+      - name: Emit metrics
+        if: always() # run this step even if previous steps failed or the job is canceled
+        uses: aws/aws-kotlin-repo-tools/.github/actions/emit-metrics@main
+        with:
+          namespace: CI Metrics
+          dimensions: |
+            Product=aws-sdk-kotlin
+            JobName=${{ github.job }}
+            Branch=${{ github.base_ref || github.ref_name }}
+          metrics: |
+            WorkflowSucceeded:${{ job.status == 'success' && '1' || '0' }}:Count
+            WorkflowDuration:${{ steps.end.outputs.duration }}:Seconds
+      - name: Save Test Reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-windows
+          path: '**/build/reports'
+
+  # JVM and protocol tests on every OS; Native is covered by the linux, macos, and windows jobs
   all-platforms:
     runs-on: ${{ matrix.os }}
     strategy:
