@@ -28,6 +28,8 @@ public final class aws/sdk/kotlin/runtime/auth/credentials/AssumeRoleWithWebIden
 
 public final class aws/sdk/kotlin/runtime/auth/credentials/CredentialsInvalidationInterceptor : aws/smithy/kotlin/runtime/client/Interceptor {
 	public fun <init> ()V
+	public fun <init> (Ljava/util/Set;)V
+	public synthetic fun <init> (Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun modifyBeforeAttemptCompletion-gIAlu-s (Laws/smithy/kotlin/runtime/client/ResponseInterceptorContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun modifyBeforeCompletion-gIAlu-s (Laws/smithy/kotlin/runtime/client/ResponseInterceptorContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun modifyBeforeDeserialization (Laws/smithy/kotlin/runtime/client/ProtocolResponseInterceptorContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

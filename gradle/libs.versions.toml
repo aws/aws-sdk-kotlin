@@ -1,11 +1,11 @@
 [versions]
-kotlin-version = "2.4.0"
+kotlin-version = "2.4.21"
 ksp-version = "2.3.12"
 
 dokka-version = "2.2.0"
 jackson-bom-version = "2.22.3"
 
-aws-kotlin-repo-tools-version = "0.6.3"
+aws-kotlin-repo-tools-version = "0.6.4"
 
 # libs
 coroutines-version = "1.11.0"
@@ -13,7 +13,7 @@ atomicfu-version = "0.33.0"
 binary-compatibility-validator-version = "0.18.2"
 
 # smithy-kotlin
-smithy-kotlin-version = "1.7.12"
+smithy-kotlin-version = "1.7.13"
 
 # codegen
 smithy-version = "1.74.1"
@@ -25,7 +25,7 @@ kotlinx-benchmark-version = "0.5.0"
 kotlinx-serialization-version = "1.11.0"
 kaml-version = "0.55.0"
 mockk-version = "1.14.11"
-slf4j-version = "2.0.18"
+slf4j-version = "2.0.20"
 mokkery-version = "3.5.1"
 jsoup-version = "1.23.2"
 

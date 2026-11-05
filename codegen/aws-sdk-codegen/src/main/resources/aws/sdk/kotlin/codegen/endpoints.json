@@ -676,6 +676,7 @@
           "il-central-1" : { },
           "me-central-1" : { },
           "me-south-1" : { },
+          "mx-central-1" : { },
           "sa-east-1" : { },
           "us-east-1" : { },
           "us-east-2" : { },
@@ -26611,6 +26612,7 @@
       },
       "textract" : {
         "endpoints" : {
+          "ap-northeast-1" : { },
           "ap-northeast-2" : {
             "variants" : [ {
               "hostname" : "textract.ap-northeast-2.api.aws",
@@ -26653,6 +26655,7 @@
               "tags" : [ "dualstack" ]
             } ]
           },
+          "eu-central-2" : { },
           "eu-south-2" : {
             "variants" : [ {
               "hostname" : "textract.eu-south-2.api.aws",
@@ -37056,6 +37059,11 @@
         "isRegionalized" : false,
         "partitionEndpoint" : "aws-iso-global"
       },
+      "kafka" : {
+        "endpoints" : {
+          "us-iso-east-1" : { }
+        }
+      },
       "kinesis" : {
         "endpoints" : {
           "us-iso-east-1" : { },
@@ -40751,6 +40759,11 @@
         }
       },
       "tagging" : {
+        "endpoints" : {
+          "eusc-de-east-1" : { }
+        }
+      },
+      "transcribestreaming" : {
         "endpoints" : {
           "eusc-de-east-1" : { }
         }

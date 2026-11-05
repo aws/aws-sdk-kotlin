@@ -619,6 +619,12 @@
             "brazilName": "AwsSdkKotlinConnectparticipant"
         },
         {
+            "sdkId": "Continuum",
+            "namespace": "aws.sdk.kotlin.services.continuum",
+            "artifactName": "continuum",
+            "brazilName": "AwsSdkKotlinContinuum"
+        },
+        {
             "sdkId": "ControlCatalog",
             "namespace": "aws.sdk.kotlin.services.controlcatalog",
             "artifactName": "controlcatalog",

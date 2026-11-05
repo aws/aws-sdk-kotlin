@@ -21,11 +21,12 @@ import kotlin.coroutines.coroutineContext
 
 /**
  * Target service error codes that indicate the credentials themselves were rejected, as opposed to the request
- * being unauthorized. `AccessDenied` is deliberately absent: it usually means the credentials are valid but the
- * principal lacks permission, and refreshing them would not help. `ExpiredTokenException` is absent too: services that
- * model it use it for an expired token in the request payload, not for the credentials that signed the request.
+ * being unauthorized: `ExpiredToken`, and `ExpiredTokenException`, which JSON-protocol services such as DynamoDB return
+ * for expired credentials. They are matched on the error code alone, whatever the HTTP status. `AccessDenied` is
+ * deliberately absent: it usually means the credentials are valid but the principal lacks permission, and refreshing
+ * them would not help. `InvalidToken` is absent too: services return it for other tokens, not for expired credentials.
  */
-private val INVALIDATION_ERROR_CODES = setOf("ExpiredToken", "InvalidToken")
+private val INVALIDATION_ERROR_CODES = setOf("ExpiredToken", "ExpiredTokenException")
 
 /**
  * Signals credential invalidation back to the identity provider when a target service rejects the credentials that
@@ -35,9 +36,15 @@ private val INVALIDATION_ERROR_CODES = setOf("ExpiredToken", "InvalidToken")
  * caches them ([RefreshAwareCredentialsProvider]), the exception is marked with [CredentialsMarkedForRefresh] so the
  * retry policy retries the request, which then resolves refreshed credentials. A provider that does not cache cannot
  * refresh in response, so a retry would be signed with the same rejected credentials and is not attempted.
+ *
+ * @param modeledErrorCodes the rejection error codes that the operation models as its own errors. Such an error
+ * describes the request, for example an expired token in its input, rather than the credentials that signed it, so
+ * refreshing the credentials cannot resolve it and it is not treated as a rejection.
  */
 @InternalSdkApi
-public class CredentialsInvalidationInterceptor : HttpInterceptor {
+public class CredentialsInvalidationInterceptor(
+    private val modeledErrorCodes: Set<String> = emptySet(),
+) : HttpInterceptor {
 
     override suspend fun modifyBeforeAttemptCompletion(
         context: ResponseInterceptorContext<Any, Any, HttpRequest, HttpResponse?>,
@@ -47,7 +54,7 @@ public class CredentialsInvalidationInterceptor : HttpInterceptor {
         // Read from the deserialized exception rather than a response header: `x-amzn-ErrorType` is not populated for
         // all protocols, and query and XML services carry the code in the body.
         val errorCode = ex.sdkErrorMetadata.attributes.getOrNull(ServiceErrorMetadata.ErrorCode)
-        if (errorCode !in INVALIDATION_ERROR_CODES) return context.response
+        if (errorCode !in INVALIDATION_ERROR_CODES || errorCode in modeledErrorCodes) return context.response
 
         coroutineContext.debug<CredentialsInvalidationInterceptor> {
             "Credentials were rejected by the service with error code $errorCode"

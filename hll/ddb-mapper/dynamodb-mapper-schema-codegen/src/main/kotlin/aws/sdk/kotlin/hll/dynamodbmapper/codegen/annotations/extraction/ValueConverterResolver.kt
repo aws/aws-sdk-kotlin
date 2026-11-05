@@ -12,6 +12,8 @@ import aws.sdk.kotlin.hll.codegen.model.Types
 import aws.sdk.kotlin.hll.codegen.model.isGenericFor
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbAttributeConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbHeterogeneousAttribute
+import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbHeterogeneousType
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMappable
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model.MapKeyConverterSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model.ValueConverterSpec
@@ -19,6 +21,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.model.MapperTypes
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.ClassKind
+import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
@@ -34,16 +37,29 @@ internal fun resolvePropertyConverter(
     prop: KSPropertyDeclaration,
     ctx: RenderContext,
     diagnostics: DiagnosticCollector,
+    annotations: List<KSAnnotation> = prop.annotations.toList(),
 ): ValueConverterSpec? {
     // KSP requires extra work to get a class argument out of an annotation, can't just use getAnnotationsByType
     // https://slack-chats.kotlinlang.org/t/8480301/hello-again-how-do-you-get-a-kclass-out-from-an-annotation-a
-    val customConverterKsType = prop
-        .annotations
+    val customConverterKsType = annotations
         .singleOrNull { it.annotationType.resolve().declaration.qualifiedName?.asString() == DynamoDbAttributeConverter::class.qualifiedName }
         ?.arguments
         ?.single()
         ?.value
         ?.let { it as KSType }
+
+    val heterogeneousAnnotation = annotations.find(DynamoDbHeterogeneousAttribute::class.qualifiedName!!)
+    if (heterogeneousAnnotation != null) {
+        if (customConverterKsType != null) {
+            diagnostics.error(
+                "Property '${prop.name}' is annotated with both @DynamoDbHeterogeneousAttribute and " +
+                    "@DynamoDbAttributeConverter; use only one",
+                prop.asSymbolRef(),
+            )
+            return null
+        }
+        return resolveHeterogeneousAttribute(prop, heterogeneousAnnotation, ctx, diagnostics)
+    }
 
     return if (customConverterKsType != null) {
         ValueConverterSpec.Custom(
@@ -53,6 +69,66 @@ internal fun resolvePropertyConverter(
     } else {
         resolveValueConverter(prop.type.resolve(), ctx, diagnostics, prop.asSymbolRef())
     }
+}
+
+/**
+ * The family named by a [DynamoDbHeterogeneousAttribute] among [annotations], if any
+ */
+internal fun heterogeneousAttributeFamily(annotations: List<KSAnnotation>): KSClassDeclaration? = (
+    annotations.find(DynamoDbHeterogeneousAttribute::class.qualifiedName!!)?.argument("family") as? KSType
+    )?.declaration as? KSClassDeclaration
+
+/**
+ * Resolves a [DynamoDbHeterogeneousAttribute] property: every value of the family's value type, at any depth of
+ * nullability and collections, uses the family's generated value converter
+ */
+private fun resolveHeterogeneousAttribute(
+    prop: KSPropertyDeclaration,
+    annotation: KSAnnotation,
+    ctx: RenderContext,
+    diagnostics: DiagnosticCollector,
+): ValueConverterSpec? {
+    val family = (annotation.argument("family") as? KSType)?.declaration as? KSClassDeclaration
+    val familyName = family?.qualifiedName?.asString()
+    when {
+        family == null || family.annotationNamed(DynamoDbHeterogeneousType::class.qualifiedName!!) == null -> {
+            diagnostics.error(
+                "Family '$familyName' named by @DynamoDbHeterogeneousAttribute on property '${prop.name}' is not " +
+                    "annotated with @DynamoDbHeterogeneousType",
+                prop.asSymbolRef(),
+            )
+            return null
+        }
+        family.containingFile == null -> {
+            diagnostics.error(
+                "Family '$familyName' named by @DynamoDbHeterogeneousAttribute on property '${prop.name}' is " +
+                    "defined in another module. Nesting @DynamoDbMappable types across modules is not yet supported.",
+                prop.asSymbolRef(),
+            )
+            return null
+        }
+    }
+
+    val valueTypeName = if (family.classKind == ClassKind.OBJECT) AnyType.fullName else familyName!!
+    val leaf = HeterogeneousLeaf(valueTypeName, generatedValueConverter(family, ctx))
+    val spec = resolveValueConverter(prop.type.resolve(), ctx, diagnostics, prop.asSymbolRef(), leaf) ?: return null
+
+    if (!leaf.used) {
+        diagnostics.error(
+            "Property '${prop.name}' is annotated with @DynamoDbHeterogeneousAttribute($familyName::class) but " +
+                "holds no value of type '$valueTypeName'",
+            prop.asSymbolRef(),
+        )
+        return null
+    }
+    return spec
+}
+
+/**
+ * The family whose value converter replaces resolution of [valueTypeName] wherever it appears in a property's type
+ */
+internal class HeterogeneousLeaf(val valueTypeName: String, val valueConverter: TypeRef) {
+    var used: Boolean = false
 }
 
 /**
@@ -66,12 +142,18 @@ internal fun resolveValueConverter(
     ctx: RenderContext,
     diagnostics: DiagnosticCollector,
     symbol: SymbolRef? = null,
+    heterogeneousLeaf: HeterogeneousLeaf? = null,
 ): ValueConverterSpec? {
     val type = Type.from(ksType)
-    fun recurse(t: KSType) = resolveValueConverter(t, ctx, diagnostics, symbol)
+    fun recurse(t: KSType) = resolveValueConverter(t, ctx, diagnostics, symbol, heterogeneousLeaf)
 
     return when {
         type.nullable -> recurse(ksType.makeNotNullable())?.let(ValueConverterSpec::Nullable)
+
+        heterogeneousLeaf != null && ksType.declaration.qualifiedName?.asString() == heterogeneousLeaf.valueTypeName -> {
+            heterogeneousLeaf.used = true
+            ValueConverterSpec.NestedRef(heterogeneousLeaf.valueConverter)
+        }
 
         ksType.isEnum -> ValueConverterSpec.Enum(type)
 

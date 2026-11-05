@@ -94,7 +94,7 @@ class CredentialsInvalidationInterceptorTest {
 
     @Test
     fun testInvalidatesOnEveryRejectionCode() = runTest {
-        listOf("ExpiredToken", "InvalidToken").forEach { code ->
+        listOf("ExpiredToken", "ExpiredTokenException").forEach { code ->
             val provider = RecordingProvider()
             val context = context(Result.failure(serviceException(code)), credentials, provider)
 
@@ -117,14 +117,28 @@ class CredentialsInvalidationInterceptorTest {
     }
 
     @Test
-    fun testIgnoresExpiredTokenException() = runTest {
+    fun testIgnoresACodeTheOperationModels() = runTest {
+        val interceptor = CredentialsInvalidationInterceptor(modeledErrorCodes = setOf("ExpiredTokenException"))
+
+        val modeled = RecordingProvider()
+        interceptor.modifyBeforeAttemptCompletion(context(Result.failure(serviceException("ExpiredTokenException")), credentials, modeled))
+        // The operation models the error for something other than the signing credentials, such as an expired token in
+        // its input, so refreshing the credentials cannot resolve it.
+        assertNull(modeled.rejected)
+
+        val unmodeled = RecordingProvider()
+        interceptor.modifyBeforeAttemptCompletion(context(Result.failure(serviceException("ExpiredToken")), credentials, unmodeled))
+        assertEquals(credentials, unmodeled.rejected, "a code the operation does not model still invalidates")
+    }
+
+    @Test
+    fun testIgnoresInvalidToken() = runTest {
         val provider = RecordingProvider()
-        val context = context(Result.failure(serviceException("ExpiredTokenException")), credentials, provider)
+        val context = context(Result.failure(serviceException("InvalidToken")), credentials, provider)
 
         CredentialsInvalidationInterceptor().modifyBeforeAttemptCompletion(context)
 
-        // Services that model ExpiredTokenException (STS web identity, SSO OIDC, EKS Auth, Marketplace Metering) use it
-        // for an expired token in the request payload; the credentials that signed the request are still valid.
+        // Services return InvalidToken for other tokens, such as a pagination or task token, not for expired credentials.
         assertNull(provider.rejected)
     }
 
