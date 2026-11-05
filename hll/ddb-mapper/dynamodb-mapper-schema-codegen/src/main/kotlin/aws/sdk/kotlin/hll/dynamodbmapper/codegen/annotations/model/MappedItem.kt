@@ -20,6 +20,8 @@ import aws.sdk.kotlin.hll.codegen.model.TypeRef
  * @param metadata Table-level metadata (keys, TTL, counters). Empty for [Kind.Nested] items.
  * @param generateGetTable Whether to generate a `getTable` extension. Only ever `true` for [Kind.Table] items.
  * @param destinationPkg The package into which code for this class is generated
+ * @param isObject Whether the annotated class is an `object`, whose single instance is never constructed or mutated
+ * @param fileName The name of the generated file. Defaults to `<name>Schema`.
  */
 internal data class MappedItem(
     val name: String,
@@ -31,6 +33,8 @@ internal data class MappedItem(
     val metadata: SchemaMetadata,
     val generateGetTable: Boolean,
     val destinationPkg: String,
+    val isObject: Boolean = false,
+    val fileName: String = "${name}Schema",
 ) {
     /**
      * Identifies the role of a mapped class
