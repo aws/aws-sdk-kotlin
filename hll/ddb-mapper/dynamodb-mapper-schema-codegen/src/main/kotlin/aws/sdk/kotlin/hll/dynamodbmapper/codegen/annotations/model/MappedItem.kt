@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model
 
 import aws.sdk.kotlin.hll.codegen.model.TypeRef
+import aws.sdk.kotlin.hll.codegen.rendering.Visibility
 
 /**
  * Everything required to generate code for a single annotated class. Instances are fully resolved: renderers make no
@@ -22,6 +23,7 @@ import aws.sdk.kotlin.hll.codegen.model.TypeRef
  * @param destinationPkg The package into which code for this class is generated
  * @param isObject Whether the annotated class is an `object`, whose single instance is never constructed or mutated
  * @param fileName The name of the generated file. Defaults to `<name>Schema`.
+ * @param visibility The visibility of the generated declarations. Always [Visibility.PUBLIC] or [Visibility.INTERNAL].
  */
 internal data class MappedItem(
     val name: String,
@@ -35,6 +37,7 @@ internal data class MappedItem(
     val destinationPkg: String,
     val isObject: Boolean = false,
     val fileName: String = "${name}Schema",
+    val visibility: Visibility,
 ) {
     /**
      * Identifies the role of a mapped class
