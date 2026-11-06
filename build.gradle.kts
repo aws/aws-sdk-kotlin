@@ -77,7 +77,7 @@ allprojects {
 dokka {
     moduleName.set("AWS SDK for Kotlin")
 
-    dokkaPublications.html {
+    dokkaPublications.configureEach {
         includes.from(
             rootProject.file("docs/dokka-presets/README.md"),
         )
