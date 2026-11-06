@@ -8,6 +8,7 @@ import aws.sdk.kotlin.runtime.client.AwsClientOption
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehaviorKey
+import aws.smithy.kotlin.runtime.auth.awscredentials.PacedRefreshKey
 import aws.smithy.kotlin.runtime.collections.emptyAttributes
 import aws.smithy.kotlin.runtime.collections.mutableAttributes
 import aws.smithy.kotlin.runtime.collections.setIfValueNotNull
@@ -22,12 +23,14 @@ internal fun credentials(
     providerName: String? = null,
     accountId: String? = null,
     refreshBehavior: CredentialsRefreshBehavior? = null,
+    pacedRefresh: Boolean = false,
 ): Credentials {
     val attributes = when {
-        providerName != null || accountId != null || refreshBehavior != null -> mutableAttributes().apply {
+        providerName != null || accountId != null || refreshBehavior != null || pacedRefresh -> mutableAttributes().apply {
             setIfValueNotNull(IdentityAttributes.ProviderName, providerName)
             setIfValueNotNull(AwsClientOption.AccountId, accountId)
             setIfValueNotNull(CredentialsRefreshBehaviorKey, refreshBehavior)
+            if (pacedRefresh) set(PacedRefreshKey, true)
         }
         else -> emptyAttributes()
     }

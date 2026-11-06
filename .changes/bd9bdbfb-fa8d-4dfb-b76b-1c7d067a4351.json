@@ -1,0 +1,6 @@
+{
+  "id": "bd9bdbfb-fa8d-4dfb-b76b-1c7d067a4351",
+  "type": "feature",
+  "description": "Default-chain credentials are now refreshed ahead of expiration by a margin that scales with their lifetime (5 minutes for credentials that last 20 minutes or less, 15 minutes for less than 90 minutes, otherwise 60 minutes; container and IMDS credentials are also looked up again every 15 minutes). A non-recoverable credentials error, such as an STS `AccessDenied` or an expired SSO or login session, is now raised at the first refresh attempt, before the cached credentials expire. When cached credentials have expired and cannot be refreshed, requests are now signed with them and fail with the service's `ExpiredToken` error, retried subject to the retry quota, instead of a client-side credentials error",
+  "module": "aws-config"
+}
