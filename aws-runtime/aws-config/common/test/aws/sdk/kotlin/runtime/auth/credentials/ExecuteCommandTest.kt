@@ -18,6 +18,9 @@ import kotlin.test.assertFailsWith
  */
 internal expect val processSpawningSupported: Boolean
 
+// Generous so a slow shell start (e.g. PowerShell on a busy CI host) can't fail tests that aren't about timeouts
+private const val TEST_TIMEOUT_MILLIS = 30_000L
+
 class ExecuteCommandTest {
     val provider = PlatformProvider.System
 
@@ -37,7 +40,7 @@ class ExecuteCommandTest {
             command = command,
             platformProvider = provider,
             maxOutputLengthBytes = 1024L,
-            timeoutMillis = 1000,
+            timeoutMillis = TEST_TIMEOUT_MILLIS,
         )
 
         assertEquals(0, exitCode)
@@ -65,7 +68,7 @@ class ExecuteCommandTest {
                 command = command,
                 platformProvider = provider,
                 maxOutputLengthBytes = 1024L,
-                timeoutMillis = 1000,
+                timeoutMillis = TEST_TIMEOUT_MILLIS,
             )
         }
 
@@ -81,7 +84,7 @@ class ExecuteCommandTest {
             command = "echo $payload",
             platformProvider = provider,
             maxOutputLengthBytes = limit.toLong(),
-            timeoutMillis = 1000,
+            timeoutMillis = TEST_TIMEOUT_MILLIS,
         )
 
         assertEquals(0, exitCode)
@@ -98,7 +101,7 @@ class ExecuteCommandTest {
             command = "printf 'h\u00e9llo \u2603'",
             platformProvider = provider,
             maxOutputLengthBytes = 1024L,
-            timeoutMillis = 1000,
+            timeoutMillis = TEST_TIMEOUT_MILLIS,
         )
 
         assertEquals(0, exitCode)
@@ -117,7 +120,7 @@ class ExecuteCommandTest {
             command = command,
             platformProvider = provider,
             maxOutputLengthBytes = 1024L,
-            timeoutMillis = 1000,
+            timeoutMillis = TEST_TIMEOUT_MILLIS,
         )
 
         assertEquals(0, exitCode)
@@ -136,7 +139,7 @@ class ExecuteCommandTest {
             command = command,
             platformProvider = provider,
             maxOutputLengthBytes = 1024L,
-            timeoutMillis = 1000,
+            timeoutMillis = TEST_TIMEOUT_MILLIS,
         )
 
         assertEquals(0, exitCode)
@@ -155,7 +158,7 @@ class ExecuteCommandTest {
             command = command,
             platformProvider = provider,
             maxOutputLengthBytes = 1024L,
-            timeoutMillis = 1000,
+            timeoutMillis = TEST_TIMEOUT_MILLIS,
         )
 
         assertEquals(0, exitCode)
@@ -179,7 +182,7 @@ class ExecuteCommandTest {
             command = errorCommand,
             platformProvider = provider,
             maxOutputLengthBytes = 1024L,
-            timeoutMillis = 1000,
+            timeoutMillis = TEST_TIMEOUT_MILLIS,
         )
 
         assertEquals(13, exitCode)
@@ -194,7 +197,7 @@ class ExecuteCommandTest {
             command = "kill -9 $$",
             platformProvider = provider,
             maxOutputLengthBytes = 1024L,
-            timeoutMillis = 1000,
+            timeoutMillis = TEST_TIMEOUT_MILLIS,
         )
 
         assertEquals(128 + 9, exitCode)
