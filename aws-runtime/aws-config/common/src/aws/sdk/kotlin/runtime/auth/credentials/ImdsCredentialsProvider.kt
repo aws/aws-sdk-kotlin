@@ -204,9 +204,9 @@ public class ImdsCredentialsProvider(
 }
 
 /**
- * Builds IMDS credentials. They keep static stability, and are looked up again every 15 minutes, as they were behind
- * the caching layer this provider was used with before, rather than only once they near expiration (see
- * [PacedRefreshKey]).
+ * Builds IMDS credentials. They keep static stability, and a cache looks them up again at its default pace rather than
+ * only once they near expiration: IMDS rotates in new credentials well before the current ones expire, and the
+ * instance's role can change (see [PacedRefreshKey]).
  */
 private fun imdsCredentials(resp: JsonCredentialsResponse.SessionCredentials): Credentials = credentials(
     resp.accessKeyId,
