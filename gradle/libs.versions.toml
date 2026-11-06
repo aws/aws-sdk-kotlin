@@ -5,7 +5,7 @@ ksp-version = "2.3.12"
 dokka-version = "2.2.0"
 jackson-bom-version = "2.22.3"
 
-aws-kotlin-repo-tools-version = "0.6.4"
+aws-kotlin-repo-tools-version = "0.6.6-gfm-SNAPSHOT"
 
 # libs
 coroutines-version = "1.11.0"
@@ -32,6 +32,7 @@ jsoup-version = "1.23.2"
 [libraries]
 jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson-bom-version" }
 aws-kotlin-repo-tools-build-support = { module="aws.sdk.kotlin.gradle:build-support", version.ref = "aws-kotlin-repo-tools-version" }
+aws-kotlin-repo-tools-dokka-gfm = { module = "aws.sdk.kotlin.gradle:dokka-gfm", version.ref = "aws-kotlin-repo-tools-version" }
 
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-version" }

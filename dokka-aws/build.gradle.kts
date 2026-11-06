@@ -2,7 +2,7 @@
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
+import org.jetbrains.dokka.gradle.tasks.DokkaGeneratePublicationTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -28,7 +28,16 @@ dependencies {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
-    dependsOn(tasks.withType<DokkaGenerateTask>())
+
+    listOf("html", "gfm").forEach { format ->
+        val publicationTask = "dokkaGeneratePublication${format.replaceFirstChar(Char::titlecase)}"
+        val outputDir = tasks.named<DokkaGeneratePublicationTask>(publicationTask).flatMap { it.outputDirectory }
+
+        inputs.dir(outputDir).withPropertyName("dokka-$format").withPathSensitivity(PathSensitivity.RELATIVE)
+        jvmArgumentProviders.add(
+            CommandLineArgumentProvider { listOf("-Ddokka.$format.outputDir=${outputDir.get().asFile.absolutePath}") },
+        )
+    }
 }
 
 tasks.withType<KotlinCompile> {

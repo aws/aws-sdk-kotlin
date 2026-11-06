@@ -7,12 +7,13 @@ package aws.sdk.kotlin.dokka
 import org.jsoup.Jsoup
 import java.io.File
 import kotlin.test.Test
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class DokkaAwsTest {
     @Test
     fun testLoadScripts() {
-        val testFile = File("build/dokka/html/index.html")
+        val testFile = File(outputDir("html"), "index.html")
 
         assertTrue(
             testFile.exists(),
@@ -34,4 +35,25 @@ class DokkaAwsTest {
             )
         }
     }
+
+    @Test
+    fun testGfmPublication() {
+        val testFile = File(outputDir("gfm"), "dokka-aws/aws.sdk.kotlin.dokka/-aws-dokka-plugin/index.md")
+
+        assertTrue(
+            testFile.exists(),
+            "Test file does not exist: ${testFile.absolutePath}",
+        )
+
+        assertTrue(
+            testFile.readLines().any { it == "# AwsDokkaPlugin" },
+            "Expected heading for AwsDokkaPlugin not found",
+        )
+    }
+}
+
+private fun outputDir(format: String): File {
+    val path = System.getProperty("dokka.$format.outputDir")
+    assertNotNull(path, "System property dokka.$format.outputDir is not set")
+    return File(path)
 }

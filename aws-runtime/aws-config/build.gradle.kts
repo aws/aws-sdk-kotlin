@@ -5,6 +5,7 @@
 import aws.sdk.kotlin.gradle.codegen.dsl.generateSmithyProjections
 import aws.sdk.kotlin.gradle.codegen.dsl.smithyKotlinPlugin
 import aws.sdk.kotlin.gradle.codegen.smithyKotlinProjectionSrcDir
+import org.jetbrains.dokka.gradle.tasks.DokkaGenerateModuleTask
 
 plugins {
     alias(libs.plugins.aws.kotlin.repo.tools.smithybuild)
@@ -281,7 +282,7 @@ smithyBuild.projections.all {
 
 // Suppress internally-generated clients
 dokka {
-    tasks.dokkaGenerateModuleHtml {
+    tasks.withType<DokkaGenerateModuleTask>().configureEach {
         dependsOn(tasks.generateSmithyProjections)
     }
 
