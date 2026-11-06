@@ -7,15 +7,22 @@ package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
+import aws.sdk.kotlin.runtime.auth.credentials.internal.nonRecoverable
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.SigninClient
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.createOAuth2Token
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.AccessDeniedException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.OAuth2ErrorCode
+import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.model.ValidationException
 import aws.sdk.kotlin.runtime.auth.credentials.internal.signin.withConfig
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.profile.normalizePath
+import aws.smithy.kotlin.runtime.auth.awscredentials.CallerHasCachedCredentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.CallerOwnsCredentialsRefresh
+import aws.smithy.kotlin.runtime.auth.awscredentials.CallerRejectedAccessKeyId
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
+import aws.smithy.kotlin.runtime.auth.awscredentials.isNonRecoverableCredentialsError
 import aws.smithy.kotlin.runtime.client.ProtocolRequestInterceptorContext
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.config.resolve
@@ -116,13 +123,17 @@ internal class LoginTokenProvider(
             expiration = token.expiresAt,
             providerName = PROVIDER_NAME,
             accountId = token.accountId,
+            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         )
     }
 
     private suspend fun getToken(attributes: Attributes): LoginToken {
         val token = readLoginTokenFromCache(loginSessionName, platformProvider, cacheDirectory)
+        // The credentials are this token's access token, so when a target service rejected them only a new token can
+        // replace them: the token is refreshed even before its refresh window, and never handed back on failure.
+        val rejected = attributes.getOrNull(CallerRejectedAccessKeyId) == token.accessKeyId
 
-        if (clock.now() < (token.expiresAt - refreshBufferWindow)) {
+        if (!rejected && clock.now() < (token.expiresAt - refreshBufferWindow)) {
             coroutineContext.debug<LoginTokenProvider> { "using cached token for login-session: $loginSessionName" }
             return token
         }
@@ -130,25 +141,27 @@ internal class LoginTokenProvider(
         return try {
             attemptRefresh(token)
         } catch (e: Exception) {
-            token.takeIf { clock.now() < it.expiresAt }?.also {
-                coroutineContext.debug<LoginTokenProvider> { "cached token is not refreshable but still valid until ${it.expiresAt} for login-session: $loginSessionName" }
-            } ?: throwTokenExpired(e)
+            val stillValid = clock.now() < token.expiresAt
+            if (attributes.getOrNull(CallerOwnsCredentialsRefresh) == true) {
+                // A cache above owns the refresh lifecycle: it raises a non-recoverable failure, and otherwise serves
+                // the credentials it holds and backs off. Answering with the old token would hide the failure from it,
+                // so it would count the refresh as a success. A cold cache holds nothing, so there the old token,
+                // while it is still valid, is the better answer.
+                if (e.isNonRecoverableCredentialsError()) throw e
+                if (stillValid && attributes.getOrNull(CallerHasCachedCredentials) == true) throw e
+            }
+            if (stillValid && !rejected) {
+                coroutineContext.debug<LoginTokenProvider> { "refresh token failed, original token is still valid until ${token.expiresAt} for login-session: $loginSessionName, re-using" }
+                return token
+            }
+            coroutineContext.error<LoginTokenProvider>(e) { "token refresh failed" }
+            throwTokenExpired(e)
         }
     }
 
     private suspend fun attemptRefresh(oldToken: LoginToken): LoginToken {
         coroutineContext.debug<LoginTokenProvider> { "attempting to refresh token for login-session: $loginSessionName" }
-        val result = runCatching { refreshToken(oldToken) }
-        return result
-            .onSuccess { refreshed -> writeToken(refreshed) }
-            .getOrElse { cause ->
-                if (clock.now() >= oldToken.expiresAt) {
-                    coroutineContext.error<LoginTokenProvider>(cause) { "token refresh failed" }
-                    throwTokenExpired(cause)
-                }
-                coroutineContext.debug<LoginTokenProvider> { "refresh token failed, original token is still valid until ${oldToken.expiresAt} for login-session: $loginSessionName, re-using" }
-                oldToken
-            }
+        return refreshToken(oldToken).also { refreshed -> writeToken(refreshed) }
     }
 
     private suspend fun writeToken(refreshed: LoginToken) {
@@ -168,7 +181,10 @@ internal class LoginTokenProvider(
         }
     }
 
-    private fun throwTokenExpired(cause: Throwable? = null, message: String? = null): Nothing = throw InvalidLoginTokenException(message ?: "Login token for login-session: $loginSessionName is expired", cause)
+    private fun throwTokenExpired(cause: Throwable? = null, message: String? = null, requiresReauthentication: Boolean = false): Nothing {
+        val ex = InvalidLoginTokenException(message ?: "Login token for login-session: $loginSessionName is expired", cause)
+        throw if (requiresReauthentication) ex.nonRecoverable() else ex
+    }
 
     private suspend fun refreshToken(oldToken: LoginToken): LoginToken {
         client.withConfig {
@@ -207,6 +223,7 @@ internal class LoginTokenProvider(
                             throwTokenExpired(
                                 e,
                                 "Your session has expired. Please reauthenticate.",
+                                requiresReauthentication = true,
                             )
                         }
                         is OAuth2ErrorCode.UserCredentialsChanged -> {
@@ -216,6 +233,7 @@ internal class LoginTokenProvider(
                                     append("Unable to refresh credentials because of a change in your password. ")
                                     append("Please reauthenticate with your new password.")
                                 },
+                                requiresReauthentication = true,
                             )
                         }
                         is OAuth2ErrorCode.InsufficientPermissions -> {
@@ -225,10 +243,21 @@ internal class LoginTokenProvider(
                                     append("Unable to refresh credentials due to insufficient permissions. ")
                                     append("You may be missing permission for the 'CreateOAuth2Token' action.")
                                 },
+                                requiresReauthentication = true,
                             )
                         }
                         else -> throw e
                     }
+                } else if (e is ValidationException) {
+                    // Sign-In rejected the refresh token itself as invalid, expired, revoked or malformed.
+                    throwTokenExpired(
+                        e,
+                        buildString {
+                            append("Unable to refresh credentials because the login session is no longer valid. ")
+                            append("Please reauthenticate using 'aws login'.")
+                        },
+                        requiresReauthentication = true,
+                    )
                 } else {
                     throw e
                 }
@@ -343,7 +372,7 @@ internal suspend fun readLoginTokenFromCache(cacheKey: String, platformProvider:
     val bytes = with(platformProvider) {
         val defaultCacheLocation = normalizePath(cacheDirectory, this)
         readFileOrNull(filepath(defaultCacheLocation, key))
-    } ?: throw ProviderConfigurationException("Invalid or missing login session cache. Run `aws login` to initiate a new session")
+    } ?: throw ProviderConfigurationException("Invalid or missing login session cache. Run `aws login` to initiate a new session").nonRecoverable()
     return deserializeLoginToken(bytes)
 }
 
@@ -418,17 +447,17 @@ internal fun deserializeLoginToken(json: ByteArray): LoginToken {
             }
         }
     } catch (ex: Exception) {
-        throw InvalidLoginTokenException("invalid cached login token", ex)
+        throw InvalidLoginTokenException("invalid cached login token", ex).nonRecoverable()
     }
-    if (!hasAccessToken) throw InvalidLoginTokenException("missing `accessToken`")
-    if (accessKeyId == null) throw InvalidLoginTokenException("missing `accessKeyId`")
-    if (secretAccessKey == null) throw InvalidLoginTokenException("missing `secretAccessKey`")
-    if (sessionToken == null) throw InvalidLoginTokenException("missing `sessionToken`")
-    if (accountId == null) throw InvalidLoginTokenException("missing `accountId`")
-    val expiresAt = expiresAtRfc3339?.let { Instant.fromIso8601(it) } ?: throw InvalidLoginTokenException("missing `expiresAt`")
-    if (clientId == null) throw InvalidLoginTokenException("missing `clientId`")
-    if (refreshToken == null) throw InvalidLoginTokenException("missing `refreshToken`")
-    if (dpopKey == null) throw InvalidLoginTokenException("missing `dpopKey`")
+    if (!hasAccessToken) throw InvalidLoginTokenException("missing `accessToken`").nonRecoverable()
+    if (accessKeyId == null) throw InvalidLoginTokenException("missing `accessKeyId`").nonRecoverable()
+    if (secretAccessKey == null) throw InvalidLoginTokenException("missing `secretAccessKey`").nonRecoverable()
+    if (sessionToken == null) throw InvalidLoginTokenException("missing `sessionToken`").nonRecoverable()
+    if (accountId == null) throw InvalidLoginTokenException("missing `accountId`").nonRecoverable()
+    val expiresAt = expiresAtRfc3339?.let { Instant.fromIso8601(it) } ?: throw InvalidLoginTokenException("missing `expiresAt`").nonRecoverable()
+    if (clientId == null) throw InvalidLoginTokenException("missing `clientId`").nonRecoverable()
+    if (refreshToken == null) throw InvalidLoginTokenException("missing `refreshToken`").nonRecoverable()
+    if (dpopKey == null) throw InvalidLoginTokenException("missing `dpopKey`").nonRecoverable()
 
     return LoginToken(
         accessKeyId,
@@ -464,4 +493,12 @@ internal fun serializeLoginToken(token: LoginToken): ByteArray = jsonStreamWrite
     endObject()
 }.bytes ?: error("serializing LoginToken failed")
 
+/**
+ * An error associated with a cached login token from `~/.aws/login/cache/`
+ *
+ * Instances that need the customer to sign in again (a missing or malformed token, or a refresh the Sign-In service
+ * rejects with `TOKEN_EXPIRED`, `USER_CREDENTIALS_CHANGED`, `INSUFFICIENT_PERMISSIONS` or a `ValidationException`) are
+ * marked non-recoverable
+ * where they are thrown. A token that expired because a refresh failed transiently is not.
+ */
 public class InvalidLoginTokenException(message: String, cause: Throwable? = null) : ConfigurationException(message, cause)

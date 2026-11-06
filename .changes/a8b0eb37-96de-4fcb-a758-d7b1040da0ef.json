@@ -1,0 +1,6 @@
+{
+  "id": "a8b0eb37-96de-4fcb-a758-d7b1040da0ef",
+  "type": "feature",
+  "description": "Cache the credentials resolved by the default chain in a provider that refreshes them ahead of expiration, keeps serving them for a bounded window if a refresh fails, rate-limits refresh attempts after a failure, and propagates a non-recoverable error immediately",
+  "module": "aws-config"
+}

@@ -216,6 +216,7 @@ private class EcsCredentialsDeserializer : HttpDeserializer.NonStreaming<Credent
             resp.expiration,
             PROVIDER_NAME,
             resp.accountId,
+            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         )
     }
 }
