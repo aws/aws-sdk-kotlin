@@ -11,7 +11,7 @@ import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetri
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderException
-import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
+import aws.smithy.kotlin.runtime.auth.awscredentials.resilientlyCached
 import aws.smithy.kotlin.runtime.http.Headers
 import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpMethod
@@ -29,6 +29,7 @@ import aws.smithy.kotlin.runtime.net.IpAddr
 import aws.smithy.kotlin.runtime.net.url.Url
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
 import aws.smithy.kotlin.runtime.time.Instant
+import aws.smithy.kotlin.runtime.time.ManualClock
 import aws.smithy.kotlin.runtime.time.TimestampFormat
 import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
@@ -39,6 +40,7 @@ import kotlinx.serialization.json.put
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 class EcsCredentialsProviderTest {
@@ -51,7 +53,7 @@ class EcsCredentialsProviderTest {
         expectedExpiration,
         "EcsContainer",
     ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_HTTP)
-        .withRefreshBehavior(CredentialsRefreshBehavior.RefreshableWithStaticStability)
+        .withPacedStaticStability()
 
     private fun ecsResponse(accountId: String? = null): HttpResponse {
         val payload = buildJsonObject {
@@ -581,9 +583,43 @@ class EcsCredentialsProviderTest {
             expectedExpiration,
             "EcsContainer",
             "12345",
-            refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_HTTP)
+            .withPacedStaticStability()
         assertEquals(expected, actual)
+        engine.assertRequests()
+    }
+
+    @Test
+    fun testCachedCredentialsAreLookedUpAgainAtTheCachesPace() = runTest {
+        // The container endpoint rotates credentials long before they expire. Behind a cache, six-hour credentials
+        // are looked up again after the cache's default 15 minutes rather than only within an hour of expiring, so
+        // the cache picks up the rotated credentials.
+        val clock = ManualClock(epoch)
+        fun sixHourResponse(accessKeyId: String): HttpResponse {
+            val payload = buildJsonObject {
+                put("Code", "Success")
+                put("Type", "AWS-HMAC")
+                put("AccessKeyId", accessKeyId)
+                put("SecretAccessKey", "test-secret")
+                put("Token", "test-token")
+                put("Expiration", (epoch + 6.hours).format(TimestampFormat.ISO_8601))
+            }.toString().encodeToByteArray()
+            return HttpResponse(HttpStatusCode.OK, Headers.Empty, HttpBody.fromBytes(payload))
+        }
+        val engine = buildTestConnection {
+            expect(ecsRequest("http://169.254.170.2/relative"), sixHourResponse("AKID1"))
+            expect(ecsRequest("http://169.254.170.2/relative"), sixHourResponse("AKID2"))
+        }
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf(AwsSdkSetting.AwsContainerCredentialsRelativeUri.envVar to "/relative"),
+        )
+        val provider = EcsCredentialsProvider(testPlatform, engine).resilientlyCached(clock = clock)
+
+        assertEquals("AKID1", provider.resolve().accessKeyId)
+        clock.advance(14.minutes)
+        assertEquals("AKID1", provider.resolve().accessKeyId, "still served from the cache")
+        clock.advance(2.minutes)
+        assertEquals("AKID2", provider.resolve().accessKeyId, "looked up again at the cache's pace")
         engine.assertRequests()
     }
 }
