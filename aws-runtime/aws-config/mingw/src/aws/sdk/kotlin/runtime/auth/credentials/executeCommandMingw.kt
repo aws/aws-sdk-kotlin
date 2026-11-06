@@ -41,7 +41,12 @@ internal actual suspend fun executeCommand(
     var exited = false
     try {
         process = try {
-            startShell(command, stdoutWrite, stderrWrite)
+            val stdin = openNullDevice()
+            try {
+                startShell(command, stdin, stdoutWrite, stderrWrite)
+            } finally {
+                CloseHandle(stdin)
+            }
         } finally {
             CloseHandle(stdoutWrite)
             CloseHandle(stderrWrite)
@@ -105,10 +110,37 @@ private fun createPipe(): Pair<HANDLE?, HANDLE?> = memScoped {
 }
 
 /**
- * Start `cmd.exe /S /C "<command>"` with stdout and stderr redirected and return the process handle.
+ * Open the null device as an inheritable handle to use as the child's stdin.
  */
 @OptIn(ExperimentalForeignApi::class)
-private fun startShell(command: String, stdoutWrite: HANDLE?, stderrWrite: HANDLE?): HANDLE? = memScoped {
+private fun openNullDevice(): HANDLE? = memScoped {
+    val attributes = alloc<SECURITY_ATTRIBUTES>().apply {
+        nLength = sizeOf<SECURITY_ATTRIBUTES>().convert()
+        bInheritHandle = TRUE
+        lpSecurityDescriptor = null
+    }
+    val handle = CreateFileW(
+        "NUL",
+        GENERIC_READ,
+        (FILE_SHARE_READ or FILE_SHARE_WRITE).convert(),
+        attributes.ptr,
+        OPEN_EXISTING.convert(),
+        0u,
+        null,
+    )
+    if (handle == INVALID_HANDLE_VALUE) {
+        throw CredentialsProviderException("Failed to open the null device: error ${GetLastError()}")
+    }
+    handle
+}
+
+/**
+ * Start `cmd.exe /S /C "<command>"` with its standard streams redirected and return the process handle. Only the
+ * given handles are inherited, so a process started concurrently by another call can't receive this call's pipe
+ * handles and hold them open (see the remarks on handle inheritance in the `CreateProcessW` documentation).
+ */
+@OptIn(ExperimentalForeignApi::class)
+private fun startShell(command: String, stdin: HANDLE?, stdoutWrite: HANDLE?, stderrWrite: HANDLE?): HANDLE? = memScoped {
     // Resolve cmd.exe from the system directory rather than letting CreateProcessW search the working directory
     val systemDir = allocArray<WCHARVar>(MAX_PATH)
     val length = GetSystemDirectoryW(systemDir, MAX_PATH.convert()).toInt()
@@ -120,32 +152,59 @@ private fun startShell(command: String, stdoutWrite: HANDLE?, stderrWrite: HANDL
     // /S strips exactly the outer quotes, so the command runs as written regardless of its own quoting
     val commandLine = "\"$shell\" /S /C \"$command\""
 
-    val startupInfo = alloc<STARTUPINFOW>().apply {
-        cb = sizeOf<STARTUPINFOW>().convert()
-        dwFlags = STARTF_USESTDHANDLES.convert()
-        hStdInput = GetStdHandle(STD_INPUT_HANDLE)
-        hStdOutput = stdoutWrite
-        hStdError = stderrWrite
+    val inherited = allocArrayOf(stdin, stdoutWrite, stderrWrite)
+    val attributeListSize = alloc<SIZE_TVar>()
+    InitializeProcThreadAttributeList(null, 1u, 0u, attributeListSize.ptr)
+    val attributeList: LPPROC_THREAD_ATTRIBUTE_LIST =
+        allocArray<ByteVar>(attributeListSize.value.toLong()).reinterpret()
+    if (InitializeProcThreadAttributeList(attributeList, 1u, 0u, attributeListSize.ptr) == 0) {
+        throw CredentialsProviderException("Failed to initialize process attributes: error ${GetLastError()}")
     }
-    val processInfo = alloc<PROCESS_INFORMATION>()
 
-    val created = CreateProcessW(
-        shell,
-        commandLine.wcstr.ptr,
-        null,
-        null,
-        TRUE,
-        CREATE_NO_WINDOW.convert(),
-        null,
-        null,
-        startupInfo.ptr,
-        processInfo.ptr,
-    )
-    if (created == 0) {
-        throw CredentialsProviderException("Failed to start process: error ${GetLastError()}")
+    try {
+        val updated = UpdateProcThreadAttribute(
+            attributeList,
+            0u,
+            PROC_THREAD_ATTRIBUTE_HANDLE_LIST.convert(),
+            inherited,
+            (3 * sizeOf<HANDLEVar>()).convert(),
+            null,
+            null,
+        )
+        if (updated == 0) {
+            throw CredentialsProviderException("Failed to set inherited handles: error ${GetLastError()}")
+        }
+
+        val startupInfo = alloc<STARTUPINFOEXW>().apply {
+            StartupInfo.cb = sizeOf<STARTUPINFOEXW>().convert()
+            StartupInfo.dwFlags = STARTF_USESTDHANDLES.convert()
+            StartupInfo.hStdInput = stdin
+            StartupInfo.hStdOutput = stdoutWrite
+            StartupInfo.hStdError = stderrWrite
+            lpAttributeList = attributeList
+        }
+        val processInfo = alloc<PROCESS_INFORMATION>()
+
+        val created = CreateProcessW(
+            shell,
+            commandLine.wcstr.ptr,
+            null,
+            null,
+            TRUE,
+            (CREATE_NO_WINDOW or EXTENDED_STARTUPINFO_PRESENT).convert(),
+            null,
+            null,
+            startupInfo.StartupInfo.ptr,
+            processInfo.ptr,
+        )
+        if (created == 0) {
+            throw CredentialsProviderException("Failed to start process: error ${GetLastError()}")
+        }
+        CloseHandle(processInfo.hThread)
+        processInfo.hProcess
+    } finally {
+        DeleteProcThreadAttributeList(attributeList)
     }
-    CloseHandle(processInfo.hThread)
-    processInfo.hProcess
 }
 
 /**

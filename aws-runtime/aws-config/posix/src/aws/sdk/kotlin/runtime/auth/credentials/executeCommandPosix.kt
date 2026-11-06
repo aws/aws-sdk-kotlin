@@ -10,6 +10,8 @@ import kotlinx.cinterop.*
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import platform.posix.*
@@ -20,6 +22,8 @@ internal const val POSIX_SHELL = "/bin/sh"
 private const val POLL_INTERVAL_MILLIS = 50
 private const val EXIT_POLL_INTERVAL_MILLIS = 10L
 private const val READ_BUFFER_SIZE = 4096
+
+private val spawnLock = Mutex()
 
 /**
  * Starts `/bin/sh -c <command>` with its stdout and stderr redirected to the given file descriptors and returns
@@ -38,24 +42,29 @@ internal suspend fun executeShellCommandPosix(
     timeoutMillis: Long,
     spawn: PosixShellSpawner,
 ): Pair<Int, String> = withContext(SdkDispatchers.IO) {
-    val stdoutPipe = createPipe()
-    val stderrPipe = try {
-        createPipe()
-    } catch (ex: Throwable) {
-        stdoutPipe.forEach { close(it) }
-        throw ex
-    }
-    val (stdoutRead, stdoutWrite) = stdoutPipe
-    val (stderrRead, stderrWrite) = stderrPipe
-
+    var stdoutRead = -1
+    var stderrRead = -1
     var pid: pid_t = -1
     var reaped = false
     try {
-        try {
-            pid = spawn(listOf(POSIX_SHELL, "-c", command), stdoutWrite, stderrWrite)
-        } finally {
-            close(stdoutWrite)
-            close(stderrWrite)
+        // FD_CLOEXEC is set after pipe() rather than atomically, so a spawn running concurrently could inherit these
+        // descriptors and hold our pipes open until it exits. Serialize pipe creation through spawn to prevent that.
+        spawnLock.withLock {
+            val (stdoutPipeRead, stdoutWrite) = createPipe()
+            stdoutRead = stdoutPipeRead
+            val (stderrPipeRead, stderrWrite) = try {
+                createPipe()
+            } catch (ex: Throwable) {
+                close(stdoutWrite)
+                throw ex
+            }
+            stderrRead = stderrPipeRead
+            try {
+                pid = spawn(listOf(POSIX_SHELL, "-c", command), stdoutWrite, stderrWrite)
+            } finally {
+                close(stdoutWrite)
+                close(stderrWrite)
+            }
         }
 
         val stdout = ProcessOutputBuffer(maxOutputLengthBytes, failOnOverflow = true)
@@ -68,8 +77,8 @@ internal suspend fun executeShellCommandPosix(
 
         processResult(exitCodeOf(status), stdout, stderr)
     } finally {
-        close(stdoutRead)
-        close(stderrRead)
+        if (stdoutRead >= 0) close(stdoutRead)
+        if (stderrRead >= 0) close(stderrRead)
         if (pid > 0 && !reaped) {
             kill(pid, SIGKILL)
             waitpidRetrying(pid, 0)
