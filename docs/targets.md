@@ -56,20 +56,21 @@ NOTE: [log4j2 does not currently support](https://github.com/apache/logging-log4
 The AWS SDK for Kotlin is a Kotlin Multiplatform project. In addition to Kotlin/JVM, it supports the following
 [Kotlin/Native targets](https://kotlinlang.org/docs/native-target-support.html):
 
-| Target              | Built on |
-|---------------------|----------|
-| `linuxX64`          | Linux    |
-| `linuxArm64`        | Linux    |
-| `macosX64`          | macOS    |
-| `macosArm64`        | macOS    |
-| `iosArm64`          | macOS    |
-| `iosX64`            | macOS    |
-| `iosSimulatorArm64` | macOS    |
-| `mingwX64`          | Windows  |
+| Target              | Built on | Tests run in CI |
+|---------------------|----------|-----------------|
+| `linuxX64`          | Linux    | Yes             |
+| `linuxArm64`        | Linux    | No              |
+| `macosX64`          | macOS    | No              |
+| `macosArm64`        | macOS    | Yes             |
+| `iosArm64`          | macOS    | No              |
+| `iosX64`            | macOS    | No              |
+| `iosSimulatorArm64` | macOS    | Yes             |
+| `mingwX64`          | Windows  | Yes             |
 
-Hosts that run the Kotlin/Native tests: [INCOMPLETE: the CI host matrix for Kotlin/Native test runs is not yet defined]
+Targets without CI test runs are compiled in CI but not executed.
 
-Minimum supported Xcode and Apple OS versions: [INCOMPLETE: not yet defined by the SDK]
+Building Apple targets requires an Xcode version compatible with the Kotlin version the SDK uses. See the
+[Kotlin Multiplatform version compatibility table](https://kotlinlang.org/docs/multiplatform/multiplatform-compatibility-guide.html).
 
 To use the SDK from Kotlin/Native, apply the [Kotlin Multiplatform Gradle plugin](https://kotlinlang.org/docs/multiplatform/multiplatform-dsl-reference.html)
 and add SDK dependencies to the `commonMain` source set. See [Getting Started](GettingStarted.md) for an example.
