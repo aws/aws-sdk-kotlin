@@ -86,7 +86,8 @@ private class DpopInterceptor(private val dpopKeyPem: String) : HttpInterceptor 
  * called and a refresh token is available.
  *
  * @param loginSessionName the name of the login session from the shared config file to load tokens for
- * @param region The AWS region used to call the log in service.
+ * @param region The AWS region used to call the log in service. When the cached token names a non-blank
+ * `signInRegion`, that region is used for the refresh call instead.
  * @param refreshBufferWindow amount of time before the actual credential expiration time when credentials are
  * considered expired. For example, if credentials are expiring in 15 minutes, and the buffer time is 10 seconds,
  * then any requests made after 14 minutes and 50 seconds will load new credentials. Defaults to 5 minutes.
@@ -188,6 +189,7 @@ internal class LoginTokenProvider(
     private suspend fun refreshToken(oldToken: LoginToken): LoginToken {
         client.withConfig {
             interceptors += DpopInterceptor(oldToken.dpopKey)
+            oldToken.signInRegion?.takeUnless { it.isBlank() }?.let { region = it }
         }.use { client ->
             return try {
                 val result = client.createOAuth2Token {
@@ -390,6 +392,7 @@ internal data class LoginToken(
     val idToken: String? = null,
     val clientId: String,
     val dpopKey: String,
+    val signInRegion: String? = null,
 )
 
 internal fun deserializeLoginToken(json: ByteArray): LoginToken {
@@ -405,6 +408,7 @@ internal fun deserializeLoginToken(json: ByteArray): LoginToken {
     var idToken: String? = null
     var clientId: String? = null
     var dpopKey: String? = null
+    var signInRegion: String? = null
     var hasAccessToken = false
 
     try {
@@ -436,6 +440,7 @@ internal fun deserializeLoginToken(json: ByteArray): LoginToken {
                     "idToken" -> idToken = lexer.nextTokenOf<JsonToken.String>().value
                     "clientId" -> clientId = lexer.nextTokenOf<JsonToken.String>().value
                     "dpopKey" -> dpopKey = lexer.nextTokenOf<JsonToken.String>().value
+                    "signInRegion" -> signInRegion = lexer.nextTokenOf<JsonToken.String>().value
                     else -> lexer.skipNext()
                 }
                 else -> error("expected either key or end of object")
@@ -465,6 +470,7 @@ internal fun deserializeLoginToken(json: ByteArray): LoginToken {
         idToken,
         clientId,
         dpopKey,
+        signInRegion,
     )
 }
 
@@ -483,6 +489,7 @@ internal fun serializeLoginToken(token: LoginToken): ByteArray = jsonStreamWrite
     writeNotNull("idToken", token.idToken)
     writeNotNull("clientId", token.clientId)
     writeNotNull("dpopKey", token.dpopKey)
+    writeNotNull("signInRegion", token.signInRegion)
     endObject()
 }.bytes ?: error("serializing LoginToken failed")
 
