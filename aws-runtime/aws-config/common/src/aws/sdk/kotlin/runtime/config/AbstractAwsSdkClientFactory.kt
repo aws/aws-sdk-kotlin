@@ -16,20 +16,25 @@ import aws.sdk.kotlin.runtime.config.profile.AwsProfile
 import aws.sdk.kotlin.runtime.config.profile.AwsSharedConfig
 import aws.sdk.kotlin.runtime.config.profile.loadAwsSharedConfig
 import aws.sdk.kotlin.runtime.config.retries.buildRetryStrategy
+import aws.sdk.kotlin.runtime.config.retries.configureRetryDefaults
 import aws.sdk.kotlin.runtime.config.retries.resolveRetryConfig
 import aws.sdk.kotlin.runtime.config.useragent.resolveUserAgentAppId
+import aws.sdk.kotlin.runtime.http.retries.LegacyAwsRetryPolicy
 import aws.sdk.kotlin.runtime.region.resolveRegion
 import aws.sdk.kotlin.runtime.region.resolveSigV4aSigningRegionSet
 import aws.smithy.kotlin.runtime.auth.awscredentials.SigV4aClientConfig
 import aws.smithy.kotlin.runtime.client.AbstractSdkClientFactory
+import aws.smithy.kotlin.runtime.client.RetryClientConfig
 import aws.smithy.kotlin.runtime.client.RetryStrategyClientConfig
 import aws.smithy.kotlin.runtime.client.SdkClient
 import aws.smithy.kotlin.runtime.client.SdkClientConfig
 import aws.smithy.kotlin.runtime.client.config.ClientSettings
 import aws.smithy.kotlin.runtime.client.config.CompressionClientConfig
 import aws.smithy.kotlin.runtime.client.config.HttpChecksumConfig
+import aws.smithy.kotlin.runtime.client.config.RetryMode
 import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.http.auth.HttpAuthConfig
+import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
 import aws.smithy.kotlin.runtime.telemetry.TelemetryConfig
 import aws.smithy.kotlin.runtime.telemetry.TelemetryProvider
 import aws.smithy.kotlin.runtime.telemetry.trace.withSpan
@@ -70,6 +75,22 @@ public abstract class AbstractAwsSdkClientFactory<
     protected open val defaultInitialDelay: Duration? = null
 
     /**
+     * Construct a [TClient] from the given config [block]. When the service has retry defaults (see
+     * [defaultMaxAttempts] and [defaultInitialDelay]), the retry strategy starts from them and [block] can override
+     * them. Unlike [fromEnvironment], this does not read the environment or shared config files.
+     */
+    public override operator fun invoke(block: TConfigBuilder.() -> Unit): TClient = builder().apply {
+        val cfg = config
+        if (cfg is RetryStrategyClientConfig.Builder && (defaultMaxAttempts != null || defaultInitialDelay != null)) {
+            cfg.retryStrategy = StandardRetryStrategy {
+                configureRetryDefaults(defaultMaxAttempts = defaultMaxAttempts, defaultInitialDelay = defaultInitialDelay)
+            }
+        }
+        config.apply(block)
+        finalizeConfig(this)
+    }.build()
+
+    /**
      * Construct a [TClient] by resolving the configuration from the current environment.
      */
     public suspend fun fromEnvironment(block: (TConfigBuilder.() -> Unit)? = null): TClient {
@@ -88,8 +109,7 @@ public abstract class AbstractAwsSdkClientFactory<
             // As a DslBuilderProperty, the value of retryStrategy cannot be checked for nullability because it may have
             // been set using a DSL. Thus, set the resolved strategy _first_ to ensure it's used as the fallback.
             if (config is RetryStrategyClientConfig.Builder) {
-                val retryConfig = resolveRetryConfig(platform, profile)
-                config.retryStrategy = buildRetryStrategy(retryConfig, defaultMaxAttempts, defaultInitialDelay)
+                seedRetryConfig(config, platform, profile)
             }
 
             block?.let(config::apply)
@@ -131,6 +151,23 @@ public abstract class AbstractAwsSdkClientFactory<
             finalizeEnvironmentalConfig(builder, sharedConfig, profile)
         }
         return builder.build()
+    }
+
+    /**
+     * Resolve the retry strategy from the environment, profile and service defaults, and set it on [config]. In the
+     * legacy retry mode, also set the legacy retry policy on [config] if it accepts one.
+     */
+    private suspend fun seedRetryConfig(
+        config: RetryStrategyClientConfig.Builder,
+        platform: PlatformProvider,
+        profile: LazyAsyncValue<AwsProfile>,
+    ) {
+        val retryConfig = resolveRetryConfig(platform, profile)
+        config.retryStrategy = buildRetryStrategy(retryConfig, defaultMaxAttempts, defaultInitialDelay)
+
+        if (retryConfig.retryMode == RetryMode.LEGACY && config is RetryClientConfig.Builder) {
+            config.retryPolicy = LegacyAwsRetryPolicy
+        }
     }
 
     /**

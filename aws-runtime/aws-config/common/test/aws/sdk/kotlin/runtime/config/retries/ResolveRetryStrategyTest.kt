@@ -9,6 +9,7 @@ import aws.sdk.kotlin.runtime.ConfigurationException
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.profile.loadAwsSharedConfig
 import aws.smithy.kotlin.runtime.ClientException
+import aws.smithy.kotlin.runtime.client.config.RetryMode
 import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
 import aws.smithy.kotlin.runtime.retries.delay.ExponentialBackoffWithJitter
@@ -25,6 +26,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.milliseconds
 
 class ResolveRetryStrategyTest {
     @Test
@@ -264,10 +266,8 @@ class ResolveRetryStrategyTest {
     }
 
     @Test
-    fun itResolvesNewRetriesFromEnvironmentVariable() = runTest {
-        val platform = TestPlatformProvider.of(
-            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
-        )
+    fun itAppliesStandardDefaultsWhenNothingIsConfigured() = runTest {
+        val platform = TestPlatformProvider.of() // no environment variables / system properties / profile
 
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
         val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
@@ -281,20 +281,83 @@ class ResolveRetryStrategyTest {
     }
 
     @Test
-    fun itChargesFullRetryCostForTransientRetriesWhenNewRetriesEnabled() = runTest {
-        // Regression test for the AWS_NEW_RETRIES_2026 propagation bug: the token bucket must charge
-        // STANDARD_RETRY_COST (14) — not STANDARD_THROTTLING_RETRY_COST (5) — for transient retries when the new
-        // behavior is enabled via the AWS setting rather than smithy-kotlin's SMITHY_NEW_RETRIES_2026.
+    fun itAppliesStandardDefaultsToAdaptiveMode() = runTest {
         val platform = TestPlatformProvider.of(
-            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "true"),
+            env = mapOf(AwsSdkSetting.AwsRetryMode.envVar to "adaptive"),
+        )
+
+        val strategy = assertIs<AdaptiveRetryStrategy>(resolveRetryStrategy(platform))
+        val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
+        val bucketConfig = assertIs<StandardRetryTokenBucket.Config>(strategy.config.tokenBucket.config)
+
+        assertEquals(STANDARD_INITIAL_DELAY, delayConfig.initialDelay)
+        assertEquals(STANDARD_SCALE_FACTOR, delayConfig.scaleFactor)
+        assertEquals(STANDARD_RETRY_COST, bucketConfig.retryCost)
+        assertEquals(STANDARD_THROTTLING_RETRY_COST, bucketConfig.timeoutRetryCost)
+        assertTrue(strategy.config.enableLongPollingBackoff)
+    }
+
+    @Test
+    fun itChargesFullRetryCostForTransientRetriesByDefault() = runTest {
+        // The token bucket must charge STANDARD_RETRY_COST (14), not STANDARD_THROTTLING_RETRY_COST (5), for
+        // transient retries without any opt-in.
+        val platform = TestPlatformProvider.of()
+
+        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
+        assertEquals(500 / STANDARD_RETRY_COST, countTransientRetries(strategy))
+    }
+
+    @Test
+    fun itAppliesLegacyDefaultsInLegacyMode() = runTest {
+        val platform = TestPlatformProvider.of(
+            env = mapOf(AwsSdkSetting.AwsRetryMode.envVar to "legacy"),
         )
 
         val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
-        val bucket = strategy.config.tokenBucket
+        val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
+        val bucketConfig = assertIs<StandardRetryTokenBucket.Config>(strategy.config.tokenBucket.config)
 
-        // Default bucket: maxCapacity=500, circuit-breaker mode, initialTryCost=0. Schedule transient retries until
-        // capacity is exhausted; the count reveals the per-retry cost.
-        var token = bucket.acquireToken()
+        assertEquals(LEGACY_INITIAL_DELAY, delayConfig.initialDelay)
+        assertEquals(LEGACY_SCALE_FACTOR, delayConfig.scaleFactor)
+        assertEquals(LEGACY_RETRY_COST, bucketConfig.retryCost)
+        assertEquals(LEGACY_TIMEOUT_RETRY_COST, bucketConfig.timeoutRetryCost)
+        assertFalse(strategy.config.enableLongPollingBackoff)
+        assertEquals(StandardRetryStrategy.Config.DEFAULT_MAX_ATTEMPTS, strategy.config.maxAttempts)
+
+        // Legacy cost model: transient retries are charged the timeout cost (10)
+        assertEquals(500 / LEGACY_TIMEOUT_RETRY_COST, countTransientRetries(strategy))
+    }
+
+    @Test
+    fun itIgnoresServiceDefaultsInLegacyMode() = runTest {
+        val platform = TestPlatformProvider.of()
+        val config = resolveRetryConfig(platform, asyncLazy { loadAwsSharedConfig(platform).activeProfile })
+        val legacy = config.copy(retryMode = RetryMode.LEGACY)
+
+        val strategy = assertIs<StandardRetryStrategy>(buildRetryStrategy(legacy, defaultMaxAttempts = 4, defaultInitialDelay = 25.milliseconds))
+        val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
+
+        assertEquals(StandardRetryStrategy.Config.DEFAULT_MAX_ATTEMPTS, strategy.config.maxAttempts)
+        assertEquals(LEGACY_INITIAL_DELAY, delayConfig.initialDelay)
+    }
+
+    @Test
+    fun itAppliesServiceDefaultsInStandardMode() = runTest {
+        val strategy = assertIs<StandardRetryStrategy>(
+            buildRetryStrategy(ResolvedRetryConfig(null, RetryMode.STANDARD), defaultMaxAttempts = 4, defaultInitialDelay = 25.milliseconds),
+        )
+        val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
+
+        assertEquals(4, strategy.config.maxAttempts)
+        assertEquals(25.milliseconds, delayConfig.initialDelay)
+    }
+
+    /**
+     * Schedule transient retries on the strategy's bucket (maxCapacity=500, circuit-breaker mode, initialTryCost=0)
+     * until capacity is exhausted. The count reveals the per-retry cost.
+     */
+    private suspend fun countTransientRetries(strategy: StandardRetryStrategy): Int {
+        var token = strategy.config.tokenBucket.acquireToken()
         var transientRetries = 0
         val result = runCatching {
             while (true) {
@@ -302,39 +365,7 @@ class ResolveRetryStrategyTest {
                 transientRetries++
             }
         }
-
         assertIs<RetryCapacityExceededException>(result.exceptionOrNull())
-        // 500 / 14 = 35 successful transient retries. Under the bug (cost 5) this would have been 100.
-        assertEquals(500 / STANDARD_RETRY_COST, transientRetries)
-    }
-
-    @Test
-    fun itResolvesNewRetriesFromSystemProperty() = runTest {
-        val platform = TestPlatformProvider.of(
-            props = mapOf(AwsSdkSetting.AwsNewRetries.sysProp to "true"),
-        )
-
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
-        val delayConfig = assertIs<ExponentialBackoffWithJitter.Config>(strategy.config.delayProvider.config)
-        val bucketConfig = assertIs<StandardRetryTokenBucket.Config>(strategy.config.tokenBucket.config)
-
-        assertEquals(STANDARD_INITIAL_DELAY, delayConfig.initialDelay)
-        assertEquals(STANDARD_SCALE_FACTOR, delayConfig.scaleFactor)
-        assertEquals(STANDARD_RETRY_COST, bucketConfig.retryCost)
-        assertEquals(STANDARD_THROTTLING_RETRY_COST, bucketConfig.timeoutRetryCost)
-        assertTrue(strategy.config.enableLongPollingBackoff)
-    }
-
-    @Test
-    fun itDoesNotApplyNewRetriesDefaultsWhenDisabled() = runTest {
-        val platform = TestPlatformProvider.of(
-            env = mapOf(AwsSdkSetting.AwsNewRetries.envVar to "false"),
-        )
-
-        val config = resolveRetryConfig(platform, asyncLazy { loadAwsSharedConfig(platform).activeProfile })
-        assertFalse(config.useNewRetries)
-
-        val strategy = assertIs<StandardRetryStrategy>(resolveRetryStrategy(platform))
-        assertFalse(strategy.config.enableLongPollingBackoff)
+        return transientRetries
     }
 }

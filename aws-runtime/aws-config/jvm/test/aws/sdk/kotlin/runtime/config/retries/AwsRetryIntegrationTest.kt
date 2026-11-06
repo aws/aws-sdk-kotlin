@@ -43,7 +43,6 @@ class AwsRetryIntegrationTest {
             val strategy = StandardRetryStrategy {
                 configureRetryDefaults(
                     configuredMaxAttempts = tc.given.maxAttempts,
-                    useNewRetries = true,
                     defaultMaxAttempts = defaultMaxAttempts,
                     defaultInitialDelay = defaultInitialDelay,
                 )

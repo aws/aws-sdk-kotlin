@@ -8,10 +8,16 @@ package aws.sdk.kotlin.runtime.config
 import aws.sdk.kotlin.runtime.config.profile.loadAwsSharedConfig
 import aws.sdk.kotlin.runtime.config.useragent.resolveUserAgentAppId
 import aws.sdk.kotlin.runtime.config.utils.mockPlatform
+import aws.sdk.kotlin.runtime.http.retries.AwsRetryPolicy
+import aws.sdk.kotlin.runtime.http.retries.LegacyAwsRetryPolicy
 import aws.sdk.kotlin.runtime.region.DefaultRegionProviderChain
 import aws.smithy.kotlin.runtime.client.*
 import aws.smithy.kotlin.runtime.client.region.RegionProvider
+import aws.smithy.kotlin.runtime.retries.AdaptiveRetryStrategy
 import aws.smithy.kotlin.runtime.retries.StandardRetryStrategy
+import aws.smithy.kotlin.runtime.retries.delay.ExponentialBackoffWithJitter
+import aws.smithy.kotlin.runtime.retries.delay.StandardRetryTokenBucket
+import aws.smithy.kotlin.runtime.retries.policy.RetryPolicy
 import aws.smithy.kotlin.runtime.testing.withEnvVars
 import aws.smithy.kotlin.runtime.testing.withSystemProperties
 import aws.smithy.kotlin.runtime.testing.withTempDir
@@ -25,6 +31,8 @@ import kotlinx.io.writeString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertSame
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class AbstractAwsSdkClientFactoryTest {
@@ -101,56 +109,69 @@ class AbstractAwsSdkClientFactoryTest {
             }
         }
     }
-}
 
-private interface TestClient : SdkClient {
-    override val config: Config
-
-    // refactored: mostly in an abstract base now
-    companion object : AbstractAwsSdkClientFactory<Config, Config.Builder, TestClient, Builder>() {
-        override fun builder(): Builder = Builder()
-    }
-
-    class Builder internal constructor() : AbstractSdkClientBuilder<Config, Config.Builder, TestClient>() {
-        override val config: Config.Builder = Config.Builder()
-        override fun newClient(config: Config): TestClient = DefaultTestClient(config)
-    }
-
-    class Config private constructor(builder: Builder) :
-        SdkClientConfig,
-        AwsSdkClientConfig,
-        LogRedactionConfig,
-        RetryStrategyClientConfig by builder.buildRetryStrategyClientConfig() {
-        override val clientName: String = builder.clientName
-        override val logMode: LogMode = builder.logMode ?: LogMode.Default
-        override val logRedactedHeaders: Set<String> = builder.logRedactedHeaders
-        override val region: String? = builder.region
-        override var regionProvider: RegionProvider = builder.regionProvider ?: DefaultRegionProviderChain()
-        override var useFips: Boolean = builder.useFips ?: false
-        override var useDualStack: Boolean = builder.useDualStack ?: false
-        override val applicationId: String? = builder.applicationId
-
-        // new: inherits builder equivalents for Config base classes
-        class Builder :
-            AwsSdkClientConfig.Builder,
-            LogRedactionConfig.Builder,
-            SdkClientConfig.Builder<Config>,
-            RetryStrategyClientConfig.Builder by RetryStrategyClientConfigImpl.BuilderImpl() {
-            override var clientName: String = "Test"
-            override var logMode: LogMode? = LogMode.Default
-            override var logRedactedHeaders: MutableSet<String> = mutableSetOf()
-            override var region: String? = null
-            override var regionProvider: RegionProvider? = null
-            override var useFips: Boolean? = null
-            override var useDualStack: Boolean? = null
-            override var applicationId: String? = null
-            override fun build(): Config = Config(this)
+    // Point the shared config and credentials files at a missing path so the host's profile can't affect the result
+    private suspend fun withIsolatedEnvironment(props: Map<String, String> = emptyMap(), block: suspend () -> Unit) {
+        withTempDir { dir ->
+            withSystemProperties(
+                mapOf(
+                    AwsSdkSetting.AwsConfigFile.sysProp to Path(dir, "missing-config").toString(),
+                    AwsSdkSetting.AwsSharedCredentialsFile.sysProp to Path(dir, "missing-credentials").toString(),
+                ) + props,
+            ) { block() }
         }
     }
-}
 
-private class DefaultTestClient(
-    override val config: TestClient.Config,
-) : TestClient {
-    override fun close() { }
+    private val legacyMode = mapOf(AwsSdkSetting.AwsRetryMode.sysProp to "legacy")
+
+    private val TestClient.standardStrategy: StandardRetryStrategy
+        get() = assertIs<StandardRetryStrategy>(config.retryStrategy)
+
+    private val TestClient.bucketConfig: StandardRetryTokenBucket.Config
+        get() = assertIs<StandardRetryTokenBucket.Config>(standardStrategy.config.tokenBucket.config)
+
+    private val TestClient.delayConfig: ExponentialBackoffWithJitter.Config
+        get() = assertIs<ExponentialBackoffWithJitter.Config>(standardStrategy.config.delayProvider.config)
+
+    @Test
+    fun testFromEnvironmentUsesDefaultRetryPolicy() = runTest {
+        withIsolatedEnvironment {
+            assertSame(AwsRetryPolicy.Default, TestClient.fromEnvironment().config.retryPolicy)
+        }
+    }
+
+    @Test
+    fun testFromEnvironmentUsesLegacyRetryPolicyInLegacyMode() = runTest {
+        withIsolatedEnvironment(legacyMode) {
+            assertSame(LegacyAwsRetryPolicy, TestClient.fromEnvironment().config.retryPolicy)
+        }
+    }
+
+    @Test
+    fun testFromEnvironmentFavorsExplicitRetryPolicyInLegacyMode() = runTest {
+        withIsolatedEnvironment(legacyMode) {
+            val client = TestClient.fromEnvironment { retryPolicy = AwsRetryPolicy.Default }
+            assertSame(AwsRetryPolicy.Default, client.config.retryPolicy)
+        }
+    }
+
+    @Test
+    fun testFromEnvironmentLegacyModeIgnoresServiceDefaults() = runTest {
+        withIsolatedEnvironment(legacyMode) {
+            val client = ServiceDefaultsTestClientFactory.fromEnvironment()
+            assertEquals(StandardRetryStrategy.Config.DEFAULT_MAX_ATTEMPTS, client.standardStrategy.config.maxAttempts)
+            assertEquals(10.milliseconds, client.delayConfig.initialDelay)
+            assertEquals(5, client.bucketConfig.retryCost)
+        }
+    }
+
+    @Test
+    fun testFromEnvironmentAppliesRetryStrategyDslOnTopOfResolvedAdaptiveStrategy() = runTest {
+        withIsolatedEnvironment(mapOf(AwsSdkSetting.AwsRetryMode.sysProp to "adaptive")) {
+            val client = TestClient.fromEnvironment { retryStrategy { maxAttempts = 2 } }
+            assertIs<AdaptiveRetryStrategy>(client.config.retryStrategy)
+            assertEquals(2, client.standardStrategy.config.maxAttempts)
+            assertEquals(14, client.bucketConfig.retryCost)
+        }
+    }
 }
