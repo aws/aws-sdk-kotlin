@@ -63,6 +63,13 @@ kotlin {
             }
         }
 
+        // The posix group is attached to leaf targets only. Let the linux and apple intermediates, which hold
+        // platform-specific process spawning, build on its shared code.
+        val posixMain = findByName("posixMain")
+        if (posixMain != null) {
+            listOf("linuxMain", "appleMain").forEach { findByName(it)?.dependsOn(posixMain) }
+        }
+
         all {
             languageSettings.optIn("aws.smithy.kotlin.runtime.InternalApi")
             languageSettings.optIn("aws.sdk.kotlin.runtime.InternalSdkApi")
