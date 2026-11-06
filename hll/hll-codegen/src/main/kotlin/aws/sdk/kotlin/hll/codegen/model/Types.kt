@@ -18,6 +18,14 @@ public object Types {
         public val Instant: TypeRef = TypeRef("aws.smithy.kotlin.runtime.time", "Instant")
         public val Url: TypeRef = TypeRef("aws.smithy.kotlin.runtime.net.url", "Url")
         public val Document: TypeRef = TypeRef("aws.smithy.kotlin.runtime.content", "Document")
+        public val BigDecimal: TypeRef = TypeRef("aws.smithy.kotlin.runtime.content", "BigDecimal")
+        public val BigInteger: TypeRef = TypeRef("aws.smithy.kotlin.runtime.content", "BigInteger")
+    }
+
+    @InternalSdkApi
+    public object Java {
+        public val BigDecimal: TypeRef = TypeRef(Pkg.Java.Math, "BigDecimal")
+        public val BigInteger: TypeRef = TypeRef(Pkg.Java.Math, "BigInteger")
     }
 
     @InternalSdkApi

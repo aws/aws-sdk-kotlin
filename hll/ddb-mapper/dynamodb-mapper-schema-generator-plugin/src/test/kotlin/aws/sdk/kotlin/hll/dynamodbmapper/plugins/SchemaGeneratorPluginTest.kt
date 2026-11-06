@@ -813,4 +813,464 @@ class SchemaGeneratorPluginTest {
         val result = runner.build()
         assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
     }
+
+    @Test
+    fun testNestedItems() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test"))
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("nested/src/NestedItem")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas"
+
+        // The table item (@DynamoDbItem) generates a full schema and references the nested value converter
+        val personSchema = File(testProjectDir, "$basePath/PersonSchema.kt")
+        assertTrue(personSchema.exists())
+        val personContents = personSchema.readText()
+        assertContains(personContents, "public object PersonSchema : ItemSchema.PartitionKey<Person, KeyType.Key1<Int>>")
+        assertContains(personContents, "AddressValueConverter")
+
+        // The nested-only type (@DynamoDbMappable) generates a converter + value converter but NO schema or table accessor
+        val addressSchema = File(testProjectDir, "$basePath/AddressSchema.kt")
+        assertTrue(addressSchema.exists())
+        val addressContents = addressSchema.readText()
+        assertContains(addressContents, "public object AddressConverter : ItemConverter<Address>")
+        assertContains(addressContents, "public val AddressValueConverter:")
+        assertFalse(addressContents.contains("ItemSchema.PartitionKey"))
+        assertFalse(addressContents.contains("getAddressTable"))
+
+        // Round-trip conversion
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/NestedItemTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.createNewFile()
+        testFile.writeText(getResource("/nested/test/NestedItemTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testCrossPackageNesting() = withTestProject {
+        createClassFile("nested/crosspackage/Coordinates")
+        createClassFile("nested/crosspackage/Place")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        // Nested type in org.example.geo generates its value converter in that package's generated schemas
+        val coordinatesSchema = File(
+            testProjectDir,
+            "build/generated/ksp/main/kotlin/org/example/geo/dynamodbmapper/generatedschemas/CoordinatesSchema.kt",
+        )
+        assertTrue(coordinatesSchema.exists())
+        assertContains(coordinatesSchema.readText(), "public val CoordinatesValueConverter:")
+
+        // The referencing table item in org.example must reference the converter in the nested type's package
+        val placeSchema = File(
+            testProjectDir,
+            "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas/PlaceSchema.kt",
+        )
+        assertTrue(placeSchema.exists())
+        assertContains(
+            placeSchema.readText(),
+            "import org.example.geo.dynamodbmapper.generatedschemas.CoordinatesValueConverter",
+        )
+    }
+
+    @Test
+    fun testSelfReferentialNestingFails() = withTestProject {
+        createClassFile("nested/src/SelfReferential")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Cyclic nesting detected involving type 'org.example.TreeNode'")
+    }
+
+    @Test
+    fun testNestedTableItem() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("nested/src/NestedTableItem")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas"
+
+        // The parent @DynamoDbItem generates a full schema and references the nested item's value converter
+        val productSchema = File(testProjectDir, "$basePath/ProductSchema.kt")
+        assertTrue(productSchema.exists())
+        val productContents = productSchema.readText()
+        assertContains(productContents, "public object ProductSchema : ItemSchema.PartitionKey<Product, KeyType.Key1<String>>")
+        assertContains(productContents, "ManufacturerValueConverter")
+
+        // The nested type is itself a @DynamoDbItem, so it ALSO generates its own schema, table accessor, and value converter
+        val manufacturerSchema = File(testProjectDir, "$basePath/ManufacturerSchema.kt")
+        assertTrue(manufacturerSchema.exists())
+        val manufacturerContents = manufacturerSchema.readText()
+        assertContains(manufacturerContents, "public object ManufacturerSchema : ItemSchema.PartitionKey<Manufacturer, KeyType.Key1<Int>>")
+        assertContains(manufacturerContents, "public fun DynamoDbMapper.getManufacturerTable")
+        assertContains(manufacturerContents, "public val ManufacturerValueConverter:")
+
+        // Round-trip conversion, including the nested item's key field serialized as a plain attribute
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/NestedTableItemTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.createNewFile()
+        testFile.writeText(getResource("/nested/test/NestedTableItemTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testNestedTableItemTtlAndCounterAreInert() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("nested/src/NestedItemWithTtlCounter")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas"
+
+        // The nested type's TTL/counter are captured only on its OWN schema attributes
+        val sessionSchema = File(testProjectDir, "$basePath/SessionSchema.kt").readText()
+        assertContains(sessionSchema, "SchemaAttributes.TtlFields to ttlFields")
+        assertContains(sessionSchema, "SchemaAttributes.CounterFields to setOf(\"accessCount\")")
+
+        // They do NOT propagate to the parent schema, so the TTL/counter interceptors (which read the operation's
+        // schema attributes) never act on the nested fields
+        val accountSchema = File(testProjectDir, "$basePath/AccountSchema.kt").readText()
+        assertContains(accountSchema, "override val attributes: Attributes = emptyAttributes()")
+        assertFalse(accountSchema.contains("TtlFields"))
+        assertFalse(accountSchema.contains("CounterFields"))
+
+        // Round-trip shows the nested TTL/counter fields serialize as ordinary, unchanged attributes
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/NestedItemWithTtlCounterTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.createNewFile()
+        testFile.writeText(getResource("/nested/test/NestedItemWithTtlCounterTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testDeeplyNestedMappable() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test")) 
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("nested/src/DeepNesting")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        // The deeply-nested reference is detected and the nested value converter is wired through List/Map/List
+        val holderSchema = File(
+            testProjectDir,
+            "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas/DeepListHolderSchema.kt",
+        ).readText()
+        assertContains(holderSchema, "ListValueConverter(MapValueConverter(")
+        assertContains(holderSchema, "ListValueConverter(LeafValueConverter)")
+
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/DeepNestingTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.createNewFile()
+        testFile.writeText(getResource("/nested/test/DeepNestingTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testDeeplyNestedSetOfMappableFails() = withTestProject {
+        createClassFile("nested/negative/DeepSetNesting")
+
+        // Set<SetLeaf> is a set of maps, which is unsupported even when nested inside List<Map<String, ...>>
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Unsupported set element")
+    }
+
+    @Test
+    fun testMutualCyclicNestingFails() = withTestProject {
+        createClassFile("nested/negative/MutualCycle")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Cyclic nesting detected")
+    }
+
+    @Test
+    fun testIgnoredAndPrivateSelfReferencesAreNotCyclic() = withTestProject {
+        createClassFile("nested/src/IgnoredCycle")
+
+        // Self-references exist only through an ignored and a private field, so this must build successfully.
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val schemaFile = File(
+            testProjectDir,
+            "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas/IgnoredCycleSchema.kt",
+        )
+        assertTrue(schemaFile.exists())
+
+        val schemaContents = schemaFile.readText()
+        // Neither the ignored nor the private self-referential field should be mapped
+        assertFalse(schemaContents.contains("ignoredParent"))
+        assertFalse(schemaContents.contains("privateParent"))
+    }
+
+    @Test
+    fun testMappableOnAnnotationClassFails() = withTestProject {
+        createClassFile("nested/negative/MappableAnnotation")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "@DynamoDbMappable cannot be applied to annotation classes")
+    }
+
+    @Test
+    fun testNestedWithKeyFails() = withTestProject {
+        createClassFile("nested/negative/NestedWithKey")
+
+        val result = runner.buildAndFail()
+        assertContains(
+            result.output,
+            "is annotated with @DynamoDbPartitionKey. These annotations are only valid on a @DynamoDbItem table item",
+        )
+    }
+
+    @Test
+    fun testUnannotatedNestedTypeFails() = withTestProject {
+        createClassFile("nested/negative/UnannotatedNested")
+
+        val result = runner.buildAndFail()
+        assertContains(
+            result.output,
+            "If 'org.example.PlainThing' should be stored as a nested item, annotate it with @DynamoDbMappable",
+        )
+    }
+
+    @Test
+    fun testSetOfNestedTypeFails() = withTestProject {
+        createClassFile("nested/negative/SetOfNested")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Unsupported set element")
+    }
+
+    @Test
+    fun testMissingPartitionKeyFails() = withTestProject {
+        createClassFile("keys/NoPartitionKey")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Expected between 1 and 4 properties annotated with @DynamoDbPartitionKey, found 0")
+    }
+
+    @Test
+    fun testTooManyPartitionKeysFails() = withTestProject {
+        createClassFile("keys/TooManyPartitionKeys")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Expected between 1 and 4 properties annotated with @DynamoDbPartitionKey, found 5")
+    }
+
+    @Test
+    fun testTooManySortKeysFails() = withTestProject {
+        createClassFile("keys/TooManySortKeys")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Expected between 0 and 4 properties annotated with @DynamoDbSortKey, found 5")
+    }
+
+    @Test
+    fun testUnsupportedMapKeyTypeFails() = withTestProject {
+        createClassFile("keys/UnsupportedMapKey")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Unsupported key type:")
+    }
+
+    @Test
+    fun testUnsupportedKeyAttributeTypeFails() = withTestProject {
+        createClassFile("keys/UnsupportedKeyAttributeType")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Unsupported key attribute type")
+    }
+
+    @Test
+    fun testAllProblemsAreReported() = withTestProject {
+        createClassFile("keys/MultipleProblems")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "Expected between 1 and 4 properties annotated with @DynamoDbPartitionKey, found 0")
+        assertContains(result.output, "@DynamoDbTtlSeconds must be positive, got -5 seconds on property expiresAt")
+        assertContains(result.output, "Property 'accessCount' annotated with @DynamoDbCounter must be of type Int or Long, but was String")
+    }
+
+    @Test
+    fun testHeterogeneousSealedFamily() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test"))
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("heterogeneous/src/Vehicles")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas"
+        val vehicleContents = File(testProjectDir, "$basePath/VehicleSchema.kt").readText()
+
+        // Registrations are ordered by name (no member descends from another); the nested family is one registration
+        assertContains(
+            vehicleContents,
+            """
+                @GeneratedApi
+                public object VehicleConverter : ItemConverter<Vehicle> by HeterogeneousItemConverter<Vehicle>(
+                    typeAttribute = "type",
+                    block = {
+                        exactType<Bike>("bike", BikeConverter)
+                        exactType<Car>("car", CarConverter)
+                        instanceOf<Truck>("truck", TruckConverter)
+                        exactType<Unicycle>("unicycle", UnicycleConverter)
+                    },
+                )
+            """.trimIndent(),
+        )
+        assertContains(vehicleContents, "public val VehicleValueConverter: ValueConverter<Vehicle> = ConverterChain(VehicleConverter, ItemValueConverter)")
+        assertContains(
+            vehicleContents,
+            """
+                @GeneratedApi
+                public object VehicleSchema : ItemSchema.PartitionKey<Vehicle, KeyType.Key1<Int>> {
+                    override val converter: VehicleConverter = VehicleConverter
+                    override val partitionKey: KeySpec.Key1<Int> = KeySpec.int("id")
+                    override val attributes: Attributes = emptyAttributes()
+                }
+            """.trimIndent(),
+        )
+        assertContains(vehicleContents, "public fun DynamoDbMapper.getVehicleTable(name: String): Table.PartitionKey<Vehicle, KeyType.Key1<Int>> = getTable(name, VehicleSchema)")
+
+        val truckContents = File(testProjectDir, "$basePath/TruckSchema.kt").readText()
+        assertContains(truckContents, "public object TruckConverter : ItemConverter<Truck> by HeterogeneousItemConverter<Truck>(")
+        assertContains(truckContents, "typeAttribute = \"truckType\",")
+        assertFalse(truckContents.contains("TruckSchema :"))
+
+        // Members get converters but no schemas of their own
+        val carContents = File(testProjectDir, "$basePath/CarSchema.kt").readText()
+        assertContains(carContents, "public object CarConverter : ItemConverter<Car> by SimpleItemConverter(")
+        assertFalse(carContents.contains("CarSchema :"))
+
+        val unicycleContents = File(testProjectDir, "$basePath/UnicycleSchema.kt").readText()
+        assertContains(unicycleContents, "builderFactory = { Unicycle },")
+        assertFalse(unicycleContents.contains("UnicycleBuilder"))
+
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/VehiclesTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.writeText(getResource("/heterogeneous/test/VehiclesTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testHeterogeneousOpenAndAdHocFamilies() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test"))
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("heterogeneous/src/Animals")
+        createClassFile("heterogeneous/src/Entities")
+
+        val buildResult = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), buildResult.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/dynamodbmapper/generatedschemas"
+
+        // A subtype is registered before its supertype, and a self-registering base always comes last
+        val animalContents = File(testProjectDir, "$basePath/AnimalSchema.kt").readText()
+        val registrations = listOf(
+            "exactType<Puppy>(\"puppy\", PuppyConverter)",
+            "instanceOf<Dog>(\"dog\", DogConverter)",
+            "instanceOf<Animal>(\"animal\", AnimalBaseConverter)",
+        )
+        val positions = registrations.map { animalContents.indexOf(it) }
+        assertTrue(positions.all { it >= 0 } && positions == positions.sorted(), "Unexpected registrations in:\n$animalContents")
+        val animalBaseContents = File(testProjectDir, "$basePath/AnimalBaseConverter.kt").readText()
+        assertContains(animalBaseContents, "public object AnimalBaseConverter : ItemConverter<Animal> by SimpleItemConverter(")
+
+        // With the default baseMatch, the base matches only its own exact class
+        val plantContents = File(testProjectDir, "$basePath/PlantSchema.kt").readText()
+        assertContains(plantContents, "exactType<Plant>(\"plant\", PlantBaseConverter)")
+
+        // An ad-hoc family's value type is Any; the TTL and counter attributes its members share become the schema's
+        val entitiesContents = File(testProjectDir, "$basePath/EntitiesSchema.kt").readText()
+        assertContains(entitiesContents, "public object EntitiesConverter : ItemConverter<Any> by HeterogeneousItemConverter<Any>(")
+        assertContains(entitiesContents, "public object EntitiesSchema : ItemSchema.CompositeKey<Any, KeyType.Key1<String>, KeyType.Key1<String>> {")
+        assertContains(entitiesContents, "private val ttlFields = mapOf(\"expiresAt\" to 3600L)")
+        assertContains(entitiesContents, "SchemaAttributes.CounterFields to setOf(\"version\")")
+
+        val auditContents = File(testProjectDir, "$basePath/AuditRecordSchema.kt").readText()
+        assertContains(auditContents, "EntitiesValueConverter,")
+        assertContains(auditContents, "ListValueConverter(EntitiesValueConverter),")
+
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/OpenAndAdHocFamiliesTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.writeText(getResource("/heterogeneous/test/OpenAndAdHocFamiliesTest.kt"))
+
+        val testResult = runner.withArguments("test").build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), testResult.task(":test")?.outcome)
+    }
+
+    @Test
+    fun testHeterogeneousFamilyProblemsAreReported() = withTestProject {
+        createClassFile("heterogeneous/negative/FamilyProblems")
+
+        val result = runner.buildAndFail()
+        assertContains(result.output, "'org.example.Square' is a concrete subtype of sealed family 'org.example.Shape' but is not matched by any @DynamoDbSubtype registration")
+        assertContains(result.output, "Subtype 'org.example.DocB' has keys (partition [id: Int], sort []) but 'org.example.DocA' has keys (partition [id: String], sort [])")
+        assertContains(result.output, "Property 'kind' of 'org.example.Fish' maps to attribute 'kind', which collides with a type attribute of its family")
+        assertContains(result.output, "Type name 'pome' of 'org.example.Pear' is already registered in family 'org.example.Fruit' by 'org.example.Apple'")
+        assertContains(result.output, "typeName of subtype 'org.example.Plum' must not be blank")
+        assertContains(result.output, "Subtype 'org.example.Hammer' uses EXACT_TYPE but is abstract or an interface, so it can never match")
+        assertContains(result.output, "No @DynamoDbHeterogeneousType family found for subtype 'org.example.Thing'")
+        assertContains(result.output, "Family 'org.example.Things' must have at least one @DynamoDbSubtype")
+        assertContains(result.output, "Property 'n' is annotated with @DynamoDbHeterogeneousAttribute(org.example.Things::class) but holds no value of type 'kotlin.Any'")
+        assertContains(result.output, "All members of table family 'org.example.Session' must declare the same @DynamoDbTtlSeconds attributes with the same lifetimes")
+        assertContains(result.output, "Subtype 'org.example.PinnedEntry' has TTL attributes [] but 'org.example.TempEntry' has TTL attributes [expiresAt: 60s]")
+        assertContains(result.output, "All members of table family 'org.example.Account' must declare the same @DynamoDbCounter attributes")
+        assertContains(result.output, "@DynamoDbHeterogeneousType cannot be applied to 'org.example.Sealed' because it cannot have subtypes")
+    }
 }

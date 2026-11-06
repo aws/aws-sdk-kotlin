@@ -26,3 +26,20 @@ public class EnumValueConverter<E : Enum<E>>(
 public inline fun <reified E : Enum<E>> EnumValueConverter(): EnumValueConverter<E> = EnumValueConverter(
     ConverterImpl({ it.name }, { enumValueOf(it) }),
 )
+
+/**
+ * A [Converter] between an enum of type [E] and its [String] name
+ * @param E The [Enum] type to convert
+ */
+public class EnumToStringConverter<E : Enum<E>>(
+    enumToString: Converter<E, String>,
+) : Converter<E, String> by enumToString
+
+/**
+ * Instantiates a new [EnumToStringConverter] for enums of type [E]
+ * @param E The [Enum] type to convert
+ */
+@Suppress("ktlint:standard:function-naming")
+public inline fun <reified E : Enum<E>> EnumToStringConverter(): EnumToStringConverter<E> = EnumToStringConverter(
+    ConverterImpl({ it.name }, { enumValueOf(it) }),
+)

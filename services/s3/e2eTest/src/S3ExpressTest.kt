@@ -102,7 +102,7 @@ class S3ExpressTest {
     }
 
     @Test
-    fun testChecksums() = runBlocking {
+    fun testChecksums() = runBlocking<Unit> {
         val bucketName = testBuckets.first() // only need one bucket for this test
 
         val keysToDelete = listOf("checksums.txt", "delete-me.txt", "dont-forget-about-me.txt")
@@ -133,7 +133,7 @@ class S3ExpressTest {
     }
 
     @Test
-    fun testUploadPartContainsCRC32Checksum() = runBlocking {
+    fun testUploadPartContainsCRC32Checksum() = runBlocking<Unit> {
         val testBucket = testBuckets.first()
         val testObject = "I-will-be-uploaded-in-parts-!"
 

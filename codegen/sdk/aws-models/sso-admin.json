@@ -2923,6 +2923,12 @@
                         "smithy.api#documentation": "<p>The identifier of the identity store that is connected to the instance of IAM Identity Center.</p>"
                     }
                 },
+                "IdentityStoreArn": {
+                    "target": "com.amazonaws.ssoadmin#InstanceIdentityStoreArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the identity store that is connected to the instance of IAM Identity Center.</p>"
+                    }
+                },
                 "OwnerAccountId": {
                     "target": "com.amazonaws.ssoadmin#AccountId",
                     "traits": {
@@ -2951,6 +2957,18 @@
                     "target": "com.amazonaws.ssoadmin#Reason",
                     "traits": {
                         "smithy.api#documentation": "<p>Provides additional context about the current status of the IAM Identity Center instance. This field is particularly useful when an instance is in a non-ACTIVE state, such as CREATE_FAILED. When an instance fails to create or update, this field contains information about the cause, which may include issues with KMS key configuration, permission problems with the specified KMS key, or service-related errors. </p>"
+                    }
+                },
+                "PrimaryRegion": {
+                    "target": "com.amazonaws.ssoadmin#RegionName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The primary Region where the IAM Identity Center instance was originally enabled. The primary Region cannot be removed.</p>"
+                    }
+                },
+                "Regions": {
+                    "target": "com.amazonaws.ssoadmin#RegionMetadataList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of Regions enabled in the IAM Identity Center instance, including Regions with ACTIVE, ADDING, or REMOVING status.</p>"
                     }
                 },
                 "EncryptionConfigurationDetails": {
@@ -4145,6 +4163,16 @@
                 "smithy.api#pattern": "^arn:aws(-[a-z]{1,5}){0,3}:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$"
             }
         },
+        "com.amazonaws.ssoadmin#InstanceIdentityStoreArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 62,
+                    "max": 93
+                },
+                "smithy.api#pattern": "^arn:aws(-[a-z]{1,5}){0,3}:identitystore::\\d{12}:identitystore/(d-[0-9a-f]{10}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$"
+            }
+        },
         "com.amazonaws.ssoadmin#InstanceList": {
             "type": "list",
             "member": {
@@ -4170,6 +4198,12 @@
                     "target": "com.amazonaws.ssoadmin#Id",
                     "traits": {
                         "smithy.api#documentation": "<p>The identifier of the identity store that is connected to the Identity Center instance.</p>"
+                    }
+                },
+                "IdentityStoreArn": {
+                    "target": "com.amazonaws.ssoadmin#InstanceIdentityStoreArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the identity store that is connected to the Identity Center instance.</p>"
                     }
                 },
                 "OwnerAccountId": {
@@ -5593,6 +5627,12 @@
                     "target": "com.amazonaws.ssoadmin#Token",
                     "traits": {
                         "smithy.api#documentation": "<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
+                    }
+                },
+                "RegionScope": {
+                    "target": "com.amazonaws.ssoadmin#RegionScope",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies which Amazon Web Services Regions to list IAM Identity Center instances from. Valid values:</p> <ul> <li> <p> <code>CURRENT_REGION</code> - Lists only the instances in the Region that you call this API from.</p> </li> <li> <p> <code>ALL_REGIONS</code> - Lists the instances that the caller owns or that are shared with the caller across all Regions.</p> </li> </ul> <p>If you don't specify a value, the default is <code>CURRENT_REGION</code>.</p>"
                     }
                 }
             },
@@ -7216,6 +7256,23 @@
                     "max": 32
                 },
                 "smithy.api#pattern": "^([a-z]+-){2,3}\\d$"
+            }
+        },
+        "com.amazonaws.ssoadmin#RegionScope": {
+            "type": "enum",
+            "members": {
+                "CURRENT_REGION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CURRENT_REGION"
+                    }
+                },
+                "ALL_REGIONS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALL_REGIONS"
+                    }
+                }
             }
         },
         "com.amazonaws.ssoadmin#RegionStatus": {
@@ -9394,7 +9451,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Update the details for the instance of IAM Identity Center that is owned by the Amazon Web Services account.</p> <p>In a single <code>UpdateInstance</code> request, you can perform only one of the following operations:</p> <ul> <li> <p>Update the encryption configuration of the instance by specifying <code>EncryptionConfiguration</code>.</p> </li> <li> <p>Enable permission sets for the instance by specifying <code>PermissionSetsEnabled</code>.</p> </li> </ul> <p>A request that specifies both <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> returns a <code>ValidationException</code>. To perform both operations, call <code>UpdateInstance</code> separately for each. The two calls can be made in parallel.</p>"
+                "smithy.api#documentation": "<p>Update the details for the instance of IAM Identity Center that is owned by the Amazon Web Services account.</p> <p>In a single <code>UpdateInstance</code> request, you can perform only one of the following operations:</p> <ul> <li> <p>Update the encryption configuration of the instance by specifying <code>EncryptionConfiguration</code>.</p> </li> <li> <p>Enable permission sets for the instance by specifying <code>PermissionSetsEnabled</code>.</p> </li> </ul> <p>If you specify both <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> in a request, the request returns a <code>ValidationException</code>. To perform both operations, call <code>UpdateInstance</code> separately for each. You can make the two calls in parallel.</p>"
             }
         },
         "com.amazonaws.ssoadmin#UpdateInstanceAccessControlAttributeConfiguration": {
@@ -9483,7 +9540,7 @@
                 "PermissionSetsEnabled": {
                     "target": "smithy.api#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "<p>Enables permission sets for this Identity Center instance. The only accepted value is <code>true </code>. After permission sets are enabled, they cannot be disabled.</p> <note> <p>You can't set <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> in the same request. To configure both, make two separate <code>UpdateInstance</code> calls. These calls can be made in parallel.</p> </note>"
+                        "smithy.api#documentation": "<p>Enables permission sets for this Identity Center instance. The only accepted value is <code>true </code>. After permission sets are enabled, they cannot be disabled.</p> <note> <p>You can't set <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> in the same request. To configure both, make two separate <code>UpdateInstance</code> calls. You can make these calls in parallel.</p> </note>"
                     }
                 }
             },

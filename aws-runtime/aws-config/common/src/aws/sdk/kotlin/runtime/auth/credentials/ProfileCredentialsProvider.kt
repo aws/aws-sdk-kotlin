@@ -199,11 +199,19 @@ public class ProfileCredentialsProvider @InternalSdkApi constructor(
             credentialsBusinessMetrics.add(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE_SSO_LEGACY)
         }
 
-        is LeafProvider.LoginSession -> LoginCredentialsProvider(loginSessionName, region.get()).also {
+        is LeafProvider.LoginSession -> LoginCredentialsProvider(
+            loginSession = loginSessionName,
+            region = region.get(),
+            httpClient = httpClient,
+            platformProvider = platformProvider,
+        ).also {
             credentialsBusinessMetrics.add(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE_LOGIN)
         }
 
-        is LeafProvider.Process -> ProcessCredentialsProvider(command).also {
+        is LeafProvider.Process -> ProcessCredentialsProvider(
+            credentialProcess = command,
+            platformProvider = platformProvider,
+        ).also {
             credentialsBusinessMetrics.add(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE_PROCESS)
         }
     }
