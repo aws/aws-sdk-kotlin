@@ -21,6 +21,7 @@ import aws.smithy.kotlin.runtime.http.operation.*
 import aws.smithy.kotlin.runtime.http.request.HttpRequestBuilder
 import aws.smithy.kotlin.runtime.http.request.header
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
+import aws.smithy.kotlin.runtime.identity.Identity
 import aws.smithy.kotlin.runtime.io.closeIfCloseable
 import aws.smithy.kotlin.runtime.net.*
 import aws.smithy.kotlin.runtime.net.url.Url
@@ -49,6 +50,9 @@ private const val PROVIDER_NAME = "EcsContainer"
  *
  * For more information on configuring ECS credentials see [IAM Roles for tasks](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html)
  *
+ * This provider caches and refreshes credentials internally, so it does not need to be wrapped in a caching provider.
+ * Close it when you are done with it to release the cache.
+ *
  * @param platformProvider the platform provider
  * @param httpClient the [HttpClientEngine] instance to use to make requests. NOTE: This engine's resources and lifetime
  * are NOT managed by the provider. Caller is responsible for closing.
@@ -58,7 +62,8 @@ public class EcsCredentialsProvider(
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     httpClient: HttpClientEngine? = null,
     private val hostResolver: HostResolver = HostResolver.Default,
-) : CloseableCredentialsProvider {
+) : CloseableCredentialsProvider,
+    RefreshAwareCredentialsProvider {
 
     // Keeping previous constructor as secondary due to backwards compatibility.
     public constructor(
@@ -73,7 +78,17 @@ public class EcsCredentialsProvider(
     private val manageEngine = httpClient == null
     private val httpClient: HttpClientEngine = httpClient ?: DefaultHttpEngine()
 
-    override suspend fun resolve(attributes: Attributes): Credentials {
+    private val refresh = SelfManagedRefresh(::resolveUncached)
+
+    override suspend fun resolve(attributes: Attributes): Credentials = refresh.resolve(attributes)
+
+    override suspend fun invalidate(rejectedIdentity: Identity): Unit = refresh.invalidate(rejectedIdentity)
+
+    /**
+     * Issues the container metadata requests with no caching or pacing of its own. The caller's cache decides what a
+     * failure or an already-past expiration means.
+     */
+    private suspend fun resolveUncached(attributes: Attributes): Credentials {
         val logger = coroutineContext.logger<EcsCredentialsProvider>()
 
         val authToken = loadAuthToken()
@@ -187,6 +202,7 @@ public class EcsCredentialsProvider(
     }
 
     override fun close() {
+        refresh.close()
         if (manageEngine) {
             httpClient.closeIfCloseable()
         }
