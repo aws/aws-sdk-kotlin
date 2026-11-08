@@ -46,7 +46,8 @@ import kotlin.coroutines.coroutineContext
  * Close it when you are done with it to release the cache and the underlying client.
  *
  * @param loginSession The Login Session from the profile
- * @param region The AWS region used to call the log in service.
+ * @param region The AWS region used to call the log in service. When the cached token names a non-blank
+ * `signInRegion`, that region is used for the refresh call instead.
  * @param httpClient The [HttpClientEngine] instance to use to make requests. NOTE: This engine's resources and lifetime
  * are NOT managed by the provider. Caller is responsible for closing.
  * @param platformProvider The platform provider

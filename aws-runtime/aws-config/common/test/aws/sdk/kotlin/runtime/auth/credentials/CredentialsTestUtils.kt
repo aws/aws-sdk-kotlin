@@ -23,9 +23,9 @@ internal fun Credentials.withRefreshBehavior(behavior: CredentialsRefreshBehavio
 )
 
 /**
- * The attributes the IMDS provider attaches: static stability, and a paced refresh (see [PacedRefreshKey]).
+ * The attributes the IMDS and container providers attach: static stability, and a paced refresh (see [PacedRefreshKey]).
  */
-internal fun Credentials.withImdsRefreshAttributes(): Credentials = copy(
+internal fun Credentials.withPacedStaticStability(): Credentials = copy(
     attributes = attributes.toMutableAttributes().apply {
         set(CredentialsRefreshBehaviorKey, CredentialsRefreshBehavior.RefreshableWithStaticStability)
         set(PacedRefreshKey, true)

@@ -233,6 +233,11 @@ private class EcsCredentialsDeserializer : HttpDeserializer.NonStreaming<Credent
             PROVIDER_NAME,
             resp.accountId,
             refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
+            // The container endpoint rotates credentials well before they expire, so a cache looks them up again at its
+            // default pace rather than only once they near expiration. The cached credentials then stay recent, and an
+            // endpoint outage close to their expiration does not leave the cache holding credentials about to expire
+            // (see PacedRefreshKey).
+            pacedRefresh = true,
         )
     }
 }

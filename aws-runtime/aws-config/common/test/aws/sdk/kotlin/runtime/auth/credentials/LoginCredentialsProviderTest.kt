@@ -12,6 +12,7 @@ import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.http.Headers
 import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
+import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
@@ -21,9 +22,16 @@ import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import io.kotest.matchers.string.shouldMatch
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlin.io.encoding.Base64
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlin.text.encodeToByteArray
 import kotlin.time.Duration.Companion.minutes
 import kotlin.to
@@ -193,10 +201,27 @@ class LoginCredentialsProviderTest {
         assertEquals(expected, actual)
     }
 
-    @Test
-    fun testCachesBetweenResolutions() = runTest {
-        // `expiresIn` puts the credentials an hour ahead of the clock, so both resolutions below land well inside the
-        // refresh window.
+    private fun expiredTokenContents(signInRegionLine: String? = null): String = """
+        {
+            "accessToken": {
+                "accessKeyId": "OLD_AKID",
+                "secretAccessKey": "old-secret",
+                "sessionToken": "old-session-token",
+                "accountId": "123456789",
+                "expiresAt": "2020-10-16T03:50:00Z"
+            },
+            "tokenType": "aws_sigv4",
+            "refreshToken": "refresh-token",
+            "clientId": "test-client-id",${signInRegionLine?.let { "\n            $it," } ?: ""}
+            "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIFDZHUzOG1Pzq+6F0mjMlOSp1syN9LRPBuHMoCFXTcXhoAoGCCqGSM49\nAwEHoUQDQgAE9qhj+KtcdHj1kVgwxWWWw++tqoh7H7UHs7oXh8jBbgF47rrYGC+t\ndjiIaHK3dBvvdE7MGj5HsepzLm3Kj91bqA==\n-----END EC PRIVATE KEY-----\n"
+        }
+    """
+
+    /**
+     * Refreshes an expired token with the given cache contents through a provider configured for `us-west-2` and
+     * returns the single request that was sent.
+     */
+    private suspend fun refreshAndCaptureRequest(contents: String): HttpRequest {
         val serviceResp = """
         {
             "accessToken": {
@@ -210,7 +235,6 @@ class LoginCredentialsProviderTest {
         }
         """
 
-        // A single expectation: a second token exchange would fail the connection assertion below.
         val engine = buildTestConnection {
             expect(
                 HttpResponse(HttpStatusCode.OK, Headers.Empty, HttpBody.fromBytes(serviceResp.encodeToByteArray())),
@@ -218,25 +242,7 @@ class LoginCredentialsProviderTest {
         }
 
         val testClock = ManualClock(epoch = Instant.fromIso8601("2020-10-16T03:56:00Z"))
-
-        val contents = """
-        {
-            "accessToken": {
-                "accessKeyId": "OLD_AKID",
-                "secretAccessKey": "old-secret",
-                "sessionToken": "old-session-token",
-                "accountId": "123456789",
-                "expiresAt": "2020-10-16T03:50:00Z"
-            },
-            "tokenType": "aws_sigv4",
-            "refreshToken": "refresh-token",
-            "clientId": "test-client-id",
-            "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIFDZHUzOG1Pzq+6F0mjMlOSp1syN9LRPBuHMoCFXTcXhoAoGCCqGSM49\nAwEHoUQDQgAE9qhj+KtcdHj1kVgwxWWWw++tqoh7H7UHs7oXh8jBbgF47rrYGC+t\ndjiIaHK3dBvvdE7MGj5HsepzLm3Kj91bqA==\n-----END EC PRIVATE KEY-----\n"
-        }
-        """
-
         val key = getLoginCacheFilename("arn:aws:iam::123456789:user/TestUser")
-
         val testPlatform = TestPlatformProvider.of(
             env = mapOf("HOME" to "/home"),
             fs = mapOf("/home/.aws/login/cache/$key" to TestFile(contents)),
@@ -248,6 +254,75 @@ class LoginCredentialsProviderTest {
             httpClient = engine,
             platformProvider = testPlatform,
             clock = testClock,
+        )
+
+        assertEquals("AKID", provider.resolve().accessKeyId)
+        return engine.requests().single().actual
+    }
+
+    @Test
+    fun testRefreshUsesSignInRegion() = runTest {
+        val request = refreshAndCaptureRequest(expiredTokenContents("\"signInRegion\": \"eu-central-1\""))
+
+        val host = request.url.host.toString()
+        assertTrue(host.contains("eu-central-1"), "expected eu-central-1 in host, got $host")
+        assertFalse(host.contains("us-west-2"), "expected configured region to be ignored, got $host")
+
+        val dpop = assertNotNull(request.headers["DPoP"])
+        val payload = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT_OPTIONAL)
+            .decode(dpop.split(".")[1])
+            .decodeToString()
+        val htu = Json.parseToJsonElement(payload).jsonObject["htu"]!!.jsonPrimitive.content
+        assertTrue(htu.contains("eu-central-1"), "expected eu-central-1 in htu, got $htu")
+        assertEquals(request.url.toString(), htu)
+    }
+
+    @Test
+    fun testRefreshWithoutSignInRegionUsesConfiguredRegion() = runTest {
+        val request = refreshAndCaptureRequest(expiredTokenContents())
+        val host = request.url.host.toString()
+        assertTrue(host.contains("us-west-2"), "expected us-west-2 in host, got $host")
+    }
+
+    @Test
+    fun testRefreshWithEmptySignInRegionUsesConfiguredRegion() = runTest {
+        val request = refreshAndCaptureRequest(expiredTokenContents("\"signInRegion\": \"\""))
+        val host = request.url.host.toString()
+        assertTrue(host.contains("us-west-2"), "expected us-west-2 in host, got $host")
+    }
+
+    @Test
+    fun testCachesBetweenResolutions() = runTest {
+        // `expiresIn` puts the refreshed credentials an hour ahead of the clock, so the second resolution is served
+        // from the cache: a single expectation, so a second token exchange would fail the connection assertion.
+        val serviceResp = """
+        {
+            "accessToken": {
+                "accessKeyId": "AKID",
+                "secretAccessKey": "secret",
+                "sessionToken": "session-token"
+            },
+            "expiresIn": 3600,
+            "refreshToken": "new-refresh-token",
+            "tokenType": "aws_sigv4"
+        }
+        """
+        val engine = buildTestConnection {
+            expect(
+                HttpResponse(HttpStatusCode.OK, Headers.Empty, HttpBody.fromBytes(serviceResp.encodeToByteArray())),
+            )
+        }
+        val key = getLoginCacheFilename("arn:aws:iam::123456789:user/TestUser")
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf("HOME" to "/home"),
+            fs = mapOf("/home/.aws/login/cache/$key" to TestFile(expiredTokenContents())),
+        )
+        val provider = LoginCredentialsProvider(
+            loginSession = "arn:aws:iam::123456789:user/TestUser",
+            region = "us-west-2",
+            httpClient = engine,
+            platformProvider = testPlatform,
+            clock = ManualClock(epoch = Instant.fromIso8601("2020-10-16T03:56:00Z")),
         )
 
         assertEquals(provider.resolve(), provider.resolve())

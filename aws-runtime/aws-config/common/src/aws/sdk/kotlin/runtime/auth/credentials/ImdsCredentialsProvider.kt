@@ -5,6 +5,7 @@
 
 package aws.sdk.kotlin.runtime.auth.credentials
 
+import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.auth.credentials.internal.nonRecoverable
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.imds.EC2MetadataError
@@ -14,7 +15,6 @@ import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetri
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
 import aws.smithy.kotlin.runtime.auth.awscredentials.*
 import aws.smithy.kotlin.runtime.collections.Attributes
-import aws.smithy.kotlin.runtime.collections.attributesOf
 import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
 import aws.smithy.kotlin.runtime.identity.Identity
@@ -87,14 +87,7 @@ public class ImdsCredentialsProvider(
         }
 
         return when (val resp = deserializeJsonCredentials(JsonDeserializer(payload.encodeToByteArray()))) {
-            is JsonCredentialsResponse.SessionCredentials -> Credentials(
-                resp.accessKeyId,
-                resp.secretAccessKey,
-                resp.sessionToken,
-                resp.expiration,
-                PROVIDER_NAME,
-                imdsCredentialAttributes(),
-            ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
+            is JsonCredentialsResponse.SessionCredentials -> imdsCredentials(resp)
 
             is JsonCredentialsResponse.Error -> when (resp.code) {
                 CODE_ASSUME_ROLE_UNAUTHORIZED_ACCESS -> throw ProviderConfigurationException(
@@ -131,10 +124,16 @@ public class ImdsCredentialsProvider(
 }
 
 /**
- * IMDS credentials keep static stability, and are looked up again every 15 minutes, as they were behind the caching
- * layer this provider was used with before, rather than only once they near expiration (see [PacedRefreshKey]).
+ * Builds IMDS credentials. They keep static stability, and a cache looks them up again at its default pace rather than
+ * only once they near expiration: IMDS rotates in new credentials well before the current ones expire, and the
+ * instance's role can change (see [PacedRefreshKey]).
  */
-private fun imdsCredentialAttributes() = attributesOf {
-    CredentialsRefreshBehaviorKey to CredentialsRefreshBehavior.RefreshableWithStaticStability
-    PacedRefreshKey to true
-}
+private fun imdsCredentials(resp: JsonCredentialsResponse.SessionCredentials): Credentials = credentials(
+    resp.accessKeyId,
+    resp.secretAccessKey,
+    resp.sessionToken,
+    resp.expiration,
+    PROVIDER_NAME,
+    refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
+    pacedRefresh = true,
+).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
