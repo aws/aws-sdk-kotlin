@@ -1,5 +1,0 @@
-{
-  "id": "2c6df693-71d2-45fc-a20b-41a5fdf34f28",
-  "type": "bugfix",
-  "description": "Use the cached `signInRegion` when refreshing AWS Login credentials"
-}
