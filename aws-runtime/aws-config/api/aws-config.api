@@ -269,6 +269,7 @@ public abstract class aws/sdk/kotlin/runtime/config/AbstractAwsSdkClientFactory 
 	public static synthetic fun fromEnvironment$default (Laws/sdk/kotlin/runtime/config/AbstractAwsSdkClientFactory;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	protected fun getDefaultInitialDelay-FghU774 ()Lkotlin/time/Duration;
 	protected fun getDefaultMaxAttempts ()Ljava/lang/Integer;
+	public fun invoke (Lkotlin/jvm/functions/Function1;)Laws/smithy/kotlin/runtime/client/SdkClient;
 }
 
 public abstract interface class aws/sdk/kotlin/runtime/config/AwsSdkClientConfig : aws/smithy/kotlin/runtime/client/SdkClientConfig {
@@ -318,7 +319,6 @@ public final class aws/sdk/kotlin/runtime/config/AwsSdkSetting {
 	public final fun getAwsExecutionEnv ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsIgnoreEndpointUrls ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsMaxAttempts ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
-	public final fun getAwsNewRetries ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsProfile ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsRegion ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
 	public final fun getAwsRequestChecksumCalculation ()Laws/smithy/kotlin/runtime/config/EnvironmentSetting;
