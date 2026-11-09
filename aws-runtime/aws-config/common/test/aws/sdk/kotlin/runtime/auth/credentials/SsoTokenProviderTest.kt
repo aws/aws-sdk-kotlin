@@ -13,6 +13,7 @@ import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.ManualClock
+import aws.smithy.kotlin.runtime.time.TimestampFormat
 import aws.smithy.kotlin.runtime.util.MapFilesystem
 import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
@@ -20,6 +21,7 @@ import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.*
 import kotlin.test.*
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class SsoTokenProviderTest {
@@ -131,6 +133,81 @@ class SsoTokenProviderTest {
                     }
                 }
             }
+    }
+
+    private val now = Instant.fromIso8601("2026-11-09T12:00:00Z")
+
+    /** A cached token with refresh metadata, expiring at [expiresAt]. */
+    private fun refreshableToken(expiresAt: Instant) = """
+        {
+            "accessToken": "cachedtoken",
+            "expiresAt": "${expiresAt.format(TimestampFormat.ISO_8601)}",
+            "clientId": "clientid",
+            "clientSecret": "YSBzZWNyZXQ=",
+            "registrationExpiresAt": "2027-11-09T12:00:00Z",
+            "refreshToken": "cachedrefreshtoken"
+        }
+    """.trimIndent()
+
+    /** The SSO OIDC service rejecting the refresh token. */
+    private fun invalidGrant() = HttpResponse(
+        HttpStatusCode.BadRequest,
+        Headers { append("X-Amzn-ErrorType", "InvalidGrantException") },
+        HttpBody.fromBytes("""{"error":"invalid_grant"}""".encodeToByteArray()),
+    )
+
+    private fun provider(cachedToken: String, engine: TestConnection, clock: ManualClock): SsoTokenProvider {
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf("HOME" to "/home"),
+            fs = mapOf("/home/.aws/sso/cache/${getCacheFilename("test-session")}" to TestFile(cachedToken)),
+        )
+        return SsoTokenProvider("test-session", "start-url", "us-east-1", httpClient = engine, platformProvider = testPlatform, clock = clock)
+    }
+
+    @Test
+    fun testExpiredTokenRefreshIsAttemptedAtMostOnceEvery30Seconds() = runTest {
+        val clock = ManualClock(now)
+        val engine = buildTestConnection {
+            expect(invalidGrant())
+            expect(invalidGrant())
+        }
+        val tokenProvider = provider(refreshableToken(expiresAt = now - 10.seconds), engine, clock)
+
+        assertFailsWith<InvalidSsoTokenException> { tokenProvider.resolve() }
+        assertEquals(1, engine.requests().size, "the first resolution attempts a refresh")
+
+        clock.advance(5.seconds)
+        val ex = assertFailsWith<InvalidSsoTokenException> { tokenProvider.resolve() }
+        assertNotNull(ex.cause, "the error raised during the interval carries the last refresh failure")
+        clock.advance(24.seconds)
+        assertFailsWith<InvalidSsoTokenException> { tokenProvider.resolve() }
+        assertEquals(1, engine.requests().size, "no refresh within 30 seconds of the last attempt")
+
+        clock.advance(2.seconds)
+        assertFailsWith<InvalidSsoTokenException> { tokenProvider.resolve() }
+        assertEquals(2, engine.requests().size, "a refresh is attempted again once 30 seconds have passed")
+    }
+
+    @Test
+    fun testValidTokenIsUsedBetweenRefreshAttempts() = runTest {
+        val clock = ManualClock(now)
+        val engine = buildTestConnection {
+            expect(invalidGrant())
+            expect(invalidGrant())
+        }
+        // Inside the 5-minute refresh window, but still valid.
+        val tokenProvider = provider(refreshableToken(expiresAt = now + 2.minutes), engine, clock)
+
+        assertEquals("cachedtoken", tokenProvider.resolve().token, "a failed refresh keeps the valid token")
+        assertEquals(1, engine.requests().size)
+
+        clock.advance(10.seconds)
+        assertEquals("cachedtoken", tokenProvider.resolve().token)
+        assertEquals(1, engine.requests().size, "no refresh within 30 seconds of the last attempt")
+
+        clock.advance(21.seconds)
+        assertEquals("cachedtoken", tokenProvider.resolve().token)
+        assertEquals(2, engine.requests().size, "refresh attempts continue while the token is in the refresh window")
     }
 }
 
