@@ -55,6 +55,12 @@
             "brazilName": "AwsSdkKotlinAccountAccess"
         },
         {
+            "sdkId": "Account Access Runtime",
+            "namespace": "aws.sdk.kotlin.services.accountaccessruntime",
+            "artifactName": "accountaccessruntime",
+            "brazilName": "AwsSdkKotlinAccountAccessRuntime"
+        },
+        {
             "sdkId": "Agent Registry",
             "namespace": "aws.sdk.kotlin.services.agentregistry",
             "artifactName": "agentregistry",
@@ -617,6 +623,12 @@
             "namespace": "aws.sdk.kotlin.services.connectparticipant",
             "artifactName": "connectparticipant",
             "brazilName": "AwsSdkKotlinConnectparticipant"
+        },
+        {
+            "sdkId": "Continuum",
+            "namespace": "aws.sdk.kotlin.services.continuum",
+            "artifactName": "continuum",
+            "brazilName": "AwsSdkKotlinContinuum"
         },
         {
             "sdkId": "ControlCatalog",

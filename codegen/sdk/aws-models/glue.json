@@ -487,6 +487,9 @@
                     "target": "com.amazonaws.glue#GetJobs"
                 },
                 {
+                    "target": "com.amazonaws.glue#GetJobUpgradeAnalysis"
+                },
+                {
                     "target": "com.amazonaws.glue#GetMapping"
                 },
                 {
@@ -811,6 +814,9 @@
                     "target": "com.amazonaws.glue#StartJobRun"
                 },
                 {
+                    "target": "com.amazonaws.glue#StartJobUpgradeAnalysis"
+                },
+                {
                     "target": "com.amazonaws.glue#StartMaterializedViewRefreshTaskRun"
                 },
                 {
@@ -836,6 +842,9 @@
                 },
                 {
                     "target": "com.amazonaws.glue#StopCrawlerSchedule"
+                },
+                {
+                    "target": "com.amazonaws.glue#StopJobUpgradeAnalysis"
                 },
                 {
                     "target": "com.amazonaws.glue#StopMaterializedViewRefreshTaskRun"
@@ -2708,6 +2717,20 @@
                 "smithy.api#documentation": "<p>Specifies an Amazon Redshift target.</p>"
             }
         },
+        "com.amazonaws.glue#AnalysisType": {
+            "type": "enum",
+            "members": {
+                "AUTO_UPGRADE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AUTO_UPGRADE"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The type of upgrade analysis. For auto-upgrade jobs, this value is\n         <code>AUTO_UPGRADE</code>.</p>"
+            }
+        },
         "com.amazonaws.glue#AnnotationError": {
             "type": "structure",
             "members": {
@@ -3369,6 +3392,82 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Specifies configuration options for automatic data quality evaluation in Glue jobs. This structure enables automated data quality \n      checks and monitoring during ETL operations, helping to ensure data integrity and reliability without manual intervention.</p>"
+            }
+        },
+        "com.amazonaws.glue#AutoUpgradeMetadata": {
+            "type": "structure",
+            "members": {
+                "TargetVersion": {
+                    "target": "com.amazonaws.glue#GlueVersionString",
+                    "traits": {
+                        "smithy.api#documentation": "<text>The target Glue runtime version the job is being upgraded to.</text>"
+                    }
+                },
+                "SourceVersion": {
+                    "target": "com.amazonaws.glue#GlueVersionString",
+                    "traits": {
+                        "smithy.api#documentation": "<text>The source Glue runtime version the job was running before auto-version was enabled.</text>"
+                    }
+                },
+                "Status": {
+                    "target": "com.amazonaws.glue#AutoUpgradeStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<text>The current auto-upgrade lifecycle status (OBSERVING, UPGRADING, UPGRADE_SUCCEEDED, UPGRADE_FAILED, STOPPED, WAITING_FOR_CONSENT).</text>"
+                    }
+                },
+                "AnalysisId": {
+                    "target": "com.amazonaws.glue#IdString",
+                    "traits": {
+                        "smithy.api#documentation": "<text>The unique identifier of the auto-upgrade assessment analysis.</text>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<text>The auto-upgrade assessment information for a job configured with glueVersion=auto.</text>"
+            }
+        },
+        "com.amazonaws.glue#AutoUpgradeStatus": {
+            "type": "enum",
+            "members": {
+                "OBSERVING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "OBSERVING"
+                    }
+                },
+                "UPGRADING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPGRADING"
+                    }
+                },
+                "UPGRADE_SUCCEEDED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPGRADE_SUCCEEDED"
+                    }
+                },
+                "UPGRADE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPGRADE_FAILED"
+                    }
+                },
+                "STOPPED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STOPPED"
+                    }
+                },
+                "WAITING_FOR_CONSENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "WAITING_FOR_CONSENT"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The current phase of the auto-upgrade lifecycle for a job configured with\n      <code>GlueVersion=auto</code>.</p>"
             }
         },
         "com.amazonaws.glue#BackfillError": {
@@ -13041,7 +13140,7 @@
                 "WorkerType": {
                     "target": "com.amazonaws.glue#WorkerType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs. Accepts a value of\n      G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p>\n         <ul>\n            <li>\n               <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (N. California), US West (Oregon), Asia Pacific (Mumbai), Asia Pacific (Seoul), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Spain), Europe (Stockholm), and South America (São Paulo).</p>\n            </li>\n            <li>\n               <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p>\n            </li>\n            <li>\n               <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.025X, G.1X, G.2X, G.4X, G.8X, G.12X, G.16X, R.1X, R.2X, R.4X, or R.8X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p>\n         <ul>\n            <li>\n               <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.12X</code> worker type, each worker maps to 12 DPU (48 vCPUs, 192 GB of memory) with 768GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.16X</code> worker type, each worker maps to 16 DPU (64 vCPUs, 256 GB of memory) with 1024GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.1X</code> worker type, each worker maps to 1 M-DPU (4 vCPUs, 32 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.2X</code> worker type, each worker maps to 2 M-DPU (8 vCPUs, 64 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.4X</code> worker type, each worker maps to 4 M-DPU (16 vCPUs, 128 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.8X</code> worker type, each worker maps to 8 M-DPU (32 vCPUs, 256 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p>\n            </li>\n         </ul>"
                     }
                 },
                 "CodeGenConfigurationNodes": {
@@ -13922,7 +14021,7 @@
                 "WorkerType": {
                     "target": "com.amazonaws.glue#WorkerType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs. Accepts a value of\n      G.1X, G.2X, G.4X, or G.8X for Spark jobs. Accepts the value Z.2X for Ray notebooks.</p>\n         <ul>\n            <li>\n               <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).</p>\n            </li>\n            <li>\n               <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p>\n            </li>\n            <li>\n               <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.1X, G.2X, G.4X, G.8X, G.12X, G.16X, R.1X, R.2X, R.4X, or R.8X for Spark jobs. Accepts the value Z.2X for Ray notebooks.</p>\n         <ul>\n            <li>\n               <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.12X</code> worker type, each worker maps to 12 DPU (48 vCPUs, 192 GB of memory) with 768GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.16X</code> worker type, each worker maps to 16 DPU (64 vCPUs, 256 GB of memory) with 1024GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.1X</code> worker type, each worker maps to 1 M-DPU (4 vCPUs, 32 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.2X</code> worker type, each worker maps to 2 M-DPU (8 vCPUs, 64 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.4X</code> worker type, each worker maps to 4 M-DPU (16 vCPUs, 128 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.8X</code> worker type, each worker maps to 8 M-DPU (32 vCPUs, 256 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p>\n            </li>\n         </ul>"
                     }
                 },
                 "SecurityConfiguration": {
@@ -26740,6 +26839,124 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.glue#GetJobUpgradeAnalysis": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#GetJobUpgradeAnalysisRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#GetJobUpgradeAnalysisResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationNotSupportedException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Retrieves the current status and results of an upgrade analysis.</p>",
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.glue#GetJobUpgradeAnalysisRequest": {
+            "type": "structure",
+            "members": {
+                "analysisId": {
+                    "target": "com.amazonaws.glue#Id",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the upgrade analysis to retrieve.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "jobName": {
+                    "target": "com.amazonaws.glue#Name",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the job associated with the analysis.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#GetJobUpgradeAnalysisResponse": {
+            "type": "structure",
+            "members": {
+                "jobName": {
+                    "target": "com.amazonaws.glue#Name",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the job associated with this analysis.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "analysisId": {
+                    "target": "com.amazonaws.glue#Id",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the upgrade analysis.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.glue#Status",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current status of the analysis.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "sourceVersion": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Glue version the job was running before the upgrade, for\n         example <code>4.0</code>.</p>"
+                    }
+                },
+                "targetVersion": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Glue version the job will be upgraded to, for example\n         <code>6.0</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "analysisType": {
+                    "target": "com.amazonaws.glue#AnalysisType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of upgrade analysis. For auto-upgrade jobs, this value is\n         <code>AUTO_UPGRADE</code>.</p>"
+                    }
+                },
+                "autoUpgradeEvaluationSummary": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 URI of the terminal-state evaluation summary, available\n         once the analysis reaches a terminal status (<code>SUCCEEDED</code> or\n         <code>FAILED</code>).</p>"
+                    }
+                },
+                "errorMessage": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason the analysis did not complete.</p>"
+                    }
+                },
+                "autoUpgradeEligibilitySummary": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 URI of the consent report summarizing upgrade assessment\n         findings. Populated when the analysis reaches <code>WAITING_FOR_CONSENT</code> and\n         remains available in all subsequent states.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.glue#GetJobs": {
             "type": "operation",
             "input": {
@@ -30983,7 +31200,24 @@
                     "min": 1,
                     "max": 255
                 },
-                "smithy.api#pattern": "^(\\w+\\.)+\\w+$"
+                "smithy.api#pattern": "^((\\w+\\.)+\\w+|auto)$"
+            }
+        },
+        "com.amazonaws.glue#GovernanceMode": {
+            "type": "enum",
+            "members": {
+                "IAM_ONLY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IAM_ONLY"
+                    }
+                },
+                "LAKE_FORMATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LAKE_FORMATION"
+                    }
+                }
             }
         },
         "com.amazonaws.glue#GovernedCatalogSource": {
@@ -32210,6 +32444,17 @@
                         "smithy.api#enumValue": "remove-encryption-key"
                     }
                 }
+            }
+        },
+        "com.amazonaws.glue#Id": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The unique identifier of an upgrade analysis, in the format\n         <code>ja-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code>.</p>",
+                "smithy.api#length": {
+                    "min": 39,
+                    "max": 39
+                },
+                "smithy.api#pattern": "^ja-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
             }
         },
         "com.amazonaws.glue#IdString": {
@@ -33955,7 +34200,7 @@
                 "WorkerType": {
                     "target": "com.amazonaws.glue#WorkerType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs.</p>\n         <p>Glue provides multiple worker types to accommodate different workload requirements:</p>\n         <p>G Worker Types (General-purpose compute workers):</p>\n         <ul>\n            <li>\n               <p>G.1X: 1 DPU (4 vCPUs, 16 GB memory, 94GB disk)</p>\n            </li>\n            <li>\n               <p>G.2X: 2 DPU (8 vCPUs, 32 GB memory, 138GB disk)</p>\n            </li>\n            <li>\n               <p>G.4X: 4 DPU (16 vCPUs, 64 GB memory, 256GB disk)</p>\n            </li>\n            <li>\n               <p>G.8X: 8 DPU (32 vCPUs, 128 GB memory, 512GB disk)</p>\n            </li>\n            <li>\n               <p>G.12X: 12 DPU (48 vCPUs, 192 GB memory, 768GB disk)</p>\n            </li>\n            <li>\n               <p>G.16X: 16 DPU (64 vCPUs, 256 GB memory, 1024GB disk)</p>\n            </li>\n         </ul>\n         <p>R Worker Types (Memory-optimized workers):</p>\n         <ul>\n            <li>\n               <p>R.1X: 1 M-DPU (4 vCPUs, 32 GB memory)</p>\n            </li>\n            <li>\n               <p>R.2X: 2 M-DPU (8 vCPUs, 64 GB memory)</p>\n            </li>\n            <li>\n               <p>R.4X: 4 M-DPU (16 vCPUs, 128 GB memory)</p>\n            </li>\n            <li>\n               <p>R.8X: 8 M-DPU (32 vCPUs, 256 GB memory)</p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs.</p>\n         <p>Glue provides multiple worker types to accommodate different workload requirements:</p>\n         <p>G Worker Types (General-purpose compute workers):</p>\n         <ul>\n            <li>\n               <p>G.1X: 1 DPU (4 vCPUs, 16 GB memory, 94GB disk)</p>\n            </li>\n            <li>\n               <p>G.2X: 2 DPU (8 vCPUs, 32 GB memory, 138GB disk)</p>\n            </li>\n            <li>\n               <p>G.4X: 4 DPU (16 vCPUs, 64 GB memory, 256GB disk)</p>\n            </li>\n            <li>\n               <p>G.8X: 8 DPU (32 vCPUs, 128 GB memory, 512GB disk)</p>\n            </li>\n            <li>\n               <p>G.12X: 12 DPU (48 vCPUs, 192 GB memory, 768GB disk)</p>\n            </li>\n            <li>\n               <p>G.16X: 16 DPU (64 vCPUs, 256 GB memory, 1024GB disk)</p>\n            </li>\n         </ul>\n         <p>R Worker Types (Memory-optimized workers):</p>\n         <ul>\n            <li>\n               <p>R.1X: 1 M-DPU (4 vCPUs, 32 GB memory, 94GB disk)</p>\n            </li>\n            <li>\n               <p>R.2X: 2 M-DPU (8 vCPUs, 64 GB memory, 138GB disk)</p>\n            </li>\n            <li>\n               <p>R.4X: 4 M-DPU (16 vCPUs, 128 GB memory, 256GB disk)</p>\n            </li>\n            <li>\n               <p>R.8X: 8 M-DPU (32 vCPUs, 256 GB memory, 512GB disk)</p>\n            </li>\n         </ul>\n         <p>The <code>G.12X</code>, <code>G.16X</code>, and <code>R.1X</code> through <code>R.8X</code> worker types are available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>"
                     }
                 },
                 "NumberOfWorkers": {
@@ -34010,6 +34255,12 @@
                     "target": "com.amazonaws.glue#NameString",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of an Glue usage profile associated with the job.</p>"
+                    }
+                },
+                "AutoUpgradeMetadata": {
+                    "target": "com.amazonaws.glue#AutoUpgradeMetadata",
+                    "traits": {
+                        "smithy.api#documentation": "<text>The auto-upgrade assessment information for a job configured with glueVersion=auto. This field is null when the job is not configured to auto.</text>"
                     }
                 }
             },
@@ -34311,7 +34562,7 @@
                 "WorkerType": {
                     "target": "com.amazonaws.glue#WorkerType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs. Accepts a value of\n          G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p>\n         <ul>\n            <li>\n               <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).</p>\n            </li>\n            <li>\n               <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p>\n            </li>\n            <li>\n               <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.025X, G.1X, G.2X, G.4X, G.8X, G.12X, G.16X, R.1X, R.2X, R.4X, or R.8X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p>\n         <ul>\n            <li>\n               <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.12X</code> worker type, each worker maps to 12 DPU (48 vCPUs, 192 GB of memory) with 768GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.16X</code> worker type, each worker maps to 16 DPU (64 vCPUs, 256 GB of memory) with 1024GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.1X</code> worker type, each worker maps to 1 M-DPU (4 vCPUs, 32 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.2X</code> worker type, each worker maps to 2 M-DPU (8 vCPUs, 64 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.4X</code> worker type, each worker maps to 4 M-DPU (16 vCPUs, 128 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.8X</code> worker type, each worker maps to 8 M-DPU (32 vCPUs, 256 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p>\n            </li>\n         </ul>"
                     }
                 },
                 "NumberOfWorkers": {
@@ -34551,7 +34802,7 @@
                 "WorkerType": {
                     "target": "com.amazonaws.glue#WorkerType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs. Accepts a value of\n      G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs. For more information, see \n      <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html#create-job\">Defining job properties for Spark jobs   \n      </a>\n         </p>"
+                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.025X, G.1X, G.2X, G.4X, G.8X, G.12X, G.16X, R.1X, R.2X, R.4X, or R.8X for Spark jobs. Accepts the value Z.2X for Ray jobs. For more information, see \n      <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html#create-job\">Defining job properties for Spark jobs   \n      </a>\n         </p>\n         <p>The <code>G.12X</code>, <code>G.16X</code>, and <code>R.1X</code> through <code>R.8X</code> worker types are available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>"
                     }
                 },
                 "NumberOfWorkers": {
@@ -39350,6 +39601,17 @@
                 "smithy.api#documentation": "<p>Specifies a target that uses MySQL.</p>"
             }
         },
+        "com.amazonaws.glue#Name": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The name of an Glue job.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 255
+                },
+                "smithy.api#pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*$"
+            }
+        },
         "com.amazonaws.glue#NameString": {
             "type": "string",
             "traits": {
@@ -43812,6 +44074,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The URI for accessing the resource.</p>"
                     }
+                },
+                "LastModified": {
+                    "target": "com.amazonaws.glue#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time at which the resource was last modified in Amazon S3. Glue records this\n      value when you create or update a function whose <code>GovernanceMode</code> is <code>LAKE_FORMATION</code>.\n      Analytics engines use it to verify that the resource hasn't changed. This is an output-only field.</p>"
+                    }
                 }
             },
             "traits": {
@@ -47048,7 +47316,7 @@
                 "WorkerType": {
                     "target": "com.amazonaws.glue#WorkerType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a session runs. Accepts a value of <code>G.1X</code>, <code>G.2X</code>, <code>G.4X</code>, or <code>G.8X</code> for Spark sessions. Accepts the value <code>Z.2X</code> for Ray sessions.</p>"
+                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a session runs. Accepts a value of <code>G.1X</code>, <code>G.2X</code>, <code>G.4X</code>, <code>G.8X</code>, <code>G.12X</code>, <code>G.16X</code>, <code>R.1X</code>, <code>R.2X</code>, <code>R.4X</code>, or <code>R.8X</code> for Spark sessions. Accepts the value <code>Z.2X</code> for Ray sessions.</p>\n         <p>The <code>G.12X</code>, <code>G.16X</code>, and <code>R.1X</code> through <code>R.8X</code> worker types are available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>"
                     }
                 },
                 "CompletedOn": {
@@ -48791,7 +49059,7 @@
                 "WorkerType": {
                     "target": "com.amazonaws.glue#WorkerType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs. Accepts a value of\n          G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p>\n         <ul>\n            <li>\n               <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).</p>\n            </li>\n            <li>\n               <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p>\n            </li>\n            <li>\n               <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.025X, G.1X, G.2X, G.4X, G.8X, G.12X, G.16X, R.1X, R.2X, R.4X, or R.8X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p>\n         <ul>\n            <li>\n               <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p>\n            </li>\n            <li>\n               <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.12X</code> worker type, each worker maps to 12 DPU (48 vCPUs, 192 GB of memory) with 768GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>G.16X</code> worker type, each worker maps to 16 DPU (64 vCPUs, 256 GB of memory) with 1024GB disk, and provides 1 executor per worker. We recommend this worker type for jobs with very large workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.1X</code> worker type, each worker maps to 1 M-DPU (4 vCPUs, 32 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.2X</code> worker type, each worker maps to 2 M-DPU (8 vCPUs, 64 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.4X</code> worker type, each worker maps to 4 M-DPU (16 vCPUs, 128 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>R.8X</code> worker type, each worker maps to 8 M-DPU (32 vCPUs, 256 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for memory-intensive workloads. This worker type is available only for Glue version 4.0 or later Spark ETL jobs in select Amazon Web Services Regions. For the supported Regions, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-job.html\">Configuring job properties for Spark jobs</a> in the developer guide.</p>\n            </li>\n            <li>\n               <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p>\n            </li>\n         </ul>"
                     }
                 },
                 "NumberOfWorkers": {
@@ -48824,6 +49092,88 @@
                     "target": "com.amazonaws.glue#IdString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID assigned to this job run.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.glue#StartJobUpgradeAnalysis": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#StartJobUpgradeAnalysisRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#StartJobUpgradeAnalysisResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationNotSupportedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ResourceNumberLimitExceededException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Resumes an analysis that is waiting for upgrade consent.</p>"
+            }
+        },
+        "com.amazonaws.glue#StartJobUpgradeAnalysisRequest": {
+            "type": "structure",
+            "members": {
+                "jobName": {
+                    "target": "com.amazonaws.glue#Name",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the job associated with the analysis to resume.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "analysisId": {
+                    "target": "com.amazonaws.glue#Id",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the upgrade analysis. The analysis must be in\n         <code>WAITING_FOR_CONSENT</code> status.</p>"
+                    }
+                },
+                "upgradeConsent": {
+                    "target": "com.amazonaws.glue#UpgradeConsent",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer's decision on whether to proceed with the upgrade.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#StartJobUpgradeAnalysisResponse": {
+            "type": "structure",
+            "members": {
+                "analysisId": {
+                    "target": "com.amazonaws.glue#Id",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the upgrade analysis.</p>"
+                    }
+                },
+                "jobName": {
+                    "target": "com.amazonaws.glue#Name",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the job associated with this analysis.</p>"
                     }
                 }
             },
@@ -49592,6 +49942,56 @@
                 "smithy.api#documentation": "<p>A list of <code>StatisticSummary</code>.</p>"
             }
         },
+        "com.amazonaws.glue#Status": {
+            "type": "enum",
+            "members": {
+                "OBSERVING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "OBSERVING"
+                    }
+                },
+                "WAITING_FOR_CONSENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "WAITING_FOR_CONSENT"
+                    }
+                },
+                "UPGRADING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UPGRADING"
+                    }
+                },
+                "SUCCEEDED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SUCCEEDED"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FAILED"
+                    }
+                },
+                "TIMEOUT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TIMEOUT"
+                    }
+                },
+                "STOPPED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STOPPED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The current status of an upgrade analysis. Possible values are\n         <code>OBSERVING</code>, <code>WAITING_FOR_CONSENT</code>,\n         <code>UPGRADING</code>, <code>SUCCEEDED</code>, <code>FAILED</code>,\n         <code>TIMEOUT</code>, and <code>STOPPED</code>.</p>"
+            }
+        },
         "com.amazonaws.glue#StatusDetails": {
             "type": "structure",
             "members": {
@@ -49821,6 +50221,67 @@
             }
         },
         "com.amazonaws.glue#StopCrawlerScheduleResponse": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.glue#StopJobUpgradeAnalysis": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.glue#StopJobUpgradeAnalysisRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.glue#StopJobUpgradeAnalysisResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.glue#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#EntityNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.glue#InvalidInputException"
+                },
+                {
+                    "target": "com.amazonaws.glue#OperationNotSupportedException"
+                },
+                {
+                    "target": "com.amazonaws.glue#ThrottlingException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Stops an in-progress upgrade analysis.</p>"
+            }
+        },
+        "com.amazonaws.glue#StopJobUpgradeAnalysisRequest": {
+            "type": "structure",
+            "members": {
+                "jobName": {
+                    "target": "com.amazonaws.glue#Name",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the job associated with the analysis.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "analysisId": {
+                    "target": "com.amazonaws.glue#Id",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the analysis to stop.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.glue#StopJobUpgradeAnalysisResponse": {
             "type": "structure",
             "members": {},
             "traits": {
@@ -55560,6 +56021,23 @@
         "com.amazonaws.glue#UpdatedTimestamp": {
             "type": "string"
         },
+        "com.amazonaws.glue#UpgradeConsent": {
+            "type": "enum",
+            "members": {
+                "APPROVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "APPROVE"
+                    }
+                },
+                "DECLINE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DECLINE"
+                    }
+                }
+            }
+        },
         "com.amazonaws.glue#UpsertRedshiftTargetOptions": {
             "type": "structure",
             "members": {
@@ -55690,6 +56168,18 @@
                         "smithy.api#documentation": "<p>The resource URIs for the function.</p>"
                     }
                 },
+                "ArtifactLocation": {
+                    "target": "com.amazonaws.glue#URI",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 location that contains the function's artifacts. This location must be registered\n      with Lake Formation. Glue returns this field only for functions whose\n      <code>GovernanceMode</code> is <code>LAKE_FORMATION</code>.</p>"
+                    }
+                },
+                "GovernanceMode": {
+                    "target": "com.amazonaws.glue#GovernanceMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>How access to the function is governed. <code>IAM_ONLY</code> means access is controlled by IAM\n      permissions only. <code>LAKE_FORMATION</code> means Lake Formation permissions (<code>EXECUTE</code>,\n      <code>DESCRIBE</code>, <code>ALTER</code>, and <code>DROP</code>) also control who can run, describe, update,\n      and delete the function.</p>"
+                    }
+                },
                 "CatalogId": {
                     "target": "com.amazonaws.glue#CatalogIdString",
                     "traits": {
@@ -55738,6 +56228,18 @@
                     "target": "com.amazonaws.glue#ResourceUriList",
                     "traits": {
                         "smithy.api#documentation": "<p>The resource URIs for the function.</p>"
+                    }
+                },
+                "ArtifactLocation": {
+                    "target": "com.amazonaws.glue#URI",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon S3 location that contains the function's artifacts. Required when\n      <code>GovernanceMode</code> is <code>LAKE_FORMATION</code>. You must register the location with\n      Lake Formation, and every resource URI must be under this location.</p>"
+                    }
+                },
+                "GovernanceMode": {
+                    "target": "com.amazonaws.glue#GovernanceMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>How access to the function is governed. Specify <code>LAKE_FORMATION</code> to manage access to the\n      function with Lake Formation permissions. If you don't specify a value, the default is\n      <code>IAM_ONLY</code>. You can't change the governance mode after the function is created.</p>\n         <p>When <code>GovernanceMode</code> is <code>LAKE_FORMATION</code>:</p>\n         <ul>\n            <li>\n               <p>You must be a data lake administrator or have all permissions on the Data Catalog with the\n        grant option.</p>\n            </li>\n            <li>\n               <p>You must have the <code>DATA_LOCATION_ACCESS</code> permission on the\n        <code>ArtifactLocation</code>, unless you're a data lake administrator.</p>\n            </li>\n            <li>\n               <p>You must specify from 1 to 10 resource URIs, each under the <code>ArtifactLocation</code>.</p>\n            </li>\n            <li>\n               <p>You can't rename the function.</p>\n            </li>\n         </ul>"
                     }
                 }
             },
@@ -56304,12 +56806,6 @@
                         "smithy.api#enumValue": "G.2X"
                     }
                 },
-                "G_025X": {
-                    "target": "smithy.api#Unit",
-                    "traits": {
-                        "smithy.api#enumValue": "G.025X"
-                    }
-                },
                 "G_4X": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -56322,10 +56818,52 @@
                         "smithy.api#enumValue": "G.8X"
                     }
                 },
+                "G_025X": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "G.025X"
+                    }
+                },
                 "Z_2X": {
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "Z.2X"
+                    }
+                },
+                "G_12X": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "G.12X"
+                    }
+                },
+                "G_16X": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "G.16X"
+                    }
+                },
+                "R_1X": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "R.1X"
+                    }
+                },
+                "R_2X": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "R.2X"
+                    }
+                },
+                "R_4X": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "R.4X"
+                    }
+                },
+                "R_8X": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "R.8X"
                     }
                 }
             }
