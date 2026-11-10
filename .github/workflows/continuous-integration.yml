@@ -94,6 +94,181 @@ jobs:
           name: test-reports
           path: '**/build/reports'
 
+  # build and test for targets: jvm, linuxX64
+  # cross compile for: linuxArm64
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set start timestamp
+        id: start
+        run: printf 'timestamp=%(%s)T\n' >> "$GITHUB_OUTPUT"
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          path: 'aws-sdk-kotlin'
+      - name: Setup Build
+        uses: ./aws-sdk-kotlin/.github/actions/setup-build
+      - name: Configure Gradle
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        with:
+          working-directory: ./aws-sdk-kotlin
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
+          aws-region: us-west-2
+      - name: Setup kat
+        uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
+      - name: Build and Test on Linux with Cross-Compile
+        working-directory: ./aws-sdk-kotlin
+        shell: bash
+        run: |
+          ./gradlew apiCheck
+          ./gradlew build --stacktrace
+      - name: Calculate duration
+        id: end
+        if: always()
+        run: |
+          printf -v now '%(%s)T'
+          duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
+          echo "duration=$duration" >> "$GITHUB_OUTPUT"
+      - name: Emit metrics
+        if: always() # run this step even if previous steps failed or the job is canceled
+        uses: aws/aws-kotlin-repo-tools/.github/actions/emit-metrics@main
+        with:
+          namespace: CI Metrics
+          dimensions: |
+            Product=aws-sdk-kotlin
+            JobName=${{ github.job }}
+            Branch=${{ github.base_ref || github.ref_name }}
+          metrics: |
+            WorkflowSucceeded:${{ job.status == 'success' && '1' || '0' }}:Count
+            WorkflowDuration:${{ steps.end.outputs.duration }}:Seconds
+      - name: Save Test Reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-linux
+          path: '**/build/reports'
+
+  # build and test for targets: jvm, macosArm64, iosSimulatorArm64
+  # cross compile for: macosX64, iosArm64, iosX64
+  macos:
+    runs-on: macos-latest
+    steps:
+      - name: Set start timestamp
+        id: start
+        shell: bash
+        run: echo "timestamp=$(date +%s)" >> "$GITHUB_OUTPUT"
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          path: 'aws-sdk-kotlin'
+      - name: Setup Build
+        uses: ./aws-sdk-kotlin/.github/actions/setup-build
+      - name: Configure Gradle
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        with:
+          working-directory: ./aws-sdk-kotlin
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
+          aws-region: us-west-2
+      - name: Setup kat
+        uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
+      - name: Build and Test on Apple platforms
+        working-directory: ./aws-sdk-kotlin
+        shell: bash
+        run: |
+          ./gradlew apiCheck
+          ./gradlew build --stacktrace
+      - name: Calculate duration
+        id: end
+        if: always()
+        shell: bash
+        run: |
+          now=$(date +%s)
+          duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
+          echo "duration=$duration" >> "$GITHUB_OUTPUT"
+      - name: Emit metrics
+        if: always() # run this step even if previous steps failed or the job is canceled
+        uses: aws/aws-kotlin-repo-tools/.github/actions/emit-metrics@main
+        with:
+          namespace: CI Metrics
+          dimensions: |
+            Product=aws-sdk-kotlin
+            JobName=${{ github.job }}
+            Branch=${{ github.base_ref || github.ref_name }}
+          metrics: |
+            WorkflowSucceeded:${{ job.status == 'success' && '1' || '0' }}:Count
+            WorkflowDuration:${{ steps.end.outputs.duration }}:Seconds
+      - name: Save Test Reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-macos
+          path: '**/build/reports'
+
+  # build and test for targets: jvm, mingwX64
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Set start timestamp
+        id: start
+        shell: bash
+        run: echo "timestamp=$(date +%s)" >> "$GITHUB_OUTPUT"
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          path: 'aws-sdk-kotlin'
+      - name: Setup Build
+        uses: ./aws-sdk-kotlin/.github/actions/setup-build
+      - name: Configure Gradle
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        with:
+          working-directory: ./aws-sdk-kotlin
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CI_AWS_ROLE_ARN }}
+          aws-region: us-west-2
+      - name: Setup kat
+        uses: aws/aws-kotlin-repo-tools/.github/actions/setup-kat@main
+      - name: Build and Test on Windows
+        working-directory: ./aws-sdk-kotlin
+        shell: bash
+        run: |
+          ./gradlew apiCheck
+          ./gradlew build --stacktrace
+      - name: Calculate duration
+        id: end
+        if: always()
+        shell: bash
+        run: |
+          now=$(date +%s)
+          duration=$(( now - ${{ steps.start.outputs.timestamp }} ))
+          echo "duration=$duration" >> "$GITHUB_OUTPUT"
+      - name: Emit metrics
+        if: always() # run this step even if previous steps failed or the job is canceled
+        uses: aws/aws-kotlin-repo-tools/.github/actions/emit-metrics@main
+        with:
+          namespace: CI Metrics
+          dimensions: |
+            Product=aws-sdk-kotlin
+            JobName=${{ github.job }}
+            Branch=${{ github.base_ref || github.ref_name }}
+          metrics: |
+            WorkflowSucceeded:${{ job.status == 'success' && '1' || '0' }}:Count
+            WorkflowDuration:${{ steps.end.outputs.duration }}:Seconds
+      - name: Save Test Reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-windows
+          path: '**/build/reports'
+
+  # JVM and protocol tests on every OS; Native is covered by the linux, macos, and windows jobs
   all-platforms:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -123,21 +298,14 @@ jobs:
         uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
           working-directory: ./smithy-kotlin
-      - name: Disable native builds # FIXME remove this step once K/N is merged
-        shell: bash
-        run: |
-          echo "Appending aws.kotlin.native=false to smithy-kotlin/gradle.properties..."
-          echo -e "\n\naws.kotlin.native=false" >> ./smithy-kotlin/gradle.properties
-          echo "Appending aws.kotlin.native=false to aws-sdk-kotlin/gradle.properties..."
-          echo -e "\n\naws.kotlin.native=false" >> ./aws-sdk-kotlin/gradle.properties
       - name: Build smithy-kotlin
         working-directory: ./smithy-kotlin
         shell: bash
         run: |
           # protocol tests require everything is published
           pwd
-          ./gradlew assemble
-          ./gradlew publishToMavenLocal
+          ./gradlew -Paws.kotlin.native=false assemble
+          ./gradlew -Paws.kotlin.native=false publishToMavenLocal
 
       - name: Configure Gradle aws-sdk-kotlin
         uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
@@ -150,10 +318,10 @@ jobs:
         run: |
           pwd
           ./gradlew :build-support:test
-          ./gradlew publishToMavenLocal
-          ./gradlew apiCheck
-          ./gradlew test jvmTest
-          ./gradlew testAllProtocols
+          ./gradlew -Paws.kotlin.native=false publishToMavenLocal
+          ./gradlew -Paws.kotlin.native=false apiCheck
+          ./gradlew -Paws.kotlin.native=false test jvmTest
+          ./gradlew -Paws.kotlin.native=false testAllProtocols
       - name: Calculate duration
         id: end
         if: always()

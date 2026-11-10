@@ -1273,4 +1273,56 @@ class SchemaGeneratorPluginTest {
         assertContains(result.output, "All members of table family 'org.example.Account' must declare the same @DynamoDbCounter attributes")
         assertContains(result.output, "@DynamoDbHeterogeneousType cannot be applied to 'org.example.Sealed' because it cannot have subtypes")
     }
+
+    @Test
+    fun testMultiplatformConsumer() = withTestProject {
+        buildFile.writeText(
+            """
+                plugins {
+                    id("org.jetbrains.kotlin.multiplatform") version "$kotlinVersion"
+                    id("aws.sdk.kotlin.hll.dynamodbmapper.schema.generator")
+                }
+
+                repositories {
+                    mavenCentral()
+                    mavenLocal()
+                }
+
+                kotlin {
+                    jvm()
+                    linuxX64()
+
+                    sourceSets {
+                        commonMain.dependencies {
+                            implementation("aws.sdk.kotlin:dynamodb-mapper:$sdkVersion")
+                            implementation("aws.sdk.kotlin:dynamodb-mapper-annotations:$sdkVersion")
+                        }
+                    }
+                }
+
+            """.trimIndent(),
+        )
+
+        val commonMain = "src/commonMain/kotlin/org/example"
+        createClassFile("User", commonMain)
+        createClassFile("multiplatform/UserTable", commonMain)
+
+        val compileTasks = listOf(":compileCommonMainKotlinMetadata", ":compileKotlinJvm", ":compileKotlinLinuxX64")
+        val result = runner.withArguments(listOf("--info") + compileTasks).build()
+
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":kspCommonMainKotlinMetadata")?.outcome)
+        compileTasks.forEach { task ->
+            assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(task)?.outcome, "Unexpected outcome for $task")
+        }
+
+        val generatedSchemas = "org/example/dynamodbmapper/generatedschemas/UserSchema.kt"
+        val schemaFile = File(testProjectDir, "build/generated/ksp/metadata/commonMain/kotlin/$generatedSchemas")
+        assertTrue(schemaFile.exists())
+        assertContains(schemaFile.readText(), "public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {")
+
+        // Schemas are generated once for commonMain, not again per target
+        listOf("jvm/jvmMain", "linuxX64/linuxX64Main").forEach { target ->
+            assertFalse(File(testProjectDir, "build/generated/ksp/$target/kotlin/$generatedSchemas").exists())
+        }
+    }
 }

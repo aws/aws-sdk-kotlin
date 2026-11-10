@@ -77,9 +77,17 @@ subprojects {
                     }
 
                     if (project.name == "s3") {
-                        dependencies {
-                            rootProject.findProject(":services:s3control")?.let { implementation(it) }
-                            rootProject.findProject(":services:sts")?.let { implementation(it) }
+                        val e2eSiblings = listOf(":services:s3control", ":services:sts")
+                        val missingSiblings = e2eSiblings.filter { rootProject.findProject(it) == null }
+                        if (missingSiblings.isEmpty()) {
+                            dependencies {
+                                e2eSiblings.forEach { implementation(project(it)) }
+                            }
+                        } else {
+                            // `assemble` compiles every Native compilation, so s3's E2E sources would fail to compile
+                            // whenever only s3 is bootstrapped (e.g. release checks that bootstrap s3 and run `build`)
+                            logger.warn("$path: skipping E2E tasks because these service(s) are not bootstrapped: $missingSiblings")
+                            tasks.matching { it.name.contains("E2eTest") }.configureEach { enabled = false }
                         }
                     }
                 }
@@ -97,12 +105,6 @@ subprojects {
                             implementation(libraries.smithy.kotlin.aws.signing.crt)
                         }
 
-                        if (project.name == "sesv2") {
-                            dependencies {
-                                implementation(libraries.smithy.kotlin.aws.signing.crt)
-                            }
-                        }
-
                         if (project.name == "route53") {
                             dependencies {
                                 implementation(libraries.smithy.kotlin.http.test)
@@ -116,6 +118,11 @@ subprojects {
                         classpath = compileDependencyFiles + runtimeDependencyFiles + output.allOutputs
                         testClassesDirs = output.classesDirs
                         useJUnitPlatform()
+
+                        // model a random input to enable re-running e2e tests back to back without
+                        // up-to-date checks or cache getting in the way
+                        inputs.property("integration.datetime", LocalDateTime.now())
+
                         testLogging {
                             events("passed", "skipped", "failed")
                             showStandardStreams = true
@@ -156,6 +163,7 @@ subprojects {
                     val linkTaskName = "linkE2eTestDebugTest${target.targetName.replaceFirstChar { it.uppercase() }}"
                     dependsOn(linkTaskName)
                     executable = "build/bin/${target.targetName}/e2eTestDebugTest/e2eTest.kexe"
+                    inputs.property("integration.datetime", LocalDateTime.now())
 
                     // TODO More consideration needed for running E2E tests on iOS... booting simulator, configuring credentials inside the sim, etc.
                     onlyIf { !target.targetName.startsWith("ios") }
