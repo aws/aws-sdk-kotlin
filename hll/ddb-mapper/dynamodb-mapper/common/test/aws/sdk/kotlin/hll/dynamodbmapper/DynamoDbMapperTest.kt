@@ -4,10 +4,12 @@
  */
 package aws.sdk.kotlin.hll.dynamodbmapper
 
+import aws.sdk.kotlin.hll.dynamodbmapper.annotations.ManualPagination
 import aws.sdk.kotlin.hll.dynamodbmapper.items.AttributeDescriptor
 import aws.sdk.kotlin.hll.dynamodbmapper.items.ItemSchema
 import aws.sdk.kotlin.hll.dynamodbmapper.items.KeySpec
 import aws.sdk.kotlin.hll.dynamodbmapper.items.SimpleItemConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.operations.scan
 import aws.sdk.kotlin.hll.dynamodbmapper.operations.scanPaginated
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
@@ -17,6 +19,7 @@ import aws.sdk.kotlin.services.dynamodb.scan
 import aws.sdk.kotlin.services.dynamodb.withConfig
 import aws.smithy.kotlin.runtime.businessmetrics.BusinessMetric
 import aws.smithy.kotlin.runtime.businessmetrics.BusinessMetrics
+import aws.smithy.kotlin.runtime.businessmetrics.SmithyBusinessMetric
 import aws.smithy.kotlin.runtime.client.ProtocolRequestInterceptorContext
 import aws.smithy.kotlin.runtime.collections.get
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
@@ -75,6 +78,21 @@ class DynamoDbMapperTest : DdbLocalTest() {
         lowLevelAccess<Unit> { close() }
         table.scanPaginated { }.collect()
         interceptor.assertMetric(AwsBusinessMetric.DDB_MAPPER)
+    }
+
+    @Test
+    fun testPaginatorBusinessMetricEmission() = runTest {
+        val interceptor = MetricCapturingInterceptor()
+        val ddb = lowLevelAccess { withConfig { interceptors += interceptor } }
+        val table = mapper(ddb).getTable(TABLE_NAME, dummySchema)
+
+        table.scanPaginated { }.collect()
+        interceptor.assertMetric(SmithyBusinessMetric.PAGINATOR)
+        interceptor.reset()
+
+        @OptIn(ManualPagination::class)
+        table.scan { }
+        interceptor.assertMetric(SmithyBusinessMetric.PAGINATOR, exists = false)
     }
 }
 
