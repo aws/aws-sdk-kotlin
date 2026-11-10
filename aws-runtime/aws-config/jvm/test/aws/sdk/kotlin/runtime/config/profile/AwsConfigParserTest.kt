@@ -102,7 +102,7 @@ class AwsProfileParserTest {
                         else -> error("Unexpected branch from $json")
                     }
                 } else {
-                    MatchErrorCase(name, configIn, credentialIn, errorContaining!!)
+                    MatchErrorCase(name, configIn, credentialIn, errorContaining)
                 }
             }
         }

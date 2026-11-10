@@ -13,6 +13,7 @@ import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
+import aws.smithy.kotlin.runtime.io.use
 import aws.smithy.kotlin.runtime.time.Instant
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -40,15 +41,16 @@ class ExpiresFieldInterceptorTest {
             append("Expires", "Mon, 1 Apr 2024 00:00:00 +0000")
         }.build()
 
-        val s3 = newTestClient(headers = expectedHeaders)
-        s3.getObject(
-            GetObjectRequest {
-                bucket = "test"
-                key = "key"
-            },
-        ) {
-            assertEquals(Instant.fromEpochSeconds(1711929600), it.expires)
-            assertEquals("Mon, 1 Apr 2024 00:00:00 +0000", it.expiresString)
+        newTestClient(headers = expectedHeaders).use { s3 ->
+            s3.getObject(
+                GetObjectRequest {
+                    bucket = "test"
+                    key = "key"
+                },
+            ) {
+                assertEquals(Instant.fromEpochSeconds(1711929600), it.expires)
+                assertEquals("Mon, 1 Apr 2024 00:00:00 +0000", it.expiresString)
+            }
         }
     }
 
@@ -60,15 +62,16 @@ class ExpiresFieldInterceptorTest {
             append("Expires", invalidExpiresField)
         }.build()
 
-        val s3 = newTestClient(headers = expectedHeaders)
-        s3.getObject(
-            GetObjectRequest {
-                bucket = "test"
-                key = "key"
-            },
-        ) {
-            assertNull(it.expires)
-            assertEquals(invalidExpiresField, it.expiresString)
+        newTestClient(headers = expectedHeaders).use { s3 ->
+            s3.getObject(
+                GetObjectRequest {
+                    bucket = "test"
+                    key = "key"
+                },
+            ) {
+                assertNull(it.expires)
+                assertEquals(invalidExpiresField, it.expiresString)
+            }
         }
     }
 }

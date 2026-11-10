@@ -1,0 +1,238 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+package aws.sdk.kotlin.e2etest
+
+import aws.sdk.kotlin.services.s3.*
+import aws.sdk.kotlin.services.s3.model.*
+import aws.sdk.kotlin.services.s3.model.BucketLocationConstraint
+import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
+import aws.sdk.kotlin.services.s3.waiters.waitUntilBucketExists
+import aws.sdk.kotlin.services.s3.waiters.waitUntilBucketNotExists
+import aws.sdk.kotlin.services.sts.StsClient
+import aws.smithy.kotlin.runtime.http.HttpBody
+import aws.smithy.kotlin.runtime.http.HttpMethod
+import aws.smithy.kotlin.runtime.http.SdkHttpClient
+import aws.smithy.kotlin.runtime.http.complete
+import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
+import aws.smithy.kotlin.runtime.http.request.HttpRequest
+import aws.smithy.kotlin.runtime.io.use
+import aws.smithy.kotlin.runtime.time.Instant
+import aws.smithy.kotlin.runtime.time.TimestampFormat
+import aws.smithy.kotlin.runtime.util.Uuid
+import aws.smithy.kotlin.runtime.util.asyncLazy
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.minutes
+
+object S3TestUtils {
+    const val DEFAULT_REGION = "us-west-2"
+
+    // The E2E test account only has permission to operate on buckets with the prefix "s3-test-bucket-"
+    private const val TEST_BUCKET_PREFIX = "s3-test-bucket"
+
+    private const val S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX = "x-s3"
+    private const val S3_MAX_BUCKET_NAME_LENGTH = 63 // https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
+
+    val testRunId by lazy {
+        val timestamp = Instant
+            .now()
+            .format(TimestampFormat.ISO_8601_CONDENSED)
+            .lowercase()
+        // Append a short random suffix so concurrent suites (e.g. JVM and Kotlin/Native)
+        // that start in the same second don't collide on a shared bucket name and delete
+        // each other's buckets.
+        "$timestamp-${Uuid.random().toString().substringBefore('-')}"
+            .also { println("Starting test run ID $it") }
+    }
+
+    suspend fun createTestBucket(
+        client: S3Client,
+        suffix: String,
+        region: String = client.config.region!!,
+    ): String = createBucket(client, TEST_BUCKET_PREFIX, suffix, region)
+
+    // Tests create and delete buckets per test, so every bucket gets a distinct name. Reusing a just-deleted name can
+    // fail with S3's "conflicting conditional operation" error. Test execution is sequential on JVM and Native.
+    private var bucketCount = 0
+    private fun nextBucketOrdinal(): Int = ++bucketCount
+
+    suspend fun createBucket(
+        client: S3Client,
+        prefix: String,
+        suffix: String,
+        region: String = client.config.region!!,
+    ): String = withTimeout(5.minutes) {
+        val bucketName = "$prefix-$testRunId-$suffix-${nextBucketOrdinal()}"
+        println("Creating S3 bucket: $bucketName")
+
+        client.createBucket {
+            bucket = bucketName
+            createBucketConfiguration {
+                locationConstraint = BucketLocationConstraint.fromValue(region)
+            }
+        }
+
+        client.waitUntilBucketExists { bucket = bucketName }
+
+        client.putBucketLifecycleConfiguration {
+            bucket = bucketName
+            lifecycleConfiguration {
+                rules = listOf(
+                    LifecycleRule {
+                        expiration { days = 1 }
+                        filter { this.prefix = "" }
+                        status = ExpirationStatus.Enabled
+                        id = "delete-old"
+                    },
+                )
+            }
+        }
+
+        bucketName
+    }
+
+    suspend fun createTestDirectoryBucket(
+        client: S3Client,
+        availabilityZone: String,
+        suffix: String,
+    ) = createDirectoryBucket(client, TEST_BUCKET_PREFIX, availabilityZone, suffix)
+
+    suspend fun createDirectoryBucket(
+        client: S3Client,
+        prefix: String,
+        availabilityZone: String,
+        suffix: String,
+    ) = withTimeout(5.minutes) {
+        val bucketName = "$prefix-$testRunId-$suffix-${nextBucketOrdinal()}--$availabilityZone--$S3_EXPRESS_DIRECTORY_BUCKET_SUFFIX"
+        require(bucketName.length <= S3_MAX_BUCKET_NAME_LENGTH) {
+            "S3 Express directory bucket name '$bucketName' is ${bucketName.length} chars, exceeding the $S3_MAX_BUCKET_NAME_LENGTH-char limit; shorten the suffix"
+        }
+        println("Creating S3 Express directory bucket: $bucketName")
+
+        client.createBucket {
+            bucket = bucketName
+            createBucketConfiguration {
+                location = LocationInfo {
+                    type = LocationType.AvailabilityZone
+                    name = availabilityZone
+                }
+                bucket = BucketInfo {
+                    type = BucketType.Directory
+                    dataRedundancy = DataRedundancy.SingleAvailabilityZone
+                }
+            }
+        }
+
+        bucketName
+    }
+
+    suspend fun deleteBucket(client: S3Client, bucketName: String): Unit = coroutineScope {
+        deleteBucketContents(client, bucketName)
+        deleteMultiPartUploads(client, bucketName)
+
+        try {
+            println("Deleting S3 bucket: $bucketName")
+            client.deleteBucket { bucket = bucketName }
+
+            client.waitUntilBucketNotExists {
+                bucket = bucketName
+            }
+        } catch (ex: Exception) {
+            println("Failed to delete bucket: $bucketName")
+            throw ex
+        }
+    }
+
+    private suspend fun deleteBucketContents(client: S3Client, bucketName: String): Unit = coroutineScope {
+        val scope = this
+
+        try {
+            println("Deleting contents of S3 bucket: $bucketName")
+            val dispatcher = Dispatchers.Default.limitedParallelism(64)
+            val jobs = mutableListOf<Job>()
+
+            client.listObjectsV2Paginated { bucket = bucketName }
+                .mapNotNull { it.contents }
+                .collect { contents ->
+                    val job = scope.launch(dispatcher) {
+                        client.deleteObjects {
+                            bucket = bucketName
+                            delete {
+                                objects = contents.mapNotNull(Object::key).map { ObjectIdentifier { key = it } }
+                            }
+                        }
+                    }
+                    jobs.add(job)
+                }
+
+            jobs.joinAll()
+        } catch (ex: Exception) {
+            println("Failed to delete buckets contents: $bucketName")
+            throw ex
+        }
+    }
+
+    private suspend fun deleteMultiPartUploads(client: S3Client, bucketName: String) {
+        // ListMultipartUploads is not a modeled paginated operation, so page manually via the
+        // key-marker / upload-id-marker continuation tokens; an unpaginated single call would
+        // leave any uploads beyond the first page un-aborted, leaking the bucket permanently.
+        var nextKeyMarker: String? = null
+        var nextUploadIdMarker: String? = null
+        var isTruncated: Boolean
+        do {
+            val response = client.listMultipartUploads {
+                bucket = bucketName
+                keyMarker = nextKeyMarker
+                uploadIdMarker = nextUploadIdMarker
+            }
+
+            response.uploads?.forEach { upload ->
+                client.abortMultipartUpload {
+                    bucket = bucketName
+                    key = upload.key
+                    uploadId = upload.uploadId
+                }
+            }
+
+            nextKeyMarker = response.nextKeyMarker
+            nextUploadIdMarker = response.nextUploadIdMarker
+            isTruncated = response.isTruncated == true
+        } while (isTruncated)
+    }
+
+    suspend fun responseCodeFromPut(engine: HttpClientEngine, presignedRequest: HttpRequest, content: String): Int {
+        val request = HttpRequest(
+            method = HttpMethod.PUT,
+            url = presignedRequest.url,
+            headers = presignedRequest.headers,
+            body = HttpBody.fromBytes(content.encodeToByteArray()),
+        )
+
+        val call = SdkHttpClient(engine).call(request)
+        val statusCode = call.response.status.value
+        call.complete()
+        return statusCode
+    }
+
+    private val accountId = asyncLazy {
+        println("Getting account ID")
+
+        val accountId = StsClient { region = DEFAULT_REGION }.use { sts ->
+            sts.getCallerIdentity().account
+        }
+
+        checkNotNull(accountId) { "Unable to get AWS account ID" }
+    }
+
+    internal suspend fun getAccountId(): String = accountId.get()
+
+    fun createClient(builder: S3Client.Config.Builder.() -> Unit = { }): S3Client = S3Client {
+        region = DEFAULT_REGION
+
+        // Apply builder block after setting default region in case of overrides
+        builder()
+    }
+}

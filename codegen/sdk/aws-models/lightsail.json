@@ -20986,6 +20986,12 @@
                     "traits": {
                         "smithy.api#enumValue": "sa-east-1"
                     }
+                },
+                "AP_SOUTHEAST_3": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ap-southeast-3"
+                    }
                 }
             }
         },

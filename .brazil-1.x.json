@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "org.jetbrains.kotlin:kotlin-gradle-plugin:2.*": "KotlinGradlePlugin-2.x",
+    "org.jetbrains.kotlin:kotlin-stdlib-common:2.*.*": "KotlinStdlibCommon-2.x",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.*.*": "KotlinStdlibJdk8-2.x",
+    "org.jetbrains.kotlin:kotlin-stdlib:2.*.*": "KotlinStdlib-2.x",
+    "org.jetbrains.kotlinx:atomicfu:0.*.*": "Atomicfu-0.x",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.*": "KotlinxCoroutinesCoreJvm-1.x",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.*": "KotlinxCoroutinesJdk8-1.x",
+    "com.google.devtools.ksp:symbol-processing-api:2.*": "Maven-com-google-devtools-ksp_symbol-processing-api-2.x",
+    "com.google.devtools.ksp:symbol-processing-gradle-plugin:2.*": "Maven-com-google-devtools-ksp_symbol-processing-gradle-plugin-2.x"
+  },
+  "packageHandlingRules": {
+    "versioning": {
+      "defaultVersionLayout": "{MAJOR}.x"
+    },
+    "ignore": [
+      "aws.sdk.kotlin:bom",
+      "aws.sdk.kotlin:testing",
+      "aws.sdk.kotlin:version-catalog"
+    ],
+    "resolvesConflictDependencies": {
+      "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.*" : ["KotlinxCoroutinesCoreJvm-1.x"],
+      "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.*": ["KotlinxCoroutinesJdk8-1.x"],
+      "aws.smithy.kotlin:aws-event-stream:1.*": ["KotlinxCoroutinesCoreJvm-1.x"]
+    }
+  }
+}
