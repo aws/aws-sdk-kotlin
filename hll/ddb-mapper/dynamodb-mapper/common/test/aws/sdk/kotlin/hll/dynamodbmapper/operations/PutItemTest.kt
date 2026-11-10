@@ -12,7 +12,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.getItem
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,7 +19,7 @@ import kotlin.test.assertNotNull
 
 class PutItemTest : DdbLocalTest() {
     companion object {
-        private const val TABLE_NAME = "put-item-test"
+        private val TABLE_NAME = "put-item-test-$testRunId"
 
         private data class Item(var id: String = "", var value: Int = 0)
 
@@ -33,8 +32,7 @@ class PutItemTest : DdbLocalTest() {
         private val schema = ItemSchema(converter, KeySpec.string("id"))
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(TABLE_NAME, schema)
     }
 

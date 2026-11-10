@@ -10,7 +10,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import aws.sdk.kotlin.services.dynamodb.model.ReturnConsumedCapacity
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -19,8 +18,8 @@ import kotlin.test.assertNull
 
 class GetItemTest : DdbLocalTest() {
     companion object {
-        private const val PK_TABLE_NAME = "get-item-test-pk"
-        private const val CK_TABLE_NAME = "get-item-test-ck"
+        private val PK_TABLE_NAME = "get-item-test-pk-$testRunId"
+        private val CK_TABLE_NAME = "get-item-test-ck-$testRunId"
 
         private data class PkItem(var id: Int = 0, var value: String = "")
 
@@ -44,8 +43,7 @@ class GetItemTest : DdbLocalTest() {
         private val ckSchema = ItemSchema(ckConverter, KeySpec.string("id"), KeySpec.int("version"))
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(PK_TABLE_NAME, pkSchema, itemOf("id" to 1, "value" to "foo"))
         createTable(CK_TABLE_NAME, ckSchema, itemOf("id" to "abcd", "version" to 42, "value" to "foo"))
     }

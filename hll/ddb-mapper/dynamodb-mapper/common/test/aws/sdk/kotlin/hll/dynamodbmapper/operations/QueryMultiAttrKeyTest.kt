@@ -10,7 +10,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
@@ -20,7 +19,7 @@ import kotlin.test.assertFailsWith
 
 class QueryMultiAttrKeyTest : DdbLocalTest() {
     companion object {
-        private const val TABLE_NAME = "query-multi-attr-keys-test"
+        private val TABLE_NAME = "query-multi-attr-keys-test-$testRunId"
         private const val INDEX_NAME = "multi-attr-keys-index"
 
         private data class Event(
@@ -51,8 +50,7 @@ class QueryMultiAttrKeyTest : DdbLocalTest() {
         )
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(
             name = TABLE_NAME,
             schema = tableSchema,
