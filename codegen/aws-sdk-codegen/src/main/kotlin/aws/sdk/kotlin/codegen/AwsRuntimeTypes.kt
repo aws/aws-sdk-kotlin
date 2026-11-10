@@ -68,6 +68,15 @@ object AwsRuntimeTypes {
         }
     }
 
+    object Benchmarks : RuntimeTypePackage(AwsKotlinDependency.AWS_SERDE_BENCHMARKS) {
+        val BenchmarkHarness = symbol("BenchmarkHarness")
+        val BenchmarkInterceptor = symbol("BenchmarkInterceptor")
+        val KotlinBenchmarkMetadata = symbol("KotlinBenchmarkMetadata")
+        val BenchmarkRegistry = symbol("BenchmarkRegistry")
+        val BenchmarkResult = symbol("BenchmarkResult")
+        val SerdeBenchmark = symbol("SerdeBenchmark")
+    }
+
     object Http : RuntimeTypePackage(AwsKotlinDependency.AWS_HTTP) {
         object Interceptors : RuntimeTypePackage(AwsKotlinDependency.AWS_HTTP, "interceptors") {
             val AddUserAgentMetadataInterceptor = symbol("AddUserAgentMetadataInterceptor")
