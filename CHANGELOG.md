@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.9.33] - 11/09/2026
+
+### Features
+* (**batch**) Adds support for additional Amazon EKS security context settings in AWS Batch. Pod-level settings include fsGroup, runAsUser, runAsGroup, runAsNonRoot, and seccompProfile. Container-level settings add Linux capabilities and seccompProfile to existing runAsUser, runAsGroup, and runAsNonRoot support.
+* (**bedrockagentcore**) Adds the InvokeWebSearch API, which searches the web using the AWS-managed web search and returns ranked results with a text extract from each page. Results can be filtered by domain and by publication time.
+* (**datazone**) Adds support for Workday Data Connect and Workday Live Data Query connection types in Amazon DataZone connection APIs.
+* (**ecs**) Amazon ECS Managed Instances now supports isolated and confidential tasks, which run in AWS Nitro Sandboxes. Configure them with trustedExecutionConfiguration in task definitions and nitroEnclavesEnabled in capacity providers.
+* (**elasticsearchservice**) Adds cloned blue-green upgrades for Amazon OpenSearch Service domains. UpgradeElasticsearchDomain accepts DeploymentStrategyOptions to upgrade on a cloned cluster, the new UpdateClone API shifts search traffic, cuts over and sets retention, and DescribeDomainChangeProgress reports upgrade details.
+* (**evs**) Amazon EVS adds support for r7i.metal-24xl and r7i.metal-48xl EC2 bare metal instance types for self-deployed VMware Cloud Foundation environments. These diskless instance types use customer-connected external NFS storage, such as Amazon FSx for NetApp ONTAP, instead of local NVMe and vSAN.
+* (**glue**) We are releasing five new APIs to allow customers to enable Catalog-level data quality monitoring in AWS Glue Data Catalog, a new feature to perform data quality evaluation on collections of GDC tables selected by the customer, on a schedule or event-driven basis, using a custom or managed ruleset.
+* (**opensearch**) Adds cloned blue-green upgrades for Amazon OpenSearch Service domains. UpgradeDomain accepts DeploymentStrategyOptions to upgrade on a cloned cluster, the new UpdateClone API shifts search traffic, cuts over and sets retention, and DescribeDomainChangeProgress reports the upgrade details.
+* (**s3control**) Adds support for cross-account access grants with InstanceScope parameter for GetDataAccess and ListCallerAccessGrants operations in S3 Access Grants.
+* (**sagemaker**) Adds support for pipelines that AWS manages, filter ListPipelines by ManagedBy and run them with your own role via RoleArn on StartPipelineExecution. Adds pipeline version aliases to reference versions by name. Adds HubContent step metadata to ListPipelineExecutionSteps.
+* (**signin**) Adds the CreateBearerToken API, which exchanges your IAM credentials for a bearer token that can be used to access supported AWS services.
+
+### Fixes
+* Use the cached `signInRegion` when refreshing AWS Login credentials
+
 ## [1.9.32] - 11/06/2026
 
 ### Features
