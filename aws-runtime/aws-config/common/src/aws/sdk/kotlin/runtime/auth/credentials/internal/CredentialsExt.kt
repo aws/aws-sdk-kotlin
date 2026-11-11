@@ -29,3 +29,6 @@ internal fun credentials(
     }
     return Credentials(accessKeyId, secretAccessKey, sessionToken, expiration, attributes = attributes)
 }
+
+internal val Credentials.accountId: String?
+    get() = attributes.getOrNull(AwsClientOption.AccountId)

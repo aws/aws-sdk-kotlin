@@ -18,7 +18,7 @@ class CreateClientTest {
     @Test
     fun testMissingRegion() {
         // Should _not_ throw an exception since region is optional
-        S3Client { }
+        S3Client { }.use { }
     }
 
     @Test

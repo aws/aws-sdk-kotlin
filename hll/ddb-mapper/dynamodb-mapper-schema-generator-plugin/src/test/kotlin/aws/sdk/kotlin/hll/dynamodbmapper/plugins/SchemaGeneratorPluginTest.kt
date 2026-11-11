@@ -11,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.jetbrains.kotlin.gradle.internal.ensureParentDirsCreated
+import org.junit.jupiter.api.Assumptions.assumeTrue
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertContains
@@ -23,6 +24,9 @@ class SchemaGeneratorPluginTest {
     private val kotlinVersion = getResource("kotlin-version.txt")
     private val sdkVersion = getResource("sdk-version.txt")
     private val smithyKotlinVersion = getResource("smithy-kotlin-version.txt")
+
+    // Native consumers need the SDK's Native artifacts in Maven Local, which aren't published when Native is disabled
+    private val nativeEnabled = System.getProperty("aws.kotlin.native")?.toBoolean() ?: true
 
     private fun withTestProject(block: TestProject.() -> Unit) = runBlocking {
         withTempDir(TempDirCleanupMode.ON_SUCCESS) { dir ->
@@ -1272,5 +1276,102 @@ class SchemaGeneratorPluginTest {
         assertContains(result.output, "Subtype 'org.example.PinnedEntry' has TTL attributes [] but 'org.example.TempEntry' has TTL attributes [expiresAt: 60s]")
         assertContains(result.output, "All members of table family 'org.example.Account' must declare the same @DynamoDbCounter attributes")
         assertContains(result.output, "@DynamoDbHeterogeneousType cannot be applied to 'org.example.Sealed' because it cannot have subtypes")
+    }
+
+    @Test
+    fun testMultiplatformConsumer() = withTestProject {
+        assumeTrue(nativeEnabled, "Kotlin/Native is disabled")
+
+        buildFile.writeText(
+            """
+                plugins {
+                    id("org.jetbrains.kotlin.multiplatform") version "$kotlinVersion"
+                    id("aws.sdk.kotlin.hll.dynamodbmapper.schema.generator")
+                }
+
+                repositories {
+                    mavenCentral()
+                    mavenLocal()
+                }
+
+                kotlin {
+                    jvm()
+                    linuxX64()
+
+                    sourceSets {
+                        commonMain.dependencies {
+                            implementation("aws.sdk.kotlin:dynamodb-mapper:$sdkVersion")
+                            implementation("aws.sdk.kotlin:dynamodb-mapper-annotations:$sdkVersion")
+                        }
+                    }
+                }
+
+            """.trimIndent(),
+        )
+
+        val commonMain = "src/commonMain/kotlin/org/example"
+        createClassFile("User", commonMain)
+        createClassFile("multiplatform/UserTable", commonMain)
+
+        val compileTasks = listOf(":compileCommonMainKotlinMetadata", ":compileKotlinJvm", ":compileKotlinLinuxX64")
+        val result = runner.withArguments(listOf("--info") + compileTasks).build()
+
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":kspCommonMainKotlinMetadata")?.outcome)
+        compileTasks.forEach { task ->
+            assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(task)?.outcome, "Unexpected outcome for $task")
+        }
+
+        val generatedSchemas = "org/example/dynamodbmapper/generatedschemas/UserSchema.kt"
+        val schemaFile = File(testProjectDir, "build/generated/ksp/metadata/commonMain/kotlin/$generatedSchemas")
+        assertTrue(schemaFile.exists())
+        assertContains(schemaFile.readText(), "public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {")
+
+        // Schemas are generated once for commonMain, not again per target
+        listOf("jvm/jvmMain", "linuxX64/linuxX64Main").forEach { target ->
+            assertFalse(File(testProjectDir, "build/generated/ksp/$target/kotlin/$generatedSchemas").exists())
+        }
+    }
+
+    @Test
+    fun testSingleTargetMultiplatformConsumer() = withTestProject {
+        buildFile.writeText(
+            """
+                plugins {
+                    id("org.jetbrains.kotlin.multiplatform") version "$kotlinVersion"
+                    id("aws.sdk.kotlin.hll.dynamodbmapper.schema.generator")
+                }
+
+                repositories {
+                    mavenCentral()
+                    mavenLocal()
+                }
+
+                kotlin {
+                    jvm()
+
+                    sourceSets {
+                        commonMain.dependencies {
+                            implementation("aws.sdk.kotlin:dynamodb-mapper:$sdkVersion")
+                            implementation("aws.sdk.kotlin:dynamodb-mapper-annotations:$sdkVersion")
+                        }
+                    }
+                }
+
+            """.trimIndent(),
+        )
+
+        // With one target there's no commonMain metadata compilation, so schemas come from the target's own KSP run
+        // and are visible to that target's code
+        createClassFile("User", "src/commonMain/kotlin/org/example")
+        createClassFile("multiplatform/UserTable", "src/jvmMain/kotlin/org/example")
+
+        val result = runner.withArguments("--info", ":compileKotlinJvm").build()
+
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":kspKotlinJvm")?.outcome)
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":compileKotlinJvm")?.outcome)
+
+        val schemaFile = File(testProjectDir, "build/generated/ksp/jvm/jvmMain/kotlin/org/example/dynamodbmapper/generatedschemas/UserSchema.kt")
+        assertTrue(schemaFile.exists())
+        assertContains(schemaFile.readText(), "public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {")
     }
 }

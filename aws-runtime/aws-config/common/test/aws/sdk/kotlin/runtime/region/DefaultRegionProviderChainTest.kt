@@ -14,34 +14,42 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DefaultRegionProviderChainTest {
-    private data class RegionProviderChainTest(
-        val name: String,
-        val platformProvider: TestPlatformProvider,
-        val instanceMetadataProvider: TestInstanceMetadataProvider,
-        val region: String?,
-        val targets: List<String> = emptyList(),
-    )
-
     @Test
-    fun testSuite() = runTest {
-        val tests = Json.parseToJsonElement(REGION_PROVIDER_CHAIN_TEST_SUITE).jsonArray
-            .map { it.jsonObject }
-            .map {
-                val name = it["name"]!!.jsonPrimitive.content
-                val platform = TestPlatformProvider.fromJsonNode(it["platform"]!!.jsonObject)
-                val instanceMetadata = TestInstanceMetadataProvider.fromJsonNode(it["imds"]!!.jsonObject)
-                val region = it["region"]!!.jsonPrimitive.contentOrNull
-                RegionProviderChainTest(name, platform, instanceMetadata, region)
-            }
+    fun testSuite() = runRegionProviderChainTestSuite(REGION_PROVIDER_CHAIN_TEST_SUITE)
+}
 
-        tests.forEach { test ->
-            val provider = DefaultRegionProviderChain(
-                platformProvider = test.platformProvider,
-                imdsClient = lazy { test.instanceMetadataProvider },
-            )
-            val actual = provider.getRegion()
-            assertEquals(test.region, actual, test.name)
+private data class RegionProviderChainTest(
+    val name: String,
+    val platformProvider: TestPlatformProvider,
+    val instanceMetadataProvider: TestInstanceMetadataProvider,
+    val region: String?,
+    val targets: List<String> = emptyList(),
+)
+
+/**
+ * Parse a region-provider-chain test suite from a JSON string and run its assertions.
+ *
+ * This is a shared, reusable test runner so that both the common test suite and platform-specific
+ * test suites (e.g. JVM) can exercise the same machinery without duplicating logic.
+ */
+internal fun runRegionProviderChainTestSuite(testSuiteJson: String) = runTest {
+    val tests = Json.parseToJsonElement(testSuiteJson).jsonArray
+        .map { it.jsonObject }
+        .map {
+            val name = it["name"]!!.jsonPrimitive.content
+            val platform = TestPlatformProvider.fromJsonNode(it["platform"]!!.jsonObject)
+            val instanceMetadata = TestInstanceMetadataProvider.fromJsonNode(it["imds"]!!.jsonObject)
+            val region = it["region"]!!.jsonPrimitive.contentOrNull
+            RegionProviderChainTest(name, platform, instanceMetadata, region)
         }
+
+    tests.forEach { test ->
+        val provider = DefaultRegionProviderChain(
+            platformProvider = test.platformProvider,
+            imdsClient = lazy { test.instanceMetadataProvider },
+        )
+        val actual = provider.getRegion()
+        assertEquals(test.region, actual, test.name)
     }
 }
 
@@ -103,20 +111,6 @@ private const val REGION_PROVIDER_CHAIN_TEST_SUITE = """
         "region": "us-east-2"
     },
     {
-        "name": "jvm property is favored",
-        "platform": {
-            "env": {
-                "AWS_REGION": "us-east-2"
-            },
-            "props": {
-                "aws.region": "us-west-1"
-            },
-            "fs": {}
-        },
-        "imds": {},
-        "region": "us-west-1"
-    },
-    {
         "name": "default profile",
         "platform": {
             "env": {
@@ -158,26 +152,12 @@ private const val REGION_PROVIDER_CHAIN_TEST_SUITE = """
         "region": "us-east-1"
     },
     {
-        "name": "jvm system properties are favored over imds",
-        "platform": {
-            "env": {
-                "AWS_REGION": "us-east-2"
-            },
-            "props": {},
-            "fs": {}
-        },
-        "imds": {
-            "/latest/meta-data/placement/region": "us-east-1"
-        },
-        "region": "us-east-2"
-    },
-    {
         "name": "environment variables are favored over imds",
         "platform": {
-            "env": {},
-            "props": {
-                "aws.region": "us-west-1"
+            "env": {
+              "AWS_REGION": "us-west-1"
             },
+            "props": {},
             "fs": {}
         },
         "imds": {
