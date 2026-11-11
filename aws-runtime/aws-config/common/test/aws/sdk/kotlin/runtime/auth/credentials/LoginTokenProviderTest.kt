@@ -6,6 +6,9 @@
 package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.client.AwsClientOption
+import aws.smithy.kotlin.runtime.auth.awscredentials.CallerRejectedAccessKeyId
+import aws.smithy.kotlin.runtime.collections.attributesOf
+import aws.smithy.kotlin.runtime.collections.emptyAttributes
 import aws.smithy.kotlin.runtime.http.Headers
 import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
@@ -46,11 +49,14 @@ class LoginTokenProviderTest {
         val cacheContents: Map<String, String>,
         val mockApiCalls: JsonArray?,
         val outcomes: List<TestOutcome>,
+        // The access key ID of credentials a target service rejected: the case is the refresh that follows.
+        val invalidatedAccessKeyId: String? = null,
     ) {
         companion object {
             fun fromJson(json: JsonObject): LoginTestCase {
                 val name = json["documentation"]!!.jsonPrimitive.content
                 val configContents = json["configContents"]!!.jsonPrimitive.content
+                val invalidatedAccessKeyId = json["invalidatedAccessKeyId"]?.jsonPrimitive?.content
                 val cacheContents = json["cacheContents"]!!.jsonObject.mapValues { (_, value) ->
                     value.toString()
                 }
@@ -75,7 +81,7 @@ class LoginTokenProviderTest {
                         else -> error("Unknown result type: $result")
                     }
                 }
-                return LoginTestCase(name, configContents, cacheContents, mockApiCalls, outcomes)
+                return LoginTestCase(name, configContents, cacheContents, mockApiCalls, outcomes, invalidatedAccessKeyId)
             }
         }
     }
@@ -158,11 +164,17 @@ class LoginTokenProviderTest {
                 client = signinClient("us-west-2", providedHttpClient = httpClient),
             )
 
+            // An invalidation case is the refresh that follows a target service rejecting those credentials. The
+            // credentials cache signals that by naming the rejected access key ID.
+            val resolveAttributes = testCase.invalidatedAccessKeyId
+                ?.let { rejected -> attributesOf { CallerRejectedAccessKeyId to rejected } }
+                ?: emptyAttributes()
+
             testCase.outcomes.forEach { expectedOutcome ->
                 when (expectedOutcome) {
                     is TestOutcome.Credentials -> {
                         // Verify that credentials are successfully resolved and match expected values
-                        val credentials = tokenProvider.resolve()
+                        val credentials = tokenProvider.resolve(resolveAttributes)
                         assertEquals(expectedOutcome.accessKeyId, credentials.accessKeyId, "[idx=$idx]: $testCase")
                         assertEquals(
                             expectedOutcome.secretAccessKey,
@@ -193,7 +205,7 @@ class LoginTokenProviderTest {
 
                     is TestOutcome.Error -> {
                         val exception = assertFails("[idx=$idx]: $testCase") {
-                            tokenProvider.resolve()
+                            tokenProvider.resolve(resolveAttributes)
                         }
                         assertEquals(
                             exception.message?.contains(expectedOutcome.message),
@@ -529,6 +541,142 @@ private const val LOGIN_TOKEN_PROVIDER_TEST_SUITE = """
       {
         "result": "error",
         "message": "Login token for login-session: arn:aws:sts::012345678910:assumed-role/Admin/admin is expired"
+      }
+    ]
+  },
+  {
+    "documentation": "Success - Invalidation of the cached token's credentials refreshes through Sign-In even though the token is valid",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+      "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+        "accessToken": {
+          "accessKeyId": "REJECTEDKEY",
+          "secretAccessKey": "rejectedSecretKey",
+          "sessionToken": "rejectedSessionToken",
+          "accountId": "012345678901",
+          "expiresAt": "3025-09-14T04:05:45Z"
+        },
+        "clientId": "arn:aws:signin:::devtools/same-device",
+        "refreshToken": "valid_refresh_token",
+        "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+        "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
+      }
+    },
+    "invalidatedAccessKeyId": "REJECTEDKEY",
+    "mockApiCalls": [
+      {
+        "request": {
+          "tokenInput": {
+            "clientId": "arn:aws:signin:::devtools/same-device",
+            "refreshToken": "valid_refresh_token",
+            "grantType": "refresh_token"
+          }
+        },
+        "response": {
+          "tokenOutput": {
+            "accessToken": {
+              "accessKeyId": "NEWREFRESHEDKEY",
+              "secretAccessKey": "newRefreshedSecretKey",
+              "sessionToken": "newRefreshedSessionToken"
+            },
+            "refreshToken": "new_refresh_token",
+            "expiresIn": 900
+          }
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "result": "credentials",
+        "accessKeyId": "NEWREFRESHEDKEY",
+        "secretAccessKey": "newRefreshedSecretKey",
+        "sessionToken": "newRefreshedSessionToken",
+        "accountId": "012345678901",
+        "expiresAt": "2025-11-19T00:15:00Z"
+      },
+      {
+        "result": "cacheContents",
+        "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+          "accessToken": {
+            "accessKeyId": "NEWREFRESHEDKEY",
+            "secretAccessKey": "newRefreshedSecretKey",
+            "sessionToken": "newRefreshedSessionToken",
+            "accountId": "012345678901",
+            "expiresAt": "2025-11-19T00:15:00Z"
+          },
+          "clientId": "arn:aws:signin:::devtools/same-device",
+          "refreshToken": "new_refresh_token",
+          "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+          "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
+        }
+      }
+    ]
+  },
+  {
+    "documentation": "Failure - Invalidation with a valid token and a failed refresh raises an error instead of returning the cached token. The response is a 403 error response, which is recoverable and not retried.",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+      "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+        "accessToken": {
+          "accessKeyId": "REJECTEDKEY",
+          "secretAccessKey": "rejectedSecretKey",
+          "sessionToken": "rejectedSessionToken",
+          "accountId": "012345678901",
+          "expiresAt": "3025-09-14T04:05:45Z"
+        },
+        "clientId": "arn:aws:signin:::devtools/same-device",
+        "refreshToken": "valid_refresh_token",
+        "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+        "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
+      }
+    },
+    "invalidatedAccessKeyId": "REJECTEDKEY",
+    "mockApiCalls": [
+      {
+        "request": {
+          "tokenInput": {
+            "clientId": "arn:aws:signin:::devtools/same-device",
+            "refreshToken": "valid_refresh_token",
+            "grantType": "refresh_token"
+          }
+        },
+        "responseCode": 403
+      }
+    ],
+    "outcomes": [
+      {
+        "result": "error",
+        "message": "Login token for login-session: arn:aws:sts::012345678910:assumed-role/Admin/admin is expired"
+      }
+    ]
+  },
+  {
+    "documentation": "Success - Invalidation reuses a cached token that already holds different credentials (another process refreshed it), without calling Sign-In",
+    "configContents": "[profile signin]\nlogin_session = arn:aws:sts::012345678910:assumed-role/Admin/admin\n",
+    "cacheContents": {
+      "4b0ba8f99f075c0633e122fd73346ce203a3faf18ea0310eb2d29df1bab2e255.json": {
+        "accessToken": {
+          "accessKeyId": "NEWERKEY",
+          "secretAccessKey": "newerSecretKey",
+          "sessionToken": "newerSessionToken",
+          "accountId": "012345678901",
+          "expiresAt": "3025-09-14T04:05:45Z"
+        },
+        "clientId": "arn:aws:signin:::devtools/same-device",
+        "refreshToken": "refresh_token",
+        "idToken": "eyJraWQiOiI1MzYxMjY2ZS1mNjI5LTQ0ZGQtOTA1My1jYzJkNTM1OTJiOTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzM4NCJ9.eyJzdWIiOiJhcm46YXdzOnN0czo6NzIxNzgxNjAzNzU1OmFzc3VtZWQtcm9sZVwvQWRtaW5cL3Nob3ZsaWEtSXNlbmdhcmQiLCJhdWQiOiJhcm46YXdzOnNpZ25pbjo6OmNsaVwvc2FtZS1kZXZpY2UiLCJpc3MiOiJodHRwczpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJzZXNzaW9uX2FybiI6ImFybjphd3M6c3RzOjo3MjE3ODE2MDM3NTU6YXNzdW1lZC1yb2xlXC9BZG1pblwvc2hvdmxpYS1Jc2VuZ2FyZCIsImV4cCI6MTc2MTE2Nzk0NiwiaWF0IjoxNzYxMTY3MDQ2fQ.EzySTg0K11hwQtIYtcBcnNMmX33F6XrVqXsk8WyTWjYcMQxaMnqXebLwBQBCRZha05hZiIZ5xPVCBIt7hZGyymurSfOL72cz69xHUH6u7rwu8vn10UKLHfyKLneKBlmJ",
+        "dpopKey": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPt/u8InPLpQeQLJTvVX+sNDzni8vMDMt3Liu+nMBigfoAoGCCqGSM49\nAwEHoUQDQgAEILkGG7rNOnxiIJlMgimY1UPP8eDMFP0DAY6WGjngP4bvTAiUCQ/I\nffut2379uP+OBCm2ovGpBOJRgrl1RspUOQ==\n-----END EC PRIVATE KEY-----\n"
+      }
+    },
+    "invalidatedAccessKeyId": "REJECTEDKEY",
+    "outcomes": [
+      {
+        "result": "credentials",
+        "accessKeyId": "NEWERKEY",
+        "secretAccessKey": "newerSecretKey",
+        "sessionToken": "newerSessionToken",
+        "accountId": "012345678901",
+        "expiresAt": "3025-09-14T04:05:45Z"
       }
     ]
   }
