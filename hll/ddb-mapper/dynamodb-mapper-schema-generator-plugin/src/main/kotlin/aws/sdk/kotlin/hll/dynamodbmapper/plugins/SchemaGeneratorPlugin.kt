@@ -89,7 +89,7 @@ public class SchemaGeneratorPlugin : Plugin<Project> {
         // The metadata KSP task itself reads commonMain's source directories, so the generated directory can't carry
         // a task dependency (the task would depend on itself). Wire it explicitly for the tasks that read commonMain.
         // Matched by name so single-target projects, which have no such task, are unaffected.
-        val commonMainKsp = tasks.matching { it.name == KSP_COMMON_MAIN_METADATA_TASK }
+        val commonMainKsp = tasks.named { it == KSP_COMMON_MAIN_METADATA_TASK }
         tasks.withType<KotlinCompilationTask<*>>().configureEach { dependsOn(commonMainKsp) }
         tasks.withType<KspAATask>().configureEach {
             if (name != KSP_COMMON_MAIN_METADATA_TASK) dependsOn(commonMainKsp)
