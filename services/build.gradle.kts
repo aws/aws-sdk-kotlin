@@ -62,9 +62,6 @@ subprojects {
         if (project.file("e2eTest").exists()) {
             jvm().compilations {
                 val e2eTest by creating {
-                    // We use associateWith instead of dependsOn(commonMain). With dependsOn, the e2eTest dependencies
-                    // (such as :services:s3control) also become commonMain dependencies, and native builds fail when
-                    // those services are not bootstrapped.
                     associateWith(this@compilations.getByName("main"))
                     defaultSourceSet {
                         kotlin.srcDir("e2eTest/src")
