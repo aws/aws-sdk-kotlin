@@ -37,7 +37,11 @@ jobs:
 
       - name: Build SDK
         working-directory: ./aws-sdk-kotlin
-        run: ./gradlew test jvmTest linuxX64Test
+        run: |
+          .github/scripts/native-test-watchdog.sh &
+          watchdog=$!
+          trap 'kill "$watchdog"' EXIT
+          ./gradlew test jvmTest linuxX64Test
 
       - name: Build SDK client
         working-directory: ./aws-sdk-kotlin
