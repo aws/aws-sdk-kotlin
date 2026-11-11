@@ -89,12 +89,17 @@ public class SsoTokenProvider(
     private val lastRefreshAttempt = atomic<Instant?>(null)
     private val lastRefreshFailure = atomic<Throwable?>(null)
 
+    // The last token obtained by a refresh. It is used instead of the cached token when it expires later, so that a
+    // refreshed token isn't lost if writing it back to the cache fails.
+    private val lastRefreshedToken = atomic<SsoToken?>(null)
+
     override suspend fun resolve(attributes: Attributes): BearerToken = sfg.singleFlight {
         getToken(attributes)
     }
 
     private suspend fun getToken(attributes: Attributes): SsoToken {
-        val token = readTokenFromCache(ssoSessionName, platformProvider)
+        val cachedToken = readTokenFromCache(ssoSessionName, platformProvider)
+        val token = lastRefreshedToken.value?.takeIf { it.expiration > cachedToken.expiration } ?: cachedToken
         if (clock.now() < (token.expiration - refreshBufferWindow)) {
             coroutineContext.debug<SsoTokenProvider> { "using cached token for sso-session: $ssoSessionName" }
             return token
@@ -123,7 +128,10 @@ public class SsoTokenProvider(
         val result = runCatching { refreshToken(oldToken) }
         lastRefreshFailure.value = result.exceptionOrNull()
         return result
-            .onSuccess { refreshed -> writeToken(refreshed) }
+            .onSuccess { refreshed ->
+                lastRefreshedToken.value = refreshed
+                writeToken(refreshed)
+            }
             .getOrElse { cause ->
                 if (clock.now() >= oldToken.expiration) {
                     coroutineContext.error<SsoTokenProvider>(cause) { "token refresh failed" }

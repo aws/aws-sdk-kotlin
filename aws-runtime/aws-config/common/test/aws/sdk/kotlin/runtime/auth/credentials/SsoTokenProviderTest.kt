@@ -15,8 +15,10 @@ import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.time.ManualClock
 import aws.smithy.kotlin.runtime.time.TimestampFormat
 import aws.smithy.kotlin.runtime.util.MapFilesystem
+import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.TestFile
 import aws.smithy.kotlin.runtime.util.TestPlatformProvider
+import aws.smithy.kotlin.runtime.util.WriteType
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.*
@@ -208,6 +210,32 @@ class SsoTokenProviderTest {
         clock.advance(21.seconds)
         assertEquals("cachedtoken", tokenProvider.resolve().token)
         assertEquals(2, engine.requests().size, "refresh attempts continue while the token is in the refresh window")
+    }
+
+    @Test
+    fun testRefreshedTokenIsUsedWhenWritingItBackFails() = runTest {
+        val clock = ManualClock(now)
+        val engine = buildTestConnection {
+            val body = """{"tokenType":"Bearer","accessToken":"newtoken","expiresIn":28800,"refreshToken":"newrefreshtoken"}"""
+            expect(HttpResponse(HttpStatusCode.OK, Headers.Empty, HttpBody.fromBytes(body.encodeToByteArray())))
+        }
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf("HOME" to "/home"),
+            fs = mapOf("/home/.aws/sso/cache/${getCacheFilename("test-session")}" to TestFile(refreshableToken(expiresAt = now - 10.seconds))),
+        )
+        val readOnlyPlatform = object : PlatformProvider by testPlatform {
+            override fun write(path: String, data: ByteArray, writeType: WriteType, mustExist: Boolean, permissions: String?) {
+                error("read-only file system")
+            }
+        }
+        val tokenProvider = SsoTokenProvider("test-session", "start-url", "us-east-1", httpClient = engine, platformProvider = readOnlyPlatform, clock = clock)
+
+        assertEquals("newtoken", tokenProvider.resolve().token)
+        assertEquals(1, engine.requests().size)
+
+        clock.advance(5.seconds)
+        assertEquals("newtoken", tokenProvider.resolve().token, "the refreshed token is used although the cache still holds the expired one")
+        assertEquals(1, engine.requests().size, "a valid refreshed token is not refreshed again")
     }
 }
 
