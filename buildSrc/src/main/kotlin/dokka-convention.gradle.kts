@@ -8,7 +8,7 @@ import org.gradle.accessors.dm.LibrariesForLibs
 
 plugins {
     id("org.jetbrains.dokka")
-    id("aws.sdk.kotlin.gradle.dokkagfm")
+    id("aws.sdk.kotlin.gradle.dokkamarkdown")
 }
 
 // https://github.com/gradle/gradle/issues/15383

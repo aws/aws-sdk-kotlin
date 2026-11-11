@@ -37,8 +37,8 @@ class DokkaAwsTest {
     }
 
     @Test
-    fun testGfmPublication() {
-        val testFile = File(outputDir("gfm"), "dokka-aws/aws.sdk.kotlin.dokka/-aws-dokka-plugin/index.md")
+    fun testMarkdownPublication() {
+        val testFile = File(outputDir("markdown"), "dokka-aws/aws.sdk.kotlin.dokka/-aws-dokka-plugin/index.md")
 
         assertTrue(
             testFile.exists(),

@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.aws.kotlin.repo.tools.dokka.gfm)
+    implementation(libs.aws.kotlin.repo.tools.dokka.markdown)
     implementation(libs.dokka.gradle.plugin)
     implementation(libs.kotlin.gradle.plugin)
     implementation(platform(libs.jackson.bom))
