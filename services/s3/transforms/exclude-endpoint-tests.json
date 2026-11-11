@@ -1,0 +1,6 @@
+{
+    "name": "excludeTraits",
+    "args": {
+        "traits": ["smithy.rules#endpointTests"]
+    }
+}

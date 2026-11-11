@@ -1,0 +1,2 @@
+S3=putObject,getObject,listObjectsV2,createSession
+DynamoDB=getItem,query,scan

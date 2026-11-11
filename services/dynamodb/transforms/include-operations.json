@@ -1,0 +1,1 @@
+{ "name": "awsSmithyKotlinIncludeOperations", "args": { "operations": ["com.amazonaws.dynamodb#GetItem", "com.amazonaws.dynamodb#Query", "com.amazonaws.dynamodb#Scan"] } }

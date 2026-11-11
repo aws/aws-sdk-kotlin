@@ -1,0 +1,1 @@
+{ "name": "excludeTraits", "args": { "traits": ["smithy.rules#endpointTests", "aws.api#clientEndpointDiscovery", "aws.api#clientDiscoveredEndpoint"] } }

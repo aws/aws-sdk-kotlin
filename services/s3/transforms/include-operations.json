@@ -1,0 +1,11 @@
+{
+    "name": "awsSmithyKotlinIncludeOperations",
+    "args": {
+        "operations": [
+            "com.amazonaws.s3#PutObject",
+            "com.amazonaws.s3#GetObject",
+            "com.amazonaws.s3#ListObjectsV2",
+            "com.amazonaws.s3#CreateSession"
+        ]
+    }
+}

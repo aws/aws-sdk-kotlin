@@ -71,6 +71,7 @@ include(":tests:codegen:rules-engine")
 include(":tests:e2e-test-util")
 include(":tests:codegen:smoke-tests")
 include(":tests:codegen:checksums")
+include(":custom-client-spike")
 
 // generated services
 val File.isServiceDir: Boolean
