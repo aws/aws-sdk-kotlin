@@ -24,6 +24,7 @@ import aws.smithy.kotlin.runtime.client.ProtocolRequestInterceptorContext
 import aws.smithy.kotlin.runtime.collections.get
 import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
+import aws.smithy.kotlin.runtime.io.use
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -54,45 +55,49 @@ class DynamoDbMapperTest : DdbLocalTest() {
     fun testBusinessMetricEmission() = runTest {
         val interceptor = MetricCapturingInterceptor()
 
-        val ddb = lowLevelAccess { withConfig { interceptors += interceptor } }
-        interceptor.assertEmpty()
+        val original = lowLevelAccess { withConfig { } }
+        original.withConfig { interceptors += interceptor }.use { ddb ->
+            val table = mapper(ddb).getTable(TABLE_NAME, dummySchema)
 
-        // No metric for low-level client
-        lowLevelAccess { scan { tableName = TABLE_NAME } }
-        interceptor.assertMetric(AwsBusinessMetric.DDB_MAPPER, exists = false)
-        interceptor.reset()
+            original.use {
+                interceptor.assertEmpty()
 
-        // Metric for high-level client
-        val mapper = mapper(ddb)
-        val table = mapper.getTable(TABLE_NAME, dummySchema)
-        table.scanPaginated { }.collect()
-        interceptor.assertMetric(AwsBusinessMetric.DDB_MAPPER)
-        interceptor.reset()
+                // No metric for low-level client
+                lowLevelAccess { original.scan { tableName = TABLE_NAME } }
+                interceptor.assertMetric(AwsBusinessMetric.DDB_MAPPER, exists = false)
+                interceptor.reset()
 
-        // Still no metric for low-level client (i.e., LL wasn't modified by HL)
-        lowLevelAccess { scan { tableName = TABLE_NAME } }
-        interceptor.assertMetric(AwsBusinessMetric.DDB_MAPPER, exists = false)
-        interceptor.reset()
+                // Metric for high-level client
+                table.scanPaginated { }.collect()
+                interceptor.assertMetric(AwsBusinessMetric.DDB_MAPPER)
+                interceptor.reset()
 
-        // Original client can be closed, mapper is unaffected
-        lowLevelAccess<Unit> { close() }
-        table.scanPaginated { }.collect()
-        interceptor.assertMetric(AwsBusinessMetric.DDB_MAPPER)
+                // Still no metric for low-level client (i.e., LL wasn't modified by HL)
+                lowLevelAccess { original.scan { tableName = TABLE_NAME } }
+                interceptor.assertMetric(AwsBusinessMetric.DDB_MAPPER, exists = false)
+                interceptor.reset()
+            }
+
+            // Original client can be closed, mapper is unaffected
+            table.scanPaginated { }.collect()
+            interceptor.assertMetric(AwsBusinessMetric.DDB_MAPPER)
+        }
     }
 
     @Test
     fun testPaginatorBusinessMetricEmission() = runTest {
         val interceptor = MetricCapturingInterceptor()
-        val ddb = lowLevelAccess { withConfig { interceptors += interceptor } }
-        val table = mapper(ddb).getTable(TABLE_NAME, dummySchema)
+        lowLevelAccess { withConfig { interceptors += interceptor } }.use { ddb ->
+            val table = mapper(ddb).getTable(TABLE_NAME, dummySchema)
 
-        table.scanPaginated { }.collect()
-        interceptor.assertMetric(SmithyBusinessMetric.PAGINATOR)
-        interceptor.reset()
+            table.scanPaginated { }.collect()
+            interceptor.assertMetric(SmithyBusinessMetric.PAGINATOR)
+            interceptor.reset()
 
-        @OptIn(ManualPagination::class)
-        table.scan { }
-        interceptor.assertMetric(SmithyBusinessMetric.PAGINATOR, exists = false)
+            @OptIn(ManualPagination::class)
+            table.scan { }
+            interceptor.assertMetric(SmithyBusinessMetric.PAGINATOR, exists = false)
+        }
     }
 }
 
