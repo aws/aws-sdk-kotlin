@@ -47,7 +47,7 @@ process_age_secs() {
 }
 
 print_process_tree() {
-  local pid=$1 indent=${2:-}
+  local pid=$1 indent=${2:-} child
   ps -o pid=,ppid=,etime=,stat=,command= -p "$pid" 2>/dev/null | sed "s/^/$indent/"
   for child in $(pgrep -P "$pid" 2>/dev/null); do
     print_process_tree "$child" "$indent  "
@@ -84,7 +84,7 @@ dump_test_binary() {
 }
 
 dump_gradle() {
-  local reason=$1 jstack=jstack
+  local reason=$1 jstack=jstack pid
   [[ -n ${JAVA_HOME:-} && -x $JAVA_HOME/bin/jstack ]] && jstack=$JAVA_HOME/bin/jstack
   for pid in $(pgrep -f 'GradleDaemon|GradleWorkerMain|GradleMain|KotlinCompileDaemon' 2>/dev/null); do
     echo "::group::[native-test-watchdog] Gradle JVM $pid thread dump ($reason)"
