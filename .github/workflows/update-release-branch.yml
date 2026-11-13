@@ -30,6 +30,7 @@ env:
 jobs:
   update-release:
     runs-on: ubuntu-latest
+    if: github.repository == 'aws/aws-sdk-kotlin'
     steps:
       - name: Set start timestamp
         id: start
