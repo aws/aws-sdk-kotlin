@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.extraction
 
 import aws.sdk.kotlin.hll.codegen.ksp.asSymbolRef
+import aws.sdk.kotlin.hll.codegen.ksp.resolveTypeAliases
 import aws.sdk.kotlin.hll.codegen.model.Member
 import aws.sdk.kotlin.hll.codegen.model.Structure
 import aws.sdk.kotlin.hll.codegen.model.Type
@@ -337,6 +338,7 @@ private fun findCyclicallyNestedClasses(adjacency: Map<String, Set<String>>): Se
 
 /** Yields the qualified names of this type and all of its type arguments, recursively. */
 private fun KSType.referencedTypeNames(): Sequence<String> = sequence {
-    declaration.qualifiedName?.asString()?.let { yield(it) }
-    arguments.forEach { arg -> arg.type?.resolve()?.let { yieldAll(it.referencedTypeNames()) } }
+    val resolved = resolveTypeAliases()
+    resolved.declaration.qualifiedName?.asString()?.let { yield(it) }
+    resolved.arguments.forEach { arg -> arg.type?.resolve()?.let { yieldAll(it.referencedTypeNames()) } }
 }

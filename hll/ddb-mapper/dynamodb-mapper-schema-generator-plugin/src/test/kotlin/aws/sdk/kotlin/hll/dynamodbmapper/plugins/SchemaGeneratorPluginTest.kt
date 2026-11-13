@@ -532,6 +532,27 @@ class SchemaGeneratorPluginTest {
     }
 
     @Test
+    fun testTypeAliases() = withTestProject {
+        buildFile.appendText(
+            """
+                dependencies {
+                    testImplementation(kotlin("test"))
+                }
+            """.trimIndent(),
+        )
+
+        createClassFile("standard-item-converters/src/TypeAliases")
+
+        val testFile = File(testProjectDir, "src/test/kotlin/org/example/TypeAliasesTest.kt")
+        testFile.ensureParentDirsCreated()
+        testFile.writeText(getResource("/standard-item-converters/test/TypeAliasesTest.kt"))
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":test")?.outcome)
+    }
+
+    @Test
     fun testNullableTypes() = withTestProject {
         buildFile.appendText(
             """
@@ -891,6 +912,16 @@ class SchemaGeneratorPluginTest {
 
         val result = runner.buildAndFail()
         assertContains(result.output, "Cyclic nesting detected involving type 'org.example.TreeNode'")
+    }
+
+    @Test
+    fun testAliasedCyclicNestingFails() = withTestProject {
+        createClassFile("nested/negative/AliasedCycles")
+
+        val result = runner.buildAndFail()
+        for (typeName in listOf("TreeNode", "First", "Second")) {
+            assertContains(result.output, "Cyclic nesting detected involving type 'org.example.$typeName'")
+        }
     }
 
     @Test
