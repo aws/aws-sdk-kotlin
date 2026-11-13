@@ -25,9 +25,9 @@ jobs:
         uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:
           working-directory: ./aws-sdk-kotlin
-      - name: Link test binary and boot simulator
+      - name: Link test binary
         working-directory: ./aws-sdk-kotlin
-        run: ./gradlew :aws-runtime:aws-config:linkDebugTestIosSimulatorArm64 bootIosSimulatorDevice
+        run: ./gradlew :aws-runtime:aws-config:linkDebugTestIosSimulatorArm64
       - name: Diagnose
         working-directory: ./aws-sdk-kotlin
         run: .github/scripts/scratch-ios-ecs-teardown.sh

@@ -5,13 +5,13 @@
 #   ecs-only     the two ECS tests that do real DNS, with CRT trace logs; dumps the managed thread count if it hangs
 #   all-but-ecs  every other test, as a control
 #   ecs-lldb     the two ECS tests under lldb, logging each event loop group create/shutdown/destroy step
-# Run from the aws-sdk-kotlin root after linking :aws-runtime:aws-config:linkDebugTestIosSimulatorArm64 and booting the
-# simulator. Written for macOS's bash 3.2.
+# Run from the aws-sdk-kotlin root after linking :aws-runtime:aws-config:linkDebugTestIosSimulatorArm64. Boots the
+# simulator itself. Written for macOS's bash 3.2.
 
 set -u
 
 kexe=$PWD/aws-runtime/aws-config/build/bin/iosSimulatorArm64/debugTest/test.kexe
-device=${IOS_SIMULATOR_DEVICE:-iPhone 16}
+device=
 out=${OUT_DIR:-$PWD/build/scratch-ios}
 limit=${HANG_LIMIT_SECS:-180}
 ecs_filter='*.EcsCredentialsProviderTest.testNonLocalFullUri:*.EcsCredentialsProviderTest.testNonexistentFullUri'
@@ -21,6 +21,22 @@ mkdir -p "$out"
 log() {
   echo "[scratch-ios] $*"
 }
+
+# Boot the named simulator, or the first available iPhone, and address it by UDID from here on
+uuid_pattern='[0-9A-F]{8}(-[0-9A-F]{4}){3}-[0-9A-F]{12}'
+if [[ -n ${IOS_SIMULATOR_DEVICE:-} ]]; then
+  device=$(xcrun simctl list devices available | grep -m1 "$IOS_SIMULATOR_DEVICE (" | grep -oE "$uuid_pattern")
+else
+  device=$(xcrun simctl list devices available | grep -m1 "iPhone" | grep -oE "$uuid_pattern")
+fi
+if [[ -z $device ]]; then
+  log "no matching available simulator"
+  xcrun simctl list devices available
+  exit 1
+fi
+log "using simulator: $(xcrun simctl list devices | grep -m1 "$device")"
+xcrun simctl boot "$device" 2>/dev/null
+xcrun simctl bootstatus "$device" -b > /dev/null 2>&1
 
 # Returns 0 if process $1 exits within $2 seconds
 wait_for_exit() {
@@ -76,14 +92,8 @@ run_spawn() {
 }
 
 run_lldb() {
-  local name=ecs-lldb udid pid
+  local name=ecs-lldb udid=$device pid
   echo "::group::[scratch-ios] $name"
-  udid=$(xcrun simctl list devices booted | grep -m1 "$device (" | grep -oE '[0-9A-F]{8}(-[0-9A-F]{4}){3}-[0-9A-F]{12}')
-  if [[ -z $udid ]]; then
-    log "$name: no booted '$device' simulator found"
-    echo "::endgroup::"
-    return
-  fi
 
   cat > "$out/$name.cmds" <<EOF
 platform select ios-simulator

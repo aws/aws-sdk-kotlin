@@ -63,7 +63,7 @@ kotlin {
             }
         }
 
-        named("nativeTest") {
+        matching { it.name == "nativeTest" }.configureEach {
             dependencies {
                 implementation(libs.smithy.kotlin.http.client.engine.crt)
             }
