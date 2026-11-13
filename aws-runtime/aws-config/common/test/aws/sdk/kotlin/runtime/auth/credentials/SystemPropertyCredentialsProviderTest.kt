@@ -9,6 +9,7 @@ import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.util.testAttributes
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -35,7 +36,7 @@ class SystemPropertyCredentialsProviderTest {
                 attributes = testAttributes(
                     AwsBusinessMetric.Credentials.CREDENTIALS_JVM_SYSTEM_PROPERTIES,
                 ),
-            ),
+            ).withRefreshBehavior(CredentialsRefreshBehavior.NonRefreshable),
         )
     }
 
@@ -55,7 +56,7 @@ class SystemPropertyCredentialsProviderTest {
                 attributes = testAttributes(
                     AwsBusinessMetric.Credentials.CREDENTIALS_JVM_SYSTEM_PROPERTIES,
                 ),
-            ),
+            ).withRefreshBehavior(CredentialsRefreshBehavior.NonRefreshable),
         )
     }
 

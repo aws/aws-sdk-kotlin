@@ -5,6 +5,8 @@
 
 package aws.sdk.kotlin.runtime.auth.credentials
 
+import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
+import aws.sdk.kotlin.runtime.auth.credentials.internal.nonRecoverable
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.config.imds.EC2MetadataError
 import aws.sdk.kotlin.runtime.config.imds.ImdsClient
@@ -61,7 +63,61 @@ public class ImdsCredentialsProvider(
     // protects previousCredentials and nextRefresh
     private val mu = Mutex()
 
-    override suspend fun resolve(attributes: Attributes): Credentials {
+    override suspend fun resolve(attributes: Attributes): Credentials = if (attributes.getOrNull(CallerOwnsCredentialsRefresh) == true) {
+        resolveUncached(attributes) // a cache above owns the lifecycle
+    } else {
+        resolveSelfPaced(attributes) // held directly: the behavior this class shipped with
+    }
+
+    /**
+     * The same requests as [resolveSelfPaced] with no cache state of its own, and the only path the default chain
+     * takes.
+     *
+     * A failure propagates instead of falling back to a retained value, and an already-past expiration is returned
+     * as-is: the caller's cache decides what both mean. That is why the two paths do not share a fetch — today's
+     * lifecycle is interleaved with the requests at five points (the early return under [mu], the two catch sites
+     * that fall back with different messages, the `nextRefresh` write in the expiration-extension branch, and the
+     * `previousCredentials` write on success), so factoring one shared fetch out of it would require threading a mode
+     * through it.
+     */
+    private suspend fun resolveUncached(attributes: Attributes): Credentials {
+        if (AwsSdkSetting.AwsEc2MetadataDisabled.resolve(platformProvider) == true) {
+            throw CredentialsNotLoadedException("AWS EC2 metadata is explicitly disabled; credentials not loaded")
+        }
+
+        val profileName = try {
+            profileOverride ?: loadProfile()
+        } catch (ex: Exception) {
+            throw CredentialsProviderException("failed to load instance profile", ex)
+        }
+
+        val payload = try {
+            client.value.get("$CREDENTIALS_BASE_PATH$profileName")
+        } catch (ex: Exception) {
+            throw CredentialsProviderException("failed to load credentials", ex)
+        }
+
+        return when (val resp = deserializeJsonCredentials(JsonDeserializer(payload.encodeToByteArray()))) {
+            is JsonCredentialsResponse.SessionCredentials -> imdsCredentials(resp)
+
+            is JsonCredentialsResponse.Error -> when (resp.code) {
+                CODE_ASSUME_ROLE_UNAUTHORIZED_ACCESS -> throw ProviderConfigurationException(
+                    "Incorrect IMDS/IAM configuration: [${resp.code}] ${resp.message}. " +
+                        "Hint: Does this role have a trust relationship with EC2?",
+                ).nonRecoverable()
+                else -> throw CredentialsProviderException(
+                    "Error retrieving credentials from IMDS: code=${resp.code}; ${resp.message}",
+                )
+            }
+        }
+    }
+
+    /**
+     * The lifecycle this provider shipped with, reached only when it is held directly by a caller. Unchanged apart
+     * from the refresh-behavior declaration on the credentials it builds, so that declaration is a property of the
+     * provider rather than of the path taken to it.
+     */
+    private suspend fun resolveSelfPaced(attributes: Attributes): Credentials {
         if (AwsSdkSetting.AwsEc2MetadataDisabled.resolve(platformProvider) == true) {
             throw CredentialsNotLoadedException("AWS EC2 metadata is explicitly disabled; credentials not loaded")
         }
@@ -102,13 +158,7 @@ public class ImdsCredentialsProvider(
                     null
                 }
 
-                val creds = Credentials(
-                    resp.accessKeyId,
-                    resp.secretAccessKey,
-                    resp.sessionToken,
-                    resp.expiration,
-                    PROVIDER_NAME,
-                ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
+                val creds = imdsCredentials(resp)
 
                 creds.also {
                     mu.withLock { previousCredentials = it }
@@ -116,7 +166,7 @@ public class ImdsCredentialsProvider(
             }
             is JsonCredentialsResponse.Error -> {
                 when (resp.code) {
-                    CODE_ASSUME_ROLE_UNAUTHORIZED_ACCESS -> throw ProviderConfigurationException("Incorrect IMDS/IAM configuration: [${resp.code}] ${resp.message}. Hint: Does this role have a trust relationship with EC2?")
+                    CODE_ASSUME_ROLE_UNAUTHORIZED_ACCESS -> throw ProviderConfigurationException("Incorrect IMDS/IAM configuration: [${resp.code}] ${resp.message}. Hint: Does this role have a trust relationship with EC2?").nonRecoverable()
                     else -> throw CredentialsProviderException("Error retrieving credentials from IMDS: code=${resp.code}; ${resp.message}")
                 }
             }
@@ -152,3 +202,18 @@ public class ImdsCredentialsProvider(
 
     override fun toString(): String = this.simpleClassName
 }
+
+/**
+ * Builds IMDS credentials. They keep static stability, and a cache looks them up again at its default pace rather than
+ * only once they near expiration: IMDS rotates in new credentials well before the current ones expire, and the
+ * instance's role can change (see [PacedRefreshKey]).
+ */
+private fun imdsCredentials(resp: JsonCredentialsResponse.SessionCredentials): Credentials = credentials(
+    resp.accessKeyId,
+    resp.secretAccessKey,
+    resp.sessionToken,
+    resp.expiration,
+    PROVIDER_NAME,
+    refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
+    pacedRefresh = true,
+).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_IMDS)
