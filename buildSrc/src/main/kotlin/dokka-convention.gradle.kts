@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import aws.sdk.kotlin.dokka.TrimNavigation
 import org.gradle.accessors.dm.LibrariesForLibs
 
 plugins {
@@ -39,7 +38,6 @@ dokka {
         customAssets.from(
             rootProject.file("docs/dokka-presets/assets/logo-icon.svg"),
             rootProject.file("docs/dokka-presets/scripts/accessibility.js"),
-            rootProject.file("docs/dokka-presets/scripts/custom-navigation-loader.js"),
         )
 
         templatesDir.set(rootProject.file("docs/dokka-presets/templates"))
@@ -104,12 +102,5 @@ configurations.matching { it.name.startsWith("dokka") }.configureEach {
 
 dependencies {
     dokkaPlugin(project(":dokka-aws"))
-}
-
-val trimNavigationTask = tasks.register<TrimNavigation>("trimNavigationFiles") {
-    sourceDirectory.set(layout.buildDirectory.get().dir("dokka/html"))
-}
-
-tasks.dokkaGenerate {
-    finalizedBy(trimNavigationTask)
+    dokkaHtmlPlugin(libs.aws.kotlin.repo.tools.dokka.lazy.load)
 }
