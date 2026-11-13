@@ -1,0 +1,39 @@
+name: Scratch iOS ECS teardown
+
+on:
+  push:
+    branches: [ ci-native-test-hang-diagnostics ]
+
+permissions:
+  contents: read
+
+env:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+
+jobs:
+  ios-ecs-teardown:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          path: 'aws-sdk-kotlin'
+      - name: Setup Build
+        uses: ./aws-sdk-kotlin/.github/actions/setup-build
+      - name: Configure Gradle
+        uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
+        with:
+          working-directory: ./aws-sdk-kotlin
+      - name: Link test binary and boot simulator
+        working-directory: ./aws-sdk-kotlin
+        run: ./gradlew :aws-runtime:aws-config:linkDebugTestIosSimulatorArm64 bootIosSimulatorDevice
+      - name: Diagnose
+        working-directory: ./aws-sdk-kotlin
+        run: .github/scripts/scratch-ios-ecs-teardown.sh
+      - name: Save diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scratch-ios-ecs-teardown
+          path: aws-sdk-kotlin/build/scratch-ios

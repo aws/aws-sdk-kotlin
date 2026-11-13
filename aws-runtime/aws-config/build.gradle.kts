@@ -63,6 +63,12 @@ kotlin {
             }
         }
 
+        named("nativeTest") {
+            dependencies {
+                implementation(libs.smithy.kotlin.http.client.engine.crt)
+            }
+        }
+
         all {
             languageSettings.optIn("aws.smithy.kotlin.runtime.InternalApi")
             languageSettings.optIn("aws.sdk.kotlin.runtime.InternalSdkApi")
