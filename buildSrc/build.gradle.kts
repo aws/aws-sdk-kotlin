@@ -20,7 +20,3 @@ dependencies {
     // https://github.com/gradle/gradle/issues/15383 — expose generated catalog accessors to precompiled plugins
     implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
-
-dependencies {
-    implementation(libs.jsoup)
-}

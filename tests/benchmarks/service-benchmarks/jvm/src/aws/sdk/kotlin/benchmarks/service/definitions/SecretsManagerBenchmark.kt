@@ -6,12 +6,10 @@ package aws.sdk.kotlin.benchmarks.service.definitions
 
 import aws.sdk.kotlin.benchmarks.service.Common
 import aws.sdk.kotlin.services.secretsmanager.*
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 class SecretsManagerBenchmark : ServiceBenchmark<SecretsManagerClient> {
     private val secretName = Common.random("sdk-benchmark-secret-name-")
 
-    @OptIn(ExperimentalApi::class)
     override suspend fun client() = SecretsManagerClient.fromEnvironment {
         retryStrategy = Common.noRetries
         telemetryProvider = Common.telemetryProvider

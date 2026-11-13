@@ -12,6 +12,7 @@ permissions:
 jobs:
   update-canary:
     runs-on: ubuntu-latest
+    if: github.repository == 'aws/aws-sdk-kotlin'
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4

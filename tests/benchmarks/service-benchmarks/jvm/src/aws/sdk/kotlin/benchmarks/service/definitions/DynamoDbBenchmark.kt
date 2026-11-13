@@ -8,12 +8,10 @@ import aws.sdk.kotlin.benchmarks.service.Common
 import aws.sdk.kotlin.services.dynamodb.*
 import aws.sdk.kotlin.services.dynamodb.model.*
 import aws.sdk.kotlin.services.dynamodb.waiters.waitUntilTableExists
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 class DynamoDbBenchmark : ServiceBenchmark<DynamoDbClient> {
     private val table = Common.random("sdk-benchmark-table-")
 
-    @OptIn(ExperimentalApi::class)
     override suspend fun client() = DynamoDbClient.fromEnvironment {
         retryStrategy = Common.noRetries
         telemetryProvider = Common.telemetryProvider

@@ -45,7 +45,8 @@ import kotlin.coroutines.coroutineContext
  * credentials each time the provider is used to source credentials.
  *
  * @param loginSession The Login Session from the profile
- * @param region The AWS region used to call the log in service.
+ * @param region The AWS region used to call the log in service. When the cached token names a non-blank
+ * `signInRegion`, that region is used for the refresh call instead.
  * @param httpClient The [HttpClientEngine] instance to use to make requests. NOTE: This engine's resources and lifetime
  * are NOT managed by the provider. Caller is responsible for closing.
  * @param platformProvider The platform provider
@@ -86,7 +87,7 @@ public class LoginCredentialsProvider public constructor(
     }
 }
 
-internal fun resolveCacheDir(platformProvider: PlatformProvider) = platformProvider.getenv("AWS_LOGIN_IN_CACHE_DIRECTORY") ?: platformProvider.filepath("~", ".aws", "login", "cache")
+internal fun resolveCacheDir(platformProvider: PlatformProvider) = platformProvider.getenv("AWS_LOGIN_CACHE_DIRECTORY") ?: platformProvider.getenv("AWS_LOGIN_IN_CACHE_DIRECTORY") ?: platformProvider.filepath("~", ".aws", "login", "cache")
 
 internal suspend fun signinClient(providedRegion: String? = null, providedHttpClient: HttpClientEngine? = null) = SigninClient.fromEnvironment {
     region = providedRegion

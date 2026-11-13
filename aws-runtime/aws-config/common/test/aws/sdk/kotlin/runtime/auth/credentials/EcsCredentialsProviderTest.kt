@@ -386,42 +386,44 @@ class EcsCredentialsProviderTest {
 
     @Test
     fun testAuthTokenIllegal() = runTest {
-        val token = "auth\r\ntoken"
-        val engine = TestConnection()
+        listOf("auth\rtoken", "auth\ntoken", "auth\r\ntoken").forEach { token ->
+            val engine = TestConnection()
 
-        val testPlatform = TestPlatformProvider.of(
-            env = mapOf(
-                AwsSdkSetting.AwsContainerCredentialsRelativeUri.envVar to "/relative",
-                AwsSdkSetting.AwsContainerAuthorizationToken.envVar to token,
-            ),
-        )
+            val testPlatform = TestPlatformProvider.of(
+                env = mapOf(
+                    AwsSdkSetting.AwsContainerCredentialsRelativeUri.envVar to "/relative",
+                    AwsSdkSetting.AwsContainerAuthorizationToken.envVar to token,
+                ),
+            )
 
-        val provider = EcsCredentialsProvider(testPlatform, engine)
-        assertFailsWith<CredentialsProviderException> {
-            provider.resolve()
-        }.message.shouldContain("Token contains illegal line break sequence.")
+            val provider = EcsCredentialsProvider(testPlatform, engine)
+            assertFailsWith<CredentialsProviderException> {
+                provider.resolve()
+            }.message.shouldContain("Token contains illegal line break sequence.")
+        }
     }
 
     @Test
     fun testAuthTokenFileIllegal() = runTest {
-        val tokenFile = "/path/to/token"
-        val token = "auth\r\ntoken"
-        val engine = TestConnection()
+        listOf("auth\rtoken", "auth\ntoken", "auth\r\ntoken").forEach { token ->
+            val tokenFile = "/path/to/token"
+            val engine = TestConnection()
 
-        val testPlatform = TestPlatformProvider.of(
-            env = mapOf(
-                AwsSdkSetting.AwsContainerCredentialsRelativeUri.envVar to "/relative",
-                AwsSdkSetting.AwsContainerAuthorizationTokenFile.envVar to tokenFile,
-            ),
-            fs = mapOf(
-                tokenFile to TestFile(token),
-            ),
-        )
+            val testPlatform = TestPlatformProvider.of(
+                env = mapOf(
+                    AwsSdkSetting.AwsContainerCredentialsRelativeUri.envVar to "/relative",
+                    AwsSdkSetting.AwsContainerAuthorizationTokenFile.envVar to tokenFile,
+                ),
+                fs = mapOf(
+                    tokenFile to TestFile(token),
+                ),
+            )
 
-        val provider = EcsCredentialsProvider(testPlatform, engine)
-        assertFailsWith<CredentialsProviderException> {
-            provider.resolve()
-        }.message.shouldContain("Token contains illegal line break sequence.")
+            val provider = EcsCredentialsProvider(testPlatform, engine)
+            assertFailsWith<CredentialsProviderException> {
+                provider.resolve()
+            }.message.shouldContain("Token contains illegal line break sequence.")
+        }
     }
 
     @Test

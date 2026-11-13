@@ -5,12 +5,12 @@
 package aws.sdk.kotlin.hll.codegen.rendering
 
 import aws.sdk.kotlin.hll.codegen.core.CodeGeneratorFactory
+import aws.sdk.kotlin.hll.codegen.core.CodegenLogger
+import aws.sdk.kotlin.hll.codegen.core.SymbolRef
 import aws.sdk.kotlin.hll.codegen.model.HasAttributes
 import aws.sdk.kotlin.runtime.InternalSdkApi
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.collections.emptyAttributes
-import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.symbol.KSNode
 
 /**
  * Holds useful context data about code generation. Like many context objects, this is sort of a grab-bag of things
@@ -21,16 +21,16 @@ import com.google.devtools.ksp.symbol.KSNode
  */
 @InternalSdkApi
 public data class RenderContext(
-    val logger: KSPLogger,
+    val logger: CodegenLogger,
     val codegenFactory: CodeGeneratorFactory,
     val pkg: String,
     val rendererName: String = "aws-sdk-kotlin-hll-codegen",
     override val attributes: Attributes = emptyAttributes(),
 ) : HasAttributes
 
-public fun RenderContext.logging(message: String, symbol: KSNode? = null): Unit = logger.logging(message, symbol)
-public fun RenderContext.info(message: String, symbol: KSNode? = null): Unit = logger.info(message, symbol)
-public fun RenderContext.warn(message: String, symbol: KSNode? = null): Unit = logger.warn(message, symbol)
-public fun RenderContext.error(message: String, symbol: KSNode? = null): Unit = logger.error(message, symbol)
+public fun RenderContext.logging(message: String, symbol: SymbolRef? = null): Unit = logger.logging(message, symbol)
+public fun RenderContext.info(message: String, symbol: SymbolRef? = null): Unit = logger.info(message, symbol)
+public fun RenderContext.warn(message: String, symbol: SymbolRef? = null): Unit = logger.warn(message, symbol)
+public fun RenderContext.error(message: String, symbol: SymbolRef? = null): Unit = logger.error(message, symbol)
 
 public fun RenderContext.exception(e: Throwable): Unit = logger.exception(e)

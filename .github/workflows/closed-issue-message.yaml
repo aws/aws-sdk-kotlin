@@ -10,6 +10,7 @@ permissions:
 jobs:
     auto_comment:
         runs-on: ubuntu-latest
+        if: github.repository == 'aws/aws-sdk-kotlin'
         steps:
         - uses: aws-actions/closed-issue-message@v1
           with:
