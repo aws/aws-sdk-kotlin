@@ -96,7 +96,7 @@ public class AnnotationsProcessor(private val environment: SymbolProcessorEnviro
 
         return attributesOf {
             GenerateBuilderClassesAttribute to GenerateBuilderClasses.valueOf(environment.options[GenerateBuilderClassesAttribute.name] ?: GenerateBuilderClasses.WHEN_REQUIRED.name)
-            VisibilityAttribute to Visibility.valueOf(environment.options.getOrDefault(VisibilityAttribute.name, Visibility.PUBLIC.name))
+            VisibilityAttribute to Visibility.valueOf(environment.options.getOrDefault(VisibilityAttribute.name, Visibility.MATCH_SOURCE.name))
             DestinationPackageAttribute to DestinationPackage.fromString(environment.options.getOrDefault(DestinationPackageAttribute.name, "relative=aws.sdk.kotlin.hll.dynamodbmapper.generatedschemas"))
             GenerateGetTableMethodAttribute to generateGetTableMethod.equals("true", ignoreCase = true)
         }

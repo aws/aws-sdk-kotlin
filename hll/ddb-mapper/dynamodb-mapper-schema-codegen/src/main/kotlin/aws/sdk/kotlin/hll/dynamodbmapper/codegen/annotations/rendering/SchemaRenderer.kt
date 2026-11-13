@@ -32,6 +32,12 @@ internal class SchemaRenderer(
     private val className = item.name
     private val classType = item.type
 
+    /**
+     * The mapped class in expression position (constructor calls, callable references): qualified by any enclosing
+     * classes and without type arguments
+     */
+    private val classRef = classType.copy(genericArgs = emptyList())
+
     private val schemaName = "${className}Schema"
 
     private val partitionKeyTypeRefs = item.metadata.partitionKeys.map { it.type }
@@ -61,7 +67,7 @@ internal class SchemaRenderer(
         val builderCtx = ctx.copy(
             attributes = ctx.attributes + (ModelAttributes.GeneratedApi to true),
         )
-        BuilderRenderer(builderCtx, this, builder.builtStructure, builder.implementationType, builder.members).render()
+        BuilderRenderer(builderCtx, this, builder.builtStructure, builder.implementationType, builder.members, builder.name).render()
     }
 
     private fun renderItemConverter(converter: ItemConverterSpec.Generated) {
@@ -79,10 +85,10 @@ internal class SchemaRenderer(
                 write("builderFactory = ::#L,", builder.name)
                 write("build = #L::build,", builder.name)
             } else if (item.isObject) {
-                write("builderFactory = { $className },")
+                write("builderFactory = { #T },", classRef)
                 write("build = { this },")
             } else {
-                write("builderFactory = { $className() },")
+                write("builderFactory = { #T() },", classRef)
                 write("build = { this },")
             }
 
@@ -148,11 +154,14 @@ internal class SchemaRenderer(
 
             if (item.isObject) {
                 // A bound reference (`Obj::prop`) has the wrong shape for a getter, and an object is never mutated
-                write("{ obj: #L -> obj.#L },", className, prop.name) // getter
+                write("{ obj: #T -> obj.#L },", classRef, prop.name) // getter
                 write("{ },") // setter
             } else {
-                write("#L,", "$className::${prop.name}") // getter
-                write("#L,", "${item.builder?.name ?: className}::${prop.name}::set") // setter
+                write("#T::#L,", classRef, prop.name) // getter
+                when (val builder = item.builder) {
+                    null -> write("#T::#L::set,", classRef, prop.name) // setter
+                    else -> write("#L::#L::set,", builder.name, prop.name) // setter
+                }
             }
 
             // converter

@@ -22,8 +22,9 @@ internal data class BuilderSpec(
     val members: Set<Member>,
 ) {
     /**
-     * The name of the generated builder class, exactly as [BuilderRenderer] declares it
+     * The name of the generated top-level builder class. Derived from the innermost name of a nested class, like every
+     * other generated declaration name.
      */
     val name: String
-        get() = BuilderRenderer.builderName(builtStructure)
+        get() = "${builtStructure.type.leafName}Builder"
 }

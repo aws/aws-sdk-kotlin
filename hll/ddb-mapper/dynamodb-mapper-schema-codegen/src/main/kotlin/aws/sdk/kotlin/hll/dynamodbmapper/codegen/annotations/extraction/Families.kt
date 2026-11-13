@@ -246,6 +246,14 @@ private fun validateFamily(family: Family, index: FamilyIndex, diagnostics: Diag
         )
     }
 
+    if (family.isAdHoc && family.outer != null) {
+        diagnostics.error(
+            "Ad-hoc family '$name' cannot be a @DynamoDbSubtype of '${family.outer!!.family.qualifiedName}'. Its " +
+                "values are not instances of its marker object, so the outer family could never match them.",
+            baseRef,
+        )
+    }
+
     family.outer?.let { outer ->
         if (outer.family.typeAttribute == family.typeAttribute) {
             diagnostics.error(
