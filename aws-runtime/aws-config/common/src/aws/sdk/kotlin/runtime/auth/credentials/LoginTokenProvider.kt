@@ -156,7 +156,7 @@ internal class LoginTokenProvider(
         val filepath = normalizePath(platformProvider.filepath(cacheDirectory, cacheKey), platformProvider)
         val contents = serializeLoginToken(refreshed)
         try {
-            platformProvider.write(
+            platformProvider.writeFile(
                 filepath,
                 contents,
                 WriteType.OVERWRITE,
