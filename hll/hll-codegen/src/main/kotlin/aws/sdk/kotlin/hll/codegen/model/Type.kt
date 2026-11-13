@@ -4,6 +4,7 @@
  */
 package aws.sdk.kotlin.hll.codegen.model
 
+import aws.sdk.kotlin.hll.codegen.ksp.resolveTypeAliases
 import aws.sdk.kotlin.runtime.InternalSdkApi
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
@@ -32,6 +33,9 @@ public sealed interface Type {
          * Derives a [TypeRef] from a [KSType]
          */
         public fun from(ksType: KSType): TypeRef {
+            val resolved = ksType.resolveTypeAliases()
+            if (resolved !== ksType) return from(resolved)
+
             val rootType = ksType.declaration.rootDeclaration
             val pkg = rootType.qualifiedName!!.getQualifier()
 
