@@ -1,0 +1,7 @@
+{
+  "id": "544d6ec4-bb91-496d-88d8-1c1260546dd0",
+  "type": "feature",
+  "description": "Cache and refresh credentials inside each individual credentials provider, so a provider used standalone gets the same refresh-ahead-of-expiration, static stability, rate-limited retry and immediate non-recoverable error behavior that the default chain already had. `SsoCredentialsProvider`, `StsAssumeRoleCredentialsProvider` and `StsWebIdentityCredentialsProvider` are now closeable; close them when you are done with them to release the cache",
+  "module": "aws-config",
+  "requiresMinorVersionBump": true
+}

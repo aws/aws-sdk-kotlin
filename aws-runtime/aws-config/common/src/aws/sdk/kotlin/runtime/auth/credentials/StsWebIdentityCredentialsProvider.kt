@@ -22,6 +22,7 @@ import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.config.EnvironmentSetting
 import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
+import aws.smithy.kotlin.runtime.identity.Identity
 import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import aws.smithy.kotlin.runtime.telemetry.telemetryProvider
 import aws.smithy.kotlin.runtime.time.TimestampFormat
@@ -35,6 +36,10 @@ private const val PROVIDER_NAME = "WebIdentityToken"
 /**
  * A [CredentialsProvider] that exchanges a Web Identity Token for credentials from the AWS Security Token Service (STS).
  *
+ * This provider caches and refreshes credentials internally, so it does not need to be wrapped in a caching provider.
+ * Each refresh re-reads the token file, so a token rotated on disk is picked up. Close it when you are done with it to
+ * release the cache.
+ *
  * @param webIdentityParameters The parameters to pass to the `AssumeRoleWithWebIdentity` call
  * @param region The AWS region to assume the role in
  * @param platformProvider The platform API provider
@@ -46,7 +51,8 @@ public class StsWebIdentityCredentialsProvider(
     public val region: String?,
     public val platformProvider: PlatformProvider = PlatformProvider.System,
     public val httpClient: HttpClientEngine? = null,
-) : CredentialsProvider {
+) : CloseableCredentialsProvider,
+    RefreshAwareCredentialsProvider {
 
     /**
      * A [CredentialsProvider] that exchanges a Web Identity Token for credentials from the AWS Security Token Service
@@ -106,7 +112,18 @@ public class StsWebIdentityCredentialsProvider(
         }
     }
 
-    override suspend fun resolve(attributes: Attributes): Credentials {
+    // No defaultLifetime override: STS always states an expiration, so the fallback is never reached.
+    private val refresh = SelfManagedRefresh(::resolveUncached)
+
+    override suspend fun resolve(attributes: Attributes): Credentials = refresh.resolve(attributes)
+
+    override suspend fun invalidate(rejectedIdentity: Identity): Unit = refresh.invalidate(rejectedIdentity)
+
+    /**
+     * Calls `AssumeRoleWithWebIdentity` with no caching or pacing of its own, re-reading the token file each time. The
+     * caller's cache decides what a failure or an already-past expiration means.
+     */
+    private suspend fun resolveUncached(attributes: Attributes): Credentials {
         val logger = coroutineContext.logger<StsAssumeRoleCredentialsProvider>()
         logger.debug { "retrieving assumed credentials via web identity" }
 
@@ -164,6 +181,14 @@ public class StsWebIdentityCredentialsProvider(
             accountId = accountId,
             refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_STS_ASSUME_ROLE_WEB_ID)
+    }
+
+    /**
+     * Releases the refresh lifecycle. The `StsClient` each resolution builds is closed by that resolution, and this
+     * provider owns nothing else closeable.
+     */
+    override fun close() {
+        refresh.close()
     }
 
     override fun toString(): String = this.simpleClassName

@@ -290,4 +290,42 @@ class LoginCredentialsProviderTest {
         val host = request.url.host.toString()
         assertTrue(host.contains("us-west-2"), "expected us-west-2 in host, got $host")
     }
+
+    @Test
+    fun testCachesBetweenResolutions() = runTest {
+        // `expiresIn` puts the refreshed credentials an hour ahead of the clock, so the second resolution is served
+        // from the cache: a single expectation, so a second token exchange would fail the connection assertion.
+        val serviceResp = """
+        {
+            "accessToken": {
+                "accessKeyId": "AKID",
+                "secretAccessKey": "secret",
+                "sessionToken": "session-token"
+            },
+            "expiresIn": 3600,
+            "refreshToken": "new-refresh-token",
+            "tokenType": "aws_sigv4"
+        }
+        """
+        val engine = buildTestConnection {
+            expect(
+                HttpResponse(HttpStatusCode.OK, Headers.Empty, HttpBody.fromBytes(serviceResp.encodeToByteArray())),
+            )
+        }
+        val key = getLoginCacheFilename("arn:aws:iam::123456789:user/TestUser")
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf("HOME" to "/home"),
+            fs = mapOf("/home/.aws/login/cache/$key" to TestFile(expiredTokenContents())),
+        )
+        val provider = LoginCredentialsProvider(
+            loginSession = "arn:aws:iam::123456789:user/TestUser",
+            region = "us-west-2",
+            httpClient = engine,
+            platformProvider = testPlatform,
+            clock = ManualClock(epoch = Instant.fromIso8601("2020-10-16T03:56:00Z")),
+        )
+
+        assertEquals(provider.resolve(), provider.resolve())
+        engine.assertRequests()
+    }
 }
