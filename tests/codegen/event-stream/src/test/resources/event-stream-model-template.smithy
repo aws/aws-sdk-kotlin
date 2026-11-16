@@ -34,9 +34,21 @@ structure MessageWithEnumHeaders {
     @eventHeader intEnum: IntEnum,
 }
 
+structure MessageWithHeaderAndPayload {
+    @eventHeader header: String,
+    @eventPayload payload: Blob,
+}
+
+structure MessageWithNoHeaderPayloadTraits {
+    someInt: Integer,
+    someString: String,
+}
+
 @streaming
 union TestStream {
     MessageWithEnumHeaders: MessageWithEnumHeaders,
+    MessageWithHeaderAndPayload: MessageWithHeaderAndPayload,
+    MessageWithNoHeaderPayloadTraits: MessageWithNoHeaderPayloadTraits,
     SomeError: SomeError,
 }
 

@@ -24,6 +24,7 @@ import aws.smithy.kotlin.runtime.http.request.HttpRequestBuilder
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.io.SdkBuffer
 import aws.smithy.kotlin.runtime.operation.ExecutionContext
+import aws.smithy.kotlin.runtime.smithy.test.assertJsonStringsEqual
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.single
@@ -38,7 +39,8 @@ import kotlin.time.Duration.Companion.milliseconds
  * works as expected for an HTTP-bound service.
  *
  * Most event shapes are covered by the Smithy `eventStreamTests` protocol tests run in smithy-kotlin. This suite only
- * covers cases those tests don't model (e.g. enum-typed event headers).
+ * covers cases those tests don't model: enum-typed event headers, a header next to a blob payload, and an implicit
+ * payload with several members and no headers.
  */
 @OptIn(InternalApi::class)
 class HttpEventStreamTests {
@@ -113,6 +115,51 @@ class HttpEventStreamTests {
 
         val deserialized = deserializedEvent(message)
         assertIs<TestStream.MessageWithEnumHeaders>(deserialized)
+        assertEquals(event, deserialized)
+    }
+
+    @Test
+    fun testSerializeMessageWithHeaderAndPayload() = runTest {
+        val event = TestStream.MessageWithHeaderAndPayload(
+            MessageWithHeaderAndPayload {
+                header = "a korf is a tiger"
+                payload = "remember a korf is a tiger".encodeToByteArray()
+            },
+        )
+
+        val message = serializedMessage(event)
+
+        val headers = message.headers.associate { it.name to it.value }
+        assertEquals("event", headers[":message-type"]?.expectString())
+        assertEquals("MessageWithHeaderAndPayload", headers[":event-type"]?.expectString())
+        assertEquals("a korf is a tiger", headers["header"]?.expectString())
+        assertEquals("remember a korf is a tiger", message.payload.decodeToString())
+
+        val deserialized = deserializedEvent(message)
+        assertIs<TestStream.MessageWithHeaderAndPayload>(deserialized)
+        assertEquals(event, deserialized)
+    }
+
+    @Test
+    fun testSerializeMessageWithNoTraits() = runTest {
+        val event = TestStream.MessageWithNoHeaderPayloadTraits(
+            MessageWithNoHeaderPayloadTraits {
+                someInt = 2
+                someString = "a flix is comb"
+            },
+        )
+
+        val message = serializedMessage(event)
+
+        val headers = message.headers.associate { it.name to it.value }
+        assertEquals("event", headers[":message-type"]?.expectString())
+        assertEquals("MessageWithNoHeaderPayloadTraits", headers[":event-type"]?.expectString())
+        assertEquals("application/json", headers[":content-type"]?.expectString())
+        val expectedBody = """{"someInt":2,"someString":"a flix is comb"}"""
+        assertJsonStringsEqual(expectedBody, message.payload.decodeToString())
+
+        val deserialized = deserializedEvent(message)
+        assertIs<TestStream.MessageWithNoHeaderPayloadTraits>(deserialized)
         assertEquals(event, deserialized)
     }
 }
