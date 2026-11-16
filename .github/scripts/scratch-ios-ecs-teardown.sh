@@ -1,10 +1,8 @@
 #!/bin/bash
 #
-# Scratch diagnostics for the aws-config iOS simulator test binary hanging at exit. Runs the linked test binary on a
-# booted simulator three ways and saves everything under $OUT_DIR:
-#   ecs-only     the two ECS tests that do real DNS, with CRT trace logs; dumps the managed thread count if it hangs
-#   all-but-ecs  every other test, as a control
-#   ecs-lldb     the two ECS tests under lldb, logging each event loop group create/shutdown/destroy step
+# Scratch diagnostics for the aws-config iOS simulator test binary hanging at exit. Runs each test class in its own
+# process on a booted simulator, then the whole binary once. Any run still alive after $HANG_LIMIT_SECS is attached with
+# lldb to print the CRT's unjoined managed thread count and every thread's stack. Output goes under $OUT_DIR.
 # Run from the aws-sdk-kotlin root after linking :aws-runtime:aws-config:linkDebugTestIosSimulatorArm64. Boots the
 # simulator itself. Written for macOS's bash 3.2.
 
@@ -13,8 +11,7 @@ set -u
 kexe=$PWD/aws-runtime/aws-config/build/bin/iosSimulatorArm64/debugTest/test.kexe
 device=
 out=${OUT_DIR:-$PWD/build/scratch-ios}
-limit=${HANG_LIMIT_SECS:-180}
-ecs_filter='*.EcsCredentialsProviderTest.testNonLocalFullUri:*.EcsCredentialsProviderTest.testNonexistentFullUri'
+limit=${HANG_LIMIT_SECS:-90}
 
 mkdir -p "$out"
 
@@ -48,6 +45,11 @@ wait_for_exit() {
   return 1
 }
 
+# The count is a file-static C variable without debug info, so read it through its symbol's load address
+read_count_py="script s = lldb.target.FindSymbols('s_unjoined_thread_count')[0].GetSymbol(); \
+a = s.GetStartAddress().GetLoadAddress(lldb.target); e = lldb.SBError(); \
+print('s_unjoined_thread_count =', lldb.process.ReadUnsignedFromMemory(a, 4, e), e)"
+
 dump_hung_binary() {
   local name=$1 pid
   pid=$(pgrep -nx test.kexe)
@@ -55,77 +57,48 @@ dump_hung_binary() {
     log "$name: no test.kexe process found"
     return
   fi
-  log "$name: managed thread count and stacks of pid $pid"
   sudo lldb --batch -p "$pid" \
-    -o "expr (unsigned int)s_unjoined_thread_count" \
-    -o "memory read --size 4 --format u --count 1 &s_unjoined_thread_count" \
+    -O "settings set interpreter.stop-command-source-on-error false" \
+    -o "image lookup -s s_unjoined_thread_count" \
+    -o "$read_count_py" \
     -o "thread backtrace all" \
     -o "detach" > "$out/$name-lldb.txt" 2>&1
-  grep -A2 "s_unjoined_thread_count" "$out/$name-lldb.txt"
+  log "$name: $(grep -m1 "s_unjoined_thread_count =" "$out/$name-lldb.txt" || echo "count not read")"
+  grep -E "frame #[0-9]+: .*(aws_|kfun:aws\.sdk\.kotlin\.crt)" "$out/$name-lldb.txt" | sed -E 's/^ *//' | cut -c1-200 | head -40
   kill -9 "$pid" 2>/dev/null
 }
 
-# Runs the test binary on the simulator: run_spawn <name> <crt log level or empty> <ktest args...>
+# Runs the test binary on the simulator: run_spawn <name> <ktest args...>. Returns 1 if it hung.
 run_spawn() {
-  local name=$1 level=$2 pid rc
-  shift 2
-  echo "::group::[scratch-ios] $name"
-  if [[ -n $level ]]; then
-    SIMCTL_CHILD_CRT_LOG_LEVEL=$level xcrun simctl spawn "$device" "$kexe" --ktest_logger=SIMPLE "$@" > "$out/$name.log" 2>&1 &
-  else
-    xcrun simctl spawn "$device" "$kexe" --ktest_logger=SIMPLE "$@" > "$out/$name.log" 2>&1 &
-  fi
+  local name=$1 pid rc
+  shift
+  xcrun simctl spawn "$device" "$kexe" --ktest_logger=SIMPLE "$@" > "$out/$name.log" 2>&1 &
   pid=$!
   if wait_for_exit "$pid" "$limit"; then
     wait "$pid"
     rc=$?
-    log "$name: exited rc=$rc"
-  else
-    log "$name: HUNG after ${limit}s"
-    dump_hung_binary "$name"
+    log "$name: exited rc=$rc ($(grep -c "^Passed" "$out/$name.log") passed, $(grep -c "^Failed" "$out/$name.log") failed)"
+    return 0
   fi
-  grep -E "^(Starting test case|Passed|Failed)" "$out/$name.log"
-  log "$name: event loop and host resolver teardown lines"
-  grep -E "\[(event-loop|dns|common-thread)\]" "$out/$name.log" |
-    grep -iE "destroy|shut ?down|clean|join|terminat|killing" | sed -E 's/^.*\] - //' | head -200
+  echo "::group::[scratch-ios] $name HUNG after ${limit}s"
+  tail -3 "$out/$name.log"
+  dump_hung_binary "$name"
   echo "::endgroup::"
-}
-
-run_lldb() {
-  local name=ecs-lldb udid=$device pid
-  echo "::group::[scratch-ios] $name"
-
-  cat > "$out/$name.cmds" <<EOF
-platform select ios-simulator
-platform connect $udid
-target create "$kexe"
-breakpoint set --name aws_event_loop_group_new_internal --auto-continue true --command "bt 12"
-breakpoint set --name s_aws_event_loop_group_shutdown_async --auto-continue true --command "bt 12"
-breakpoint set --name s_complete_destroy --auto-continue true --command "bt 12"
-breakpoint set --name s_dispatch_event_loop_final_destroy --auto-continue true --command "bt 8"
-breakpoint set --name aws_thread_increment_unjoined_count --auto-continue true --command "bt 6"
-breakpoint set --name aws_thread_decrement_unjoined_count --auto-continue true --command "bt 6"
-breakpoint set --name aws_thread_join_all_managed --auto-continue true --command "expr (unsigned int)s_unjoined_thread_count"
-process launch --shell-expand-args false -- --ktest_logger=SIMPLE '--ktest_filter=$ecs_filter'
-EOF
-
-  lldb --batch -s "$out/$name.cmds" > "$out/$name.log" 2>&1 &
-  pid=$!
-  if wait_for_exit "$pid" "$limit"; then
-    wait "$pid"
-    log "$name: lldb exited rc=$?"
-  else
-    log "$name: HUNG after ${limit}s"
-    kill -9 "$pid" 2>/dev/null
-    pkill -9 -x test.kexe 2>/dev/null
-  fi
-  grep -E "^\(lldb\)|stop reason|frame #[0-9]+:|s_unjoined_thread_count|\(unsigned int\)|exited with status|error:" "$out/$name.log" |
-    cut -c1-200 | head -400
-  echo "::endgroup::"
+  return 1
 }
 
 sudo DevToolsSecurity -enable > /dev/null 2>&1 || log "DevToolsSecurity -enable failed"
 
-run_spawn ecs-only Trace "--ktest_filter=$ecs_filter"
-run_spawn all-but-ecs "" "--ktest_filter=*-$ecs_filter"
-run_lldb
+xcrun simctl spawn "$device" "$kexe" --ktest_list_tests > "$out/tests.txt" 2>&1
+classes=$(grep -E '^[A-Za-z0-9_.]+\.$' "$out/tests.txt" | sed 's/\.$//')
+log "$(echo "$classes" | grep -c .) test classes"
+
+hung=""
+for class in $classes; do
+  short=${class##*.}
+  run_spawn "class-$short" "--ktest_filter=$class.*" || hung="$hung $short"
+done
+
+log "classes that hung:${hung:- none}"
+
+run_spawn all || true
