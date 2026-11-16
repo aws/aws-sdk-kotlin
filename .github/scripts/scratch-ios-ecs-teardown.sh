@@ -1,8 +1,9 @@
 #!/bin/bash
 #
-# Scratch diagnostics for the aws-config iOS simulator test binary hanging at exit. Runs each test class in its own
-# process on a booted simulator, then the whole binary once. Any run still alive after $HANG_LIMIT_SECS is attached with
-# lldb to print the CRT's unjoined managed thread count and every thread's stack. Output goes under $OUT_DIR.
+# Scratch diagnostics for the aws-config iOS simulator test binary hanging at exit. Runs each CrtTeardownReproTest test
+# and each LoginCredentialsProviderTest test in its own process on a booted simulator. Any run still alive after
+# $HANG_LIMIT_SECS is attached with lldb to print the CRT's unjoined managed thread count and every thread's stack.
+# Output goes under $OUT_DIR.
 # Run from the aws-sdk-kotlin root after linking :aws-runtime:aws-config:linkDebugTestIosSimulatorArm64. Boots the
 # simulator itself. Written for macOS's bash 3.2.
 
@@ -90,15 +91,21 @@ run_spawn() {
 sudo DevToolsSecurity -enable > /dev/null 2>&1 || log "DevToolsSecurity -enable failed"
 
 xcrun simctl spawn "$device" "$kexe" --ktest_list_tests > "$out/tests.txt" 2>&1
-classes=$(grep -E '^[A-Za-z0-9_.]+\.$' "$out/tests.txt" | sed 's/\.$//')
-log "$(echo "$classes" | grep -c .) test classes"
 
-hung=""
-for class in $classes; do
-  short=${class##*.}
-  run_spawn "class-$short" "--ktest_filter=$class.*" || hung="$hung $short"
+# Each repro test in its own process. simctl passes SIMCTL_CHILD_* env vars to the child without the prefix.
+export SIMCTL_CHILD_CRT_TEARDOWN_REPRO=1
+repro=aws.sdk.kotlin.runtime.auth.credentials.CrtTeardownReproTest
+for test in $(sed -n "/^$repro\./,/^[^ ]/p" "$out/tests.txt" | grep -E '^ +[A-Za-z]' | tr -d ' '); do
+  if run_spawn "repro-$test" "--ktest_filter=$repro.$test"; then
+    grep -m1 -E "did not drain|join drained|Exception" "$out/repro-$test.log" | cut -c1-200
+  fi
 done
+unset SIMCTL_CHILD_CRT_TEARDOWN_REPRO
 
-log "classes that hung:${hung:- none}"
-
-run_spawn all || true
+# Each LoginCredentialsProviderTest test in its own process, to find which ones hang
+login=aws.sdk.kotlin.runtime.auth.credentials.LoginCredentialsProviderTest
+hung=""
+for test in $(sed -n "/^$login\./,/^[^ ]/p" "$out/tests.txt" | grep -E '^ +[A-Za-z]' | tr -d ' '); do
+  run_spawn "login-$test" "--ktest_filter=$login.$test" || hung="$hung $test"
+done
+log "LoginCredentialsProviderTest tests that hung:${hung:- none}"
