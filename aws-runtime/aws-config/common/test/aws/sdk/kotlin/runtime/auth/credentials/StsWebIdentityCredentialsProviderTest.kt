@@ -9,6 +9,7 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderException
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.http.Headers
 import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
@@ -37,6 +38,7 @@ private val CREDENTIALS = credentials(
     StsTestUtils.EPOCH + 15.minutes,
     "WebIdentityToken",
     "1234567",
+    refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
 ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_STS_ASSUME_ROLE_WEB_ID)
 
 class StsWebIdentityCredentialsProviderTest {

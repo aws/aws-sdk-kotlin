@@ -10,6 +10,7 @@ import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetric
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.collections.attributesOf
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.test.runTest
@@ -34,7 +35,8 @@ class EnvironmentCredentialsProviderTest {
                 "def",
                 "ghi",
                 providerName = "Environment",
-            ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_ENV_VARS),
+            ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_ENV_VARS)
+                .withRefreshBehavior(CredentialsRefreshBehavior.NonRefreshable),
         )
     }
 
@@ -51,7 +53,8 @@ class EnvironmentCredentialsProviderTest {
                 "def",
                 null,
                 providerName = "Environment",
-            ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_ENV_VARS),
+            ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_ENV_VARS)
+                .withRefreshBehavior(CredentialsRefreshBehavior.NonRefreshable),
         )
     }
 
@@ -104,6 +107,7 @@ class EnvironmentCredentialsProviderTest {
             providerName = "Environment",
             attributes = attributesOf { AwsClientOption.AccountId to "12345" },
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_ENV_VARS)
+            .withRefreshBehavior(CredentialsRefreshBehavior.NonRefreshable)
         assertEquals(expected, actual)
     }
 }

@@ -11,6 +11,7 @@ import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.AwsBusinessMetri
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetric
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.auth.awscredentials.simpleClassName
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.telemetry.logging.trace
@@ -45,6 +46,7 @@ public class EnvironmentCredentialsProvider(
             sessionToken = getEnv(SESSION_TOKEN),
             providerName = PROVIDER_NAME,
             accountId = getEnv(ACCOUNT_ID),
+            refreshBehavior = CredentialsRefreshBehavior.NonRefreshable,
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_ENV_VARS)
     }
 

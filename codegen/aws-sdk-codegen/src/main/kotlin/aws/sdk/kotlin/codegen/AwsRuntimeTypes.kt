@@ -58,6 +58,7 @@ object AwsRuntimeTypes {
             val DefaultChainCredentialsProvider = symbol("DefaultChainCredentialsProvider")
             val DefaultChainBearerTokenProvider = symbol("DefaultChainBearerTokenProvider")
             val StaticCredentialsProvider = symbol("StaticCredentialsProvider")
+            val CredentialsInvalidationInterceptor = symbol("CredentialsInvalidationInterceptor")
             val manage = symbol("manage", "auth.credentials.internal", isExtension = true)
         }
 

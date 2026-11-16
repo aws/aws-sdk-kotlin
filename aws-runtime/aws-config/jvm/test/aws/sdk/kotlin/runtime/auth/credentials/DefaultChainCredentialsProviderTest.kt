@@ -9,7 +9,9 @@ import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetrics
 import aws.sdk.kotlin.runtime.util.toAwsCredentialsBusinessMetric
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsRefreshBehavior
 import aws.smithy.kotlin.runtime.auth.awscredentials.copy
+import aws.smithy.kotlin.runtime.auth.awscredentials.refreshBehavior
 import aws.smithy.kotlin.runtime.httptest.TestConnection
 import aws.smithy.kotlin.runtime.time.Instant
 import aws.smithy.kotlin.runtime.util.Filesystem
@@ -190,7 +192,9 @@ class DefaultChainCredentialsProviderTest {
                 val actualCreds = actual.getOrThrow()
 
                 val sanitizedExpiration = if (expected.creds.expiration == null) null else actualCreds.expiration
-                val creds = actualCreds.copy(providerName = null, expiration = sanitizedExpiration)
+                // The refresh-behavior declaration varies by which provider won the chain, and these test cases are
+                // shared fixtures that do not model it. testRefreshBehaviorSurvivesTheChain covers it instead.
+                val creds = actualCreds.withoutRefreshBehavior().copy(providerName = null, expiration = sanitizedExpiration)
                 assertEquals(expected.creds, creds)
 
                 // assert http traffic to the extent we can. These tests do not have specific timestamps they
@@ -290,4 +294,26 @@ class DefaultChainCredentialsProviderTest {
 
     @Test
     fun testStsRetryOnError() = executeTest("retry_on_error")
+
+    @Test
+    fun testRefreshBehaviorSurvivesTheChain() = runTest {
+        val test = makeTest("ecs_credentials")
+        val provider = DefaultChainCredentialsProvider(platformProvider = test.testPlatform, httpClient = test.testEngine)
+
+        // The declaration the resolving provider made has to reach the caller: it is what the cache wrapping the
+        // chain uses to decide the refresh schedule for these credentials.
+        assertEquals(CredentialsRefreshBehavior.RefreshableWithStaticStability, provider.resolve().refreshBehavior)
+    }
+
+    @Test
+    fun testInvalidateBeforeAnythingIsCached() = runTest {
+        val test = makeTest("ecs_credentials")
+        val provider = DefaultChainCredentialsProvider(platformProvider = test.testPlatform, httpClient = test.testEngine)
+
+        // A rejection can arrive for credentials this chain never supplied, or after the cache has been emptied.
+        // It has to be dropped rather than recorded, or it would reject the first credentials resolved afterwards.
+        provider.invalidate(Credentials("stale-AKID", "stale-secret"))
+
+        assertEquals("ASIARCORRECT", provider.resolve().accessKeyId)
+    }
 }
