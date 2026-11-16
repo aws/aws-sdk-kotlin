@@ -625,6 +625,12 @@
             "brazilName": "AwsSdkKotlinConnectparticipant"
         },
         {
+            "sdkId": "ConnectScheduling",
+            "namespace": "aws.sdk.kotlin.services.connectscheduling",
+            "artifactName": "connectscheduling",
+            "brazilName": "AwsSdkKotlinConnectscheduling"
+        },
+        {
             "sdkId": "Continuum",
             "namespace": "aws.sdk.kotlin.services.continuum",
             "artifactName": "continuum",
@@ -1621,6 +1627,12 @@
             "brazilName": "AwsSdkKotlinOpensearch"
         },
         {
+            "sdkId": "OpenSearchMemory",
+            "namespace": "aws.sdk.kotlin.services.opensearchmemory",
+            "artifactName": "opensearchmemory",
+            "brazilName": "AwsSdkKotlinOpensearchmemory"
+        },
+        {
             "sdkId": "OpenSearchServerless",
             "namespace": "aws.sdk.kotlin.services.opensearchserverless",
             "artifactName": "opensearchserverless",
@@ -2075,6 +2087,12 @@
             "namespace": "aws.sdk.kotlin.services.sagemakergeospatial",
             "artifactName": "sagemakergeospatial",
             "brazilName": "AwsSdkKotlinSagemakerGeospatial"
+        },
+        {
+            "sdkId": "SageMaker Inference Router Runtime",
+            "namespace": "aws.sdk.kotlin.services.sagemakerinferencerouterruntime",
+            "artifactName": "sagemakerinferencerouterruntime",
+            "brazilName": "AwsSdkKotlinSagemakerInferenceRouterRuntime"
         },
         {
             "sdkId": "SageMaker Metrics",
