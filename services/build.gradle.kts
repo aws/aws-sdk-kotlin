@@ -62,11 +62,10 @@ subprojects {
         if (project.file("e2eTest").exists()) {
             jvm().compilations {
                 val e2eTest by creating {
+                    associateWith(this@compilations.getByName("main"))
                     defaultSourceSet {
                         kotlin.srcDir("e2eTest/src")
                         resources.srcDir("e2eTest/test-resources")
-                        dependsOn(this@kotlin.sourceSets.getByName("commonMain"))
-                        dependsOn(this@kotlin.sourceSets.getByName("jvmMain"))
 
                         dependencies {
                             api(libraries.smithy.kotlin.testing)

@@ -23,6 +23,13 @@ jobs:
         with:
           path: 'aws-sdk-kotlin'
 
+      - name: Configure JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: 17
+          cache: 'gradle'
+
       - name: Configure Gradle
         uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
         with:

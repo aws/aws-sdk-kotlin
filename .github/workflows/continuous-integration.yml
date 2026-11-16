@@ -39,6 +39,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: 'aws-sdk-kotlin'
+      - name: Install test JDK
+        id: test-jdk
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: ${{ matrix.java-version }}
       - name: Setup Build
         uses: ./aws-sdk-kotlin/.github/actions/setup-build
       - name: Configure Gradle
@@ -58,7 +64,10 @@ jobs:
         run: |
           pwd
           ls -lsa
-          ./gradlew -Ptest.java.version=${{ matrix.java-version }} jvmTest --stacktrace
+          # Gradle doesn't search setup-java's tool cache for toolchains, so point it at the test JDK
+          ./gradlew \
+            -Porg.gradle.java.installations.paths=${{ steps.test-jdk.outputs.path }} \
+            -Ptest.java.version=${{ matrix.java-version }} jvmTest --stacktrace
       - name: Calculate duration
         id: end
         if: always()
