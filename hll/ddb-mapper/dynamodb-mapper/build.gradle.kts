@@ -8,7 +8,6 @@ import dev.mokkery.verify.VerifyMode
 import software.amazon.dynamodb.services.local.main.ServerRunner
 import software.amazon.dynamodb.services.local.server.DynamoDBProxyServer
 import java.net.ServerSocket
-import kotlin.properties.Delegates
 
 description = "High level DynamoDbMapper client"
 extra["displayName"] = "AWS :: SDK :: Kotlin :: HLL :: DynamoDbMapper"
@@ -66,58 +65,83 @@ ksp {
 
 configureKspCodegen(listOf(":hll:ddb-mapper:dynamodb-mapper-ops-codegen"))
 
-open class DynamoDbLocalInstance : DefaultTask() {
-    private var port: Int by Delegates.notNull()
+/**
+ * Owns a single DynamoDB Local instance shared by every test task in the build (e.g., `jvmTest` and `linuxX64Test`).
+ * Gradle closes the service once the build finishes, so the server outlives whichever test task happens to finish
+ * first instead of being torn down by it.
+ */
+abstract class DynamoDbLocalService :
+    BuildService<DynamoDbLocalService.Params>,
+    AutoCloseable {
+    interface Params : BuildServiceParameters {
+        val portFile: RegularFileProperty
+    }
 
-    @OutputFile
-    val portFile = project.objects.fileProperty()
+    private var runner: DynamoDBProxyServer? = null
+    private var port: Int? = null
 
-    @Internal
-    var runner: DynamoDBProxyServer? = null
-        private set
+    @Synchronized
+    fun start() {
+        if (runner != null) return
 
-    @TaskAction
-    fun exec() {
-        port = ServerSocket(0).use { it.localPort }
-
+        val port = ServerSocket(0).use { it.localPort }
         println("Starting DynamoDB local instance on port $port")
-        runner = ServerRunner
+        val server = ServerRunner
             .createServerFromCommandLineArgs(arrayOf("-inMemory", "-port", port.toString(), "-disableTelemetry"))
-            .also { it.start() }
+        server.start()
+        runner = server
+        this.port = port
 
-        portFile
+        parameters
+            .portFile
             .asFile
             .get()
             .also { println("Writing port info file to ${it.absolutePath}") }
+            .apply { parentFile.mkdirs() }
             .writeText(port.toString())
     }
 
-    fun stop() {
+    @Synchronized
+    override fun close() {
         runCatching {
-            portFile
+            parameters
+                .portFile
                 .asFile
                 .get()
                 .also { println("Deleting port info file at ${it.absolutePath}") }
                 .delete()
-        }.onFailure { t -> println("Failed to delete $portFile: $t") }
+        }.onFailure { t -> println("Failed to delete ${parameters.portFile}: $t") }
 
         runner?.let {
             println("Stopping DynamoDB local instance on port $port")
             it.stop()
         }
+        runner = null
     }
 }
 
-val startDdbLocal = tasks.register<DynamoDbLocalInstance>("startDdbLocal") {
-    portFile.set(file("build/ddblocal/port.info")) // Keep in sync with DdbLocalTest.kt
-    outputs.upToDateWhen { false } // Always run this task even if a portFile already exists
+val ddbLocalService = gradle.sharedServices.registerIfAbsent("ddbLocal-${project.path}", DynamoDbLocalService::class) {
+    parameters.portFile.set(file("build/ddblocal/port.info")) // Keep in sync with DdbLocalTest.kt
 }
 
-tasks.withType<Test> {
+abstract class StartDynamoDbLocal : DefaultTask() {
+    @get:Internal
+    abstract val ddbLocal: Property<DynamoDbLocalService>
+
+    @TaskAction
+    fun exec() = ddbLocal.get().start()
+}
+
+// No declared outputs, so Gradle always runs this task rather than treating it as up to date
+val startDdbLocal = tasks.register<StartDynamoDbLocal>("startDdbLocal") {
+    ddbLocal.set(ddbLocalService)
+    usesService(ddbLocalService)
+}
+
+tasks.withType<AbstractTestTask> {
     dependsOn(startDdbLocal)
-    doLast {
-        startDdbLocal.get().stop()
-    }
+    // Keeps the service (and therefore the server) alive until every test task using it has finished
+    usesService(ddbLocalService)
 }
 
 mokkery {

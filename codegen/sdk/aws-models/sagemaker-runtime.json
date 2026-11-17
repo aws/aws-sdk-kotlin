@@ -1544,6 +1544,20 @@
                         "smithy.api#httpHeader": "X-Amzn-SageMaker-Filename"
                     }
                 },
+                "S3OutputPathExtension": {
+                    "target": "com.amazonaws.sagemakerruntime#S3OutputPathExtensionHeader",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The path extension that is appended to the Amazon S3 output path where the inference\n            response payload is stored.</p>",
+                        "smithy.api#httpHeader": "X-Amzn-SageMaker-S3OutputPathExtension"
+                    }
+                },
+                "Filename": {
+                    "target": "com.amazonaws.sagemakerruntime#FilenameHeader",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The filename for the inference response payload stored in Amazon S3. If not\n            specified, Amazon SageMaker AI generates a filename based on the inference ID.</p>",
+                        "smithy.api#httpHeader": "X-Amzn-SageMaker-Filename"
+                    }
+                },
                 "RequestTTLSeconds": {
                     "target": "com.amazonaws.sagemakerruntime#RequestTTLSecondsHeader",
                     "traits": {
