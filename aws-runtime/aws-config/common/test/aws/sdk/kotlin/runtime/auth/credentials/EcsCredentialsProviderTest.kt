@@ -43,10 +43,6 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.minutes
 
 class EcsCredentialsProviderTest {
-    init {
-        initCrtLoggingFromEnv()
-    }
-
     private val epoch = Instant.fromIso8601("2020-10-16T03:56:00Z")
     private val expectedExpiration = epoch + 15.minutes
     private val expectedCredentials = Credentials(
