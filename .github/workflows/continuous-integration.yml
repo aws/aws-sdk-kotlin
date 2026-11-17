@@ -123,6 +123,9 @@ jobs:
         working-directory: ./aws-sdk-kotlin
         shell: bash
         run: |
+          .github/scripts/native-test-watchdog.sh &
+          watchdog=$!
+          trap 'kill "$watchdog"' EXIT
           ./gradlew apiCheck
           ./gradlew build --stacktrace
       - name: Calculate duration
@@ -181,6 +184,9 @@ jobs:
         working-directory: ./aws-sdk-kotlin
         shell: bash
         run: |
+          .github/scripts/native-test-watchdog.sh &
+          watchdog=$!
+          trap 'kill "$watchdog"' EXIT
           ./gradlew apiCheck
           ./gradlew build --stacktrace
       - name: Calculate duration

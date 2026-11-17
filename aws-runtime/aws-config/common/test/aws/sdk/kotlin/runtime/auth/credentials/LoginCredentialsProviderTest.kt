@@ -32,7 +32,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.text.encodeToByteArray
-import kotlin.time.Duration.Companion.minutes
 import kotlin.to
 
 class LoginCredentialsProviderTest {
@@ -83,11 +82,7 @@ class LoginCredentialsProviderTest {
     }
 
     @Test
-    fun testExpiredToken() = runTest(
-        // TODO: Figure out why this test takes so long to run on some developer machines (@aoperez)
-        // TODO: Remove custom timeout
-        timeout = 2.minutes,
-    ) {
+    fun testExpiredToken() = runTest {
         val engine = TestConnection()
 
         val epoch = "2025-09-15T04:05:45Z"
@@ -119,6 +114,7 @@ class LoginCredentialsProviderTest {
 
         val provider = LoginCredentialsProvider(
             loginSession = "arn:aws:iam::0123456789012:user/Admin",
+            region = "us-west-2",
             httpClient = engine,
             platformProvider = testPlatform,
             clock = testClock,
