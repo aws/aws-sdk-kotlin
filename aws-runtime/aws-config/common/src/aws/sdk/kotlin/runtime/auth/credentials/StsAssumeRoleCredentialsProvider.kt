@@ -23,6 +23,7 @@ import aws.smithy.kotlin.runtime.client.SdkClientOption
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
+import aws.smithy.kotlin.runtime.identity.Identity
 import aws.smithy.kotlin.runtime.telemetry.logging.logger
 import aws.smithy.kotlin.runtime.telemetry.telemetryProvider
 import aws.smithy.kotlin.runtime.time.Instant
@@ -43,6 +44,9 @@ private const val PROVIDER_NAME = "AssumeRoleProvider"
  * When asked to provide credentials, this provider will first invoke the inner credentials provider
  * to get AWS credentials for STS. Then, it will call STS to get assumed credentials for the desired role.
  *
+ * This provider caches and refreshes credentials internally, so it does not need to be wrapped in a caching provider.
+ * Close it when you are done with it to release the cache.
+ *
  * @param bootstrapCredentialsProvider The underlying provider to use for source credentials
  * @param assumeRoleParameters The parameters to pass to the `AssumeRole` call
  * @param region The AWS region to assume the role in. If not set then the global STS endpoint will be used.
@@ -54,7 +58,8 @@ public class StsAssumeRoleCredentialsProvider(
     public val assumeRoleParameters: AssumeRoleParameters,
     public val region: String? = null,
     public val httpClient: HttpClientEngine? = null,
-) : CredentialsProvider {
+) : CloseableCredentialsProvider,
+    RefreshAwareCredentialsProvider {
 
     /**
      * A [CredentialsProvider] that uses another provider to assume a role from the AWS Security Token Service (STS).
@@ -96,7 +101,18 @@ public class StsAssumeRoleCredentialsProvider(
         httpClient,
     )
 
-    override suspend fun resolve(attributes: Attributes): Credentials {
+    // No defaultLifetime override: STS always states an expiration, so the fallback is never reached.
+    private val refresh = SelfManagedRefresh(::resolveUncached)
+
+    override suspend fun resolve(attributes: Attributes): Credentials = refresh.resolve(attributes)
+
+    override suspend fun invalidate(rejectedIdentity: Identity): Unit = refresh.invalidate(rejectedIdentity)
+
+    /**
+     * Calls `AssumeRole` with no caching or pacing of its own. The caller's cache decides what a failure or an
+     * already-past expiration means.
+     */
+    private suspend fun resolveUncached(attributes: Attributes): Credentials {
         val logger = coroutineContext.logger<StsAssumeRoleCredentialsProvider>()
         logger.debug { "retrieving assumed credentials" }
 
@@ -162,6 +178,14 @@ public class StsAssumeRoleCredentialsProvider(
             accountId = accountId,
             refreshBehavior = CredentialsRefreshBehavior.RefreshableWithStaticStability,
         ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_STS_ASSUME_ROLE)
+    }
+
+    /**
+     * Releases the refresh lifecycle. The `StsClient` each resolution builds is closed by that resolution, and
+     * [bootstrapCredentialsProvider] belongs to whoever supplied it, so there is nothing else to release here.
+     */
+    override fun close() {
+        refresh.close()
     }
 
     override fun toString(): String = this.simpleClassName

@@ -26,6 +26,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 private const val TOKEN_PATH = "token-path"
@@ -150,6 +151,32 @@ class StsWebIdentityCredentialsProviderTest {
         assertEquals(CREDENTIALS, actual)
 
         testEngine.assertRequests(CallAsserter.MatchingBodies)
+    }
+
+    @Test
+    fun testCachesBetweenResolutions() = runTest {
+        // An hour of lifetime, so both resolutions below land well inside the refresh window. This provider has no
+        // injectable clock, so the expiration is stated relative to the real one.
+        val testEngine = buildTestConnection {
+            // A single expectation: a second `AssumeRoleWithWebIdentity` call would fail the assertion below.
+            expect(stsResponse(expiration = Instant.now() + 1.hours))
+        }
+
+        val testPlatform = TestPlatformProvider.of(
+            fs = mapOf(TOKEN_PATH to TestFile(TOKEN_VALUE)),
+        )
+
+        val provider = StsWebIdentityCredentialsProvider(
+            roleArn = StsTestUtils.ARN,
+            roleSessionName = StsTestUtils.SESSION_NAME,
+            webIdentityTokenFilePath = TOKEN_PATH,
+            region = StsTestUtils.REGION,
+            httpClient = testEngine,
+            platformProvider = testPlatform,
+        )
+
+        assertEquals(provider.resolve(), provider.resolve())
+        testEngine.assertRequests()
     }
 
     @Test

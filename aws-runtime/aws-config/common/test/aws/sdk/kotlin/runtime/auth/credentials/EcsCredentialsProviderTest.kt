@@ -55,7 +55,7 @@ class EcsCredentialsProviderTest {
     ).withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_HTTP)
         .withPacedStaticStability()
 
-    private fun ecsResponse(accountId: String? = null): HttpResponse {
+    private fun ecsResponse(accountId: String? = null, expiration: Instant = expectedExpiration): HttpResponse {
         val payload = buildJsonObject {
             put("Code", "Success")
             put("LastUpdated", "2021-09-17T20:57:08Z")
@@ -63,7 +63,7 @@ class EcsCredentialsProviderTest {
             put("AccessKeyId", "AKID")
             put("SecretAccessKey", "test-secret")
             put("Token", "test-token")
-            put("Expiration", expectedExpiration.format(TimestampFormat.ISO_8601))
+            put("Expiration", expiration.format(TimestampFormat.ISO_8601))
             if (accountId != null) {
                 put("AccountId", accountId)
             }
@@ -587,6 +587,26 @@ class EcsCredentialsProviderTest {
             .withPacedStaticStability()
         assertEquals(expected, actual)
         engine.assertRequests()
+    }
+
+    @Test
+    fun testCachesBetweenResolutions() = runTest {
+        // An hour of lifetime, so both resolutions below land well inside the refresh window. This provider has no
+        // injectable clock, so the expiration is stated relative to the real one.
+        val engine = buildTestConnection {
+            // A single expectation: a second metadata call would fail the connection assertion below.
+            expect(
+                ecsRequest("http://169.254.170.2/relative"),
+                ecsResponse(expiration = Instant.now() + 1.hours),
+            )
+        }
+
+        val testPlatform = TestPlatformProvider.of(
+            env = mapOf(AwsSdkSetting.AwsContainerCredentialsRelativeUri.envVar to "/relative"),
+        )
+
+        val provider = EcsCredentialsProvider(testPlatform, engine)
+        assertEquals(provider.resolve(), provider.resolve())
     }
 
     @Test
