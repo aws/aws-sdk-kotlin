@@ -370,7 +370,7 @@
                     "target": "com.amazonaws.connect#AfterContactWorkTimeLimit",
                     "traits": {
                         "smithy.api#default": 0,
-                        "smithy.api#documentation": "<p>The ACW timeout duration in seconds. Minimum: 1 second. Maximum: 2,000,000 seconds (24 days). Enter 0 for indefinite ACW time.</p>"
+                        "smithy.api#documentation": "<p>The after contact work (ACW) timeout duration in seconds. Minimum: 1 second. Maximum: 2,000,000 seconds (24 days). For the CHAT channel, the maximum for a specific duration is 5,400 seconds (90 minutes); higher values end ACW after 90 minutes. For all channels, including chat, you can enter 0 for an indefinite amount of time, meaning agents must manually choose to end ACW.</p>"
                     }
                 }
             },
@@ -1622,6 +1622,9 @@
                 },
                 {
                     "target": "com.amazonaws.connect#DeactivateEvaluationForm"
+                },
+                {
+                    "target": "com.amazonaws.connect#DeleteAllEntitySessions"
                 },
                 {
                     "target": "com.amazonaws.connect#DeleteAttachedFile"
@@ -18012,6 +18015,79 @@
                 }
             }
         },
+        "com.amazonaws.connect#DeleteAllEntitySessions": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.connect#DeleteAllEntitySessionsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.connect#DeleteAllEntitySessionsResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.connect#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.connect#InternalServiceException"
+                },
+                {
+                    "target": "com.amazonaws.connect#InvalidParameterException"
+                },
+                {
+                    "target": "com.amazonaws.connect#InvalidRequestException"
+                },
+                {
+                    "target": "com.amazonaws.connect#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.connect#ThrottlingException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes all active sessions for the specified entity in the specified Connect Customer instance. The\n   operation supports only the <code>USER</code> entity type, so you can use it to sign out all of a user's active\n   sessions. Use it when you need to end a user's access right away, for example when they leave your organization or\n   you suspect that their credentials are compromised.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/auth/sessions/delete-all-entity-sessions",
+                    "code": 200
+                }
+            }
+        },
+        "com.amazonaws.connect#DeleteAllEntitySessionsRequest": {
+            "type": "structure",
+            "members": {
+                "InstanceId": {
+                    "target": "com.amazonaws.connect#InstanceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "EntityId": {
+                    "target": "com.amazonaws.connect#EntityId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the entity whose sessions you want to delete. For <code>USER</code>, use the user ID or\n   the user ARN.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "EntityType": {
+                    "target": "com.amazonaws.connect#SessionEntityType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of entity whose sessions you want to delete.</p>\n         <note>\n            <p>The only valid value is <code>USER</code>, which signs out a user in your Connect Customer\n    instance.</p>\n         </note>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.connect#DeleteAllEntitySessionsResponse": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.connect#DeleteAttachedFile": {
             "type": "operation",
             "input": {
@@ -27135,6 +27211,582 @@
                     "traits": {
                         "smithy.api#enumValue": "ms-MY"
                     }
+                },
+                "AF_ZA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "af-ZA"
+                    }
+                },
+                "SQ_AL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sq-AL"
+                    }
+                },
+                "AM_ET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "am-ET"
+                    }
+                },
+                "AR_AE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ar-AE"
+                    }
+                },
+                "AR_SA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ar-SA"
+                    }
+                },
+                "HY_AM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hy-AM"
+                    }
+                },
+                "EU_ES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-ES"
+                    }
+                },
+                "BE_BY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "be-BY"
+                    }
+                },
+                "BS_BA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "bs-BA"
+                    }
+                },
+                "BG_BG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "bg-BG"
+                    }
+                },
+                "CA_ES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ca-ES"
+                    }
+                },
+                "CKB_IR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ckb-IR"
+                    }
+                },
+                "CKB_IQ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ckb-IQ"
+                    }
+                },
+                "ZH_TW": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "zh-TW"
+                    }
+                },
+                "HR_HR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hr-HR"
+                    }
+                },
+                "CS_CZ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "cs-CZ"
+                    }
+                },
+                "DA_DK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "da-DK"
+                    }
+                },
+                "NL_BE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "nl-BE"
+                    }
+                },
+                "NL_NL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "nl-NL"
+                    }
+                },
+                "EN_AU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-AU"
+                    }
+                },
+                "EN_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-IN"
+                    }
+                },
+                "EN_IE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-IE"
+                    }
+                },
+                "EN_NZ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-NZ"
+                    }
+                },
+                "EN_AB": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-AB"
+                    }
+                },
+                "EN_SG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-SG"
+                    }
+                },
+                "EN_ZA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-ZA"
+                    }
+                },
+                "EN_GB": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-GB"
+                    }
+                },
+                "EN_WL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-WL"
+                    }
+                },
+                "FA_IR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "fa-IR"
+                    }
+                },
+                "FA_AF": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "fa-AF"
+                    }
+                },
+                "FI_FI": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "fi-FI"
+                    }
+                },
+                "FR_BE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "fr-BE"
+                    }
+                },
+                "FR_CA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "fr-CA"
+                    }
+                },
+                "GA_IE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ga-IE"
+                    }
+                },
+                "GL_ES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "gl-ES"
+                    }
+                },
+                "KA_GE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ka-GE"
+                    }
+                },
+                "DE_AT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "de-AT"
+                    }
+                },
+                "DE_CH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "de-CH"
+                    }
+                },
+                "EL_GR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "el-GR"
+                    }
+                },
+                "GU_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "gu-IN"
+                    }
+                },
+                "HT_HT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ht-HT"
+                    }
+                },
+                "HE_IL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "he-IL"
+                    }
+                },
+                "HI_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hi-IN"
+                    }
+                },
+                "HU_HU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hu-HU"
+                    }
+                },
+                "IS_IS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "is-IS"
+                    }
+                },
+                "ID_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "id-ID"
+                    }
+                },
+                "JV_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "jv-ID"
+                    }
+                },
+                "KM_KH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "km-KH"
+                    }
+                },
+                "KN_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "kn-IN"
+                    }
+                },
+                "KK_KZ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "kk-KZ"
+                    }
+                },
+                "LO_LA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "lo-LA"
+                    }
+                },
+                "LV_LV": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "lv-LV"
+                    }
+                },
+                "LT_LT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "lt-LT"
+                    }
+                },
+                "MK_MK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "mk-MK"
+                    }
+                },
+                "ML_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ml-IN"
+                    }
+                },
+                "MR_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "mr-IN"
+                    }
+                },
+                "NE_NP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ne-NP"
+                    }
+                },
+                "NO_NO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "no-NO"
+                    }
+                },
+                "OR_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "or-IN"
+                    }
+                },
+                "PS_AF": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ps-AF"
+                    }
+                },
+                "PL_PL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pl-PL"
+                    }
+                },
+                "PT_PT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pt-PT"
+                    }
+                },
+                "PA_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pa-IN"
+                    }
+                },
+                "RO_RO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ro-RO"
+                    }
+                },
+                "RU_RU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ru-RU"
+                    }
+                },
+                "SR_RS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sr-RS"
+                    }
+                },
+                "SI_LK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "si-LK"
+                    }
+                },
+                "SK_SK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sk-SK"
+                    }
+                },
+                "SL_SI": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sl-SI"
+                    }
+                },
+                "ES_MX": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "es-MX"
+                    }
+                },
+                "ES_US": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "es-US"
+                    }
+                },
+                "SU_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "su-ID"
+                    }
+                },
+                "SW_BI": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sw-BI"
+                    }
+                },
+                "SW_KE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sw-KE"
+                    }
+                },
+                "SW_RW": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sw-RW"
+                    }
+                },
+                "SW_TZ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sw-TZ"
+                    }
+                },
+                "SW_UG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sw-UG"
+                    }
+                },
+                "SV_SE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sv-SE"
+                    }
+                },
+                "TL_PH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "tl-PH"
+                    }
+                },
+                "TA_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ta-IN"
+                    }
+                },
+                "TE_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "te-IN"
+                    }
+                },
+                "TH_TH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "th-TH"
+                    }
+                },
+                "TR_TR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "tr-TR"
+                    }
+                },
+                "UK_UA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "uk-UA"
+                    }
+                },
+                "UZ_UZ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "uz-UZ"
+                    }
+                },
+                "VI_VN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "vi-VN"
+                    }
+                },
+                "ZU_ZA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "zu-ZA"
+                    }
+                },
+                "MY_MM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "my-MM"
+                    }
+                },
+                "SO_SO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "so-SO"
+                    }
+                },
+                "YUE_HK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "yue-HK"
+                    }
+                },
+                "ET_EE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "et-EE"
+                    }
+                },
+                "HMN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hmn"
+                    }
+                },
+                "LG_UG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "lg-UG"
+                    }
+                },
+                "CY_GB": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "cy-GB"
+                    }
+                },
+                "XH_ZA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "xh-ZA"
+                    }
+                },
+                "BN_BD": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "bn-BD"
+                    }
                 }
             }
         },
@@ -34733,6 +35385,18 @@
                     "target": "com.amazonaws.connect#SourceType",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the source.</p>"
+                    }
+                },
+                "LastModifiedTime": {
+                    "target": "com.amazonaws.connect#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when the integration association was last modified.</p>"
+                    }
+                },
+                "LastModifiedRegion": {
+                    "target": "com.amazonaws.connect#RegionName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region where the integration association was last modified.</p>"
                     }
                 }
             },
@@ -57891,6 +58555,20 @@
                 "smithy.api#documentation": "<p>The reason for the exception.</p>"
             }
         },
+        "com.amazonaws.connect#SessionEntityType": {
+            "type": "enum",
+            "members": {
+                "USER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "USER"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Specifies the type of entity whose sessions you delete when you call\n   <code>DeleteAllEntitySessions</code>. The only valid value is <code>USER</code>, which targets a user in your\n   Connect Customer instance.</p>"
+            }
+        },
         "com.amazonaws.connect#SessionId": {
             "type": "string",
             "traits": {
@@ -68262,7 +68940,7 @@
                 "AfterContactWorkConfigs": {
                     "target": "com.amazonaws.connect#AfterContactWorkConfigs",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of after contact work (ACW) timeout configuration settings for each channel. ACW timeout specifies how many seconds agents have for after contact work, such as entering notes about the contact. The minimum setting is 1 second, and the maximum is 2,000,000 seconds (24 days). Enter 0 for an indefinite amount of time, meaning agents must manually choose to end ACW.</p>"
+                        "smithy.api#documentation": "<p>The list of after contact work (ACW) timeout configuration settings for each channel. ACW timeout specifies how many seconds agents have for after contact work, such as entering notes about the contact. The minimum setting is 1 second, and the maximum is 2,000,000 seconds (24 days). For the CHAT channel, the maximum for a specific duration is 5,400 seconds (90 minutes); higher values end ACW after 90 minutes. For all channels, including chat, you can enter 0 for an indefinite amount of time, meaning agents must manually choose to end ACW.</p>"
                     }
                 },
                 "PhoneNumberConfigs": {
@@ -70042,7 +70720,7 @@
                     "target": "com.amazonaws.connect#AfterContactWorkTimeLimit",
                     "traits": {
                         "smithy.api#default": 0,
-                        "smithy.api#documentation": "<p>The After Call Work (ACW) timeout setting, in seconds. This parameter has a minimum value of 0 and a maximum\n   value of 2,000,000 seconds (24 days). Enter 0 if you don't want to allocate a specific amount of ACW time. It\n   essentially means an indefinite amount of time. When the conversation ends, ACW starts; the agent must choose Close\n   contact to end ACW. </p>\n         <note>\n            <p>When returned by a <code>SearchUsers</code> call, <code>AfterContactWorkTimeLimit</code> is returned in\n    milliseconds. </p>\n         </note>"
+                        "smithy.api#documentation": "<p>The After Call Work (ACW) timeout setting, in seconds. This parameter has a minimum value of 0 and a maximum\n   value of 2,000,000 seconds (24 days). For the CHAT channel, the maximum for a specific duration is 5,400 seconds (90 minutes); higher values end ACW after 90 minutes.\n   For all channels, including chat, you can enter 0 if you don't want to allocate a specific amount of ACW time. It\n   essentially means an indefinite amount of time. When the conversation ends, ACW starts; the agent must choose Close\n   contact to end ACW. </p>\n         <note>\n            <p>When returned by a <code>SearchUsers</code> call, <code>AfterContactWorkTimeLimit</code> is returned in\n    milliseconds. </p>\n         </note>"
                     }
                 },
                 "DeskPhoneNumber": {
