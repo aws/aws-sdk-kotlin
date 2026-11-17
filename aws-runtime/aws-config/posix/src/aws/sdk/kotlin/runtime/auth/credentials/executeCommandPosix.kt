@@ -114,7 +114,7 @@ private suspend fun drainPipes(
     while (fds[0].fd >= 0 || fds[1].fd >= 0) {
         currentCoroutineContext().ensureActive()
 
-        val ready = poll(fds, 2.convert(), POLL_INTERVAL_MILLIS)
+        val ready = pollFds(fds, 2, POLL_INTERVAL_MILLIS)
         if (ready < 0) {
             if (errno == EINTR) continue
             throw CredentialsProviderException("Failed to poll process output: ${errnoMessage()}")
@@ -173,3 +173,10 @@ private fun exitCodeOf(status: Int): Int {
 
 @OptIn(ExperimentalForeignApi::class)
 internal fun errnoMessage(error: Int = errno): String = strerror(error)?.toKString() ?: "errno $error"
+
+/**
+ * Call poll() on [count] entries of [fds]. poll()'s `nfds_t` count is a different width on Linux and Apple, so the call
+ * can't be made from posixMain.
+ */
+@OptIn(ExperimentalForeignApi::class)
+internal expect fun pollFds(fds: CPointer<pollfd>, count: Int, timeoutMillis: Int): Int
