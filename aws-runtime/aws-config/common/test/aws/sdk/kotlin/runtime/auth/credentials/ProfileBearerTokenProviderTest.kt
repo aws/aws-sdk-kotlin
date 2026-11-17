@@ -158,4 +158,57 @@ class ProfileBearerTokenProviderTest {
         val ex = assertFailsWith<ProviderConfigurationException> { provider.resolve() }
         ex.message.shouldContain("profile (default) references non-existing sso_session = `$sessionName`")
     }
+
+    private fun daemonProfileProvider(daemonLine: String): ProfileBearerTokenProvider {
+        val sessionName = "my-session"
+        val key = getCacheFilename(sessionName)
+        val testProvider = TestPlatformProvider.of(
+            env = mapOf(
+                "HOME" to "/home",
+                "AWS_CONFIG_FILE" to "config",
+            ),
+            fs = mapOf(
+                "config" to TestFile(
+                    """
+                [default]
+                $daemonLine
+                sso_session = $sessionName
+                sso_account_id = 123456789012
+                sso_role_name = role
+
+                [sso-session $sessionName]
+                sso_start_url = https://test-url
+                sso_region = us-west-2
+                    """.trimIndent(),
+                ),
+                "/home/.aws/sso/cache/$key" to TestFile(
+                    """
+                {
+                    "accessToken": "cachedtoken",
+                    "expiresAt": "2022-07-07T14:30:00Z"
+                }
+                    """.trimIndent(),
+                ),
+            ),
+        )
+        return ProfileBearerTokenProvider(
+            platformProvider = testProvider,
+            httpClient = TestEngine(),
+            clock = ManualClock(Instant.fromIso8601("2022-07-07T14:30:00Z") - 15.minutes),
+        )
+    }
+
+    @Test
+    fun testCredentialDaemonProfileHasNoSsoSession() = runTest {
+        val provider = daemonProfileProvider("daemon_credential = dev")
+        val ex = assertFailsWith<ProviderConfigurationException> { provider.resolve() }
+        ex.message.shouldContain("no bearer token providers available for profile `default`")
+        ex.message.shouldContain("credential daemon")
+    }
+
+    @Test
+    fun testSsoProfileWithoutCredentialDaemon() = runTest {
+        val provider = daemonProfileProvider("")
+        assertEquals(SsoToken("cachedtoken", Instant.fromIso8601("2022-07-07T14:30:00Z")), provider.resolve())
+    }
 }

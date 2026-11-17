@@ -5,7 +5,10 @@
 
 package aws.sdk.kotlin.runtime.auth.credentials
 
+import aws.sdk.kotlin.runtime.auth.credentials.profile.DAEMON_CREDENTIAL
+import aws.sdk.kotlin.runtime.auth.credentials.profile.SSO_ACCOUNT_ID
 import aws.sdk.kotlin.runtime.auth.credentials.profile.SSO_REGION
+import aws.sdk.kotlin.runtime.auth.credentials.profile.SSO_ROLE_NAME
 import aws.sdk.kotlin.runtime.auth.credentials.profile.SSO_SESSION
 import aws.sdk.kotlin.runtime.auth.credentials.profile.SSO_START_URL
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
@@ -73,6 +76,14 @@ internal class ProfileBearerTokenProvider(
     }
 
     private fun AwsSharedConfig.resolveTokenProviderOrThrow(): BearerTokenProvider {
+        if (DAEMON_CREDENTIAL in activeProfile && SSO_ACCOUNT_ID in activeProfile && SSO_ROLE_NAME in activeProfile) {
+            throw ProviderConfigurationException(
+                "no bearer token providers available for profile `${activeProfile.name}`: its SSO session lives in the " +
+                    "credential daemon, and services that use bearer tokens need an SSO session stored in the shared " +
+                    "config and SSO cache files",
+            )
+        }
+
         val sessionName = activeProfile.getOrNull(SSO_SESSION) ?: throw ProviderConfigurationException("no bearer token providers available for profile `${activeProfile.name}`")
         val session = ssoSessions[sessionName] ?: throw ProviderConfigurationException("profile (${activeProfile.name}) references non-existing sso_session = `$sessionName`")
 

@@ -69,6 +69,14 @@ import kotlin.coroutines.coroutineContext
  * aws_secret_access_key = my-secret
  * ```
  *
+ * ### Credentials from the local credential daemon
+ * ```ini
+ * [default]
+ * daemon_credential = my-credential
+ * ```
+ * `daemon_credential` is only read from the config file. A profile that sets it gets its credentials only from
+ * the credential daemon (see [CredentialDaemonCredentialsProvider]).
+ *
  * Other more complex configurations are possible. See the [Configuration and credential file settings](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
  * documentation provided by the AWS CLI.
  *
@@ -214,6 +222,13 @@ public class ProfileCredentialsProvider @InternalSdkApi constructor(
         ).also {
             credentialsBusinessMetrics.add(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE_PROCESS)
         }
+
+        is LeafProvider.CredentialDaemon -> CredentialDaemonCredentialsProvider(
+            credentialName = credentialName,
+            accountId = accountId,
+            roleName = roleName,
+            platformProvider = platformProvider,
+        )
     }
 
     private suspend fun RoleArn.toCredentialsProvider(
@@ -236,6 +251,7 @@ public class ProfileCredentialsProvider @InternalSdkApi constructor(
         is LeafProvider.LegacySso -> "single sign-on (legacy)"
         is LeafProvider.LoginSession -> "aws login"
         is LeafProvider.Process -> "process"
+        is LeafProvider.CredentialDaemon -> "credential daemon"
     }
 
     override fun toString(): String = this.simpleClassName
