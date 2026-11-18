@@ -28,6 +28,15 @@ class SchemaGeneratorPluginTest {
     // Native consumers need the SDK's Native artifacts in Maven Local, which aren't published when Native is disabled
     private val nativeEnabled = System.getProperty("aws.kotlin.native")?.toBoolean() ?: true
 
+    // Maven Local only holds the SDK's Native artifacts for the targets this host builds, so consumers target the host
+    private val hostNativeTarget = System.getProperty("os.name").lowercase().let { os ->
+        when {
+            os.startsWith("windows") -> "mingwX64"
+            os.startsWith("mac") -> if (System.getProperty("os.arch") == "aarch64") "macosArm64" else "macosX64"
+            else -> "linuxX64"
+        }
+    }
+
     private fun withTestProject(block: TestProject.() -> Unit) = runBlocking {
         withTempDir(TempDirCleanupMode.ON_SUCCESS) { dir ->
             val testProjectDir = File(dir.toString())
@@ -1296,7 +1305,7 @@ class SchemaGeneratorPluginTest {
 
                 kotlin {
                     jvm()
-                    linuxX64()
+                    $hostNativeTarget()
 
                     sourceSets {
                         commonMain.dependencies {
@@ -1313,7 +1322,11 @@ class SchemaGeneratorPluginTest {
         createClassFile("User", commonMain)
         createClassFile("multiplatform/UserTable", commonMain)
 
-        val compileTasks = listOf(":compileCommonMainKotlinMetadata", ":compileKotlinJvm", ":compileKotlinLinuxX64")
+        val compileTasks = listOf(
+            ":compileCommonMainKotlinMetadata",
+            ":compileKotlinJvm",
+            ":compileKotlin${hostNativeTarget.replaceFirstChar { it.uppercase() }}",
+        )
         val result = runner.withArguments(listOf("--info") + compileTasks).build()
 
         assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":kspCommonMainKotlinMetadata")?.outcome)
@@ -1327,7 +1340,7 @@ class SchemaGeneratorPluginTest {
         assertContains(schemaFile.readText(), "public object UserSchema : ItemSchema.PartitionKey<User, KeyType.Key1<Int>> {")
 
         // Schemas are generated once for commonMain, not again per target
-        listOf("jvm/jvmMain", "linuxX64/linuxX64Main").forEach { target ->
+        listOf("jvm/jvmMain", "$hostNativeTarget/${hostNativeTarget}Main").forEach { target ->
             assertFalse(File(testProjectDir, "build/generated/ksp/$target/kotlin/$generatedSchemas").exists())
         }
     }
