@@ -25,6 +25,7 @@ import aws.smithy.kotlin.runtime.util.TestPlatformProvider
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ProfileCredentialsProviderTest {
     @Test
@@ -115,6 +116,63 @@ class ProfileCredentialsProviderTest {
         val expected = Credentials("AKID-Profile", "Profile-Secret")
             .withBusinessMetric(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE)
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun testSsoTokenRefreshAttemptsAreSharedAcrossResolutions() = runTest {
+        val sessionName = "my-session"
+        val testProvider = TestPlatformProvider.of(
+            env = mapOf(
+                "HOME" to "/home",
+                "AWS_CONFIG_FILE" to "config",
+                "AWS_REGION" to "us-west-2",
+            ),
+            fs = mapOf(
+                "config" to TestFile(
+                    """
+                [default]
+                sso_session = $sessionName
+                sso_account_id = 123456789012
+                sso_role_name = TestRole
+
+                [sso-session $sessionName]
+                sso_start_url = https://test-url
+                sso_region = us-west-2
+                    """.trimIndent(),
+                ),
+                "/home/.aws/sso/cache/${getCacheFilename(sessionName)}" to TestFile(
+                    """
+                {
+                    "accessToken": "cachedtoken",
+                    "expiresAt": "2021-12-25T13:00:00Z",
+                    "clientId": "clientid",
+                    "clientSecret": "YSBzZWNyZXQ=",
+                    "refreshToken": "cachedrefreshtoken"
+                }
+                    """.trimIndent(),
+                ),
+            ),
+        )
+
+        // the SSO OIDC service rejecting the refresh token
+        fun invalidGrant() = HttpResponse(
+            HttpStatusCode.BadRequest,
+            Headers { append("X-Amzn-ErrorType", "InvalidGrantException") },
+            HttpBody.fromBytes("""{"error":"invalid_grant"}""".encodeToByteArray()),
+        )
+
+        val testEngine = buildTestConnection {
+            expect(invalidGrant())
+            expect(invalidGrant())
+        }
+
+        val provider = ProfileCredentialsProvider(
+            platformProvider = testProvider,
+            httpClient = testEngine,
+        )
+        assertFailsWith<InvalidSsoTokenException> { provider.resolve() }
+        assertFailsWith<InvalidSsoTokenException> { provider.resolve() }
+        assertEquals(1, testEngine.requests().size, "the second resolution is within 30 seconds of the first refresh attempt")
     }
 
     @Test

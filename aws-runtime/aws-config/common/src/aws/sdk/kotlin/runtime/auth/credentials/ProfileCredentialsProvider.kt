@@ -29,6 +29,8 @@ import aws.smithy.kotlin.runtime.time.TimestampFormat
 import aws.smithy.kotlin.runtime.util.LazyAsyncValue
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.asyncLazy
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.coroutineContext
 
 /**
@@ -103,6 +105,11 @@ public class ProfileCredentialsProvider @InternalSdkApi constructor(
         null,
     )
 
+    // The SSO providers created so far, one for each SSO session configuration. They are reused across resolutions
+    // because their token provider keeps state between resolutions, such as when it last attempted to refresh the token.
+    private val ssoSessionProviders = mutableMapOf<LeafProvider.SsoSession, SsoCredentialsProvider>()
+    private val ssoSessionProvidersMu = Mutex()
+
     private val namedProviders = mapOf(
         "Environment" to EnvironmentCredentialsProvider(platformProvider::getenv),
         "Ec2InstanceMetadata" to ImdsCredentialsProvider(
@@ -176,15 +183,19 @@ public class ProfileCredentialsProvider @InternalSdkApi constructor(
             credentialsBusinessMetrics.add(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE_STS_WEB_ID_TOKEN)
         }
 
-        is LeafProvider.SsoSession -> SsoCredentialsProvider(
-            accountId = ssoAccountId,
-            roleName = ssoRoleName,
-            startUrl = ssoStartUrl,
-            ssoRegion = ssoRegion,
-            ssoSessionName = ssoSessionName,
-            httpClient = httpClient,
-            platformProvider = platformProvider,
-        ).also {
+        is LeafProvider.SsoSession -> ssoSessionProvidersMu.withLock {
+            ssoSessionProviders.getOrPut(this) {
+                SsoCredentialsProvider(
+                    accountId = ssoAccountId,
+                    roleName = ssoRoleName,
+                    startUrl = ssoStartUrl,
+                    ssoRegion = ssoRegion,
+                    ssoSessionName = ssoSessionName,
+                    httpClient = httpClient,
+                    platformProvider = platformProvider,
+                )
+            }
+        }.also {
             credentialsBusinessMetrics.add(AwsBusinessMetric.Credentials.CREDENTIALS_PROFILE_SSO)
         }
 

@@ -1,0 +1,6 @@
+{
+  "id": "fa645bc8-5772-4e8c-9368-226d67e9296d",
+  "type": "bugfix",
+  "description": "Refresh a cached SSO token through the SSO OIDC service at most once every 30 seconds. Between attempts, a still-valid token keeps being used and an expired one raises `InvalidSsoTokenException`, instead of calling `CreateToken` again on every resolution",
+  "module": "aws-config"
+}

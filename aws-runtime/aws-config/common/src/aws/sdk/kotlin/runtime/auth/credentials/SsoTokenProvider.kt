@@ -30,12 +30,16 @@ import aws.smithy.kotlin.runtime.time.TimestampFormat
 import aws.smithy.kotlin.runtime.util.PlatformProvider
 import aws.smithy.kotlin.runtime.util.SingleFlightGroup
 import aws.smithy.kotlin.runtime.util.WriteType
+import kotlinx.atomicfu.atomic
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 private const val DEFAULT_SSO_TOKEN_REFRESH_BUFFER_SECONDS = 60 * 5
 private const val OIDC_GRANT_TYPE_REFRESH = "refresh_token"
+
+/** The shortest interval between two attempts to refresh a cached token through the SSO OIDC service. */
+private val REFRESH_ATTEMPT_INTERVAL = 30.seconds
 
 /**
  * SsoTokenProvider provides a utility for refreshing SSO AccessTokens for Bearer Authentication.
@@ -49,7 +53,9 @@ private const val OIDC_GRANT_TYPE_REFRESH = "refresh_token"
  *
  *
  * This provider will attempt to refresh the cached SSO token periodically if needed when [resolve] is
- * called and a refresh token is available.
+ * called and a refresh token is available. Refresh attempts are made at most once every 30 seconds; in between, the
+ * cached token is used while it is still valid, and an expired token raises [InvalidSsoTokenException] without
+ * contacting the SSO OIDC service.
  *
  * @param ssoSessionName the name of the SSO Session from the shared config file to load tokens for
  * @param startUrl the start URL (also known as the "User Portal URL") provided by the SSO service
@@ -78,12 +84,22 @@ public class SsoTokenProvider(
     private val tokenFilePermissions = AwsSdkSetting.AwsRestrictFilePermissions.resolve(platformProvider)
         ?: RestrictFilePermissions.USER_READ_WRITE
 
+    // When the last refresh attempt started, and why it failed if it did. Resolutions run one at a time inside the
+    // single-flight group; the fields are atomic so that each resolution sees what the previous one recorded.
+    private val lastRefreshAttempt = atomic<Instant?>(null)
+    private val lastRefreshFailure = atomic<Throwable?>(null)
+
+    // The last token obtained by a refresh. It is used instead of the cached token when it expires later, so that a
+    // refreshed token isn't lost if writing it back to the cache fails.
+    private val lastRefreshedToken = atomic<SsoToken?>(null)
+
     override suspend fun resolve(attributes: Attributes): BearerToken = sfg.singleFlight {
         getToken(attributes)
     }
 
     private suspend fun getToken(attributes: Attributes): SsoToken {
-        val token = readTokenFromCache(ssoSessionName, platformProvider)
+        val cachedToken = readTokenFromCache(ssoSessionName, platformProvider)
+        val token = lastRefreshedToken.value?.takeIf { it.expiration > cachedToken.expiration } ?: cachedToken
         if (clock.now() < (token.expiration - refreshBufferWindow)) {
             coroutineContext.debug<SsoTokenProvider> { "using cached token for sso-session: $ssoSessionName" }
             return token
@@ -91,7 +107,14 @@ public class SsoTokenProvider(
 
         // token is within expiry window
         if (token.canRefresh) {
-            return attemptRefresh(token)
+            val nextAttemptAllowedAt = lastRefreshAttempt.value?.plus(REFRESH_ATTEMPT_INTERVAL)
+            if (nextAttemptAllowedAt == null || clock.now() >= nextAttemptAllowedAt) {
+                return attemptRefresh(token)
+            }
+            // A refresh was attempted less than 30 seconds ago: don't call the SSO OIDC service again yet.
+            return token.takeIf { clock.now() < it.expiration }?.also {
+                coroutineContext.debug<SsoTokenProvider> { "token refresh was attempted less than $REFRESH_ATTEMPT_INTERVAL ago; using cached token, valid until ${it.expiration}, for sso-session: $ssoSessionName" }
+            } ?: throwTokenExpired(lastRefreshFailure.value)
         }
 
         return token.takeIf { clock.now() < it.expiration }?.also {
@@ -101,9 +124,14 @@ public class SsoTokenProvider(
 
     private suspend fun attemptRefresh(oldToken: SsoToken): SsoToken {
         coroutineContext.debug<SsoTokenProvider> { "attempting to refresh token for sso-session: $ssoSessionName" }
+        lastRefreshAttempt.value = clock.now()
         val result = runCatching { refreshToken(oldToken) }
+        lastRefreshFailure.value = result.exceptionOrNull()
         return result
-            .onSuccess { refreshed -> writeToken(refreshed) }
+            .onSuccess { refreshed ->
+                lastRefreshedToken.value = refreshed
+                writeToken(refreshed)
+            }
             .getOrElse { cause ->
                 if (clock.now() >= oldToken.expiration) {
                     coroutineContext.error<SsoTokenProvider>(cause) { "token refresh failed" }

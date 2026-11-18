@@ -63,13 +63,16 @@ internal class ProfileBearerTokenProvider(
     // TODO - re-evaluate how often shared config is parsed and passed down through credential/token chains
     private val sharedConfig = asyncLazy { loadAwsSharedConfig(platformProvider, profileName) }
 
+    // The shared config is loaded once, so the token provider it selects is created once and reused. The token
+    // provider keeps state between resolutions, such as when it last attempted to refresh the token.
+    private val tokenProvider = asyncLazy { sharedConfig.get().resolveTokenProviderOrThrow() }
+
     override suspend fun resolve(attributes: Attributes): BearerToken {
         val logger = coroutineContext.logger<ProfileBearerTokenProvider>()
         val config = sharedConfig.get()
         logger.debug { "Loading bearer token from profile `${config.activeProfile.name}`" }
 
-        val provider = config.resolveTokenProviderOrThrow()
-        return provider.resolve(attributes)
+        return tokenProvider.get().resolve(attributes)
     }
 
     private fun AwsSharedConfig.resolveTokenProviderOrThrow(): BearerTokenProvider {
