@@ -5,6 +5,7 @@
 
 import aws.sdk.kotlin.gradle.hll.configureKspCodegen
 import dev.mokkery.verify.VerifyMode
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import software.amazon.dynamodb.services.local.main.ServerRunner
 import software.amazon.dynamodb.services.local.server.DynamoDBProxyServer
 import java.net.ServerSocket
@@ -142,6 +143,14 @@ tasks.withType<AbstractTestTask> {
     dependsOn(startDdbLocal)
     // Keeps the service (and therefore the server) alive until every test task using it has finished
     usesService(ddbLocalService)
+}
+
+// FIXME The iOS simulator runs tests outside the project directory, so DdbLocalTest can't find the relative
+//  build/ddblocal/port.info file. Skip the DynamoDB Local tests on the simulator until the port reaches it another way
+//  (e.g. a SIMCTL_CHILD_-prefixed environment variable).
+tasks.withType<KotlinNativeSimulatorTest>().configureEach {
+    filter.excludeTestsMatching("aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMapperTest")
+    filter.excludeTestsMatching("aws.sdk.kotlin.hll.dynamodbmapper.operations.*")
 }
 
 mokkery {
