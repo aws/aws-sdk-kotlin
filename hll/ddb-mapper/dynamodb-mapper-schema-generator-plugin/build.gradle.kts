@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import aws.sdk.kotlin.gradle.util.prop
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 description = "Plugin used to generate DynamoDbMapper schemas from user classes"
@@ -81,6 +82,10 @@ afterEvaluate {
 
 tasks.test {
     useJUnitPlatform()
+
+    // Lets tests skip Kotlin/Native consumers when Native is disabled, matching the repo-tools default of enabled
+    systemProperty("aws.kotlin.native", prop("aws.kotlin.native")?.toString()?.toBoolean() ?: true)
+
     testLogging {
         events("passed", "skipped", "failed")
         showStandardStreams = true

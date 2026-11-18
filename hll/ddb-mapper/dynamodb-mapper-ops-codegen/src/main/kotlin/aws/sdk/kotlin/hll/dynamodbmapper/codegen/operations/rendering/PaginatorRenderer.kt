@@ -34,7 +34,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.operations.model.keyType
  *         val req = initialRequest.copy { exclusiveStartKey = cursor }
  *
  *         @OptIn(ManualPagination::class)
- *         val res = this@queryPaginated.query(req)
+ *         val res = withScopedBusinessMetrics(SmithyBusinessMetric.PAGINATOR) { this@queryPaginated.query(req) }
  *
  *         cursor = res.lastEvaluatedKey
  *         hasNextPage = cursor != null
@@ -162,7 +162,13 @@ internal class PaginatorRenderer(
 
                 blankLine()
                 write("@#T(#T::class)", Types.Kotlin.OptIn, MapperTypes.Annotations.ManualPagination)
-                write("val res = this@#L.#L(req)", name, op.methodName)
+                write(
+                    "val res = #T(#T.PAGINATOR) { this@#L.#L(req) }",
+                    Types.Smithy.withScopedBusinessMetrics,
+                    Types.Smithy.SmithyBusinessMetric,
+                    name,
+                    op.methodName,
+                )
 
                 blankLine()
                 paginationInfo.tokens.forEach { paginationToken ->

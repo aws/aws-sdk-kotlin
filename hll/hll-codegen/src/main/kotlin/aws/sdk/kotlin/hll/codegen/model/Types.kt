@@ -20,6 +20,8 @@ public object Types {
         public val Document: TypeRef = TypeRef("aws.smithy.kotlin.runtime.content", "Document")
         public val BigDecimal: TypeRef = TypeRef("aws.smithy.kotlin.runtime.content", "BigDecimal")
         public val BigInteger: TypeRef = TypeRef("aws.smithy.kotlin.runtime.content", "BigInteger")
+        public val SmithyBusinessMetric: TypeRef = TypeRef("aws.smithy.kotlin.runtime.businessmetrics", "SmithyBusinessMetric")
+        public val withScopedBusinessMetrics: TypeRef = TypeRef("aws.smithy.kotlin.runtime.businessmetrics", "withScopedBusinessMetrics")
     }
 
     @InternalSdkApi
