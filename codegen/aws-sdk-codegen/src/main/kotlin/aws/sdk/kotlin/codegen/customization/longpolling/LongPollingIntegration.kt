@@ -23,6 +23,7 @@ private val LONG_POLLING_OPERATIONS: Map<String, Set<String>> = mapOf(
     "sqs" to setOf("ReceiveMessage"),
     "sfn" to setOf("GetActivityTask"),
     "swf" to setOf("PollForActivityTask", "PollForDecisionTask"),
+    "kinesis" to setOf("ReceiveQueueRecords", "ReceiveDeadLetterQueueRecords"),
 )
 
 class LongPollingIntegration : KotlinIntegration {
