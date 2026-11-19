@@ -5,11 +5,12 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.extraction
 
 import aws.sdk.kotlin.hll.codegen.ksp.asSymbolRef
-import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbCounter
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbItem
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMappable
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbTtlSeconds
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model.ItemConverterSpec
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model.MappedItem
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.isJavaPackagePrivate
@@ -81,27 +82,20 @@ internal fun validateNotInnerClass(decl: KSClassDeclaration, diagnostics: Diagno
 }
 
 /**
- * Generated declarations are named after the innermost name of each annotated class, so two classes with the same name
- * whose code is generated into the same package (e.g., nested classes in different enclosing classes, or classes from
- * different packages with an absolute destination package) would generate conflicting declarations
- * @param isSelfRegisteringBase Whether a class is a family base which registers itself, which generates an additional
- * `<name>BaseConverter`
- * @return the qualified names of the colliding classes, each of which has been reported
+ * Generated declarations are named after the innermost name of each annotated class, so the code generated for two
+ * different classes into the same package (e.g., for nested classes with the same name in different enclosing classes,
+ * or for classes from different packages with an absolute destination package) may declare the same top-level
+ * declaration or file
+ * @param itemsByClass The IR built for each annotated class
+ * @return the qualified names of the colliding classes, each of which has been reported once
  */
 internal fun findGeneratedNameCollisions(
-    classes: List<KSClassDeclaration>,
-    ctx: RenderContext,
-    isSelfRegisteringBase: (KSClassDeclaration) -> Boolean,
+    itemsByClass: List<Pair<KSClassDeclaration, List<MappedItem>>>,
     diagnostics: DiagnosticCollector,
 ): Set<String> {
-    val claimants = mutableMapOf<String, MutableSet<KSClassDeclaration>>()
-    classes.forEach { decl ->
-        val name = decl.simpleName.asString()
-        val suffixes = listOf("Builder", "Converter", "ValueConverter", "Schema") +
-            listOfNotNull("BaseConverter".takeIf { isSelfRegisteringBase(decl) })
-        suffixes.forEach { suffix ->
-            claimants.getOrPut("${destinationPackage(decl, ctx)}.$name$suffix") { linkedSetOf() } += decl
-        }
+    val claimants = linkedMapOf<String, MutableSet<KSClassDeclaration>>()
+    itemsByClass.forEach { (decl, items) ->
+        items.flatMap { it.generatedNames() }.forEach { claimants.getOrPut(it) { linkedSetOf() } += decl }
     }
 
     val colliding = linkedSetOf<String>()
@@ -113,12 +107,24 @@ internal fun findGeneratedNameCollisions(
                 val others = names - decl.qualifiedName!!.asString()
                 diagnostics.error(
                     "'${decl.qualifiedName!!.asString()}' and ${others.joinToString { "'$it'" }} would both generate " +
-                        "'$generatedName'. Rename one of them, or generate their code into different packages.",
+                        "$generatedName. Rename one of them, or generate their code into different packages.",
                     decl.asSymbolRef(),
                 )
             }
         }
     return colliding
+}
+
+/**
+ * Describes every top-level declaration and file rendered for this item
+ */
+private fun MappedItem.generatedNames(): List<String> = buildList {
+    builder?.let { add("'$destinationPkg.${it.name}'") }
+    if (itemConverter !is ItemConverterSpec.UserProvided) add("'${itemConverter.converter.fullName}'")
+    valueConverter?.let { add("'${it.fullName}'") }
+    if (kind == MappedItem.Kind.Table) add("'$destinationPkg.${name}Schema'")
+    if (generateGetTable) add("'$destinationPkg.get${name}Table'")
+    add("the file '${destinationPkg.replace('.', '/')}/$fileName.kt'")
 }
 
 /**

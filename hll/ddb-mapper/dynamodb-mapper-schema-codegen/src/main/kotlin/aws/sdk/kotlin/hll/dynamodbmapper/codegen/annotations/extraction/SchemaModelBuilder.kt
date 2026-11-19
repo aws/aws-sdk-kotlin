@@ -41,11 +41,12 @@ import com.google.devtools.ksp.symbol.KSType
 /**
  * Builds the IR for a batch of annotated classes. Checks run in this order:
  *  1. cycle detection over the whole batch; cyclic classes are reported and skipped before any per-class work
- *  2. generated-name collision detection over the whole batch; colliding classes are reported and skipped
- *  3. per class (except an ad-hoc family's marker object), the checks that generated code can access and construct it;
+ *  2. per class (except an ad-hoc family's marker object), the checks that generated code can access and construct it;
  *     a class failing them is not extracted further
- *  4. per class, the annotation-class misuse check; a class failing it is not extracted further
- *  5. per class, key/nested validation, then converter, key, TTL and counter extraction
+ *  3. per class, the annotation-class misuse check; a class failing it is not extracted further
+ *  4. per class, key/nested validation, then converter, key, TTL and counter extraction
+ *  5. over every class extracted, detection of top-level declarations and files which the code generated for two
+ *     different classes would both declare
  *
  * Cross-class analysis (cycles, whether a value converter is needed) runs over *all* annotated classes, including ones
  * that later fail validation, exactly as before.
@@ -73,47 +74,44 @@ internal fun buildModel(
     // Value converters must be generated for any mappable type which is referenced by another annotated type
     val referencedClasses = references.values.flatten().toSet()
     val familyBuilder = FamilyModelBuilder(families, ctx, diagnostics)
-    val collidingClasses = findGeneratedNameCollisions(
-        classes.filterNot { it.qualifiedName?.asString() in cyclicClasses },
-        ctx,
-        isSelfRegisteringBase = { families.familyOf(it)?.baseTypeName != null },
-        diagnostics,
-    )
 
-    return classes.flatMap { decl ->
-        ctx.logger.info("Processing annotation on ${decl.simpleName}")
+    val itemsByClass = classes.map { decl ->
+        decl to run items@{
+            ctx.logger.info("Processing annotation on ${decl.simpleName}")
 
-        val qualifiedName = decl.qualifiedName?.asString()
-        if (qualifiedName != null && qualifiedName in cyclicClasses) {
-            diagnostics.error(
-                "Cyclic nesting detected involving type '$qualifiedName'. Nesting " +
-                    "@DynamoDbItem/@DynamoDbMappable types in a reference cycle (including self-references) is " +
-                    "not yet supported.",
-                decl.asSymbolRef(),
-            )
-            return@flatMap emptyList()
-        }
+            val qualifiedName = decl.qualifiedName?.asString()
+            if (qualifiedName != null && qualifiedName in cyclicClasses) {
+                diagnostics.error(
+                    "Cyclic nesting detected involving type '$qualifiedName'. Nesting " +
+                        "@DynamoDbItem/@DynamoDbMappable types in a reference cycle (including self-references) is " +
+                        "not yet supported.",
+                    decl.asSymbolRef(),
+                )
+                return@items emptyList()
+            }
 
-        if (qualifiedName in collidingClasses) return@flatMap emptyList()
+            val family = families.familyOf(decl)
 
-        val family = families.familyOf(decl)
+            // Generated code never references an ad-hoc family's marker object (validateFamily rejects registering one as
+            // a subtype of another family)
+            if (family?.isAdHoc != true) {
+                val accessible = validateAccessibleFromGeneratedCode(decl, diagnostics)
+                val constructible = validateNotInnerClass(decl, diagnostics)
+                if (!accessible || !constructible) return@items emptyList()
+            }
 
-        // Generated code never references an ad-hoc family's marker object (validateFamily rejects registering one as a
-        // subtype of another family)
-        if (family?.isAdHoc != true) {
-            val accessible = validateAccessibleFromGeneratedCode(decl, diagnostics)
-            val constructible = validateNotInnerClass(decl, diagnostics)
-            if (!accessible || !constructible) return@flatMap emptyList()
-        }
-
-        val generateValueConverter = qualifiedName in referencedClasses
-        if (family != null) {
-            familyBuilder.build(family, generateValueConverter)
-        } else {
-            val role = families.membershipOf(decl)?.let { FamilyRole(inTableFamily = families.inTableContext(it.family)) }
-            listOfNotNull(buildMappedItem(decl, ctx, generateValueConverter, diagnostics, role))
+            val generateValueConverter = qualifiedName in referencedClasses
+            if (family != null) {
+                familyBuilder.build(family, generateValueConverter)
+            } else {
+                val role = families.membershipOf(decl)?.let { FamilyRole(inTableFamily = families.inTableContext(it.family)) }
+                listOfNotNull(buildMappedItem(decl, ctx, generateValueConverter, diagnostics, role))
+            }
         }
     }
+
+    findGeneratedNameCollisions(itemsByClass, diagnostics)
+    return itemsByClass.flatMap { (_, items) -> items }
 }
 
 /**

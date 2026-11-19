@@ -5,7 +5,6 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.extraction
 
 import aws.sdk.kotlin.hll.codegen.rendering.Visibility
-import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeParameter
@@ -100,39 +99,6 @@ class GeneratedVisibilityTest {
         assertFalse(validateNotInnerClass(decl, diagnostics))
         assertContains(diagnostics.diagnostics.single().message, "'org.example.Outer.Thing' is an inner class")
         assertTrue(validateNotInnerClass(parent, diagnostics))
-    }
-
-    @Test
-    fun testGeneratedNameCollisionsAreReported() {
-        val diagnostics = DiagnosticCollector()
-        val first = fakeClassDeclaration("org.a.User")
-        val second = fakeClassDeclaration("org.b.User")
-        val unrelated = fakeClassDeclaration("org.a.Order")
-        val ctx = testRenderContext(destinationPackage = DestinationPackage.Absolute("gen"))
-
-        val colliding = findGeneratedNameCollisions(listOf(first, second, unrelated), ctx, { false }, diagnostics)
-
-        assertEquals(setOf("org.a.User", "org.b.User"), colliding)
-        assertEquals(
-            listOf(
-                "'org.a.User' and 'org.b.User' would both generate 'gen.UserBuilder'. Rename one of them, or generate their code into different packages.",
-                "'org.b.User' and 'org.a.User' would both generate 'gen.UserBuilder'. Rename one of them, or generate their code into different packages.",
-            ),
-            diagnostics.diagnostics.map { it.message },
-        )
-    }
-
-    @Test
-    fun testSelfRegisteringBaseConverterCollisionIsReported() {
-        val diagnostics = DiagnosticCollector()
-        val base = fakeClassDeclaration("org.example.Animal")
-        val other = fakeClassDeclaration("org.example.AnimalBase")
-
-        val colliding = findGeneratedNameCollisions(listOf(base, other), testRenderContext(), { it === base }, diagnostics)
-
-        assertEquals(setOf("org.example.Animal", "org.example.AnimalBase"), colliding)
-        assertContains(diagnostics.diagnostics.first().message, "would both generate 'org.example.dynamodbmapper.generatedschemas.AnimalBaseConverter'")
-        assertEquals(emptySet(), findGeneratedNameCollisions(listOf(base, other), testRenderContext(), { false }, DiagnosticCollector()))
     }
 
     @Test

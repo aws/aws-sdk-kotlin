@@ -501,11 +501,24 @@ class SchemaGeneratorPluginTest {
         createClassFile("visibility/UnmappableItems")
 
         val result = runner.buildAndFail()
-        assertContains(result.output, "'org.example.visibility.Orders.Line' and 'org.example.visibility.Invoices.Line' would both generate 'org.example.visibility.dynamodbmapper.generatedschemas.LineBuilder'. Rename one of them, or generate their code into different packages.")
+        assertContains(result.output, "'org.example.visibility.Orders.Line' and 'org.example.visibility.Invoices.Line' would both generate 'org.example.visibility.dynamodbmapper.generatedschemas.LineConverter'. Rename one of them, or generate their code into different packages.")
         assertContains(result.output, "'org.example.visibility.Invoices.Line' and 'org.example.visibility.Orders.Line' would both generate")
+        assertContains(result.output, "'org.example.visibility.Pet' and 'org.example.visibility.PetBase' would both generate 'org.example.visibility.dynamodbmapper.generatedschemas.PetBaseConverter'.")
         assertContains(result.output, "'org.example.visibility.Outer.Thing' is an inner class, so generated DynamoDbMapper code cannot construct it. Remove the `inner` modifier.")
         assertContains(result.output, "Ad-hoc family 'org.example.visibility.Listings' cannot be a @DynamoDbSubtype of 'org.example.visibility.Catalog'")
         assertFalse(result.output.contains("FileAlreadyExistsException"), "KSP crashed instead of reporting the collision")
+    }
+
+    @Test
+    fun testSimilarNamesDoNotCollide() = withTestProject {
+        createClassFile("visibility/SimilarNames")
+
+        val result = runner.build()
+        assertContains(setOf(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE), result.task(":build")?.outcome)
+
+        val basePath = "build/generated/ksp/main/kotlin/org/example/visibility/dynamodbmapper/generatedschemas"
+        assertContains(File(testProjectDir, "$basePath/UserSchema.kt").readText(), "public object UserConverter")
+        assertContains(File(testProjectDir, "$basePath/UserValueSchema.kt").readText(), "public object UserValueConverter")
     }
 
     @Test

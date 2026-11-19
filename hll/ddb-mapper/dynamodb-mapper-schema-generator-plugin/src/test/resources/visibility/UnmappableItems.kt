@@ -7,6 +7,7 @@ package org.example.visibility
 
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbHeterogeneousType
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbItem
+import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMappable
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbPartitionKey
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbSubtype
 
@@ -43,3 +44,14 @@ public object Listings : Catalog {
 
 @DynamoDbSubtype("listing", parent = Listings::class)
 public data class Listing(@DynamoDbPartitionKey val id: Int, val price: Int)
+
+// The self-registering base generates PetBaseConverter, as does the unrelated PetBase
+@DynamoDbItem
+@DynamoDbHeterogeneousType(typeAttribute = "kind", baseTypeName = "pet")
+public open class Pet(@DynamoDbPartitionKey public open val id: Int = 0)
+
+@DynamoDbSubtype("cat")
+public class Cat(override val id: Int = 0, public val lives: Int = 9) : Pet(id)
+
+@DynamoDbMappable
+public data class PetBase(var name: String = "")

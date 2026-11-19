@@ -11,6 +11,7 @@ import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbItem
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMappable
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbPartitionKey
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbTtlSeconds
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.extractModel
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model.ItemConverterSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model.MappedItem
@@ -180,6 +181,58 @@ class SchemaModelBuilderTest {
         assertEquals(emptyList(), buildModel(listOf(item), testRenderContext(), diagnostics))
         assertEquals(1, messages.size)
         assertContains(messages.single(), "'org.example.Hidden' is private")
+    }
+
+    @Test
+    fun testSimilarNamesDoNotCollideWhenTheirDeclarationsAreNotGenerated() {
+        // UserValue's converter is named like User's value converter, which isn't generated since nothing references User
+        val user = mappedClass("org.example.User", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+        val userValue = mappedClass("org.example.UserValue", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+
+        val built = buildModel(listOf(user, userValue), testRenderContext(), diagnostics)
+
+        assertEquals(emptyList(), messages)
+        assertEquals(listOf("User", "UserValue"), built.map { it.name })
+    }
+
+    @Test
+    fun testGeneratedValueConverterCollidingWithGeneratedItemConverterIsReported() {
+        val user = mappedClass("org.example.User", table = false, properties = { listOf(fakeProperty("name", string)) })
+        val userValue = mappedClass("org.example.UserValue", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+        val holder = mappedClass("org.example.Holder", table = true, properties = {
+            listOf(fakeProperty("id", string, listOf(pk)), fakeProperty("user", typeOf(user)))
+        })
+
+        buildModel(listOf(user, userValue, holder), testRenderContext(), diagnostics)
+
+        assertEquals(
+            listOf(
+                "'org.example.User' and 'org.example.UserValue' would both generate '$generatedPkg.UserValueConverter'. " +
+                    "Rename one of them, or generate their code into different packages.",
+                "'org.example.UserValue' and 'org.example.User' would both generate '$generatedPkg.UserValueConverter'. " +
+                    "Rename one of them, or generate their code into different packages.",
+            ),
+            messages,
+        )
+    }
+
+    @Test
+    fun testSameNamesInOneDestinationPackageAreReportedOncePerClass() {
+        val first = mappedClass("org.a.User", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+        val second = mappedClass("org.b.User", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+        val unrelated = mappedClass("org.a.Order", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+
+        buildModel(listOf(first, second, unrelated), testRenderContext(destinationPackage = DestinationPackage.Absolute("gen")), diagnostics)
+
+        assertEquals(
+            listOf(
+                "'org.a.User' and 'org.b.User' would both generate 'gen.UserConverter'. Rename one of them, or generate " +
+                    "their code into different packages.",
+                "'org.b.User' and 'org.a.User' would both generate 'gen.UserConverter'. Rename one of them, or generate " +
+                    "their code into different packages.",
+            ),
+            messages,
+        )
     }
 
     @Test
