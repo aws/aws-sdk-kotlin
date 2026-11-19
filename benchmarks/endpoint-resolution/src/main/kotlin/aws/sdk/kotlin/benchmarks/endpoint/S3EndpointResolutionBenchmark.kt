@@ -1,0 +1,102 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+package aws.sdk.kotlin.benchmarks.endpoint
+
+import aws.sdk.kotlin.services.s3.endpoints.DefaultS3EndpointProvider
+import aws.sdk.kotlin.services.s3.endpoints.S3EndpointParameters
+import kotlinx.benchmark.*
+
+/**
+ * Benchmarks for S3 endpoint resolution.
+ *
+ * Uses [startCoroutineUninterceptedOrReturn] to invoke the suspend function directly
+ * without coroutine infrastructure overhead. This matches production behavior where
+ * resolveEndpoint is called from within an existing coroutine and never actually suspends.
+ *
+ * Each benchmark binds parameters per the smithy.endpoints#endpointTests trait definitions.
+ */
+@State(Scope.Benchmark)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@Warmup(iterations = 5, time = 1, timeUnit = BenchmarkTimeUnit.SECONDS)
+@Measurement(iterations = 20, time = 1, timeUnit = BenchmarkTimeUnit.SECONDS)
+class S3EndpointResolutionBenchmark {
+
+    private val provider = DefaultS3EndpointProvider()
+
+    private val vanillaVirtualAddressingParams = S3EndpointParameters {
+        accelerate = false
+        bucket = "bucket-name"
+        forcePathStyle = false
+        region = "us-west-2"
+        useDualStack = false
+        useFips = false
+    }
+
+    private val vanillaPathStyleParams = S3EndpointParameters {
+        accelerate = false
+        bucket = "bucket-name"
+        forcePathStyle = true
+        region = "us-west-2"
+        useDualStack = false
+        useFips = false
+    }
+
+    private val dataPlaneShortZoneNameParams = S3EndpointParameters {
+        region = "us-east-1"
+        bucket = "mybucket--abcd-ab1--x-s3"
+        useFips = false
+        useDualStack = false
+        accelerate = false
+        useS3ExpressControlEndpoint = false
+    }
+
+    private val vanillaAccessPointArnParams = S3EndpointParameters {
+        accelerate = false
+        bucket = "arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint"
+        forcePathStyle = false
+        region = "us-west-2"
+        useDualStack = false
+        useFips = false
+    }
+
+    private val s3OutpostsVanillaParams = S3EndpointParameters {
+        region = "us-west-2"
+        useFips = false
+        useDualStack = false
+        accelerate = false
+        bucket = "arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-01234567890123456/accesspoint/reports"
+    }
+
+    // vanilla virtual addressing@us-west-2
+    @Benchmark
+    fun vanillaVirtualAddressing(blackhole: Blackhole) {
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(vanillaVirtualAddressingParams) })
+    }
+
+    // vanilla path style@us-west-2
+    @Benchmark
+    fun vanillaPathStyle(blackhole: Blackhole) {
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(vanillaPathStyleParams) })
+    }
+
+    // Data Plane with short zone name
+    @Benchmark
+    fun dataPlaneShortZoneName(blackhole: Blackhole) {
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(dataPlaneShortZoneNameParams) })
+    }
+
+    // vanilla access point arn@us-west-2
+    @Benchmark
+    fun vanillaAccessPointArn(blackhole: Blackhole) {
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(vanillaAccessPointArnParams) })
+    }
+
+    // S3 outposts vanilla test
+    @Benchmark
+    fun s3OutpostsVanilla(blackhole: Blackhole) {
+        blackhole.consume(resolveEndpointSync { provider.resolveEndpoint(s3OutpostsVanillaParams) })
+    }
+}
