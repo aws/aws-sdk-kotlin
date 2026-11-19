@@ -9,7 +9,9 @@ import aws.sdk.kotlin.runtime.InternalSdkApi
 import aws.sdk.kotlin.runtime.config.AwsSdkSetting
 import aws.smithy.kotlin.runtime.config.resolve
 import aws.smithy.kotlin.runtime.io.internal.SdkDispatchers
+import aws.smithy.kotlin.runtime.telemetry.logging.Logger
 import aws.smithy.kotlin.runtime.telemetry.logging.logger
+import aws.smithy.kotlin.runtime.telemetry.logging.warn
 import aws.smithy.kotlin.runtime.telemetry.trace.withSpan
 import aws.smithy.kotlin.runtime.util.OsFamily
 import aws.smithy.kotlin.runtime.util.PlatformProvider
@@ -48,8 +50,25 @@ public suspend fun loadAwsSharedConfig(
                 logger,
                 FileType.CREDENTIAL,
                 platform.readFileOrNull(source.credentialsPath)?.decodeToString(),
-            ),
+            ).withoutProperties(CONFIG_FILE_ONLY_KEYS, logger),
         ).toSharedConfig(source)
+    }
+}
+
+/**
+ * Properties that are only read from the config file. Values for them in the credentials file are ignored.
+ */
+internal val CONFIG_FILE_ONLY_KEYS: Set<String> = setOf("daemon_credential")
+
+/**
+ * Remove [keys] from every section of this parsed credentials file, logging a warning for each property removed
+ */
+internal fun TypedSectionMap.withoutProperties(keys: Set<String>, logger: Logger): TypedSectionMap = mapValues { (_, sections) ->
+    sections.mapValues { (_, section) ->
+        keys.filter { it in section }.forEach { key ->
+            logger.warn { "Ignoring property '$key' in ${section.sectionType.name.lowercase()} '${section.name}' of the credentials file, it is only read from the config file" }
+        }
+        ConfigSection(section.name, section.properties - keys, section.sectionType)
     }
 }
 

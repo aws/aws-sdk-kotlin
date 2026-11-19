@@ -199,6 +199,7 @@ public final class aws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsB
 	public static final field CREDENTIALS_SSO_LEGACY Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
 	public static final field CREDENTIALS_STS_ASSUME_ROLE Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
 	public static final field CREDENTIALS_STS_ASSUME_ROLE_WEB_ID Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
+	public static final field CREDENTIAL_DAEMON Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public fun getIdentifier ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Laws/sdk/kotlin/runtime/http/interceptors/businessmetrics/AwsBusinessMetric$Credentials;
