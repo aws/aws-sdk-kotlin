@@ -6,10 +6,15 @@ package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.extraction
 
 import aws.sdk.kotlin.hll.codegen.model.TypeRef
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
+import aws.sdk.kotlin.hll.codegen.rendering.RenderOptions
+import aws.sdk.kotlin.hll.codegen.rendering.Visibility
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.AnnotationsProcessorOptions
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
 import aws.smithy.kotlin.runtime.collections.get
+import com.google.devtools.ksp.isPublic
 import com.google.devtools.ksp.symbol.KSDeclaration
+import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeParameter
 
 /*
  * The single source of generated declaration locations. Both a class's own generated code and every reference to it
@@ -24,6 +29,29 @@ internal fun destinationPackage(decl: KSDeclaration, ctx: RenderContext): String
 ) {
     is DestinationPackage.Relative -> "${decl.packageName.asString()}.${dstPkg.pkg}"
     is DestinationPackage.Absolute -> dstPkg.pkg
+}
+
+/**
+ * The visibility of the code generated for one mapped item. [Visibility.MATCH_SOURCE] resolves to [Visibility.PUBLIC]
+ * only if every declaration in [exposed] is effectively public (it and every declaration enclosing it are `public`),
+ * and to [Visibility.INTERNAL] otherwise.
+ * @param exposed The user declarations named in the signatures of the generated code
+ */
+internal fun generatedVisibility(exposed: Sequence<KSDeclaration>, ctx: RenderContext): Visibility = when (
+    val visibility = ctx.attributes[RenderOptions.VisibilityAttribute]
+) {
+    Visibility.MATCH_SOURCE -> if (exposed.all { it.isEffectivelyPublic() }) Visibility.PUBLIC else Visibility.INTERNAL
+    else -> visibility
+}
+
+private fun KSDeclaration.isEffectivelyPublic(): Boolean = generateSequence(this) { it.parentDeclaration }.all { it.isPublic() }
+
+/**
+ * Yields the declarations of this type and all of its type arguments, recursively, excluding type parameters
+ */
+internal fun KSType.referencedDeclarations(): Sequence<KSDeclaration> = sequence {
+    if (declaration !is KSTypeParameter) yield(declaration)
+    arguments.forEach { arg -> arg.type?.resolve()?.let { yieldAll(it.referencedDeclarations()) } }
 }
 
 /**
