@@ -73,7 +73,7 @@ public class CredentialDaemonException(
 /**
  * Link to the credential daemon documentation, included in setup-related error messages.
  */
-internal const val CREDENTIAL_DAEMON_DOC = "https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-credential-daemon.html"
+internal const val CREDENTIAL_DAEMON_DOC = "https://docs.aws.amazon.com/cli/latest/userguide/cli-authentication-credsd.html"
 
 /**
  * Remove control characters from text that came from outside the SDK.
