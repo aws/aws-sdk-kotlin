@@ -1687,6 +1687,12 @@
             "brazilName": "AwsSdkKotlinPartnercentralChannel"
         },
         {
+            "sdkId": "PartnerCentral Marketing",
+            "namespace": "aws.sdk.kotlin.services.partnercentralmarketing",
+            "artifactName": "partnercentralmarketing",
+            "brazilName": "AwsSdkKotlinPartnercentralMarketing"
+        },
+        {
             "sdkId": "PartnerCentral Revenue Measurement",
             "namespace": "aws.sdk.kotlin.services.partnercentralrevenuemeasurement",
             "artifactName": "partnercentralrevenuemeasurement",
