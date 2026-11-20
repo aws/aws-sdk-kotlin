@@ -37,6 +37,12 @@
             "brazilName": "AwsSdkKotlinArcZonalShift"
         },
         {
+            "sdkId": "Abuse Signal",
+            "namespace": "aws.sdk.kotlin.services.abusesignal",
+            "artifactName": "abusesignal",
+            "brazilName": "AwsSdkKotlinAbuseSignal"
+        },
+        {
             "sdkId": "AccessAnalyzer",
             "namespace": "aws.sdk.kotlin.services.accessanalyzer",
             "artifactName": "accessanalyzer",

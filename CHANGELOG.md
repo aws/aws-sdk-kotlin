@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.9.40] - 11/20/2026
+
+### Features
+* (**abusesignal**) This release introduces the AWS Abuse Signal API, enabling customers to programmatically submit and track AWS abuse reports.
+* (**bedrockagentcorecontrol**) Adds s3BucketMount to mount an Amazon S3 bucket as a file system in AgentCore Runtime, with an optional per-session key prefix and adds operatingSystemConfiguration with a Linux privilegeMode (STANDARD or PRIVILEGED) to the capacity provider configuration
+* (**braket**) Supporting a new PAUSED device status and a DeviceStatusReason.
+* (**cleanrooms**) Adds support for populating intermediate tables with results from PySpark analysis templates.
+* (**cloudformation**) AWS CloudFormation StackSets now provides stage-by-stage progress for deployments that span thousands of accounts and AWS Regions, which enables you to see where each deployment stands while it runs
+* (**cognitoidentityprovider**) Add support for restoring user pool's user data to point in time.
+* (**health**) Adds resource tags functionality to the AWS Health service
+* (**iam**) Adds MaxSignInSessionDuration to IAM Roles and Login Profiles, allowing customers to configure the maximum Console sign-in session duration per principal. Affects CreateRole, UpdateRole, GetRole and LoginProfile APIs.
+* (**neptune**) Neptune Database Serverless support for graviton3 based r8g instances.
+* (**resiliencehubv2**) This release includes support for adding new field for the effective policy used in test runs and documentation updates.
+* (**s3**) Adds exclusions and Multi-Region key resolution to S3 Replication. Rule filters support a Not element to exclude prefixes and object tags. Destination EncryptionConfiguration supports UseSourceMultiRegionKey to encrypt replicas with the related replica KMS multi-Region key in the destination Region.
+* (**securityagent**) This release adds support for resuming a paused penetration test job from its last saved checkpoint.
+* (**sesv2**) This release adds support for Spillover Routing in Amazon SES.
+* (**signin**) These APIs enable customers and administrators to list, view, and revoke AWS Sign-In Sessions programmatically using the AWS CLI and SDKs, providing greater visibility and control over authenticated access.
+* (**support**) Updated endpoint resolution for AWS Support, including FIPS and dual-stack endpoints.
+* (**wafv2**) Adds the AnalyticsConfig parameter to CreateWebACL and UpdateWebACL to enable or disable cross-Region security analytics for a WebACL. When you enable security analytics, you authorize AWS to transfer and store full request logs outside the AWS Region where the WebACL is hosted.
+
+### Documentation
+* (**elasticloadbalancingv2**) This release adds support for the keyExchange field in CloudTrail tlsDetails, enabling customers to distinguish classical from post-quantum hybrid key exchange for TLS connections on Application Load Balancers.
+
 ## [1.9.39] - 11/18/2026
 
 ### Features
