@@ -25,6 +25,12 @@
             "brazilName": "AwsSdkKotlinApiGateway"
         },
         {
+            "sdkId": "APIPortal",
+            "namespace": "aws.sdk.kotlin.services.apiportal",
+            "artifactName": "apiportal",
+            "brazilName": "AwsSdkKotlinApiportal"
+        },
+        {
             "sdkId": "ARC Region switch",
             "namespace": "aws.sdk.kotlin.services.arcregionswitch",
             "artifactName": "arcregionswitch",
@@ -65,6 +71,12 @@
             "namespace": "aws.sdk.kotlin.services.accountaccessruntime",
             "artifactName": "accountaccessruntime",
             "brazilName": "AwsSdkKotlinAccountAccessRuntime"
+        },
+        {
+            "sdkId": "Agent Discovery",
+            "namespace": "aws.sdk.kotlin.services.agentdiscovery",
+            "artifactName": "agentdiscovery",
+            "brazilName": "AwsSdkKotlinAgentDiscovery"
         },
         {
             "sdkId": "Agent Registry",
@@ -1717,6 +1729,12 @@
             "brazilName": "AwsSdkKotlinPaymentCryptographyData"
         },
         {
+            "sdkId": "Payments",
+            "namespace": "aws.sdk.kotlin.services.payments",
+            "artifactName": "payments",
+            "brazilName": "AwsSdkKotlinPayments"
+        },
+        {
             "sdkId": "Pca Connector Ad",
             "namespace": "aws.sdk.kotlin.services.pcaconnectorad",
             "artifactName": "pcaconnectorad",
@@ -2093,6 +2111,12 @@
             "namespace": "aws.sdk.kotlin.services.sagemakerfeaturestoreruntime",
             "artifactName": "sagemakerfeaturestoreruntime",
             "brazilName": "AwsSdkKotlinSagemakerFeaturestoreRuntime"
+        },
+        {
+            "sdkId": "SageMaker Gateway Runtime",
+            "namespace": "aws.sdk.kotlin.services.sagemakergatewayruntime",
+            "artifactName": "sagemakergatewayruntime",
+            "brazilName": "AwsSdkKotlinSagemakerGatewayRuntime"
         },
         {
             "sdkId": "SageMaker Geospatial",
