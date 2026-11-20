@@ -39,7 +39,7 @@ internal data class ProfileChain(
         /**
          * Resolves profile chain with the following precedence:
          *
-         * 1. Credential daemon (`daemon_credential`), checked first for every profile in the chain
+         * 1. Credential daemon (`credential_daemon`), checked first for every profile in the chain
          * 2. Static credentials
          * 3. Assume role with source profile OR assume role with named provider (mutually exclusive)
          * 4. Web ID token file & role arn
@@ -162,20 +162,20 @@ internal const val LOGIN_SESSION = "login_session"
 
 internal const val CREDENTIAL_PROCESS = "credential_process"
 
-internal const val DAEMON_CREDENTIAL = "daemon_credential"
+internal const val CREDENTIAL_DAEMON = "credential_daemon"
 
 /**
  * Get a [LeafProvider.CredentialDaemon] for the current profile, `null` if the profile does not use the
  * credential daemon, or throw if the profile's daemon settings are invalid.
  */
 private fun AwsProfile.credentialDaemonLeaf(config: AwsSharedConfig): LeafProvider? {
-    if (DAEMON_CREDENTIAL !in this) return null
+    if (CREDENTIAL_DAEMON !in this) return null
 
     val isSso = contains(SSO_SESSION) || contains(SSO_START_URL)
     val hasAccount = contains(SSO_ACCOUNT_ID)
     val hasRole = contains(SSO_ROLE_NAME)
 
-    // an SSO profile without account and role resolves as though `daemon_credential` were not set
+    // an SSO profile without account and role resolves as though `credential_daemon` were not set
     if (isSso && !hasAccount && !hasRole) return null
 
     // exactly one of account and role: raise the existing SSO error and make no daemon call. This always throws,
@@ -186,26 +186,26 @@ private fun AwsProfile.credentialDaemonLeaf(config: AwsSharedConfig): LeafProvid
         throw ProviderConfigurationException(sso.errorMessage)
     }
 
-    val credentialName = when (val value = properties[DAEMON_CREDENTIAL]) {
+    val credentialName = when (val value = properties[CREDENTIAL_DAEMON]) {
         is AwsConfigValue.String -> value.value
-        else -> throw credentialDaemonProfileProviderConfigurationException("profile ($name) `$DAEMON_CREDENTIAL` must be a single value, not sub-properties")
+        else -> throw credentialDaemonProfileProviderConfigurationException("profile ($name) `$CREDENTIAL_DAEMON` must be a single value, not sub-properties")
     }
     if (!isValidCredentialDaemonName(credentialName)) {
         throw credentialDaemonProfileProviderConfigurationException(
-            "profile ($name) `$DAEMON_CREDENTIAL` must be 1-64 characters [A-Za-z0-9._-] and not start with '.'",
+            "profile ($name) `$CREDENTIAL_DAEMON` must be 1-64 characters [A-Za-z0-9._-] and not start with '.'",
         )
     }
 
     if (contains(WEB_IDENTITY_TOKEN_FILE)) {
         throw credentialDaemonProfileProviderConfigurationException(
-            "profile ($name) has two credential sources, `$DAEMON_CREDENTIAL` and `$WEB_IDENTITY_TOKEN_FILE`; " +
+            "profile ($name) has two credential sources, `$CREDENTIAL_DAEMON` and `$WEB_IDENTITY_TOKEN_FILE`; " +
                 "remove one of them",
         )
     }
 
     if (contains(ROLE_ARN)) {
         throw credentialDaemonProfileProviderConfigurationException(
-            "profile ($name) sets `$DAEMON_CREDENTIAL` together with `$ROLE_ARN`; move the role into its own profile " +
+            "profile ($name) sets `$CREDENTIAL_DAEMON` together with `$ROLE_ARN`; move the role into its own profile " +
                 "with `$ROLE_ARN` and `$SOURCE_PROFILE = $name`",
         )
     }

@@ -54,7 +54,7 @@ class CredentialDaemonProfileTest {
     @Test
     fun testAcceptanceThroughHomeLink() = runTest {
         FakeCredentialDaemon().use { daemon ->
-            val env = env(null, "[profile dev]\ndaemon_credential = dev", extra = mapOf("AWS_PROFILE" to "dev"))
+            val env = env(null, "[profile dev]\ncredential_daemon = dev", extra = mapOf("AWS_PROFILE" to "dev"))
             val aws = File(env.getValue("HOME"), ".aws").apply { mkdirs() }
             Files.createSymbolicLink(File(aws, "credential-daemon.sock").toPath(), Paths.get(daemon.path))
             DefaultChainCredentialsProvider(platformProvider = fakePlatform(env), region = "us-east-1").use { provider ->
@@ -67,7 +67,7 @@ class CredentialDaemonProfileTest {
     @Test
     fun testAcceptanceThroughDefaultChain() = runTest {
         FakeCredentialDaemon().use { daemon ->
-            val env = env(daemon, "[profile dev]\ndaemon_credential = dev", extra = mapOf("AWS_PROFILE" to "dev"))
+            val env = env(daemon, "[profile dev]\ncredential_daemon = dev", extra = mapOf("AWS_PROFILE" to "dev"))
             DefaultChainCredentialsProvider(platformProvider = fakePlatform(env), region = "us-east-1").use { provider ->
                 val creds = provider.resolve()
                 assertEquals("ASIADAEMON", creds.accessKeyId)
@@ -78,11 +78,26 @@ class CredentialDaemonProfileTest {
     }
 
     @Test
+    fun testSystemPropertySocketThroughDefaultChain() = runTest {
+        FakeCredentialDaemon().use { fromEnv ->
+            FakeCredentialDaemon().use { fromProp ->
+                val env = env(fromEnv, "[profile dev]\ncredential_daemon = dev", extra = mapOf("AWS_PROFILE" to "dev"))
+                val platform = fakePlatform(env, props = mapOf("aws.credentialDaemonSocket" to fromProp.path))
+                DefaultChainCredentialsProvider(platformProvider = platform, region = "us-east-1").use { provider ->
+                    assertEquals("ASIADAEMON", provider.resolve().accessKeyId)
+                }
+                assertEquals("dev", requestedCredential(fromProp))
+                assertEquals(0, fromEnv.requests.size)
+            }
+        }
+    }
+
+    @Test
     fun testEnvWebIdentityWithMissingTokenFallsThroughToDaemonProfile() = runTest {
         FakeCredentialDaemon().use { daemon ->
             val env = env(
                 daemon,
-                "[profile dev]\ndaemon_credential = dev",
+                "[profile dev]\ncredential_daemon = dev",
                 extra = mapOf(
                     "AWS_ROLE_ARN" to StsTestUtils.ARN,
                     "AWS_WEB_IDENTITY_TOKEN_FILE" to "/nonexistent/aws-web-identity-token",
@@ -103,7 +118,7 @@ class CredentialDaemonProfileTest {
         FakeCredentialDaemon().use { daemon ->
             val env = env(
                 daemon,
-                "[default]\ndaemon_credential = dev",
+                "[default]\ncredential_daemon = dev",
                 extra = mapOf("AWS_ACCESS_KEY_ID" to "AKIDENV", "AWS_SECRET_ACCESS_KEY" to "secret"),
             )
             DefaultChainCredentialsProvider(platformProvider = fakePlatform(env), region = "us-east-1").use { provider ->
@@ -124,7 +139,7 @@ class CredentialDaemonProfileTest {
                 source_profile = base
 
                 [profile base]
-                daemon_credential = base-cred
+                credential_daemon = base-cred
                 """,
             )
             val conn = buildTestConnection { expect(StsTestUtils.stsResponse()) }
@@ -154,7 +169,7 @@ class CredentialDaemonProfileTest {
                 """,
                 credentials = """
                 [default]
-                daemon_credential = dev
+                credential_daemon = dev
                 """,
             )
             assertEquals("AKIDCONFIG", ProfileCredentialsProvider(platformProvider = fakePlatform(env)).resolve().accessKeyId)
@@ -167,8 +182,8 @@ class CredentialDaemonProfileTest {
         FakeCredentialDaemon().use { daemon ->
             val env = env(
                 daemon,
-                "[default]\ndaemon_credential = from-config",
-                credentials = "[default]\ndaemon_credential = from-credentials",
+                "[default]\ncredential_daemon = from-config",
+                credentials = "[default]\ncredential_daemon = from-credentials",
             )
             assertEquals("ASIADAEMON", ProfileCredentialsProvider(platformProvider = fakePlatform(env)).resolve().accessKeyId)
             assertEquals("from-config", requestedCredential(daemon))
@@ -183,7 +198,7 @@ class CredentialDaemonProfileTest {
                 daemon,
                 """
                 [default]
-                daemon_credential = dev
+                credential_daemon = dev
                 aws_access_key_id = AKIDSTATIC
                 aws_secret_access_key = secret
                 credential_process = touch ${marker.absolutePath}
@@ -201,7 +216,7 @@ class CredentialDaemonProfileTest {
     @Test
     fun testFeatureIdOnTheWire() = runTest {
         FakeCredentialDaemon().use { daemon ->
-            val env = env(daemon, "[default]\ndaemon_credential = dev")
+            val env = env(daemon, "[default]\ncredential_daemon = dev")
             val conn = buildTestConnection { expect(StsTestUtils.stsResponse()) }
             StsClient {
                 region = StsTestUtils.REGION
@@ -223,7 +238,7 @@ class CredentialDaemonProfileTest {
     fun testNoRequestWhenDaemonNotRunning() = runTest {
         FakeCredentialDaemon.assumeSupported()
         val missing = File(FakeCredentialDaemon.tempDir(), "missing.sock").absolutePath
-        val env = env(null, "[default]\ndaemon_credential = dev", extra = mapOf("AWS_CREDENTIAL_DAEMON_SOCKET" to missing))
+        val env = env(null, "[default]\ncredential_daemon = dev", extra = mapOf("AWS_CREDENTIAL_DAEMON_SOCKET" to missing))
         val conn = TestConnection()
         StsClient {
             region = StsTestUtils.REGION

@@ -43,11 +43,12 @@ internal fun fakePlatform(
     env: Map<String, String>,
     os: OsFamily = OsFamily.Linux,
     android: Boolean = false,
+    props: Map<String, String> = emptyMap(),
 ): PlatformProvider = object : PlatformProvider by PlatformProvider.System {
     override fun getenv(key: String): String? = env[key]
     override fun getAllEnvVars(): Map<String, String> = env
-    override fun getProperty(key: String): String? = null
-    override fun getAllProperties(): Map<String, String> = emptyMap()
+    override fun getProperty(key: String): String? = props[key]
+    override fun getAllProperties(): Map<String, String> = props
     override fun osInfo(): OperatingSystem = OperatingSystem(os, "test")
     override val isAndroid: Boolean = android
 }
@@ -226,6 +227,94 @@ class CredentialDaemonCredentialsProviderTest {
                 assertEquals("ASIAENV", CredentialDaemonCredentialsProvider("dev", platformProvider = fakePlatform(env)).resolve().accessKeyId)
                 assertEquals(0, atLink.requests.size)
             }
+        }
+    }
+
+    private fun sessionDaemon(accessKeyId: String) = FakeCredentialDaemon(handler = { Action.Reply(FakeCredentialDaemon.sessionReply(accessKeyId)) })
+
+    private val socketProperty = "aws.credentialDaemonSocket"
+
+    @Test
+    fun testSystemPropertyWinsOverEnvAndLink() = runTest {
+        val (home, link) = tempHome()
+        FakeCredentialDaemon(socketPath = link.absolutePath).use { atLink ->
+            sessionDaemon("ASIAENV").use { fromEnv ->
+                sessionDaemon("ASIAPROP").use { fromProp ->
+                    val env = mapOf("HOME" to home.absolutePath, "AWS_CREDENTIAL_DAEMON_SOCKET" to fromEnv.path)
+                    val platform = fakePlatform(env, props = mapOf(socketProperty to fromProp.path))
+                    assertEquals("ASIAPROP", CredentialDaemonCredentialsProvider("dev", platformProvider = platform).resolve().accessKeyId)
+                    assertEquals(0, atLink.requests.size)
+                    assertEquals(0, fromEnv.requests.size)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testSystemPropertyNotListeningDoesNotFallBack() = runTest {
+        val (home, link) = tempHome()
+        FakeCredentialDaemon(socketPath = link.absolutePath).use { atLink ->
+            sessionDaemon("ASIAENV").use { fromEnv ->
+                val missing = File(FakeCredentialDaemon.tempDir(), "missing.sock").absolutePath
+                val env = mapOf("HOME" to home.absolutePath, "AWS_CREDENTIAL_DAEMON_SOCKET" to fromEnv.path)
+                val provider = CredentialDaemonCredentialsProvider("dev", platformProvider = fakePlatform(env, props = mapOf(socketProperty to missing)))
+                val ex = assertDaemonError(CredentialDaemonErrorCode.NOT_RUNNING, provider)
+                assertTrue(ex.message!!.contains(missing), ex.message)
+                assertEquals(0, atLink.requests.size)
+                assertEquals(0, fromEnv.requests.size)
+            }
+        }
+    }
+
+    @Test
+    fun testEmptyOrRelativeSystemPropertyIsUnset() = runTest {
+        sessionDaemon("ASIAENV").use { fromEnv ->
+            val env = mapOf("AWS_CREDENTIAL_DAEMON_SOCKET" to fromEnv.path)
+            listOf("", "relative").forEach { value ->
+                val platform = fakePlatform(env, props = mapOf(socketProperty to value))
+                assertEquals("ASIAENV", CredentialDaemonCredentialsProvider("dev", platformProvider = platform).resolve().accessKeyId, value)
+            }
+            assertEquals(2, fromEnv.requests.size)
+        }
+    }
+
+    @Test
+    fun testSocketPathWinsOverSystemProperty() = runTest {
+        sessionDaemon("ASIAENV").use { fromEnv ->
+            sessionDaemon("ASIAPROP").use { fromProp ->
+                sessionDaemon("ASIASET").use { fromSetting ->
+                    val env = mapOf("AWS_CREDENTIAL_DAEMON_SOCKET" to fromEnv.path)
+                    val platform = fakePlatform(env, props = mapOf(socketProperty to fromProp.path))
+                    val provider = CredentialDaemonCredentialsProvider("dev", platformProvider = platform, socketPath = fromSetting.path)
+                    assertEquals("ASIASET", provider.resolve().accessKeyId)
+                    assertEquals(0, fromProp.requests.size)
+                    assertEquals(0, fromEnv.requests.size)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testSocketPathNotListeningDoesNotFallBack() = runTest {
+        sessionDaemon("ASIAPROP").use { fromProp ->
+            val missing = File(FakeCredentialDaemon.tempDir(), "missing.sock").absolutePath
+            val platform = fakePlatform(emptyMap(), props = mapOf(socketProperty to fromProp.path))
+            val provider = CredentialDaemonCredentialsProvider("dev", platformProvider = platform, socketPath = missing)
+            val ex = assertDaemonError(CredentialDaemonErrorCode.NOT_RUNNING, provider)
+            assertTrue(ex.message!!.contains(missing), ex.message)
+            assertEquals(0, fromProp.requests.size)
+        }
+    }
+
+    @Test
+    fun testEmptyOrRelativeSocketPathIsUnset() = runTest {
+        sessionDaemon("ASIAPROP").use { fromProp ->
+            val platform = fakePlatform(emptyMap(), props = mapOf(socketProperty to fromProp.path))
+            listOf("", "relative").forEach { value ->
+                val provider = CredentialDaemonCredentialsProvider("dev", platformProvider = platform, socketPath = value)
+                assertEquals("ASIAPROP", provider.resolve().accessKeyId, value)
+            }
+            assertEquals(2, fromProp.requests.size)
         }
     }
 

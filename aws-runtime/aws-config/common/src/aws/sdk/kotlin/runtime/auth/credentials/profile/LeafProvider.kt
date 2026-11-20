@@ -115,7 +115,7 @@ internal sealed class LeafProvider {
      * Example
      * ```ini
      * [profile D]
-     * daemon_credential = my-credential
+     * credential_daemon = my-credential
      * ```
      */
     data class CredentialDaemon(

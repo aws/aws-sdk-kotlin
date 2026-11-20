@@ -270,10 +270,19 @@ class CredentialDaemonProtocolTest {
         env: Map<String, String>,
         os: OperatingSystem = linux,
         entries: Map<String, SocketPathEntry> = emptyMap(),
-    ): String = resolveCredentialDaemonSocketPath(TestPlatformProvider(env = env, os = os)) { entries[it] ?: SocketPathEntry.Missing }
+        props: Map<String, String> = emptyMap(),
+        socketPath: String? = null,
+    ): String = resolveCredentialDaemonSocketPath(TestPlatformProvider(env = env, props = props, os = os), socketPath) {
+        entries[it] ?: SocketPathEntry.Missing
+    }
 
-    private fun noLocation(env: Map<String, String>, entries: Map<String, SocketPathEntry> = emptyMap()): CredentialDaemonException {
-        val ex = assertFailsWith<CredentialDaemonException> { path(env, entries = entries) }
+    private fun noLocation(
+        env: Map<String, String>,
+        entries: Map<String, SocketPathEntry> = emptyMap(),
+        props: Map<String, String> = emptyMap(),
+        socketPath: String? = null,
+    ): CredentialDaemonException {
+        val ex = assertFailsWith<CredentialDaemonException> { path(env, entries = entries, props = props, socketPath = socketPath) }
         assertEquals(CredentialDaemonErrorCode.NOT_RUNNING, ex.errorCode, ex.message)
         listOf("install the credential daemon", "\$HOME/.aws/credential-daemon.sock", "AWS_CREDENTIAL_DAEMON_SOCKET").forEach {
             assertTrue(ex.message!!.contains(it, ignoreCase = true), ex.message)
@@ -317,6 +326,24 @@ class CredentialDaemonProtocolTest {
         noLocation(mapOf("HOME" to "home/u"), mapOf("home/u/.aws/credential-daemon.sock" to SocketPathEntry.Present))
         // a relative env value does not stop the lookup from failing
         noLocation(mapOf("AWS_CREDENTIAL_DAEMON_SOCKET" to "rel/d.sock"))
+
+        // the system property wins over the env var and the link, and is used as is
+        val env = mapOf("AWS_CREDENTIAL_DAEMON_SOCKET" to "/tmp/env.sock", "HOME" to "/home/u")
+        val prop = "aws.credentialDaemonSocket"
+        assertEquals("/tmp/prop.sock", path(env, entries = present, props = mapOf(prop to "/tmp/prop.sock")))
+        // a relative or empty system property counts as unset
+        assertEquals("/tmp/env.sock", path(env, entries = present, props = mapOf(prop to "rel/prop.sock")))
+        assertEquals("/tmp/env.sock", path(env, entries = present, props = mapOf(prop to "")))
+        assertEquals(link, path(mapOf("HOME" to "/home/u"), entries = present, props = mapOf(prop to "rel/prop.sock")))
+
+        // the provider setting wins over the system property, the env var and the link
+        val props = mapOf(prop to "/tmp/prop.sock")
+        assertEquals("/tmp/set.sock", path(env, entries = present, props = props, socketPath = "/tmp/set.sock"))
+        // a relative or empty provider setting counts as unset
+        assertEquals("/tmp/prop.sock", path(env, entries = present, props = props, socketPath = "rel/set.sock"))
+        assertEquals("/tmp/prop.sock", path(env, entries = present, props = props, socketPath = ""))
+        assertEquals("/tmp/env.sock", path(env, entries = present, socketPath = ""))
+        noLocation(mapOf("HOME" to "/home/u"), socketPath = "rel/set.sock", props = mapOf(prop to "rel/prop.sock"))
 
         // link-dangling names the link and its target
         val dangling = assertFailsWith<CredentialDaemonException> {

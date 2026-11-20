@@ -672,7 +672,7 @@ class ProfileChainTest {
     )
 
     private fun invalidName(profile: String = "A") = TestOutput.Error(
-        "profile ($profile) `daemon_credential` must be 1-64 characters [A-Za-z0-9._-] and not start with '.'",
+        "profile ($profile) `credential_daemon` must be 1-64 characters [A-Za-z0-9._-] and not start with '.'",
         CredentialDaemonErrorCode.INVALID_CONFIG,
     )
 
@@ -681,7 +681,7 @@ class ProfileChainTest {
             "credential daemon",
             """
             [profile A]
-            daemon_credential = dev
+            credential_daemon = dev
             """,
             chain(LeafProvider.CredentialDaemon("dev")),
         ),
@@ -689,7 +689,7 @@ class ProfileChainTest {
             "credential daemon wins over static keys, process and credential_source",
             """
             [profile A]
-            daemon_credential = dev
+            credential_daemon = dev
             aws_access_key_id = abc123
             aws_secret_access_key = def456
             credential_process = some/process
@@ -700,6 +700,16 @@ class ProfileChainTest {
             chain(LeafProvider.CredentialDaemon("dev")),
         ),
         TestCase(
+            "the earlier daemon_credential key is not read",
+            """
+            [profile A]
+            daemon_credential = dev
+            aws_access_key_id = abc123
+            aws_secret_access_key = def456
+            """,
+            chain(LeafProvider.AccessKey(Credentials("abc123", "def456"))),
+        ),
+        TestCase(
             "role profile with credential daemon source profile",
             """
             [profile A]
@@ -707,7 +717,7 @@ class ProfileChainTest {
             source_profile = D
 
             [profile D]
-            daemon_credential = d
+            credential_daemon = d
             aws_access_key_id = abc123
             aws_secret_access_key = def456
             """,
@@ -720,12 +730,12 @@ class ProfileChainTest {
             "credential daemon with role_arn",
             """
             [profile A]
-            daemon_credential = dev
+            credential_daemon = dev
             role_arn = arn:aws:iam::123456789:role/RoleA
             source_profile = B
             """,
             TestOutput.Error(
-                "profile (A) sets `daemon_credential` together with `role_arn`; move the role into its own profile with `role_arn` and `source_profile = A`",
+                "profile (A) sets `credential_daemon` together with `role_arn`; move the role into its own profile with `role_arn` and `source_profile = A`",
                 CredentialDaemonErrorCode.INVALID_CONFIG,
             ),
         ),
@@ -733,11 +743,11 @@ class ProfileChainTest {
             "credential daemon with web_identity_token_file",
             """
             [profile A]
-            daemon_credential = dev
+            credential_daemon = dev
             web_identity_token_file = /token
             """,
             TestOutput.Error(
-                "profile (A) has two credential sources, `daemon_credential` and `web_identity_token_file`; remove one of them",
+                "profile (A) has two credential sources, `credential_daemon` and `web_identity_token_file`; remove one of them",
                 CredentialDaemonErrorCode.INVALID_CONFIG,
             ),
         ),
@@ -745,25 +755,25 @@ class ProfileChainTest {
             "credential daemon with role_arn and web_identity_token_file",
             """
             [profile A]
-            daemon_credential = dev
+            credential_daemon = dev
             role_arn = arn:aws:iam::123456789:role/RoleA
             web_identity_token_file = /token
             """,
             TestOutput.Error(
-                "profile (A) has two credential sources, `daemon_credential` and `web_identity_token_file`; remove one of them",
+                "profile (A) has two credential sources, `credential_daemon` and `web_identity_token_file`; remove one of them",
                 CredentialDaemonErrorCode.INVALID_CONFIG,
             ),
         ),
-        TestCase("empty name", "[profile A]\ndaemon_credential =", invalidName()),
-        TestCase("leading dot", "[profile A]\ndaemon_credential = .x", invalidName()),
-        TestCase("too long", "[profile A]\ndaemon_credential = ${"x".repeat(65)}", invalidName()),
-        TestCase("space", "[profile A]\ndaemon_credential = a b", invalidName()),
-        TestCase("slash", "[profile A]\ndaemon_credential = a/b", invalidName()),
-        TestCase("non-ASCII", "[profile A]\ndaemon_credential = caf\u00e9", invalidName()),
+        TestCase("empty name", "[profile A]\ncredential_daemon =", invalidName()),
+        TestCase("leading dot", "[profile A]\ncredential_daemon = .x", invalidName()),
+        TestCase("too long", "[profile A]\ncredential_daemon = ${"x".repeat(65)}", invalidName()),
+        TestCase("space", "[profile A]\ncredential_daemon = a b", invalidName()),
+        TestCase("slash", "[profile A]\ncredential_daemon = a/b", invalidName()),
+        TestCase("non-ASCII", "[profile A]\ncredential_daemon = caf\u00e9", invalidName()),
         TestCase(
             "sub-properties",
-            "[profile A]\ndaemon_credential =\n  name = dev",
-            TestOutput.Error("profile (A) `daemon_credential` must be a single value, not sub-properties", CredentialDaemonErrorCode.INVALID_CONFIG),
+            "[profile A]\ncredential_daemon =\n  name = dev",
+            TestOutput.Error("profile (A) `credential_daemon` must be a single value, not sub-properties", CredentialDaemonErrorCode.INVALID_CONFIG),
         ),
         TestCase(
             "invalid name in source profile",
@@ -773,19 +783,19 @@ class ProfileChainTest {
             source_profile = D
 
             [profile D]
-            daemon_credential = .bad
+            credential_daemon = .bad
             """,
             invalidName("D"),
         ),
-        TestCase("64 chars", "[profile A]\ndaemon_credential = ${"x".repeat(64)}", chain(LeafProvider.CredentialDaemon("x".repeat(64)))),
-        TestCase("leading dash", "[profile A]\ndaemon_credential = -a", chain(LeafProvider.CredentialDaemon("-a"))),
-        TestCase("leading underscore", "[profile A]\ndaemon_credential = _a", chain(LeafProvider.CredentialDaemon("_a"))),
-        TestCase("mixed, case kept", "[profile A]\ndaemon_credential = A.b-c_9", chain(LeafProvider.CredentialDaemon("A.b-c_9"))),
+        TestCase("64 chars", "[profile A]\ncredential_daemon = ${"x".repeat(64)}", chain(LeafProvider.CredentialDaemon("x".repeat(64)))),
+        TestCase("leading dash", "[profile A]\ncredential_daemon = -a", chain(LeafProvider.CredentialDaemon("-a"))),
+        TestCase("leading underscore", "[profile A]\ncredential_daemon = _a", chain(LeafProvider.CredentialDaemon("_a"))),
+        TestCase("mixed, case kept", "[profile A]\ncredential_daemon = A.b-c_9", chain(LeafProvider.CredentialDaemon("A.b-c_9"))),
         TestCase(
             "non-SSO profile does not send sso_account_id or sso_role_name",
             """
             [profile A]
-            daemon_credential = dev
+            credential_daemon = dev
             sso_account_id = 123456789012
             sso_role_name = role
             """,
@@ -795,7 +805,7 @@ class ProfileChainTest {
             "SSO session profile with account and role",
             """
             [profile A]
-            daemon_credential = dev
+            credential_daemon = dev
             sso_session = s
             sso_account_id = 123456789012
             sso_role_name = role
@@ -810,7 +820,7 @@ class ProfileChainTest {
             "legacy SSO profile with account and role",
             """
             [profile A]
-            daemon_credential = dev
+            credential_daemon = dev
             sso_start_url = https://some.url
             sso_region = us-west-2
             sso_account_id = 123456789012
@@ -822,7 +832,7 @@ class ProfileChainTest {
             "SSO session profile with only account",
             """
             [profile A]
-            daemon_credential = dev
+            credential_daemon = dev
             sso_session = s
             sso_account_id = 123456789012
 
@@ -836,7 +846,7 @@ class ProfileChainTest {
             "legacy SSO profile with only role",
             """
             [profile A]
-            daemon_credential = dev
+            credential_daemon = dev
             sso_start_url = https://some.url
             sso_region = us-west-2
             sso_role_name = role
@@ -844,10 +854,10 @@ class ProfileChainTest {
             TestOutput.Error("profile (A) missing `sso_account_id`"),
         ),
         TestCase(
-            "SSO profile with neither account nor role ignores daemon_credential",
+            "SSO profile with neither account nor role ignores credential_daemon",
             """
             [profile A]
-            daemon_credential = .not-validated
+            credential_daemon = .not-validated
             sso_session = s
             role_arn = arn:aws:iam::123456789:role/RoleA
             source_profile = B

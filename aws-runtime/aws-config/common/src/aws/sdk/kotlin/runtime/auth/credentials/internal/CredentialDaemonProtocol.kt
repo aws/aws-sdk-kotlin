@@ -24,6 +24,11 @@ import aws.smithy.kotlin.runtime.util.PlatformProvider
 internal const val AWS_CREDENTIAL_DAEMON_SOCKET = "AWS_CREDENTIAL_DAEMON_SOCKET"
 
 /**
+ * The JVM system property that names the credential daemon socket, checked before [AWS_CREDENTIAL_DAEMON_SOCKET]
+ */
+internal const val AWS_CREDENTIAL_DAEMON_SOCKET_PROPERTY = "aws.credentialDaemonSocket"
+
+/**
  * The most bytes a credential daemon reply line may hold, not counting the terminating `\n`
  */
 internal const val CREDENTIAL_DAEMON_MAX_REPLY_BYTES = 64_000
@@ -81,6 +86,8 @@ internal sealed interface SocketPathEntry {
     data class DanglingLink(val target: String) : SocketPathEntry
 }
 
+private fun String?.absoluteOrNull(): String? = this?.takeIf { it.startsWith('/') }
+
 /**
  * Resolve the credential daemon socket path in the order that [aws.sdk.kotlin.runtime.auth.credentials.CredentialDaemonCredentialsProvider]
  * documents. The result is never cached, callers resolve it for every fetch.
@@ -90,10 +97,14 @@ internal sealed interface SocketPathEntry {
  */
 internal fun resolveCredentialDaemonSocketPath(
     platform: PlatformProvider,
+    socketPath: String? = null,
     entryAt: (String) -> SocketPathEntry = ::socketPathEntry,
 ): String {
-    val fromEnv = platform.getenv(AWS_CREDENTIAL_DAEMON_SOCKET)
-    if (!fromEnv.isNullOrEmpty() && fromEnv.startsWith('/')) return fromEnv
+    // The provider setting, the system property and the environment variable apply only if set to an absolute
+    // path. An empty or relative value counts as unset. System properties are only set on the JVM.
+    socketPath.absoluteOrNull()?.let { return it }
+    platform.getProperty(AWS_CREDENTIAL_DAEMON_SOCKET_PROPERTY).absoluteOrNull()?.let { return it }
+    platform.getenv(AWS_CREDENTIAL_DAEMON_SOCKET).absoluteOrNull()?.let { return it }
 
     // HOME comes from the environment. An unset, empty or relative HOME skips the location.
     val home = platform.getenv("HOME")?.takeIf { it.startsWith('/') }

@@ -58,7 +58,7 @@ public suspend fun loadAwsSharedConfig(
 /**
  * Properties that are only read from the config file. Values for them in the credentials file are ignored.
  */
-internal val CONFIG_FILE_ONLY_KEYS: Set<String> = setOf("daemon_credential")
+internal val CONFIG_FILE_ONLY_KEYS: Set<String> = setOf("credential_daemon")
 
 /**
  * Remove [keys] from every section of this parsed credentials file, logging a warning for each property removed
