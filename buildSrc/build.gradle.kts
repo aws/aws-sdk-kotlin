@@ -11,9 +11,17 @@ plugins {
 repositories {
     mavenCentral()
     gradlePluginPortal()
+    maven {
+        name = "kotlinRepoTools"
+        url = uri("https://d2gys1nrxnjnyg.cloudfront.net/releases")
+        content {
+            includeGroupByRegex("""aws\.sdk\.kotlin.*""")
+        }
+    }
 }
 
 dependencies {
+    implementation(libs.aws.kotlin.repo.tools.dokka.markdown)
     implementation(libs.dokka.gradle.plugin)
     implementation(libs.kotlin.gradle.plugin)
     implementation(platform(libs.jackson.bom))
