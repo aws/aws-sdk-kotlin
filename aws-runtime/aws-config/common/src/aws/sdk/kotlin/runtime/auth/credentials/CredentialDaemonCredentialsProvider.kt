@@ -27,16 +27,20 @@ import kotlin.coroutines.coroutineContext
  *
  * Each call to [resolve] opens one connection, sends one JSON-RPC 2.0 `credential/get` request and reads one reply.
  * The socket path is looked up on every call, in this order:
- * 1. The `AWS_CREDENTIAL_DAEMON_SOCKET` environment variable, if it is an absolute path
- * 2. `$HOME/.aws/credential-daemon.sock`, if anything is there: a socket, a symbolic link, or a link whose target
+ * 1. [socketPath], if it is an absolute path
+ * 2. The `aws.credentialDaemonSocket` JVM system property, if it is an absolute path (JVM only)
+ * 3. The `AWS_CREDENTIAL_DAEMON_SOCKET` environment variable, if it is an absolute path
+ * 4. `$HOME/.aws/credential-daemon.sock`, if anything is there: a socket, a symbolic link, or a link whose target
  * is missing. `HOME` is read from the environment, and this location is skipped when `HOME` is unset, empty or
  * relative.
  *
+ * An empty or relative value for locations 1 to 3 counts as unset.
+ *
  * The provider dials the first location that applies and tries no other location if that dial fails. When no
- * location applies, or location 2 is a link whose target is missing, it raises
+ * location applies, or location 4 is a link whose target is missing, it raises
  * [CredentialDaemonErrorCode.NOT_RUNNING] without dialing.
  *
- * This provider is used by [ProfileCredentialsProvider] for profiles that set `daemon_credential`.
+ * This provider is used by [ProfileCredentialsProvider] for profiles that set `credential_daemon`.
  *
  * NOTE: This provider does not implement any caching. Use [CachedCredentialsProvider] to decorate it.
  *
@@ -48,6 +52,7 @@ import kotlin.coroutines.coroutineContext
  * @param platformProvider the platform provider
  * @param connectTimeoutMillis how long to wait for the connection to the daemon
  * @param callTimeoutMillis how long the whole exchange with the daemon may take
+ * @param socketPath the path of the daemon's socket, checked before any other location
  */
 public class CredentialDaemonCredentialsProvider(
     public val credentialName: String,
@@ -56,6 +61,7 @@ public class CredentialDaemonCredentialsProvider(
     private val platformProvider: PlatformProvider = PlatformProvider.System,
     private val connectTimeoutMillis: Long = 1_000,
     private val callTimeoutMillis: Long = 5_000,
+    public val socketPath: String? = null,
 ) : CredentialsProvider {
     init {
         require(connectTimeoutMillis > 0) { "connectTimeoutMillis must be greater than 0" }
@@ -78,7 +84,7 @@ public class CredentialDaemonCredentialsProvider(
         }
 
         checkCredentialDaemonTransportSupported()
-        val path = resolveCredentialDaemonSocketPath(platformProvider)
+        val path = resolveCredentialDaemonSocketPath(platformProvider, socketPath)
         logger.debug { "Requesting credential `$credentialName` from the credential daemon at `$path`" }
 
         val request = credentialDaemonRequest(credentialName, accountId, roleName)

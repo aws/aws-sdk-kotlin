@@ -1,5 +1,5 @@
 {
   "id": "067eabab-de33-4160-8239-425d6f72b2aa",
   "type": "feature",
-  "description": "Add credential daemon credentials provider selected by `daemon_credential` in the shared config file"
+  "description": "Add credential daemon credentials provider selected by `credential_daemon` in the shared config file"
 }

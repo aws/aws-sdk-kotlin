@@ -200,7 +200,7 @@ class ProfileBearerTokenProviderTest {
 
     @Test
     fun testCredentialDaemonProfileHasNoSsoSession() = runTest {
-        val provider = daemonProfileProvider("daemon_credential = dev")
+        val provider = daemonProfileProvider("credential_daemon = dev")
         val ex = assertFailsWith<ProviderConfigurationException> { provider.resolve() }
         ex.message.shouldContain("no bearer token providers available for profile `default`")
         ex.message.shouldContain("credential daemon")

@@ -72,9 +72,9 @@ import kotlin.coroutines.coroutineContext
  * ### Credentials from the local credential daemon
  * ```ini
  * [default]
- * daemon_credential = my-credential
+ * credential_daemon = my-credential
  * ```
- * `daemon_credential` is only read from the config file. A profile that sets it gets its credentials only from
+ * `credential_daemon` is only read from the config file. A profile that sets it gets its credentials only from
  * the credential daemon (see [CredentialDaemonCredentialsProvider]).
  *
  * Other more complex configurations are possible. See the [Configuration and credential file settings](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
