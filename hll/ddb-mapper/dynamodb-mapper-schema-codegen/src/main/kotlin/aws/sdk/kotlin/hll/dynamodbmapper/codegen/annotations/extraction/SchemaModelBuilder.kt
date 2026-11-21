@@ -35,14 +35,19 @@ import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
 
 /**
- * Builds the IR for a batch of annotated classes. Checks run in this order, preserving historical behavior:
+ * Builds the IR for a batch of annotated classes. Checks run in this order:
  *  1. cycle detection over the whole batch; cyclic classes are reported and skipped before any per-class work
- *  2. per class, the annotation-class misuse check; a class failing it is not extracted further
- *  3. per class, key/nested validation, then converter, key, TTL and counter extraction
+ *  2. per class (except an ad-hoc family's marker object), the checks that generated code can access and construct it;
+ *     a class failing them is not extracted further
+ *  3. per class, the annotation-class misuse check; a class failing it is not extracted further
+ *  4. per class, key/nested validation, then converter, key, TTL and counter extraction
+ *  5. over every class extracted, detection of top-level declarations and files which the code generated for two
+ *     different classes would both declare
  *
  * Cross-class analysis (cycles, whether a value converter is needed) runs over *all* annotated classes, including ones
  * that later fail validation, exactly as before.
@@ -71,29 +76,43 @@ internal fun buildModel(
     val referencedClasses = references.values.flatten().toSet()
     val familyBuilder = FamilyModelBuilder(families, ctx, diagnostics)
 
-    return classes.flatMap { decl ->
-        ctx.logger.info("Processing annotation on ${decl.simpleName}")
+    val itemsByClass = classes.map { decl ->
+        decl to run items@{
+            ctx.logger.info("Processing annotation on ${decl.simpleName}")
 
-        val qualifiedName = decl.qualifiedName?.asString()
-        if (qualifiedName != null && qualifiedName in cyclicClasses) {
-            diagnostics.error(
-                "Cyclic nesting detected involving type '$qualifiedName'. Nesting " +
-                    "@DynamoDbItem/@DynamoDbMappable types in a reference cycle (including self-references) is " +
-                    "not yet supported.",
-                decl.asSymbolRef(),
-            )
-            return@flatMap emptyList()
-        }
+            val qualifiedName = decl.qualifiedName?.asString()
+            if (qualifiedName != null && qualifiedName in cyclicClasses) {
+                diagnostics.error(
+                    "Cyclic nesting detected involving type '$qualifiedName'. Nesting " +
+                        "@DynamoDbItem/@DynamoDbMappable types in a reference cycle (including self-references) is " +
+                        "not yet supported.",
+                    decl.asSymbolRef(),
+                )
+                return@items emptyList()
+            }
 
-        val generateValueConverter = qualifiedName in referencedClasses
-        val family = families.familyOf(decl)
-        if (family != null) {
-            familyBuilder.build(family, generateValueConverter)
-        } else {
-            val role = families.membershipOf(decl)?.let { FamilyRole(inTableFamily = families.inTableContext(it.family)) }
-            listOfNotNull(buildMappedItem(decl, ctx, generateValueConverter, diagnostics, role))
+            val family = families.familyOf(decl)
+
+            // Generated code never references an ad-hoc family's marker object (validateFamily rejects registering one as
+            // a subtype of another family)
+            if (family?.isAdHoc != true) {
+                val accessible = validateAccessibleFromGeneratedCode(decl, diagnostics)
+                val constructible = validateNotInnerClass(decl, diagnostics)
+                if (!accessible || !constructible) return@items emptyList()
+            }
+
+            val generateValueConverter = qualifiedName in referencedClasses
+            if (family != null) {
+                familyBuilder.build(family, generateValueConverter)
+            } else {
+                val role = families.membershipOf(decl)?.let { FamilyRole(inTableFamily = families.inTableContext(it.family)) }
+                listOfNotNull(buildMappedItem(decl, ctx, generateValueConverter, diagnostics, role))
+            }
         }
     }
+
+    findGeneratedNameCollisions(itemsByClass, diagnostics)
+    return itemsByClass.flatMap { (_, items) -> items }
 }
 
 /**
@@ -162,7 +181,8 @@ internal fun buildMappedItem(
         null
     }
 
-    val itemConverter = when (val specified = decl.specifiedItemConverter(kind)) {
+    val specifiedConverter = decl.specifiedItemConverter(kind)
+    val itemConverter = when (val specified = specifiedConverter) {
         null -> {
             val attributes = properties.mapNotNull { prop ->
                 resolvePropertyConverter(prop.decl, ctx, diagnostics, prop.annotations)?.let { GeneratedAttribute(prop.mapped, it) }
@@ -198,7 +218,30 @@ internal fun buildMappedItem(
         destinationPkg = destinationPackage(decl, ctx),
         isObject = isObject,
         fileName = role?.baseConverter?.shortName ?: "${name}Schema",
+        visibility = generatedVisibility(exposedDeclarations(decl, kind, builder, properties, specifiedConverter), ctx),
     )
+}
+
+/**
+ * The user declarations named in the signatures of the code generated for [decl]: the class itself, the property types
+ * of its builder, and, for a table item, the type of its user-provided item converter, which the schema declares as its
+ * `converter` type. Generated code which references other declarations does so only in initializers and function
+ * bodies.
+ */
+private fun exposedDeclarations(
+    decl: KSClassDeclaration,
+    kind: MappedItem.Kind,
+    builder: BuilderSpec?,
+    properties: List<SourceProperty>,
+    specifiedConverter: KSType?,
+): Sequence<KSDeclaration> = sequence {
+    yield(decl)
+    if (builder != null) {
+        properties.forEach { yieldAll(it.decl.type.resolve().referencedDeclarations()) }
+    }
+    if (kind == MappedItem.Kind.Table) {
+        specifiedConverter?.let { yieldAll(it.referencedDeclarations()) }
+    }
 }
 
 /**

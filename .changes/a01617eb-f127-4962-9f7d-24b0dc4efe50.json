@@ -1,0 +1,6 @@
+{
+  "id": "a01617eb-f127-4962-9f7d-24b0dc4efe50",
+  "type": "bugfix",
+  "description": "Fix DynamoDB Mapper schema generation for `internal` and nested annotated classes. The schema generator's default `visibility` is now `MATCH_SOURCE`, which generates `internal` code for any annotated class whose generated signatures expose a non-public type. Previously all generated code was `public` by default. Set `visibility = Visibility.PUBLIC` to restore the previous behavior.",
+  "module": "dynamodb-mapper"
+}

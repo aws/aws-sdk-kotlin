@@ -58,7 +58,7 @@
                 "resourceType": {
                     "target": "com.amazonaws.inspector2#AggregationResourceType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of resource.</p>"
+                        "smithy.api#documentation": "<p>The type of resource. For Google Cloud Platform (GCP) resources, the resource type is <code>compute.googleapis.com/Instance</code>, <code>cloudfunctions.googleapis.com/Function</code>, or <code>artifactregistry.googleapis.com/DockerImage</code>.</p>"
                     }
                 },
                 "sortOrder": {
@@ -365,6 +365,18 @@
                     {
                         "value": "Microsoft.Web/sites",
                         "name": "MICROSOFT_WEB_SITES"
+                    },
+                    {
+                        "value": "cloudfunctions.googleapis.com/Function",
+                        "name": "CLOUDFUNCTIONS_GOOGLEAPIS_COM_FUNCTION"
+                    },
+                    {
+                        "value": "compute.googleapis.com/Instance",
+                        "name": "COMPUTE_GOOGLEAPIS_COM_INSTANCE"
+                    },
+                    {
+                        "value": "artifactregistry.googleapis.com/DockerImage",
+                        "name": "ARTIFACTREGISTRY_GOOGLEAPIS_COM_DOCKER_IMAGE"
                     }
                 ]
             }
@@ -591,7 +603,7 @@
                 "cloudProvider": {
                     "target": "com.amazonaws.inspector2#Provider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud service provider associated with this Amazon Machine Image (AMI) aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud service provider associated with this Amazon Machine Image (AMI) aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudPartition": {
@@ -603,7 +615,7 @@
                 "cloudRegion": {
                     "target": "com.amazonaws.inspector2#ProviderRegion",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud Region associated with this AMI aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud Region associated with this AMI aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudOrgId": {
@@ -4040,6 +4052,10 @@
                         "value": "AZURE"
                     },
                     {
+                        "name": "GCP",
+                        "value": "GCP"
+                    },
+                    {
                         "name": "NOT_APPLICABLE",
                         "value": "NOT_APPLICABLE"
                     }
@@ -4183,6 +4199,12 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The metadata for a cluster.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#CodeConnectionsHostArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^arn:aws(-[\\w]+)*:(codestar-connections|codeconnections):.+:[0-9]{12}:host\\/.+$"
             }
         },
         "com.amazonaws.inspector2#CodeFilePath": {
@@ -4611,6 +4633,52 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>A summary of information about a code security integration.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#CodeSecurityIntegrationVpcConfiguration": {
+            "type": "structure",
+            "members": {
+                "vpcId": {
+                    "target": "com.amazonaws.inspector2#VpcId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the VPC that Amazon Inspector connects through to reach the repository provider.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "vpcEndpointId": {
+                    "target": "com.amazonaws.inspector2#VpcEndpointId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the VPC endpoint used for the connection.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "codeConnectionsHostArn": {
+                    "target": "com.amazonaws.inspector2#CodeConnectionsHostArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the AWS CodeConnections host used for the connection.</p>"
+                    }
+                },
+                "subnetIds": {
+                    "target": "com.amazonaws.inspector2#SubnetIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the subnets used for the connection.</p>"
+                    }
+                },
+                "securityGroups": {
+                    "target": "com.amazonaws.inspector2#SecurityGroupIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The IDs of the security groups used for the connection.</p>"
+                    }
+                },
+                "tlsCertificate": {
+                    "target": "com.amazonaws.inspector2#TlsCertificate",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The TLS certificate used to establish a trusted connection to the repository provider.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The VPC configuration that Amazon Inspector uses to connect to a source code repository provider that is hosted in a private network.</p>"
             }
         },
         "com.amazonaws.inspector2#CodeSecurityResource": {
@@ -5088,6 +5156,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Specifies whether the VM scanner is automatically installed on connected resources.</p>"
                     }
+                },
+                "gcpRegions": {
+                    "target": "com.amazonaws.inspector2#GcpRegionList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Google Cloud Platform (GCP) locations configured for the connector.</p>"
+                    }
+                },
+                "gcpScopeConfiguration": {
+                    "target": "com.amazonaws.inspector2#GcpScopeConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Google Cloud Platform (GCP) scope configuration for the connector.</p>"
+                    }
                 }
             },
             "traits": {
@@ -5161,6 +5241,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "AZURE"
+                    }
+                },
+                "GCP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GCP"
                     }
                 }
             }
@@ -5514,7 +5600,7 @@
                 "cloudProviders": {
                     "target": "com.amazonaws.inspector2#StringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudPartitions": {
@@ -5526,7 +5612,7 @@
                 "cloudRegions": {
                     "target": "com.amazonaws.inspector2#StringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudOrgIds": {
@@ -5583,7 +5669,7 @@
                 "cloudProvider": {
                     "target": "com.amazonaws.inspector2#Provider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud service provider associated with this container image aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud service provider associated with this container image aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudAccountId": {
@@ -5601,7 +5687,7 @@
                 "cloudRegion": {
                     "target": "com.amazonaws.inspector2#ProviderRegion",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud Region associated with this container image aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud Region associated with this container image aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudOrgId": {
@@ -5976,7 +6062,7 @@
                 "resourceType": {
                     "target": "com.amazonaws.inspector2#CoverageStringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>An array of Amazon Web Services resource types to return coverage statistics for. The values can be <code>AWS_EC2_INSTANCE</code>, <code>AWS_LAMBDA_FUNCTION</code>, <code>AWS_ECR_CONTAINER_IMAGE</code>, <code>AWS_ECR_REPOSITORY</code> or <code>AWS_ACCOUNT</code>.</p>"
+                        "smithy.api#documentation": "<p>An array of resource types to return coverage statistics for. Valid values:</p> <ul> <li> <p>Amazon Web Services – <code>AWS_EC2_INSTANCE</code>, <code>AWS_LAMBDA_FUNCTION</code>, <code>AWS_ECR_CONTAINER_IMAGE</code>, <code>AWS_ECR_REPOSITORY</code>, <code>MACHINE_IMAGE</code>, <code>CODE_REPOSITORY</code>, or <code>AWS_ACCOUNT</code>.</p> </li> <li> <p>Microsoft Azure – <code>Microsoft.Compute/virtualMachines</code>, <code>Microsoft.ContainerRegistry/registries</code>, <code>Microsoft.ContainerRegistry/registry/containerRepository</code>, <code>Microsoft.ContainerRegistry/registry/containerImage</code>, or <code>Microsoft.Web/sites</code>.</p> </li> <li> <p>Google Cloud Platform (GCP) – <code>compute.googleapis.com/Instance</code>, <code>cloudfunctions.googleapis.com/Function</code>, <code>artifactregistry.googleapis.com/Repository</code>, or <code>artifactregistry.googleapis.com/DockerImage</code>.</p> </li> </ul>"
                     }
                 },
                 "scanType": {
@@ -6084,19 +6170,19 @@
                 "cloudProvider": {
                     "target": "com.amazonaws.inspector2#CoverageStringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider to filter coverage results by.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider to filter coverage results by. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudProviderAccountId": {
                     "target": "com.amazonaws.inspector2#CoverageStringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider account ID to filter coverage results by.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider account ID to filter coverage results by. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services account ID.</p> </li> <li> <p>An Azure subscription ID.</p> </li> <li> <p>A Google Cloud Platform (GCP) project ID, such as <code>my-project</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudProviderRegion": {
                     "target": "com.amazonaws.inspector2#CoverageStringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider region to filter coverage results by.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider region to filter coverage results by. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudVmInstanceTags": {
@@ -6144,7 +6230,7 @@
                 "cloudProviderOrgId": {
                     "target": "com.amazonaws.inspector2#CoverageStringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider organization ID to filter coverage results by.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider organization ID to filter coverage results by. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Organizations organization ID.</p> </li> <li> <p>An Azure tenant ID.</p> </li> <li> <p>A numeric Google Cloud Platform (GCP) organization ID.</p> </li> </ul>"
                     }
                 }
             },
@@ -6282,6 +6368,22 @@
                     {
                         "value": "MACHINE_IMAGE",
                         "name": "MACHINE_IMAGE"
+                    },
+                    {
+                        "value": "cloudfunctions.googleapis.com/Function",
+                        "name": "CLOUDFUNCTIONS_GOOGLEAPIS_COM_FUNCTION"
+                    },
+                    {
+                        "value": "compute.googleapis.com/Instance",
+                        "name": "COMPUTE_GOOGLEAPIS_COM_INSTANCE"
+                    },
+                    {
+                        "value": "artifactregistry.googleapis.com/Repository",
+                        "name": "ARTIFACTREGISTRY_GOOGLEAPIS_COM_REPOSITORY"
+                    },
+                    {
+                        "value": "artifactregistry.googleapis.com/DockerImage",
+                        "name": "ARTIFACTREGISTRY_GOOGLEAPIS_COM_DOCKER_IMAGE"
                     }
                 ]
             }
@@ -6350,7 +6452,7 @@
                 "resourceType": {
                     "target": "com.amazonaws.inspector2#CoverageResourceType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of the covered resource.</p>",
+                        "smithy.api#documentation": "<p>The type of the covered resource. Valid values:</p> <ul> <li> <p>Amazon Web Services – <code>AWS_EC2_INSTANCE</code>, <code>AWS_LAMBDA_FUNCTION</code>, <code>AWS_ECR_CONTAINER_IMAGE</code>, <code>AWS_ECR_REPOSITORY</code>, <code>MACHINE_IMAGE</code>, <code>CODE_REPOSITORY</code>, or <code>AWS_ACCOUNT</code>.</p> </li> <li> <p>Microsoft Azure – <code>Microsoft.Compute/virtualMachines</code>, <code>Microsoft.ContainerRegistry/registries</code>, <code>Microsoft.ContainerRegistry/registry/containerRepository</code>, <code>Microsoft.ContainerRegistry/registry/containerImage</code>, or <code>Microsoft.Web/sites</code>.</p> </li> <li> <p>Google Cloud Platform (GCP) – <code>compute.googleapis.com/Instance</code>, <code>cloudfunctions.googleapis.com/Function</code>, <code>artifactregistry.googleapis.com/Repository</code>, or <code>artifactregistry.googleapis.com/DockerImage</code>.</p> </li> </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -6402,25 +6504,25 @@
                 "provider": {
                     "target": "com.amazonaws.inspector2#Provider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider of the covered resource.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider of the covered resource. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "providerAccountId": {
                     "target": "com.amazonaws.inspector2#ProviderAccountId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider account ID of the covered resource.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider account ID of the covered resource. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services account ID.</p> </li> <li> <p>An Azure subscription ID.</p> </li> <li> <p>A Google Cloud Platform (GCP) project ID, such as <code>my-project</code>.</p> </li> </ul>"
                     }
                 },
                 "providerOrgId": {
                     "target": "com.amazonaws.inspector2#ProviderOrgId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider organization ID of the covered resource.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider organization ID of the covered resource. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Organizations organization ID.</p> </li> <li> <p>An Azure tenant ID.</p> </li> <li> <p>A numeric Google Cloud Platform (GCP) organization ID.</p> </li> </ul>"
                     }
                 },
                 "providerRegion": {
                     "target": "com.amazonaws.inspector2#ProviderRegion",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider region of the covered resource.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider region of the covered resource. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "providerPartition": {
@@ -7068,6 +7170,27 @@
                 }
             }
         },
+        "com.amazonaws.inspector2#CreateGitHubEnterpriseIntegrationDetail": {
+            "type": "structure",
+            "members": {
+                "instanceUrl": {
+                    "target": "com.amazonaws.inspector2#InstanceUrl",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL of the GitHub Enterprise Server instance.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "vpcConfiguration": {
+                    "target": "com.amazonaws.inspector2#CodeSecurityIntegrationVpcConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The VPC configuration used to connect to the GitHub Enterprise Server instance in a private network. For publicly accessible instances, omit this field.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the details required to create an integration with a GitHub Enterprise Server instance.</p>"
+            }
+        },
         "com.amazonaws.inspector2#CreateGitLabSelfManagedIntegrationDetail": {
             "type": "structure",
             "members": {
@@ -7084,6 +7207,12 @@
                         "smithy.api#documentation": "<p>The personal access token used to authenticate with the self-managed GitLab instance.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "vpcConfiguration": {
+                    "target": "com.amazonaws.inspector2#CodeSecurityIntegrationVpcConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The VPC configuration used to connect to the self-managed GitLab instance in a private network. For publicly accessible instances, omit this field.</p>"
+                    }
                 }
             },
             "traits": {
@@ -7097,6 +7226,12 @@
                     "target": "com.amazonaws.inspector2#CreateGitLabSelfManagedIntegrationDetail",
                     "traits": {
                         "smithy.api#documentation": "<p>Details specific to creating an integration with a self-managed GitLab instance.</p>"
+                    }
+                },
+                "githubEnterprise": {
+                    "target": "com.amazonaws.inspector2#CreateGitHubEnterpriseIntegrationDetail",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Details specific to creating an integration with a GitHub Enterprise Server instance.</p>"
                     }
                 }
             },
@@ -9577,7 +9712,7 @@
                 "resourceType": {
                     "target": "com.amazonaws.inspector2#StringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>Details on the resource types used to filter findings.</p>"
+                        "smithy.api#documentation": "<p>Details on the resource types used to filter findings. For Google Cloud Platform (GCP) resources, the resource type is <code>compute.googleapis.com/Instance</code>, <code>cloudfunctions.googleapis.com/Function</code>, or <code>artifactregistry.googleapis.com/DockerImage</code>.</p>"
                     }
                 },
                 "resourceId": {
@@ -10354,7 +10489,7 @@
                 "resourceType": {
                     "target": "com.amazonaws.inspector2#AggregationResourceType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The resource type to aggregate.</p>"
+                        "smithy.api#documentation": "<p>The resource type to aggregate. For Google Cloud Platform (GCP) resources, the resource type is <code>compute.googleapis.com/Instance</code>, <code>cloudfunctions.googleapis.com/Function</code>, or <code>artifactregistry.googleapis.com/DockerImage</code>.</p>"
                     }
                 },
                 "sortOrder": {
@@ -10404,7 +10539,7 @@
                 "cloudProvider": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud service provider associated with this finding type aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud service provider associated with this finding type aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudAccountId": {
@@ -10422,7 +10557,7 @@
                 "cloudRegion": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud Region associated with this finding type aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud Region associated with this finding type aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudPartition": {
@@ -10539,7 +10674,7 @@
                 "cloudProvider": {
                     "target": "com.amazonaws.inspector2#CloudProvider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider associated with the free trial information.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider associated with the free trial information. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 }
             },
@@ -10674,6 +10809,217 @@
             "type": "string",
             "traits": {
                 "smithy.api#pattern": "^[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
+            }
+        },
+        "com.amazonaws.inspector2#GcpCapabilityScope": {
+            "type": "structure",
+            "members": {
+                "scopeType": {
+                    "target": "com.amazonaws.inspector2#ScopeType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of scope: <code>ORGANIZATION</code>, which scans all projects in the GCP organization, or <code>PROJECT</code>, which scans only the specified GCP projects.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "scopeValues": {
+                    "target": "com.amazonaws.inspector2#GcpScopeValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The GCP project IDs to scan when <code>scopeType</code> is <code>PROJECT</code>. Not used when <code>scopeType</code> is <code>ORGANIZATION</code>. Amazon Inspector scans the organization of the Amazon Web Services Config connector.</p>"
+                    }
+                },
+                "state": {
+                    "target": "com.amazonaws.inspector2#ScopeState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current state of the scope configuration.</p>"
+                    }
+                },
+                "stateReason": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason for the current state of the scope configuration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The scope of Google Cloud Platform (GCP) resources that Amazon Inspector scans for a single scanning type, including the scope level, the targeted resources, and the current state.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#GcpCapabilityScopeInput": {
+            "type": "structure",
+            "members": {
+                "scopeType": {
+                    "target": "com.amazonaws.inspector2#ScopeType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of scope: <code>ORGANIZATION</code>, which scans all projects in the GCP organization, or <code>PROJECT</code>, which scans only the specified GCP projects.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "scopeValues": {
+                    "target": "com.amazonaws.inspector2#GcpScopeValueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The GCP project IDs to scan. Required when <code>scopeType</code> is <code>PROJECT</code>. Don't specify scope values when <code>scopeType</code> is <code>ORGANIZATION</code>. Amazon Inspector scans the organization of the Amazon Web Services Config connector.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The scope of Google Cloud Platform (GCP) resources to scan for a single scanning type. Provide this as part of a <code>GcpScopeConfigurationInput</code> when you create or update a connector.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#GcpProviderDetailCreate": {
+            "type": "structure",
+            "members": {
+                "awsConfigConnectorArn": {
+                    "target": "com.amazonaws.inspector2#AwsConfigConnectorArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ARN of the Amazon Web Services Config connector to associate with this connector.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "scopeConfiguration": {
+                    "target": "com.amazonaws.inspector2#GcpScopeConfigurationInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scope configuration that defines which GCP resources to scan.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "gcpRegions": {
+                    "target": "com.amazonaws.inspector2#GcpRegionList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The GCP locations to scan, such as regions, zones, multi-regions, or dual-regions. Specify <code>ALL</code> to scan all locations.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "autoInstallVMScanner": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#default": true,
+                        "smithy.api#documentation": "<p>Specifies whether to automatically install the VM scanner on connected GCP resources. Defaults to <code>true</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration details specific to Google Cloud Platform (GCP) for creating a connector, including the Amazon Web Services Config connector association, scan scope, and locations to scan.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#GcpProviderDetailUpdate": {
+            "type": "structure",
+            "members": {
+                "gcpRegions": {
+                    "target": "com.amazonaws.inspector2#GcpRegionList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated GCP locations to scan, such as regions, zones, multi-regions, or dual-regions. Specify <code>ALL</code> to scan all locations.</p>"
+                    }
+                },
+                "scopeConfiguration": {
+                    "target": "com.amazonaws.inspector2#GcpScopeConfigurationInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The updated scope configuration that defines which GCP resources to scan.</p>"
+                    }
+                },
+                "autoInstallVMScanner": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether to automatically install the VM scanner on connected GCP resources.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The configuration details specific to Google Cloud Platform (GCP) for updating a connector, including the scan scope and locations to scan.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#GcpRegion": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                },
+                "smithy.api#pattern": "^(ALL|[a-z][a-z0-9-]*)$"
+            }
+        },
+        "com.amazonaws.inspector2#GcpRegionList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.inspector2#GcpRegion"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 256
+                }
+            }
+        },
+        "com.amazonaws.inspector2#GcpScopeConfiguration": {
+            "type": "structure",
+            "members": {
+                "vmScanning": {
+                    "target": "com.amazonaws.inspector2#GcpCapabilityScope",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scope configuration for VM scanning.</p>"
+                    }
+                },
+                "containerImageScanning": {
+                    "target": "com.amazonaws.inspector2#GcpCapabilityScope",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scope configuration for container image scanning.</p>"
+                    }
+                },
+                "serverlessScanning": {
+                    "target": "com.amazonaws.inspector2#GcpCapabilityScope",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scope configuration for serverless scanning.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The scope of Google Cloud Platform (GCP) resources that Amazon Inspector scans, defined separately for VM, container image, and serverless scanning. Returned as part of a connector's configuration.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#GcpScopeConfigurationInput": {
+            "type": "structure",
+            "members": {
+                "vmScanning": {
+                    "target": "com.amazonaws.inspector2#GcpCapabilityScopeInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scope configuration input for VM scanning.</p>"
+                    }
+                },
+                "containerImageScanning": {
+                    "target": "com.amazonaws.inspector2#GcpCapabilityScopeInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scope configuration input for container image scanning.</p>"
+                    }
+                },
+                "serverlessScanning": {
+                    "target": "com.amazonaws.inspector2#GcpCapabilityScopeInput",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scope configuration input for serverless scanning.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The scope of Google Cloud Platform (GCP) resources to scan, defined separately for VM, container image, and serverless scanning. Provide this when you create or update a GCP connector.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#GcpScopeValue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 6,
+                    "max": 30
+                },
+                "smithy.api#pattern": "^([a-z][a-z0-9-]{4,28}[a-z0-9]|[0-9]{6,30})$"
+            }
+        },
+        "com.amazonaws.inspector2#GcpScopeValueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.inspector2#GcpScopeValue"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 100
+                }
             }
         },
         "com.amazonaws.inspector2#GetCisScanReport": {
@@ -11133,6 +11479,18 @@
                     "target": "com.amazonaws.inspector2#AuthorizationUrl",
                     "traits": {
                         "smithy.api#documentation": "<p>The URL used to authorize the integration with the repository provider. This is only returned if reauthorization is required to fix a connection issue. Otherwise, it is null.</p>"
+                    }
+                },
+                "vpcConfiguration": {
+                    "target": "com.amazonaws.inspector2#CodeSecurityIntegrationVpcConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The VPC configuration associated with the integration, if it connects to a repository provider in a private network.</p>"
+                    }
+                },
+                "instanceUrl": {
+                    "target": "com.amazonaws.inspector2#InstanceUrl",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The URL of the self-managed GitLab or GitHub Enterprise Server instance associated with the integration.</p>"
                     }
                 },
                 "tags": {
@@ -12002,6 +12360,32 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.inspector2#GitHubEnterpriseServerAppRegistrationDetail": {
+            "type": "structure",
+            "members": {
+                "manifestCode": {
+                    "target": "com.amazonaws.inspector2#GitHubEnterpriseServerManifestCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The manifest code used to register the GitHub App on the GitHub Enterprise Server instance.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the details required to register the GitHub App on the GitHub Enterprise Server instance.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#GitHubEnterpriseServerManifestCode": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1024
+                },
+                "smithy.api#pattern": "^[a-zA-Z0-9._~+/-]+$",
+                "smithy.api#sensitive": {}
+            }
+        },
         "com.amazonaws.inspector2#GitHubInstallationId": {
             "type": "string",
             "traits": {
@@ -12175,7 +12559,7 @@
                 "cloudProviders": {
                     "target": "com.amazonaws.inspector2#StringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudAccountIds": {
@@ -12193,7 +12577,7 @@
                 "cloudRegions": {
                     "target": "com.amazonaws.inspector2#StringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudPartitions": {
@@ -12253,7 +12637,7 @@
                 "cloudProvider": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud service provider associated with this image layer aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud service provider associated with this image layer aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudAccountId": {
@@ -12271,7 +12655,7 @@
                 "cloudRegion": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud Region associated with this image layer aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud Region associated with this image layer aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudPartition": {
@@ -13674,6 +14058,42 @@
                     "traits": {
                         "smithy.api#enumValue": "DISABLING"
                     }
+                },
+                "ESTABLISHING_CONNECTION_IN_PROGRESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ESTABLISHING_CONNECTION_IN_PROGRESS"
+                    }
+                },
+                "ESTABLISHING_CONNECTION_COMPLETED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ESTABLISHING_CONNECTION_COMPLETED"
+                    }
+                },
+                "ESTABLISHING_CONNECTION_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ESTABLISHING_CONNECTION_FAILED"
+                    }
+                },
+                "PENDING_MANIFEST_CODE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PENDING_MANIFEST_CODE"
+                    }
+                },
+                "DELETE_IN_PROGRESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETE_IN_PROGRESS"
+                    }
+                },
+                "DELETE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETE_FAILED"
+                    }
                 }
             }
         },
@@ -13703,6 +14123,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "GITHUB"
+                    }
+                },
+                "GITHUB_ENTERPRISE_SERVER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GITHUB_ENTERPRISE_SERVER"
                     }
                 }
             }
@@ -15578,7 +16004,7 @@
                 "groupBy": {
                     "target": "com.amazonaws.inspector2#GroupKey",
                     "traits": {
-                        "smithy.api#documentation": "<p>The value to group the results by.</p>"
+                        "smithy.api#documentation": "<p>The value to group the results by. For multi-cloud resources, use <code>PROVIDER</code>, <code>PROVIDER_ACCOUNT_ID</code> (Azure subscription ID or Google Cloud Platform (GCP) project ID), <code>PROVIDER_ORG_ID</code> (Azure tenant ID or Google Cloud Platform (GCP) organization ID), or <code>PROVIDER_REGION</code>.</p>"
                     }
                 },
                 "nextToken": {
@@ -16316,7 +16742,7 @@
                 "machineImageId": {
                     "target": "com.amazonaws.inspector2#NonEmptyString",
                     "traits": {
-                        "smithy.api#documentation": "The machine image ID (e.g., ami-0abcdef1234567890)",
+                        "smithy.api#documentation": "<p>The ID of the machine image, for example <code>ami-0abcdef1234567890</code>.</p>",
                         "smithy.api#pattern": "^ami-[0-9a-f]{8,17}$",
                         "smithy.api#required": {}
                     }
@@ -16324,67 +16750,67 @@
                 "name": {
                     "target": "com.amazonaws.inspector2#NonEmptyString",
                     "traits": {
-                        "smithy.api#documentation": "Human-readable image name"
+                        "smithy.api#documentation": "<p>The name of the machine image.</p>"
                     }
                 },
                 "ownerAccountId": {
                     "target": "com.amazonaws.inspector2#ProviderAccountId",
                     "traits": {
-                        "smithy.api#documentation": "Account ID that owns the image"
+                        "smithy.api#documentation": "<p>The ID of the account that owns the machine image.</p>"
                     }
                 },
                 "platform": {
                     "target": "com.amazonaws.inspector2#Platform",
                     "traits": {
-                        "smithy.api#documentation": "OS platform (Linux/Windows)"
+                        "smithy.api#documentation": "<p>The operating system platform of the machine image.</p>"
                     }
                 },
                 "architecture": {
                     "target": "com.amazonaws.inspector2#Architecture",
                     "traits": {
-                        "smithy.api#documentation": "CPU architecture (x86_64/arm64)"
+                        "smithy.api#documentation": "<p>The CPU architecture of the machine image, for example <code>x86_64</code> or <code>arm64</code>.</p>"
                     }
                 },
                 "creationDate": {
                     "target": "com.amazonaws.inspector2#DateTimeTimestamp",
                     "traits": {
-                        "smithy.api#documentation": "When the image was created"
+                        "smithy.api#documentation": "<p>The date and time that the machine image was created.</p>"
                     }
                 },
                 "state": {
                     "target": "com.amazonaws.inspector2#NonEmptyString",
                     "traits": {
-                        "smithy.api#documentation": "Image state (available/pending/deregistered)"
+                        "smithy.api#documentation": "<p>The state of the machine image, for example <code>available</code>, <code>pending</code>, or <code>deregistered</code>.</p>"
                     }
                 },
                 "isPublic": {
                     "target": "smithy.api#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "Whether the image is publicly shared"
+                        "smithy.api#documentation": "<p>Indicates whether the machine image is shared publicly.</p>"
                     }
                 },
                 "rootDeviceType": {
                     "target": "com.amazonaws.inspector2#NonEmptyString",
                     "traits": {
-                        "smithy.api#documentation": "Root device type (ebs/instance-store) — AWS-specific"
+                        "smithy.api#documentation": "<p>The root device type of the machine image, either <code>ebs</code> or <code>instance-store</code>.</p>"
                     }
                 },
                 "virtualizationType": {
                     "target": "com.amazonaws.inspector2#NonEmptyString",
                     "traits": {
-                        "smithy.api#documentation": "Virtualization type (hvm/paravirtual) — AWS-specific"
+                        "smithy.api#documentation": "<p>The virtualization type of the machine image, either <code>hvm</code> or <code>paravirtual</code>.</p>"
                     }
                 },
                 "sourceResourceId": {
                     "target": "com.amazonaws.inspector2#NonEmptyString",
                     "traits": {
-                        "smithy.api#documentation": "Source resource the image was created from (nullable)",
+                        "smithy.api#documentation": "<p>The ID of the Amazon EC2 instance that the machine image was created from, if available.</p>",
                         "smithy.api#pattern": "^i-[0-9a-f]{8,17}$"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "Details about a machine image resource scanned directly by Inspector."
+                "smithy.api#documentation": "<p>Contains details about an Amazon Machine Image (AMI) that Amazon Inspector scanned directly.</p>"
             }
         },
         "com.amazonaws.inspector2#MachineImageMetadata": {
@@ -17083,6 +17509,24 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An object that contains details on the package file path to filter on.</p>"
                     }
+                },
+                "runtimeReachability": {
+                    "target": "com.amazonaws.inspector2#RuntimeReachabilityFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An object that contains details on the runtime reachability status of the package to filter on. For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-runtime-reachability.html\">Understanding runtime reachability</a> in the Amazon Inspector user guide.</p>"
+                    }
+                },
+                "runtimeReachabilityReason": {
+                    "target": "com.amazonaws.inspector2#RuntimeReachabilityReasonFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An object that contains details on the runtime reachability reason of the package to filter on. For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-runtime-reachability.html\">Understanding runtime reachability</a> in the Amazon Inspector user guide.</p>"
+                    }
+                },
+                "purlQualifier": {
+                    "target": "com.amazonaws.inspector2#PurlQualifierFilter",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An object that contains details on the package URL (purl) qualifier to filter on.</p>"
+                    }
                 }
             },
             "traits": {
@@ -17230,6 +17674,15 @@
                         "name": "ZIP"
                     }
                 ]
+            }
+        },
+        "com.amazonaws.inspector2#PackageUrl": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                }
             }
         },
         "com.amazonaws.inspector2#PackageVersion": {
@@ -17407,6 +17860,17 @@
                     "min": 0,
                     "max": 1024
                 }
+            }
+        },
+        "com.amazonaws.inspector2#PkceState": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1024
+                },
+                "smithy.api#pattern": "^[A-Za-z0-9_-]+$",
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.inspector2#Platform": {
@@ -17609,6 +18073,10 @@
                     {
                         "value": "AZURE",
                         "name": "AZURE"
+                    },
+                    {
+                        "value": "GCP",
+                        "name": "GCP"
                     }
                 ]
             }
@@ -17617,10 +18085,10 @@
             "type": "string",
             "traits": {
                 "smithy.api#length": {
-                    "min": 12,
+                    "min": 6,
                     "max": 36
                 },
-                "smithy.api#pattern": "^(\\d{12}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                "smithy.api#pattern": "^(\\d{12}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|[a-z][a-z0-9-]{4,28}[a-z0-9])$"
             }
         },
         "com.amazonaws.inspector2#ProviderComparison": {
@@ -17642,6 +18110,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The Azure-specific details for creating a connector.</p>"
                     }
+                },
+                "gcp": {
+                    "target": "com.amazonaws.inspector2#GcpProviderDetailCreate",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The details specific to Google Cloud Platform (GCP) for creating a connector.</p>"
+                    }
                 }
             },
             "traits": {
@@ -17655,6 +18129,12 @@
                     "target": "com.amazonaws.inspector2#AzureProviderDetailUpdate",
                     "traits": {
                         "smithy.api#documentation": "<p>The Azure-specific details for updating a connector.</p>"
+                    }
+                },
+                "gcp": {
+                    "target": "com.amazonaws.inspector2#GcpProviderDetailUpdate",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The details specific to Google Cloud Platform (GCP) for updating a connector.</p>"
                     }
                 }
             },
@@ -17699,10 +18179,10 @@
             "type": "string",
             "traits": {
                 "smithy.api#length": {
-                    "min": 12,
+                    "min": 6,
                     "max": 36
                 },
-                "smithy.api#pattern": "^(o-[a-z0-9]{10,32}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+                "smithy.api#pattern": "^(o-[a-z0-9]{10,32}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|[0-9]{6,30})$"
             }
         },
         "com.amazonaws.inspector2#ProviderPartition": {
@@ -17722,7 +18202,106 @@
                     "min": 1,
                     "max": 64
                 },
-                "smithy.api#pattern": "^([a-z]{2}(-[a-z]+)+-\\d+|[a-z][a-z0-9]+)$"
+                "smithy.api#pattern": "^([a-z]{2}(-[a-z]+)+-\\d+|[a-z][a-z0-9]+|[a-z]+-[a-z]+[0-9]+(-[a-z])?)$"
+            }
+        },
+        "com.amazonaws.inspector2#PurlQualifierFilter": {
+            "type": "structure",
+            "members": {
+                "comparison": {
+                    "target": "com.amazonaws.inspector2#MapComparison",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The operator to use when comparing values in the filter.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "key": {
+                    "target": "com.amazonaws.inspector2#PurlQualifierKey",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The package URL (purl) qualifier key to filter on.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "value": {
+                    "target": "com.amazonaws.inspector2#MapValue",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The package URL (purl) qualifier value to filter on.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An object that describes the details of a package URL (purl) qualifier filter.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#PurlQualifierKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "arch",
+                        "name": "ARCH"
+                    },
+                    {
+                        "value": "collector",
+                        "name": "COLLECTOR"
+                    },
+                    {
+                        "value": "dev_dependency",
+                        "name": "DEV_DEPENDENCY"
+                    },
+                    {
+                        "value": "distro",
+                        "name": "DISTRO"
+                    },
+                    {
+                        "value": "epoch",
+                        "name": "EPOCH"
+                    },
+                    {
+                        "value": "go_toolchain",
+                        "name": "GO_TOOLCHAIN"
+                    },
+                    {
+                        "value": "hardened",
+                        "name": "HARDENED"
+                    },
+                    {
+                        "value": "private",
+                        "name": "PRIVATE"
+                    },
+                    {
+                        "value": "rust_toolchain",
+                        "name": "RUST_TOOLCHAIN"
+                    },
+                    {
+                        "value": "scope",
+                        "name": "SCOPE"
+                    },
+                    {
+                        "value": "skip_chromium_download",
+                        "name": "SKIP_CHROMIUM_DOWNLOAD"
+                    },
+                    {
+                        "value": "source",
+                        "name": "SOURCE"
+                    },
+                    {
+                        "value": "stream",
+                        "name": "STREAM"
+                    },
+                    {
+                        "value": "transitive_dependency",
+                        "name": "TRANSITIVE_DEPENDENCY"
+                    },
+                    {
+                        "value": "unresolved",
+                        "name": "UNRESOLVED"
+                    },
+                    {
+                        "value": "vendor",
+                        "name": "VENDOR"
+                    }
+                ]
             }
         },
         "com.amazonaws.inspector2#Reason": {
@@ -17963,7 +18542,7 @@
                 "cloudProvider": {
                     "target": "com.amazonaws.inspector2#Provider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud service provider associated with this repository aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud service provider associated with this repository aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudPartition": {
@@ -17975,7 +18554,7 @@
                 "cloudRegion": {
                     "target": "com.amazonaws.inspector2#ProviderRegion",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud Region associated with this repository aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud Region associated with this repository aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudOrgId": {
@@ -18138,19 +18717,19 @@
                 "provider": {
                     "target": "com.amazonaws.inspector2#Provider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider of the resource.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider of the resource. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "providerAccountId": {
                     "target": "com.amazonaws.inspector2#ProviderAccountId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider account ID of the resource.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider account ID of the resource. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services account ID.</p> </li> <li> <p>An Azure subscription ID.</p> </li> <li> <p>A Google Cloud Platform (GCP) project ID, such as <code>my-project</code>.</p> </li> </ul>"
                     }
                 },
                 "providerOrgId": {
                     "target": "com.amazonaws.inspector2#ProviderOrgId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider organization ID of the resource.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider organization ID of the resource. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Organizations organization ID.</p> </li> <li> <p>An Azure tenant ID.</p> </li> <li> <p>A numeric Google Cloud Platform (GCP) organization ID.</p> </li> </ul>"
                     }
                 }
             },
@@ -18186,7 +18765,10 @@
                     }
                 },
                 "machineImage": {
-                    "target": "com.amazonaws.inspector2#MachineImageDetails"
+                    "target": "com.amazonaws.inspector2#MachineImageDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An object that contains details about the Amazon Machine Image (AMI) involved in the finding.</p>"
+                    }
                 },
                 "vm": {
                     "target": "com.amazonaws.inspector2#Vm",
@@ -18229,7 +18811,7 @@
                 "resourceType": {
                     "target": "com.amazonaws.inspector2#ResourceStringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The resource types used as resource filter criteria.</p>"
+                        "smithy.api#documentation": "<p>The resource types used as resource filter criteria. Valid values:</p> <ul> <li> <p>Amazon Web Services – <code>AWS_EC2_INSTANCE</code>, <code>AWS_ECR_CONTAINER_IMAGE</code>, <code>AWS_LAMBDA_FUNCTION</code>, or <code>MACHINE_IMAGE</code>.</p> </li> <li> <p>Microsoft Azure – <code>Microsoft.Compute/virtualMachines</code>, <code>Microsoft.ContainerRegistry/registry/containerImage</code>, or <code>Microsoft.Web/sites</code>.</p> </li> <li> <p>Google Cloud Platform (GCP) – <code>compute.googleapis.com/Instance</code>, <code>cloudfunctions.googleapis.com/Function</code>, or <code>artifactregistry.googleapis.com/DockerImage</code>.</p> </li> </ul>"
                     }
                 },
                 "ecrRepositoryName": {
@@ -18265,25 +18847,25 @@
                 "cloudProvider": {
                     "target": "com.amazonaws.inspector2#ResourceStringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud providers used as resource filter criteria.</p>"
+                        "smithy.api#documentation": "<p>The cloud providers used as resource filter criteria. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudProviderAccountId": {
                     "target": "com.amazonaws.inspector2#ResourceStringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider account IDs used as resource filter criteria.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider account IDs used as resource filter criteria. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services account ID.</p> </li> <li> <p>An Azure subscription ID.</p> </li> <li> <p>A Google Cloud Platform (GCP) project ID.</p> </li> </ul>"
                     }
                 },
                 "cloudProviderOrgId": {
                     "target": "com.amazonaws.inspector2#ResourceStringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider organization IDs used as resource filter criteria.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider organization IDs used as resource filter criteria. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Organizations organization ID.</p> </li> <li> <p>An Azure tenant ID.</p> </li> <li> <p>A Google Cloud Platform (GCP) organization ID.</p> </li> </ul>"
                     }
                 },
                 "cloudProviderRegion": {
                     "target": "com.amazonaws.inspector2#ResourceStringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider regions used as resource filter criteria.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider regions used as resource filter criteria. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudVmInstanceTags": {
@@ -18730,6 +19312,18 @@
                     {
                         "value": "MACHINE_IMAGE",
                         "name": "MACHINE_IMAGE"
+                    },
+                    {
+                        "value": "cloudfunctions.googleapis.com/Function",
+                        "name": "CLOUDFUNCTIONS_GOOGLEAPIS_COM_FUNCTION"
+                    },
+                    {
+                        "value": "compute.googleapis.com/Instance",
+                        "name": "COMPUTE_GOOGLEAPIS_COM_INSTANCE"
+                    },
+                    {
+                        "value": "artifactregistry.googleapis.com/DockerImage",
+                        "name": "ARTIFACTREGISTRY_GOOGLEAPIS_COM_DOCKER_IMAGE"
                     }
                 ]
             }
@@ -18914,6 +19508,107 @@
                         "name": "NODEJS_20_X"
                     }
                 ]
+            }
+        },
+        "com.amazonaws.inspector2#RuntimeReachability": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "REACHABLE",
+                        "name": "REACHABLE"
+                    },
+                    {
+                        "value": "NOT_REACHABLE",
+                        "name": "NOT_REACHABLE"
+                    },
+                    {
+                        "value": "UNKNOWN",
+                        "name": "UNKNOWN"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.inspector2#RuntimeReachabilityComparison": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "EQUALS",
+                        "name": "EQUALS"
+                    },
+                    {
+                        "value": "NOT_EQUALS",
+                        "name": "NOT_EQUALS"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.inspector2#RuntimeReachabilityFilter": {
+            "type": "structure",
+            "members": {
+                "comparison": {
+                    "target": "com.amazonaws.inspector2#RuntimeReachabilityComparison",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The operator to use when comparing values in the filter.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "value": {
+                    "target": "com.amazonaws.inspector2#RuntimeReachability",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The runtime reachability status to filter on.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An object that describes the details of a runtime reachability filter.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#RuntimeReachabilityReason": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "PACKAGE_IN_DOCKERFILE_WORKLOAD_PATH",
+                        "name": "PACKAGE_IN_DOCKERFILE_WORKLOAD_PATH"
+                    },
+                    {
+                        "value": "PACKAGE_NOT_IN_DOCKERFILE_WORKLOAD_PATH",
+                        "name": "PACKAGE_NOT_IN_DOCKERFILE_WORKLOAD_PATH"
+                    },
+                    {
+                        "value": "PROCESS_OBSERVED_IN_EC2_RUNTIME",
+                        "name": "PROCESS_OBSERVED_IN_EC2_RUNTIME"
+                    },
+                    {
+                        "value": "PROCESS_NOT_OBSERVED_IN_EC2_RUNTIME",
+                        "name": "PROCESS_NOT_OBSERVED_IN_EC2_RUNTIME"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.inspector2#RuntimeReachabilityReasonFilter": {
+            "type": "structure",
+            "members": {
+                "comparison": {
+                    "target": "com.amazonaws.inspector2#RuntimeReachabilityComparison",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The operator to use when comparing values in the filter.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "value": {
+                    "target": "com.amazonaws.inspector2#RuntimeReachabilityReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The runtime reachability reason to filter on.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An object that describes the details of a runtime reachability reason filter.</p>"
             }
         },
         "com.amazonaws.inspector2#SbomReportFormat": {
@@ -19298,7 +19993,7 @@
                 "scopeType": {
                     "target": "com.amazonaws.inspector2#ScopeType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type of scope. Valid values are <code>TENANT</code>, which scans all resources in the Azure tenant, and <code>SUBSCRIPTION</code>, which scans only the resources in the specified Azure subscriptions.</p>",
+                        "smithy.api#documentation": "<p>The type of scope: <code>TENANT</code>, which scans all resources in the Azure tenant, or <code>SUBSCRIPTION</code>, which scans only the resources in the specified Azure subscriptions.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -19369,6 +20064,18 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "SUBSCRIPTION"
+                    }
+                },
+                "ORGANIZATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ORGANIZATION"
+                    }
+                },
+                "PROJECT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PROJECT"
                     }
                 }
             }
@@ -19781,7 +20488,7 @@
                 "cloudProviders": {
                     "target": "com.amazonaws.inspector2#StringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudPartitions": {
@@ -19793,7 +20500,7 @@
                 "cloudRegions": {
                     "target": "com.amazonaws.inspector2#StringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudOrgIds": {
@@ -19838,7 +20545,7 @@
                 "cloudProvider": {
                     "target": "com.amazonaws.inspector2#Provider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud service provider associated with this serverless function aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud service provider associated with this serverless function aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudAccountId": {
@@ -19856,7 +20563,7 @@
                 "cloudRegion": {
                     "target": "com.amazonaws.inspector2#ProviderRegion",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud Region associated with this serverless function aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud Region associated with this serverless function aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudOrgId": {
@@ -21305,7 +22012,7 @@
                 "resourceType": {
                     "target": "com.amazonaws.inspector2#AggregationResourceType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The resource type to aggregate on.</p>"
+                        "smithy.api#documentation": "<p>The resource type to aggregate on. For Google Cloud Platform (GCP) resources, the resource type is <code>compute.googleapis.com/Instance</code>, <code>cloudfunctions.googleapis.com/Function</code>, or <code>artifactregistry.googleapis.com/DockerImage</code>.</p>"
                     }
                 },
                 "findingType": {
@@ -21393,6 +22100,17 @@
                         "name": "ALL"
                     }
                 ]
+            }
+        },
+        "com.amazonaws.inspector2#TlsCertificate": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 16384
+                },
+                "smithy.api#pattern": "^[\\s\\S]*$",
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.inspector2#Tool": {
@@ -22301,6 +23019,54 @@
                 }
             }
         },
+        "com.amazonaws.inspector2#UpdateGitHubEnterpriseServerAppInstallationDetail": {
+            "type": "structure",
+            "members": {
+                "code": {
+                    "target": "com.amazonaws.inspector2#GitHubAuthCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The authorization code received from GitHub Enterprise Server.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "installationId": {
+                    "target": "com.amazonaws.inspector2#GitHubInstallationId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The installation ID of the GitHub App associated with the integration.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "stateToken": {
+                    "target": "com.amazonaws.inspector2#PkceState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The PKCE state token used to validate the authorization request.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the details required to complete the GitHub App installation for a GitHub Enterprise Server integration.</p>"
+            }
+        },
+        "com.amazonaws.inspector2#UpdateGitHubEnterpriseServerIntegrationDetail": {
+            "type": "union",
+            "members": {
+                "appInstallation": {
+                    "target": "com.amazonaws.inspector2#UpdateGitHubEnterpriseServerAppInstallationDetail",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Details for completing the GitHub App installation step of the GitHub Enterprise Server integration.</p>"
+                    }
+                },
+                "appRegistration": {
+                    "target": "com.amazonaws.inspector2#GitHubEnterpriseServerAppRegistrationDetail",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Details for completing the GitHub App manifest registration step of the GitHub Enterprise Server integration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the details required to update an integration with a GitHub Enterprise Server instance. Provide one of the following, depending on the step of the setup flow.</p>"
+            }
+        },
         "com.amazonaws.inspector2#UpdateGitHubIntegrationDetail": {
             "type": "structure",
             "members": {
@@ -22317,6 +23083,12 @@
                         "smithy.api#documentation": "<p>The installation ID of the GitHub App associated with the integration.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "stateToken": {
+                    "target": "com.amazonaws.inspector2#PkceState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The PKCE state token used to validate the authorization request.</p>"
+                    }
                 }
             },
             "traits": {
@@ -22331,6 +23103,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The authorization code received from the self-managed GitLab instance to update the integration.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "stateToken": {
+                    "target": "com.amazonaws.inspector2#PkceState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The PKCE state token used to validate the authorization request.</p>"
                     }
                 }
             },
@@ -22351,6 +23129,12 @@
                     "target": "com.amazonaws.inspector2#UpdateGitHubIntegrationDetail",
                     "traits": {
                         "smithy.api#documentation": "<p>Details specific to updating an integration with GitHub.</p>"
+                    }
+                },
+                "githubEnterpriseServer": {
+                    "target": "com.amazonaws.inspector2#UpdateGitHubEnterpriseServerIntegrationDetail",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Details specific to updating an integration with a GitHub Enterprise Server instance.</p>"
                     }
                 }
             },
@@ -22472,7 +23256,7 @@
                 "type": {
                     "target": "com.amazonaws.inspector2#UsageType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The type scan.</p>"
+                        "smithy.api#documentation": "<p>The type of scan. Valid values:</p> <ul> <li> <p>Amazon Web Services – <code>EC2_INSTANCE_HOURS</code>, <code>EC2_AGENTLESS_INSTANCE_HOURS</code>, <code>EC2_AMI_HOURS</code>, <code>EC2_AMI_ONE_SHOT_SCAN</code>, <code>ECR_INITIAL_SCAN</code>, <code>ECR_RESCAN</code>, <code>LAMBDA_FUNCTION_HOURS</code>, <code>LAMBDA_FUNCTION_CODE_HOURS</code>, <code>CODE_REPOSITORY_SAST</code>, <code>CODE_REPOSITORY_IAC</code>, or <code>CODE_REPOSITORY_SCA</code>.</p> </li> <li> <p>Microsoft Azure – <code>AZURE_VM_AGENT_BASED_INSTANCE_HOURS</code>, <code>AZURE_CONTAINER_IMAGE_INITIAL_SCAN</code>, <code>AZURE_CONTAINER_IMAGE_RESCAN</code>, or <code>AZURE_SERVERLESS_FUNCTION_HOURS</code>.</p> </li> <li> <p>Google Cloud Platform (GCP) – <code>GCP_VM_AGENT_BASED_INSTANCE_HOURS</code>, <code>GCP_CONTAINER_IMAGE_INITIAL_SCAN</code>, <code>GCP_CONTAINER_IMAGE_RESCAN</code>, or <code>GCP_CLOUD_RUN_HOURS</code> (Cloud Run functions).</p> </li> </ul>"
                     }
                 },
                 "total": {
@@ -22498,7 +23282,7 @@
                 "cloudProvider": {
                     "target": "com.amazonaws.inspector2#CloudProvider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud provider associated with the usage information.</p>"
+                        "smithy.api#documentation": "<p>The cloud provider associated with the usage information. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 }
             },
@@ -22615,6 +23399,26 @@
                     {
                         "name": "EC2_AMI_HOURS",
                         "value": "EC2_AMI_HOURS"
+                    },
+                    {
+                        "name": "EC2_AMI_ONE_SHOT_SCAN",
+                        "value": "EC2_AMI_ONE_SHOT_SCAN"
+                    },
+                    {
+                        "name": "GCP_VM_AGENT_BASED_INSTANCE_HOURS",
+                        "value": "GCP_VM_AGENT_BASED_INSTANCE_HOURS"
+                    },
+                    {
+                        "name": "GCP_CLOUD_RUN_HOURS",
+                        "value": "GCP_CLOUD_RUN_HOURS"
+                    },
+                    {
+                        "name": "GCP_CONTAINER_IMAGE_INITIAL_SCAN",
+                        "value": "GCP_CONTAINER_IMAGE_INITIAL_SCAN"
+                    },
+                    {
+                        "name": "GCP_CONTAINER_IMAGE_RESCAN",
+                        "value": "GCP_CONTAINER_IMAGE_RESCAN"
                     }
                 ]
             }
@@ -22888,7 +23692,7 @@
                 "cloudProviders": {
                     "target": "com.amazonaws.inspector2#StringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudPartitions": {
@@ -22900,7 +23704,7 @@
                 "cloudRegions": {
                     "target": "com.amazonaws.inspector2#StringFilterList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudOrgIds": {
@@ -22945,7 +23749,7 @@
                 "cloudProvider": {
                     "target": "com.amazonaws.inspector2#Provider",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud service provider associated with this VM instance aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud service provider associated with this VM instance aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> <li> <p> <code>GCP</code> – Findings from Google Cloud Platform (GCP) resources.</p> </li> </ul>"
                     }
                 },
                 "cloudAccountId": {
@@ -22963,7 +23767,7 @@
                 "cloudRegion": {
                     "target": "com.amazonaws.inspector2#ProviderRegion",
                     "traits": {
-                        "smithy.api#documentation": "<p>The cloud Region associated with this VM instance aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+                        "smithy.api#documentation": "<p>The cloud Region associated with this VM instance aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> <li> <p>A Google Cloud Platform (GCP) location, such as the region <code>us-central1</code> or the zone <code>us-central1-a</code>.</p> </li> </ul>"
                     }
                 },
                 "cloudOrgId": {
@@ -23102,6 +23906,12 @@
                         "name": "UNKNOWN"
                     }
                 ]
+            }
+        },
+        "com.amazonaws.inspector2#VpcEndpointId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^vpce-[0-9a-f]{8}([0-9a-f]{9})?$"
             }
         },
         "com.amazonaws.inspector2#VpcId": {
@@ -23384,6 +24194,24 @@
                     "target": "com.amazonaws.inspector2#LambdaLayerArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Resource Number (ARN) of the Amazon Web Services Lambda function affected by a finding.</p>"
+                    }
+                },
+                "runtimeReachability": {
+                    "target": "com.amazonaws.inspector2#RuntimeReachability",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The runtime reachability status of the vulnerable package. For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-runtime-reachability.html\">Understanding runtime reachability</a> in the Amazon Inspector user guide.</p>"
+                    }
+                },
+                "runtimeReachabilityReason": {
+                    "target": "com.amazonaws.inspector2#RuntimeReachabilityReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason for the runtime reachability status of the vulnerable package. For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-runtime-reachability.html\">Understanding runtime reachability</a> in the Amazon Inspector user guide.</p>"
+                    }
+                },
+                "purl": {
+                    "target": "com.amazonaws.inspector2#PackageUrl",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The package URL (purl) of the vulnerable package.</p>"
                     }
                 }
             },

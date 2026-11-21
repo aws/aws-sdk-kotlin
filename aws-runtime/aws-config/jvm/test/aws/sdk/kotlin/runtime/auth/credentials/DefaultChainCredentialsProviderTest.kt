@@ -8,6 +8,7 @@ package aws.sdk.kotlin.runtime.auth.credentials
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentials
 import aws.sdk.kotlin.runtime.http.interceptors.businessmetrics.withBusinessMetrics
 import aws.sdk.kotlin.runtime.util.toAwsCredentialsBusinessMetric
+import aws.smithy.kotlin.runtime.PlannedRemoval
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.auth.awscredentials.copy
 import aws.smithy.kotlin.runtime.httptest.TestConnection
@@ -30,6 +31,8 @@ import kotlin.test.assertTrue
 // TODO - refactor to make this work in common
 class DefaultChainCredentialsProviderTest {
 
+    @OptIn(PlannedRemoval::class)
+    @Suppress("OVERRIDE_DEPRECATION")
     class FsRootedAt(val root: File) : Filesystem {
         override val filePathSeparator: String = "/"
         override suspend fun readFileOrNull(path: String): ByteArray? {

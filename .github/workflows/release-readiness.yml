@@ -37,13 +37,17 @@ jobs:
 
       - name: Build SDK
         working-directory: ./aws-sdk-kotlin
-        run: ./gradlew test jvmTest
+        run: |
+          .github/scripts/native-test-watchdog.sh &
+          watchdog=$!
+          trap 'kill "$watchdog"' EXIT
+          ./gradlew test jvmTest linuxX64Test
 
       - name: Build SDK client
         working-directory: ./aws-sdk-kotlin
         run: |
-          ./gradlew -Paws.kotlin.native=false -Paws.services=s3 bootstrap
-          ./gradlew -Paws.kotlin.native=false build
+          ./gradlew -Paws.services=s3 bootstrap
+          ./gradlew build
 
       - name: Checkout smithy-kotlin
         uses: aws/aws-kotlin-repo-tools/.github/actions/checkout-head@main

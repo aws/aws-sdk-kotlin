@@ -56,7 +56,7 @@ internal actual suspend fun executeCommand(
                 val rc = reader.read(buffer)
                 if (rc == -1) break
 
-                output.append(buffer)
+                output.append(buffer, 0, rc)
                 if (output.length > maxOutputLengthBytes) {
                     throw CredentialsProviderException("Process output exceeded limit of $maxOutputLengthBytes bytes")
                 }

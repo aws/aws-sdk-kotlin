@@ -19,6 +19,8 @@ Consult the [stability guide](../VERSIONING.md#stability-of-the-aws-sdk-for-kotl
 
 2. Add services to your project
 
+    **Kotlin/JVM Users**
+
     ```kt
     # file: my-project/build.gradle.kts
 
@@ -27,6 +29,24 @@ Consult the [stability guide](../VERSIONING.md#stability-of-the-aws-sdk-for-kotl
         
         // The following line adds a dependency on the dynamodb client.
         implementation("aws.sdk.kotlin:dynamodb:1.+")
+    }
+    ```
+
+    **Kotlin Multiplatform Users**
+
+    Add dependencies to the `commonMain` source set. See [supported targets](targets.md#kotlinnative) for the
+    Kotlin/Native targets the SDK supports.
+
+    ```kt
+    # file: my-project/build.gradle.kts
+
+    kotlin {
+        sourceSets {
+            commonMain.dependencies {
+                // The following line adds a dependency on the dynamodb client.
+                implementation("aws.sdk.kotlin:dynamodb:1.+")
+            }
+        }
     }
     ```
 
@@ -58,3 +78,4 @@ Consult the [stability guide](../VERSIONING.md#stability-of-the-aws-sdk-for-kotl
 * [Getting started](https://github.com/aws/aws-sdk-kotlin#getting-started)
 * [Debugging](debugging.md)
 * [Android support](targets.md#android)
+* [Kotlin/Native support](targets.md#kotlinnative)

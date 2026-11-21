@@ -8,6 +8,8 @@ import aws.sdk.kotlin.hll.codegen.core.CodeGeneratorFactory
 import aws.sdk.kotlin.hll.codegen.core.CodegenLogger
 import aws.sdk.kotlin.hll.codegen.core.SymbolRef
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
+import aws.sdk.kotlin.hll.codegen.rendering.RenderOptions
+import aws.sdk.kotlin.hll.codegen.rendering.Visibility
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.AnnotationsProcessorOptions
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.GenerateBuilderClasses
@@ -15,6 +17,7 @@ import aws.smithy.kotlin.runtime.collections.attributesOf
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSName
@@ -24,6 +27,8 @@ import com.google.devtools.ksp.symbol.KSTypeArgument
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueArgument
 import com.google.devtools.ksp.symbol.KSValueParameter
+import com.google.devtools.ksp.symbol.Modifier
+import com.google.devtools.ksp.symbol.Origin
 import io.mockk.every
 import io.mockk.mockk
 
@@ -51,6 +56,9 @@ internal fun fakeClassDeclaration(
     hasSourceFile: Boolean = true,
     properties: List<KSPropertyDeclaration> = emptyList(),
     hasZeroArgConstructor: Boolean = true,
+    modifiers: Set<Modifier> = emptySet(),
+    parent: KSDeclaration? = null,
+    origin: Origin = Origin.KOTLIN,
 ): KSClassDeclaration = mockk {
     val constructor = mockk<KSFunctionDeclaration> {
         every { simpleName } returns fakeName("<init>")
@@ -66,7 +74,9 @@ internal fun fakeClassDeclaration(
     every { qualifiedName } returns fakeName(fqName)
     every { simpleName } returns fakeName(fqName.substringAfterLast('.'))
     every { packageName } returns fakeName(fqName.substringBeforeLast('.', ""))
-    every { parentDeclaration } returns null
+    every { parentDeclaration } returns parent
+    every { this@mockk.modifiers } returns modifiers
+    every { this@mockk.origin } returns origin
     every { this@mockk.classKind } returns classKind
     every { this@mockk.annotations } answers { annotations.asSequence() }
     every { containingFile } returns if (hasSourceFile) mockk<KSFile>() else null
@@ -168,6 +178,7 @@ internal class RecordingLogger : CodegenLogger {
 internal fun testRenderContext(
     logger: CodegenLogger = RecordingLogger(),
     destinationPackage: DestinationPackage = DestinationPackage.Relative("dynamodbmapper.generatedschemas"),
+    visibility: Visibility = Visibility.MATCH_SOURCE,
 ): RenderContext = RenderContext(
     logger = logger,
     codegenFactory = mockk<CodeGeneratorFactory>(),
@@ -176,5 +187,6 @@ internal fun testRenderContext(
         AnnotationsProcessorOptions.DestinationPackageAttribute to destinationPackage
         AnnotationsProcessorOptions.GenerateBuilderClassesAttribute to GenerateBuilderClasses.WHEN_REQUIRED
         AnnotationsProcessorOptions.GenerateGetTableMethodAttribute to true
+        RenderOptions.VisibilityAttribute to visibility
     },
 )

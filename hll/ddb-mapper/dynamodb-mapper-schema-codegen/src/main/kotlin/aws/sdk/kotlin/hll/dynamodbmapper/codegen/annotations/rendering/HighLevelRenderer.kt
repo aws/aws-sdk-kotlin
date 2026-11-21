@@ -5,6 +5,8 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.rendering
 
 import aws.sdk.kotlin.hll.codegen.rendering.RenderContext
+import aws.sdk.kotlin.hll.codegen.rendering.RenderOptions
+import aws.sdk.kotlin.hll.codegen.util.plus
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model.MappedItem
 
 /**
@@ -18,7 +20,11 @@ internal class HighLevelRenderer(
 ) {
     internal fun render() {
         items.forEach { item ->
-            SchemaRenderer(ctx.copy(pkg = item.destinationPkg), item).render()
+            val itemCtx = ctx.copy(
+                pkg = item.destinationPkg,
+                attributes = ctx.attributes + (RenderOptions.VisibilityAttribute to item.visibility),
+            )
+            SchemaRenderer(itemCtx, item).render()
         }
     }
 }
