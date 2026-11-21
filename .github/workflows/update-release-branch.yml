@@ -97,15 +97,15 @@ jobs:
           # successfully (which is how it is built during release).
           # This should help prevent the cases where we forgot to bump smithy-kotlin versions and don't catch it
           # because CI is masking it
-          ./gradlew -Paws.kotlin.native=false test jvmTest
+          ./gradlew test jvmTest linuxX64Test
       - name: Release Check - build an SDK client
         if: env.MERGE_NEEDED == 'true'
         shell: bash
         run: |
           # Additionally generate and build a service client to confirm that codegen and build works
           # without "live at HEAD" mode.
-          ./gradlew -Paws.services=s3 -Paws.kotlin.native=false bootstrap; 
-          ./gradlew -Paws.kotlin.native=false build;
+          ./gradlew -Paws.services=s3 bootstrap; 
+          ./gradlew build;
       - name: Merge
         if: env.MERGE_NEEDED == 'true'
         shell: bash

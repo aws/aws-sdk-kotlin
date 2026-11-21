@@ -14,7 +14,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.BigDecimalValueConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.BigIntegerValueConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.test.runTest
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -49,11 +48,10 @@ private val schema = ItemSchema(
 
 class BigNumberOrderItemTest : DdbLocalTest() {
     companion object {
-        private const val TABLE_NAME = "big-number-order-item-test"
+        private val TABLE_NAME = "big-number-order-item-test-$testRunId"
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(TABLE_NAME, schema)
     }
 

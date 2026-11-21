@@ -110,6 +110,44 @@ class LongPollingIntegrationTest {
         structure RegisterDomainOutput {}
     """.trimIndent().toSmithyModel()
 
+    private val kinesisModel = """
+        namespace com.test
+
+        use aws.protocols#awsJson1_1
+        use aws.api#service
+
+        @awsJson1_1
+        @service(sdkId: "Kinesis")
+        service TestService {
+            version: "1.0.0",
+            operations: [ReceiveQueueRecords, ReceiveDeadLetterQueueRecords, PutRecord]
+        }
+
+        @http(method: "POST", uri: "/ReceiveQueueRecords")
+        operation ReceiveQueueRecords {
+            input: ReceiveQueueRecordsInput
+            output: ReceiveQueueRecordsOutput
+        }
+        structure ReceiveQueueRecordsInput {}
+        structure ReceiveQueueRecordsOutput {}
+
+        @http(method: "POST", uri: "/ReceiveDeadLetterQueueRecords")
+        operation ReceiveDeadLetterQueueRecords {
+            input: ReceiveDeadLetterQueueRecordsInput
+            output: ReceiveDeadLetterQueueRecordsOutput
+        }
+        structure ReceiveDeadLetterQueueRecordsInput {}
+        structure ReceiveDeadLetterQueueRecordsOutput {}
+
+        @http(method: "POST", uri: "/PutRecord")
+        operation PutRecord {
+            input: PutRecordInput
+            output: PutRecordOutput
+        }
+        structure PutRecordInput {}
+        structure PutRecordOutput {}
+    """.trimIndent().toSmithyModel()
+
     private val otherModel = """
         namespace com.test
 
@@ -147,6 +185,11 @@ class LongPollingIntegrationTest {
     @Test
     fun testEnabledForSwf() {
         assertTrue { LongPollingIntegration().enabledForService(swfModel, swfModel.defaultSettings()) }
+    }
+
+    @Test
+    fun testEnabledForKinesis() {
+        assertTrue { LongPollingIntegration().enabledForService(kinesisModel, kinesisModel.defaultSettings()) }
     }
 
     @Test
@@ -193,6 +236,23 @@ class LongPollingIntegrationTest {
     @Test
     fun testSwfRegisterDomainIsNotLongPolling() {
         assertOperationNotLongPolling(swfModel, "registerDomain", "RegisterDomainRequest", "RegisterDomainResponse")
+    }
+
+    // Kinesis: ReceiveQueueRecords and ReceiveDeadLetterQueueRecords are long-polling, PutRecord is not
+
+    @Test
+    fun testKinesisReceiveQueueRecordsIsLongPolling() {
+        assertOperationHasLongPolling(kinesisModel, "receiveQueueRecords", "ReceiveQueueRecordsRequest", "ReceiveQueueRecordsResponse")
+    }
+
+    @Test
+    fun testKinesisReceiveDeadLetterQueueRecordsIsLongPolling() {
+        assertOperationHasLongPolling(kinesisModel, "receiveDeadLetterQueueRecords", "ReceiveDeadLetterQueueRecordsRequest", "ReceiveDeadLetterQueueRecordsResponse")
+    }
+
+    @Test
+    fun testKinesisPutRecordIsNotLongPolling() {
+        assertOperationNotLongPolling(kinesisModel, "putRecord", "PutRecordRequest", "PutRecordResponse")
     }
 
     private fun generateClient(model: Model): String {

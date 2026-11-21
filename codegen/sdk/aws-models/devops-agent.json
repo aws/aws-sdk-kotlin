@@ -37,6 +37,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Validation status of the agentElevatedRoleArn. Updated asynchronously after the customer registers an elevated role. Possible values: PENDING_CONFIRMATION (validation in progress), VALID (role validated), INVALID (validation failed).</p>"
                     }
+                },
+                "serviceManagementRoleArn": {
+                    "target": "com.amazonaws.devopsagent#RoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Organizations service-managed role that AIDevOps uses to deploy and manage resources across the accounts in your Amazon Web Services Organization.</p>"
+                    }
                 }
             },
             "traits": {
@@ -58,6 +64,19 @@
                 "smithy.api#documentation": "<p>Access to the requested resource is denied due to insufficient permissions.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 403
+            }
+        },
+        "com.amazonaws.devopsagent#AccountIdList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.devopsagent#AwsAccountId"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1000
+                },
+                "smithy.api#uniqueItems": {}
             }
         },
         "com.amazonaws.devopsagent#AdditionalServiceDetails": {
@@ -228,6 +247,12 @@
                     "target": "com.amazonaws.devopsagent#AgentSpacePreferences",
                     "traits": {
                         "smithy.api#documentation": "<p>The preferences configured on the agent space. Preferences that are not set take their default values.</p>"
+                    }
+                },
+                "awsSourceMode": {
+                    "target": "com.amazonaws.devopsagent#AwsSourceMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services source mode for the AgentSpace, indicating whether its Amazon Web Services source configuration targets an individual Amazon Web Services account or an Amazon Web Services Organization.</p>"
                     }
                 }
             },
@@ -1270,6 +1295,29 @@
                 "smithy.api#documentation": "<p>Authentication flow type for operator app.</p>"
             }
         },
+        "com.amazonaws.devopsagent#AwsAccountId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^\\d{12}$"
+            }
+        },
+        "com.amazonaws.devopsagent#AwsSourceMode": {
+            "type": "enum",
+            "members": {
+                "STANDALONE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "standalone"
+                    }
+                },
+                "ORGANIZATION": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "organization"
+                    }
+                }
+            }
+        },
         "com.amazonaws.devopsagent#AzureConfiguration": {
             "type": "structure",
             "members": {
@@ -1386,6 +1434,18 @@
                         "smithy.api#documentation": "<p>Release readiness review automated testing capability.</p>",
                         "smithy.api#enumValue": "RELEASE_READINESS_REVIEW_AUTOMATED_TESTING"
                     }
+                },
+                "CODE_CHANGE_RISK_ANALYSIS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CODE_CHANGE_RISK_ANALYSIS"
+                    }
+                },
+                "CODE_CHANGE_RISK_ANALYSIS_AUTOMATED_TESTING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CODE_CHANGE_RISK_ANALYSIS_AUTOMATED_TESTING"
+                    }
                 }
             },
             "traits": {
@@ -1399,6 +1459,23 @@
                 "smithy.api#length": {
                     "min": 1,
                     "max": 32768
+                }
+            }
+        },
+        "com.amazonaws.devopsagent#ChatArchiveStatus": {
+            "type": "enum",
+            "members": {
+                "ACTIVE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACTIVE"
+                    }
+                },
+                "ARCHIVED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ARCHIVED"
+                    }
                 }
             }
         },
@@ -1429,6 +1506,12 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p>Summary or title of the chat</p>"
+                    }
+                },
+                "archiveStatus": {
+                    "target": "com.amazonaws.devopsagent#ChatArchiveStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether the chat execution is archived or active.</p>"
                     }
                 }
             },
@@ -1486,12 +1569,29 @@
                         "smithy.api#documentation": "<p>Detailed error message describing the conflict.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "reason": {
+                    "target": "com.amazonaws.devopsagent#ConflictExceptionReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A machine-readable reason code that explains why the request conflicted with the current state of the resource. For example, <code>CHAT_ARCHIVED</code> indicates that the request acted on a chat that is archived. This field is absent when no specific reason applies.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>The request conflicts with the current state of the resource.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 409
+            }
+        },
+        "com.amazonaws.devopsagent#ConflictExceptionReason": {
+            "type": "enum",
+            "members": {
+                "CHAT_ARCHIVED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CHAT_ARCHIVED"
+                    }
+                }
             }
         },
         "com.amazonaws.devopsagent#ContentSizeExceededException": {
@@ -1601,6 +1701,13 @@
                     "target": "com.amazonaws.devopsagent#AgentSpacePreferences",
                     "traits": {
                         "smithy.api#documentation": "<p>The preferences to configure on the agent space. Preferences not provided take their default values.</p>",
+                        "smithy.api#notProperty": {}
+                    }
+                },
+                "awsSourceMode": {
+                    "target": "com.amazonaws.devopsagent#AwsSourceMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether the AgentSpace's Amazon Web Services source configuration targets an individual Amazon Web Services account or an Amazon Web Services Organization.</p>",
                         "smithy.api#notProperty": {}
                     }
                 }
@@ -3186,6 +3293,9 @@
                     "target": "com.amazonaws.devopsagent#GetBacklogTask"
                 },
                 {
+                    "target": "com.amazonaws.devopsagent#GetChat"
+                },
+                {
                     "target": "com.amazonaws.devopsagent#GetRecommendation"
                 },
                 {
@@ -3250,6 +3360,9 @@
                 },
                 {
                     "target": "com.amazonaws.devopsagent#UpdateBacklogTask"
+                },
+                {
+                    "target": "com.amazonaws.devopsagent#UpdateChat"
                 },
                 {
                     "target": "com.amazonaws.devopsagent#UpdateGoal"
@@ -5052,6 +5165,117 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Response structure containing the requested backlog task</p>",
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.devopsagent#GetChat": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.devopsagent#GetChatRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.devopsagent#GetChatResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.devopsagent#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.devopsagent#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.devopsagent#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.devopsagent#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.devopsagent#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.iam#iamAction": {
+                    "documentation": "Grants permission to get a chat",
+                    "resources": {
+                        "required": {
+                            "AgentSpaceResource": {}
+                        }
+                    }
+                },
+                "smithy.api#documentation": "<p>Retrieves the details of a chat execution, including its execution ID, summary, timestamps, and archive status.</p>",
+                "smithy.api#endpoint": {
+                    "hostPrefix": "dp."
+                },
+                "smithy.api#http": {
+                    "method": "GET",
+                    "uri": "/agents/agent-space/{agentSpaceId}/chat/get/{executionId}"
+                },
+                "smithy.api#readonly": {}
+            }
+        },
+        "com.amazonaws.devopsagent#GetChatRequest": {
+            "type": "structure",
+            "members": {
+                "agentSpaceId": {
+                    "target": "com.amazonaws.devopsagent#AgentSpaceIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the agent space that contains the chat execution.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "executionId": {
+                    "target": "com.amazonaws.devopsagent#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the chat execution to retrieve.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.devopsagent#GetChatResponse": {
+            "type": "structure",
+            "members": {
+                "executionId": {
+                    "target": "com.amazonaws.devopsagent#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the chat execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "summary": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The summary of the chat execution.</p>"
+                    }
+                },
+                "createdAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time at which the chat execution was created.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "updatedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time at which the chat execution was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "archiveStatus": {
+                    "target": "com.amazonaws.devopsagent#ChatArchiveStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates whether the chat execution is archived or active.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
                 "smithy.api#output": {}
             }
         },
@@ -7023,6 +7247,9 @@
             },
             "errors": [
                 {
+                    "target": "com.amazonaws.devopsagent#AccessDeniedException"
+                },
+                {
                     "target": "com.amazonaws.devopsagent#InternalServerException"
                 },
                 {
@@ -7092,6 +7319,13 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Token for pagination</p>",
                         "smithy.api#httpQuery": "nextToken"
+                    }
+                },
+                "archiveStatus": {
+                    "target": "com.amazonaws.devopsagent#ChatArchiveStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The archive status to filter by. Use this parameter to list only archived chat executions or only active ones.</p>",
+                        "smithy.api#httpQuery": "archiveStatus"
                     }
                 }
             },
@@ -8837,6 +9071,27 @@
                 "smithy.api#documentation": "<p>List of MCP tool names available for the association.</p>"
             }
         },
+        "com.amazonaws.devopsagent#MSTeamsBidirectionalConfiguration": {
+            "type": "structure",
+            "members": {
+                "roleArn": {
+                    "target": "com.amazonaws.devopsagent#RoleArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that the agent assumes to exchange messages with the Microsoft Teams team for this association.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "enabled": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether bidirectional communication is enabled for this association. If you set this value to <code>true</code>, you can mention the agent in the configured Microsoft Teams channel and it responds in that channel. If you omit this parameter or set it to <code>false</code>, the agent only sends one-way notifications.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for bidirectional communication with a Microsoft Teams channel. When enabled, the agent receives and responds to mentions in the configured channel in addition to sending notifications.</p>"
+            }
+        },
         "com.amazonaws.devopsagent#MSTeamsChannel": {
             "type": "structure",
             "members": {
@@ -8890,6 +9145,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The Microsoft Teams channels that receive agent notifications.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "bidirectional": {
+                    "target": "com.amazonaws.devopsagent#MSTeamsBidirectionalConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The bidirectional communication configuration for the Microsoft Teams integration. Provide this configuration with <code>enabled</code> set to <code>true</code> to allow users to interact with the agent directly from Microsoft Teams.</p>"
                     }
                 }
             },
@@ -9222,6 +9483,148 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Sort order options for journal operations</p>"
+            }
+        },
+        "com.amazonaws.devopsagent#OrgSourceAccountReasonCode": {
+            "type": "enum",
+            "members": {
+                "ACCOUNT_SUSPENDED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "accountSuspended"
+                    }
+                },
+                "ACCOUNT_NOT_IN_SCOPE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "accountNotInScope"
+                    }
+                },
+                "MANAGEMENT_ACCOUNT_NOT_SUPPORTED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "managementAccountNotSupported"
+                    }
+                },
+                "STACK_INSTANCE_INOPERABLE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "stackInstanceInoperable"
+                    }
+                },
+                "ACCESS_DENIED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "accessDenied"
+                    }
+                },
+                "DEPLOYMENT_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "deploymentFailed"
+                    }
+                },
+                "SECONDARY_ACCOUNT_LIMIT_EXCEEDED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "secondaryAccountLimitExceeded"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.devopsagent#OrgSourceDeploymentState": {
+            "type": "structure",
+            "members": {
+                "deployedAccountCount": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of accounts in the targeted Amazon Web Services Organization or organizational unit that have successfully been deployed to.</p>",
+                        "smithy.api#range": {
+                            "min": 0
+                        }
+                    }
+                },
+                "issues": {
+                    "target": "com.amazonaws.devopsagent#OrgSourceIssueList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The issues encountered while deploying the source configuration across the accounts in the Amazon Web Services Organization.</p>"
+                    }
+                },
+                "lastEvaluatedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of the most recent evaluation of the organization-wide deployment state.</p>",
+                        "smithy.api#timestampFormat": "date-time"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes the current rollout state of an Amazon Web Services Organization source configuration, including the number of accounts that have been deployed to and any issues encountered during deployment.</p>"
+            }
+        },
+        "com.amazonaws.devopsagent#OrgSourceIssue": {
+            "type": "structure",
+            "members": {
+                "reasonCode": {
+                    "target": "com.amazonaws.devopsagent#OrgSourceAccountReasonCode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A code that identifies the reason for the issue.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "accountCount": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of accounts affected by this issue.</p>",
+                        "smithy.api#range": {
+                            "min": 1
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "accountIds": {
+                    "target": "com.amazonaws.devopsagent#AccountIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services account IDs affected by this issue.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "message": {
+                    "target": "com.amazonaws.devopsagent#OrgSourceIssueMessage",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A description of the issue.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Describes an issue encountered while deploying or evaluating an Amazon Web Services Organization source configuration.</p>"
+            }
+        },
+        "com.amazonaws.devopsagent#OrgSourceIssueList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.devopsagent#OrgSourceIssue"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "max": 20
+                }
+            }
+        },
+        "com.amazonaws.devopsagent#OrgSourceIssueMessage": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1024
+                },
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.devopsagent#OrgUnitId": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^(r-[0-9a-z]{4,32}|ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$"
             }
         },
         "com.amazonaws.devopsagent#PagerDutyAuthorizationConfig": {
@@ -11303,6 +11706,9 @@
                     "target": "com.amazonaws.devopsagent#AccessDeniedException"
                 },
                 {
+                    "target": "com.amazonaws.devopsagent#ConflictException"
+                },
+                {
                     "target": "com.amazonaws.devopsagent#InternalServerException"
                 },
                 {
@@ -11951,6 +12357,12 @@
                     "target": "com.amazonaws.devopsagent#SourceAwsConfiguration",
                     "traits": {
                         "smithy.api#documentation": "<p>AWS source account configuration for monitoring resources.</p>"
+                    }
+                },
+                "sourceAwsOrg": {
+                    "target": "com.amazonaws.devopsagent#SourceAwsOrgConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Organization source configuration used to monitor resources across an entire Amazon Web Services Organization or specified organizational units.</p>"
                     }
                 },
                 "aws": {
@@ -12609,6 +13021,55 @@
                 "smithy.api#documentation": "<p>Configuration for AWS source account integration. Setting the role ARNs on this configuration requires the caller to have at least the iam:PassRole permission (see assumableRoleArn).</p>"
             }
         },
+        "com.amazonaws.devopsagent#SourceAwsOrgConfiguration": {
+            "type": "structure",
+            "members": {
+                "accountType": {
+                    "target": "com.amazonaws.devopsagent#SourceAccountType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The account type for this configuration. For Amazon Web Services Organization-level configurations, this value is <code>source</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "organizationalUnit": {
+                    "target": "com.amazonaws.devopsagent#SourceAwsOrgUnit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The organizational units within the Amazon Web Services Organization that are targeted for source monitoring.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "deploymentState": {
+                    "target": "com.amazonaws.devopsagent#OrgSourceDeploymentState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The current deployment state of the Amazon Web Services Organization-wide source configuration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Configuration for Amazon Web Services Organization-wide source account integration. Use this configuration to monitor Amazon Web Services resources across multiple accounts within an organization or within targeted organizational units.</p>"
+            }
+        },
+        "com.amazonaws.devopsagent#SourceAwsOrgUnit": {
+            "type": "structure",
+            "members": {
+                "organizationalUnitId": {
+                    "target": "com.amazonaws.devopsagent#OrgUnitId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the Organizations organizational unit.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "accountIds": {
+                    "target": "com.amazonaws.devopsagent#AccountIdList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services account IDs that belong to this organizational unit and are targeted for source monitoring.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Identifies an Organizations organizational unit and its member accounts that are targeted for source monitoring.</p>"
+            }
+        },
         "com.amazonaws.devopsagent#SubnetId": {
             "type": "string",
             "traits": {
@@ -13113,6 +13574,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Task for automated release testing</p>",
                         "smithy.api#enumValue": "RELEASE_TESTING"
+                    }
+                },
+                "CODE_CHANGE_RISK_ANALYSIS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CODE_CHANGE_RISK_ANALYSIS"
                     }
                 }
             },
@@ -13629,6 +14096,13 @@
                     "target": "com.amazonaws.devopsagent#AgentSpacePreferences",
                     "traits": {
                         "smithy.api#documentation": "<p>The preferences to configure on the agent space. When provided, this replaces the full set of configured preferences; preferences not included revert to their default values. When omitted, the current preferences are left unchanged.</p>",
+                        "smithy.api#notProperty": {}
+                    }
+                },
+                "awsSourceMode": {
+                    "target": "com.amazonaws.devopsagent#AwsSourceMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether the AgentSpace's Amazon Web Services source configuration targets an individual Amazon Web Services account or an Amazon Web Services Organization. Use this parameter to switch an existing AgentSpace between source modes.</p>",
                         "smithy.api#notProperty": {}
                     }
                 }
@@ -14244,6 +14718,141 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>Response structure containing the updated task</p>",
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.devopsagent#UpdateChat": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.devopsagent#UpdateChatRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.devopsagent#UpdateChatResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.devopsagent#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.devopsagent#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.devopsagent#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.devopsagent#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.devopsagent#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.devopsagent#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.iam#iamAction": {
+                    "documentation": "Grants permission to update a chat",
+                    "resources": {
+                        "required": {
+                            "AgentSpaceResource": {}
+                        }
+                    }
+                },
+                "smithy.api#documentation": "<p>Updates a chat execution. You can use this operation to change the chat execution's summary or to archive or unarchive it.</p><p>Archiving a chat execution hides it from the default chat list. Unarchiving a chat execution restores it to the default chat list.</p>",
+                "smithy.api#endpoint": {
+                    "hostPrefix": "dp."
+                },
+                "smithy.api#http": {
+                    "method": "PATCH",
+                    "uri": "/agents/agent-space/{agentSpaceId}/chat/{executionId}"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.devopsagent#UpdateChatRequest": {
+            "type": "structure",
+            "members": {
+                "agentSpaceId": {
+                    "target": "com.amazonaws.devopsagent#AgentSpaceIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the agent space that contains the chat execution to update.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "executionId": {
+                    "target": "com.amazonaws.devopsagent#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the chat execution to update.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "summary": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The new summary to set for the chat execution.</p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 256
+                        }
+                    }
+                },
+                "archiveStatus": {
+                    "target": "com.amazonaws.devopsagent#ChatArchiveStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The archive status to set for the chat execution. Use this parameter to archive the chat execution, hiding it from the default chat list, or to unarchive it, restoring it to the default chat list.</p>"
+                    }
+                },
+                "clientToken": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+                        "smithy.api#idempotencyToken": {},
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 64
+                        },
+                        "smithy.api#pattern": "^[\\x21-\\x7E]+$"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.devopsagent#UpdateChatResponse": {
+            "type": "structure",
+            "members": {
+                "executionId": {
+                    "target": "com.amazonaws.devopsagent#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the updated chat execution.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "summary": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The summary of the chat execution after the update.</p>"
+                    }
+                },
+                "updatedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time at which the chat execution was last updated.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "archiveStatus": {
+                    "target": "com.amazonaws.devopsagent#ChatArchiveStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The archive status of the chat execution after the update.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
                 "smithy.api#output": {}
             }
         },

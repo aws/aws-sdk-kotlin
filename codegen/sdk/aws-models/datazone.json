@@ -1123,6 +1123,9 @@
                 "owningProjectId": {
                     "target": "com.amazonaws.datazone#ProjectId"
                 },
+                "ownershipTransfer": {
+                    "target": "com.amazonaws.datazone#AssetOwnershipTransfer"
+                },
                 "createdBy": {
                     "target": "com.amazonaws.datazone#CreatedBy"
                 },
@@ -1151,6 +1154,9 @@
             "operations": [
                 {
                     "target": "com.amazonaws.datazone#CreateAssetRevision"
+                },
+                {
+                    "target": "com.amazonaws.datazone#UpdateAssetOwner"
                 }
             ]
         },
@@ -1659,6 +1665,73 @@
                     "max": 256
                 },
                 "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.datazone#AssetOwnershipTransfer": {
+            "type": "structure",
+            "members": {
+                "status": {
+                    "target": "com.amazonaws.datazone#AssetOwnershipTransferStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the ownership transfer. Valid values:</p> <ul> <li> <p> <code>IN_PROGRESS</code> — The transfer is in progress. Requests that change the asset or its listing fail until the transfer completes.</p> </li> <li> <p> <code>SUCCEEDED</code> — The transfer completed. The target project owns the asset, its listing, and the subscriptions to the asset.</p> </li> <li> <p> <code>FAILED</code> — The transfer didn't complete, and the service rolled back its changes. The source project owns the asset.</p> </li> </ul>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "sourceProjectId": {
+                    "target": "com.amazonaws.datazone#ProjectId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the project that owned the asset when the transfer started.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "targetProjectId": {
+                    "target": "com.amazonaws.datazone#ProjectId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the project that the asset is transferred to.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "startedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of when the transfer started.</p>"
+                    }
+                },
+                "updatedAt": {
+                    "target": "smithy.api#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp of when the status of the transfer was last updated.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The details of an asset ownership transfer.</p>"
+            }
+        },
+        "com.amazonaws.datazone#AssetOwnershipTransferStatus": {
+            "type": "enum",
+            "members": {
+                "IN_PROGRESS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IN_PROGRESS"
+                    }
+                },
+                "SUCCEEDED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SUCCEEDED"
+                    }
+                },
+                "FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FAILED"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The state of an asset ownership transfer, which indicates whether the transfer is in progress, succeeded, or failed.</p>"
             }
         },
         "com.amazonaws.datazone#AssetPermission": {
@@ -4111,6 +4184,20 @@
                         "smithy.api#documentation": "<p>A Databricks Unity Catalog (Iceberg REST) connection type.</p>",
                         "smithy.api#enumValue": "DATABRICKSICEBERGRESTCATALOG"
                     }
+                },
+                "WORKDAYICEBERGRESTCATALOG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Workday Data Connect (Iceberg REST) catalog connection type.</p>",
+                        "smithy.api#enumValue": "WORKDAYICEBERGRESTCATALOG"
+                    }
+                },
+                "WORKDAYLDQ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Workday Live Data Query connection type.</p>",
+                        "smithy.api#enumValue": "WORKDAYLDQ"
+                    }
                 }
             }
         },
@@ -6161,7 +6248,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "Creates a new user-defined designation with a Cedar permit policy.\nThe designation defines a named role that can be assigned to project members.",
+                "smithy.api#documentation": "<p>Creates a new user-defined designation with a Cedar permit policy. The designation defines a named role that can be assigned to project members through <code>CreateProjectMembership</code> or granted through <code>AddPolicyGrant</code>.</p>",
                 "smithy.api#http": {
                     "code": 201,
                     "method": "POST",
@@ -6196,7 +6283,7 @@
                 "policy": {
                     "target": "com.amazonaws.datazone#CedarDesignationPolicy",
                     "traits": {
-                        "smithy.api#documentation": "The Cedar permit policy that defines what actions holders of this\ndesignation are allowed to perform.",
+                        "smithy.api#documentation": "<p>The Cedar permit policy that defines the actions holders of this designation are allowed to perform.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -6204,7 +6291,7 @@
                     "target": "smithy.api#Boolean",
                     "traits": {
                         "smithy.api#default": true,
-                        "smithy.api#documentation": "Whether deletion protection is enabled for this designation. Defaults to true when omitted."
+                        "smithy.api#documentation": "<p>Specifies whether deletion protection is enabled for this designation. Defaults to <code>true</code> when omitted. When enabled, <code>DeleteDesignation</code> is rejected until protection is disabled through <code>UpdateDesignation</code>.</p>"
                     }
                 }
             },
@@ -6245,21 +6332,21 @@
                 "designationType": {
                     "target": "com.amazonaws.datazone#DesignationType",
                     "traits": {
-                        "smithy.api#documentation": "The classification of this designation. MANAGED designations are\nsystem-defined and cannot be modified or deleted.",
+                        "smithy.api#documentation": "<p>The classification of this designation. Valid values:</p> <ul> <li> <p> <code>MANAGED</code> — System-defined designations that cannot be modified or deleted.</p> </li> <li> <p> <code>USER_CREATED</code> — Designations created through <code>CreateDesignation</code>.</p> </li> </ul>",
                         "smithy.api#required": {}
                     }
                 },
                 "policy": {
                     "target": "com.amazonaws.datazone#CedarDesignationPolicy",
                     "traits": {
-                        "smithy.api#documentation": "The Cedar permit policy that governs what actions holders of this\ndesignation are allowed to perform.",
+                        "smithy.api#documentation": "<p>The Cedar permit policy that governs the actions holders of this designation are allowed to perform.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "deletionProtection": {
                     "target": "smithy.api#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "Whether deletion protection is enabled for this designation. When true,\nDeleteDesignation is rejected until protection is disabled via UpdateDesignation.",
+                        "smithy.api#documentation": "<p>Specifies whether deletion protection is enabled for this designation. When <code>true</code>, <code>DeleteDesignation</code> is rejected until protection is disabled through <code>UpdateDesignation</code>.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -13018,7 +13105,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "Deletes a designation. Managed designations cannot be deleted.\nThis operation is idempotent.",
+                "smithy.api#documentation": "<p>Deletes a user-created designation. Managed designations cannot be deleted. The call fails if the designation has <code>deletionProtection</code> enabled or if any project member still holds it. This operation is idempotent.</p>",
                 "smithy.api#http": {
                     "code": 204,
                     "method": "DELETE",
@@ -14859,13 +14946,13 @@
                 "designationType": {
                     "target": "com.amazonaws.datazone#DesignationType",
                     "traits": {
-                        "smithy.api#documentation": "The classification of this designation."
+                        "smithy.api#documentation": "<p>The classification of this designation. Valid values:</p> <ul> <li> <p> <code>MANAGED</code> — System-defined designation.</p> </li> <li> <p> <code>USER_CREATED</code> — User-created designation.</p> </li> </ul>"
                     }
                 },
                 "deletionProtection": {
                     "target": "smithy.api#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "Whether deletion protection is enabled for this designation.",
+                        "smithy.api#documentation": "<p>Specifies whether deletion protection is enabled for this designation. When <code>true</code>, <code>DeleteDesignation</code> is rejected until protection is disabled through <code>UpdateDesignation</code>.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -14892,7 +14979,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "Summary representation of a designation returned by list operations."
+                "smithy.api#documentation": "<p>The summary representation of a designation returned by <code>ListDesignations</code>. The summary omits the Cedar permit policy. Call <code>GetDesignation</code> to retrieve the full designation record including the policy.</p>"
             }
         },
         "com.amazonaws.datazone#DesignationType": {
@@ -16232,6 +16319,12 @@
                     "target": "com.amazonaws.datazone#EnvironmentId",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the environment.</p>"
+                    }
+                },
+                "environmentBlueprintId": {
+                    "target": "com.amazonaws.datazone#EnvironmentBlueprintId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the environment blueprint.</p>"
                     }
                 },
                 "environmentResolvedAccount": {
@@ -17912,6 +18005,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The latest data point that was imported into the time series form for the asset. </p>"
                     }
+                },
+                "ownershipTransfer": {
+                    "target": "com.amazonaws.datazone#AssetOwnershipTransfer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The most recent ownership transfer of the asset. The response omits this member if the asset has never had an ownership transfer.</p>"
+                    }
                 }
             },
             "traits": {
@@ -18900,7 +18999,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "Gets the details of a designation, including its Cedar policy.",
+                "smithy.api#documentation": "<p>Gets the details of a designation, including its Cedar permit policy. Returns the full designation record for both system-managed and user-created designations.</p>",
                 "smithy.api#http": {
                     "code": 200,
                     "method": "GET",
@@ -18966,21 +19065,21 @@
                 "designationType": {
                     "target": "com.amazonaws.datazone#DesignationType",
                     "traits": {
-                        "smithy.api#documentation": "The classification of this designation. MANAGED designations are\nsystem-defined and cannot be modified or deleted.",
+                        "smithy.api#documentation": "<p>The classification of this designation. Valid values:</p> <ul> <li> <p> <code>MANAGED</code> — System-defined designations that cannot be modified or deleted.</p> </li> <li> <p> <code>USER_CREATED</code> — Designations created through <code>CreateDesignation</code>.</p> </li> </ul>",
                         "smithy.api#required": {}
                     }
                 },
                 "policy": {
                     "target": "com.amazonaws.datazone#CedarDesignationPolicy",
                     "traits": {
-                        "smithy.api#documentation": "The Cedar permit policy that governs what actions holders of this\ndesignation are allowed to perform.",
+                        "smithy.api#documentation": "<p>The Cedar permit policy that governs the actions holders of this designation are allowed to perform.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "deletionProtection": {
                     "target": "smithy.api#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "Whether deletion protection is enabled for this designation. When true,\nDeleteDesignation is rejected until protection is disabled via UpdateDesignation.",
+                        "smithy.api#documentation": "<p>Specifies whether deletion protection is enabled for this designation. When <code>true</code>, <code>DeleteDesignation</code> is rejected until protection is disabled through <code>UpdateDesignation</code>.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -24459,6 +24558,20 @@
                         "smithy.api#documentation": "<p>A Databricks Unity Catalog (Iceberg REST) connection type.</p>",
                         "smithy.api#enumValue": "DATABRICKSICEBERGRESTCATALOG"
                     }
+                },
+                "WORKDAYICEBERGRESTCATALOG": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Workday Data Connect (Iceberg REST) catalog connection type.</p>",
+                        "smithy.api#enumValue": "WORKDAYICEBERGRESTCATALOG"
+                    }
+                },
+                "WORKDAYLDQ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A Workday Live Data Query connection type.</p>",
+                        "smithy.api#enumValue": "WORKDAYLDQ"
+                    }
                 }
             }
         },
@@ -27270,7 +27383,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "Lists the designations in a domain. Returns system-managed designations\nfirst, followed by user-created designations sorted alphabetically by name.",
+                "smithy.api#documentation": "<p>Lists the designations in a domain. The response returns system-managed designations first, followed by user-created designations in alphabetical order by name. Results are paginated. Use <code>nextToken</code> to retrieve additional pages of results.</p>",
                 "smithy.api#http": {
                     "code": 200,
                     "method": "GET",
@@ -33718,6 +33831,17 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The project policy grant principal.</p>"
+            }
+        },
+        "com.amazonaws.datazone#ProjectProfileAction": {
+            "type": "enum",
+            "members": {
+                "DISASSOCIATE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DISASSOCIATE"
+                    }
+                }
             }
         },
         "com.amazonaws.datazone#ProjectProfileId": {
@@ -42360,6 +42484,115 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.datazone#UpdateAssetOwner": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.datazone#UpdateAssetOwnerInput"
+            },
+            "output": {
+                "target": "com.amazonaws.datazone#UpdateAssetOwnerOutput"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.datazone#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.datazone#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Transfers the ownership of an asset to another project in the same Amazon DataZone domain. The transfer changes the asset's owning project and moves its published listing, subscriptions, and subscription grants to the target project.</p> <p>The transfer runs asynchronously, and the operation returns HTTP status code 202. To follow the transfer, call <code>GetAsset</code> and check <code>ownershipTransfer.status</code> until it is <code>SUCCEEDED</code> or <code>FAILED</code>.</p> <p>You need to be an owner of the project that currently owns the asset. You can transfer an asset from the domain's administration project to any project. You can also transfer an asset from any project to the administration project.</p> <p>An asset can have only one ownership transfer in progress at a time. While a transfer is in progress, requests that change the asset or its listing fail with a <code>ConflictException</code>.</p>",
+                "smithy.api#http": {
+                    "code": 202,
+                    "method": "PATCH",
+                    "uri": "/v2/domains/{domainIdentifier}/assets/{identifier}"
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.datazone#UpdateAssetOwnerInput": {
+            "type": "structure",
+            "members": {
+                "domainIdentifier": {
+                    "target": "com.amazonaws.datazone#DomainId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Amazon DataZone domain that contains the asset.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "identifier": {
+                    "target": "com.amazonaws.datazone#AssetIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the asset whose ownership is transferred.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "targetProjectIdentifier": {
+                    "target": "com.amazonaws.datazone#ProjectId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the project that the asset is transferred to. The project must be in the same domain and must be different from the project that currently owns the asset.</p> <p>If the domain's administration project owns the asset, the target can be any project. Otherwise, the target must be the administration project.</p>",
+                        "smithy.api#notProperty": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientToken": {
+                    "target": "com.amazonaws.datazone#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request while its transfer is in progress, the service returns that transfer and doesn't start a new one. This field is automatically populated if not provided.</p>",
+                        "smithy.api#idempotencyToken": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.datazone#UpdateAssetOwnerOutput": {
+            "type": "structure",
+            "members": {
+                "id": {
+                    "target": "com.amazonaws.datazone#AssetId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the asset.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "revision": {
+                    "target": "com.amazonaws.datazone#Revision",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The revision of the asset that was created when the transfer started.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ownershipTransfer": {
+                    "target": "com.amazonaws.datazone#AssetOwnershipTransfer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The state of the ownership transfer that the request started.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.datazone#UpdateConnection": {
             "type": "operation",
             "input": {
@@ -42840,7 +43073,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "Updates an existing designation. Managed designations cannot be modified.",
+                "smithy.api#documentation": "<p>Updates an existing user-created designation. Managed designations cannot be modified. Omit a field to leave its current value unchanged.</p>",
                 "smithy.api#http": {
                     "code": 200,
                     "method": "PATCH",
@@ -42882,13 +43115,13 @@
                 "policy": {
                     "target": "com.amazonaws.datazone#CedarDesignationPolicy",
                     "traits": {
-                        "smithy.api#documentation": "The updated Cedar permit policy."
+                        "smithy.api#documentation": "<p>The updated Cedar permit policy. Omit to keep the existing policy.</p>"
                     }
                 },
                 "deletionProtection": {
                     "target": "smithy.api#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "Whether deletion protection is enabled for this designation. Omit to keep the existing value."
+                        "smithy.api#documentation": "<p>Specifies whether deletion protection is enabled for this designation. Omit to keep the existing value.</p>"
                     }
                 }
             },
@@ -42929,21 +43162,21 @@
                 "designationType": {
                     "target": "com.amazonaws.datazone#DesignationType",
                     "traits": {
-                        "smithy.api#documentation": "The classification of this designation. MANAGED designations are\nsystem-defined and cannot be modified or deleted.",
+                        "smithy.api#documentation": "<p>The classification of this designation. Valid values:</p> <ul> <li> <p> <code>MANAGED</code> — System-defined designations that cannot be modified or deleted.</p> </li> <li> <p> <code>USER_CREATED</code> — Designations created through <code>CreateDesignation</code>.</p> </li> </ul>",
                         "smithy.api#required": {}
                     }
                 },
                 "policy": {
                     "target": "com.amazonaws.datazone#CedarDesignationPolicy",
                     "traits": {
-                        "smithy.api#documentation": "The Cedar permit policy that governs what actions holders of this\ndesignation are allowed to perform.",
+                        "smithy.api#documentation": "<p>The Cedar permit policy that governs the actions holders of this designation are allowed to perform.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "deletionProtection": {
                     "target": "smithy.api#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "Whether deletion protection is enabled for this designation. When true,\nDeleteDesignation is rejected until protection is disabled via UpdateDesignation.",
+                        "smithy.api#documentation": "<p>Specifies whether deletion protection is enabled for this designation. When <code>true</code>, <code>DeleteDesignation</code> is rejected until protection is disabled through <code>UpdateDesignation</code>.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -44797,6 +45030,12 @@
                     "target": "smithy.api#String",
                     "traits": {
                         "smithy.api#documentation": "<p>The project profile version to which the project should be updated. You can only specify the following string for this parameter: <code>latest</code>.</p>"
+                    }
+                },
+                "projectProfileAction": {
+                    "target": "com.amazonaws.datazone#ProjectProfileAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The action to perform on the project profile of the project. Specify <code>DISASSOCIATE</code> to disassociate the project from its project profile.</p>"
                     }
                 }
             },

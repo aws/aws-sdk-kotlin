@@ -15,6 +15,7 @@ import aws.smithy.kotlin.runtime.http.HttpBody
 import aws.smithy.kotlin.runtime.http.HttpStatusCode
 import aws.smithy.kotlin.runtime.http.response.HttpResponse
 import aws.smithy.kotlin.runtime.httptest.buildTestConnection
+import aws.smithy.kotlin.runtime.io.use
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -62,23 +63,25 @@ class Handle200ErrorsInterceptorTest {
 
     @Test
     fun testHandle200ErrorsWithNoExpectedBody() = runTest {
-        val s3 = newTestClient()
-        val ex = assertFailsWith<S3Exception> {
-            s3.deleteObject {
-                bucket = "test"
-                key = "key"
+        newTestClient().use { s3 ->
+            val ex = assertFailsWith<S3Exception> {
+                s3.deleteObject {
+                    bucket = "test"
+                    key = "key"
+                }
             }
+            assertException(ex)
         }
-        assertException(ex)
     }
 
     @Test
     fun testHandle200ErrorsWithExpectedBody() = runTest {
-        val s3 = newTestClient()
-        val ex = assertFailsWith<S3Exception> {
-            s3.deleteObjects { bucket = "test" }
+        newTestClient().use { s3 ->
+            val ex = assertFailsWith<S3Exception> {
+                s3.deleteObjects { bucket = "test" }
+            }
+            assertException(ex)
         }
-        assertException(ex)
     }
 
     @Test
@@ -107,15 +110,16 @@ class Handle200ErrorsInterceptorTest {
                 <HostId>rid2</HostId>
             </Error>
         """.trimIndent().encodeToByteArray()
-        val s3 = newTestClient(HttpStatusCode.BadRequest, payload)
-        val ex = assertFailsWith<S3Exception> {
-            s3.deleteObjects { bucket = "test" }
+        newTestClient(HttpStatusCode.BadRequest, payload).use { s3 ->
+            val ex = assertFailsWith<S3Exception> {
+                s3.deleteObjects { bucket = "test" }
+            }
+            val expectedMessage = "Please use less foos."
+            assertEquals("$expectedMessage, Request ID: rid, Extended request ID: rid2", ex.message)
+            assertEquals(expectedMessage, ex.sdkErrorMetadata.errorMessage)
+            assertEquals("FooError", ex.sdkErrorMetadata.errorCode)
+            assertEquals("rid", ex.sdkErrorMetadata.requestId)
+            assertEquals("rid2", ex.sdkErrorMetadata.requestId2)
         }
-        val expectedMessage = "Please use less foos."
-        assertEquals("$expectedMessage, Request ID: rid, Extended request ID: rid2", ex.message)
-        assertEquals(expectedMessage, ex.sdkErrorMetadata.errorMessage)
-        assertEquals("FooError", ex.sdkErrorMetadata.errorCode)
-        assertEquals("rid", ex.sdkErrorMetadata.requestId)
-        assertEquals("rid2", ex.sdkErrorMetadata.requestId2)
     }
 }
