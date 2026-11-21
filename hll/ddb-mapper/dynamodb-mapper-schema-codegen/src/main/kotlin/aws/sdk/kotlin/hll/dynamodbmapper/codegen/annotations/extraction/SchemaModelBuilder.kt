@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.extraction
 
 import aws.sdk.kotlin.hll.codegen.ksp.asSymbolRef
+import aws.sdk.kotlin.hll.codegen.ksp.resolveTypeAliases
 import aws.sdk.kotlin.hll.codegen.model.Member
 import aws.sdk.kotlin.hll.codegen.model.Structure
 import aws.sdk.kotlin.hll.codegen.model.Type
@@ -349,7 +350,7 @@ private fun mappedTypeReferences(classes: List<KSClassDeclaration>, families: Fa
             .flatMap { (prop, annotations) ->
                 // A @DynamoDbHeterogeneousAttribute property references its family even though its type (Any) doesn't
                 val family = heterogeneousAttributeFamily(annotations)?.qualifiedName?.asString()
-                prop.type.resolve().referencedDeclarations().mapNotNull { it.qualifiedName?.asString() } + listOfNotNull(family)
+                prop.type.resolve().referencedTypeNames() + listOfNotNull(family)
             }
             .filterTo(mutableSetOf()) { it in classNames }
     }
@@ -376,4 +377,11 @@ private fun findCyclicallyNestedClasses(adjacency: Map<String, Set<String>>): Se
         }
     }
     reachesSelf
+}
+
+/** Yields the qualified names of this type and all of its type arguments, recursively. */
+private fun KSType.referencedTypeNames(): Sequence<String> = sequence {
+    val resolved = resolveTypeAliases()
+    resolved.declaration.qualifiedName?.asString()?.let { yield(it) }
+    resolved.arguments.forEach { arg -> arg.type?.resolve()?.let { yieldAll(it.referencedTypeNames()) } }
 }

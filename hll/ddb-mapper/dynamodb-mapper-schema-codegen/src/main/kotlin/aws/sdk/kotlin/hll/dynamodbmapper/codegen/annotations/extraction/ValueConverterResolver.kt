@@ -6,6 +6,7 @@ package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.extraction
 
 import aws.sdk.kotlin.hll.codegen.core.SymbolRef
 import aws.sdk.kotlin.hll.codegen.ksp.asSymbolRef
+import aws.sdk.kotlin.hll.codegen.ksp.resolveTypeAliases
 import aws.sdk.kotlin.hll.codegen.model.Type
 import aws.sdk.kotlin.hll.codegen.model.TypeRef
 import aws.sdk.kotlin.hll.codegen.model.Types
@@ -144,6 +145,9 @@ internal fun resolveValueConverter(
     symbol: SymbolRef? = null,
     heterogeneousLeaf: HeterogeneousLeaf? = null,
 ): ValueConverterSpec? {
+    val resolved = ksType.resolveTypeAliases()
+    if (resolved !== ksType) return resolveValueConverter(resolved, ctx, diagnostics, symbol, heterogeneousLeaf)
+
     val type = Type.from(ksType)
     fun recurse(t: KSType) = resolveValueConverter(t, ctx, diagnostics, symbol, heterogeneousLeaf)
 
@@ -328,7 +332,7 @@ private val KSType.setValueConverter: TypeRef?
     }
 
 private val KSType.isEnum: Boolean
-    get() = (declaration as? KSClassDeclaration)?.classKind == ClassKind.ENUM_CLASS
+    get() = (resolveTypeAliases().declaration as? KSClassDeclaration)?.classKind == ClassKind.ENUM_CLASS
 
 private val KSType.isUserClass: Boolean
     get() = declaration.isDynamoDbMappable
