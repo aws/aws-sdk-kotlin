@@ -33,4 +33,5 @@ public val Attributes.visibility: String
     get() = when (this[VisibilityAttribute]) {
         Visibility.PUBLIC -> "public "
         Visibility.INTERNAL -> "internal "
+        Visibility.MATCH_SOURCE -> error("${Visibility.MATCH_SOURCE} must be resolved to a concrete visibility before rendering")
     }

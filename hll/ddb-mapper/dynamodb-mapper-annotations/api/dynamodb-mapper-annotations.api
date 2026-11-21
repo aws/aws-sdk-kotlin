@@ -9,6 +9,16 @@ public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/Dyn
 public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbCounter : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbHeterogeneousAttribute : java/lang/annotation/Annotation {
+	public abstract fun family ()Ljava/lang/Class;
+}
+
+public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbHeterogeneousType : java/lang/annotation/Annotation {
+	public abstract fun baseMatch ()Laws/sdk/kotlin/hll/dynamodbmapper/DynamoDbSubtypeMatch;
+	public abstract fun baseTypeName ()Ljava/lang/String;
+	public abstract fun typeAttribute ()Ljava/lang/String;
+}
+
 public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbIgnore : java/lang/annotation/Annotation {
 }
 
@@ -16,10 +26,29 @@ public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/Dyn
 	public abstract fun converter ()Ljava/lang/Class;
 }
 
+public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbMappable : java/lang/annotation/Annotation {
+	public abstract fun converter ()Ljava/lang/Class;
+}
+
 public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbPartitionKey : java/lang/annotation/Annotation {
 }
 
 public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbSortKey : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbSubtype : java/lang/annotation/Annotation {
+	public abstract fun converter ()Ljava/lang/Class;
+	public abstract fun match ()Laws/sdk/kotlin/hll/dynamodbmapper/DynamoDbSubtypeMatch;
+	public abstract fun parent ()Ljava/lang/Class;
+	public abstract fun typeName ()Ljava/lang/String;
+}
+
+public final class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbSubtypeMatch : java/lang/Enum {
+	public static final field EXACT_TYPE Laws/sdk/kotlin/hll/dynamodbmapper/DynamoDbSubtypeMatch;
+	public static final field INSTANCE_OF Laws/sdk/kotlin/hll/dynamodbmapper/DynamoDbSubtypeMatch;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Laws/sdk/kotlin/hll/dynamodbmapper/DynamoDbSubtypeMatch;
+	public static fun values ()[Laws/sdk/kotlin/hll/dynamodbmapper/DynamoDbSubtypeMatch;
 }
 
 public abstract interface annotation class aws/sdk/kotlin/hll/dynamodbmapper/DynamoDbTtlSeconds : java/lang/annotation/Annotation {

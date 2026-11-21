@@ -38,6 +38,8 @@ import kotlinx.serialization.json.put
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.minutes
 
 class EcsCredentialsProviderTest {
@@ -152,9 +154,14 @@ class EcsCredentialsProviderTest {
         )
 
         val provider = EcsCredentialsProvider(testPlatform, engine)
-        assertFailsWith<ProviderConfigurationException> {
+        val ex = assertFailsWith<ProviderConfigurationException> {
             provider.resolve()
-        }.message.shouldContain("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) do not resolve to the loopback device.")
+        }
+        assertNotNull(ex.message)
+        assertTrue(
+            ex.message!!.contains("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) do not resolve to the loopback device.") ||
+                ex.message!!.contains("The container credentials full URI (http://amazonaws.com/full) is specified via a hostname whose IP address(es) could not be resolved."),
+        )
     }
 
     @Test
@@ -386,42 +393,44 @@ class EcsCredentialsProviderTest {
 
     @Test
     fun testAuthTokenIllegal() = runTest {
-        val token = "auth\r\ntoken"
-        val engine = TestConnection()
+        listOf("auth\rtoken", "auth\ntoken", "auth\r\ntoken").forEach { token ->
+            val engine = TestConnection()
 
-        val testPlatform = TestPlatformProvider.of(
-            env = mapOf(
-                AwsSdkSetting.AwsContainerCredentialsRelativeUri.envVar to "/relative",
-                AwsSdkSetting.AwsContainerAuthorizationToken.envVar to token,
-            ),
-        )
+            val testPlatform = TestPlatformProvider.of(
+                env = mapOf(
+                    AwsSdkSetting.AwsContainerCredentialsRelativeUri.envVar to "/relative",
+                    AwsSdkSetting.AwsContainerAuthorizationToken.envVar to token,
+                ),
+            )
 
-        val provider = EcsCredentialsProvider(testPlatform, engine)
-        assertFailsWith<CredentialsProviderException> {
-            provider.resolve()
-        }.message.shouldContain("Token contains illegal line break sequence.")
+            val provider = EcsCredentialsProvider(testPlatform, engine)
+            assertFailsWith<CredentialsProviderException> {
+                provider.resolve()
+            }.message.shouldContain("Token contains illegal line break sequence.")
+        }
     }
 
     @Test
     fun testAuthTokenFileIllegal() = runTest {
-        val tokenFile = "/path/to/token"
-        val token = "auth\r\ntoken"
-        val engine = TestConnection()
+        listOf("auth\rtoken", "auth\ntoken", "auth\r\ntoken").forEach { token ->
+            val tokenFile = "/path/to/token"
+            val engine = TestConnection()
 
-        val testPlatform = TestPlatformProvider.of(
-            env = mapOf(
-                AwsSdkSetting.AwsContainerCredentialsRelativeUri.envVar to "/relative",
-                AwsSdkSetting.AwsContainerAuthorizationTokenFile.envVar to tokenFile,
-            ),
-            fs = mapOf(
-                tokenFile to TestFile(token),
-            ),
-        )
+            val testPlatform = TestPlatformProvider.of(
+                env = mapOf(
+                    AwsSdkSetting.AwsContainerCredentialsRelativeUri.envVar to "/relative",
+                    AwsSdkSetting.AwsContainerAuthorizationTokenFile.envVar to tokenFile,
+                ),
+                fs = mapOf(
+                    tokenFile to TestFile(token),
+                ),
+            )
 
-        val provider = EcsCredentialsProvider(testPlatform, engine)
-        assertFailsWith<CredentialsProviderException> {
-            provider.resolve()
-        }.message.shouldContain("Token contains illegal line break sequence.")
+            val provider = EcsCredentialsProvider(testPlatform, engine)
+            assertFailsWith<CredentialsProviderException> {
+                provider.resolve()
+            }.message.shouldContain("Token contains illegal line break sequence.")
+        }
     }
 
     @Test

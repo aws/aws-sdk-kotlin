@@ -4,7 +4,6 @@
  */
 package aws.sdk.kotlin.benchmarks.service.telemetry
 
-import aws.smithy.kotlin.runtime.ExperimentalApi
 import aws.smithy.kotlin.runtime.collections.Attributes
 import aws.smithy.kotlin.runtime.telemetry.AbstractTelemetryProvider
 import aws.smithy.kotlin.runtime.telemetry.context.Context
@@ -21,7 +20,6 @@ private val capturedMetrics = mapOf(
     // "smithy.client.call.response_payload_size" to "RespSize",
 )
 
-@ExperimentalApi
 class BenchmarkTelemetryProvider(private val metricAggregator: MetricAggregator) : AbstractTelemetryProvider() {
     override val meterProvider = object : AbstractMeterProvider() {
         override fun getOrCreateMeter(scope: String) = object : AbstractMeter() {

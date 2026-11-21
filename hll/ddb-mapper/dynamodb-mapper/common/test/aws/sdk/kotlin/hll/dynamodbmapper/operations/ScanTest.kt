@@ -13,7 +13,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.values.smithytypes.InstantValueConverter
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.time.Instant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,7 +23,7 @@ import kotlin.test.assertEquals
 
 class ScanTest : DdbLocalTest() {
     companion object {
-        private const val TABLE_NAME = "scan-test"
+        private val TABLE_NAME = "scan-test-$testRunId"
 
         private data class Product(
             var id: Int = 0,
@@ -45,8 +44,7 @@ class ScanTest : DdbLocalTest() {
         private val schema = ItemSchema(converter, KeySpec.int("id"))
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(
             name = TABLE_NAME,
             schema = schema,
