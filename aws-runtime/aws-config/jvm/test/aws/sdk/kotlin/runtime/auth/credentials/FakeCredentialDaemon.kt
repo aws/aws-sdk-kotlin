@@ -5,14 +5,13 @@
 
 package aws.sdk.kotlin.runtime.auth.credentials
 
+import aws.sdk.kotlin.runtime.auth.credentials.internal.Jdk16UnixDomainSockets
 import org.junit.jupiter.api.Assumptions
 import java.io.ByteArrayOutputStream
 import java.io.Closeable
 import java.io.File
 import java.io.IOException
-import java.net.ProtocolFamily
 import java.net.SocketAddress
-import java.net.StandardProtocolFamily
 import java.nio.ByteBuffer
 import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
@@ -23,9 +22,9 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 /**
- * A fake credential daemon on a temporary Unix domain socket. JDK 16+ socket APIs are used through reflection
- * because test code is compiled against the Java 8 API. Tests that create one are skipped on JDKs without
- * Unix domain socket support.
+ * A fake credential daemon on a temporary Unix domain socket. Test code is compiled against the JDK 17 API, and the
+ * Java 16 socket calls live in [Jdk16UnixDomainSockets] and [Jdk16TestSockets] so that this class still loads on
+ * older JVMs. Tests that create one are skipped on JVMs without Unix domain socket support.
  *
  * @param socketPath where to bind, a fresh temporary path by default
  * @param accept whether to accept connections at all; `false` leaves them in the backlog
@@ -54,10 +53,9 @@ class FakeCredentialDaemon(
     companion object {
         val unixSocketsSupported: Boolean by lazy {
             try {
-                val server = openServerChannel()
-                server.close()
+                Jdk16UnixDomainSockets.ensureLinked()
                 true
-            } catch (_: Throwable) {
+            } catch (_: LinkageError) {
                 false
             }
         }
@@ -68,13 +66,11 @@ class FakeCredentialDaemon(
 
         fun tempDir(): File = Files.createTempDirectory(Paths.get("/tmp"), "cd").toFile().apply { deleteOnExit() }
 
-        fun address(path: String): SocketAddress = Class.forName("java.net.UnixDomainSocketAddress").getMethod("of", String::class.java).invoke(null, path) as SocketAddress
+        fun address(path: String): SocketAddress = Jdk16UnixDomainSockets.address(path)
 
-        private fun unixFamily(): ProtocolFamily = StandardProtocolFamily.valueOf("UNIX")
+        fun openServerChannel(): ServerSocketChannel = Jdk16TestSockets.openServerChannel()
 
-        fun openServerChannel(): ServerSocketChannel = ServerSocketChannel::class.java.getMethod("open", ProtocolFamily::class.java).invoke(null, unixFamily()) as ServerSocketChannel
-
-        fun openClientChannel(): SocketChannel = SocketChannel::class.java.getMethod("open", ProtocolFamily::class.java).invoke(null, unixFamily()) as SocketChannel
+        fun openClientChannel(): SocketChannel = Jdk16UnixDomainSockets.openChannel()
 
         fun sessionReply(
             accessKeyId: String = "ASIADAEMON",
@@ -196,4 +192,11 @@ class FakeCredentialDaemon(
         server.close()
         File(path).delete()
     }
+}
+
+/**
+ * Java 16 socket calls only the tests need. Kept out of [FakeCredentialDaemon] so that class loads on older JVMs.
+ */
+private object Jdk16TestSockets {
+    fun openServerChannel(): ServerSocketChannel = ServerSocketChannel.open(java.net.StandardProtocolFamily.UNIX)
 }

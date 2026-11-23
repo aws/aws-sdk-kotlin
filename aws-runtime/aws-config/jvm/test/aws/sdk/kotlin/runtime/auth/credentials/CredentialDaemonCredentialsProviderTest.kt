@@ -6,8 +6,10 @@
 package aws.sdk.kotlin.runtime.auth.credentials
 
 import aws.sdk.kotlin.runtime.auth.credentials.FakeCredentialDaemon.Action
+import aws.sdk.kotlin.runtime.auth.credentials.internal.Jdk16UnixDomainSockets
 import aws.sdk.kotlin.runtime.auth.credentials.internal.JvmUnixSockets
 import aws.sdk.kotlin.runtime.auth.credentials.internal.SocketPathEntry
+import aws.sdk.kotlin.runtime.auth.credentials.internal.UnixSocketApi
 import aws.sdk.kotlin.runtime.auth.credentials.internal.credentialDaemonRequest
 import aws.sdk.kotlin.runtime.auth.credentials.internal.exchange
 import aws.sdk.kotlin.runtime.auth.credentials.internal.socketPathEntry
@@ -27,6 +29,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.junit.jupiter.api.Assumptions
 import java.io.File
 import java.net.SocketAddress
+import java.nio.channels.SocketChannel
 import java.nio.file.Files
 import java.nio.file.InvalidPathException
 import java.nio.file.Paths
@@ -199,7 +202,7 @@ class CredentialDaemonCredentialsProviderTest {
             CredentialDaemonErrorCode.UNSUPPORTED_PLATFORM,
             CredentialDaemonCredentialsProvider("dev", platformProvider = fakePlatform(emptyMap())),
         )
-        assertTrue(ex.cause is ClassNotFoundException, "cause: ${ex.cause}")
+        assertTrue(ex.cause is LinkageError, "cause: ${ex.cause}")
     }
 
     @Test
@@ -366,7 +369,7 @@ class CredentialDaemonCredentialsProviderTest {
         )
 
         // JDK < 16: the Unix domain socket classes do not exist
-        val oldJdk = JvmUnixSockets(forName = { throw ClassNotFoundException(it) })
+        val oldJdk = JvmUnixSockets(link = { throw NoClassDefFoundError("java/net/UnixDomainSocketAddress") })
         val ex = assertFailsWith<CredentialDaemonException> {
             exchange(oldJdk, "/nonexistent", credentialDaemonRequest("dev", null, null), 1_000, 5_000)
         }
@@ -378,9 +381,9 @@ class CredentialDaemonCredentialsProviderTest {
     @Test
     fun testInvalidPath() = runTest {
         FakeCredentialDaemon.assumeSupported()
-        // `UnixDomainSocketAddress.of` stand-in that rejects every path; InvalidPathException is an
-        // IllegalArgumentException, which must not be mistaken for a missing JDK API
-        val sockets = JvmUnixSockets(forName = { if (it == "java.net.UnixDomainSocketAddress") RejectingAddress::class.java else Class.forName(it) })
+        // an API whose `address` rejects every path; InvalidPathException is an IllegalArgumentException, which must
+        // not be mistaken for a missing JDK API
+        val sockets = JvmUnixSockets(link = { RejectingAddressApi })
         val injected = assertFailsWith<CredentialDaemonException> {
             exchange(sockets, "/bad", credentialDaemonRequest("dev", null, null), 1_000, 5_000)
         }
@@ -444,9 +447,7 @@ class CredentialDaemonCredentialsProviderTest {
     }
 }
 
-class RejectingAddress {
-    companion object {
-        @JvmStatic
-        fun of(path: String): SocketAddress = throw InvalidPathException(path, "rejected for test")
-    }
+private object RejectingAddressApi : UnixSocketApi {
+    override fun address(path: String): SocketAddress = throw InvalidPathException(path, "rejected for test")
+    override fun openChannel(): SocketChannel = Jdk16UnixDomainSockets.openChannel()
 }

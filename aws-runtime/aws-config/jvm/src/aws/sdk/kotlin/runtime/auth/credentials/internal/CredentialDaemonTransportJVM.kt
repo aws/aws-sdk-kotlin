@@ -16,11 +16,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Method
-import java.net.ProtocolFamily
 import java.net.SocketAddress
-import java.net.StandardProtocolFamily
 import java.nio.ByteBuffer
 import java.nio.channels.SocketChannel
 import java.nio.file.Files
@@ -33,67 +29,78 @@ import kotlin.time.Duration.Companion.milliseconds
 private const val UNSUPPORTED_JDK_MESSAGE = "Unix domain sockets require Java 16 or newer"
 
 /**
- * Access to JDK 16+ Unix domain socket APIs through reflection, so this code still compiles for and runs on
- * older JDKs. Reflection handles are loaded once per instance; socket paths are never cached.
- *
- * @param forName the function used to load classes by name, replaceable in tests
+ * The Unix domain socket operations the transport needs, replaceable in tests
  */
-internal class JvmUnixSockets(private val forName: (String) -> Class<*> = { Class.forName(it) }) {
-    private class Handles(val addressOf: Method, val family: ProtocolFamily, val openChannel: Method)
+internal interface UnixSocketApi {
+    /**
+     * Create a Unix domain socket address for [path]
+     */
+    fun address(path: String): SocketAddress
 
-    private val handles: Result<Handles> by lazy {
+    /**
+     * Open an unconnected Unix domain socket channel
+     */
+    fun openChannel(): SocketChannel
+}
+
+/**
+ * [UnixSocketApi] backed by the Java 16 API. This adapter references [Jdk16UnixDomainSockets] only inside its method
+ * bodies, so it loads on any JVM; its methods must only be called once [Jdk16UnixDomainSockets.ensureLinked] succeeded.
+ */
+private object Jdk16UnixSocketApi : UnixSocketApi {
+    override fun address(path: String): SocketAddress = Jdk16UnixDomainSockets.address(path)
+    override fun openChannel(): SocketChannel = Jdk16UnixDomainSockets.openChannel()
+}
+
+/**
+ * Unix domain sockets for the credential daemon transport.
+ *
+ * The Java 16 API is checked once per instance by calling [link]. A [LinkageError] from it means the running JVM is
+ * older than 16, and every call then raises an unsupported-platform error. Socket paths are never cached.
+ *
+ * @param link resolves the Java 16 API, replaceable in tests
+ */
+internal class JvmUnixSockets(
+    private val link: () -> UnixSocketApi = {
+        Jdk16UnixDomainSockets.ensureLinked()
+        Jdk16UnixSocketApi
+    },
+) {
+    private val api: Result<UnixSocketApi> by lazy {
         try {
-            val addressOf = forName("java.net.UnixDomainSocketAddress").getMethod("of", String::class.java)
-            val family = StandardProtocolFamily.valueOf("UNIX")
-            val openChannel = SocketChannel::class.java.getMethod("open", ProtocolFamily::class.java)
-            Result.success(Handles(addressOf, family, openChannel))
-        } catch (ex: ReflectiveOperationException) {
-            Result.failure(ex)
-        } catch (ex: IllegalArgumentException) {
-            Result.failure(ex)
-        } catch (ex: UnsupportedOperationException) {
+            Result.success(link())
+        } catch (ex: LinkageError) {
             Result.failure(ex)
         }
     }
 
     /**
-     * Throw an unsupported-platform error if this JDK has no Unix domain socket APIs
+     * Throw an unsupported-platform error if this JVM has no Unix domain socket API
      */
     fun checkSupported() {
-        loadHandles()
+        api()
     }
 
-    private fun loadHandles(): Handles = handles.getOrElse { throw credentialDaemonUnsupportedPlatform(UNSUPPORTED_JDK_MESSAGE, it) }
+    private fun api(): UnixSocketApi = api.getOrElse { throw credentialDaemonUnsupportedPlatform(UNSUPPORTED_JDK_MESSAGE, it) }
 
     /**
      * Create a Unix domain socket address for [path]
      */
-    fun address(path: String): SocketAddress {
-        val h = loadHandles()
-        return try {
-            h.addressOf.invoke(null, path) as SocketAddress
-        } catch (ex: InvocationTargetException) {
-            when (val cause = ex.cause) {
-                is InvalidPathException -> throw credentialDaemonNotRunning(path, "invalid socket path: ${cause.message}", cause)
-                else -> throw credentialDaemonNotRunning(path, cause?.message, cause ?: ex)
-            }
-        }
+    fun address(path: String): SocketAddress = try {
+        api().address(path)
+    } catch (ex: InvalidPathException) {
+        throw credentialDaemonNotRunning(path, "invalid socket path: ${ex.message}", ex)
     }
 
     /**
      * Open an unconnected Unix domain socket channel, used to connect to [path]
      */
-    fun open(path: String): SocketChannel {
-        val h = loadHandles()
-        return try {
-            h.openChannel.invoke(null, h.family) as SocketChannel
-        } catch (ex: InvocationTargetException) {
-            when (val cause = ex.cause) {
-                is UnsupportedOperationException -> throw credentialDaemonUnsupportedPlatform(UNSUPPORTED_JDK_MESSAGE, cause)
-                is IOException -> throw credentialDaemonNotRunning(path, cause.message, cause)
-                else -> throw cause ?: ex
-            }
-        }
+    fun open(path: String): SocketChannel = try {
+        api().openChannel()
+    } catch (ex: UnsupportedOperationException) {
+        throw credentialDaemonUnsupportedPlatform(UNSUPPORTED_JDK_MESSAGE, ex)
+    } catch (ex: IOException) {
+        throw credentialDaemonNotRunning(path, ex.message, ex)
     }
 
     companion object {

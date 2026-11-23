@@ -70,6 +70,42 @@ kotlin {
     }
 }
 
+/*
+ * Unix domain sockets, used to reach the credential daemon, need the Java 16 API. The rest of this module compiles
+ * against the Java 8 API (`-Xjdk-release=1.8`, see aws-runtime/build.gradle.kts), where those classes don't exist.
+ *
+ * The `jdk16` compilation holds only the code that calls the Java 16 API directly. It is compiled against a JDK 17
+ * class library but still emits Java 8 bytecode, and its classes are packaged into the JVM jar. JVM code checks that
+ * the running JVM has the API before it touches those classes (see CredentialDaemonTransportJVM.kt).
+ */
+val jdk17Compiler = javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(17)) }
+
+fun org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile.compileAgainstJdk17Api() {
+    kotlinJavaToolchain.toolchain.use(jdk17Compiler)
+    compilerOptions {
+        freeCompilerArgs.set(freeCompilerArgs.get().filterNot { it.startsWith("-Xjdk-release") })
+    }
+}
+
+kotlin {
+    jvm {
+        val main by compilations.getting
+        val test by compilations.getting
+        val jdk16 by compilations.creating {
+            defaultSourceSet.kotlin.srcDir("jvmJdk16/src")
+        }
+        main.associateWith(jdk16)
+        tasks.named<Jar>(artifactsTaskName) { from(jdk16.output.allOutputs) }
+
+        // tests use the Java 16 API directly for the fake daemon's server socket; test code isn't published
+        listOf(jdk16, test).forEach { compilation ->
+            compilation.compileTaskProvider.configure {
+                (this as org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile).compileAgainstJdk17Api()
+            }
+        }
+    }
+}
+
 fun awsModelFile(name: String): String = rootProject.file("codegen/sdk/aws-models/$name").relativeTo(project.layout.buildDirectory.get().asFile).toString()
 
 val codegen by configurations.getting
