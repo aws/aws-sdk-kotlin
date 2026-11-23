@@ -108,4 +108,19 @@ internal sealed class LeafProvider {
      * A provider that invokes a command and reads its standard output to parse credentials.
      */
     data class Process(val command: String) : LeafProvider()
+
+    /**
+     * A provider that gets credentials from the local credential daemon
+     *
+     * Example
+     * ```ini
+     * [profile D]
+     * daemon_credential = my-credential
+     * ```
+     */
+    data class CredentialDaemon(
+        val credentialName: String,
+        val accountId: String? = null,
+        val roleName: String? = null,
+    ) : LeafProvider()
 }
