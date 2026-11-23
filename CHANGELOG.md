@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.9.44] - 11/23/2026
+
+### Features
+* (**cloudfront**) Launch CloudFront in AWS European Sovereign Cloud.
+* (**cloudfrontkeyvaluestore**) This release adds support for KVSHQ API in the AWS European Sovereign Cloud. Requests for key value stores in the aws-eusc partition are now routed to account-based endpoints under cloudfront-kvs.global.api.amazonwebservices.eu.
+* (**cloudwatchomni**) Release of the new integration type in CreateIntegration API - Used to add Microsoft Azure resources to the Amazon CloudWatch Omni context graph through an AWS Config connector for your Azure tenant.
+* (**fsx**) Adds support for new FSx for NetApp ONTAP resources
+
+### Fixes
+* (**dynamodb-mapper**) Fix DynamoDB Mapper schema generation for `internal` and nested annotated classes. The schema generator's default `visibility` is now `MATCH_SOURCE`, which generates `internal` code for any annotated class whose generated signatures expose a non-public type. Previously all generated code was `public` by default. Set `visibility = Visibility.PUBLIC` to restore the previous behavior.
+
 ## [1.9.43] - 11/21/2026
 
 ### Features
