@@ -22,6 +22,12 @@
                     "traits": {
                         "smithy.api#enumValue": "ARM_64"
                     }
+                },
+                "X86_64": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "X86_64"
+                    }
                 }
             }
         },
@@ -105,6 +111,12 @@
                     "traits": {
                         "smithy.api#enumValue": "GRAVITON"
                     }
+                },
+                "INTEL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INTEL"
+                    }
                 }
             }
         },
@@ -174,7 +186,8 @@
             "traits": {
                 "smithy.api#documentation": "<p>The request could not be completed due to a conflict with the current state of the resource.</p>",
                 "smithy.api#error": "client",
-                "smithy.api#httpError": 409
+                "smithy.api#httpError": 409,
+                "smithy.api#retryable": {}
             }
         },
         "com.amazonaws.lambdamicrovms#CpuConfiguration": {
@@ -389,7 +402,7 @@
                 "egressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at runtime.</p>",
+                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at image build time.</p>",
                         "smithy.api#length": {
                             "max": 1
                         }
@@ -420,6 +433,12 @@
                     "target": "com.amazonaws.lambdamicrovms#EnvironmentVariableMap",
                     "traits": {
                         "smithy.api#documentation": "<p>Environment variables set in the MicroVM runtime environment.</p>"
+                    }
+                },
+                "kmsKeyIdentifier": {
+                    "target": "com.amazonaws.lambdamicrovms#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. You must have permission to use the key. Specify the key in one of the following formats:</p> <ul> <li> <p>Key ARN</p> </li> <li> <p>Alias ARN</p> </li> </ul> <p>If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
                     }
                 },
                 "name": {
@@ -536,7 +555,7 @@
                 "egressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at runtime.</p>",
+                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at image build time.</p>",
                         "smithy.api#length": {
                             "max": 1
                         }
@@ -567,6 +586,12 @@
                     "target": "com.amazonaws.lambdamicrovms#EnvironmentVariableMap",
                     "traits": {
                         "smithy.api#documentation": "<p>Environment variables set in the MicroVM runtime environment.</p>"
+                    }
+                },
+                "kmsKeyIdentifier": {
+                    "target": "com.amazonaws.lambdamicrovms#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
                     }
                 },
                 "tags": {
@@ -872,7 +897,7 @@
             },
             "traits": {
                 "smithy.api#length": {
-                    "max": 50
+                    "max": 100
                 }
             }
         },
@@ -1300,7 +1325,7 @@
                 "egressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at runtime.</p>",
+                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at image build time.</p>",
                         "smithy.api#length": {
                             "max": 1
                         }
@@ -1331,6 +1356,12 @@
                     "target": "com.amazonaws.lambdamicrovms#EnvironmentVariableMap",
                     "traits": {
                         "smithy.api#documentation": "<p>Environment variables set in the MicroVM runtime environment.</p>"
+                    }
+                },
+                "kmsKeyIdentifier": {
+                    "target": "com.amazonaws.lambdamicrovms#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
                     }
                 },
                 "imageArn": {
@@ -1487,6 +1518,12 @@
                         "smithy.api#documentation": "<p>The reason for why the MicroVM is in the current state.</p>"
                     }
                 },
+                "kmsKeyIdentifier": {
+                    "target": "com.amazonaws.lambdamicrovms#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts your MicroVM configuration at rest. If you don't specify a key, your MicroVM uses an Amazon Web Services owned key.</p>"
+                    }
+                },
                 "ingressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
@@ -1496,7 +1533,7 @@
                 "egressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of egress network connectors configured for the MicroVM.</p>"
+                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
                     }
                 }
             },
@@ -1654,6 +1691,17 @@
                 "smithy.api#documentation": "<p>One of the parameters in the request is not valid.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 400
+            }
+        },
+        "com.amazonaws.lambdamicrovms#KmsKeyIdentifier": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "An identifier for a KMS key: a key ARN, alias ARN, alias name, or key ID.",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^(arn:aws[a-z-]*:kms:[a-z0-9-]+:[0-9]{12}:(key|alias)/[a-zA-Z0-9:/_-]+|alias/[a-zA-Z0-9:/_-]+|[a-zA-Z0-9-]+)$"
             }
         },
         "com.amazonaws.lambdamicrovms#LambdaMicrovms": {
@@ -3315,6 +3363,12 @@
                         "smithy.api#documentation": "<p>The lifecycle status of the managed MicroVM image version. Valid values: AVAILABLE (the version is available for use) or DEPRECATED (the version is deprecated; do not use it for new MicroVM images).</p>"
                     }
                 },
+                "supportedCpuConfigurations": {
+                    "target": "com.amazonaws.lambdamicrovms#CpuConfigurationList",
+                    "traits": {
+                        "smithy.api#documentation": "CPU configurations supported by this managed base image version."
+                    }
+                },
                 "createdAt": {
                     "target": "smithy.api#Timestamp",
                     "traits": {
@@ -3354,6 +3408,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The version is deprecated. Do not use this version for new MicroVM images. Existing MicroVM images that use this version will continue to function.</p>",
                         "smithy.api#enumValue": "DEPRECATED"
+                    }
+                },
+                "RECALLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RECALLED"
                     }
                 }
             },
@@ -3914,7 +3974,7 @@
                 "egressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at runtime.</p>",
+                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at image build time.</p>",
                         "smithy.api#length": {
                             "max": 1
                         }
@@ -3945,6 +4005,12 @@
                     "target": "com.amazonaws.lambdamicrovms#EnvironmentVariableMap",
                     "traits": {
                         "smithy.api#documentation": "<p>Environment variables set in the MicroVM runtime environment.</p>"
+                    }
+                },
+                "kmsKeyIdentifier": {
+                    "target": "com.amazonaws.lambdamicrovms#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
                     }
                 },
                 "imageArn": {
@@ -4436,7 +4502,7 @@
                 "egressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of egress network connectors to configure for the MicroVM.</p>"
+                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
                     }
                 },
                 "imageIdentifier": {
@@ -4468,6 +4534,12 @@
                     "target": "com.amazonaws.lambdamicrovms#Logging",
                     "traits": {
                         "smithy.api#documentation": "<p>The logging configuration for this MicroVM instance. Specify {\"cloudWatch\": {\"logGroup\": \"...\"}} to stream application logs to a custom CloudWatch log group, or {\"disabled\": {}} to turn off logging.</p>"
+                    }
+                },
+                "kmsKeyIdentifier": {
+                    "target": "com.amazonaws.lambdamicrovms#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts your MicroVM configuration at rest. To use this operation, you must have permission to use the key. Specify the key ARN or the alias ARN.</p> <p>If you don't specify a key, your MicroVM uses an Amazon Web Services owned key.</p>"
                     }
                 },
                 "runHookPayload": {
@@ -4582,6 +4654,12 @@
                         "smithy.api#documentation": "<p>The reason for why the MicroVM is in the current state.</p>"
                     }
                 },
+                "kmsKeyIdentifier": {
+                    "target": "com.amazonaws.lambdamicrovms#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts your MicroVM configuration at rest. If you don't specify a key, your MicroVM uses an Amazon Web Services owned key.</p>"
+                    }
+                },
                 "ingressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
@@ -4591,7 +4669,7 @@
                 "egressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of egress network connectors configured for the MicroVM.</p>"
+                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at runtime.</p>"
                     }
                 }
             },
@@ -5162,7 +5240,7 @@
                 "egressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at runtime.</p>",
+                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at image build time.</p>",
                         "smithy.api#length": {
                             "max": 1
                         }
@@ -5193,6 +5271,12 @@
                     "target": "com.amazonaws.lambdamicrovms#EnvironmentVariableMap",
                     "traits": {
                         "smithy.api#documentation": "<p>Environment variables set in the MicroVM runtime environment.</p>"
+                    }
+                },
+                "kmsKeyIdentifier": {
+                    "target": "com.amazonaws.lambdamicrovms#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. You must have permission to use the key. Specify the key in one of the following formats:</p> <ul> <li> <p>Key ARN</p> </li> <li> <p>Alias ARN</p> </li> </ul> <p>If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
                     }
                 },
                 "imageIdentifier": {
@@ -5304,7 +5388,7 @@
                 "egressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at runtime.</p>",
+                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at image build time.</p>",
                         "smithy.api#length": {
                             "max": 1
                         }
@@ -5335,6 +5419,12 @@
                     "target": "com.amazonaws.lambdamicrovms#EnvironmentVariableMap",
                     "traits": {
                         "smithy.api#documentation": "<p>Environment variables set in the MicroVM runtime environment.</p>"
+                    }
+                },
+                "kmsKeyIdentifier": {
+                    "target": "com.amazonaws.lambdamicrovms#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
                     }
                 },
                 "updatedAt": {
@@ -5473,7 +5563,7 @@
                 "egressNetworkConnectors": {
                     "target": "com.amazonaws.lambdamicrovms#NetworkConnectorList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at runtime.</p>",
+                        "smithy.api#documentation": "<p>The list of egress network connectors available to the MicroVM at image build time.</p>",
                         "smithy.api#length": {
                             "max": 1
                         }
@@ -5504,6 +5594,12 @@
                     "target": "com.amazonaws.lambdamicrovms#EnvironmentVariableMap",
                     "traits": {
                         "smithy.api#documentation": "<p>Environment variables set in the MicroVM runtime environment.</p>"
+                    }
+                },
+                "kmsKeyIdentifier": {
+                    "target": "com.amazonaws.lambdamicrovms#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
                     }
                 },
                 "imageArn": {

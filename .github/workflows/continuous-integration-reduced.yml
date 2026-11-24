@@ -47,6 +47,20 @@ jobs:
       - name: Checkout SDK
         uses: actions/checkout@v4
 
+      - name: Install test JDK
+        id: test-jdk
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: ${{ matrix.java-version }}
+
+      - name: Configure JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: 17
+          cache: 'gradle'
+
       - name: Configure Gradle (SDK)
         uses: aws/aws-kotlin-repo-tools/.github/actions/configure-gradle@main
 
@@ -87,7 +101,10 @@ jobs:
       - name: Test SDK on JVM (with dependency on reduced Smithy Kotlin)
         shell: bash
         run: |
-          ./gradlew -Ptest.java.version=${{ matrix.java-version }} jvmTest --stacktrace
+          # Gradle doesn't search setup-java's tool cache for toolchains, so point it at the test JDK
+          ./gradlew \
+            -Porg.gradle.java.installations.paths=${{ steps.test-jdk.outputs.path }} \
+            -Ptest.java.version=${{ matrix.java-version }} jvmTest --stacktrace
 
       - name: Calculate duration
         id: end

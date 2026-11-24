@@ -19,4 +19,10 @@ class BigDecimalSetValueConverterTest : ValueConvertersTest() {
         setOf(BigDecimal("19.90"), BigDecimal("100")) inDdbIs
             AttributeValue.Ns(listOf("19.90", "100")) whenGoing Direction.TO_ATTRIBUTE_VALUE
     }
+
+    @Test
+    fun testLargeScaleUsesScientificNotation() = given(BigDecimalSetValueConverter) {
+        setOf(BigDecimal("1E-20000000")) inDdbIs AttributeValue.Ns(listOf("1E-20000000")) whenGoing
+            Direction.TO_ATTRIBUTE_VALUE
+    }
 }

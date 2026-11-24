@@ -25,6 +25,12 @@
             "brazilName": "AwsSdkKotlinApiGateway"
         },
         {
+            "sdkId": "APIPortal",
+            "namespace": "aws.sdk.kotlin.services.apiportal",
+            "artifactName": "apiportal",
+            "brazilName": "AwsSdkKotlinApiportal"
+        },
+        {
             "sdkId": "ARC Region switch",
             "namespace": "aws.sdk.kotlin.services.arcregionswitch",
             "artifactName": "arcregionswitch",
@@ -35,6 +41,12 @@
             "namespace": "aws.sdk.kotlin.services.arczonalshift",
             "artifactName": "arczonalshift",
             "brazilName": "AwsSdkKotlinArcZonalShift"
+        },
+        {
+            "sdkId": "Abuse Signal",
+            "namespace": "aws.sdk.kotlin.services.abusesignal",
+            "artifactName": "abusesignal",
+            "brazilName": "AwsSdkKotlinAbuseSignal"
         },
         {
             "sdkId": "AccessAnalyzer",
@@ -53,6 +65,18 @@
             "namespace": "aws.sdk.kotlin.services.accountaccess",
             "artifactName": "accountaccess",
             "brazilName": "AwsSdkKotlinAccountAccess"
+        },
+        {
+            "sdkId": "Account Access Runtime",
+            "namespace": "aws.sdk.kotlin.services.accountaccessruntime",
+            "artifactName": "accountaccessruntime",
+            "brazilName": "AwsSdkKotlinAccountAccessRuntime"
+        },
+        {
+            "sdkId": "Agent Discovery",
+            "namespace": "aws.sdk.kotlin.services.agentdiscovery",
+            "artifactName": "agentdiscovery",
+            "brazilName": "AwsSdkKotlinAgentDiscovery"
         },
         {
             "sdkId": "Agent Registry",
@@ -617,6 +641,12 @@
             "namespace": "aws.sdk.kotlin.services.connectparticipant",
             "artifactName": "connectparticipant",
             "brazilName": "AwsSdkKotlinConnectparticipant"
+        },
+        {
+            "sdkId": "ConnectScheduling",
+            "namespace": "aws.sdk.kotlin.services.connectscheduling",
+            "artifactName": "connectscheduling",
+            "brazilName": "AwsSdkKotlinConnectscheduling"
         },
         {
             "sdkId": "Continuum",
@@ -1615,6 +1645,12 @@
             "brazilName": "AwsSdkKotlinOpensearch"
         },
         {
+            "sdkId": "OpenSearchMemory",
+            "namespace": "aws.sdk.kotlin.services.opensearchmemory",
+            "artifactName": "opensearchmemory",
+            "brazilName": "AwsSdkKotlinOpensearchmemory"
+        },
+        {
             "sdkId": "OpenSearchServerless",
             "namespace": "aws.sdk.kotlin.services.opensearchserverless",
             "artifactName": "opensearchserverless",
@@ -1663,6 +1699,12 @@
             "brazilName": "AwsSdkKotlinPartnercentralChannel"
         },
         {
+            "sdkId": "PartnerCentral Marketing",
+            "namespace": "aws.sdk.kotlin.services.partnercentralmarketing",
+            "artifactName": "partnercentralmarketing",
+            "brazilName": "AwsSdkKotlinPartnercentralMarketing"
+        },
+        {
             "sdkId": "PartnerCentral Revenue Measurement",
             "namespace": "aws.sdk.kotlin.services.partnercentralrevenuemeasurement",
             "artifactName": "partnercentralrevenuemeasurement",
@@ -1685,6 +1727,12 @@
             "namespace": "aws.sdk.kotlin.services.paymentcryptographydata",
             "artifactName": "paymentcryptographydata",
             "brazilName": "AwsSdkKotlinPaymentCryptographyData"
+        },
+        {
+            "sdkId": "Payments",
+            "namespace": "aws.sdk.kotlin.services.payments",
+            "artifactName": "payments",
+            "brazilName": "AwsSdkKotlinPayments"
         },
         {
             "sdkId": "Pca Connector Ad",
@@ -2065,10 +2113,22 @@
             "brazilName": "AwsSdkKotlinSagemakerFeaturestoreRuntime"
         },
         {
+            "sdkId": "SageMaker Gateway Runtime",
+            "namespace": "aws.sdk.kotlin.services.sagemakergatewayruntime",
+            "artifactName": "sagemakergatewayruntime",
+            "brazilName": "AwsSdkKotlinSagemakerGatewayRuntime"
+        },
+        {
             "sdkId": "SageMaker Geospatial",
             "namespace": "aws.sdk.kotlin.services.sagemakergeospatial",
             "artifactName": "sagemakergeospatial",
             "brazilName": "AwsSdkKotlinSagemakerGeospatial"
+        },
+        {
+            "sdkId": "SageMaker Inference Router Runtime",
+            "namespace": "aws.sdk.kotlin.services.sagemakerinferencerouterruntime",
+            "artifactName": "sagemakerinferencerouterruntime",
+            "brazilName": "AwsSdkKotlinSagemakerInferenceRouterRuntime"
         },
         {
             "sdkId": "SageMaker Metrics",

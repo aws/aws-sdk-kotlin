@@ -19,7 +19,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.putItem
 import aws.smithy.kotlin.runtime.collections.attributesOf
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import aws.smithy.kotlin.runtime.time.Instant
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
@@ -100,8 +99,7 @@ class HeterogeneousItemTest : DdbLocalTest() {
         )
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(TABLE_NAME, schema)
     }
 

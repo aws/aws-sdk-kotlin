@@ -10,7 +10,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.model.itemOf
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.test.runTest
@@ -20,7 +19,7 @@ import kotlin.test.assertTrue
 
 class PaginatedScanTest : DdbLocalTest() {
     companion object {
-        private const val TABLE_NAME = "paginated-scan-test"
+        private val TABLE_NAME = "paginated-scan-test-$testRunId"
 
         private fun rankName(rank: Int) = when (rank) {
             2, 3, 4, 5, 6, 7, 8, 9, 10 -> rank.toString()
@@ -59,8 +58,7 @@ class PaginatedScanTest : DdbLocalTest() {
         }.toSet()
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(
             name = TABLE_NAME,
             schema = schema,

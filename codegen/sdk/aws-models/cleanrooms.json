@@ -12922,6 +12922,12 @@
             "members": {
                 "queryComputeConfiguration": {
                     "target": "com.amazonaws.cleanrooms#WorkerComputeConfiguration"
+                },
+                "jobComputeConfiguration": {
+                    "target": "com.amazonaws.cleanrooms#ProtectedJobComputeConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the compute configuration for the PySpark job that populates the intermediate table.</p>"
+                    }
                 }
             },
             "traits": {
@@ -17056,6 +17062,12 @@
                     "traits": {
                         "smithy.api#enumValue": "QUERY"
                     }
+                },
+                "JOB": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "JOB"
+                    }
                 }
             }
         },
@@ -17140,10 +17152,31 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The SQL parameters for the population analysis, including the query string or analysis template ARN.</p>"
                     }
+                },
+                "jobParameters": {
+                    "target": "com.amazonaws.cleanrooms#PopulationAnalysisJobParameters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the PySpark job parameters for the population analysis. Use <code>jobParameters</code> instead of <code>sqlParameters</code> when you populate the intermediate table with results from a PySpark job.</p>"
+                    }
                 }
             },
             "traits": {
                 "smithy.api#documentation": "<p>Contains the configuration that defines the analysis used to populate an intermediate table.</p>"
+            }
+        },
+        "com.amazonaws.cleanrooms#PopulationAnalysisJobParameters": {
+            "type": "structure",
+            "members": {
+                "analysisTemplateArn": {
+                    "target": "com.amazonaws.cleanrooms#AnalysisTemplateArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the ARN of the PySpark analysis template that populates the intermediate table. Provide this ARN in <code>jobParameters</code> when you populate the intermediate table with results from a PySpark job.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the PySpark job parameters used to populate an intermediate table, including the ARN of the analysis template that defines the job. Use these parameters instead of SQL parameters when the analysis you use to populate the intermediate table is a PySpark analysis template.</p>"
             }
         },
         "com.amazonaws.cleanrooms#PopulationAnalysisSqlParameters": {
@@ -17839,20 +17872,26 @@
                 "message": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p> The message for the protected job error.</p>",
+                        "smithy.api#documentation": "<p>A description of why the protected job failed.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "code": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p> The error code for the protected job.</p>",
+                        "smithy.api#documentation": "<p>A code that identifies the category of the failure. Valid values are:</p> <ul> <li> <p> <code>MALFORMED_SCRIPT</code> – The job script or its execution environment is not valid (code, imports, entry point, virtual environment, or dependencies).</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> – A referenced resource doesn't exist.</p> </li> <li> <p> <code>INVALID_RESOURCE</code> – A referenced resource exists, but you can't use it because its configuration, state, or data is not valid.</p> </li> <li> <p> <code>RESOURCE_ACCESS_DENIED</code> – A required permission is missing for a data source or resource.</p> </li> <li> <p> <code>INSUFFICIENT_COMPUTE</code> – The job exceeded the available compute (memory, disk, or time).</p> </li> <li> <p> <code>TRANSIENT_ERROR</code> – A temporary condition caused the failure, such as throttling or a network interruption.</p> </li> <li> <p> <code>INTERNAL_ERROR</code> – Clean Rooms encountered an unexpected error. If the error persists, contact AWS Support.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code> – The failure couldn't be classified.</p> </li> </ul> <p>For more information about error codes, see <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/error-codes.html\">https://docs.aws.amazon.com/clean-rooms/latest/userguide/error-codes.html</a> in the Clean Rooms User Guide.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "retry": {
+                    "target": "com.amazonaws.cleanrooms#RetryInfo",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains information about whether running the same protected job again might succeed.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The protected job error.</p>"
+                "smithy.api#documentation": "<p>Details of the error that caused the protected job to fail.</p>"
             }
         },
         "com.amazonaws.cleanrooms#ProtectedJobIdentifier": {
@@ -17948,6 +17987,12 @@
                     "target": "com.amazonaws.cleanrooms#ProtectedJobMemberOutputConfigurationOutput",
                     "traits": {
                         "smithy.api#documentation": "<p> The member output configuration for a protected job.</p>"
+                    }
+                },
+                "intermediateTable": {
+                    "target": "com.amazonaws.cleanrooms#IntermediateTableOutputConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the intermediate table that the protected job populated, identified by its ID, Amazon Resource Name (ARN), and name. This field is present when the protected job was triggered by a <code>PopulateIntermediateTable</code> operation.</p>"
                     }
                 }
             },
@@ -18255,6 +18300,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The account ID of the member that pays for the job compute costs.</p>"
                     }
+                },
+                "intermediateTableConfiguration": {
+                    "target": "com.amazonaws.cleanrooms#IntermediateTableOutputConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The intermediate table that the protected job populated. This field is present when the protected job was triggered by a <code>PopulateIntermediateTable</code> operation.</p>"
+                    }
                 }
             },
             "traits": {
@@ -18480,20 +18531,26 @@
                 "message": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>A description of why the query failed.</p>",
+                        "smithy.api#documentation": "<p>A description of why the protected query failed.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "code": {
                     "target": "smithy.api#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>An error code for the error.</p>",
+                        "smithy.api#documentation": "<p>A code that identifies the category of the failure. Valid values are:</p> <ul> <li> <p> <code>MALFORMED_QUERY</code> – The query is not valid (syntax, semantics, columns, or an unsupported operation).</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> – A referenced resource doesn't exist.</p> </li> <li> <p> <code>INVALID_RESOURCE</code> – A referenced resource exists, but you can't use it because its configuration, state, or data is not valid.</p> </li> <li> <p> <code>RESOURCE_ACCESS_DENIED</code> – A required permission is missing for a data source or resource.</p> </li> <li> <p> <code>INSUFFICIENT_COMPUTE</code> – The query exceeded the available compute (memory, disk, or time).</p> </li> <li> <p> <code>TRANSIENT_ERROR</code> – A temporary condition caused the failure, such as throttling or a network interruption.</p> </li> <li> <p> <code>INTERNAL_ERROR</code> – Clean Rooms encountered an unexpected error. If the error persists, contact AWS Support.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code> – The failure couldn't be classified.</p> </li> </ul> <p>For more information about error codes, see <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/error-codes.html\">https://docs.aws.amazon.com/clean-rooms/latest/userguide/error-codes.html</a> in the Clean Rooms User Guide.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "retry": {
+                    "target": "com.amazonaws.cleanrooms#RetryInfo",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains information about whether running the same protected query again might succeed.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Details of errors thrown by the protected query.</p>"
+                "smithy.api#documentation": "<p>Details of the error that caused the protected query to fail.</p>"
             }
         },
         "com.amazonaws.cleanrooms#ProtectedQueryIdentifier": {
@@ -19087,6 +19144,20 @@
             },
             "traits": {
                 "smithy.api#documentation": "File format of the returned data.\n"
+            }
+        },
+        "com.amazonaws.cleanrooms#RetryInfo": {
+            "type": "structure",
+            "members": {
+                "retryable": {
+                    "target": "smithy.api#Boolean",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether running the same request again might succeed. <code>true</code> means that the failure was transient. <code>false</code> means that running the same request again is not expected to succeed.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about whether running a failed protected query or protected job again might succeed.</p>"
             }
         },
         "com.amazonaws.cleanrooms#RoleArn": {

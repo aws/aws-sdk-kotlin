@@ -191,7 +191,7 @@
                     "FederatedUser"
                 ],
                 "aws.protocols#restJson1": {},
-                "smithy.api#documentation": "<fullname>Lambda</fullname> <p> <b>Overview</b> </p> <p>Lambda is a compute service that lets you run code without provisioning or managing servers. Lambda runs your code on a high-availability compute infrastructure and performs all of the administration of the compute resources, including server and operating system maintenance, capacity provisioning and automatic scaling, code monitoring and logging. With Lambda, you can run code for virtually any type of application or backend service. For more information about the Lambda service, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/welcome.html\">What is Lambda</a> in the <b>Lambda Developer Guide</b>.</p> <p>Lambda Event Functions, previously known as Lambda functions, run your code in response to events and API calls. Event Functions is a documentation name only. In this API, the Amazon Web Services SDKs, and the CLI, Event Functions are still called <i>functions</i>, for example in <code>CreateFunction</code> and <code>Invoke</code>. You don't need to change any code.</p> <p>The <i>Lambda API Reference</i> provides information about each of the API methods, including details about the parameters in each API request and response. </p> <p/> <p>You can use Software Development Kits (SDKs), Integrated Development Environment (IDE) Toolkits, and command line tools to access the API. For installation instructions, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>. </p> <p>For a list of Region-specific endpoints that Lambda supports, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/lambda-service.html\">Lambda endpoints and quotas </a> in the <i>Amazon Web Services General Reference.</i>. </p> <p>When making the API calls, you will need to authenticate your request by providing a signature. Lambda supports signature version 4. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 signing process</a> in the <i>Amazon Web Services General Reference.</i>. </p> <p> <b>CA certificates</b> </p> <p>Because Amazon Web Services SDKs use the CA certificates from your computer, changes to the certificates on the Amazon Web Services servers can cause connection failures when you attempt to use an SDK. You can prevent these failures by keeping your computer's CA certificates and operating system up-to-date. If you encounter this issue in a corporate environment and do not manage your own computer, you might need to ask an administrator to assist with the update process. The following list shows minimum operating system and Java versions:</p> <ul> <li> <p>Microsoft Windows versions that have updates from January 2005 or later installed contain at least one of the required CAs in their trust list. </p> </li> <li> <p>Mac OS X 10.4 with Java for Mac OS X 10.4 Release 5 (February 2007), Mac OS X 10.5 (October 2007), and later versions contain at least one of the required CAs in their trust list. </p> </li> <li> <p>Red Hat Enterprise Linux 5 (March 2007), 6, and 7 and CentOS 5, 6, and 7 all contain at least one of the required CAs in their default trusted CA list. </p> </li> <li> <p>Java 1.4.2_12 (May 2006), 5 Update 2 (March 2005), and all later versions, including Java 6 (December 2006), 7, and 8, contain at least one of the required CAs in their default trusted CA list. </p> </li> </ul> <p>When accessing the Lambda management console or Lambda API endpoints, whether through browsers or programmatically, you will need to ensure your client machines support any of the following CAs: </p> <ul> <li> <p>Amazon Root CA 1</p> </li> <li> <p>Starfield Services Root Certificate Authority - G2</p> </li> <li> <p>Starfield Class 2 Certification Authority</p> </li> </ul> <p>Root certificates from the first two authorities are available from <a href=\"https://www.amazontrust.com/repository/\">Amazon trust services</a>, but keeping your computer up-to-date is the more straightforward solution. To learn more about ACM-provided certificates, see <a href=\"http://aws.amazon.com/certificate-manager/faqs/#certificates\">Amazon Web Services Certificate Manager FAQs.</a> </p>",
+                "smithy.api#documentation": "<fullname>Lambda</fullname> <p> <b>Overview</b> </p> <p>Lambda is a compute service that lets you run code without provisioning or managing servers. Lambda runs your code on a high-availability compute infrastructure and performs all of the administration of the compute resources, including server and operating system maintenance, capacity provisioning and automatic scaling, code monitoring and logging. With Lambda, you can run code for virtually any type of application or backend service. For more information about the Lambda service, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/welcome.html\">What is Lambda</a> in the <b>Lambda Developer Guide</b>.</p> <p>Lambda Event Functions, previously known as Lambda functions, run your code in response to events and API calls. In the Lambda API, the Amazon Web Services SDKs, and the CLI, Event Functions are still called <i>functions</i>, for example in <code>CreateFunction</code> and <code>Invoke</code>. You don't need to change any existing code.</p> <p>The <i>Lambda API Reference</i> provides information about each of the API methods for Lambda Event Functions, including details about the parameters in each API request and response.</p> <p/> <p>You can use Software Development Kits (SDKs), Integrated Development Environment (IDE) Toolkits, and command line tools to access the API. For installation instructions, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>. </p> <p>For a list of Region-specific endpoints that Lambda supports, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/lambda-service.html\">Lambda endpoints and quotas </a> in the <i>Amazon Web Services General Reference.</i>. </p> <p>When making the API calls, you will need to authenticate your request by providing a signature. Lambda supports signature version 4. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 signing process</a> in the <i>Amazon Web Services General Reference.</i>. </p> <p> <b>CA certificates</b> </p> <p>Because Amazon Web Services SDKs use the CA certificates from your computer, changes to the certificates on the Amazon Web Services servers can cause connection failures when you attempt to use an SDK. You can prevent these failures by keeping your computer's CA certificates and operating system up-to-date. If you encounter this issue in a corporate environment and do not manage your own computer, you might need to ask an administrator to assist with the update process. The following list shows minimum operating system and Java versions:</p> <ul> <li> <p>Microsoft Windows versions that have updates from January 2005 or later installed contain at least one of the required CAs in their trust list. </p> </li> <li> <p>Mac OS X 10.4 with Java for Mac OS X 10.4 Release 5 (February 2007), Mac OS X 10.5 (October 2007), and later versions contain at least one of the required CAs in their trust list. </p> </li> <li> <p>Red Hat Enterprise Linux 5 (March 2007), 6, and 7 and CentOS 5, 6, and 7 all contain at least one of the required CAs in their default trusted CA list. </p> </li> <li> <p>Java 1.4.2_12 (May 2006), 5 Update 2 (March 2005), and all later versions, including Java 6 (December 2006), 7, and 8, contain at least one of the required CAs in their default trusted CA list. </p> </li> </ul> <p>When accessing the Lambda management console or Lambda API endpoints, whether through browsers or programmatically, you will need to ensure your client machines support any of the following CAs: </p> <ul> <li> <p>Amazon Root CA 1</p> </li> <li> <p>Starfield Services Root Certificate Authority - G2</p> </li> <li> <p>Starfield Class 2 Certification Authority</p> </li> </ul> <p>Root certificates from the first two authorities are available from <a href=\"https://www.amazontrust.com/repository/\">Amazon trust services</a>, but keeping your computer up-to-date is the more straightforward solution. To learn more about ACM-provided certificates, see <a href=\"http://aws.amazon.com/certificate-manager/faqs/#certificates\">Amazon Web Services Certificate Manager FAQs.</a> </p>",
                 "smithy.api#paginated": {
                     "inputToken": "Marker",
                     "outputToken": "NextMarker",
@@ -1628,6 +1628,97 @@
                 }
             }
         },
+        "com.amazonaws.lambda#AcceleratorConfig": {
+            "type": "structure",
+            "members": {
+                "AcceleratorMemorySize": {
+                    "target": "com.amazonaws.lambda#AcceleratorMemoryGB",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The minimum amount of memory (in GB) of each accelerator device exposed to the execution environment. Lambda might allocate more, depending on the accelerator instance types available.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The accelerator resource settings for a Lambda execution environment, including the amount of accelerator memory to allocate.</p>",
+                "smithy.api#tags": [
+                    "feature:lmi-gpu"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#AcceleratorMemoryGB": {
+            "type": "intEnum",
+            "members": {
+                "MEMORY_3": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allocates at least 3 GB of accelerator memory to each execution environment.</p>",
+                        "smithy.api#enumValue": 3,
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
+                        ]
+                    }
+                },
+                "MEMORY_6": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allocates at least 6 GB of accelerator memory to each execution environment.</p>",
+                        "smithy.api#enumValue": 6,
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
+                        ]
+                    }
+                },
+                "MEMORY_12": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allocates at least 12 GB of accelerator memory to each execution environment.</p>",
+                        "smithy.api#enumValue": 12,
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
+                        ]
+                    }
+                },
+                "MEMORY_16": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allocates at least 16 GB of accelerator memory to each execution environment.</p>",
+                        "smithy.api#enumValue": 16,
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
+                        ]
+                    }
+                },
+                "MEMORY_24": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allocates at least 24 GB of accelerator memory to each execution environment.</p>",
+                        "smithy.api#enumValue": 24,
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
+                        ]
+                    }
+                },
+                "MEMORY_48": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Allocates at least 48 GB of accelerator memory to each execution environment.</p>",
+                        "smithy.api#enumValue": 48,
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#tags": [
+                    "feature:lmi-gpu"
+                ]
+            }
+        },
         "com.amazonaws.lambda#AccountLimit": {
             "type": "structure",
             "members": {
@@ -1805,7 +1896,7 @@
             "type": "structure",
             "members": {
                 "LayerName": {
-                    "target": "com.amazonaws.lambda#LayerName",
+                    "target": "com.amazonaws.lambda#LayerNameOrArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
                         "smithy.api#httpLabel": {},
@@ -3106,6 +3197,15 @@
                             "feature:public"
                         ]
                     }
+                },
+                "LambdaCapacityProviderAverageGPUUtilization": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LambdaCapacityProviderAverageGPUUtilization",
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
+                        ]
+                    }
                 }
             },
             "traits": {
@@ -3480,9 +3580,9 @@
                 "XAmznTraceId": {
                     "target": "com.amazonaws.lambda#XAmznTraceId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The optional X-Ray trace header to use when starting the chained invocation. If you omit this value, the child invocation inherits the parent durable execution's trace header.</p> <p>Specify this value on the <code>START</code> update for the chained invocation operation. For more information about the header format, see <a href=\"https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader\">Tracing header</a> in the <i>X-Ray Developer Guide</i>.</p>",
+                        "smithy.api#documentation": "<p>The X-Ray trace header to use when starting the chained invocation. This parameter is optional. If you omit this value, the child invocation inherits the parent durable execution's trace header.</p> <p>Specify this value on the <code>START</code> update for the chained invocation operation. For more information about the header format, see <a href=\"https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader\">Tracing header</a> in the <i>X-Ray Developer Guide</i>.</p>",
                         "smithy.api#tags": [
-                            "feature:dar-chained-invoke-trace"
+                            "feature:public"
                         ]
                     }
                 }
@@ -5012,7 +5112,7 @@
                 "MaximumBatchingWindowInSeconds": {
                     "target": "com.amazonaws.lambda#MaximumBatchingWindowInSeconds",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For Kinesis, DynamoDB, and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For Kinesis, DynamoDB, and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>",
+                        "smithy.api#documentation": "<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For Kinesis, DynamoDB, and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For Kinesis, DynamoDB, and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p> <p>Not supported for Kafka event source mappings when <code>ConsumptionMode</code> is <code>Queue</code>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -5030,7 +5130,7 @@
                 "StartingPosition": {
                     "target": "com.amazonaws.lambda#EventSourcePosition",
                     "traits": {
-                        "smithy.api#documentation": "<p>The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Stream event sources. <code>AT_TIMESTAMP</code> is supported only for Amazon Kinesis streams, Amazon DocumentDB, Amazon MSK, and self-managed Apache Kafka.</p>",
+                        "smithy.api#documentation": "<p>The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Stream event sources. <code>AT_TIMESTAMP</code> is supported only for Amazon Kinesis streams, Amazon DocumentDB, Amazon MSK, and self-managed Apache Kafka.</p> <p>Not supported for Kafka event source mappings when <code>ConsumptionMode</code> is <code>Queue</code>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -5039,7 +5139,7 @@
                 "StartingPositionTimestamp": {
                     "target": "com.amazonaws.lambda#Date",
                     "traits": {
-                        "smithy.api#documentation": "<p>With <code>StartingPosition</code> set to <code>AT_TIMESTAMP</code>, the time from which to start reading. <code>StartingPositionTimestamp</code> cannot be in the future.</p>",
+                        "smithy.api#documentation": "<p>With <code>StartingPosition</code> set to <code>AT_TIMESTAMP</code>, the time from which to start reading. <code>StartingPositionTimestamp</code> cannot be in the future.</p> <p>Not supported for Kafka event source mappings when <code>ConsumptionMode</code> is <code>Queue</code>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -5075,7 +5175,7 @@
                 "MaximumRetryAttempts": {
                     "target": "com.amazonaws.lambda#MaximumRetryAttemptsEventSourceMapping",
                     "traits": {
-                        "smithy.api#documentation": "<p>(Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Apache Kafka) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p>",
+                        "smithy.api#documentation": "<p>(Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Apache Kafka) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p> <p>For Kafka event source mappings with <code>ConsumptionMode</code> set to <code>Queue</code>, the value -1 (infinite retries) is not supported and the default is 0 (no retries). Lambda releases failed records back to the broker, which redelivers them up to the share group's <code>group.share.delivery.count.limit</code>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -5246,7 +5346,8 @@
                     "relativeDocumentation": "API_CreateFunction.html",
                     "requiredActions": [
                         "iam:PassRole",
-                        "lambda:PassCapacityProvider"
+                        "lambda:PassCapacityProvider",
+                        "lambda:AssociateRuntimeAlias"
                     ],
                     "resources": {
                         "required": {
@@ -5400,7 +5501,7 @@
                 "Timeout": {
                     "target": "com.amazonaws.lambda#Timeout",
                     "traits": {
-                        "smithy.api#documentation": "<p>The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds, and the maximum allowed value is 900 seconds. For functions using Lambda Managed Instances, asynchronous invocations and event source mapping invocations (except Amazon MQ and Amazon DocumentDB) support a maximum allowed value of 5,400 seconds (90 minutes). For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html\">Lambda execution environment</a>.</p>",
+                        "smithy.api#documentation": "<p>The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds, and the maximum allowed value is 1,800 seconds. For functions using Lambda Managed Instances, asynchronous invocations and event source mapping invocations (except Amazon MQ and Amazon DocumentDB) support a maximum allowed value of 5,400 seconds (90 minutes). For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html\">Lambda execution environment</a>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -5545,7 +5646,7 @@
                 "EphemeralStorage": {
                     "target": "com.amazonaws.lambda#EphemeralStorage",
                     "traits": {
-                        "smithy.api#documentation": "<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>",
+                        "smithy.api#documentation": "<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For functions that use <code>AcceleratorConfig</code>, the maximum is 32,768 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -5593,6 +5694,24 @@
                         "smithy.api#documentation": "<p>Configuration settings for durable functions. Enables creating functions with durability that can remember their state and continue execution even after interruptions.</p>",
                         "smithy.api#tags": [
                             "feature:public"
+                        ]
+                    }
+                },
+                "RuntimeConfig": {
+                    "target": "com.amazonaws.lambda#FunctionRuntimeConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer-managed runtime configuration for your function. Specifies the customer-managed runtime and the runtime alias that your function uses.</p>",
+                        "smithy.api#tags": [
+                            "feature:cmr"
+                        ]
+                    }
+                },
+                "AcceleratorConfig": {
+                    "target": "com.amazonaws.lambda#AcceleratorConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The accelerator resource settings for a Lambda execution environment.</p>",
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
                         ]
                     }
                 }
@@ -6081,6 +6200,96 @@
                 ]
             }
         },
+        "com.amazonaws.lambda#DeleteDurableExecution": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.lambda#DeleteDurableExecutionRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.lambda#DeleteDurableExecutionResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.lambda#InvalidParameterValueException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#ResourceConflictException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#ServiceException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#TooManyRequestsException"
+                }
+            ],
+            "traits": {
+                "aws.iam#iamAction": {
+                    "documentation": "Grants permission to delete an AWS Lambda durable execution",
+                    "relativeDocumentation": "API_DeleteDurableExecution.html",
+                    "resources": {
+                        "required": {
+                            "durable execution": {}
+                        }
+                    }
+                },
+                "smithy.api#documentation": "<p>Deletes a completed Lambda <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> and its data. The execution must be in a terminal state (<code>SUCCEEDED</code>, <code>FAILED</code>, <code>STOPPED</code>, or <code>TIMED_OUT</code>). Otherwise, this operation returns a <code>ResourceConflictException</code>.</p> <p>The execution has <code>DELETING</code> status until the deletion finishes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-delete.html\">Deleting durable executions</a>.</p>",
+                "smithy.api#http": {
+                    "method": "DELETE",
+                    "uri": "/2025-12-01/durable-executions/{DurableExecutionArn}",
+                    "code": 202
+                },
+                "smithy.api#idempotent": {},
+                "smithy.api#tags": [
+                    "feature:delete-durable-execution"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#DeleteDurableExecutionRequest": {
+            "type": "structure",
+            "members": {
+                "DurableExecutionArn": {
+                    "target": "com.amazonaws.lambda#DurableExecutionArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:delete-durable-execution"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {},
+                "smithy.api#tags": [
+                    "feature:delete-durable-execution"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#DeleteDurableExecutionResponse": {
+            "type": "structure",
+            "members": {
+                "DeletionRequestTimestamp": {
+                    "target": "com.amazonaws.lambda#ExecutionTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The timestamp when Lambda accepted the deletion request (ISO 8601 format).</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:delete-durable-execution"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {},
+                "smithy.api#tags": [
+                    "feature:delete-durable-execution"
+                ]
+            }
+        },
         "com.amazonaws.lambda#DeleteEventSourceMapping": {
             "type": "operation",
             "input": {
@@ -6336,7 +6545,7 @@
                         }
                     }
                 },
-                "smithy.api#documentation": "<p>Removes a concurrent execution limit from a function.</p>",
+                "smithy.api#documentation": "<p>Removes a concurrent execution limit from a Lambda Event Function.</p>",
                 "smithy.api#examples": [
                     {
                         "documentation": "The following example deletes the reserved concurrent execution limit from a function named my-function.",
@@ -6660,7 +6869,7 @@
             "type": "structure",
             "members": {
                 "LayerName": {
-                    "target": "com.amazonaws.lambda#LayerName",
+                    "target": "com.amazonaws.lambda#LayerNameOrArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
                         "smithy.api#httpLabel": {},
@@ -6814,14 +7023,15 @@
                     "lambda:Principal"
                 ],
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to detach a policy from an AWS Lambda resource",
+                    "documentation": "Grants permission to detach a policy from an AWS Lambda resource, additionally requiring lambda:RemovePermission only for a function resource",
                     "relativeDocumentation": "API_DeleteResourcePolicy.html",
                     "requiredActions": [
                         "lambda:RemovePermission"
                     ],
                     "resources": {
-                        "required": {
-                            "function": {}
+                        "optional": {
+                            "function": {},
+                            "runtime": {}
                         }
                     }
                 },
@@ -7051,10 +7261,19 @@
                     "target": "com.amazonaws.lambda#CheckpointDurableExecution"
                 },
                 {
+                    "target": "com.amazonaws.lambda#DeleteDurableExecution"
+                },
+                {
                     "target": "com.amazonaws.lambda#GetDurableExecutionHistory"
                 },
                 {
                     "target": "com.amazonaws.lambda#GetDurableExecutionState"
+                },
+                {
+                    "target": "com.amazonaws.lambda#PauseDurableExecution"
+                },
+                {
+                    "target": "com.amazonaws.lambda#ResumeDurableExecution"
                 },
                 {
                     "target": "com.amazonaws.lambda#StopDurableExecution"
@@ -7662,7 +7881,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>",
+                "smithy.api#documentation": "<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For functions that use <code>AcceleratorConfig</code>, the maximum is 32,768 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>",
                 "smithy.api#tags": [
                     "feature:public"
                 ]
@@ -8030,6 +8249,24 @@
                             "feature:public"
                         ]
                     }
+                },
+                "ExecutionPausedDetails": {
+                    "target": "com.amazonaws.lambda#ExecutionPausedDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The details of an <code>ExecutionPaused</code> event.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "ExecutionResumedDetails": {
+                    "target": "com.amazonaws.lambda#ExecutionResumedDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The details of an <code>ExecutionResumed</code> event.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
                 }
             },
             "traits": {
@@ -8109,6 +8346,35 @@
                 ]
             }
         },
+        "com.amazonaws.lambda#EventPauseReason": {
+            "type": "structure",
+            "members": {
+                "Payload": {
+                    "target": "com.amazonaws.lambda#PauseReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason that you provided when you paused the execution. This field is only present if you set <code>IncludeExecutionData</code> to <code>true</code> in the request.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "Truncated": {
+                    "target": "com.amazonaws.lambda#Truncated",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether Lambda omitted the reason from the response because <code>IncludeExecutionData</code> is <code>false</code>.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The reason for pausing a durable execution, as recorded in the execution history.</p>",
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
         "com.amazonaws.lambda#EventResult": {
             "type": "structure",
             "members": {
@@ -8135,6 +8401,35 @@
                 "smithy.api#documentation": "<p>Result information for an event.</p>",
                 "smithy.api#tags": [
                     "feature:public"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#EventResumeReason": {
+            "type": "structure",
+            "members": {
+                "Payload": {
+                    "target": "com.amazonaws.lambda#ResumeReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason that you provided when you resumed the execution. This field is only present if you set <code>IncludeExecutionData</code> to <code>true</code> in the request.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "Truncated": {
+                    "target": "com.amazonaws.lambda#Truncated",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether Lambda omitted the reason from the response because <code>IncludeExecutionData</code> is <code>false</code>.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The reason for resuming a durable execution, as recorded in the execution history.</p>",
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
                 ]
             }
         },
@@ -8924,6 +9219,24 @@
                             "feature:public"
                         ]
                     }
+                },
+                "ExecutionPaused": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ExecutionPaused",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "ExecutionResumed": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ExecutionResumed",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
                 }
             },
             "traits": {
@@ -9088,6 +9401,76 @@
                 ]
             }
         },
+        "com.amazonaws.lambda#ExecutionPausedDetails": {
+            "type": "structure",
+            "members": {
+                "PauseRequestTimestamp": {
+                    "target": "com.amazonaws.lambda#ExecutionTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time when you requested the pause, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "Reason": {
+                    "target": "com.amazonaws.lambda#EventPauseReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason that you provided when you paused the execution.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "ExecutionTimeoutPaused": {
+                    "target": "com.amazonaws.lambda#ExecutionTimeoutPaused",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether the pause also paused the execution timeout.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Details about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> that paused. The event timestamp is when the execution paused.</p>",
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#ExecutionResumedDetails": {
+            "type": "structure",
+            "members": {
+                "ResumeRequestTimestamp": {
+                    "target": "com.amazonaws.lambda#ExecutionTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time when you requested the resume, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "Reason": {
+                    "target": "com.amazonaws.lambda#EventResumeReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason that you provided when you resumed the execution.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Details about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> that resumed. The event timestamp is when the execution resumed.</p>",
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
         "com.amazonaws.lambda#ExecutionStartedDetails": {
             "type": "structure",
             "members": {
@@ -9164,6 +9547,33 @@
                         "smithy.api#enumValue": "STOPPED",
                         "smithy.api#tags": [
                             "feature:public"
+                        ]
+                    }
+                },
+                "DELETING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DELETING",
+                        "smithy.api#tags": [
+                            "feature:delete-durable-execution"
+                        ]
+                    }
+                },
+                "PAUSING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PAUSING",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "PAUSED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PAUSED",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
                         ]
                     }
                 }
@@ -9265,6 +9675,14 @@
                 },
                 "smithy.api#tags": [
                     "feature:public"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#ExecutionTimeoutPaused": {
+            "type": "boolean",
+            "traits": {
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
                 ]
             }
         },
@@ -9660,10 +10078,6 @@
         "com.amazonaws.lambda#FunctionArn": {
             "type": "string",
             "traits": {
-                "aws.api#arnReference": {
-                    "type": "AWS::Lambda::Function",
-                    "resource": "com.amazonaws.lambda#Function"
-                },
                 "smithy.api#length": {
                     "min": 0,
                     "max": 10000
@@ -10162,7 +10576,7 @@
                 "EphemeralStorage": {
                     "target": "com.amazonaws.lambda#EphemeralStorage",
                     "traits": {
-                        "smithy.api#documentation": "<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>",
+                        "smithy.api#documentation": "<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For functions that use <code>AcceleratorConfig</code>, the maximum is 32,768 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -10226,6 +10640,24 @@
                     "target": "com.amazonaws.lambda#DurableConfig",
                     "traits": {
                         "smithy.api#documentation": "<p>The function's durable execution configuration settings, if the function is configured for durability.</p>",
+                        "smithy.api#tags": [
+                            "feature:public"
+                        ]
+                    }
+                },
+                "RuntimeConfig": {
+                    "target": "com.amazonaws.lambda#FunctionRuntimeConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer-managed runtime configuration for your function. Specifies the customer-managed runtime and the runtime alias that your function uses.</p>",
+                        "smithy.api#tags": [
+                            "feature:cmr"
+                        ]
+                    }
+                },
+                "AcceleratorConfig": {
+                    "target": "com.amazonaws.lambda#AcceleratorConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The accelerator resource settings for a Lambda execution environment.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -10375,6 +10807,62 @@
                 },
                 "smithy.api#tags": [
                     "feature:public"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#FunctionRuntimeAlias": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 128
+                },
+                "smithy.api#tags": [
+                    "feature:cmr"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#FunctionRuntimeArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 48,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^arn:[a-z-]+:lambda:[a-z0-9-]+:\\d{12}:runtime/.+$",
+                "smithy.api#tags": [
+                    "feature:cmr"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#FunctionRuntimeConfig": {
+            "type": "structure",
+            "members": {
+                "RuntimeArn": {
+                    "target": "com.amazonaws.lambda#FunctionRuntimeArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the customer-managed runtime that your function uses.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:cmr"
+                        ]
+                    }
+                },
+                "RuntimeAlias": {
+                    "target": "com.amazonaws.lambda#FunctionRuntimeAlias",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the customer-managed runtime alias that your function uses. A runtime alias is a name that points to a runtime version.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:cmr"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The customer-managed runtime configuration for your function. Specifies the customer-managed runtime and the runtime alias that your function uses.</p>",
+                "smithy.api#tags": [
+                    "feature:cmr"
                 ]
             }
         },
@@ -11413,7 +11901,7 @@
                 "Status": {
                     "target": "com.amazonaws.lambda#ExecutionStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The current status of the durable execution. Valid values are <code>RUNNING</code>, <code>SUCCEEDED</code>, <code>FAILED</code>, <code>TIMED_OUT</code>, and <code>STOPPED</code>.</p>",
+                        "smithy.api#documentation": "<p>The durable execution has one of the following statuses:</p> <ul> <li> <p> <code>RUNNING</code> – The execution is running or waiting for pending operations to complete.</p> </li> <li> <p> <code>PAUSING</code> – The execution is waiting for an in-progress invocation to reach its next checkpoint before it pauses.</p> </li> <li> <p> <code>PAUSED</code> – The execution is paused, and Lambda doesn't invoke your function.</p> </li> <li> <p> <code>SUCCEEDED</code> – The execution completed successfully.</p> </li> <li> <p> <code>FAILED</code> – The execution completed with an error.</p> </li> <li> <p> <code>TIMED_OUT</code> – The execution exceeded its execution timeout.</p> </li> <li> <p> <code>STOPPED</code> – A <code>StopDurableExecution</code> request stopped the execution.</p> </li> <li> <p> <code>DELETING</code> – A <code>DeleteDurableExecution</code> request is deleting the execution and its data.</p> </li> </ul>",
                         "smithy.api#required": {},
                         "smithy.api#tags": [
                             "feature:public"
@@ -11462,6 +11950,24 @@
                         "smithy.api#documentation": "<p>Configuration settings for the durable execution, including execution timeout, retention period for execution history, and an optional ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>",
                         "smithy.api#tags": [
                             "feature:public"
+                        ]
+                    }
+                },
+                "PauseDetails": {
+                    "target": "com.amazonaws.lambda#PauseDetails",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The details of the pause, including when you requested it and whether it pauses the execution timeout. This field is only present when the execution status is <code>PAUSING</code> or <code>PAUSED</code>.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "ExpectedExecutionTimeoutTimestamp": {
+                    "target": "com.amazonaws.lambda#ExecutionTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time when the durable execution will time out, in Unix timestamp format. This value includes any extension from time the execution spent paused. While the execution is paused with its execution timeout paused, this value is 366 days after the start time. This field isn't present for completed executions.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
                         ]
                     }
                 }
@@ -11742,7 +12248,7 @@
                         }
                     }
                 },
-                "smithy.api#documentation": "<p>Returns information about the function or function version, with a link to download the deployment package that's valid for 10 minutes. If you specify a function version, only details that are specific to that version are returned.</p>",
+                "smithy.api#documentation": "<p>Returns information about a Lambda Event Function or function version, with a link to download the deployment package that's valid for 10 minutes. If you specify a function version, only details that are specific to that version are returned.</p>",
                 "smithy.api#examples": [
                     {
                         "documentation": "The following example returns code and configuration details for version 1 of a function named my-function.",
@@ -13082,7 +13588,7 @@
             "type": "structure",
             "members": {
                 "LayerName": {
-                    "target": "com.amazonaws.lambda#LayerName",
+                    "target": "com.amazonaws.lambda#LayerNameOrArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
                         "smithy.api#httpLabel": {},
@@ -13145,7 +13651,7 @@
             "type": "structure",
             "members": {
                 "LayerName": {
-                    "target": "com.amazonaws.lambda#LayerName",
+                    "target": "com.amazonaws.lambda#LayerNameOrArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
                         "smithy.api#httpLabel": {},
@@ -13588,14 +14094,15 @@
             ],
             "traits": {
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to view a policy for an AWS Lambda resource",
+                    "documentation": "Grants permission to view a policy for an AWS Lambda resource, additionally requiring lambda:GetPolicy only for a function resource",
                     "relativeDocumentation": "API_GetResourcePolicy.html",
                     "requiredActions": [
                         "lambda:GetPolicy"
                     ],
                     "resources": {
-                        "required": {
-                            "function": {}
+                        "optional": {
+                            "function": {},
+                            "runtime": {}
                         }
                     }
                 },
@@ -14322,7 +14829,7 @@
                 "ClientContext": {
                     "target": "com.amazonaws.lambda#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>Up to 3,583 bytes of base64-encoded data about the invoking client to pass to the function in the context object. Lambda passes the <code>ClientContext</code> object to your function for synchronous invocations only.</p>",
+                        "smithy.api#documentation": "<p>Up to 3,583 bytes of base64-encoded data about the invoking client to pass to the function in the context object. Lambda passes the <code>ClientContext</code> object to your function for synchronous invocations only.</p> <p> <code>ClientContext</code> is logged to CloudTrail if you turn on data events.</p>",
                         "smithy.api#httpHeader": "X-Amz-Client-Context",
                         "smithy.api#tags": [
                             "feature:public"
@@ -14586,6 +15093,12 @@
                     "target": "com.amazonaws.lambda#ResourceNotReadyException"
                 },
                 {
+                    "target": "com.amazonaws.lambda#RuntimeAliasDeletedException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#RuntimeVersionDeletedException"
+                },
+                {
                     "target": "com.amazonaws.lambda#S3FilesMountConnectivityException"
                 },
                 {
@@ -14639,7 +15152,7 @@
                         }
                     }
                 },
-                "smithy.api#documentation": "<p>Invokes a Lambda Event Function. You can invoke a function synchronously (and wait for the response), or asynchronously. By default, Lambda invokes your function synchronously (i.e. the<code>InvocationType</code> is <code>RequestResponse</code>). To invoke a function asynchronously, set <code>InvocationType</code> to <code>Event</code>. Lambda passes the <code>ClientContext</code> object to your function for synchronous invocations only.</p> <p>For synchronous invocations, the maximum payload size is 6 MB. For asynchronous invocations, the maximum payload size is 1 MB.</p> <p>For <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-sync.html\">synchronous invocation</a>, details about the function response, including errors, are included in the response body and headers. For either invocation type, you can find more information in the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-functions.html\">execution log</a> and <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html\">trace</a>.</p> <p>When an error occurs, your function may be invoked multiple times. Retry behavior varies by error type, client, event source, and invocation type. For example, if you invoke a function asynchronously and it returns an error, Lambda executes the function up to two more times. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html\">Error handling and automatic retries in Lambda</a>.</p> <p>For <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html\">asynchronous invocation</a>, Lambda adds events to a queue before sending them to your function. If your function does not have enough capacity to keep up with the queue, events may be lost. Occasionally, your function may receive the same event multiple times, even if no error occurs. To retain events that were not processed, configure your function with a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq\">dead-letter queue</a>.</p> <p>The status code in the API response doesn't reflect function errors. Error codes are reserved for errors that prevent your function from executing, such as permissions errors, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html\">quota</a> errors, or issues with your function's code and configuration. For example, Lambda returns <code>TooManyRequestsException</code> if running the function would cause you to exceed a concurrency limit at either the account level (<code>ConcurrentInvocationLimitExceeded</code>) or function level (<code>ReservedFunctionConcurrentInvocationLimitExceeded</code>).</p> <p>For functions with a long timeout, your client might disconnect during synchronous invocation while it waits for a response. Configure your HTTP client, SDK, firewall, proxy, or operating system to allow for long connections with timeout or keep-alive settings.</p> <p>This operation requires permission for the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awslambda.html\">lambda:InvokeFunction</a> action. For details on how to set up permissions for cross-account invocations, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#permissions-resource-xaccountinvoke\">Granting function access to other accounts</a>.</p>",
+                "smithy.api#documentation": "<p>Invokes a Lambda Event Function. You can invoke a function synchronously (and wait for the response), or asynchronously. By default, Lambda invokes your function synchronously (i.e. the<code>InvocationType</code> is <code>RequestResponse</code>). To invoke a function asynchronously, set <code>InvocationType</code> to <code>Event</code>. Lambda passes the <code>ClientContext</code> object to your function for synchronous invocations only.</p> <p>For synchronous invocations, the maximum payload size is 6 MB. For asynchronous invocations, the maximum payload size is 1 MB.</p> <p>For <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-sync.html\">synchronous invocation</a>, details about the function response, including errors, are included in the response body and headers. For either invocation type, you can find more information in the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-functions.html\">execution log</a> and <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html\">trace</a>.</p> <p>When an error occurs, your function may be invoked multiple times. Retry behavior varies by error type, client, event source, and invocation type. For example, if you invoke a function asynchronously and it returns an error, Lambda executes the function up to two more times. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html\">Error handling and automatic retries in Lambda</a>.</p> <p>For <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html\">asynchronous invocation</a>, Lambda adds events to a queue before sending them to your function. If your function does not have enough capacity to keep up with the queue, events may be lost. Occasionally, your function may receive the same event multiple times, even if no error occurs. To retain events that were not processed, configure your function with a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq\">dead-letter queue</a>.</p> <p>The status code in the API response doesn't reflect function errors. Error codes are reserved for errors that prevent your function from executing, such as permissions errors, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html\">quota</a> errors, or issues with your function's code and configuration. For example, Lambda returns <code>TooManyRequestsException</code> if running the function would cause you to exceed a concurrency limit at either the account level (<code>ConcurrentInvocationLimitExceeded</code>) or function level (<code>ReservedFunctionConcurrentInvocationLimitExceeded</code>).</p> <p>For functions with a long timeout, your client might disconnect during synchronous invocation while it waits for a response. Configure your HTTP client, SDK, firewall, proxy, or operating system to allow for long connections with timeout or keep-alive settings. Synchronous invocations can run for up to 30 minutes. Set the read timeout of your client higher than the function timeout, and turn on TCP keep-alive.</p> <p>This operation requires permission for the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awslambda.html\">lambda:InvokeFunction</a> action. For details on how to set up permissions for cross-account invocations, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#permissions-resource-xaccountinvoke\">Granting function access to other accounts</a>.</p>",
                 "smithy.api#examples": [
                     {
                         "documentation": "The following example invokes version 1 of a function named my-function with an empty event payload.",
@@ -15026,6 +15539,12 @@
                     "target": "com.amazonaws.lambda#ResourceNotReadyException"
                 },
                 {
+                    "target": "com.amazonaws.lambda#RuntimeAliasDeletedException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#RuntimeVersionDeletedException"
+                },
+                {
                     "target": "com.amazonaws.lambda#S3FilesMountConnectivityException"
                 },
                 {
@@ -15155,7 +15674,7 @@
                 "ClientContext": {
                     "target": "com.amazonaws.lambda#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>Up to 3,583 bytes of base64-encoded data about the invoking client to pass to the function in the context object.</p>",
+                        "smithy.api#documentation": "<p>Up to 3,583 bytes of base64-encoded data about the invoking client to pass to the function in the context object.</p> <p> <code>ClientContext</code> is logged to CloudTrail if you turn on data events.</p>",
                         "smithy.api#httpHeader": "X-Amz-Client-Context",
                         "smithy.api#tags": [
                             "feature:public"
@@ -15463,6 +15982,34 @@
                 "smithy.api#httpError": 502,
                 "smithy.api#tags": [
                     "feature:public",
+                    "feature:public"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#KafkaEventSourceMappingConsumptionMode": {
+            "type": "enum",
+            "members": {
+                "Stream": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Stream",
+                        "smithy.api#tags": [
+                            "feature:public"
+                        ]
+                    }
+                },
+                "Queue": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Queue",
+                        "smithy.api#tags": [
+                            "feature:public"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#tags": [
                     "feature:public"
                 ]
             }
@@ -16071,6 +16618,15 @@
                         ]
                     }
                 },
+                "IncompatibleAcceleratorInstanceTypes": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IncompatibleAcceleratorInstanceTypes",
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
+                        ]
+                    }
+                },
                 "DependencyError": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -16181,6 +16737,19 @@
                 ]
             }
         },
+        "com.amazonaws.lambda#LayerNameOrArn": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                },
+                "smithy.api#pattern": "^(arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:layer:[a-zA-Z0-9-_]{1,140}|[a-zA-Z0-9-_]{1,140})$",
+                "smithy.api#tags": [
+                    "feature:public"
+                ]
+            }
+        },
         "com.amazonaws.lambda#LayerPermissionAllowedAction": {
             "type": "string",
             "traits": {
@@ -16211,7 +16780,7 @@
             "type": "resource",
             "identifiers": {
                 "LayerName": {
-                    "target": "com.amazonaws.lambda#LayerName"
+                    "target": "com.amazonaws.lambda#LayerNameOrArn"
                 }
             },
             "list": {
@@ -16221,6 +16790,9 @@
                 "aws.api#arn": {
                     "template": "layer:{LayerName}"
                 },
+                "aws.iam#conditionKeys": [
+                    "aws:ResourceTag/${TagKey}"
+                ],
                 "aws.iam#iamResource": {
                     "disableConditionKeyInheritance": true,
                     "name": "layer",
@@ -16236,7 +16808,7 @@
             "type": "resource",
             "identifiers": {
                 "LayerName": {
-                    "target": "com.amazonaws.lambda#LayerName"
+                    "target": "com.amazonaws.lambda#LayerNameOrArn"
                 },
                 "LayerVersion": {
                     "target": "com.amazonaws.lambda#String"
@@ -16272,6 +16844,9 @@
                 "aws.api#arn": {
                     "template": "layer:{LayerName}:{LayerVersion}"
                 },
+                "aws.iam#conditionKeys": [
+                    "aws:ResourceTag/${TagKey}"
+                ],
                 "aws.iam#iamResource": {
                     "disableConditionKeyInheritance": true,
                     "name": "layerVersion",
@@ -17064,7 +17639,7 @@
                 "Statuses": {
                     "target": "com.amazonaws.lambda#ExecutionStatusList",
                     "traits": {
-                        "smithy.api#documentation": "<p>Filter executions by status. Valid values: RUNNING, SUCCEEDED, FAILED, TIMED_OUT, STOPPED.</p>",
+                        "smithy.api#documentation": "<p>Filters the executions by status. Specify one of the following values:</p> <ul> <li> <p> <code>RUNNING</code> – The execution is running or waiting for pending operations to complete.</p> </li> <li> <p> <code>PAUSING</code> – The execution is waiting for an in-progress invocation to reach its next checkpoint before it pauses.</p> </li> <li> <p> <code>PAUSED</code> – The execution is paused, and Lambda doesn't invoke your function.</p> </li> <li> <p> <code>SUCCEEDED</code> – The execution completed successfully.</p> </li> <li> <p> <code>FAILED</code> – The execution completed with an error.</p> </li> <li> <p> <code>TIMED_OUT</code> – The execution exceeded its execution timeout.</p> </li> <li> <p> <code>STOPPED</code> – A <code>StopDurableExecution</code> request stopped the execution.</p> </li> <li> <p> <code>DELETING</code> – A <code>DeleteDurableExecution</code> request is deleting the execution and its data.</p> </li> </ul>",
                         "smithy.api#httpQuery": "Statuses",
                         "smithy.api#tags": [
                             "feature:public"
@@ -17336,7 +17911,7 @@
                         }
                     }
                 },
-                "smithy.api#documentation": "<p>Retrieves a list of configurations for asynchronous invocation for a function.</p> <p>To configure options for asynchronous invocation, use <a>PutFunctionEventInvokeConfig</a>.</p>",
+                "smithy.api#documentation": "<p>Retrieves a list of configurations for asynchronous invocation for a Lambda Event Function. To retrieve more configurations, use the <code>Marker</code> parameter.</p> <p>To configure options for asynchronous invocation, use <a>PutFunctionEventInvokeConfig</a>.</p>",
                 "smithy.api#examples": [
                     {
                         "documentation": "The following example returns a list of asynchronous invocation configurations for a function named my-function.",
@@ -18028,7 +18603,12 @@
             "traits": {
                 "aws.iam#iamAction": {
                     "documentation": "Grants permission to retrieve a list of versions of an AWS Lambda layer",
-                    "relativeDocumentation": "API_ListLayerVersions.html"
+                    "relativeDocumentation": "API_ListLayerVersions.html",
+                    "resources": {
+                        "required": {
+                            "layer": {}
+                        }
+                    }
                 },
                 "smithy.api#documentation": "<p>Lists the versions of an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html\">Lambda layer</a>. Versions that have been deleted aren't listed. Specify a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">runtime identifier</a> to list only versions that indicate that they're compatible with that runtime. Specify a compatible architecture to include only layer versions that are compatible with that architecture.</p>",
                 "smithy.api#examples": [
@@ -18100,7 +18680,7 @@
                     }
                 },
                 "LayerName": {
-                    "target": "com.amazonaws.lambda#LayerName",
+                    "target": "com.amazonaws.lambda#LayerNameOrArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
                         "smithy.api#httpLabel": {},
@@ -18484,14 +19064,16 @@
             ],
             "traits": {
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to retrieve a list of tags for an AWS Lambda function, event source mapping, capacity provider, or code signing configuration resource",
+                    "documentation": "Grants permission to retrieve a list of tags for an AWS Lambda function, event source mapping, capacity provider, code signing configuration, layer, or runtime resource",
                     "relativeDocumentation": "API_ListTags.html",
                     "resources": {
                         "optional": {
                             "eventSourceMapping": {},
                             "function": {},
                             "code signing config": {},
-                            "capacityProvider": {}
+                            "capacityProvider": {},
+                            "layer": {},
+                            "runtime": {}
                         }
                     }
                 },
@@ -18596,7 +19178,7 @@
                         }
                     }
                 },
-                "smithy.api#documentation": "<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">versions</a>, with the version-specific configuration of each. Lambda returns up to 50 versions per call.</p>",
+                "smithy.api#documentation": "<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">versions</a> of a Lambda Event Function, with the version-specific configuration of each. Lambda returns up to 50 versions per call.</p>",
                 "smithy.api#examples": [
                     {
                         "documentation": "The following example returns a list of versions of a function named my-function",
@@ -19158,6 +19740,10 @@
         "com.amazonaws.lambda#NameSpacedFunctionArn": {
             "type": "string",
             "traits": {
+                "aws.api#arnReference": {
+                    "type": "AWS::Lambda::Function",
+                    "resource": "com.amazonaws.lambda#Function"
+                },
                 "smithy.api#length": {
                     "min": 0,
                     "max": 10000
@@ -19941,6 +20527,179 @@
                 ]
             }
         },
+        "com.amazonaws.lambda#PauseDetails": {
+            "type": "structure",
+            "members": {
+                "PauseRequestTimestamp": {
+                    "target": "com.amazonaws.lambda#ExecutionTimestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The date and time when you requested the pause, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "Reason": {
+                    "target": "com.amazonaws.lambda#PauseReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The reason that you provided when you paused the execution. This field is only present if you set <code>IncludeExecutionData</code> to <code>true</code> in the request.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "ExecutionTimeoutPaused": {
+                    "target": "com.amazonaws.lambda#ExecutionTimeoutPaused",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whether the pause also pauses the execution timeout.</p>",
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Details about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> that is pausing or paused.</p>",
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#PauseDurableExecution": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.lambda#PauseDurableExecutionRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.lambda#PauseDurableExecutionResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.lambda#InvalidParameterValueException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#KMSAccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#KMSDisabledException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#KMSInvalidStateException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#KMSNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#ResourceConflictException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#ServiceException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#TooManyRequestsException"
+                }
+            ],
+            "traits": {
+                "aws.iam#iamAction": {
+                    "documentation": "Grants permission to pause an AWS Lambda durable execution",
+                    "relativeDocumentation": "API_PauseDurableExecution.html",
+                    "resources": {
+                        "required": {
+                            "durable execution": {}
+                        }
+                    }
+                },
+                "smithy.api#documentation": "<p>Pauses a running <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. While an execution is paused, Lambda doesn't invoke your function, but pending operations such as waits and callbacks continue to complete.</p> <p>If an invocation is in progress, the execution status changes to <code>PAUSING</code> until the invocation reaches its next checkpoint, and then changes to <code>PAUSED</code>. This operation returns a successful response while the execution status is still <code>RUNNING</code>, and the status changes when Lambda processes the request. For more information about pausing executions, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-pause-resume.html\">Pausing and resuming durable executions</a>.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/2025-12-01/durable-executions/{DurableExecutionArn}/pause",
+                    "code": 202
+                },
+                "smithy.api#idempotent": {},
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#PauseDurableExecutionRequest": {
+            "type": "structure",
+            "members": {
+                "DurableExecutionArn": {
+                    "target": "com.amazonaws.lambda#DurableExecutionArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.lambda#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier that you provide so that the request completes no more than one time. If you repeat a request with the same client token and parameters within 15 minutes, Lambda doesn't pause the execution again and returns a successful response instead of an error.</p>",
+                        "smithy.api#idempotencyToken": {},
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "Reason": {
+                    "target": "com.amazonaws.lambda#PauseReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A description of why you're pausing the execution. Lambda records the reason in the execution history.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "ExecutionTimeoutPaused": {
+                    "target": "com.amazonaws.lambda#ExecutionTimeoutPaused",
+                    "traits": {
+                        "smithy.api#default": true,
+                        "smithy.api#documentation": "<p>Specifies whether to pause the execution timeout while the execution is paused. If <code>true</code>, Lambda extends the execution timeout by the time the execution spends paused. An execution with a paused timeout still times out 366 days after it started. The default value is <code>true</code>.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {},
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#PauseDurableExecutionResponse": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#output": {},
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#PauseReason": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 1024
+                },
+                "smithy.api#sensitive": {},
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
         "com.amazonaws.lambda#PerExecutionEnvironmentMaxConcurrency": {
             "type": "integer",
             "traits": {
@@ -20011,9 +20770,9 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 0,
-                    "max": 256
+                    "max": 512
                 },
-                "smithy.api#pattern": "^arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(runtime/|function:)[a-zA-Z0-9-_]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_])+)?$",
+                "smithy.api#pattern": "^arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(function:[a-zA-Z0-9-_]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_])+)?|runtime/[a-zA-Z0-9-_./]+)$",
                 "smithy.api#tags": [
                     "feature:public"
                 ]
@@ -20502,7 +21261,7 @@
             "type": "structure",
             "members": {
                 "LayerName": {
-                    "target": "com.amazonaws.lambda#LayerName",
+                    "target": "com.amazonaws.lambda#LayerNameOrArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
                         "smithy.api#httpLabel": {},
@@ -20703,7 +21462,7 @@
                         }
                     }
                 },
-                "smithy.api#documentation": "<p>Creates a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">version</a> from the current code and configuration of a function. Use versions to create a snapshot of your function code and configuration that doesn't change.</p> <p>Lambda doesn't publish a version if the function's configuration and code haven't changed since the last version. Use <a>UpdateFunctionCode</a> or <a>UpdateFunctionConfiguration</a> to update the function before publishing a version.</p> <p>Clients can invoke versions directly or with an alias. To create an alias, use <a>CreateAlias</a>.</p>",
+                "smithy.api#documentation": "<p>Creates a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">version</a> from the current code and configuration of a Lambda Event Function. Use versions to create a snapshot of your function code and configuration that doesn't change.</p> <p>Lambda doesn't publish a version if the function's configuration and code haven't changed since the last version. Use <a>UpdateFunctionCode</a> or <a>UpdateFunctionConfiguration</a> to update the function before publishing a version.</p> <p>Clients can invoke versions directly or with an alias. To create an alias, use <a>CreateAlias</a>.</p>",
                 "smithy.api#examples": [
                     {
                         "documentation": "This operation publishes a version of a Lambda function",
@@ -20974,7 +21733,7 @@
                         }
                     }
                 },
-                "smithy.api#documentation": "<p>Sets the maximum number of simultaneous executions for a function, and reserves capacity for that concurrency level.</p> <p>Concurrency settings apply to the function as a whole, including all published versions and the unpublished version. Reserving concurrency both ensures that your function has capacity to process the specified number of events simultaneously, and prevents it from scaling beyond that level. Use <a>GetFunction</a> to see the current setting for a function.</p> <p>Use <a>GetAccountSettings</a> to see your Regional concurrency limit. You can reserve concurrency for as many functions as you like, as long as you leave at least 100 simultaneous executions unreserved for functions that aren't configured with a per-function limit. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-scaling.html\">Lambda function scaling</a>.</p>",
+                "smithy.api#documentation": "<p>Sets the maximum number of simultaneous executions for a Lambda Event Function, and reserves capacity for that concurrency level.</p> <p>Concurrency settings apply to the function as a whole, including all published versions and the unpublished version. Reserving concurrency both ensures that your function has capacity to process the specified number of events simultaneously, and prevents it from scaling beyond that level. Use <a>GetFunction</a> to see the current setting for a function.</p> <p>Use <a>GetAccountSettings</a> to see your Regional concurrency limit. You can reserve concurrency for as many functions as you like, as long as you leave at least 100 simultaneous executions unreserved for functions that aren't configured with a per-function limit. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-scaling.html\">Lambda function scaling</a>.</p>",
                 "smithy.api#examples": [
                     {
                         "documentation": "The following example configures 100 reserved concurrent executions for the my-function function.",
@@ -21191,7 +21950,7 @@
                         }
                     }
                 },
-                "smithy.api#documentation": "<p>Sets your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-recursion.html\">recursive loop detection</a> configuration.</p> <p>When you configure a Lambda function to output to the same service or resource that invokes the function, it's possible to create an infinite recursive loop. For example, a Lambda function might write a message to an Amazon Simple Queue Service (Amazon SQS) queue, which then invokes the same function. This invocation causes the function to write another message to the queue, which in turn invokes the function again.</p> <p>Lambda can detect certain types of recursive loops shortly after they occur. When Lambda detects a recursive loop and your function's recursive loop detection configuration is set to <code>Terminate</code>, it stops your function being invoked and notifies you.</p>",
+                "smithy.api#documentation": "<p>Sets the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-recursion.html\">recursive loop detection</a> configuration for a Lambda Event Function.</p> <p>When you configure a Lambda function to output to the same service or resource that invokes the function, it's possible to create an infinite recursive loop. For example, a Lambda function might write a message to an Amazon Simple Queue Service (Amazon SQS) queue, which then invokes the same function. This invocation causes the function to write another message to the queue, which in turn invokes the function again.</p> <p>Lambda can detect certain types of recursive loops shortly after they occur. When Lambda detects a recursive loop and your function's recursive loop detection configuration is set to <code>Terminate</code>, it stops your function being invoked and notifies you.</p>",
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/2024-08-31/functions/{FunctionName}/recursion-config",
@@ -21574,15 +22333,16 @@
                     "lambda:Principal"
                 ],
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to attach a policy to an AWS Lambda resource",
+                    "documentation": "Grants permission to attach a policy to an AWS Lambda resource, additionally requiring lambda:AddPermission and lambda:RemovePermission only for a function resource",
                     "relativeDocumentation": "API_PutResourcePolicy.html",
                     "requiredActions": [
                         "lambda:AddPermission",
                         "lambda:RemovePermission"
                     ],
                     "resources": {
-                        "required": {
-                            "function": {}
+                        "optional": {
+                            "function": {},
+                            "runtime": {}
                         }
                     }
                 },
@@ -21697,6 +22457,9 @@
                 "aws.iam#iamAction": {
                     "documentation": "Grants permission to update the runtime management configuration of an AWS Lambda function",
                     "relativeDocumentation": "API_PutRuntimeManagementConfig.html",
+                    "requiredActions": [
+                        "lambda:AssociateRuntimeVersion"
+                    ],
                     "resources": {
                         "required": {
                             "function": {}
@@ -21926,6 +22689,9 @@
                     "target": "com.amazonaws.lambda#PreconditionFailedException"
                 },
                 {
+                    "target": "com.amazonaws.lambda#ResourceConflictException"
+                },
+                {
                     "target": "com.amazonaws.lambda#ResourceNotFoundException"
                 },
                 {
@@ -21971,7 +22737,7 @@
             "type": "structure",
             "members": {
                 "LayerName": {
-                    "target": "com.amazonaws.lambda#LayerName",
+                    "target": "com.amazonaws.lambda#LayerNameOrArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The name or Amazon Resource Name (ARN) of the layer.</p>",
                         "smithy.api#httpLabel": {},
@@ -22398,6 +23164,129 @@
             "traits": {
                 "smithy.api#tags": [
                     "feature:public"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#ResumeDurableExecution": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.lambda#ResumeDurableExecutionRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.lambda#ResumeDurableExecutionResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.lambda#InvalidParameterValueException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#KMSAccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#KMSDisabledException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#KMSInvalidStateException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#KMSNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#ResourceConflictException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#ServiceException"
+                },
+                {
+                    "target": "com.amazonaws.lambda#TooManyRequestsException"
+                }
+            ],
+            "traits": {
+                "aws.iam#iamAction": {
+                    "documentation": "Grants permission to resume a paused AWS Lambda durable execution",
+                    "relativeDocumentation": "API_ResumeDurableExecution.html",
+                    "resources": {
+                        "required": {
+                            "durable execution": {}
+                        }
+                    }
+                },
+                "smithy.api#documentation": "<p>Resumes a paused <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. If the pause interrupted an invocation, or an operation completed while the execution was paused, Lambda invokes your function. Otherwise, the execution continues to wait for its pending operations.</p> <p>If the execution status is <code>PAUSING</code>, this operation cancels the pause, and the in-progress invocation continues. This operation returns a successful response while the execution status is still <code>PAUSED</code> or <code>PAUSING</code>, and the status changes to <code>RUNNING</code> when Lambda processes the request. For more information about resuming executions, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-pause-resume.html\">Pausing and resuming durable executions</a>.</p>",
+                "smithy.api#http": {
+                    "method": "POST",
+                    "uri": "/2025-12-01/durable-executions/{DurableExecutionArn}/resume",
+                    "code": 202
+                },
+                "smithy.api#idempotent": {},
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#ResumeDurableExecutionRequest": {
+            "type": "structure",
+            "members": {
+                "DurableExecutionArn": {
+                    "target": "com.amazonaws.lambda#DurableExecutionArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {},
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "ClientToken": {
+                    "target": "com.amazonaws.lambda#ClientToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A unique, case-sensitive identifier that you provide so that the request completes no more than one time. If you repeat a request with the same client token and parameters within 15 minutes, Lambda doesn't resume the execution again and returns a successful response instead of an error.</p>",
+                        "smithy.api#idempotencyToken": {},
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                },
+                "Reason": {
+                    "target": "com.amazonaws.lambda#ResumeReason",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A description of why you're resuming the execution. Lambda records the reason in the execution history.</p>",
+                        "smithy.api#tags": [
+                            "feature:pause-resume-durable-execution"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {},
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#ResumeDurableExecutionResponse": {
+            "type": "structure",
+            "members": {},
+            "traits": {
+                "smithy.api#output": {},
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#ResumeReason": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 1024
+                },
+                "smithy.api#sensitive": {},
+                "smithy.api#tags": [
+                    "feature:pause-resume-durable-execution"
                 ]
             }
         },
@@ -22938,11 +23827,50 @@
                             "feature:public"
                         ]
                     }
+                },
+                "custom": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "custom",
+                        "smithy.api#tags": [
+                            "feature:cmr"
+                        ]
+                    }
                 }
             },
             "traits": {
                 "smithy.api#tags": [
                     "feature:public"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#RuntimeAliasDeletedException": {
+            "type": "structure",
+            "members": {
+                "Type": {
+                    "target": "com.amazonaws.lambda#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates the exception type for a deleted runtime alias.</p>",
+                        "smithy.api#tags": [
+                            "feature:cmr"
+                        ]
+                    }
+                },
+                "message": {
+                    "target": "com.amazonaws.lambda#String",
+                    "traits": {
+                        "smithy.api#tags": [
+                            "feature:cmr"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The runtime alias for your function is no longer available. Update your function to use an available runtime alias.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 409,
+                "smithy.api#tags": [
+                    "feature:cmr"
                 ]
             }
         },
@@ -22985,6 +23913,36 @@
                 "smithy.api#documentation": "<p>The ARN of the runtime and any errors that occured.</p>",
                 "smithy.api#tags": [
                     "feature:public"
+                ]
+            }
+        },
+        "com.amazonaws.lambda#RuntimeVersionDeletedException": {
+            "type": "structure",
+            "members": {
+                "Type": {
+                    "target": "com.amazonaws.lambda#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Indicates the exception type for a deleted runtime version.</p>",
+                        "smithy.api#tags": [
+                            "feature:cmr"
+                        ]
+                    }
+                },
+                "message": {
+                    "target": "com.amazonaws.lambda#String",
+                    "traits": {
+                        "smithy.api#tags": [
+                            "feature:cmr"
+                        ]
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The runtime version used by your function is no longer available. Update your function to use an available runtime version or runtime alias.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 409,
+                "smithy.api#tags": [
+                    "feature:cmr"
                 ]
             }
         },
@@ -23330,6 +24288,15 @@
                     "target": "com.amazonaws.lambda#KafkaSchemaRegistryConfig",
                     "traits": {
                         "smithy.api#documentation": "<p>Specific configuration settings for a Kafka schema registry.</p>",
+                        "smithy.api#tags": [
+                            "feature:public"
+                        ]
+                    }
+                },
+                "ConsumptionMode": {
+                    "target": "com.amazonaws.lambda#KafkaEventSourceMappingConsumptionMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The mode that Lambda uses to consume records from your self-managed Apache Kafka topic. Valid values are the following:</p> <ul> <li> <p> <code>Stream</code> (default) – Lambda consumes records using a Kafka consumer group and preserves the order of records within each partition.</p> </li> <li> <p> <code>Queue</code> – Lambda consumes records using a Kafka share group. Multiple consumers can process records from the same partition concurrently, so Lambda doesn't preserve per-partition order. To use Queue mode, your cluster must run Apache Kafka version 4.2 or later with share groups enabled.</p> </li> </ul> <p>If you omit this parameter, Lambda uses <code>Stream</code>.</p> <p>You cannot change <code>ConsumptionMode</code> after you create the event source mapping. To use a different consumption mode, create a new event source mapping.</p> <p>When <code>ConsumptionMode</code> is <code>Queue</code>, the <code>StartingPosition</code>, <code>StartingPositionTimestamp</code>, and <code>MaximumBatchingWindowInSeconds</code> parameters are not supported.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -23706,6 +24673,7 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The exception type.</p>",
                         "smithy.api#tags": [
+                            "feature:public",
                             "feature:public"
                         ]
                     }
@@ -23715,6 +24683,7 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The exception message.</p>",
                         "smithy.api#tags": [
+                            "feature:public",
                             "feature:public"
                         ]
                     }
@@ -23725,6 +24694,7 @@
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 402,
                 "smithy.api#tags": [
+                    "feature:public",
                     "feature:public"
                 ]
             }
@@ -24648,6 +25618,15 @@
                         ]
                     }
                 },
+                "IncompatibleAcceleratorInstanceTypes": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IncompatibleAcceleratorInstanceTypes",
+                        "smithy.api#tags": [
+                            "feature:lmi-gpu"
+                        ]
+                    }
+                },
                 "DependencyError": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -24865,7 +25844,7 @@
                         }
                     }
                 },
-                "smithy.api#documentation": "<p>Stops a running <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. The execution transitions to STOPPED status and cannot be resumed. Any in-progress operations are terminated.</p>",
+                "smithy.api#documentation": "<p>Stops a running or paused <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. The execution transitions to STOPPED status and cannot be resumed. Any in-progress operations are terminated.</p>",
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/2025-12-01/durable-executions/{DurableExecutionArn}/stop",
@@ -25117,14 +26096,16 @@
                     "aws:RequestTag/${TagKey}"
                 ],
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to add tags to an AWS Lambda function, event source mapping, capacity provider, or code signing configuration resource",
+                    "documentation": "Grants permission to add tags to an AWS Lambda function, event source mapping, capacity provider, code signing configuration, layer, or runtime resource",
                     "relativeDocumentation": "API_TagResources.html",
                     "resources": {
                         "optional": {
                             "eventSourceMapping": {},
                             "function": {},
                             "code signing config": {},
-                            "capacityProvider": {}
+                            "capacityProvider": {},
+                            "layer": {},
+                            "runtime": {}
                         }
                     }
                 },
@@ -25760,14 +26741,16 @@
                     "aws:TagKeys"
                 ],
                 "aws.iam#iamAction": {
-                    "documentation": "Grants permission to remove tags from an AWS Lambda function, event source mapping, capacity provider, or code signing configuration resource",
+                    "documentation": "Grants permission to remove tags from an AWS Lambda function, event source mapping, capacity provider, code signing configuration, layer, or runtime resource",
                     "relativeDocumentation": "API_UntagResource.html",
                     "resources": {
                         "optional": {
                             "eventSourceMapping": {},
                             "function": {},
                             "code signing config": {},
-                            "capacityProvider": {}
+                            "capacityProvider": {},
+                            "layer": {},
+                            "runtime": {}
                         }
                     }
                 },
@@ -26361,7 +27344,7 @@
                 "MaximumBatchingWindowInSeconds": {
                     "target": "com.amazonaws.lambda#MaximumBatchingWindowInSeconds",
                     "traits": {
-                        "smithy.api#documentation": "<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For Kinesis, DynamoDB, and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For Kinesis, DynamoDB, and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>",
+                        "smithy.api#documentation": "<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For Kinesis, DynamoDB, and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For Kinesis, DynamoDB, and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p> <p>Not supported for Kafka event source mappings when <code>ConsumptionMode</code> is <code>Queue</code>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -26406,7 +27389,7 @@
                 "MaximumRetryAttempts": {
                     "target": "com.amazonaws.lambda#MaximumRetryAttemptsEventSourceMapping",
                     "traits": {
-                        "smithy.api#documentation": "<p>(Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Apache Kafka) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p>",
+                        "smithy.api#documentation": "<p>(Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Apache Kafka) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p> <p>For Kafka event source mappings with <code>ConsumptionMode</code> set to <code>Queue</code>, the value -1 (infinite retries) is not supported and the default is 0 (no retries). Lambda releases failed records back to the broker, which redelivers them up to the share group's <code>group.share.delivery.count.limit</code>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -26753,6 +27736,9 @@
                 "aws.iam#iamAction": {
                     "documentation": "Grants permission to modify the version-specific settings of an AWS Lambda function",
                     "relativeDocumentation": "API_UpdateFunctionConfiguration.html",
+                    "requiredActions": [
+                        "lambda:AssociateRuntimeAlias"
+                    ],
                     "resources": {
                         "required": {
                             "function": {}
@@ -26850,7 +27836,7 @@
                 "Timeout": {
                     "target": "com.amazonaws.lambda#Timeout",
                     "traits": {
-                        "smithy.api#documentation": "<p>The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds, and the maximum allowed value is 900 seconds. For functions using Lambda Managed Instances, asynchronous invocations and event source mapping invocations (except Amazon MQ and Amazon DocumentDB) support a maximum allowed value of 5,400 seconds (90 minutes). For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html\">Lambda execution environment</a>.</p>",
+                        "smithy.api#documentation": "<p>The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds, and the maximum allowed value is 1,800 seconds. For functions using Lambda Managed Instances, asynchronous invocations and event source mapping invocations (except Amazon MQ and Amazon DocumentDB) support a maximum allowed value of 5,400 seconds (90 minutes). For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html\">Lambda execution environment</a>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -26958,7 +27944,7 @@
                 "EphemeralStorage": {
                     "target": "com.amazonaws.lambda#EphemeralStorage",
                     "traits": {
-                        "smithy.api#documentation": "<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>",
+                        "smithy.api#documentation": "<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For functions that use <code>AcceleratorConfig</code>, the maximum is 32,768 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -26995,6 +27981,24 @@
                     "target": "com.amazonaws.lambda#DurableConfig",
                     "traits": {
                         "smithy.api#documentation": "<p>Configuration settings for <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable functions</a>, including execution timeout, retention period for execution history, and an optional ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>",
+                        "smithy.api#tags": [
+                            "feature:public"
+                        ]
+                    }
+                },
+                "RuntimeConfig": {
+                    "target": "com.amazonaws.lambda#FunctionRuntimeConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The customer-managed runtime configuration for your function. Specifies the customer-managed runtime and the runtime alias that your function uses.</p>",
+                        "smithy.api#tags": [
+                            "feature:cmr"
+                        ]
+                    }
+                },
+                "AcceleratorConfig": {
+                    "target": "com.amazonaws.lambda#AcceleratorConfig",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The accelerator resource settings for a Lambda execution environment.</p>",
                         "smithy.api#tags": [
                             "feature:public"
                         ]
@@ -27178,7 +28182,7 @@
                         }
                     }
                 },
-                "smithy.api#documentation": "<p>Updates the configuration for a Lambda function URL.</p>",
+                "smithy.api#documentation": "<p>Updates the configuration for a function URL of a Lambda Event Function.</p>",
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/2021-10-31/functions/{FunctionName}/url",
@@ -27541,7 +28545,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Specifies how long to pause the durable execution.</p>",
+                "smithy.api#documentation": "<p>Specifies how long the durable execution waits.</p>",
                 "smithy.api#tags": [
                     "feature:public"
                 ]
