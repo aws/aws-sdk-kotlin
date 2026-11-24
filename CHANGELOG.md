@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.45] - 11/24/2026
+
+### Features
+* (**bedrockagentcore**) Adds the optional userLocation parameter to InvokeWebSearch. Specify a two-letter ISO 3166-1 alpha-2 country code to refine web search results for that country. InvokeWebSearch also accepts search queries in languages other than English.
+
+### Documentation
+* (**globalaccelerator**) AWS Global Accelerator supports Client IP Preservation for NLBs with TLS Listener endpoints.
+
 ## [1.9.44] - 11/23/2026
 
 ### Features
