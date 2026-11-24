@@ -155,3 +155,4 @@ The SDK supports the following targets:
 * [JVM](docs/targets.md#jvm)
 * [Android](docs/targets.md#android)
 * [GraalVM](docs/targets.md#graalvm)
+* [Kotlin/Native](docs/targets.md#kotlinnative)

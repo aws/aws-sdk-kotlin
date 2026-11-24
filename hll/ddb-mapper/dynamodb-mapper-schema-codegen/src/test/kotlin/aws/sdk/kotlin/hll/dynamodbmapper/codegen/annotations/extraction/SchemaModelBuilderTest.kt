@@ -5,11 +5,13 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.extraction
 
 import aws.sdk.kotlin.hll.codegen.model.TypeRef
+import aws.sdk.kotlin.hll.codegen.rendering.Visibility
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbCounter
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbItem
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbMappable
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbPartitionKey
 import aws.sdk.kotlin.hll.dynamodbmapper.DynamoDbTtlSeconds
+import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.DestinationPackage
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.extractModel
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model.ItemConverterSpec
 import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model.MappedItem
@@ -17,8 +19,10 @@ import aws.sdk.kotlin.hll.dynamodbmapper.codegen.annotations.model.ValueConverte
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.google.devtools.ksp.symbol.Modifier
 import io.mockk.every
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
@@ -42,9 +46,11 @@ class SchemaModelBuilderTest {
         properties: (KSClassDeclaration) -> List<KSPropertyDeclaration>,
         itemConverterArgs: Map<String, Any?> = emptyMap(),
         classKind: ClassKind = ClassKind.CLASS,
+        modifiers: Set<Modifier> = emptySet(),
+        hasZeroArgConstructor: Boolean = true,
     ): KSClassDeclaration {
         val marker = fakeAnnotation(if (table) itemClass else mappableClass, itemConverterArgs)
-        val decl = fakeClassDeclaration(fqName, classKind, annotations = listOf(marker))
+        val decl = fakeClassDeclaration(fqName, classKind, annotations = listOf(marker), modifiers = modifiers, hasZeroArgConstructor = hasZeroArgConstructor)
         val props = properties(decl)
         every { decl.getAllProperties() } answers { props.asSequence() }
         return decl
@@ -80,6 +86,153 @@ class SchemaModelBuilderTest {
 
         // All members mutable + zero-arg constructor + WHEN_REQUIRED => no builder
         assertNull(parentItem.builder)
+    }
+
+    @Test
+    fun testMatchSourceVisibilityFollowsTheItemClass() {
+        val publicItem = mappedClass("org.example.PublicUser", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+        val internalItem = mappedClass(
+            "org.example.InternalUser",
+            table = true,
+            properties = { listOf(fakeProperty("id", string, listOf(pk))) },
+            modifiers = setOf(Modifier.INTERNAL),
+        )
+
+        val (publicBuilt, internalBuilt) = buildModel(listOf(publicItem, internalItem), testRenderContext(), diagnostics)
+
+        assertEquals(emptyList(), messages)
+        assertEquals(Visibility.PUBLIC, publicBuilt.visibility)
+        assertEquals(Visibility.INTERNAL, internalBuilt.visibility)
+    }
+
+    @Test
+    fun testMatchSourceVisibilityFollowsBuilderPropertyTypes() {
+        val child = mappedClass(
+            "org.example.Child",
+            table = false,
+            properties = { listOf(fakeProperty("name", string)) },
+            modifiers = setOf(Modifier.INTERNAL),
+        )
+        fun parent(name: String, hasZeroArgConstructor: Boolean) = mappedClass(
+            name,
+            table = true,
+            properties = { listOf(fakeProperty("id", string, listOf(pk)), fakeProperty("child", typeOf(child))) },
+            hasZeroArgConstructor = hasZeroArgConstructor,
+        )
+        val withBuilder = parent("org.example.WithBuilder", hasZeroArgConstructor = false)
+        val withoutBuilder = parent("org.example.WithoutBuilder", hasZeroArgConstructor = true)
+
+        val built = buildModel(listOf(withBuilder, withoutBuilder, child), testRenderContext(), diagnostics)
+
+        assertEquals(emptyList(), messages)
+        // A builder exposes the internal property type, so everything generated for its class must be internal
+        assertEquals(Visibility.INTERNAL, built.single { it.name == "WithBuilder" }.visibility)
+        // Without a builder, the internal type is only referenced inside the converter's initializer
+        assertEquals(Visibility.PUBLIC, built.single { it.name == "WithoutBuilder" }.visibility)
+    }
+
+    @Test
+    fun testMatchSourceVisibilityFollowsUserProvidedItemConverter() {
+        val internalConverter = fakeKsType(
+            "org.example.CustomConverter",
+            declaration = fakeClassDeclaration("org.example.CustomConverter", ClassKind.OBJECT, modifiers = setOf(Modifier.INTERNAL)),
+        )
+        val item = mappedClass(
+            "org.example.CustomUser",
+            table = true,
+            properties = { listOf(fakeProperty("id", string, listOf(pk))) },
+            itemConverterArgs = mapOf("converter" to internalConverter),
+        )
+
+        val built = buildModel(listOf(item), testRenderContext(), diagnostics).single()
+
+        assertEquals(emptyList(), messages)
+        assertEquals(Visibility.INTERNAL, built.visibility)
+    }
+
+    @Test
+    fun testMatchSourceVisibilityIgnoresNestedItemUserProvidedConverter() {
+        val internalConverter = fakeKsType(
+            "org.example.AddressConverter",
+            declaration = fakeClassDeclaration("org.example.AddressConverter", ClassKind.OBJECT, modifiers = setOf(Modifier.INTERNAL)),
+        )
+        val item = mappedClass(
+            "org.example.Address",
+            table = false,
+            properties = { listOf(fakeProperty("street", string)) },
+            itemConverterArgs = mapOf("converter" to internalConverter),
+        )
+
+        val built = buildModel(listOf(item), testRenderContext(), diagnostics).single()
+
+        assertEquals(emptyList(), messages)
+        assertEquals(Visibility.PUBLIC, built.visibility)
+    }
+
+    @Test
+    fun testInaccessibleClassIsNotExtractedFurther() {
+        val item = mappedClass(
+            "org.example.Hidden",
+            table = true,
+            properties = { listOf(fakeProperty("thing", fakeKsType("org.example.PlainThing"))) },
+            modifiers = setOf(Modifier.PRIVATE),
+        )
+
+        assertEquals(emptyList(), buildModel(listOf(item), testRenderContext(), diagnostics))
+        assertEquals(1, messages.size)
+        assertContains(messages.single(), "'org.example.Hidden' is private")
+    }
+
+    @Test
+    fun testSimilarNamesDoNotCollideWhenTheirDeclarationsAreNotGenerated() {
+        // UserValue's converter is named like User's value converter, which isn't generated since nothing references User
+        val user = mappedClass("org.example.User", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+        val userValue = mappedClass("org.example.UserValue", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+
+        val built = buildModel(listOf(user, userValue), testRenderContext(), diagnostics)
+
+        assertEquals(emptyList(), messages)
+        assertEquals(listOf("User", "UserValue"), built.map { it.name })
+    }
+
+    @Test
+    fun testGeneratedValueConverterCollidingWithGeneratedItemConverterIsReported() {
+        val user = mappedClass("org.example.User", table = false, properties = { listOf(fakeProperty("name", string)) })
+        val userValue = mappedClass("org.example.UserValue", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+        val holder = mappedClass("org.example.Holder", table = true, properties = {
+            listOf(fakeProperty("id", string, listOf(pk)), fakeProperty("user", typeOf(user)))
+        })
+
+        buildModel(listOf(user, userValue, holder), testRenderContext(), diagnostics)
+
+        assertEquals(
+            listOf(
+                "'org.example.User' and 'org.example.UserValue' would both generate '$generatedPkg.UserValueConverter'. " +
+                    "Rename one of them, or generate their code into different packages.",
+                "'org.example.UserValue' and 'org.example.User' would both generate '$generatedPkg.UserValueConverter'. " +
+                    "Rename one of them, or generate their code into different packages.",
+            ),
+            messages,
+        )
+    }
+
+    @Test
+    fun testSameNamesInOneDestinationPackageAreReportedOncePerClass() {
+        val first = mappedClass("org.a.User", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+        val second = mappedClass("org.b.User", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+        val unrelated = mappedClass("org.a.Order", table = true, properties = { listOf(fakeProperty("id", string, listOf(pk))) })
+
+        buildModel(listOf(first, second, unrelated), testRenderContext(destinationPackage = DestinationPackage.Absolute("gen")), diagnostics)
+
+        assertEquals(
+            listOf(
+                "'org.a.User' and 'org.b.User' would both generate 'gen.UserConverter'. Rename one of them, or generate " +
+                    "their code into different packages.",
+                "'org.b.User' and 'org.a.User' would both generate 'gen.UserConverter'. Rename one of them, or generate " +
+                    "their code into different packages.",
+            ),
+            messages,
+        )
     }
 
     @Test

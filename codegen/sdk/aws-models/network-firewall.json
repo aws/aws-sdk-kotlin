@@ -194,6 +194,26 @@
                 "smithy.api#pattern": "^([a-fA-F\\d:\\.]+($|/\\d{1,3}))$"
             }
         },
+        "com.amazonaws.networkfirewall#AddressTranslations": {
+            "type": "structure",
+            "members": {
+                "PublicIPv6Addresses": {
+                    "target": "com.amazonaws.networkfirewall#PublicIPv6Addresses",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The public IPv6 addresses that the internet gateway firewall uses for network address translation in this Availability Zone.</p>"
+                    }
+                },
+                "PublicIPv4Addresses": {
+                    "target": "com.amazonaws.networkfirewall#PublicIPv4Addresses",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The public IPv4 addresses that the internet gateway firewall uses for network address translation in this Availability Zone.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The public IP addresses that an internet gateway firewall uses for network address translation in one Availability Zone. Resources that don't have a public IP address reach the internet through these addresses. Network Firewall manages the addresses for you: it allocates them in your account and adds or removes addresses automatically based on traffic.</p>"
+            }
+        },
         "com.amazonaws.networkfirewall#Addresses": {
             "type": "list",
             "member": {
@@ -407,6 +427,12 @@
                         "smithy.api#documentation": "<p>Required. The Availability Zones where you want to create firewall endpoints. You must specify at least one Availability Zone.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -503,6 +529,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the firewall policy.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
                     }
                 }
             },
@@ -675,7 +707,7 @@
                 "Status": {
                     "target": "com.amazonaws.networkfirewall#AttachmentStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The current status of the firewall endpoint instantiation in the subnet. </p>\n         <p>When this value is <code>READY</code>, the endpoint is available to handle network traffic. Otherwise,\n         this value reflects its state, for example <code>CREATING</code> or <code>DELETING</code>.</p>"
+                        "smithy.api#documentation": "<p>The current status of the firewall endpoint instantiation in the subnet. </p>\n         <p>When this value is <code>READY</code>, the endpoint is available to handle network traffic. Otherwise,\n         this value reflects its state, for example <code>CREATING</code> or <code>DELETING</code>.</p>\n         <p>For an internet gateway firewall, <code>STANDBY</code> indicates an Availability Zone that has no resources yet.\n         Network Firewall provisions the endpoint there when the first resource is launched in that Availability Zone.</p>"
                     }
                 },
                 "StatusMessage": {
@@ -736,8 +768,17 @@
                     "traits": {
                         "smithy.api#enumValue": "READY"
                     }
+                },
+                "STANDBY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STANDBY"
+                    }
                 }
             }
+        },
+        "com.amazonaws.networkfirewall#AttachmentType": {
+            "type": "string"
         },
         "com.amazonaws.networkfirewall#AvailabilityZone": {
             "type": "string"
@@ -1068,6 +1109,193 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "EKS"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.networkfirewall#ContextDefinition": {
+            "type": "string",
+            "traits": {
+                "smithy.api#documentation": "<p>The ID of a resource that the context store records, such as a VPC, subnet, security group, or transit gateway attachment.</p>",
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                }
+            }
+        },
+        "com.amazonaws.networkfirewall#ContextDefinitionList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.networkfirewall#ContextDefinition"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1000
+                }
+            }
+        },
+        "com.amazonaws.networkfirewall#ContextFilters": {
+            "type": "structure",
+            "members": {
+                "Region": {
+                    "target": "com.amazonaws.networkfirewall#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region of the resources to return, for example <code>us-east-1</code>.</p>"
+                    }
+                },
+                "ResourceType": {
+                    "target": "com.amazonaws.networkfirewall#ResourceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of resource to return. Each resource type corresponds to the <code>ContextType</code> that\n      Network Firewall reports for the resource:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>SecurityGroup</code> - Security groups. Reported with the <code>SegmentId</code> context type.</p>\n            </li>\n            <li>\n               <p>\n                  <code>VPC</code> - VPCs. Reported with the <code>ResourceId</code> context type.</p>\n            </li>\n            <li>\n               <p>\n                  <code>Subnet</code> - Subnets. Reported with the <code>Subnet</code> context type.</p>\n            </li>\n            <li>\n               <p>\n                  <code>TGWAttachment</code> - Transit gateway attachments. Reported with the <code>Attachment</code> context type.</p>\n            </li>\n         </ul>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Filters for <code>ListResourcesInContextStore</code>. Both filters are optional. If you specify both,\n      Network Firewall returns only the resources that match both.</p>"
+            }
+        },
+        "com.amazonaws.networkfirewall#ContextSet": {
+            "type": "structure",
+            "members": {
+                "Definition": {
+                    "target": "com.amazonaws.networkfirewall#ContextDefinitionList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The list of resource identifiers. Each entry is the ID of a resource that the context store records, for example\n      <code>vpc-1234567890abcdef0</code>, <code>subnet-1234567890abcdef0</code>, <code>sg-1234567890abcdef0</code>, or\n      <code>tgw-attach-1234567890abcdef0</code>. You can specify 1-1,000 entries.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A list of resource identifiers from the context store that is associated with the firewall. Use a context set to write stateful rules against Amazon Web Services resources instead of IP addresses. This is part of a <a>RuleVariables</a>. </p>"
+            }
+        },
+        "com.amazonaws.networkfirewall#ContextSets": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.networkfirewall#RuleVariableName"
+            },
+            "value": {
+                "target": "com.amazonaws.networkfirewall#ContextSet"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 100
+                }
+            }
+        },
+        "com.amazonaws.networkfirewall#ContextStore": {
+            "type": "structure",
+            "members": {
+                "ContextStoreId": {
+                    "target": "com.amazonaws.networkfirewall#ContextStoreId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the context store. Use this value in <code>ListResourcesInContextStore</code> to list\n      the resources that the context store records.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "ContextStoreOwnerAccountId": {
+                    "target": "com.amazonaws.networkfirewall#AWSAccountId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Amazon Web Services account that owns the context store.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains details about a context store, including its unique identifier and the account that owns it.</p>"
+            }
+        },
+        "com.amazonaws.networkfirewall#ContextStoreId": {
+            "type": "string"
+        },
+        "com.amazonaws.networkfirewall#ContextStoreSyncState": {
+            "type": "structure",
+            "members": {
+                "SyncStatus": {
+                    "target": "com.amazonaws.networkfirewall#ContextStoreSyncStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The synchronization status of the firewall's context sets. Valid values:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>SYNCING</code> - The firewall is applying the latest context store data.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FULLY_RESOLVED</code> - All resource identifiers in the firewall's context sets resolve to resources in the context store.</p>\n            </li>\n            <li>\n               <p>\n                  <code>PARTIALLY_RESOLVED</code> - Some resource identifiers in the firewall's context sets don't resolve to resources in the context store.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SYNC_FAILED</code> - The firewall couldn't sync with the context store. For details, see <code>StatusMessage</code>.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "StatusMessage": {
+                    "target": "com.amazonaws.networkfirewall#StatusMessage",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A message that provides additional information about the synchronization status, particularly when the status is not <code>FULLY_RESOLVED</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The synchronization state of a firewall's context sets with its context store. This indicates whether the resource identifiers in the firewall's context sets resolve to resources that the context store records.</p>"
+            }
+        },
+        "com.amazonaws.networkfirewall#ContextStoreSyncStatus": {
+            "type": "enum",
+            "members": {
+                "SYNCING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SYNCING"
+                    }
+                },
+                "PARTIALLY_RESOLVED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PARTIALLY_RESOLVED"
+                    }
+                },
+                "FULLY_RESOLVED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FULLY_RESOLVED"
+                    }
+                },
+                "SYNC_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SYNC_FAILED"
+                    }
+                },
+                "UNRESOLVED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "UNRESOLVED"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.networkfirewall#ContextStores": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.networkfirewall#ContextStore"
+            }
+        },
+        "com.amazonaws.networkfirewall#ContextType": {
+            "type": "enum",
+            "members": {
+                "RESOURCE_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ResourceId"
+                    }
+                },
+                "SEGMENT_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SegmentId"
+                    }
+                },
+                "SUBNET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Subnet"
+                    }
+                },
+                "ATTACHMENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Attachment"
                     }
                 }
             }
@@ -1529,6 +1757,12 @@
                     "traits": {
                         "smithy.api#default": false,
                         "smithy.api#documentation": "<p>Optional. A setting indicating whether the firewall is protected against changes to its Availability Zone configuration. When set to <code>TRUE</code>, you cannot add or remove Availability Zones without first disabling this protection using <a>UpdateAvailabilityZoneChangeProtection</a>.</p>\n         <p>Default value: <code>FALSE</code>\n         </p>"
+                    }
+                },
+                "IgwFirewallConfiguration": {
+                    "target": "com.amazonaws.networkfirewall#IgwFirewallConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Settings that make this firewall an internet gateway firewall. An internet gateway firewall inspects all traffic between a VPC and its internet gateway, without changes to your subnets or route tables. Amazon Web Services Network Security Manager creates and manages internet gateway firewalls on your behalf, so you don't include this setting when you create a standard Network Firewall firewall.</p>\n         <p>When this setting is present, <code>FirewallName</code> must equal the <code>VpcId</code>, <code>AvailabilityZoneMappings</code> is required and must use Availability Zone IDs, and you can't specify <code>SubnetMappings</code> or a transit gateway.</p>"
                     }
                 },
                 "NatGatewayCreateMappings": {
@@ -2251,6 +2485,12 @@
                         "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the firewall.</p>\n         <p>You must specify the ARN or the name, and you can specify both. </p>"
                     }
                 },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
+                    }
+                },
                 "DeleteAssociatedNatGateways": {
                     "target": "com.amazonaws.networkfirewall#Boolean",
                     "traits": {
@@ -2881,7 +3121,7 @@
                 "Status": {
                     "target": "com.amazonaws.networkfirewall#FirewallStatusValue",
                     "traits": {
-                        "smithy.api#documentation": "<p>The readiness of the configured firewall to handle network traffic across all of the\n         Availability Zones where you have it configured. This setting is <code>READY</code> only when\n         the <code>ConfigurationSyncStateSummary</code> value is <code>IN_SYNC</code> and the\n            <code>Attachment</code>\n            <code>Status</code> values for all of the configured subnets are <code>READY</code>.\n      </p>"
+                        "smithy.api#documentation": "<p>The readiness of the configured firewall to handle network traffic across all of the\n         Availability Zones where you have it configured. This setting is <code>READY</code> only when\n         the <code>ConfigurationSyncStateSummary</code> value is <code>IN_SYNC</code> and the\n            <code>Attachment</code>\n            <code>Status</code> values for all of the configured subnets are <code>READY</code>.\n      </p>\n         <p>For an internet gateway firewall, this setting is <code>STANDBY</code> while no Availability Zone in the VPC has resources\n         that need the firewall. Network Firewall provisions the firewall in an Availability Zone when the first resource is\n         launched there.</p>"
                     }
                 },
                 "SupportedAvailabilityZones": {
@@ -3095,6 +3335,12 @@
                     "target": "com.amazonaws.networkfirewall#ResourceArn",
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the firewall.</p>\n         <p>You must specify the ARN or the name, and you can specify both. </p>"
+                    }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
                     }
                 }
             },
@@ -3313,6 +3559,12 @@
                     "target": "com.amazonaws.networkfirewall#ResourceName",
                     "traits": {
                         "smithy.api#documentation": "<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p>\n         <p>You must specify the ARN or the name, and you can specify both. </p>"
+                    }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
                     }
                 }
             },
@@ -4128,6 +4380,12 @@
                         "smithy.api#documentation": "<p>Required. The Availability Zones to remove from the firewall's configuration.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -4357,6 +4615,17 @@
         "com.amazonaws.networkfirewall#EndpointId": {
             "type": "string"
         },
+        "com.amazonaws.networkfirewall#EnforcementMode": {
+            "type": "enum",
+            "members": {
+                "POLICY_CONTROLLED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "POLICY_CONTROLLED"
+                    }
+                }
+            }
+        },
         "com.amazonaws.networkfirewall#ErrorMessage": {
             "type": "string"
         },
@@ -4485,6 +4754,12 @@
                         "smithy.api#documentation": "<p>A setting indicating whether the firewall is protected against changes to its Availability Zone configuration. When set to <code>TRUE</code>, you must first disable this protection before adding or removing Availability Zones.</p>"
                     }
                 },
+                "IgwFirewallConfiguration": {
+                    "target": "com.amazonaws.networkfirewall#IgwFirewallConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Contains the settings that configure an internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC. Network Firewall returns this setting only for an internet gateway firewall. For a standard firewall, this setting isn't present.</p>"
+                    }
+                },
                 "NatGatewayCreateMappings": {
                     "target": "com.amazonaws.networkfirewall#NatGatewayCreateMappingsList",
                     "traits": {
@@ -4501,6 +4776,18 @@
                     "target": "com.amazonaws.networkfirewall#VpcEndpoint",
                     "traits": {
                         "smithy.api#documentation": "<p>The VPC and subnets for the endpoints of a proxy mode firewall.</p>"
+                    }
+                },
+                "ContextStoreId": {
+                    "target": "com.amazonaws.networkfirewall#ContextStoreId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the context store that the firewall uses to resolve context sets in its rule groups. Network Firewall discovers the context store from the transit gateway association in Network Manager. This field is only present for transit gateway-attached firewalls whose transit gateway is associated with a context store.</p>"
+                    }
+                },
+                "ContextStoreOwnerAccountId": {
+                    "target": "com.amazonaws.networkfirewall#AWSAccountId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services account ID that owns the context store. This may be different from the firewall owner's account ID.</p>"
                     }
                 },
                 "TransparentFilteringNatScope": {
@@ -5448,7 +5735,7 @@
                 "Status": {
                     "target": "com.amazonaws.networkfirewall#FirewallStatusValue",
                     "traits": {
-                        "smithy.api#documentation": "<p>The readiness of the configured firewall to handle network traffic across all of the\n         Availability Zones where you have it configured. This setting is <code>READY</code> only when\n         the <code>ConfigurationSyncStateSummary</code> value is <code>IN_SYNC</code> and the\n            <code>Attachment</code>\n            <code>Status</code> values for all of the configured subnets are <code>READY</code>.\n      </p>",
+                        "smithy.api#documentation": "<p>The readiness of the configured firewall to handle network traffic across all of the\n         Availability Zones where you have it configured. This setting is <code>READY</code> only when\n         the <code>ConfigurationSyncStateSummary</code> value is <code>IN_SYNC</code> and the\n            <code>Attachment</code>\n            <code>Status</code> values for all of the configured subnets are <code>READY</code>.\n      </p>\n         <p>For an internet gateway firewall, this setting is <code>STANDBY</code> while no Availability Zone in the VPC has resources\n         that need the firewall. Network Firewall provisions the firewall in an Availability Zone when the first resource is\n         launched there.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -5475,6 +5762,12 @@
                     "target": "com.amazonaws.networkfirewall#TransitGatewayAttachmentSyncState",
                     "traits": {
                         "smithy.api#documentation": "<p>The synchronization state of the transit gateway attachment. This indicates whether the firewall's transit gateway configuration is properly synchronized and operational. Use this to verify that your transit gateway configuration changes have been applied.</p>"
+                    }
+                },
+                "ContextStoreSyncState": {
+                    "target": "com.amazonaws.networkfirewall#ContextStoreSyncState",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The synchronization state of the context sets in the firewall's rule groups with the firewall's context store. This field is only present when the firewall has a context store and its rule groups reference context sets.</p>"
                     }
                 }
             },
@@ -5507,6 +5800,29 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "FAILED"
+                    }
+                },
+                "STANDBY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "STANDBY"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.networkfirewall#FirewallType": {
+            "type": "enum",
+            "members": {
+                "FIREWALL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "FIREWALL"
+                    }
+                },
+                "IGW_FIREWALL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "IGW_FIREWALL"
                     }
                 }
             }
@@ -7274,6 +7590,18 @@
                 "target": "com.amazonaws.networkfirewall#IPSet"
             }
         },
+        "com.amazonaws.networkfirewall#IPv4AddressDefinition": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)(/([0-9]|[12]\\d|3[0-2]))?$"
+            }
+        },
+        "com.amazonaws.networkfirewall#IPv6AddressDefinition": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]+|::(ffff(:0{1,4})?:)?((25[0-5]|(2[0-4]|1?\\d)?\\d)\\.){3}(25[0-5]|(2[0-4]|1?\\d)?\\d)|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1?\\d)?\\d)\\.){3}(25[0-5]|(2[0-4]|1?\\d)?\\d))(/(12[0-8]|1[01]\\d|[1-9]?\\d))?$"
+            }
+        },
         "com.amazonaws.networkfirewall#IdentifiedType": {
             "type": "enum",
             "members": {
@@ -7289,6 +7617,21 @@
                         "smithy.api#enumValue": "STATELESS_RULE_CONTAINS_TCP_FLAGS"
                     }
                 }
+            }
+        },
+        "com.amazonaws.networkfirewall#IgwFirewallConfiguration": {
+            "type": "structure",
+            "members": {
+                "EnforcementMode": {
+                    "target": "com.amazonaws.networkfirewall#EnforcementMode",
+                    "traits": {
+                        "smithy.api#documentation": "<p>How the internet gateway firewall enforces its rules. The only supported value is <code>POLICY_CONTROLLED</code>, which means that the enforcement mode is set by the firewall policy that Amazon Web Services Network Security Manager associates with the firewall.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains the settings that configure an internet gateway firewall. An internet gateway firewall inspects all traffic between your VPC and its internet gateway, without changes to your subnets or route tables. You can describe and list internet gateway firewalls in Network Firewall, but you can't create, modify, or delete them directly, because Amazon Web Services Network Security Manager creates and manages them on your behalf.</p>"
             }
         },
         "com.amazonaws.networkfirewall#InsufficientCapacityException": {
@@ -7641,6 +7984,76 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.networkfirewall#ListContextStores": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.networkfirewall#ListContextStoresRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.networkfirewall#ListContextStoresResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.networkfirewall#InternalServerError"
+                },
+                {
+                    "target": "com.amazonaws.networkfirewall#InvalidRequestException"
+                },
+                {
+                    "target": "com.amazonaws.networkfirewall#ThrottlingException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Lists the active context stores that are associated with your firewalls. A context store records network resources that can be used to evaluate context-aware rules.\n         You can list the following resource types: VPCs, subnets, security groups, and transit gateway attachments.</p>\n         <p>When using a small page size, a single call might not return the full list. A response can contain fewer than <code>MaxResults</code>\n         results, or none, and still include a <code>NextToken</code>. Keep making requests until the response does not include a\n         <code>NextToken</code>.</p>",
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "ContextStores",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.networkfirewall#ListContextStoresRequest": {
+            "type": "structure",
+            "members": {
+                "NextToken": {
+                    "target": "com.amazonaws.networkfirewall#PaginationToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available\n         for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code>\n         value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.networkfirewall#PaginationMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of objects that you want Network Firewall to return for this request. If more\n          objects are available, in the response, Network Firewall provides a\n         <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.networkfirewall#ListContextStoresResponse": {
+            "type": "structure",
+            "members": {
+                "NextToken": {
+                    "target": "com.amazonaws.networkfirewall#PaginationToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available\n         for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code>\n         value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+                    }
+                },
+                "ContextStores": {
+                    "target": "com.amazonaws.networkfirewall#ContextStores",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The context stores that are associated with your firewalls.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.networkfirewall#ListFirewallPolicies": {
             "type": "operation",
             "input": {
@@ -7828,6 +8241,12 @@
                     "target": "com.amazonaws.networkfirewall#PaginationMaxResults",
                     "traits": {
                         "smithy.api#documentation": "<p>The maximum number of objects that you want Network Firewall to return for this request. If more\n          objects are available, in the response, Network Firewall provides a\n         <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+                    }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the firewall type to filter the results by. You can specify one of the following values:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - Returns only internet gateway firewalls, which Amazon Web Services Network Security Manager creates and manages for your VPCs.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - Returns only standard Network Firewall firewalls.</p>\n            </li>\n         </ul>\n         <p>If you don't specify a type, the default is to return firewalls of both types.</p>"
                     }
                 }
             },
@@ -8115,6 +8534,92 @@
                     "target": "com.amazonaws.networkfirewall#FlowOperations",
                     "traits": {
                         "smithy.api#documentation": "<p>Flow operations let you manage the flows tracked in the flow table, also known as the firewall table.</p>\n         <p>A flow is network traffic that is monitored by a firewall, either by stateful or stateless rules. \nFor traffic to be considered part of a flow, it must share Destination, DestinationPort, Direction, Protocol, Source, and SourcePort. </p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.networkfirewall#PaginationToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available\n         for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code>\n         value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.networkfirewall#ListResourcesInContextStore": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.networkfirewall#ListResourcesInContextStoreRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.networkfirewall#ListResourcesInContextStoreResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.networkfirewall#InternalServerError"
+                },
+                {
+                    "target": "com.amazonaws.networkfirewall#InvalidRequestException"
+                },
+                {
+                    "target": "com.amazonaws.networkfirewall#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.networkfirewall#ThrottlingException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Lists the resources that a context store records. The context store must be associated with a transit gateway that your firewall is attached to.\n      You can filter the results by Region, resource type, or both.</p>\n         <p>When using a small page size, a single call might not return the full list. A response can contain fewer than <code>MaxResults</code>\n         results, or none, and still include a <code>NextToken</code>. Keep making requests until the response does not include a\n         <code>NextToken</code>.</p>",
+                "smithy.api#paginated": {
+                    "inputToken": "NextToken",
+                    "outputToken": "NextToken",
+                    "items": "ResourceContexts",
+                    "pageSize": "MaxResults"
+                }
+            }
+        },
+        "com.amazonaws.networkfirewall#ListResourcesInContextStoreRequest": {
+            "type": "structure",
+            "members": {
+                "ContextStoreId": {
+                    "target": "com.amazonaws.networkfirewall#ContextStoreId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The unique identifier of the context store. To get the identifiers of the context stores that are associated\n      with your firewalls, call <code>ListContextStores</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Filters": {
+                    "target": "com.amazonaws.networkfirewall#ContextFilters",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Optional filters that limit the results to resources in a specific Region, of a specific resource type, or\n      both. If you specify both filters, Network Firewall returns only the resources that match both.</p>"
+                    }
+                },
+                "MaxResults": {
+                    "target": "com.amazonaws.networkfirewall#PaginationMaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum number of objects that you want Network Firewall to return for this request. If more\n          objects are available, in the response, Network Firewall provides a\n         <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+                    }
+                },
+                "NextToken": {
+                    "target": "com.amazonaws.networkfirewall#PaginationToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available\n         for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code>\n         value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>\n         <p>A token is valid only for the same <code>ContextStoreId</code> and filters as the request that returned it.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.networkfirewall#ListResourcesInContextStoreResponse": {
+            "type": "structure",
+            "members": {
+                "ResourceContexts": {
+                    "target": "com.amazonaws.networkfirewall#ResourceContexts",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The resources that the context store records and that match your filters.</p>",
+                        "smithy.api#required": {}
                     }
                 },
                 "NextToken": {
@@ -8932,6 +9437,9 @@
                     "target": "com.amazonaws.networkfirewall#ListContainerAssociations"
                 },
                 {
+                    "target": "com.amazonaws.networkfirewall#ListContextStores"
+                },
+                {
                     "target": "com.amazonaws.networkfirewall#ListFirewallPolicies"
                 },
                 {
@@ -8945,6 +9453,9 @@
                 },
                 {
                     "target": "com.amazonaws.networkfirewall#ListFlowOperations"
+                },
+                {
+                    "target": "com.amazonaws.networkfirewall#ListResourcesInContextStore"
                 },
                 {
                     "target": "com.amazonaws.networkfirewall#ListRuleGroups"
@@ -10531,6 +11042,21 @@
                 }
             }
         },
+        "com.amazonaws.networkfirewall#PublicIPv4Addresses": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.networkfirewall#IPv4AddressDefinition"
+            }
+        },
+        "com.amazonaws.networkfirewall#PublicIPv6Addresses": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.networkfirewall#IPv6AddressDefinition"
+            }
+        },
+        "com.amazonaws.networkfirewall#PublicId": {
+            "type": "string"
+        },
         "com.amazonaws.networkfirewall#PublishMetricAction": {
             "type": "structure",
             "members": {
@@ -10618,6 +11144,12 @@
                 "smithy.api#documentation": "<p>Contains a set of IP set references.</p>"
             }
         },
+        "com.amazonaws.networkfirewall#Region": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[a-z]{2}(-[a-z]+)+-\\d+$"
+            }
+        },
         "com.amazonaws.networkfirewall#RejectNetworkFirewallTransitGatewayAttachment": {
             "type": "operation",
             "input": {
@@ -10692,6 +11224,51 @@
                     "max": 256
                 },
                 "smithy.api#pattern": "^arn:aws"
+            }
+        },
+        "com.amazonaws.networkfirewall#ResourceContext": {
+            "type": "structure",
+            "members": {
+                "ContextType": {
+                    "target": "com.amazonaws.networkfirewall#ContextType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The kind of context that the context store records for the resource. Valid values:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ResourceId</code> - A VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>SegmentId</code> - A security group.</p>\n            </li>\n            <li>\n               <p>\n                  <code>Subnet</code> - A subnet.</p>\n            </li>\n            <li>\n               <p>\n                  <code>Attachment</code> - A transit gateway attachment.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "Region": {
+                    "target": "com.amazonaws.networkfirewall#Region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region of the resource.</p>"
+                    }
+                },
+                "AvailabilityZone": {
+                    "target": "com.amazonaws.networkfirewall#AvailabilityZone",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Availability Zone of the resource. Present for subnets.</p>"
+                    }
+                },
+                "AttachmentType": {
+                    "target": "com.amazonaws.networkfirewall#AttachmentType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of the transit gateway attachment. Present for attachments.</p>"
+                    }
+                },
+                "PublicId": {
+                    "target": "com.amazonaws.networkfirewall#PublicId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the resource, for example <code>vpc-1234567890abcdef0</code>,\n      <code>subnet-1234567890abcdef0</code>, <code>sg-1234567890abcdef0</code>, or\n      <code>tgw-attach-1234567890abcdef0</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A resource that a context store records, which <code>ListResourcesInContextStore</code> returns.</p>"
+            }
+        },
+        "com.amazonaws.networkfirewall#ResourceContexts": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.networkfirewall#ResourceContext"
             }
         },
         "com.amazonaws.networkfirewall#ResourceId": {
@@ -10819,6 +11396,35 @@
                 "smithy.api#length": {
                     "min": 1,
                     "max": 8192
+                }
+            }
+        },
+        "com.amazonaws.networkfirewall#ResourceType": {
+            "type": "enum",
+            "members": {
+                "SECURITY_GROUP": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SecurityGroup"
+                    }
+                },
+                "VPC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "VPC"
+                    }
+                },
+                "SUBNET": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Subnet"
+                    }
+                },
+                "TGW_ATTACHMENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TGWAttachment"
+                    }
                 }
             }
         },
@@ -11314,6 +11920,12 @@
                     "target": "com.amazonaws.networkfirewall#PortSets",
                     "traits": {
                         "smithy.api#documentation": "<p>A list of port ranges. </p>"
+                    }
+                },
+                "ContextSets": {
+                    "target": "com.amazonaws.networkfirewall#ContextSets",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of context sets. Each context set lists resources from the context store that is associated with the firewall. </p>"
                     }
                 }
             },
@@ -12437,6 +13049,12 @@
                         "smithy.api#documentation": "<p>The configuration status of the firewall endpoint in a single VPC subnet. Network Firewall\n         provides each endpoint with the rules that are configured in the firewall policy. Each time\n         you add a subnet or modify the associated firewall policy, Network Firewall synchronizes the\n          rules in the endpoint, so it can properly filter network traffic. </p>"
                     }
                 },
+                "AddressTranslations": {
+                    "target": "com.amazonaws.networkfirewall#AddressTranslations",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The public IP addresses that an internet gateway firewall uses for network address translation in this Availability Zone. Network Firewall allocates these addresses in your account and adds or removes addresses automatically based on traffic. This setting is only present for an internet gateway firewall.</p>"
+                    }
+                },
                 "NatGatewayAttachments": {
                     "target": "com.amazonaws.networkfirewall#NatGatewayAttachmentsList",
                     "traits": {
@@ -13449,6 +14067,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p>\n         <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p>\n         <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
                     }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -13547,6 +14171,12 @@
                         "smithy.api#documentation": "<p>A flag indicating whether it is possible to delete the firewall. A setting of <code>TRUE</code> indicates\n         that the firewall is protected against deletion. Use this setting to protect against\n         accidentally deleting a firewall that is in use. When you create a firewall, the operation initializes this flag to <code>TRUE</code>.</p>",
                         "smithy.api#required": {}
                     }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -13641,6 +14271,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The new description for the firewall. If you omit this setting, Network Firewall removes\n         the description for the firewall.</p>"
                     }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -13734,6 +14370,12 @@
                 },
                 "EncryptionConfiguration": {
                     "target": "com.amazonaws.networkfirewall#EncryptionConfiguration"
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -13860,6 +14502,12 @@
                         "smithy.api#default": false,
                         "smithy.api#documentation": "<p>A setting indicating whether the firewall is protected against a change to the firewall policy association.\n         Use this setting to protect against\n         accidentally modifying the firewall policy for a firewall that is in use. When you create a firewall, the operation initializes this setting to <code>TRUE</code>.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
                     }
                 }
             },
@@ -14127,6 +14775,12 @@
                     "target": "com.amazonaws.networkfirewall#ResourceName",
                     "traits": {
                         "smithy.api#documentation": "<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p>\n         <p>You must specify the ARN or the name, and you can specify both. </p>"
+                    }
+                },
+                "FirewallType": {
+                    "target": "com.amazonaws.networkfirewall#FirewallType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The type of firewall that the request targets. Network Firewall supports the following firewall types:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>IGW_FIREWALL</code> - An internet gateway firewall, which Amazon Web Services Network Security Manager creates and manages for a VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FIREWALL</code> - A standard Network Firewall firewall.</p>\n            </li>\n         </ul>\n         <p>If you specify the firewall ARN, the type must match the resource type in the ARN. If you specify only the firewall name, Network Firewall uses this value to identify the firewall. If you don't specify a type, the default is <code>FIREWALL</code>.</p>"
                     }
                 },
                 "LoggingConfiguration": {
