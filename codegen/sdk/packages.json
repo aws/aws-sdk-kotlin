@@ -865,6 +865,12 @@
             "brazilName": "AwsSdkKotlinEksAuth"
         },
         {
+            "sdkId": "ELB Proxy",
+            "namespace": "aws.sdk.kotlin.services.elbproxy",
+            "artifactName": "elbproxy",
+            "brazilName": "AwsSdkKotlinElbProxy"
+        },
+        {
             "sdkId": "EMR",
             "namespace": "aws.sdk.kotlin.services.emr",
             "artifactName": "emr",
