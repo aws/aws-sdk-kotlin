@@ -6,7 +6,8 @@ on:
 
 jobs:
   minor-version-bump-check:
-    permissions: {}
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Minor version bump check
