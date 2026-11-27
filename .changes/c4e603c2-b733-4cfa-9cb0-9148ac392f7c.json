@@ -1,0 +1,9 @@
+{
+  "id": "c4e603c2-b733-4cfa-9cb0-9148ac392f7c",
+  "type": "bugfix",
+  "description": "Handle non-parameterized type aliases in DynamoDB Mapper schema generation",
+  "issues": [
+    "#1564"
+  ],
+  "module": "dynamodb-mapper-schema-codegen"
+}
