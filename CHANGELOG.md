@@ -1,5 +1,155 @@
 # Changelog
 
+## [1.9.47] - 11/27/2026
+
+### Features
+* (**cloudwatch**) CloudWatch OTel enrichment supports a free basic option and a paid tag enrichment option, using the EnableTagEnrichment flag. Set it to true (default) to enrich vended metrics with resource ARN and tag labels for PromQL queries. Set it to false to get the free basic option without resource tags.
+* (**elasticsearchservice**) Catalog APIs for Optimized engine domains
+* (**marketplaceagreement**) This release adds per-Region pricing to AWS Marketplace usage-based pricing terms. Rate card items can now include Region-specific price overrides. When a Regional price is present for an AWS Region, it replaces the default price for that dimension.
+* (**neptunegraph**) Adds support for Graph Sessions, a new offering backed by on-demand ephemeral compute.
+* (**opensearch**) Catalog APIs for Optimized engine domains
+* (**rds**) Aurora PostgreSQL and Aurora MySQL now let you delete a DB cluster and all its instances in a single API call or console action, without deleting each instance first. Cluster deletion also completes faster.
+
+## [1.9.46] - 11/25/2026
+
+### Features
+* (**elbproxy**) Introducing Elastic Load Balancing for Envoy. Run your existing Envoy configurations with AWS integrations, managed scaling, and automatic patching.
+* (**wafv2**) AWS WAF added support for associating AWS WAF web ACLs with Elastic Load Balancing proxies. You can now use AssociateWebACL, DisassociateWebACL, GetWebACLForResource, and ListResourcesForWebACL with the ELB PROXY resource type to protect your proxies with AWS WAF
+
+## [1.9.45] - 11/24/2026
+
+### Features
+* (**bedrockagentcore**) Adds the optional userLocation parameter to InvokeWebSearch. Specify a two-letter ISO 3166-1 alpha-2 country code to refine web search results for that country. InvokeWebSearch also accepts search queries in languages other than English.
+
+### Documentation
+* (**globalaccelerator**) AWS Global Accelerator supports Client IP Preservation for NLBs with TLS Listener endpoints.
+
+## [1.9.44] - 11/23/2026
+
+### Features
+* (**cloudfront**) Launch CloudFront in AWS European Sovereign Cloud.
+* (**cloudfrontkeyvaluestore**) This release adds support for KVSHQ API in the AWS European Sovereign Cloud. Requests for key value stores in the aws-eusc partition are now routed to account-based endpoints under cloudfront-kvs.global.api.amazonwebservices.eu.
+* (**cloudwatchomni**) Release of the new integration type in CreateIntegration API - Used to add Microsoft Azure resources to the Amazon CloudWatch Omni context graph through an AWS Config connector for your Azure tenant.
+* (**fsx**) Adds support for new FSx for NetApp ONTAP resources
+
+### Fixes
+* (**dynamodb-mapper**) Fix DynamoDB Mapper schema generation for `internal` and nested annotated classes. The schema generator's default `visibility` is now `MATCH_SOURCE`, which generates `internal` code for any annotated class whose generated signatures expose a non-public type. Previously all generated code was `public` by default. Set `visibility = Visibility.PUBLIC` to restore the previous behavior.
+
+## [1.9.43] - 11/21/2026
+
+### Features
+* (**quicksight**) Quicksight public SDK release for November 20
+* (**sagemaker**) Amazon SageMaker AI adds APIs to view capacity reservations and their usage.
+
+## [1.9.42] - 11/20/2026
+
+### Features
+* (**agentdiscovery**) Adds the SearchPublicRecords API, which searches public registry records for AI agents, tools, and skills that their publishers have made discoverable.
+* (**agentregistry**) Adds support for the WEBBOT registry record type
+* (**agentregistrycontrol**) Adds APIs to create publishers, verify that a publisher owns a domain, and associate registry records with a publisher. Publishers can approve or reject each association.
+* (**apiportal**) Adds support for API Portal, a new Amazon API Gateway feature that discovers the APIs running behind API Gateway, Application Load Balancer, and CloudFront across an AWS Organization, evaluates their security posture, and publishes documentation portals for them.
+* (**backup**) This release adds ResourceTypeOptInIncremental to the UpdateRegionSettings request and the DescribeRegionSettings response, so customers can opt in to or out of incremental backups. It currently applies only to Amazon DynamoDB table backups.
+* (**bedrock**) Amazon Bedrock adds APIs to manage projects, discover and apply to Trusted Access Programs, manage enrollments, and configure data retention storage for accounts, organizations, and projects. Model and inference profile discovery now supports project context.
+* (**bedrockagentcorecontrol**) Adds responseInterceptionMode and responseStreamingConfiguration to gateway interceptor configurations. Set responseInterceptionMode to STREAM to have the response interceptor process streaming responses from HTTP and inference targets in batches of events.
+* (**bedrockruntime**) Amazon Bedrock Runtime adds an optional projectIdentifier parameter to InvokeModel, InvokeModelWithResponseStream, Converse, and ConverseStream, allowing requests to specify a project by ID or ARN.
+* (**cloudfront**) Amazon CloudFront now supports HTTP2 connections to custom and VPC origins, so you can multiplex many requests over fewer origin connections, including WebSocket connections to HTTP2 origins that support extended CONNECT.
+* (**computeoptimizerautomation**) Adds organization enrollment configurations, which enable Automation and set the organization rule mode for the organization root, organizational units (OUs), and accounts. Organization rules can include and exclude OUs, and recommended actions and automation events can be filtered by OU.
+* (**datazone**) Amazon DataZone now supports detaching a project from its project profile via UpdateProject, specifying the environment blueprint ID in environment configuration user parameters, and transferring asset ownership from a source project to a target project via UpdateAssetOwner.
+* (**devicefarm**) Add support for the use of virtual devices on Device Farm.
+* (**ec2**) This release adds documentation for the T9g instance family to the EC2 ModifyDefaultCreditSpecification and GetDefaultCreditSpecification APIs, adds the disable-complete state for IPAM routing policy registrations, and adds Network Firewall automated Internet firewall API changes.
+* (**elementalinference**) Adds Arabic (ara) as a supported language for subtitling transcription and custom vocabulary dictionaries.
+* (**fsx**) Adds support for FSx for NetApp ONTAP 3rd Generation file systems and API operations for new FSx for NetApp ONTAP resources
+* (**glue**) Minor updates to the Glue Business Context APIs
+* (**inspector2**) This release adds runtimeReachability, runtimeReachabilityReason, and purl fields to vulnerable packages in the finding model. It also adds runtimeReachability, runtimeReachabilityReason and purlQualifier package filters for listing findings, suppression rules, and findings reports.
+* (**lambdamicrovms**) AWS Lambda MicroVMs now supports customer managed keys (CMK) in AWS Key Management Service (AWS KMS), enabling you to encrypt Lambda MicroVM data at rest using keys you control.
+* (**marketplacediscovery**) AWS Marketplace Discovery adds ListListingAttributes, an API for trust center, case study, and specialization details. SearchListings adds summaries, seller engagements and filters. GetListing and GetProduct return purchase indicators when products cannot be subscribed to or require no subscription.
+* (**mediaconvert**) This release adds support for the DTS-X and DTS audio codecs, AV1 encoding improvements including Fast decode, GOP size in seconds, and temporal adaptive quantization, and Dynamic Multiview for H.264 and H.265 outputs.
+* (**medialive**) AWS Elemental MediaLive now supports converting captions from non-embedded sources, such as Teletext and Smart Subtitles, into CEA-608 and CEA-708 embedded captions, and supports WebVTT subtitle renditions from HLS inputs as a caption source.
+* (**networkfirewall**) Adds read-only support for internet gateway firewalls, which are created and managed by AWS Network Security Manager. Adds FirewallType to firewall operations and IgwFirewallConfiguration to Firewall.
+* (**networksecuritymanager**) Adds support for Network Firewall automated internet firewall to Network Security Manager
+* (**observabilityadmin**) Enablement for Network Firewall and Omni Events via Observability Admin Telemetry Rule for account and organization level
+* (**odb**) Adds the ListAutonomousDatabaseRefreshableClones and StartAutonomousDatabaseRefresh APIs for listing and refreshing refreshable clones of Autonomous Database Serverless.
+* (**omics**) Adds the parametersUri field to StartRun, which lets you provide run parameters in a JSON file in Amazon S3 instead of inline. GetRun returns parametersUri for runs started this way.
+* (**partnercentralchannel**) Adds MSP program relationships support in AWS Partner Central. Partners can now create, update, list, and delete MSP relationships using the new MSP program type on the CreateProgramManagementAccount, CreateRelationship, UpdateRelationship, and ListRelationships operations.
+* (**payments**) Initial release of AWS Payments API, which lets you view your account balance, invoices, credit memos, and payment instruments.
+* (**pcs**) Added support for Instance Health Checks in AWS PCS.
+* (**route53**) Amazon Route 53 support for advanced hosted zones. Including change guardrails, public dns fallback, change history. Also support for AZAffinityRouting.
+* (**sagemaker**) Adds HyperPod Global Inference Gateway APIs to route inference across HyperPod clusters in multiple Regions. Adds the MoveClusterNodes API, which moves running nodes between instance groups, within a cluster or between clusters in the same region, account and subnet, without releasing the instances.
+* (**sagemakergatewayruntime**) Adds the InvokeGlobalInferenceGateway and InvokeGlobalInferenceGatewayWithResponseStream APIs for sending inference requests to a SageMaker HyperPod Global Inference Gateway.
+* (**ssm**) This release adds a CloudProviders field to SSM documents. Specify the cloud providers (AWS, Azure, GCP) a document can run on in CreateDocument and UpdateDocument, view it in DescribeDocument, ListDocuments and ListDocumentVersions, and filter ListDocuments by cloud provider.
+* (**taxsettings**) Adds support for Norway, New Zealand and United Arab Emirates additional tax information, and the Vietnam VAT credit method and 20-digit payment voucher number.
+* (**textract**) Amazon Textract Insights uses generative AI to split, classify, and extract data from documents with one asynchronous API. Get text, layout, and tables as Markdown, HTML, or CSV, plus summaries and figure captions, and extract the fields you define in a blueprint with confidence scores and locations
+* (**transcribe**) This release adds the TranscribeAudio API for synchronous transcription. Send a media file inline or from Amazon S3 and receive the transcript in the same response, with support for speaker, channel identification, language identification, custom vocabularies, vocabulary filters, and PII redaction.
+* (**wafv2**) This release adds AI Security AMR configuration and five read-only APIs for AWS WAF API Security events. Use ListEvents and ListEventsByWebACL to list events, GetEvent to get event details including the timeline, and ListEventActors and GetEventActor to view the clients attributed to events
+
+### Fixes
+* [#1743](https://github.com/smithy-lang/smithy-kotlin/issues/1743) Write refreshed SSO and Login tokens without blocking the calling thread
+
+## [1.9.41] - 11/20/2026
+
+### Features
+* (**acm**) AWS Certificate Manager now supports the ability to issue certificates from the Amazon N2 certificate authorities (CAs), an Amazon-operated CA hierarchy.
+* (**agentregistry**) BatchGetDiscoverableRegistryRecord returns a short-lived download URL and SHA-256 checksum for approved skill packages. SearchDiscoverableRegistryRecords adds searchType (KEYWORD, SEMANTIC, HYBRID) and pagination. Adds bearer token authentication for registries that use JWT authorization.
+* (**agentregistrycontrol**) Adds skill packages and skill source sync for agent skill records. Upload a skill package (ZIP) or sync SKILL.md or the full package from Amazon S3 or GitHub. GetRegistryRecord returns a short-lived download URL and SHA-256 checksum. GitHub sources use OAuth 2.0 user authorization.
+* (**appstream**) Enable stack-level WebAuthn redirection to relay passkey and security-key authentication from a WorkSpaces Applications streaming session to the user's local device.
+* (**bcmpricingcalculator**) Adding new API, GetUsageLinesEstimatedCost which can be used to estimate the cost of usage lines.
+* (**bedrockagentcore**) Adds the AWS Billing x402 payment type to ProcessPayment. Agents can purchase x402-enabled AWS Marketplace products and have the charges billed to the AWS account, without a wallet. Requests use the service-managed payment instrument ID aws.agentcorepayments.awsbilling.v1.
+* (**bedrockagentcorecontrol**) Adds AWS Billing payments to ProcessPayment. Agents can pay x402 sellers that accept AWS Marketplace billing, and the charge goes on the buyer's AWS bill. Adds support for nested virtualization in Runtime Instances. When you turn on nested virtualization, Runtime launches instances with KVM enabled.
+* (**cloudformation**) Adds parameters to support custom execution roles for service-managed stack sets to CreateStackSet, UpdateStackSet, and DescribeStackSet, enabling the use of Macros, Transforms, and Nested Stacks.
+* (**cloudfront**) Amazon CloudFront adds configuration for SNI-less clients on Anycast static IPs, introduces Anycast IP based domain routing for Distribution Tenants, provides automatic domain ownership validation when creating or updating Distribution Tenants, and enables HTTP traffic via DNS validation.
+* (**codeconnections**) AWS CodeConnections now supports GitHub Enterprise Cloud with data residency (GHEC-DR) via the new GitHubEnterpriseCloudDataResidency provider type and ProviderEndpoint parameter in CreateConnection. This release also tightens connection ARN validation to enforce the expected ARN format.
+* (**cognitoidentityprovider**) Adds support for storing user pool app client secrets in AWS Secrets Manager and adds support OAuth Client ID Metadata Document (CIMD) which lets a client use an HTTPS URL as its client ID instead of registering in advance.
+* (**connect**) Amazon Connect adds voicemail support, with new reference types, file use case types, contact details, and a voicemail task contact subtype for managing voicemail recordings and transcripts.
+* (**connectcases**) This release adds support for SLAs that track any single-select field, including custom fields, and for updating the target duration of an SLA with the UpdateRelatedItem API.
+* (**costexplorer**) This release adds five standardized cost metrics to the Cost Explorer API BilledCost, ListCost, ContractedCost, PublicEquivalentBilledCost and PublicOnDemandCost. Use these metrics with GetCostAndUsage and GetCostAndUsageWithResources. The metrics return values for usage from November 2026 onwards.
+* (**devopsagent**) AWS DevOps Agent adds AWS Organizations support so that agent spaces can monitor member accounts across an organizational unit.
+* (**elasticloadbalancingv2**) Network Load Balancer now supports mutual TLS (mTLS), letting you authenticate client certificates before granting access. You can configure a trust store of certificate authorities on your Network Load Balancer, which will then verify the client certificate on each inbound connection.
+* (**eventbridgev2**) This release adds Webhook event sources, which receive events from third-party providers over HTTPS and authenticate them with a static token, HTTP Basic authentication, or an HMAC signature, and Amazon MSK subscribers, which deliver events to a topic in an Amazon MSK and MSK Serverless cluster.
+* (**iam**) This release adds API support for configuring trusted identity propagation for IAM SAML and OpenIDConnect providers.
+* (**inspector2**) Amazon Inspector Code Security now supports GitHub Enterprise Server integrations. For GitHub Enterprise Server and GitLab Self-Managed, you can connect over a private network by adding a VPC configuration when you create an integration.
+* (**kafka**) Amazon MSK now supports in-place migration of provisioned clusters from Standard to Express brokers. This release adds APIs to assess a cluster before migration and to reassign topics, and returns broker type upgrade details in cluster operations.
+* (**lakeformation**) Adds Status and StatusReason to RLSPolicy in GetRLSPolicy and ListRLSPolicies, indicating whether a row-level security policy is valid or references a deleted lookup table or user-defined function
+* (**lambda**) Increase function timeout limit to 30 minutes for Lambda Event Functions.
+* (**marketplacecatalog**) AI Listing Experience that provides listing quality, content and feature recommendations through ListAssessments and DescribeAssessment APIs. Adds a new API StartAssessment to trigger Seller testing for Metering and Entitlement integration for products.
+* (**marketplacedeployment**) Add support for deployment configurations for Data as a Service products in AWS Marketplace
+* (**medialive**) This feature adds a new codec "JPEGXS" to the Input Specification Codec field. It adds a new "MAX 500 MBPS" maximum bitrate to the maximum bitrate Input Specification field. These input spec changes are used to enable TR-07 inputs and are also tied to metering of JPEGXS inputs.
+* (**partnercentralmarketing**) Initial release of AWS Partner Central Marketing, which AWS Partners use to create co-branded marketing campaigns from AWS-authored templates, tailor and activate their emails, landing pages, documents and social posts, and export campaign assets.
+* (**partnercentralrevenuemeasurement**) Marketplace revenue shares are now identified by a marketplace revenue share ID. Adds the UpdateMarketplaceRevenueShare API, optional grouping of AWS Marketplace products that run on the same backend AWS infrastructure, and context attributes for revenue attributions.
+* (**partnercentralselling**) Adds the Leads APIs (SearchEngagements, ListEngagementGroups), customer account APIs with statistics and bulk jobs, SearchOpportunities, opportunity bulk jobs, account planning invitations, co-sell motion reason on AWS opportunity summaries, and channel recommendations on lead insights.
+* (**pcs**) Added support for Job Submit Plugins in AWS PCS.
+* (**polly**) Adds voice cloning to Amazon Polly. The new CreateVoice, GetVoice and DeleteVoice operations create and manage a custom voice from a speaker's recording, usable with the generative engine in all synthesis operations.
+* (**rds**) Adds the PrimaryEndpoint structure to DBInstance. It returns the connection endpoint for the current primary instance, so no need to reconnect to a different DNS name after the switchover. Create Aurora clusters with express configuration in a VPC, and move clusters into, out of, or between VPCs.
+* (**rolesanywhere**) Adds the tipConfiguration field to profiles to turn on trusted identity propagation, which adds the identity from an X.509 certificate to sessions as origin identity condition keys.
+* (**route53**) Route 53 Private Endpoint Health Checks support
+* (**route53resolver**) Route 53 Resolver DNS Firewall adds the AutoAllowlist firewall rule type, which observes the domains your VPCs resolve and allows the ones you approve, and the ListFirewallRuleDomains API.
+* (**rtbfabric**) AWS RTB Fabric now lets you discover modules and attach them to your links. Find modules and their versions with ListAvailableModules, GetAvailableModule, ListAvailableModuleVersions and GetAvailableModuleVersion, attach them with PutLinkFlows and track each change with GetUpdate and ListUpdates.
+* (**s3tables**) Adds support for disassociating replica tables in S3 Tables replication with the new DisassociateTableReplication API, which promotes a read-only replica table to a standalone table.
+* (**securityagent**) This release exposes additional per-job metadata within code remediation tasks.
+* (**sts**) AWS STS adds GetScopedCredentials and expands Trusted Identity Propagation (TIP) to IAM federation and IAM Roles Anywhere. GetScopedCredentials reduces an existing session's permissions and duration. TIP carries verified user or workload identity for authorization and CloudTrail auditing.
+
+## [1.9.40] - 11/20/2026
+
+### Features
+* (**abusesignal**) This release introduces the AWS Abuse Signal API, enabling customers to programmatically submit and track AWS abuse reports.
+* (**bedrockagentcorecontrol**) Adds s3BucketMount to mount an Amazon S3 bucket as a file system in AgentCore Runtime, with an optional per-session key prefix and adds operatingSystemConfiguration with a Linux privilegeMode (STANDARD or PRIVILEGED) to the capacity provider configuration
+* (**braket**) Supporting a new PAUSED device status and a DeviceStatusReason.
+* (**cleanrooms**) Adds support for populating intermediate tables with results from PySpark analysis templates.
+* (**cloudformation**) AWS CloudFormation StackSets now provides stage-by-stage progress for deployments that span thousands of accounts and AWS Regions, which enables you to see where each deployment stands while it runs
+* (**cognitoidentityprovider**) Add support for restoring user pool's user data to point in time.
+* (**health**) Adds resource tags functionality to the AWS Health service
+* (**iam**) Adds MaxSignInSessionDuration to IAM Roles and Login Profiles, allowing customers to configure the maximum Console sign-in session duration per principal. Affects CreateRole, UpdateRole, GetRole and LoginProfile APIs.
+* (**neptune**) Neptune Database Serverless support for graviton3 based r8g instances.
+* (**resiliencehubv2**) This release includes support for adding new field for the effective policy used in test runs and documentation updates.
+* (**s3**) Adds exclusions and Multi-Region key resolution to S3 Replication. Rule filters support a Not element to exclude prefixes and object tags. Destination EncryptionConfiguration supports UseSourceMultiRegionKey to encrypt replicas with the related replica KMS multi-Region key in the destination Region.
+* (**securityagent**) This release adds support for resuming a paused penetration test job from its last saved checkpoint.
+* (**sesv2**) This release adds support for Spillover Routing in Amazon SES.
+* (**signin**) These APIs enable customers and administrators to list, view, and revoke AWS Sign-In Sessions programmatically using the AWS CLI and SDKs, providing greater visibility and control over authenticated access.
+* (**support**) Updated endpoint resolution for AWS Support, including FIPS and dual-stack endpoints.
+* (**wafv2**) Adds the AnalyticsConfig parameter to CreateWebACL and UpdateWebACL to enable or disable cross-Region security analytics for a WebACL. When you enable security analytics, you authorize AWS to transfer and store full request logs outside the AWS Region where the WebACL is hosted.
+
+### Documentation
+* (**elasticloadbalancingv2**) This release adds support for the keyExchange field in CloudTrail tlsDetails, enabling customers to distinguish classical from post-quantum hybrid key exchange for TLS connections on Application Load Balancers.
+
 ## [1.9.39] - 11/18/2026
 
 ### Features
