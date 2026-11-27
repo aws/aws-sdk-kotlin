@@ -11814,7 +11814,7 @@
                     "min": 1,
                     "max": 64
                 },
-                "smithy.api#pattern": "^[a-zA-Z0-9\\-\\_\\.]+$"
+                "smithy.api#pattern": "^[a-zA-Z0-9\\-\\_]+$"
             }
         },
         "com.amazonaws.s3control#ConfirmRemoveSelfBucketAccess": {
@@ -16052,7 +16052,7 @@
                 "target": "com.amazonaws.s3control#GetDataAccessResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Returns a temporary access credential from S3 Access Grants to the grantee or client application. The <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html\">temporary credential</a> is an Amazon Web Services STS token that grants them access to the S3 data. </p>\n         <dl>\n            <dt>Permissions</dt>\n            <dd>\n               <p>You must have the <code>s3:GetDataAccess</code> permission to use this operation. </p>\n            </dd>\n            <dt>Additional Permissions</dt>\n            <dd>\n               <p>The IAM role that S3 Access Grants assumes must have the following permissions specified in the trust policy when registering the location: <code>sts:AssumeRole</code>, for directory users or groups <code>sts:SetContext</code>, and for IAM users or roles <code>sts:SetSourceIdentity</code>. </p>\n            </dd>\n         </dl>",
+                "smithy.api#documentation": "<p>Returns a temporary access credential from S3 Access Grants to the grantee or client application. The <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html\">temporary credential</a> is an Amazon Web Services STS token that grants them access to the S3 data. By default, S3 Access Grants searches for a matching grant in the instance of the Amazon Web Services account ID in the request. To also search instances shared with the caller through Amazon Web Services Resource Access Manager (RAM), set the <code>InstanceScope</code> parameter to <code>ALL</code>.</p>\n         <dl>\n            <dt>Permissions</dt>\n            <dd>\n               <p>You must have the <code>s3:GetDataAccess</code> permission to use this operation. </p>\n            </dd>\n            <dt>Additional Permissions</dt>\n            <dd>\n               <p>The IAM role that S3 Access Grants assumes must have the following permissions specified in the trust policy when registering the location: <code>sts:AssumeRole</code>, for directory users or groups <code>sts:SetContext</code>, and for IAM users or roles <code>sts:SetSourceIdentity</code>. </p>\n            </dd>\n         </dl>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "{AccountId}."
                 },
@@ -16127,6 +16127,13 @@
                         "smithy.api#documentation": "<p>The context to identify the job or query associated with the credential request. This information will be displayed in CloudTrail log in your account.</p>",
                         "smithy.api#httpQuery": "auditContext"
                     }
+                },
+                "InstanceScope": {
+                    "target": "com.amazonaws.s3control#InstanceScope",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scope of S3 Access Grants instances to search for a grant matching the requested S3 URI path.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>SELF</code> – Searches only the instance of the Amazon Web Services account ID in the request.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ALL</code> – Searches the instance of the Amazon Web Services account ID in the request and all instances shared with the caller's account through Amazon Web Services Resource Access Manager (RAM).</p>\n            </li>\n         </ul>",
+                        "smithy.api#httpQuery": "instanceScope"
+                    }
                 }
             },
             "traits": {
@@ -16152,6 +16159,12 @@
                     "target": "com.amazonaws.s3control#Grantee",
                     "traits": {
                         "smithy.api#documentation": "<p>The user, group, or role that was granted access to the S3 location scope. For directory identities, this API also returns the grants of the IAM role used for the identity-aware request. For more information on identity-aware sessions, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_sts-setcontext.html\">Granting permissions to use identity-aware console sessions</a>.\n      </p>"
+                    }
+                },
+                "MatchedInstanceArn": {
+                    "target": "com.amazonaws.s3control#AccessGrantsInstanceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the S3 Access Grants instance containing the grant that matched the requested S3 URI path.</p>"
                     }
                 }
             },
@@ -16904,6 +16917,38 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>A container for what Amazon S3 Storage Lens configuration includes.</p>"
+            }
+        },
+        "com.amazonaws.s3control#InstanceScope": {
+            "type": "enum",
+            "members": {
+                "SELF": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SELF"
+                    }
+                },
+                "ALL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ALL"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.s3control#IntAccessTiers": {
+            "type": "structure",
+            "members": {
+                "IsEnabled": {
+                    "target": "com.amazonaws.s3control#IsEnabled",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>A container that indicates whether S3 Storage Lens Intelligent-Tiering access tier metrics are enabled.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The container for S3 Storage Lens Intelligent-Tiering access tier metrics.\n         When enabled, S3 Storage Lens produces metrics for each individual S3 Intelligent-Tiering access tier\n         instead of reporting a single aggregate value for the INTELLIGENT_TIERING storage class.</p>\n         <p>For more information about S3 Storage Lens, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html\">Assessing your storage activity and usage with S3 Storage Lens</a> in the <i>Amazon S3 User Guide</i>. For a complete list of S3 Storage Lens metrics, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_metrics_glossary.html\">S3 Storage Lens metrics glossary</a> in the <i>Amazon S3 User Guide</i>.</p>"
             }
         },
         "com.amazonaws.s3control#InternalServiceException": {
@@ -18745,7 +18790,7 @@
                 "target": "com.amazonaws.s3control#ListCallerAccessGrantsResult"
             },
             "traits": {
-                "smithy.api#documentation": "<p>Use this API to list the access grants that grant the caller access to Amazon S3 data through S3 Access Grants. The caller (grantee) can be an Identity and Access Management (IAM) identity or Amazon Web Services Identity Center corporate directory identity. You must pass the Amazon Web Services account of the S3 data owner (grantor) in the request. You can, optionally, narrow the results by <code>GrantScope</code>, using a fragment of the data's S3 path, and S3 Access Grants will return only the grants with a path that contains the path fragment. You can also pass the <code>AllowedByApplication</code> filter in the request, which returns only the grants authorized for applications, whether the application is the caller's Identity Center application or any other application (<code>ALL</code>). For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-grants-list-grants.html\">List the caller's access grants</a> in the <i>Amazon S3 User Guide</i>.</p>\n         <dl>\n            <dt>Permissions</dt>\n            <dd>\n               <p>You must have the <code>s3:ListCallerAccessGrants</code> permission to use this operation. </p>\n            </dd>\n         </dl>",
+                "smithy.api#documentation": "<p>Use this API to list the access grants that grant the caller access to Amazon S3 data through S3 Access Grants. The caller (grantee) can be an Identity and Access Management (IAM) identity or Amazon Web Services Identity Center corporate directory identity. You must pass the Amazon Web Services account of the S3 data owner (grantor) in the request. By default, S3 Access Grants returns grants from the instance of the Amazon Web Services account ID in the request. To return grants from all instances shared with the caller's account through Amazon Web Services Resource Access Manager (RAM), set the <code>InstanceScope</code> parameter to <code>ALL</code>. You can, optionally, narrow the results by <code>GrantScope</code>, using a fragment of the data's S3 path, and S3 Access Grants will return only the grants with a path that contains the path fragment. You can also pass the <code>AllowedByApplication</code> filter in the request, which returns only the grants authorized for applications, whether the application is the caller's Identity Center application or any other application (<code>ALL</code>). For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-grants-list-grants.html\">List the caller's access grants</a> in the <i>Amazon S3 User Guide</i>.</p>\n         <dl>\n            <dt>Permissions</dt>\n            <dd>\n               <p>You must have the <code>s3:ListCallerAccessGrants</code> permission to use this operation. </p>\n            </dd>\n         </dl>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "{AccountId}."
                 },
@@ -18788,10 +18833,16 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of an Amazon Web Services IAM Identity Center application associated with your Identity Center instance. If the grant includes an application ARN, the grantee can only access the S3 data through this application. </p>"
                     }
+                },
+                "AccessGrantsInstanceArn": {
+                    "target": "com.amazonaws.s3control#AccessGrantsInstanceArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the S3 Access Grants instance in which the grant was created.</p>"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Part of <code>ListCallerAccessGrantsResult</code>. Each entry includes the\n         permission level (READ, WRITE, or READWRITE) and the grant scope of the access grant. If the grant also includes an application ARN, the grantee can only access the S3 data through this application.</p>"
+                "smithy.api#documentation": "<p>Part of <code>ListCallerAccessGrantsResult</code>. Each entry includes the\n         permission level (READ, WRITE, or READWRITE) and the grant scope of the access grant. Each entry also includes the ARN of the S3 Access Grants instance in which the grant was created. If the grant also includes an application ARN, the grantee can only access the S3 data through this application.</p>"
             }
         },
         "com.amazonaws.s3control#ListCallerAccessGrantsRequest": {
@@ -18837,6 +18888,13 @@
                         "smithy.api#default": false,
                         "smithy.api#documentation": "<p>If this optional parameter is passed in the request, a filter is applied to the results. The results will include only the access grants for the caller's Identity Center application or for any other applications (<code>ALL</code>).</p>",
                         "smithy.api#httpQuery": "allowedByApplication"
+                    }
+                },
+                "InstanceScope": {
+                    "target": "com.amazonaws.s3control#InstanceScope",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The scope of S3 Access Grants instances to list grants from.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>SELF</code> – Lists grants from the instance of the Amazon Web Services account ID in the request.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ALL</code> – Lists grants from the instance of the Amazon Web Services account ID in the request and all instances shared with the caller's account through Amazon Web Services Resource Access Manager (RAM).</p>\n            </li>\n         </ul>",
+                        "smithy.api#httpQuery": "instanceScope"
                     }
                 }
             },
@@ -23858,6 +23916,12 @@
                         "smithy.api#documentation": "<p>A container that configures your S3 Storage Lens expanded prefixes metrics report.\n   </p>"
                     }
                 },
+                "CostAndUsageReportsPublish": {
+                    "target": "com.amazonaws.s3control#StorageLensCostAndUsageReportsPublish",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A container for the configuration used to publish S3 Storage Lens cost data to Amazon Web Services Cost and Usage Reports (Amazon Web Services CUR).</p>"
+                    }
+                },
                 "IsEnabled": {
                     "target": "com.amazonaws.s3control#IsEnabled",
                     "traits": {
@@ -23883,6 +23947,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A container for all prefix delimiters that are used for object keys in this S3 Storage Lens\n         configuration. The prefix delimiters determine how S3 Storage Lens counts prefix depth, by\n         separating the hierarchical levels in object keys.</p>\n         <note>\n            <ul>\n               <li>\n                  <p>If either a prefix delimiter or existing delimiter is undefined, Amazon S3 uses the\n                  delimiter that’s defined.</p>\n               </li>\n               <li>\n                  <p>If both the prefix delimiter and existing delimiter are undefined, S3 uses <code>/</code>\n                  as the default delimiter.</p>\n               </li>\n               <li>\n                  <p>When custom delimiters are used, both the prefix delimiter and existing\n                  delimiter must specify the same special character. Otherwise, your request results\n                  in an error.</p>\n               </li>\n            </ul>\n         </note>"
                     }
+                },
+                "IntAccessTiers": {
+                    "target": "com.amazonaws.s3control#IntAccessTiers",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A container element for S3 Storage Lens Intelligent-Tiering access tier metrics.</p>"
+                    }
                 }
             },
             "traits": {
@@ -23896,6 +23966,80 @@
                 "traits": {
                     "smithy.api#xmlName": "StorageLensConfiguration"
                 }
+            }
+        },
+        "com.amazonaws.s3control#StorageLensCostAndUsageReportsMaxDepth": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1,
+                    "max": 15
+                }
+            }
+        },
+        "com.amazonaws.s3control#StorageLensCostAndUsageReportsMinDepth": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1,
+                    "max": 15
+                }
+            }
+        },
+        "com.amazonaws.s3control#StorageLensCostAndUsageReportsPrefixLevel": {
+            "type": "structure",
+            "members": {
+                "IsEnabled": {
+                    "target": "com.amazonaws.s3control#IsEnabled",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Indicates whether prefix-level cost data publishing to Amazon Web Services CUR is enabled.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "SelectionCriteria": {
+                    "target": "com.amazonaws.s3control#StorageLensCostAndUsageReportsSelectionCriteria",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A container for the selection criteria that determines the prefix depths for\n      which cost data is published to Amazon Web Services CUR.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A container for the prefix-level configuration that determines the prefixes\n      for which S3 Storage Lens publishes cost data to Amazon Web Services Cost and Usage Reports (Amazon Web Services CUR).</p>"
+            }
+        },
+        "com.amazonaws.s3control#StorageLensCostAndUsageReportsPublish": {
+            "type": "structure",
+            "members": {
+                "PrefixLevel": {
+                    "target": "com.amazonaws.s3control#StorageLensCostAndUsageReportsPrefixLevel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A container for the prefix-level configuration that determines the prefixes\n      for which S3 Storage Lens publishes cost data to Amazon Web Services CUR.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A container for the configuration used to publish S3 Storage Lens cost data to Amazon Web Services Cost and Usage Reports (Amazon Web Services CUR).</p>"
+            }
+        },
+        "com.amazonaws.s3control#StorageLensCostAndUsageReportsSelectionCriteria": {
+            "type": "structure",
+            "members": {
+                "MinDepth": {
+                    "target": "com.amazonaws.s3control#StorageLensCostAndUsageReportsMinDepth",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The minimum prefix depth (inclusive) for which cost data is published\n      to Amazon Web Services CUR. You must provide both <code>MinDepth</code> and\n      <code>MaxDepth</code> together, or neither. If neither is provided,\n      <code>MinDepth</code> defaults to <code>1</code>.</p>"
+                    }
+                },
+                "MaxDepth": {
+                    "target": "com.amazonaws.s3control#StorageLensCostAndUsageReportsMaxDepth",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The maximum prefix depth (inclusive) for which cost data is published\n      to Amazon Web Services CUR. You must provide both <code>MinDepth</code> and\n      <code>MaxDepth</code> together, or neither. If neither is provided,\n      <code>MaxDepth</code> defaults to <code>3</code>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A container for the selection criteria used by the S3 Storage Lens Amazon Web Services Cost and Usage Reports (Amazon Web Services CUR)\n      publish configuration. The selection criteria specifies the minimum and maximum\n      prefix depth (both inclusive) for which cost data is published to\n      Amazon Web Services CUR. You must provide both <code>MinDepth</code> and <code>MaxDepth</code>\n      together, or neither; <code>MinDepth</code> must be less than or equal to\n      <code>MaxDepth</code>, and the difference must not exceed 4. If neither is\n      provided, <code>MinDepth</code> defaults to <code>1</code> and\n      <code>MaxDepth</code> defaults to <code>3</code>.</p>"
             }
         },
         "com.amazonaws.s3control#StorageLensDataExport": {

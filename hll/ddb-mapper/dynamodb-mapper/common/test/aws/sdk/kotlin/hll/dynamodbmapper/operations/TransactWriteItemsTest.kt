@@ -10,17 +10,15 @@ import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
 import aws.sdk.kotlin.services.dynamodb.model.ReturnValuesOnConditionCheckFailure
 import aws.sdk.kotlin.services.dynamodb.model.TransactionCanceledException
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.assertThrows
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 
 class TransactWriteItemsTest : DdbLocalTest() {
     companion object {
-        private const val ARTISTS_TABLE_NAME = "artists-table"
+        private val ARTISTS_TABLE_NAME = "artists-table-$testRunId"
         private data class Artist(var name: String = "", var recordLabel: String = "")
         private val artistConverter = SimpleItemConverter(
             ::Artist,
@@ -30,7 +28,7 @@ class TransactWriteItemsTest : DdbLocalTest() {
         )
         private val artistSchema = ItemSchema(artistConverter, KeySpec.string("name"))
 
-        private const val SONGS_TABLE_NAME = "songs-table"
+        private val SONGS_TABLE_NAME = "songs-table-$testRunId"
         private data class Song(var artist: String = "", var title: String = "", var year: Int = 0)
         private val songConverter = SimpleItemConverter(
             ::Song,
@@ -42,16 +40,9 @@ class TransactWriteItemsTest : DdbLocalTest() {
         private val songSchema = ItemSchema(songConverter, KeySpec.string("artist"), KeySpec.string("title"))
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(ARTISTS_TABLE_NAME, artistSchema)
         createTable(SONGS_TABLE_NAME, songSchema)
-    }
-
-    @AfterTest
-    fun truncateTables() = runTest {
-        truncateTable(ARTISTS_TABLE_NAME)
-        truncateTable(SONGS_TABLE_NAME)
     }
 
     @Test
@@ -146,7 +137,7 @@ class TransactWriteItemsTest : DdbLocalTest() {
 
         assertEquals(2, tableSize(ARTISTS_TABLE_NAME))
 
-        val exception = assertThrows<TransactionCanceledException> {
+        val exception = assertFailsWith<TransactionCanceledException> {
             mapper.transactWriteItems {
                 table(artistsTable) {
                     update(Key("Madonna")) {
