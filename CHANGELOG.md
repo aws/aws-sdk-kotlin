@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.9.47] - 11/27/2026
+
+### Features
+* (**cloudwatch**) CloudWatch OTel enrichment supports a free basic option and a paid tag enrichment option, using the EnableTagEnrichment flag. Set it to true (default) to enrich vended metrics with resource ARN and tag labels for PromQL queries. Set it to false to get the free basic option without resource tags.
+* (**elasticsearchservice**) Catalog APIs for Optimized engine domains
+* (**marketplaceagreement**) This release adds per-Region pricing to AWS Marketplace usage-based pricing terms. Rate card items can now include Region-specific price overrides. When a Regional price is present for an AWS Region, it replaces the default price for that dimension.
+* (**neptunegraph**) Adds support for Graph Sessions, a new offering backed by on-demand ephemeral compute.
+* (**opensearch**) Catalog APIs for Optimized engine domains
+* (**rds**) Aurora PostgreSQL and Aurora MySQL now let you delete a DB cluster and all its instances in a single API call or console action, without deleting each instance first. Cluster deletion also completes faster.
+
 ## [1.9.46] - 11/25/2026
 
 ### Features
