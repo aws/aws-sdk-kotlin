@@ -11,6 +11,7 @@ permissions:
 jobs:
   build-sdk:
     runs-on: ubuntu-latest
+    if: github.repository == 'aws/aws-sdk-kotlin'
     steps:
       - name: Configure credentials
         uses: aws-actions/configure-aws-credentials@v4

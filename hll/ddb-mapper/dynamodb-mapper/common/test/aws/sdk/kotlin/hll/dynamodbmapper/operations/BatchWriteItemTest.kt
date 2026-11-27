@@ -8,7 +8,6 @@ import aws.sdk.kotlin.hll.dynamodbmapper.items.*
 import aws.sdk.kotlin.hll.dynamodbmapper.testutils.DdbLocalTest
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.NumberValueConverters
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.StringValueConverter
-import aws.smithy.kotlin.runtime.testing.BeforeAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
@@ -19,7 +18,7 @@ import kotlin.test.assertTrue
 
 class BatchWriteItemTest : DdbLocalTest() {
     companion object {
-        private const val PLAYERS_TABLE_NAME = "players-table"
+        private val PLAYERS_TABLE_NAME = "players-table-$testRunId"
         private data class Player(var teamName: String = "", var number: Int = 0, var name: String = "")
         private val playerConverter = SimpleItemConverter(
             ::Player,
@@ -30,7 +29,7 @@ class BatchWriteItemTest : DdbLocalTest() {
         )
         private val playerSchema = ItemSchema(playerConverter, KeySpec.string("teamName"), KeySpec.int("number"))
 
-        private const val TEAMS_TABLE_NAME = "teams-table"
+        private val TEAMS_TABLE_NAME = "teams-table-$testRunId"
         private data class Team(var teamName: String = "", var location: String = "", var foundedYear: Int = 0)
         private val teamConverter = SimpleItemConverter(
             ::Team,
@@ -42,8 +41,7 @@ class BatchWriteItemTest : DdbLocalTest() {
         private val teamSchema = ItemSchema(teamConverter, KeySpec.string("teamName"))
     }
 
-    @BeforeAll
-    fun setUp() = runTest {
+    override suspend fun setUp() {
         createTable(PLAYERS_TABLE_NAME, playerSchema)
         createTable(TEAMS_TABLE_NAME, teamSchema)
     }

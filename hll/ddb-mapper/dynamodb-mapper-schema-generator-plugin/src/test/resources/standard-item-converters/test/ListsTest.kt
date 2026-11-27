@@ -4,6 +4,8 @@
  */
 package org.example
 
+import aws.smithy.kotlin.runtime.content.BigDecimal
+import aws.smithy.kotlin.runtime.content.BigInteger
 import org.example.dynamodbmapper.generatedschemas.ListsConverter
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,6 +30,10 @@ public class ListsTest {
             listUInt = listOf(UInt.MIN_VALUE, UInt.MAX_VALUE),
             listUShort = listOf(UShort.MIN_VALUE, UShort.MAX_VALUE),
             listULong = listOf(ULong.MIN_VALUE, ULong.MAX_VALUE),
+            listBigDecimal = listOf(BigDecimal("-1.5"), BigDecimal("3.141592653589793238462643383279502884")),
+            listBigInteger = listOf(BigInteger("0"), BigInteger("99999999999999999999999999999999999999")),
+            listJvmBigDecimal = listOf(java.math.BigDecimal("-1.5"), java.math.BigDecimal("3.141592653589793238462643383279502884")),
+            listJvmBigInteger = listOf(java.math.BigInteger("0"), java.math.BigInteger("99999999999999999999999999999999999999")),
             listEnum = listOf(EnumAnimals.CAT, EnumAnimals.DOG, EnumAnimals.SHEEP),
             nullableList = null,
             listNullableElement = listOf("foo", null, "baz"),

@@ -10,7 +10,6 @@ import aws.sdk.kotlin.services.secretsmanager.*
 import aws.sdk.kotlin.services.secretsmanager.model.Filter
 import aws.sdk.kotlin.services.secretsmanager.model.FilterNameStringType
 import aws.sdk.kotlin.services.secretsmanager.model.Tag
-import aws.smithy.kotlin.runtime.ExperimentalApi
 
 class SecretsManagerProtocolBenchmark : ServiceProtocolBenchmark<SecretsManagerClient> {
     companion object {
@@ -18,7 +17,6 @@ class SecretsManagerProtocolBenchmark : ServiceProtocolBenchmark<SecretsManagerC
         private inline fun Int.padded(): String = String.format("%03d", this)
     }
 
-    @OptIn(ExperimentalApi::class)
     override suspend fun client() = SecretsManagerClient.fromEnvironment {
         retryStrategy = Common.noRetries
         telemetryProvider = Common.telemetryProvider

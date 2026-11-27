@@ -12,6 +12,7 @@ permissions:
 jobs:
   dependency-submission:
     runs-on: ubuntu-latest
+    if: github.repository == 'aws/aws-sdk-kotlin'
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4

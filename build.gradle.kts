@@ -8,6 +8,8 @@ import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalPublishTask
 import aws.sdk.kotlin.gradle.publishing.SonatypeCentralPortalWaitForPublicationTask
 import aws.sdk.kotlin.gradle.publishing.configureJarReduction
 import aws.sdk.kotlin.gradle.util.typedProp
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 
 buildscript {
     // NOTE: buildscript classpath for the root project is the parent classloader for the subprojects, we
@@ -26,7 +28,7 @@ buildscript {
 
             FIXME: Figure out what broke our buildscript classpath, this is a temporary fix
              */
-            force("com.squareup.okhttp3:okhttp-coroutines:5.4.0")
+            force("com.squareup.okhttp3:okhttp-coroutines:5.5.0")
         }
     }
 }
@@ -66,6 +68,13 @@ allprojects {
             // See smithy-kotlin/runtime/testing/jvm/src/aws/smithy/kotlin/runtime/testing/SystemOverrides.kt for more
             // info.
             jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+        }
+    }
+
+    // Logging test starts makes it possible to tell which test a hung Native test binary was running
+    tasks.withType<KotlinNativeTest>().configureEach {
+        testLogging {
+            events(TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         }
     }
 

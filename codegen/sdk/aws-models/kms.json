@@ -1079,7 +1079,7 @@
                 "KeyUsage": {
                     "target": "com.amazonaws.kms#KeyUsageType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Determines the <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html#cryptographic-operations\">cryptographic operations</a> for which you can use the KMS key. The default value is\n        <code>ENCRYPT_DECRYPT</code>. This parameter is optional when you are creating a symmetric\n      encryption KMS key; otherwise, it is required. You can't change the <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html#key-usage\">\n               <code>KeyUsage</code>\n            </a> value after the KMS key is created. Each KMS key can have\n      only one key usage. This follows key usage best practices according to <a href=\"https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final\">NIST SP 800-57 Recommendations for\n        Key Management</a>, section 5.2, Key usage.</p>\n         <p>Select only one valid value.</p>\n         <ul>\n            <li>\n               <p>For symmetric encryption KMS keys, omit the parameter or specify\n            <code>ENCRYPT_DECRYPT</code>.</p>\n            </li>\n            <li>\n               <p>For HMAC KMS keys (symmetric), specify <code>GENERATE_VERIFY_MAC</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with RSA key pairs, specify <code>ENCRYPT_DECRYPT</code> or\n            <code>SIGN_VERIFY</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with NIST-standard elliptic curve key pairs, specify\n            <code>SIGN_VERIFY</code> or <code>KEY_AGREEMENT</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with <code>ECC_SECG_P256K1</code> key pairs, specify\n            <code>SIGN_VERIFY</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with ML-DSA key pairs, specify\n          <code>SIGN_VERIFY</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with SM2 key pairs (China Regions only), specify\n            <code>ENCRYPT_DECRYPT</code>, <code>SIGN_VERIFY</code>, or\n          <code>KEY_AGREEMENT</code>.</p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>Determines the <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html#cryptographic-operations\">cryptographic operations</a> for which you can use the KMS key. The default value is\n        <code>ENCRYPT_DECRYPT</code>. This parameter is optional when you are creating a symmetric\n      encryption KMS key; otherwise, it is required. You can't change the <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html#key-usage\">\n               <code>KeyUsage</code>\n            </a> value after the KMS key is created. Each KMS key can have\n      only one key usage. This follows key usage best practices according to <a href=\"https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final\">NIST SP 800-57 Recommendations for\n        Key Management</a>, section 5.2, Key usage.</p>\n         <p>Select only one valid value.</p>\n         <ul>\n            <li>\n               <p>For symmetric encryption KMS keys, omit the parameter or specify\n            <code>ENCRYPT_DECRYPT</code>.</p>\n            </li>\n            <li>\n               <p>For HMAC KMS keys (symmetric), specify <code>GENERATE_VERIFY_MAC</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with RSA key pairs, specify <code>ENCRYPT_DECRYPT</code> or\n            <code>SIGN_VERIFY</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with NIST-standard elliptic curve key pairs, specify\n            <code>SIGN_VERIFY</code> or <code>KEY_AGREEMENT</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with <code>ECC_SECG_P256K1</code> key pairs, specify\n            <code>SIGN_VERIFY</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with ML-DSA key pairs, specify\n          <code>SIGN_VERIFY</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with ML-KEM key pairs, specify\n          <code>ENCAPSULATE_DECAPSULATE</code>.</p>\n            </li>\n            <li>\n               <p>For asymmetric KMS keys with SM2 key pairs (China Regions only), specify\n            <code>ENCRYPT_DECRYPT</code>, <code>SIGN_VERIFY</code>, or\n          <code>KEY_AGREEMENT</code>.</p>\n            </li>\n         </ul>"
                     }
                 },
                 "CustomerMasterKeySpec": {
@@ -1094,7 +1094,7 @@
                 "KeySpec": {
                     "target": "com.amazonaws.kms#KeySpec",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specifies the type of KMS key to create. The default value,\n      <code>SYMMETRIC_DEFAULT</code>, creates a KMS key with a 256-bit AES-GCM key that is used for\n      encryption and decryption, except in China Regions, where it creates a 128-bit symmetric key\n      that uses SM4 encryption. For a detailed description of all supported key specs, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-choose-key-spec.html\">Key spec\n        reference</a> in the <i>\n               <i>Key Management Service Developer Guide</i>\n            </i>.</p>\n         <p>The <code>KeySpec</code> determines whether the KMS key contains a symmetric key or an\n      asymmetric key pair. It also determines the algorithms that the KMS key supports. You can't\n      change the <code>KeySpec</code> after the KMS key is created. To further restrict the\n      algorithms that can be used with the KMS key, use a condition key in its key policy or IAM\n      policy. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-encryption-algorithm\">kms:EncryptionAlgorithm</a>, <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-mac-algorithm\">kms:MacAlgorithm</a>, <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-key-agreement-algorithm\">kms:KeyAgreementAlgorithm</a>, or <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-signing-algorithm\">kms:SigningAlgorithm</a> in the <i>\n               <i>Key Management Service Developer Guide</i>\n            </i>.</p>\n         <important>\n            <p>\n               <a href=\"http://aws.amazon.com/kms/features/#AWS_Service_Integration\">Amazon Web Services services that\n          are integrated with KMS</a> use symmetric encryption KMS keys to protect your data.\n        These services do not support asymmetric KMS keys or HMAC KMS keys.</p>\n         </important>\n         <p>KMS supports the following key specs for KMS keys:</p>\n         <ul>\n            <li>\n               <p>Symmetric encryption key (default)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>SYMMETRIC_DEFAULT</code>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>HMAC keys (symmetric)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>HMAC_224</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>HMAC_256</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>HMAC_384</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>HMAC_512</code>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>Asymmetric RSA key pairs (encryption and decryption -or- signing and\n          verification)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>RSA_2048</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>RSA_3072</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>RSA_4096</code>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>Asymmetric NIST-standard elliptic curve key pairs (signing and verification -or-\n          deriving shared secrets)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>ECC_NIST_P256</code> (secp256r1)</p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ECC_NIST_P384</code> (secp384r1)</p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ECC_NIST_P521</code> (secp521r1)</p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ECC_NIST_EDWARDS25519</code> (ed25519) - signing and verification only</p>\n                     <ul>\n                        <li>\n                           <p>\n                              <b>Note:</b> For ECC_NIST_EDWARDS25519 KMS keys, the\n                          ED25519_SHA_512 signing algorithm requires <a href=\"kms/latest/APIReference/API_Sign.html#KMS-Sign-request-MessageType\">\n                                 <code>MessageType:RAW</code>\n                              </a>, while ED25519_PH_SHA_512 requires <a href=\"kms/latest/APIReference/API_Sign.html#KMS-Sign-request-MessageType\">\n                                 <code>MessageType:DIGEST</code>\n                              </a>. These message types cannot be used interchangeably.</p>\n                        </li>\n                     </ul>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>Other asymmetric elliptic curve key pairs (signing and verification)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>ECC_SECG_P256K1</code> (secp256k1), commonly used for\n              cryptocurrencies.</p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>Asymmetric ML-DSA key pairs (signing and verification)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>ML_DSA_44</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ML_DSA_65</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ML_DSA_87</code>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>SM2 key pairs (encryption and decryption -or- signing and verification -or- deriving\n          shared secrets)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>SM2</code> (China Regions only)</p>\n                  </li>\n               </ul>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>Specifies the type of KMS key to create. The default value,\n      <code>SYMMETRIC_DEFAULT</code>, creates a KMS key with a 256-bit AES-GCM key that is used for\n      encryption and decryption, except in China Regions, where it creates a 128-bit symmetric key\n      that uses SM4 encryption. For a detailed description of all supported key specs, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-choose-key-spec.html\">Key spec\n        reference</a> in the <i>\n               <i>Key Management Service Developer Guide</i>\n            </i>.</p>\n         <p>The <code>KeySpec</code> determines whether the KMS key contains a symmetric key or an\n      asymmetric key pair. It also determines the algorithms that the KMS key supports. You can't\n      change the <code>KeySpec</code> after the KMS key is created. To further restrict the\n      algorithms that can be used with the KMS key, use a condition key in its key policy or IAM\n      policy. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-encryption-algorithm\">kms:EncryptionAlgorithm</a>, <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-mac-algorithm\">kms:MacAlgorithm</a>, <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-key-agreement-algorithm\">kms:KeyAgreementAlgorithm</a>, or <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-signing-algorithm\">kms:SigningAlgorithm</a> in the <i>\n               <i>Key Management Service Developer Guide</i>\n            </i>.</p>\n         <important>\n            <p>\n               <a href=\"http://aws.amazon.com/kms/features/#AWS_Service_Integration\">Amazon Web Services services that\n          are integrated with KMS</a> use symmetric encryption KMS keys to protect your data.\n        These services do not support asymmetric KMS keys or HMAC KMS keys.</p>\n         </important>\n         <p>KMS supports the following key specs for KMS keys:</p>\n         <ul>\n            <li>\n               <p>Symmetric encryption key (default)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>SYMMETRIC_DEFAULT</code>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>HMAC keys (symmetric)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>HMAC_224</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>HMAC_256</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>HMAC_384</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>HMAC_512</code>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>Asymmetric RSA key pairs (encryption and decryption -or- signing and\n          verification)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>RSA_2048</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>RSA_3072</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>RSA_4096</code>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>Asymmetric NIST-standard elliptic curve key pairs (signing and verification -or-\n          deriving shared secrets)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>ECC_NIST_P256</code> (secp256r1)</p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ECC_NIST_P384</code> (secp384r1)</p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ECC_NIST_P521</code> (secp521r1)</p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ECC_NIST_EDWARDS25519</code> (ed25519) - signing and verification only</p>\n                     <ul>\n                        <li>\n                           <p>\n                              <b>Note:</b> For ECC_NIST_EDWARDS25519 KMS keys, the\n                          ED25519_SHA_512 signing algorithm requires <a href=\"kms/latest/APIReference/API_Sign.html#KMS-Sign-request-MessageType\">\n                                 <code>MessageType:RAW</code>\n                              </a>, while ED25519_PH_SHA_512 requires <a href=\"kms/latest/APIReference/API_Sign.html#KMS-Sign-request-MessageType\">\n                                 <code>MessageType:DIGEST</code>\n                              </a>. These message types cannot be used interchangeably.</p>\n                        </li>\n                     </ul>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>Other asymmetric elliptic curve key pairs (signing and verification)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>ECC_SECG_P256K1</code> (secp256k1), commonly used for\n              cryptocurrencies.</p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>Asymmetric ML-DSA key pairs (signing and verification)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>ML_DSA_44</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ML_DSA_65</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ML_DSA_87</code>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>Asymmetric ML-KEM key pairs (establishing shared secrets)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>ML_KEM_512</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ML_KEM_768</code>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <code>ML_KEM_1024</code>\n                     </p>\n                  </li>\n               </ul>\n               <p>The ML-KEM key specs are not available in China Regions.</p>\n            </li>\n            <li>\n               <p>SM2 key pairs (encryption and decryption -or- signing and verification -or- deriving\n          shared secrets)</p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>SM2</code> (China Regions only)</p>\n                  </li>\n               </ul>\n            </li>\n         </ul>"
                     }
                 },
                 "Origin": {
@@ -1468,6 +1468,24 @@
                     "traits": {
                         "smithy.api#enumValue": "ECC_NIST_EDWARDS25519"
                     }
+                },
+                "ML_KEM_512": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ML_KEM_512"
+                    }
+                },
+                "ML_KEM_768": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ML_KEM_768"
+                    }
+                },
+                "ML_KEM_1024": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ML_KEM_1024"
+                    }
                 }
             }
         },
@@ -1490,6 +1508,133 @@
         },
         "com.amazonaws.kms#DateType": {
             "type": "timestamp"
+        },
+        "com.amazonaws.kms#Decapsulate": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.kms#DecapsulateRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.kms#DecapsulateResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.kms#DependencyTimeoutException"
+                },
+                {
+                    "target": "com.amazonaws.kms#DisabledException"
+                },
+                {
+                    "target": "com.amazonaws.kms#DryRunOperationException"
+                },
+                {
+                    "target": "com.amazonaws.kms#InvalidCiphertextException"
+                },
+                {
+                    "target": "com.amazonaws.kms#InvalidGrantTokenException"
+                },
+                {
+                    "target": "com.amazonaws.kms#InvalidKeyUsageException"
+                },
+                {
+                    "target": "com.amazonaws.kms#KeyUnavailableException"
+                },
+                {
+                    "target": "com.amazonaws.kms#KMSInternalException"
+                },
+                {
+                    "target": "com.amazonaws.kms#KMSInvalidStateException"
+                },
+                {
+                    "target": "com.amazonaws.kms#NotFoundException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Recovers the shared secret that was encapsulated with the public key of an ML-KEM KMS key.\n      Module-Lattice-Based Key-Encapsulation Mechanism (ML-KEM), specified in <a href=\"https://csrc.nist.gov/pubs/fips/203/final\">FIPS 203</a> on the NIST website, is a\n      post-quantum algorithm for establishing a shared secret between two parties. For an example \n      of how two parties establish a shared secret over an insecure channel using ML-KEM, see \n      <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/pqkeys.html#mlkem\">ML-KEM\n      keys in KMS</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>The Decapsulate operation is not available in China Regions.</p>\n         <p>\n            <code>Decapsulate</code> returns the shared secret as a 32-byte value. You can use it directly\n    as key material, or run it through a key derivation function to derive multiple keys and nonces.</p>\n         <important>\n            <p>\n               <code>Decapsulate</code> returns an <code>InvalidCiphertextException</code> when the\n          length of the <code>SharedSecretCiphertextBlob</code> is inconsistent with the ML-KEM key\n          spec. In all other cases, <code>Decapsulate</code> returns a 32-byte pseudo-random\n          value. This is true even when the <code>SharedSecretCiphertextBlob</code> was created using\n          a different ML-KEM key or altered from its original value. This behavior is a security\n          feature called <i>implicit rejection</i> that helps protect against\n          chosen-ciphertext attacks.</p>\n            <p>Because a response does not indicate that the ciphertext and key are valid, confirm the\n          two parties derived the same shared secret before using it.</p>\n         </important>\n         <p>The KMS key that you use for this operation must be in a compatible key state. For\ndetails, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html\">Key states of KMS keys</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: Yes. To perform this operation with a KMS key in a different Amazon Web Services account, specify\n  the key ARN or alias ARN in the value of the <code>KeyId</code> parameter.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:Decapsulate</a> (key policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>Encapsulate</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>CreateKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GetPublicKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>DescribeKey</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To recover a shared secret from its encapsulated ciphertext",
+                        "documentation": "Recovers a shared secret from its encapsulated ciphertext (SharedSecretCiphertextBlob) using the private key in an asymmetric ML-KEM KMS key. Your peer calls Encapsulate to generate the shared secret and ciphertext.",
+                        "input": {
+                            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+                            "SharedSecretCiphertextBlob": "<binary data>",
+                            "EncapsulationAlgorithm": "ML_KEM"
+                        },
+                        "output": {
+                            "KeyId": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+                            "SharedSecret": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
+                            "EncapsulationAlgorithm": "ML_KEM"
+                        }
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.kms#DecapsulateRequest": {
+            "type": "structure",
+            "members": {
+                "KeyId": {
+                    "target": "com.amazonaws.kms#KeyIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Identifies the asymmetric ML-KEM KMS key whose public key was used to produce the\n      encapsulated shared secret. KMS uses the private key in the specified key pair to decapsulate\n      the shared secret. </p>\n         <p>To specify a KMS key, use its key ID, key ARN, alias name, or alias ARN. When using an alias name, prefix it with <code>\"alias/\"</code>. To specify a KMS key in a different Amazon Web Services account, you must use the key ARN or alias ARN.</p>\n         <p>For example:</p>\n         <ul>\n            <li>\n               <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>\n               </p>\n            </li>\n            <li>\n               <p>Key ARN: <code>arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>\n               </p>\n            </li>\n            <li>\n               <p>Alias name: <code>alias/ExampleAlias</code>\n               </p>\n            </li>\n            <li>\n               <p>Alias ARN: <code>arn:aws:kms:us-east-2:111122223333:alias/ExampleAlias</code>\n               </p>\n            </li>\n         </ul>\n         <p>To get the key ID and key ARN for a KMS key, use <a>ListKeys</a> or <a>DescribeKey</a>. To get the alias name and alias ARN, use <a>ListAliases</a>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "SharedSecretCiphertextBlob": {
+                    "target": "com.amazonaws.kms#CiphertextType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The encapsulated (ciphertext) form of the shared secret to recover. This is the\n      <code>SharedSecretCiphertextBlob</code> value that the <a>Encapsulate</a> operation\n      returns. When you use the HTTP API or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not Base64-encoded.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "EncapsulationAlgorithm": {
+                    "target": "com.amazonaws.kms#EncapsulationAlgorithmSpec",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the key encapsulation algorithm used to recover the shared secret. The only valid\n      value is <code>ML_KEM</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "GrantTokens": {
+                    "target": "com.amazonaws.kms#GrantTokenList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of grant tokens.</p>\n         <p>Use a grant token when your permission to call this operation comes from a new grant that has not yet achieved <i>eventual consistency</i>. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token\">Grant token</a> and <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/using-grant-token.html\">Using a grant token</a> in the\n    <i>Key Management Service Developer Guide</i>.</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.kms#NullableBooleanType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks if your request will succeed. <code>DryRun</code> is an optional parameter. </p>\n         <p>To learn more about how to use this parameter, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/testing-permissions.html\">Testing your permissions</a> in the <i>Key Management Service Developer Guide</i>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.kms#DecapsulateResponse": {
+            "type": "structure",
+            "members": {
+                "KeyId": {
+                    "target": "com.amazonaws.kms#KeyIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the ML-KEM KMS key used to decapsulate the shared secret.</p>"
+                    }
+                },
+                "SharedSecret": {
+                    "target": "com.amazonaws.kms#PlaintextType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The plaintext shared secret recovered from the encapsulated form. It is a 32-byte value that\n      matches the shared secret held by the encapsulating party. When you use the HTTP API or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not Base64-encoded.</p>"
+                    }
+                },
+                "EncapsulationAlgorithm": {
+                    "target": "com.amazonaws.kms#EncapsulationAlgorithmSpec",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key encapsulation algorithm used to recover the shared secret.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
         },
         "com.amazonaws.kms#Decrypt": {
             "type": "operation",
@@ -2688,6 +2833,146 @@
                 "smithy.api#input": {}
             }
         },
+        "com.amazonaws.kms#Encapsulate": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.kms#EncapsulateRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.kms#EncapsulateResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.kms#DependencyTimeoutException"
+                },
+                {
+                    "target": "com.amazonaws.kms#DisabledException"
+                },
+                {
+                    "target": "com.amazonaws.kms#DryRunOperationException"
+                },
+                {
+                    "target": "com.amazonaws.kms#InvalidGrantTokenException"
+                },
+                {
+                    "target": "com.amazonaws.kms#InvalidKeyUsageException"
+                },
+                {
+                    "target": "com.amazonaws.kms#KeyUnavailableException"
+                },
+                {
+                    "target": "com.amazonaws.kms#KMSInternalException"
+                },
+                {
+                    "target": "com.amazonaws.kms#KMSInvalidStateException"
+                },
+                {
+                    "target": "com.amazonaws.kms#NotFoundException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Generates a shared secret and its encapsulated (ciphertext) form using the public key of\n      an ML-KEM KMS key pair. Module-Lattice-Based Key-Encapsulation Mechanism (ML-KEM), specified in <a href=\"https://csrc.nist.gov/pubs/fips/203/final\">FIPS 203</a> on the NIST website, is a\n        post-quantum algorithm for establishing a shared secret between two parties.</p>\n         <p>For an example of how two parties establish a shared secret over an insecure channel using\n      ML-KEM, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/pqkeys.html#mlkem\">ML-KEM keys in\n        KMS</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>The Encapsulate operation is not available in China Regions.</p>\n         <p>The KMS key that you use for this operation must be in a compatible key state. For\ndetails, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html\">Key states of KMS keys</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: Yes. To perform this operation with a KMS key in a different Amazon Web Services account, specify\n  the key ARN or alias ARN in the value of the <code>KeyId</code> parameter.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:Encapsulate</a> (key policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>Decapsulate</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>DeriveSharedSecret</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>CreateKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GetPublicKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>DescribeKey</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To generate a shared secret and its encapsulated ciphertext",
+                        "documentation": "Generates a shared secret and its encapsulated ciphertext (SharedSecretCiphertextBlob) using the public key in an asymmetric ML-KEM KMS key. Send the ciphertext to your peer, who calls Decapsulate to recover the same shared secret.",
+                        "input": {
+                            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+                            "EncapsulationAlgorithm": "ML_KEM"
+                        },
+                        "output": {
+                            "KeyId": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+                            "SharedSecret": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
+                            "SharedSecretCiphertextBlob": "<binary data>",
+                            "EncapsulationAlgorithm": "ML_KEM"
+                        }
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.kms#EncapsulateRequest": {
+            "type": "structure",
+            "members": {
+                "KeyId": {
+                    "target": "com.amazonaws.kms#KeyIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Identifies an asymmetric ML-KEM KMS key. KMS uses the public key in the specified key pair\n      to encapsulate the shared secret. ML-KEM KMS keys have a <code>KeySpec</code> value of <code>ML_KEM_512</code>, \n      <code>ML_KEM_768</code>, or <code>ML_KEM_1024</code> and a <code>KeyUsage</code> value of \n      <code>ENCAPSULATE_DECAPSULATE</code>. To find the <code>KeySpec</code> and <code>KeyUsage</code> of a \n      KMS key, use the <a>DescribeKey</a> operation.</p>\n         <p>To specify a KMS key, use its key ID, key ARN, alias name, or alias ARN. When using an alias name, prefix it with <code>\"alias/\"</code>. To specify a KMS key in a different Amazon Web Services account, you must use the key ARN or alias ARN.</p>\n         <p>For example:</p>\n         <ul>\n            <li>\n               <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>\n               </p>\n            </li>\n            <li>\n               <p>Key ARN: <code>arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>\n               </p>\n            </li>\n            <li>\n               <p>Alias name: <code>alias/ExampleAlias</code>\n               </p>\n            </li>\n            <li>\n               <p>Alias ARN: <code>arn:aws:kms:us-east-2:111122223333:alias/ExampleAlias</code>\n               </p>\n            </li>\n         </ul>\n         <p>To get the key ID and key ARN for a KMS key, use <a>ListKeys</a> or <a>DescribeKey</a>. To get the alias name and alias ARN, use <a>ListAliases</a>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "EncapsulationAlgorithm": {
+                    "target": "com.amazonaws.kms#EncapsulationAlgorithmSpec",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the key encapsulation algorithm used to generate the shared secret and its\n      encapsulated form. The only valid value is <code>ML_KEM</code>.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "GrantTokens": {
+                    "target": "com.amazonaws.kms#GrantTokenList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A list of grant tokens.</p>\n         <p>Use a grant token when your permission to call this operation comes from a new grant that has not yet achieved <i>eventual consistency</i>. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token\">Grant token</a> and <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/using-grant-token.html\">Using a grant token</a> in the\n    <i>Key Management Service Developer Guide</i>.</p>"
+                    }
+                },
+                "DryRun": {
+                    "target": "com.amazonaws.kms#NullableBooleanType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Checks if your request will succeed. <code>DryRun</code> is an optional parameter. </p>\n         <p>To learn more about how to use this parameter, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/testing-permissions.html\">Testing your permissions</a> in the <i>Key Management Service Developer Guide</i>.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.kms#EncapsulateResponse": {
+            "type": "structure",
+            "members": {
+                "KeyId": {
+                    "target": "com.amazonaws.kms#KeyIdType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier of the ML-KEM KMS key used to encapsulate the shared secret.</p>"
+                    }
+                },
+                "SharedSecret": {
+                    "target": "com.amazonaws.kms#PlaintextType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The plaintext shared secret. It is a 32-byte cryptographically random value that both\n      parties can use directly as key material or pass through a key derivation function to generate\n      multiple keys and nonces. When you use the HTTP API or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not Base64-encoded.</p>"
+                    }
+                },
+                "SharedSecretCiphertextBlob": {
+                    "target": "com.amazonaws.kms#CiphertextType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The encapsulated form of the shared secret. Pass this value to the <a>Decapsulate</a> operation to recover the shared secret.  When you use the HTTP API or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not Base64-encoded.\n      The length of <code>SharedSecretCiphertextBlob</code> depends on the ML-KEM key spec.\n      Before Base64 encoding, the encapsulated shared secret is 768 bytes for <code>ML_KEM_512</code>,\n      1088 bytes for <code>ML_KEM_768</code>, and 1568 bytes for <code>ML_KEM_1024</code>.\n    </p>"
+                    }
+                },
+                "EncapsulationAlgorithm": {
+                    "target": "com.amazonaws.kms#EncapsulationAlgorithmSpec",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key encapsulation algorithm used to generate the shared secret.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.kms#EncapsulationAlgorithmSpec": {
+            "type": "enum",
+            "members": {
+                "ML_KEM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ML_KEM"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.kms#EncapsulationAlgorithmSpecList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.kms#EncapsulationAlgorithmSpec"
+            }
+        },
         "com.amazonaws.kms#Encrypt": {
             "type": "operation",
             "input": {
@@ -3015,7 +3300,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns a unique asymmetric data key pair for use outside of KMS. This operation returns\n      a plaintext public key, a plaintext private key, and a copy of the private key that is\n      encrypted under the symmetric encryption KMS key you specify. You can use the data key pair to\n      perform asymmetric cryptography and implement digital signatures outside of KMS. The bytes\n      in the keys are random; they are not related to the caller or to the KMS key that is used to\n      encrypt the private key. </p>\n         <p>You can use the public key that <code>GenerateDataKeyPair</code> returns to encrypt data\n      or verify a signature outside of KMS. Then, store the encrypted private key with the data.\n      When you are ready to decrypt data or sign a message, you can use the <a>Decrypt</a> operation to decrypt the encrypted private key.</p>\n         <p>To generate a data key pair, you must specify a symmetric encryption KMS key to encrypt\n      the private key in a data key pair. You cannot use an asymmetric KMS key or a KMS key in a\n      custom key store. To get the type and origin of your KMS key, use the <a>DescribeKey</a> operation. </p>\n         <p>Use the <code>KeyPairSpec</code> parameter to choose an RSA or Elliptic Curve (ECC) data\n      key pair. In China Regions, you can also choose an SM2 data key pair. KMS recommends that\n      you use ECC key pairs for signing, and use RSA and SM2 key pairs for either encryption or\n      signing, but not both. However, KMS cannot enforce any restrictions on the use of data key\n      pairs outside of KMS.</p>\n         <p>If you are using the data key pair to encrypt data, or for any operation where you don't\n      immediately need a private key, consider using the <a>GenerateDataKeyPairWithoutPlaintext</a> operation.\n        <code>GenerateDataKeyPairWithoutPlaintext</code> returns a plaintext public key and an\n      encrypted private key, but omits the plaintext private key that you need only to decrypt\n      ciphertext or sign a message. Later, when you need to decrypt the data or sign a message, use\n      the <a>Decrypt</a> operation to decrypt the encrypted private key in the data key\n      pair.</p>\n         <p>\n            <code>GenerateDataKeyPair</code> returns a unique data key pair for each request. The\n      bytes in the keys are random; they are not related to the caller or the KMS key that is used\n      to encrypt the private key. The public key is a DER-encoded X.509 SubjectPublicKeyInfo, as\n      specified in <a href=\"https://tools.ietf.org/html/rfc5280\">RFC 5280</a>. The private\n      key is a DER-encoded PKCS8 PrivateKeyInfo, as specified in <a href=\"https://tools.ietf.org/html/rfc5958\">RFC 5958</a>.</p>\n         <p>\n            <code>GenerateDataKeyPair</code> also supports <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nitro-enclave.html\">Amazon Web Services Nitro Enclaves</a>, which provide an\n      isolated compute environment in Amazon EC2. To call <code>GenerateDataKeyPair</code> for an Amazon Web Services\n      Nitro enclave or NitroTPM, use the <a href=\"https://docs.aws.amazon.com/enclaves/latest/user/developing-applications.html#sdk\">Amazon Web Services Nitro Enclaves SDK</a> or any Amazon Web Services SDK. Use the\n        <code>Recipient</code> parameter to provide the attestation document for the attested\n      environment. <code>GenerateDataKeyPair</code> returns the public data key and a copy of the\n      private data key encrypted under the specified KMS key, as usual. But instead of a plaintext\n      copy of the private data key (<code>PrivateKeyPlaintext</code>), the response includes a copy\n      of the private data key encrypted under the public key from the attestation document\n        (<code>CiphertextForRecipient</code>). For information about the interaction between KMS and Amazon Web Services Nitro Enclaves or Amazon Web Services NitroTPM, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/cryptographic-attestation.html\">Cryptographic attestation support in KMS</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>You can use an optional encryption context to add additional security to the encryption\n      operation. If you specify an <code>EncryptionContext</code>, you must specify the same\n      encryption context (a case-sensitive exact match) when decrypting the encrypted data key.\n      Otherwise, the request to decrypt fails with an <code>InvalidCiphertextException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/encrypt_context.html\">Encryption Context</a> in the\n      <i>Key Management Service Developer Guide</i>.</p>\n         <p>The KMS key that you use for this operation must be in a compatible key state. For\ndetails, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html\">Key states of KMS keys</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: Yes. To perform this operation with a KMS key in a different Amazon Web Services account, specify\n  the key ARN or alias ARN in the value of the <code>KeyId</code> parameter.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:GenerateDataKeyPair</a> (key policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>Decrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>Encrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKeyPairWithoutPlaintext</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKeyWithoutPlaintext</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
+                "smithy.api#documentation": "<p>Returns a unique asymmetric data key pair for use outside of KMS. This operation returns\n      a plaintext public key, a plaintext private key, and a copy of the private key that is\n      encrypted under the symmetric encryption KMS key you specify. You can use the data key pair to\n      perform asymmetric cryptography and implement digital signatures outside of KMS. The bytes\n      in the keys are random; they are not related to the caller or to the KMS key that is used to\n      encrypt the private key. </p>\n         <p>You can use the public key that <code>GenerateDataKeyPair</code> returns to encrypt data\n      or verify a signature outside of KMS. Then, store the encrypted private key with the data.\n      When you are ready to decrypt data or sign a message, you can use the <a>Decrypt</a> operation to decrypt the encrypted private key.</p>\n         <p>To generate a data key pair, you must specify a symmetric encryption KMS key to encrypt\n      the private key in a data key pair. You cannot use an asymmetric KMS key or a KMS key in a\n      custom key store. To get the type and origin of your KMS key, use the <a>DescribeKey</a> operation. </p>\n         <p>Use the <code>KeyPairSpec</code> parameter to choose an RSA or Elliptic Curve (ECC) data\n      key pair. In China Regions, you can also choose an SM2 data key pair. KMS recommends that\n      you use ECC key pairs for signing, and use RSA and SM2 key pairs for either encryption or\n      signing, but not both. However, KMS cannot enforce any restrictions on the use of data key\n      pairs outside of KMS.</p>\n         <p>If you are using the data key pair to encrypt data, or for any operation where you don't\n      immediately need a private key, consider using the <a>GenerateDataKeyPairWithoutPlaintext</a> operation.\n        <code>GenerateDataKeyPairWithoutPlaintext</code> returns a plaintext public key and an\n      encrypted private key, but omits the plaintext private key that you need only to decrypt\n      ciphertext or sign a message. Later, when you need to decrypt the data or sign a message, use\n      the <a>Decrypt</a> operation to decrypt the encrypted private key in the data key\n      pair.</p>\n         <p>\n            <code>GenerateDataKeyPair</code> returns a unique data key pair for each request. The\n      bytes in the keys are random; they are not related to the caller or the KMS key that is used\n      to encrypt the private key. The public key is a DER-encoded X.509 SubjectPublicKeyInfo, as\n      specified in <a href=\"https://tools.ietf.org/html/rfc5280\">RFC 5280</a>. The private\n      key is a DER-encoded PKCS8 PrivateKeyInfo, as specified in <a href=\"https://tools.ietf.org/html/rfc5958\">RFC 5958</a>.</p>\n         <note>\n            <p>For ML-KEM data key pairs, the DER-encoded PKCS8 PrivateKeyInfo contains the private key\n        in seed format. As a result, the length of the private key is the same for all ML-KEM key pair\n        specs.</p>\n         </note>\n         <p>\n            <code>GenerateDataKeyPair</code> also supports <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nitro-enclave.html\">Amazon Web Services Nitro Enclaves</a>, which provide an\n      isolated compute environment in Amazon EC2. To call <code>GenerateDataKeyPair</code> for an Amazon Web Services\n      Nitro enclave or NitroTPM, use the <a href=\"https://docs.aws.amazon.com/enclaves/latest/user/developing-applications.html#sdk\">Amazon Web Services Nitro Enclaves SDK</a> or any Amazon Web Services SDK. Use the\n        <code>Recipient</code> parameter to provide the attestation document for the attested\n      environment. <code>GenerateDataKeyPair</code> returns the public data key and a copy of the\n      private data key encrypted under the specified KMS key, as usual. But instead of a plaintext\n      copy of the private data key (<code>PrivateKeyPlaintext</code>), the response includes a copy\n      of the private data key encrypted under the public key from the attestation document\n        (<code>CiphertextForRecipient</code>). For information about the interaction between KMS and Amazon Web Services Nitro Enclaves or Amazon Web Services NitroTPM, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/cryptographic-attestation.html\">Cryptographic attestation support in KMS</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>You can use an optional encryption context to add additional security to the encryption\n      operation. If you specify an <code>EncryptionContext</code>, you must specify the same\n      encryption context (a case-sensitive exact match) when decrypting the encrypted data key.\n      Otherwise, the request to decrypt fails with an <code>InvalidCiphertextException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/encrypt_context.html\">Encryption Context</a> in the\n      <i>Key Management Service Developer Guide</i>.</p>\n         <p>The KMS key that you use for this operation must be in a compatible key state. For\ndetails, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html\">Key states of KMS keys</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: Yes. To perform this operation with a KMS key in a different Amazon Web Services account, specify\n  the key ARN or alias ARN in the value of the <code>KeyId</code> parameter.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:GenerateDataKeyPair</a> (key policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>Decrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>Encrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKeyPairWithoutPlaintext</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKeyWithoutPlaintext</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To generate an RSA key pair for encryption and decryption",
@@ -3055,7 +3340,7 @@
                 "KeyPairSpec": {
                     "target": "com.amazonaws.kms#DataKeyPairSpec",
                     "traits": {
-                        "smithy.api#documentation": "<p>Determines the type of data key pair that is generated. </p>\n         <p>The KMS rule that restricts the use of asymmetric RSA and SM2 KMS keys to encrypt and decrypt or to sign and verify (but not both), the rule that permits you to use ECC KMS keys only to sign and verify, and the rule that permits you to use ML-DSA key pairs to sign and verify only are not effective on data key pairs, which are used outside of KMS. The SM2 key spec is only available in China Regions.</p>",
+                        "smithy.api#documentation": "<p>Determines the type of data key pair that is generated. </p>\n         <p>The KMS rule that restricts the use of asymmetric RSA and SM2 KMS keys to encrypt and decrypt or to sign and verify (but not both), the rule that permits you to use ECC KMS keys only to sign and verify, and the rule that permits you to use ML-DSA key pairs to sign and verify only are not effective on data key pairs, which are used outside of KMS. The SM2 key spec is only available in China Regions. The ML-KEM key specs are not available in China Regions.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -3173,7 +3458,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns a unique asymmetric data key pair for use outside of KMS. This operation returns\n      a plaintext public key and a copy of the private key that is encrypted under the symmetric\n      encryption KMS key you specify. Unlike <a>GenerateDataKeyPair</a>, this operation\n      does not return a plaintext private key. The bytes in the keys are random; they are not\n      related to the caller or to the KMS key that is used to encrypt the private key. </p>\n         <p>You can use the public key that <code>GenerateDataKeyPairWithoutPlaintext</code> returns\n      to encrypt data or verify a signature outside of KMS. Then, store the encrypted private key\n      with the data. When you are ready to decrypt data or sign a message, you can use the <a>Decrypt</a> operation to decrypt the encrypted private key.</p>\n         <p>To generate a data key pair, you must specify a symmetric encryption KMS key to encrypt\n      the private key in a data key pair. You cannot use an asymmetric KMS key or a KMS key in a\n      custom key store. To get the type and origin of your KMS key, use the <a>DescribeKey</a> operation. </p>\n         <p>Use the <code>KeyPairSpec</code> parameter to choose an RSA or Elliptic Curve (ECC) data\n      key pair. In China Regions, you can also choose an SM2 data key pair. KMS recommends that\n      you use ECC key pairs for signing, and use RSA and SM2 key pairs for either encryption or\n      signing, but not both. However, KMS cannot enforce any restrictions on the use of data key\n      pairs outside of KMS.</p>\n         <p>\n            <code>GenerateDataKeyPairWithoutPlaintext</code> returns a unique data key pair for each\n      request. The bytes in the key are not related to the caller or KMS key that is used to encrypt\n      the private key. The public key is a DER-encoded X.509 SubjectPublicKeyInfo, as specified in\n        <a href=\"https://tools.ietf.org/html/rfc5280\">RFC 5280</a>.</p>\n         <p>You can use an optional encryption context to add additional security to the encryption\n      operation. If you specify an <code>EncryptionContext</code>, you must specify the same\n      encryption context (a case-sensitive exact match) when decrypting the encrypted data key.\n      Otherwise, the request to decrypt fails with an <code>InvalidCiphertextException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/encrypt_context.html\">Encryption Context</a> in the\n      <i>Key Management Service Developer Guide</i>.</p>\n         <p>The KMS key that you use for this operation must be in a compatible key state. For\ndetails, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html\">Key states of KMS keys</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: Yes. To perform this operation with a KMS key in a different Amazon Web Services account, specify\n  the key ARN or alias ARN in the value of the <code>KeyId</code> parameter.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:GenerateDataKeyPairWithoutPlaintext</a> (key\n      policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>Decrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>Encrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKeyPair</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKeyWithoutPlaintext</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
+                "smithy.api#documentation": "<p>Returns a unique asymmetric data key pair for use outside of KMS. This operation returns\n      a plaintext public key and a copy of the private key that is encrypted under the symmetric\n      encryption KMS key you specify. Unlike <a>GenerateDataKeyPair</a>, this operation\n      does not return a plaintext private key. The bytes in the keys are random; they are not\n      related to the caller or to the KMS key that is used to encrypt the private key. </p>\n         <p>You can use the public key that <code>GenerateDataKeyPairWithoutPlaintext</code> returns\n      to encrypt data or verify a signature outside of KMS. Then, store the encrypted private key\n      with the data. When you are ready to decrypt data or sign a message, you can use the <a>Decrypt</a> operation to decrypt the encrypted private key.</p>\n         <p>To generate a data key pair, you must specify a symmetric encryption KMS key to encrypt\n      the private key in a data key pair. You cannot use an asymmetric KMS key or a KMS key in a\n      custom key store. To get the type and origin of your KMS key, use the <a>DescribeKey</a> operation. </p>\n         <p>Use the <code>KeyPairSpec</code> parameter to choose an RSA or Elliptic Curve (ECC) data\n      key pair. In China Regions, you can also choose an SM2 data key pair. KMS recommends that\n      you use ECC key pairs for signing, and use RSA and SM2 key pairs for either encryption or\n      signing, but not both. However, KMS cannot enforce any restrictions on the use of data key\n      pairs outside of KMS.</p>\n         <p>\n            <code>GenerateDataKeyPairWithoutPlaintext</code> returns a unique data key pair for each\n      request. The bytes in the key are not related to the caller or KMS key that is used to encrypt\n      the private key. The public key is a DER-encoded X.509 SubjectPublicKeyInfo, as specified in\n        <a href=\"https://tools.ietf.org/html/rfc5280\">RFC 5280</a>.</p>\n         <note>\n            <p>For ML-KEM data key pairs, the DER-encoded PKCS8 PrivateKeyInfo contains the private key\n        in seed format. As a result, the length of the private key is the same for all ML-KEM key pair\n        specs.</p>\n         </note>\n         <p>You can use an optional encryption context to add additional security to the encryption\n      operation. If you specify an <code>EncryptionContext</code>, you must specify the same\n      encryption context (a case-sensitive exact match) when decrypting the encrypted data key.\n      Otherwise, the request to decrypt fails with an <code>InvalidCiphertextException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/encrypt_context.html\">Encryption Context</a> in the\n      <i>Key Management Service Developer Guide</i>.</p>\n         <p>The KMS key that you use for this operation must be in a compatible key state. For\ndetails, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html\">Key states of KMS keys</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: Yes. To perform this operation with a KMS key in a different Amazon Web Services account, specify\n  the key ARN or alias ARN in the value of the <code>KeyId</code> parameter.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:GenerateDataKeyPairWithoutPlaintext</a> (key\n      policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>Decrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>Encrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKeyPair</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKeyWithoutPlaintext</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To generate an asymmetric data key pair without a plaintext key",
@@ -3212,7 +3497,7 @@
                 "KeyPairSpec": {
                     "target": "com.amazonaws.kms#DataKeyPairSpec",
                     "traits": {
-                        "smithy.api#documentation": "<p>Determines the type of data key pair that is generated.</p>\n         <p>The KMS rule that restricts the use of asymmetric RSA and SM2 KMS keys to encrypt and decrypt or to sign and verify (but not both), the rule that permits you to use ECC KMS keys only to sign and verify, and the rule that permits you to use ML-DSA key pairs to sign and verify only are not effective on data key pairs, which are used outside of KMS. The SM2 key spec is only available in China Regions.</p>",
+                        "smithy.api#documentation": "<p>Determines the type of data key pair that is generated.</p>\n         <p>The KMS rule that restricts the use of asymmetric RSA and SM2 KMS keys to encrypt and decrypt or to sign and verify (but not both), the rule that permits you to use ECC KMS keys only to sign and verify, and the rule that permits you to use ML-DSA key pairs to sign and verify only are not effective on data key pairs, which are used outside of KMS. The SM2 key spec is only available in China Regions. The ML-KEM key specs are not available in China Regions.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -3718,7 +4003,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns usage information about the last successful cryptographic operation performed with a\n      specified KMS key, including the operation type, timestamp, and associated CloudTrail event\n      ID.</p>\n         <p>The <code>TrackingStartDate</code> in the <code>GetKeyLastUsage</code> response indicates\n      the date from which KMS began recording cryptographic activity for a given key. Use this\n      value together with <code>KeyCreationDate</code> to understand the key's usage\n      history:</p>\n         <ul>\n            <li>\n               <p>If the <code>KeyLastUsage</code> response element is <i>present</i>,\n          the key has been used for a successful cryptographic operation since the\n          <code>TrackingStartDate</code>. The response includes the operation type, timestamp, and\n          associated CloudTrail event ID.</p>\n            </li>\n            <li>\n               <p>If the <code>KeyLastUsage</code> response element is <i>empty</i> and\n          <code>KeyCreationDate</code> is on or after <code>TrackingStartDate</code>, the key has\n          not been used for a successful cryptographic operation since it was created.</p>\n            </li>\n            <li>\n               <p>If the <code>KeyLastUsage</code> response element is <i>empty</i> and\n          <code>KeyCreationDate</code> is before <code>TrackingStartDate</code>, there is no record\n          of the key being used for a successful cryptographic operation since the\n          <code>TrackingStartDate</code>. However, the key may have been used before tracking\n          began. To determine whether the key was used before the <code>TrackingStartDate</code>,\n          examine your past CloudTrail logs.</p>\n            </li>\n         </ul>\n         <p>For multi-Region KMS keys, primary and replica keys track last usage independently. Each\n      key in a multi-Region key set maintains its own usage information.</p>\n         <p>The <code>ReEncrypt</code> operation uses two keys: a source key for decryption and a\n      destination key for encryption. Usage information is recorded for both keys independently,\n      each with the CloudTrail event ID from the respective key owner's account.</p>\n         <note>\n            <p>Do not use <code>GetKeyLastUsage</code> as the sole indicator when scheduling a key for\n        deletion. Instead, first <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/enabling-keys.html\">disable the key</a> and monitor CloudTrail for\n        <code>DisabledException</code> entries, as there could be infrequent workflows that are\n        dependent on the key. By looking for this exception, you can identify potential dependencies\n        and workload failures before they occur.</p>\n         </note>\n         <p>\n            <b>Cross-account use</b>: No. You cannot perform this operation\n      on a KMS key in a different Amazon Web Services account.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:GetKeyLastUsage</a> (key policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>DescribeKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>DisableKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>ScheduleKeyDeletion</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
+                "smithy.api#documentation": "<p>Returns usage information about the last successful cryptographic operation performed with a\n      specified KMS key, including the operation type, timestamp, and associated CloudTrail event\n      ID.</p>\n         <p>The <code>TrackingStartDate</code> in the <code>GetKeyLastUsage</code> response indicates\n      the date from which KMS began recording cryptographic activity for a given key. Use this\n      value together with <code>KeyCreationDate</code> to understand the key's usage\n      history:</p>\n         <ul>\n            <li>\n               <p>If the <code>KeyLastUsage</code> response element is <i>present</i>,\n          the key has been used for a successful cryptographic operation since the\n          <code>TrackingStartDate</code>. The response includes the operation type, timestamp, and\n          associated CloudTrail event ID.</p>\n            </li>\n            <li>\n               <p>If the <code>KeyLastUsage</code> response element is <i>empty</i> and\n          <code>KeyCreationDate</code> is on or after <code>TrackingStartDate</code>, the key has\n          not been used for a successful cryptographic operation since it was created.</p>\n            </li>\n            <li>\n               <p>If the <code>KeyLastUsage</code> response element is <i>empty</i> and\n          <code>KeyCreationDate</code> is before <code>TrackingStartDate</code>, there is no record\n          of the key being used for a successful cryptographic operation since the\n          <code>TrackingStartDate</code>. However, the key may have been used before tracking\n          began. To determine whether the key was used before the <code>TrackingStartDate</code>,\n          examine your past CloudTrail logs.</p>\n            </li>\n         </ul>\n         <p>For multi-Region KMS keys, primary and replica keys track last usage independently. Each\n      key in a multi-Region key set maintains its own usage information.</p>\n         <p>The <code>ReEncrypt</code> operation uses two keys: a source key for decryption and a\n      destination key for encryption. Usage information is recorded for both keys independently,\n      each with the CloudTrail event ID from the respective key owner's account.</p>\n         <note>\n            <p>Do not use <code>GetKeyLastUsage</code> as the sole indicator when scheduling a key for\n        deletion. Instead, first <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/enabling-keys.html\">disable the key</a> and monitor CloudTrail for\n        <code>DisabledException</code> entries, as there could be infrequent workflows that are\n        dependent on the key. By looking for this exception, you can identify potential dependencies\n        and workload failures before they occur. CloudTrail remains the authoritative source for all\n        API calls made to your key.</p>\n         </note>\n         <p>\n            <b>Cross-account use</b>: No. You cannot perform this operation\n      on a KMS key in a different Amazon Web Services account.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:GetKeyLastUsage</a> (key policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>DescribeKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>DisableKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>ScheduleKeyDeletion</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To retrieve the last usage for a KMS key",
@@ -3768,7 +4053,7 @@
                 "KeyLastUsage": {
                     "target": "com.amazonaws.kms#KeyLastUsageData",
                     "traits": {
-                        "smithy.api#documentation": "<p>Contains usage information about the last time the KMS key was used for a successful cryptographic\n      operation. If the key has not been used since tracking began, this response element is\n      empty.</p>"
+                        "smithy.api#documentation": "<p>Contains usage information about the last time the KMS key was used for a successful cryptographic\n      operation. If the key has not been used since tracking began, this response element is an\n      empty object.</p>"
                     }
                 },
                 "TrackingStartDate": {
@@ -3814,7 +4099,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Gets a key policy attached to the specified KMS key.</p>\n         <p>\n            <b>Cross-account use</b>: No. You cannot perform this operation on a KMS key in a different Amazon Web Services account.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:GetKeyPolicy</a> (key policy)</p>\n         <p>\n            <b>Related operations</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html\">PutKeyPolicy</a>\n         </p>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
+                "smithy.api#documentation": "<p>Gets a key policy attached to the specified KMS key.</p>\n         <p>A KMS key can have two key policies. You manage the <code>default</code> key policy.\n      Resource Access Manager (RAM) manages the <code>AWS_RAM</code> key policy for KMS keys that you share\n      through RAM. You can use <code>GetKeyPolicy</code> to view the <code>AWS_RAM</code> key\n      policy, but you can't change it with <a>PutKeyPolicy</a>. To get the\n        <code>AWS_RAM</code> key policy, set the <code>PolicyName</code> parameter to\n        <code>AWS_RAM</code>. If the KMS key doesn't have an <code>AWS_RAM</code> key policy,\n        <code>GetKeyPolicy</code> returns a <code>NotFoundException</code>. For information about sharing KMS keys, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-sharing-ram.html\">Sharing KMS keys with RAM</a> in the\n        <i>Key Management Service Developer Guide</i>. For information about RAM managed permissions, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/security-ram-permissions.html\">Managing\n        permissions in RAM</a> in the <i>RAM User Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: No. You cannot perform this operation on a KMS key in a different Amazon Web Services account.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:GetKeyPolicy</a> (key policy)</p>\n         <p>You can use the <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-policy-name\">kms:PolicyName</a> condition key to control access to this operation based on\n      the value of the <code>PolicyName</code> parameter in the request. If the request doesn't\n      include <code>PolicyName</code>, the value of <code>kms:PolicyName</code> is\n        <code>default</code>.</p>\n         <p>\n            <b>Related operations</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html\">PutKeyPolicy</a>\n         </p>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To retrieve a key policy",
@@ -3826,6 +4111,18 @@
                         "output": {
                             "Policy": "{\n  \"Version\" : \"2012-10-17\",\n  \"Id\" : \"key-default-1\",\n  \"Statement\" : [ {\n    \"Sid\" : \"Enable IAM User Permissions\",\n    \"Effect\" : \"Allow\",\n    \"Principal\" : {\n      \"AWS\" : \"arn:aws:iam::111122223333:root\"\n    },\n    \"Action\" : \"kms:*\",\n    \"Resource\" : \"*\"\n  } ]\n}"
                         }
+                    },
+                    {
+                        "title": "To retrieve the AWS_RAM key policy",
+                        "documentation": "The following example retrieves the AWS_RAM key policy for a KMS key that is shared with account 444455556666 through a resource share that uses a customer managed AWS RAM permission. AWS Resource Access Manager (AWS RAM) creates and manages the AWS_RAM key policy for KMS keys that you share through AWS RAM.",
+                        "input": {
+                            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+                            "PolicyName": "AWS_RAM"
+                        },
+                        "output": {
+                            "Policy": "{\n  \"Version\" : \"2012-10-17\",\n  \"Id\" : \"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111\",\n  \"Statement\" : [ {\n    \"Sid\" : \"ExampleKmsKeyPermission-external-principals\",\n    \"Effect\" : \"Allow\",\n    \"Principal\" : {\n      \"AWS\" : \"arn:aws:iam::444455556666:root\"\n    },\n    \"Action\" : [ \"kms:DescribeKey\", \"kms:Encrypt\", \"kms:Decrypt\" ],\n    \"Resource\" : \"arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"\n  } ]\n}",
+                            "PolicyName": "AWS_RAM"
+                        }
                     }
                 ]
             }
@@ -3836,14 +4133,14 @@
                 "KeyId": {
                     "target": "com.amazonaws.kms#KeyIdType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Gets the key policy for the specified KMS key.</p>\n         <p>Specify the key ID or key ARN of the KMS key.</p>\n         <p>For example:</p>\n         <ul>\n            <li>\n               <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>\n               </p>\n            </li>\n            <li>\n               <p>Key ARN: <code>arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>\n               </p>\n            </li>\n         </ul>\n         <p>To get the key ID and key ARN for a KMS key, use <a>ListKeys</a> or <a>DescribeKey</a>.</p>",
+                        "smithy.api#documentation": "<p>Identifies the KMS key whose key policy you want to get.</p>\n         <p>Specify the key ID or key ARN of the KMS key.</p>\n         <p>For example:</p>\n         <ul>\n            <li>\n               <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>\n               </p>\n            </li>\n            <li>\n               <p>Key ARN: <code>arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>\n               </p>\n            </li>\n         </ul>\n         <p>To get the key ID and key ARN for a KMS key, use <a>ListKeys</a> or <a>DescribeKey</a>.</p>",
                         "smithy.api#required": {}
                     }
                 },
                 "PolicyName": {
                     "target": "com.amazonaws.kms#PolicyNameType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specifies the name of the key policy. If no policy name is specified, the default value is\n        <code>default</code>. The only valid name is <code>default</code>. To get the names of key\n      policies, use <a>ListKeyPolicies</a>.</p>"
+                        "smithy.api#documentation": "<p>Specifies the name of the key policy. If no policy name is specified, the default value is\n        <code>default</code>. Valid values are <code>default</code> and <code>AWS_RAM</code>. Use\n        <code>AWS_RAM</code> to get the key policy that RAM manages for a KMS key that you share\n      through RAM. If the KMS key doesn't have an <code>AWS_RAM</code> key policy, the request\n      fails with a <code>NotFoundException</code>. To get the names of key policies, use <a>ListKeyPolicies</a>.</p>"
                     }
                 }
             },
@@ -3863,7 +4160,7 @@
                 "PolicyName": {
                     "target": "com.amazonaws.kms#PolicyNameType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the key policy. The only valid value is <code>default</code>.</p>"
+                        "smithy.api#documentation": "<p>The name of the key policy. Valid values are:</p>\n         <dl>\n            <dt>default</dt>\n            <dd>\n               <p>The key policy that you manage.</p>\n            </dd>\n            <dt>AWS_RAM</dt>\n            <dd>\n               <p>The key policy that RAM manages for KMS keys that you share through\n            RAM.</p>\n            </dd>\n         </dl>"
                     }
                 }
             },
@@ -4187,6 +4484,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The key agreement algorithm used to derive a shared secret. This field is present only\n      when the KMS key has a <code>KeyUsage</code> value of <code>KEY_AGREEMENT</code>.</p>"
                     }
+                },
+                "EncapsulationAlgorithms": {
+                    "target": "com.amazonaws.kms#EncapsulationAlgorithmSpecList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key encapsulation algorithm used to establish a shared secret. This field is present\n      only when the KMS key has a <code>KeyUsage</code> value of\n      <code>ENCAPSULATE_DECAPSULATE</code>.</p>"
+                    }
                 }
             },
             "traits": {
@@ -4431,6 +4734,18 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "DeriveSharedSecret"
+                    }
+                },
+                "Encapsulate": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Encapsulate"
+                    }
+                },
+                "Decapsulate": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Decapsulate"
                     }
                 }
             }
@@ -4749,7 +5064,7 @@
                     "code": "InvalidCiphertext",
                     "httpResponseCode": 400
                 },
-                "smithy.api#documentation": "<p>From the <a>Decrypt</a> or <a>ReEncrypt</a> operation, the request\n      was rejected because the specified ciphertext, or additional authenticated data incorporated\n      into the ciphertext, such as the encryption context, is corrupted, missing, or otherwise\n      invalid.</p>\n         <p>From the <a>ImportKeyMaterial</a> operation, the request was rejected because\n      KMS could not decrypt the encrypted (wrapped) key material. </p>",
+                "smithy.api#documentation": "<p>From the <a>Decrypt</a> or <a>ReEncrypt</a> operation, the request\n      was rejected because the specified ciphertext, or additional authenticated data incorporated\n      into the ciphertext, such as the encryption context, is corrupted, missing, or otherwise\n      invalid.</p>\n         <p>From the <a>ImportKeyMaterial</a> operation, the request was rejected because\n      KMS could not decrypt the encrypted (wrapped) key material. </p>\n         <p>From the <a>Decapsulate</a> operation, the request was rejected because the\n      length of the <code>SharedSecretCiphertextBlob</code> is inconsistent with the specified ML-KEM\n      key spec.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 400
             }
@@ -4817,7 +5132,7 @@
                     "code": "InvalidKeyUsage",
                     "httpResponseCode": 400
                 },
-                "smithy.api#documentation": "<p>The request was rejected for one of the following reasons: </p>\n         <ul>\n            <li>\n               <p>The <code>KeyUsage</code> value of the KMS key is incompatible with the API\n          operation.</p>\n            </li>\n            <li>\n               <p>The encryption algorithm or signing algorithm specified for the operation is\n          incompatible with the type of key material in the KMS key <code>(KeySpec</code>).</p>\n            </li>\n         </ul>\n         <p>For encrypting, decrypting, re-encrypting, and generating data keys, the\n        <code>KeyUsage</code> must be <code>ENCRYPT_DECRYPT</code>. For signing and verifying\n      messages, the <code>KeyUsage</code> must be <code>SIGN_VERIFY</code>. For generating and\n      verifying message authentication codes (MACs), the <code>KeyUsage</code> must be\n        <code>GENERATE_VERIFY_MAC</code>. For deriving key agreement secrets, the\n        <code>KeyUsage</code> must be <code>KEY_AGREEMENT</code>. To find the <code>KeyUsage</code>\n      of a KMS key, use the <a>DescribeKey</a> operation.</p>\n         <p>To find the encryption or signing algorithms supported for a particular KMS key, use the\n        <a>DescribeKey</a> operation.</p>",
+                "smithy.api#documentation": "<p>The request was rejected for one of the following reasons: </p>\n         <ul>\n            <li>\n               <p>The <code>KeyUsage</code> value of the KMS key is incompatible with the API\n          operation.</p>\n            </li>\n            <li>\n               <p>The encryption algorithm or signing algorithm specified for the operation is\n          incompatible with the type of key material in the KMS key <code>(KeySpec</code>).</p>\n            </li>\n         </ul>\n         <p>For encrypting, decrypting, re-encrypting, and generating data keys, the\n        <code>KeyUsage</code> must be <code>ENCRYPT_DECRYPT</code>. For signing and verifying\n      messages, the <code>KeyUsage</code> must be <code>SIGN_VERIFY</code>. For generating and\n      verifying message authentication codes (MACs), the <code>KeyUsage</code> must be\n        <code>GENERATE_VERIFY_MAC</code>. For deriving key agreement secrets, the\n        <code>KeyUsage</code> must be <code>KEY_AGREEMENT</code>. For encapsulating and decapsulating\n      shared secrets, the <code>KeyUsage</code> must be <code>ENCAPSULATE_DECAPSULATE</code>. To find\n      the <code>KeyUsage</code> of a KMS key, use the <a>DescribeKey</a> operation.</p>\n         <p>To find the encryption or signing algorithms supported for a particular KMS key, use the\n        <a>DescribeKey</a> operation.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 400
             }
@@ -5050,6 +5365,18 @@
                     "traits": {
                         "smithy.api#enumValue": "VerifyMac"
                     }
+                },
+                "Encapsulate": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Encapsulate"
+                    }
+                },
+                "Decapsulate": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Decapsulate"
+                    }
                 }
             }
         },
@@ -5263,6 +5590,12 @@
                         "smithy.api#documentation": "<p>The key agreement algorithm used to derive a shared secret.</p>"
                     }
                 },
+                "EncapsulationAlgorithms": {
+                    "target": "com.amazonaws.kms#EncapsulationAlgorithmSpecList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The key encapsulation algorithm that the KMS key supports. This field appears only for KMS\n      keys with a <code>KeyUsage</code> value of <code>ENCAPSULATE_DECAPSULATE</code>.</p>"
+                    }
+                },
                 "MultiRegion": {
                     "target": "com.amazonaws.kms#NullableBooleanType",
                     "traits": {
@@ -5408,6 +5741,24 @@
                     "traits": {
                         "smithy.api#enumValue": "ECC_NIST_EDWARDS25519"
                     }
+                },
+                "ML_KEM_512": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ML_KEM_512"
+                    }
+                },
+                "ML_KEM_768": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ML_KEM_768"
+                    }
+                },
+                "ML_KEM_1024": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ML_KEM_1024"
+                    }
                 }
             }
         },
@@ -5516,6 +5867,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "KEY_AGREEMENT"
+                    }
+                },
+                "ENCAPSULATE_DECAPSULATE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ENCAPSULATE_DECAPSULATE"
                     }
                 }
             }
@@ -5824,7 +6181,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Gets the names of the key policies that are attached to a KMS key. This operation is\n      designed to get policy names that you can use in a <a>GetKeyPolicy</a> operation.\n      However, the only valid policy name is <code>default</code>. </p>\n         <p>\n            <b>Cross-account use</b>: No. You cannot perform this operation on a KMS key in a different Amazon Web Services account.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:ListKeyPolicies</a> (key policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>GetKeyPolicy</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html\">PutKeyPolicy</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
+                "smithy.api#documentation": "<p>Gets the names of the key policies that are attached to a KMS key. This operation is\n      designed to get policy names that you can use in a <a>GetKeyPolicy</a> operation.\n      The valid policy names are <code>default</code> and <code>AWS_RAM</code>.</p>\n         <p>For information about the <code>AWS_RAM</code> key policy, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-sharing-ram.html\">Sharing KMS keys with\n        RAM</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: No. You cannot perform this operation on a KMS key in a different Amazon Web Services account.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:ListKeyPolicies</a> (key policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>GetKeyPolicy</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html\">PutKeyPolicy</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To list key policies for a KMS key",
@@ -5834,6 +6191,20 @@
                         },
                         "output": {
                             "PolicyNames": [
+                                "default"
+                            ],
+                            "Truncated": false
+                        }
+                    },
+                    {
+                        "title": "To list key policies for a KMS key that has an AWS_RAM key policy",
+                        "documentation": "The following example lists key policies for a KMS key that has an AWS_RAM key policy. AWS Resource Access Manager (AWS RAM) manages the AWS_RAM key policy for KMS keys that you share through AWS RAM.",
+                        "input": {
+                            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab"
+                        },
+                        "output": {
+                            "PolicyNames": [
+                                "AWS_RAM",
                                 "default"
                             ],
                             "Truncated": false
@@ -5861,7 +6232,7 @@
                 "Limit": {
                     "target": "com.amazonaws.kms#LimitType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Use this parameter to specify the maximum number of items to return. When this\n    value is present, KMS does not return more than the specified number of items, but it might\n    return fewer.</p>\n         <p>This value is optional. If you include a value, it must be between\n    1 and 1000, inclusive. If you do not include a value, it defaults to 100.</p>\n         <p>Only one policy can be attached to a key.</p>"
+                        "smithy.api#documentation": "<p>Use this parameter to specify the maximum number of items to return. When this\n    value is present, KMS does not return more than the specified number of items, but it might\n    return fewer.</p>\n         <p>This value is optional. If you include a value, it must be between\n    1 and 1000, inclusive. If you do not include a value, it defaults to 100.</p>\n         <p>A KMS key can have at most two key policies, <code>default</code> and\n        <code>AWS_RAM</code>.</p>"
                     }
                 },
                 "Marker": {
@@ -5881,7 +6252,7 @@
                 "PolicyNames": {
                     "target": "com.amazonaws.kms#PolicyNameList",
                     "traits": {
-                        "smithy.api#documentation": "<p>A list of key policy names. The only valid value is <code>default</code>.</p>"
+                        "smithy.api#documentation": "<p>A list of key policy names. Valid values are:</p>\n         <dl>\n            <dt>default</dt>\n            <dd>\n               <p>The key policy that you manage.</p>\n            </dd>\n            <dt>AWS_RAM</dt>\n            <dd>\n               <p>The key policy that RAM manages for KMS keys that you share through\n            RAM.</p>\n            </dd>\n         </dl>"
                     }
                 },
                 "NextMarker": {
@@ -6020,7 +6391,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Gets a list of all KMS keys in the caller's Amazon Web Services account and Region.</p>\n         <p>\n            <b>Cross-account use</b>: No. You cannot perform this operation on a KMS key in a different Amazon Web Services account.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:ListKeys</a> (IAM policy)</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>CreateKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>DescribeKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>ListAliases</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>ListResourceTags</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
+                "smithy.api#documentation": "<p>Gets a list of all KMS keys in the caller's Amazon Web Services account and Region.</p>\n         <p>You can also use <code>ListKeys</code> to list KMS keys in the Region that other\n        Amazon Web Services accounts shared with the caller's Amazon Web Services account through Resource Access Manager (RAM). To list\n      them, use the <code>ResourceOwners</code> parameter. If you omit <code>ResourceOwners</code>,\n        <code>ListKeys</code> lists only the KMS keys in the caller's Amazon Web Services account.</p>\n         <p>When <code>ResourceOwners</code> includes <code>OTHER_ACCOUNTS_VIA_RAM</code>,\n        <code>ListKeys</code> returns the KMS keys that other Amazon Web Services accounts currently share with\n      the caller's Amazon Web Services account through RAM. For information about how and when a resource\n      that another account shares becomes available to your Amazon Web Services account, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/working-with-shared.html\">Access Amazon Web Services\n        resources shared with you</a> in the <i>RAM User Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: No. This operation doesn't take a KMS\n      key parameter, so you can't use it to list the KMS keys of a specific Amazon Web Services account. The only\n      KMS keys in other Amazon Web Services accounts that <code>ListKeys</code> returns are the ones that other\n      accounts shared with the caller's Amazon Web Services account through RAM. To list them, set the\n        <code>ResourceOwners</code> parameter to include <code>OTHER_ACCOUNTS_VIA_RAM</code>.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:ListKeys</a> (IAM policy)</p>\n         <p>The same <code>kms:ListKeys</code> permission lets you list the KMS keys that other\n      accounts shared with you through RAM. KMS doesn't evaluate the key policies of shared KMS\n      keys when it lists them. To use a shared KMS key, you need permission for each operation on\n      that KMS key.</p>\n         <p>\n            <b>Related operations:</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <a>CreateKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>DescribeKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>ListAliases</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>ListResourceTags</a>\n               </p>\n            </li>\n         </ul>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>\n         <p>KMS keys that other Amazon Web Services accounts share with you can take some time to appear in or\n      disappear from <code>ListKeys</code> results after changes to resource shares, such as\n      accepting an invitation or deleting a resource share.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To list KMS keys",
@@ -6058,6 +6429,28 @@
                             ],
                             "Truncated": false
                         }
+                    },
+                    {
+                        "title": "To list KMS keys that other accounts shared with you through AWS RAM",
+                        "documentation": "The following example lists the KMS keys in the Region that other AWS accounts shared with your AWS account through AWS Resource Access Manager (AWS RAM).",
+                        "input": {
+                            "ResourceOwners": [
+                                "OTHER_ACCOUNTS_VIA_RAM"
+                            ]
+                        },
+                        "output": {
+                            "Keys": [
+                                {
+                                    "KeyArn": "arn:aws:kms:us-east-2:444455556666:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+                                    "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab"
+                                },
+                                {
+                                    "KeyArn": "arn:aws:kms:us-east-2:444455556666:key/0987dcba-09fe-87dc-65ba-ab0987654321",
+                                    "KeyId": "0987dcba-09fe-87dc-65ba-ab0987654321"
+                                }
+                            ],
+                            "Truncated": false
+                        }
                     }
                 ],
                 "smithy.api#paginated": {
@@ -6082,6 +6475,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Use this parameter in a subsequent request after you receive a response with\n    truncated results. Set it to the value of <code>NextMarker</code> from the truncated response\n    you just received.</p>"
                     }
+                },
+                "ResourceOwners": {
+                    "target": "com.amazonaws.kms#ResourceOwnersList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies whose KMS keys to list. Use this parameter to list KMS keys that other\n        Amazon Web Services accounts shared with your Amazon Web Services account through Resource Access Manager (RAM).</p>\n         <p>Specify one or two values. Valid values are:</p>\n         <dl>\n            <dt>SELF</dt>\n            <dd>\n               <p>Lists the KMS keys in your Amazon Web Services account and Region.</p>\n            </dd>\n            <dt>OTHER_ACCOUNTS_VIA_RAM</dt>\n            <dd>\n               <p>Lists the KMS keys in the Region that other Amazon Web Services accounts currently share with\n            your Amazon Web Services account through RAM. This list doesn't include KMS keys that your\n              Amazon Web Services account owns. For each of these KMS keys, the key ARN in the response contains\n            the account ID of the Amazon Web Services account that owns the KMS key.</p>\n            </dd>\n         </dl>\n         <p>If you omit this parameter, <code>ListKeys</code> lists only the KMS keys in your\n        Amazon Web Services account. If you specify both values, in either order, <code>ListKeys</code> returns the KMS keys in\n      your Amazon Web Services account first, and then the KMS keys that other Amazon Web Services accounts shared with you.\n      A single response doesn't contain both kinds of KMS keys.</p>\n         <p>When <code>ResourceOwners</code> includes <code>OTHER_ACCOUNTS_VIA_RAM</code>, a response\n      can contain fewer KMS keys than the <code>Limit</code> value, or none, even when\n        <code>Truncated</code> is true. To get all of the KMS keys, continue calling\n        <code>ListKeys</code> with the <code>NextMarker</code> value from each response until\n        <code>Truncated</code> is false. Use a <code>NextMarker</code> value only in a request\n      that has the same <code>ResourceOwners</code> value as the request that returned it.\n      Otherwise, the request can fail with an <code>InvalidMarkerException</code>.</p>\n         <p>KMS keys that other Amazon Web Services accounts share with you can take some time to appear in or\n      disappear from the results after changes to resource shares.</p>"
+                    }
                 }
             },
             "traits": {
@@ -6094,7 +6493,7 @@
                 "Keys": {
                     "target": "com.amazonaws.kms#KeyList",
                     "traits": {
-                        "smithy.api#documentation": "<p>A list of KMS keys.</p>"
+                        "smithy.api#documentation": "<p>A list of KMS keys. For a KMS key that another Amazon Web Services account shared with you through\n        RAM, the key ARN contains the account ID of the Amazon Web Services account that owns the KMS\n      key.</p>"
                     }
                 },
                 "NextMarker": {
@@ -6605,7 +7004,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Attaches a key policy to the specified KMS key. </p>\n         <p>For more information about key policies, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html\">Key Policies</a> in the <i>Key Management Service Developer Guide</i>.\n      For help writing and formatting a JSON policy document, see the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html\">IAM JSON Policy Reference</a> in the <i>\n               <i>Identity and Access Management User Guide</i>\n            </i>. For examples of adding a key policy in multiple programming languages,\n      see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/example_kms_PutKeyPolicy_section.html\">Use\n        PutKeyPolicy with an Amazon Web Services SDK or CLI</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: No. You cannot perform this operation on a KMS key in a different Amazon Web Services account.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:PutKeyPolicy</a> (key policy)</p>\n         <p>\n            <b>Related operations</b>: <a>GetKeyPolicy</a>\n         </p>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
+                "smithy.api#documentation": "<p>Attaches a key policy to the specified KMS key. You can use this operation to set only the\n        <code>default</code> key policy.</p>\n         <p>For more information about key policies, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html\">Key Policies</a> in the <i>Key Management Service Developer Guide</i>.\n      For help writing and formatting a JSON policy document, see the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html\">IAM JSON Policy Reference</a> in the <i>\n               <i>Identity and Access Management User Guide</i>\n            </i>. For examples of adding a key policy in multiple programming languages,\n      see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/example_kms_PutKeyPolicy_section.html\">Use\n        PutKeyPolicy with an Amazon Web Services SDK or CLI</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>A KMS key can also have an <code>AWS_RAM</code> key policy, which Resource Access Manager (RAM)\n      manages for KMS keys that you share through RAM. You can't use <code>PutKeyPolicy</code> to\n      create, change, or delete the <code>AWS_RAM</code> key policy. If you set\n        <code>PolicyName</code> to <code>AWS_RAM</code>, the request fails with a\n        <code>ValidationException</code> and the message <code>The AWS_RAM policy can only be\n        managed by the RAM service.</code> To view the <code>AWS_RAM</code> key policy, use <a>GetKeyPolicy</a>. For information about sharing KMS keys, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-sharing-ram.html\">Sharing KMS keys with\n        RAM</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         <p>\n            <b>Cross-account use</b>: No. You cannot perform this operation on a KMS key in a different Amazon Web Services account.</p>\n         <p>\n            <b>Required permissions</b>: <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html\">kms:PutKeyPolicy</a> (key policy)</p>\n         <p>You can use the <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-policy-name\">kms:PolicyName</a> condition key to control access to this operation based on\n      the value of the <code>PolicyName</code> parameter in the request. If the request doesn't\n      include <code>PolicyName</code>, the value of <code>kms:PolicyName</code> is\n        <code>default</code>.</p>\n         <p>\n            <b>Related operations</b>: <a>GetKeyPolicy</a>\n         </p>\n         <p>\n            <b>Eventual consistency</b>: The KMS API follows an eventual consistency model. \n  For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency\">KMS eventual consistency</a>.</p>",
                 "smithy.api#examples": [
                     {
                         "title": "To attach a key policy to a KMS key",
@@ -6632,7 +7031,7 @@
                 "PolicyName": {
                     "target": "com.amazonaws.kms#PolicyNameType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The name of the key policy. If no policy name is specified, the default value is\n        <code>default</code>. The only valid value is <code>default</code>.</p>"
+                        "smithy.api#documentation": "<p>The name of the key policy. If no policy name is specified, the default value is\n        <code>default</code>. Valid values are <code>default</code> and <code>AWS_RAM</code>, but\n      you can set only the <code>default</code> key policy. RAM manages the <code>AWS_RAM</code>\n      key policy for KMS keys that you share through RAM. If you specify <code>AWS_RAM</code>, the\n      request fails with a <code>ValidationException</code>, or with an\n        <code>AccessDeniedException</code> if you don't have permission to call\n        <code>PutKeyPolicy</code> with that policy name.</p>"
                     }
                 },
                 "Policy": {
@@ -6646,7 +7045,7 @@
                     "target": "com.amazonaws.kms#BooleanType",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Skips (\"bypasses\") the key policy lockout safety check. The default value is false.</p>\n         <important>\n            <p>Setting this value to true increases the risk that the KMS key becomes unmanageable. Do\n        not set this value to true indiscriminately.</p>\n            <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#prevent-unmanageable-key\">Default key policy</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         </important>\n         <p>Use this parameter only when you intend to prevent the principal that is making the\n      request from making a subsequent <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html\">PutKeyPolicy</a>\n      request on the KMS key.</p>"
+                        "smithy.api#documentation": "<p>Skips (\"bypasses\") the key policy lockout safety check. The default value is false.</p>\n         <important>\n            <p>Setting this value to true increases the risk that the KMS key becomes unmanageable. Do\n        not set this value to true indiscriminately.</p>\n            <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#prevent-unmanageable-key\">Default key policy</a> in the <i>Key Management Service Developer Guide</i>.</p>\n         </important>\n         <p>Use this parameter only when you intend to prevent the principal that is making the\n      request from making a subsequent <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html\">PutKeyPolicy</a>\n      request on the KMS key.</p>\n         <p>The key policy lockout safety check and the <code>BypassPolicyLockoutSafetyCheck</code>\n      parameter apply only to the <code>default</code> key policy. The check evaluates only the new\n        <code>default</code> key policy, with <code>kms:PolicyName</code> set to\n        <code>default</code>. It doesn't consider permissions in the <code>AWS_RAM</code> key\n      policy.</p>"
                     }
                 }
             },
@@ -7028,6 +7427,38 @@
             },
             "traits": {
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.kms#ResourceOwnerType": {
+            "type": "enum",
+            "members": {
+                "SELF": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SELF"
+                    }
+                },
+                "OTHER_ACCOUNTS_VIA_RAM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "OTHER_ACCOUNTS_VIA_RAM"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Identifies whose KMS keys <a>ListKeys</a> lists. <code>SELF</code> identifies\n      the KMS keys in your Amazon Web Services account. <code>OTHER_ACCOUNTS_VIA_RAM</code> identifies the KMS\n      keys that other Amazon Web Services accounts shared with your Amazon Web Services account through Resource Access Manager\n      (RAM).</p>"
+            }
+        },
+        "com.amazonaws.kms#ResourceOwnersList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.kms#ResourceOwnerType"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2
+                }
             }
         },
         "com.amazonaws.kms#RetireGrant": {
@@ -7847,6 +8278,9 @@
                     "target": "com.amazonaws.kms#CreateKey"
                 },
                 {
+                    "target": "com.amazonaws.kms#Decapsulate"
+                },
+                {
                     "target": "com.amazonaws.kms#Decrypt"
                 },
                 {
@@ -7881,6 +8315,9 @@
                 },
                 {
                     "target": "com.amazonaws.kms#EnableKeyRotation"
+                },
+                {
+                    "target": "com.amazonaws.kms#Encapsulate"
                 },
                 {
                     "target": "com.amazonaws.kms#Encrypt"
@@ -8003,7 +8440,7 @@
                     "name": "kms"
                 },
                 "aws.protocols#awsJson1_1": {},
-                "smithy.api#documentation": "<fullname>Key Management Service</fullname>\n         <p>Key Management Service (KMS) is an encryption and key management web service. This guide describes\n      the KMS operations that you can call programmatically. For general information about KMS,\n      see the <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/\">\n               <i>Key Management Service Developer Guide</i>\n            </a>.</p>\n         <note>\n            <p>KMS has replaced the term <i>customer master key (CMK)</i> with <i>Key Management Service key</i> \n  and <i>KMS key</i>. The concept has not changed. To prevent breaking changes, KMS is keeping some variations of this term.</p>\n            <p>Amazon Web Services provides SDKs that consist of libraries and sample code for various programming\n        languages and platforms (Java, Rust, Python, Ruby, .Net, macOS, Android, etc.). The SDKs\n        provide a convenient way to create programmatic access to KMS and other Amazon Web Services services.\n        For example, the SDKs take care of tasks such as signing requests (see below), managing\n        errors, and retrying requests automatically. For more information about the Amazon Web Services SDKs,\n        including how to download and install them, see <a href=\"http://aws.amazon.com/tools/\">Tools\n          for Amazon Web Services</a>.</p>\n         </note>\n         <p>We recommend that you use the Amazon Web Services SDKs to make programmatic API calls to KMS.</p>\n         <p>If you need to use FIPS 140-2 validated cryptographic modules when communicating with\n      Amazon Web Services, use one of the FIPS endpoints in your preferred Amazon Web Services Region. If you need communicate\n      over IPv6, use the dual-stack endpoint in your preferred Amazon Web Services Region. For more information\n      see <a href=\"https://docs.aws.amazon.com/general/latest/gr/kms.html#kms_region\">Service\n        endpoints</a> in the Key Management Service topic of the <i>Amazon Web Services General Reference</i> and <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/ipv6-kms.html\">Dual-stack endpoint\n        support</a> in the KMS Developer Guide.</p>\n         <p>All KMS API calls must be signed and be transmitted using Transport Layer Security\n      (TLS). KMS recommends you always use the latest supported TLS version. Clients must also\n      support cipher suites with Perfect Forward Secrecy (PFS) such as Ephemeral Diffie-Hellman\n      (DHE) or Elliptic Curve Ephemeral Diffie-Hellman (ECDHE). Most modern systems such as Java 7\n      and later support these modes.</p>\n         <p>\n            <b>Signing Requests</b>\n         </p>\n         <p>Requests must be signed using an access key ID and a secret access key. We strongly\n      recommend that you do not use your Amazon Web Services account root access key ID and secret access key for\n      everyday work. You can use the access key ID and secret access key for an IAM user or you\n      can use the Security Token Service (STS) to generate temporary security credentials and use those to sign\n      requests. </p>\n         <p>All KMS requests must be signed with <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4</a>.</p>\n         <p>\n            <b>Logging API Requests</b>\n         </p>\n         <p>KMS supports CloudTrail, a service that logs Amazon Web Services API calls and related events for your\n      Amazon Web Services account and delivers them to an Amazon S3 bucket that you specify. By using the\n      information collected by CloudTrail, you can determine what requests were made to KMS, who made\n      the request, when it was made, and so on. To learn more about CloudTrail, including how to turn it\n      on and find your log files, see the <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/\">CloudTrail User Guide</a>.</p>\n         <p>\n            <b>Additional Resources</b>\n         </p>\n         <p>For more information about credentials and request signing, see the following:</p>\n         <ul>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-security-credentials.html\">Amazon Web Services\n            Security Credentials</a> - This topic provides general information about the types\n          of credentials used to access Amazon Web Services.</p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html\">Temporary\n            Security Credentials</a> - This section of the <i>IAM User Guide</i>\n          describes how to create and use temporary security credentials.</p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version\n            4 Signing Process</a> - This set of topics walks you through the process of signing\n          a request using an access key ID and a secret access key.</p>\n            </li>\n         </ul>\n         <p>\n            <b>Commonly Used API Operations</b>\n         </p>\n         <p>Of the API operations discussed in this guide, the following will prove the most useful\n      for most applications. You will likely perform operations other than these, such as creating\n      keys and assigning policies, by using the console.</p>\n         <ul>\n            <li>\n               <p>\n                  <a>Encrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>Decrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKeyWithoutPlaintext</a>\n               </p>\n            </li>\n         </ul>",
+                "smithy.api#documentation": "<fullname>Key Management Service</fullname>\n         <p>Key Management Service (KMS) is an encryption and key management web service. This guide describes\n      the KMS operations that you can call programmatically. For general information about KMS,\n      see the <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/\">\n               <i>Key Management Service Developer Guide</i>\n            </a>.</p>\n         <note>\n            <p>KMS has replaced the term <i>customer master key (CMK)</i> with <i>Key Management Service key</i> \n  and <i>KMS key</i>. The concept has not changed. To prevent breaking changes, KMS is keeping some variations of this term.</p>\n            <p>Amazon Web Services provides SDKs that consist of libraries and sample code for various programming\n        languages and platforms (Java, Rust, Python, Ruby, .Net, macOS, Android, etc.). The SDKs\n        provide a convenient way to create programmatic access to KMS and other Amazon Web Services services.\n        For example, the SDKs take care of tasks such as signing requests (see below), managing\n        errors, and retrying requests automatically. For more information about the Amazon Web Services SDKs,\n        including how to download and install them, see <a href=\"http://aws.amazon.com/tools/\">Tools\n          for Amazon Web Services</a>.</p>\n         </note>\n         <p>We recommend that you use the Amazon Web Services SDKs to make programmatic API calls to KMS.</p>\n         <p>If you need to use FIPS 140-2 validated cryptographic modules when communicating with\n      Amazon Web Services, use one of the FIPS endpoints in your preferred Amazon Web Services Region. If you need communicate\n      over IPv6, use the dual-stack endpoint in your preferred Amazon Web Services Region. For more information\n      see <a href=\"https://docs.aws.amazon.com/general/latest/gr/kms.html#kms_region\">Service\n        endpoints</a> in the Key Management Service topic of the <i>Amazon Web Services General Reference</i> and <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/ipv6-kms.html\">Dual-stack endpoint\n        support</a> in the KMS Developer Guide.</p>\n         <p>All KMS API calls must be signed and be transmitted using Transport Layer Security\n      (TLS). KMS recommends you always use the latest supported TLS version. Clients must also\n      support cipher suites with Perfect Forward Secrecy (PFS) such as Ephemeral Diffie-Hellman\n      (DHE) or Elliptic Curve Ephemeral Diffie-Hellman (ECDHE). Most modern systems such as Java 7\n      and later support these modes.</p>\n         <note>\n            <p>With current technology, brute force attacks on KMS TLS cipher suite key exchange\n        mechanisms are not feasible. However, cipher suites that use Rivest–Shamir–Adleman (RSA)\n        or Diffie-Hellman (DH) key exchange will be susceptible if large-scale quantum computing\n        becomes practical.\n        <a href=\"https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf\">NIST IR 8547</a>\n        on the NIST website establishes a timeline to phase out quantum-vulnerable algorithms\n        by 2030 and disallow them entirely by 2035. If your applications rely on the long-term\n        confidentiality of KMS API traffic, we recommend that you\n        <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/pqtls.html\">use post-quantum TLS with KMS</a>.\n        For more information about post-quantum cybersecurity, see <a href=\"https://www.nsa.gov/Cybersecurity/Post-Quantum-Cybersecurity-Resources/\">Post-Quantum Cybersecurity Resources</a> on the\n        National Security Agency (NSA) website.</p>\n         </note>\n         <p>\n            <b>Signing Requests</b>\n         </p>\n         <p>Requests must be signed using an access key ID and a secret access key. We strongly\n      recommend that you do not use your Amazon Web Services account root access key ID and secret access key for\n      everyday work. You can use the access key ID and secret access key for an IAM user or you\n      can use the Security Token Service (STS) to generate temporary security credentials and use those to sign\n      requests. </p>\n         <p>All KMS requests must be signed with <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4</a>.</p>\n         <p>\n            <b>Logging API Requests</b>\n         </p>\n         <p>KMS supports CloudTrail, a service that logs Amazon Web Services API calls and related events for your\n      Amazon Web Services account and delivers them to an Amazon S3 bucket that you specify. By using the\n      information collected by CloudTrail, you can determine what requests were made to KMS, who made\n      the request, when it was made, and so on. To learn more about CloudTrail, including how to turn it\n      on and find your log files, see the <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/\">CloudTrail User Guide</a>.</p>\n         <p>\n            <b>Additional Resources</b>\n         </p>\n         <p>For more information about credentials and request signing, see the following:</p>\n         <ul>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-security-credentials.html\">Amazon Web Services\n            Security Credentials</a> - This topic provides general information about the types\n          of credentials used to access Amazon Web Services.</p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html\">Temporary\n            Security Credentials</a> - This section of the <i>IAM User Guide</i>\n          describes how to create and use temporary security credentials.</p>\n            </li>\n            <li>\n               <p>\n                  <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version\n            4 Signing Process</a> - This set of topics walks you through the process of signing\n          a request using an access key ID and a secret access key.</p>\n            </li>\n         </ul>\n         <p>\n            <b>Commonly Used API Operations</b>\n         </p>\n         <p>Of the API operations discussed in this guide, the following will prove the most useful\n      for most applications. You will likely perform operations other than these, such as creating\n      keys and assigning policies, by using the console.</p>\n         <ul>\n            <li>\n               <p>\n                  <a>Encrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>Decrypt</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKey</a>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <a>GenerateDataKeyWithoutPlaintext</a>\n               </p>\n            </li>\n         </ul>",
                 "smithy.api#title": "AWS Key Management Service",
                 "smithy.api#xmlNamespace": {
                     "uri": "https://trent.amazonaws.com/doc/2014-11-01/"

@@ -5,6 +5,7 @@
 package aws.sdk.kotlin.hll.dynamodbmapper.values.collections
 
 import aws.sdk.kotlin.hll.dynamodbmapper.values.ValueConverter
+import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.EnumToStringConverter
 import aws.sdk.kotlin.hll.dynamodbmapper.values.scalars.TextConverters
 import aws.sdk.kotlin.hll.mapping.core.converters.ConverterChain
 import aws.sdk.kotlin.hll.mapping.core.converters.collections.SetMappingConverter
@@ -46,3 +47,11 @@ public object CharArraySetValueConverter : ValueConverter<Set<CharArray>> by Con
  * [DynamoDB `SS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
  */
 public object CharSetValueConverter : ValueConverter<Set<Char>> by ConverterChain(SetMappingConverter(TextConverters.Char), StringSetValueConverter)
+
+/**
+ * Instantiates a new [ValueConverter] between a [Set] of enums of type [E] and
+ * [DynamoDB `SS` values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes.SetTypes)
+ * @param E The [Enum] type of the set elements
+ */
+@Suppress("ktlint:standard:function-naming")
+public inline fun <reified E : Enum<E>> EnumSetValueConverter(): ValueConverter<Set<E>> = ConverterChain(SetMappingConverter(EnumToStringConverter<E>()), StringSetValueConverter)

@@ -12,6 +12,7 @@ permissions:
 jobs:
   update-canary:
     runs-on: ubuntu-latest
+    if: github.repository == 'aws/aws-sdk-kotlin'
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -25,8 +26,9 @@ jobs:
         # Maven can take up to 2 hours after the release has succeeded to publish our artifacts
         # FIXME Track execution duration over time and see if this can be shortened
         timeout-minutes: 120
+        env:
+          TAG: ${{ github.event.release.tag_name }}
         run: |
-          TAG="${{ github.event.release.tag_name }}"
           VERSION="${TAG#v}"
           MAVEN_URL="https://repo.maven.apache.org/maven2/aws/sdk/kotlin/s3/${VERSION}/"
           
@@ -47,10 +49,11 @@ jobs:
       - name: Update canary
         shell: bash
         timeout-minutes: 15
+        env:
+          TAG: ${{ github.event.release.tag_name }}
         run: |
           set -euo pipefail
 
-          TAG="${{ github.event.release.tag_name }}"
           EXECUTION_NAME="update-canary-${TAG}"
           STATE_MACHINE_ARN="arn:aws:states:us-west-2:${{ secrets.CI_USER }}:stateMachine:DeployLatestSdkVersion"
 

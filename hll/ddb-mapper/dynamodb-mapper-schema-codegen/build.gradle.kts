@@ -27,6 +27,7 @@ dependencies {
 
     testImplementation(libs.kotest.assertions.core.jvm)
     testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.mockk)
 }
 
 val optinAnnotations = listOf(

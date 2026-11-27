@@ -20,9 +20,13 @@ public open class SchemaGeneratorPluginExtension {
     public var generateBuilderClasses: GenerateBuilderClasses = GenerateBuilderClasses.WHEN_REQUIRED
 
     /**
-     * Determines the visibility of code-generated classes / objects. Defaults to [Visibility.PUBLIC].
+     * Determines the visibility of code-generated classes / objects. Defaults to [Visibility.MATCH_SOURCE], which makes
+     * the code generated for each annotated class `public` only if every user type its generated signatures expose is
+     * effectively public: the class itself (or, for a heterogeneous family, its base type), the property types of its
+     * generated builder, and, for a table item, its user-provided item converter. Otherwise, that code is `internal`.
+     * Code generated for an ad-hoc family (named by an `object`) exposes only `Any`, so it is always `public`.
      */
-    public var visibility: Visibility = Visibility.PUBLIC
+    public var visibility: Visibility = Visibility.MATCH_SOURCE
 
     /**
      * Determines the package where code-generated classes / objects will be placed.
